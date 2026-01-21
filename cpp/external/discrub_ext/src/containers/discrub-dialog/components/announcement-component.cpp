@@ -11,7 +11,7 @@ void AnnouncementComponent() {
     const auto [announcement, setAnnouncement] = useState<Announcement | Maybe>(nullptr);
 
     useEffect(() => {
-        const auto getAnnouncementData = async () => {;
+        const auto getAnnouncementData = std::async () => {;
             const auto data = fetchAnnouncementData();
             setAnnouncement(data);
             };

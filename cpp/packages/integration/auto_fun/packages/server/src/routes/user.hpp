@@ -72,8 +72,8 @@ std::future<User> ensureUserProfile(const std::string& address);
 
         // Ensure profile exists before attempting update
 
-        // Validate Display Name (Allow clearing by setting to null or empty string)
-                 // Allow clearing the display name - set to null in DB
+        // Validate Display Name (Allow clearing by setting to null or empty std::string)
+                 // Allow clearing the display name - std::set to null in DB
                  // If you want to re-generate random on clear, handle that elsewhere
         
         // Validate Profile Picture URL

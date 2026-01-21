@@ -15,7 +15,7 @@ public:
 
     boolean isInstalling = false;
 
-    any installPromise = nullptr;
+    std::any installPromise = nullptr;
 
     PlaywrightInstaller(std::shared_ptr<Logger> logger);
     virtual boolean isPlaywrightInstalled();

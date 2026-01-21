@@ -347,14 +347,14 @@ bool ElizaStarterAgent::containsQuestion(const std::string& input) {
 }
 
 /**
- * Factory function for creating ElizaStarterAgent instances
+ * Factory std::function for creating ElizaStarterAgent instances
  */
 std::unique_ptr<ElizaStarterAgent> createElizaStarterAgent(const std::string& name, const std::string& id) {
     return std::make_unique<ElizaStarterAgent>(name, id);
 }
 
 /**
- * Simple interactive demo function
+ * Simple interactive demo std::function
  */
 void runInteractiveDemo() {
     std::cout << "=== ElizaOS C++ Starter Demo ===" << std::endl;
@@ -397,7 +397,7 @@ void runInteractiveDemo() {
 
 #ifdef ELIZA_STARTER_DEMO_MAIN
 /**
- * Main function for the ElizaOS C++ Starter Demo
+ * Main std::function for the ElizaOS C++ Starter Demo
  * Compile with -DELIZA_STARTER_DEMO_MAIN to enable
  */
 int main() {

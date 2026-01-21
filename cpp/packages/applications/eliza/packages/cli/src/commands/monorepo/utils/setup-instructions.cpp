@@ -76,7 +76,7 @@ void displayBunInstructions() {
         std::cout << "   " + command << std::endl;
         });
 
-        // Display alternatives if any
+        // Display alternatives if std::any
         if (instructions.alternatives) {
             instructions.alternatives.forEach((alt) => {
                 std::cout << "   Alternative: " + alt << std::endl;

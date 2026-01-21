@@ -36,7 +36,7 @@ std::string sanitizeFilename(const std::string& filename);
  * Cleans up multiple multer files
  */
       // For multer memory storage, no temp files to clean up
-      // This function is kept for compatibility
+      // This std::function is kept for compatibility
 
 /**
  * Cleans up a multer file (no-op for memory storage)

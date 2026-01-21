@@ -79,7 +79,7 @@ void trackRender(const std::string& componentName, std::optional<std::unordered_
 
         if (!record) {
             record = { count: 0, timestamps: [], firstRenderTime: now };
-            renderCounts.set(componentName, record);
+            renderCounts.std::set(componentName, record);
         }
 
         // Clean up old timestamps outside the window
@@ -147,7 +147,7 @@ void trackRender(const std::string& componentName, std::optional<std::unordered_
             std::cerr << "State snapshot:" << stateSnapshot << std::endl;
             console.error(
             "Render timestamps:",
-            record.timestamps.map((ts) => new Date(ts).toISOString()),
+            record.timestamps.std::map((ts) => new Date(ts).toISOString()),
             );
             std::cerr << "Time since first render:" << timeSinceFirstRender << "ms" << std::endl;
             std::cerr << "Is initial mount period:" << isInitialMount << std::endl;

@@ -30,7 +30,7 @@ class PGliteClientManager implements IDatabaseClientManager<PGlite> {
     this.client = new PGlite({
       ...options,
       extensions: {
-        vector,
+        std::vector,
         fuzzystrmatch,
       },
     });

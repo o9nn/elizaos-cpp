@@ -45,8 +45,8 @@ void Main(void)
             });
             expect(mockRuntime->registerTaskWorker)->toHaveBeenCalledWith(object{
                 object::pair{std::string("name"), std::string("RESET_DAILY_TASKS")}, 
-                object::pair{std::string("validate"), expect->any(Function)}, 
-                object::pair{std::string("execute"), expect->any(Function)}
+                object::pair{std::string("validate"), expect->std::any(Function)}, 
+                object::pair{std::string("execute"), expect->std::any(Function)}
             });
         }
         );

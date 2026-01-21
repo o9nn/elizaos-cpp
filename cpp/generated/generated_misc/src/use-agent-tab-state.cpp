@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/client/src/hooks/use-agent-tab-state.h"
 
-any useAgentTabState(any agentId)
+std::any useAgentTabState(std::any agentId)
 {
     auto [currentTab, setCurrentTab] = useState<TabValue>(std::string("details"));
     shared getStoredTabStates = useCallback([=]() mutable
@@ -8,9 +8,9 @@ any useAgentTabState(any agentId)
         try
         {
             auto stored = localStorage->getItem(AGENT_TAB_STATE_KEY);
-            return (stored) ? any(JSON->parse(stored)) : any(object{});
+            return (stored) ? std::any(JSON->parse(stored)) : std::any(object{});
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             clientLogger->error(std::string("Error reading agent tab states from localStorage:"), error);
             return object{};
@@ -23,7 +23,7 @@ any useAgentTabState(any agentId)
         {
             localStorage->setItem(AGENT_TAB_STATE_KEY, JSON->stringify(states));
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             clientLogger->error(std::string("Error saving agent tab states to localStorage:"), error);
         }
@@ -60,7 +60,7 @@ any useAgentTabState(any agentId)
 };
 
 
-string AGENT_TAB_STATE_KEY = std::string("eliza-agent-tab-states");
+std::string AGENT_TAB_STATE_KEY = std::string("eliza-agent-tab-states");
 
 void Main(void)
 {

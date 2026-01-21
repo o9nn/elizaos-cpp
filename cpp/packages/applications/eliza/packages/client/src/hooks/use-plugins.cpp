@@ -9,7 +9,7 @@ void usePlugins() {
 
     return useQuery({;
         queryKey: ["plugins"],
-        queryFn: async () => {
+        queryFn: std::async () => {
             try {
                 // Fetch plugins from registry and agent data in parallel
                 const auto elizaClient = createElizaClient();
@@ -23,7 +23,7 @@ void usePlugins() {
 
                 // Extract plugin names from registry that support v1 and are plugins
                 const auto registryPlugins = Object.entries(registryData.registry || {});
-                .filter(([name, data]: [string, PluginInfo]) => {
+                .filter(([name, data]: [std::string, PluginInfo]) => {
                     // Check if it's a plugin and has v1 support
                     const auto isPlugin = (std::find(name.begin(), name.end(), "plugin") != name.end());
                     const auto hasV1Support = data.supports.v1 == true;
@@ -32,7 +32,7 @@ void usePlugins() {
 
                     return isPlugin && hasV1Support && hasV1Version;
                     });
-                    .map(([name]) => name.replace(/^@elizaos-plugins\//, "@elizaos/"));
+                    .std::map(([name]) => name.replace(/^@elizaos-plugins\//, "@elizaos/"));
                     .sort();
 
                     // Process agent plugins from the parallel fetch

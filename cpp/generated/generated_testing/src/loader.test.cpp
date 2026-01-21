@@ -1,7 +1,7 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/tests/unit/utils/loader.test.h"
 
-string TEST_MULTI_CHARACTER_URL = std::string("https://raw.githubusercontent.com/elizaOS/eliza/refs/heads/develop/packages/cli/tests/test-characters/multi-chars.json");
-any mockFs = as<any>(fs);
+std::string TEST_MULTI_CHARACTER_URL = std::string("https://raw.githubusercontent.com/elizaOS/eliza/refs/heads/develop/packages/cli/tests/test-characters/multi-chars.json");
+std::any mockFs = as<any>(fs);
 
 void Main(void)
 {
@@ -87,7 +87,7 @@ void Main(void)
                 shared error = std::make_shared<Error>(std::string("File not found"));
                 mockFs["readFileSync"]["mockImplementation"]([=]() mutable
                 {
-                    throw any(error);
+                    throw std::any(error);
                 }
                 );
                 expect([=]() mutable
@@ -117,7 +117,7 @@ void Main(void)
             {
                 mockFs["readFileSync"]["mockImplementation"]([=]() mutable
                 {
-                    throw any(std::make_shared<Error>(std::string("ENOENT: no such file or directory")));
+                    throw std::any(std::make_shared<Error>(std::string("ENOENT: no such file or directory")));
                 }
                 );
                 std::async([=]() { expect(loadCharacter(std::string("/nonexistent/character.json")))->rejects->toThrow(std::string("Error loading file /nonexistent/character.json")); });
@@ -389,7 +389,7 @@ void Main(void)
                     std::async([=]() { loadCharacter(std::string("/path/to/no-name.json")); });
                     expect->fail(std::string("Should have thrown an error"));
                 }
-                catch (const any& error)
+                catch (const std::any& error)
                 {
                     expect(error["message"])->toContain(std::string("Character validation failed"));
                     expect(error["message"])->toContain(std::string("name"));

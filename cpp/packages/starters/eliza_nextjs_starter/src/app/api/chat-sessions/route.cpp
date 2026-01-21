@@ -53,7 +53,7 @@ std::future<void> GET(NextRequest request) {
 
                     // Filter for DM channels involving the user and agent (following ElizaOS client pattern)
                     // Only include channels that have sessionId (new UUID-based sessions)
-                    const auto dmChannels = channels.filter((channel: any) => {;
+                    const auto dmChannels = channels.filter((channel: std::any) => {;
                         const auto metadata = channel.metadata || {};
                         const auto isCorrectType = channel.type == "DM";
                         const auto isMarkedAsDm = metadata.isDm == true;
@@ -81,7 +81,7 @@ std::future<void> GET(NextRequest request) {
                         if (dmChannels.length > 0) {
                             // Use proper DM channels if they exist
                             chatSessions = Promise.all(;
-                            dmChannels.map(async (channel: any) => {
+                            dmChannels.std::map(std::async (channel: std::any) => {
                                 try {
                                     const auto messagesResponse = fetch(;
                                     API_BASE_URL + "/api/messaging/central-channels/" + channel.id + "/messages?limit=50"
@@ -109,7 +109,7 @@ std::future<void> GET(NextRequest request) {
                                         new Date(b.createdAt).getTime(),
                                         );
                                         .find(;
-                                        (msg: any) =>
+                                        (msg: std::any) =>
                                         msg.authorId == userId ||;
                                         msg.rawMessage.senderId == userId,
                                         );

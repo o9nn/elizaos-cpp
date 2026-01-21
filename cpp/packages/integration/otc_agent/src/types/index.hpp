@@ -35,7 +35,7 @@ using EVMChain = std::variant<"base", "bsc">;
  */
 struct Offer {
     bigint consignmentId;
-    string; // bytes32 hex string tokenId;
+    std::string; // bytes32 hex std::string tokenId;
     Address beneficiary;
     bigint tokenAmount;
     bigint discountBps;

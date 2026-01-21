@@ -64,7 +64,7 @@ struct TraderTransactionsSeekResponse {
     std::optional<double> amount;
     std::optional<std::string> type;
     std::optional<"from" | "to"> type_swap;
-    std::optional<any | null> fee_info;
+    std::optional<std::any | null> fee_info;
     std::optional<double> ui_amount;
     std::optional<number | null> price;
     std::optional<double> nearest_price;

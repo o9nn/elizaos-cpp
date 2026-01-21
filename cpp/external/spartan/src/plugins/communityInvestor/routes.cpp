@@ -32,7 +32,7 @@ std::future<void> getLeaderboardDataHandler(const std::any& req, const std::any&
             const auto leaderboardData = service.getLeaderboardData(runtime);
             // Return the leaderboard data directly as an array, not wrapped in an object
             sendSuccess(res, leaderboardData);
-            } catch (error: any) {
+            } catch (error: std::any) {
                 std::cerr << "[API /leaderboard] Error fetching leaderboard data:" << error << std::endl;
                 sendError(res, 500, "LEADERBOARD_ERROR", "Failed to fetch leaderboard data", error.message);
             }
@@ -105,7 +105,7 @@ std::future<void> communityInvestorPanelHandler(const std::any& req, const std::
         res.writeHead(200, { "Content-Type": "text/html" });
         res.end(html);
         }
-        } catch (error: any) {
+        } catch (error: std::any) {
             std::cerr << "[COMMUNITY INVESTOR PANEL] Error serving leaderboard panel:" << error << std::endl;
             sendError(res, 500, "PANEL_ERROR", "Failed to load leaderboard panel", error.message);
         }
@@ -169,7 +169,7 @@ std::future<void> communityInvestorAssetsHandler(const std::any& req, const std:
                     std::cout << "[COMMUNITY INVESTOR ASSET HANDLER] Asset not found: " + assetPath << std::endl;
                     "sendError(res, 404, "NOT_FOUND", " + "Asset not found: " + assetName
                 }
-                } catch (error: any) {
+                } catch (error: std::any) {
                     std::cerr << "[COMMUNITY INVESTOR ASSET HANDLER] Error serving asset " + req.path + ":" << error << std::endl;
                     sendError(res, 500, "ASSET_ERROR", "Failed to load asset", error.message);
                 }

@@ -30,17 +30,17 @@ struct ProjectStatusEvents {
  */
 class TypedEventEmitter extends EventEmitter {
   on<U extends keyof ProjectStatusEvents>(event: U, listener: ProjectStatusEvents[U]): this {
-    return super.on(event as string, listener);
+    return super.on(event as std::string, listener);
   }
 
 /**
  * Service to manage and broadcast project status updates
  */
 class ProjectStatusManager extends Service {
-  static serviceName: string = 'project-status-manager';
+  static serviceName: std::string = 'project-status-manager';
   static serviceType: ServiceTypeName = 'project-status' as ServiceTypeName;
 
-  get capabilityDescription(): string {
+  get capabilityDescription(): std::string {
     return 'Manages project status updates and real-time notifications for code generation projects';
   }
 

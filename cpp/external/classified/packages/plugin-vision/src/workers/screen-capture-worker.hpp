@@ -104,7 +104,7 @@ class ScreenCaptureWorker {
 
 // Worker entry point
 
-  // Handle messages from main thread
+  // Handle messages from main std::thread
 
   // Run the worker
 

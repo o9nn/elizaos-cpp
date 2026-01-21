@@ -16,7 +16,7 @@ namespace elizaos {
 
 
 class ServerManager {
-  private connections = new Map<string, ServerConnection>();
+  private connections = new Map<std::string, ServerConnection>();
   private logger: Console;
 
   constructor(logger: Console = console) {

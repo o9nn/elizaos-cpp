@@ -35,12 +35,12 @@ namespace elizaos {
 
  // <<< Trying path relative to src
 
- // Import shared S3 client function
+ // Import shared S3 client std::function
 
  // Import the S3 uploader
 
 // --- Validation Function ---
-std::future<void> validateQueryResults(std::optional<{ hideImported: number; status: string }> params, Token[] | null | undefined results, std::optional<{ mainQuerySql: string } // Optional parameter for SQL string> sqlStrings);
+std::future<void> validateQueryResults(std::optional<{ hideImported: number; status: std::string }> params, Token[] | null | undefined results, std::optional<{ mainQuerySql: std::string } // Optional parameter for SQL string> sqlStrings);
 
 // --- Build Base Query (Filters) ---
 // Adjust DB type if needed
@@ -64,7 +64,7 @@ std::future<void> validateQueryResults(std::optional<{ hideImported: number; sta
       // Alternative: return c.text('Failed to generate image', 500);
 
     // 3. Upload generated image to S3/R2
-      // Use the updated uploadWithS3 function with cache control
+      // Use the updated uploadWithS3 std::function with cache control
 
       // Handle upload error (e.g., return 500 or default image)
       // Alternative: return c.text('Failed to store generated image', 500);
@@ -89,7 +89,7 @@ std::future<void> validateQueryResults(std::optional<{ hideImported: number; sta
 
 std::future<void> processSwapEvent(const std::any& swap, boolean = true shouldEmitGlobal);
 
-// Helper function to process token info after finding it on a network
+// Helper std::function to process token info after finding it on a network
 std::future<void> processTokenInfo(PublicKey mintPublicKey, AccountInfo<Buffer> tokenInfo, Connection connection, const std::string& requestor);
 
 // Helper to check token balance directly on blockchain
@@ -115,12 +115,12 @@ std::future<void> processTokenInfo(PublicKey mintPublicKey, AccountInfo<Buffer> 
 
     // Make sure reserveAmount and reserveLamport have values
 
-    // Update or set default values for missing fields
+    // Update or std::set default values for missing fields
 
     // Calculate tokenPriceUSD in the same way as the old code
     // Ensure token.currentPrice is treated as SOL price per WHOLE token unit
 
-    // Get virtualReserves and curveLimit from env or set defaults
+    // Get virtualReserves and curveLimit from env or std::set defaults
 
     // Update virtualReserves and curveLimit
 
@@ -149,15 +149,15 @@ std::future<void> processTokenInfo(PublicKey mintPublicKey, AccountInfo<Buffer> 
       // for both imported and newly created tokens
 
           // Fetch historical data in the background
-          // Merge any immediately available market data
+          // Merge std::any immediately available market data
           // Continue even if webhook registration fails, especially locally
 
       // For non-imported tokens, generate additional images in the background
-        // Use a simple async call if waitUntil is not available
+        // Use a simple std::async call if waitUntil is not available
 
     // Require authentication
 
-      // holderCount, // Removed as update runs async
+      // holderCount, // Removed as update runs std::async
 
   // Permission check
 
@@ -192,7 +192,7 @@ std::future<void> processTokenInfo(PublicKey mintPublicKey, AccountInfo<Buffer> 
     // Get token for decimals and creator information first
 
     // If token doesn't exist in our database, and we are forcing on-chain check
-      // Pass c context to the helper function
+      // Pass c context to the helper std::function
 
     // If token doesn't exist in our database and not forcing on-chain
       // Don't cache 404s here
@@ -200,7 +200,7 @@ std::future<void> processTokenInfo(PublicKey mintPublicKey, AccountInfo<Buffer> 
     // Check if user is the token creator
 
     // If forcing on-chain check, skip DB holder lookup
-      // Pass c context to the helper function
+      // Pass c context to the helper std::function
 
         // Extract lastUpdated if available (assuming it's stored)
       // Continue, will likely result in 0 balance if not creator
@@ -211,7 +211,7 @@ std::future<void> processTokenInfo(PublicKey mintPublicKey, AccountInfo<Buffer> 
       // const holder = holderQuery[0];
 
       // User is the creator but not in holders table, might have balance on-chain
-      // Pass c context to the helper function
+      // Pass c context to the helper std::function
       // User is not in holders table and is not the creator
 
     // --- BEGIN REDIS CACHE SET (only if not forced on-chain) ---
@@ -238,10 +238,10 @@ std::future<void> uploadImportImage(Context c);
 
     // Create the object key
 
-    // Upload to storage using existing function
+    // Upload to storage using existing std::function
 
 /**
- * Fetches and prioritizes specific tokens at the beginning of the result set
+ * Fetches and prioritizes specific tokens at the beginning of the result std::set
  * @param db Database instance
  * @param serializableResults Current serialized token results
  * @param priorityTokenAddresses Array of token mint addresses to prioritize

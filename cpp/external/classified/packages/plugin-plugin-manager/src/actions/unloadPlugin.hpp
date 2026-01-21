@@ -20,7 +20,7 @@ namespace elizaos {
 
     // Check if the message is asking to unload a plugin
 
-    // Check if there are any plugins that can be unloaded
+    // Check if there are std::any plugins that can be unloaded
 
     // Filter out protected plugins that cannot be unloaded
 

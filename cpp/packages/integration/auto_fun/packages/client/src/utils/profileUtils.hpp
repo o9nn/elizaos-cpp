@@ -23,7 +23,7 @@ struct UserProfileData {
     std::string id;
     std::string address;
     std::string displayName;
-    string | null profilePictureUrl;
+    std::string | null profilePictureUrl;
     double points;
     double rewardPoints;
     std::string createdAt;
@@ -68,7 +68,7 @@ using MetadataAccount = AccountInfo<Buffer>;
       // const mint = t.mint; // Extract mint property
       // parse the mint
 
-      // find the account with this mint (if any)
+      // find the account with this mint (if std::any)
 
         // safe‐cast the amount or fall back to zero
 
@@ -94,10 +94,10 @@ using MetadataAccount = AccountInfo<Buffer>;
 
 // Function to upload a new profile picture
 
-  // Basic client-side validation (optional, as backend also validates)
+  // Basic client-side validation (std::optional, as backend also validates)
     // 5MB limit
 
-    // Content-Type is set automatically by browser for FormData
+    // Content-Type is std::set automatically by browser for FormData
 
   // Return the updated user data from the response
 

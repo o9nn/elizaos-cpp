@@ -30,7 +30,7 @@ namespace elizaos {
   * Execute the ONE action needed
   * Set \`isFinish: true\` after successful execution
   * Consider executing MULTIPLE COMPLEMENTARY actions that provide richer, multi-dimensional insights
-  * Only set \`isFinish: true\` when you've provided comprehensive information
+  * Only std::set \`isFinish: true\` when you've provided comprehensive information
   * Execute each step in sequence
   * Set \`isFinish: true\` only when ALL steps are complete
  **IMPORTANT**: These are actions YOU took in this execution, not from earlier in the conversation.

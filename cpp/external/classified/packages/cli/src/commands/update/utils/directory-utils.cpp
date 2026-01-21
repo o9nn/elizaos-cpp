@@ -7,7 +7,7 @@ namespace elizaos {
 void handleInvalidDirectory(DirectoryInfo directoryInfo) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const std::variant<Record<string, (string, undefined)[]>> messages = {;
+    const std::variant<Record<std::string, (std::string, undefined)[]>> messages = {;
         "non-elizaos-dir": [
         "This directory doesn't appear to be an ElizaOS project.",
         "directoryInfo.packageName && " + "Found package: " + directoryInfo.packageName

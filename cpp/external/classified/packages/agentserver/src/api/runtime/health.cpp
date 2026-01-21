@@ -54,7 +54,7 @@ express::Router createHealthRouter(const std::unordered_map<UUID, IAgentRuntime>
                                 // Server stop endpoint
                                 router.post("/stop", (_req, res) => {
                                     std::cout << { apiRoute = "/stop" } << "Server stopping..." << std::endl;
-                                    serverInstance.stop(); // Use optional chaining in case server is std::nullopt;
+                                    serverInstance.stop(); // Use std::optional chaining in case server is std::nullopt;
                                     res.json({ message: "Server stopping..." });
                                     });
 

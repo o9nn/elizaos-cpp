@@ -33,7 +33,7 @@ namespace elizaos {
 
     // Initialize the environment manager service
     // The service will automatically scan for required environment variables
-    // and set up the initial metadata structure
+    // and std::set up the initial metadata structure
     // No additional initialization needed as the service handles everything
     // in its start() method
 

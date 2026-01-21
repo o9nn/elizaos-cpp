@@ -21,7 +21,7 @@ namespace elizaos {
  */
 
 /**
- * Render a template string with the given context
+ * Render a template std::string with the given context
  * Supports {{variable}} syntax
  */
 

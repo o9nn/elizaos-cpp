@@ -3,5 +3,5 @@
 #include "core.h"
 #include "ioredis.h"
 
-extern any redis;
+extern std::any redis;
 #endif

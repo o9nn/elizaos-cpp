@@ -8,11 +8,11 @@ void CallbackPage() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const auto [error, setError] = useState<string | nullptr>(nullptr);
-        const auto [debugInfo, setDebugInfo] = useState<{ [key: string]: string }>({});
+        const auto [error, setError] = useState<std::string | nullptr>(nullptr);
+        const auto [debugInfo, setDebugInfo] = useState<{ [key: std::string]: std::string }>({});
 
         useEffect(() => {
-            const auto processCallback = async () => {;
+            const auto processCallback = std::async () => {;
                 // Check for OAuth 1.0a callback parameters
                 const auto params = new URLSearchParams(window.location.search);
                 const auto oauthToken = params.get("oauth_token");
@@ -145,8 +145,8 @@ void CallbackPage() {
                                                     std::cout << "OAuth 2.0 tokens received << fetching profile..." << std::endl;
 
                                                     // --- Fetch Profile Details ---
-                                                    auto username: string | std::nullopt;
-                                                    auto profileImageUrl: string | std::nullopt;
+                                                    auto username: std::string | std::nullopt;
+                                                    auto profileImageUrl: std::string | std::nullopt;
                                                     try {
                                                         const auto profileApiResponse = fetch(;
                                                         env.apiUrl + "/api/share/twitter-user"
@@ -229,7 +229,7 @@ void CallbackPage() {
                                                                                     }
                                                                                     };
 
-                                                                                    // Helper function for redirecting back to origin
+                                                                                    // Helper std::function for redirecting back to origin
                                                                                     const auto redirectToOrigin = [&]() {;
                                                                                         // Retrieve the original path, default to root '/' if not found
                                                                                         const auto redirectOrigin =;
@@ -238,7 +238,7 @@ void CallbackPage() {
 
                                                                                         // Construct the final redirect URL
                                                                                         const auto redirectUrl = new URL(redirectOrigin, window.location.origin);
-                                                                                        redirectUrl.searchParams.set("fresh_auth", "true"); // Add the flag;
+                                                                                        redirectUrl.searchParams.std::set("fresh_auth", "true"); // Add the flag;
 
                                                                                         window.location.href = std::to_string(redirectUrl); // Redirect dynamically;
                                                                                         };
@@ -256,7 +256,7 @@ void CallbackPage() {
                                                                                             <p className="text-sm text-gray-400 mb-2">Check the following:</p>
                                                                                             <ul className="list-disc pl-5 text-sm text-gray-300">;
                                                                                             <li>Twitter API credentials in your server environment</li>;
-                                                                                            <li>VITE_API_URL is correctly set in your .env file</li>;
+                                                                                            <li>VITE_API_URL is correctly std::set in your .env file</li>;
                                                                                             <li>Your Twitter Developer App configuration is correct</li>;
                                                                                             <li>Callback URL in Twitter Developer Portal matches your app</li>;
                                                                                             </ul>;
@@ -267,7 +267,7 @@ void CallbackPage() {
                                                                                         Request Details:
                                                                                         </h3>;
                                                                                         <div className="bg-autofun-background-primary p-2 rounded text-xs font-mono overflow-x-auto">;
-                                                                                        {Object.entries(debugInfo).map(([key, value]) => (;
+                                                                                        {Object.entries(debugInfo).std::map(([key, value]) => (;
                                                                                         <div key={key} className="flex">;
                                                                                         <span className="text-blue-400 w-32">{key}:</span>
                                                                                         <span className="text-gray-300">{value}</span>;

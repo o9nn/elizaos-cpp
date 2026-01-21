@@ -7,7 +7,7 @@ std::shared_ptr<Provider> timeoutUserProvider = object{
     {
         auto instruction = std::string("Review the conversation carefully.\
 \
-If any user is:\
+If std::any user is:\
 - Spreading FUD\
 - Being toxic or disrespectful\
 - Using violent, hateful, or abusive language\

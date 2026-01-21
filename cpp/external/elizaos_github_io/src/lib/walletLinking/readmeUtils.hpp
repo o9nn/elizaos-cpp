@@ -22,13 +22,13 @@ using WalletLinkingData = z::infer<typeof WalletLinkingDataSchema>;
 /**
  * Parses wallet linking data from a given README content string.
  * Data is expected to be in JSON format within specific comment markers.
- * @param readmeContent The string content of the README file.
+ * @param readmeContent The std::string content of the README file.
  * @returns The parsed and validated wallet linking data, or null if no valid data found.
  */
 std::optional<WalletLinkingData> parseWalletLinkingDataFromReadme(const std::string& readmeContent);
 
 /**
- * Generates an updated README content string with the provided wallet linking data.
+ * Generates an updated README content std::string with the provided wallet linking data.
  * It will replace an existing wallet section if found, or append a new one.
  * The wallet information is stored as JSON in a hidden HTML comment.
  * @param currentReadme The current content of the README file.
@@ -42,15 +42,15 @@ std::optional<WalletLinkingData> parseWalletLinkingDataFromReadme(const std::str
 /**
  * Generates the wallet section content for a README file
  * @param wallets Array of wallet information to store
- * @returns The formatted wallet section string with markers
+ * @returns The formatted wallet section std::string with markers
  */
 std::string generateReadmeWalletSection(const std::vector<LinkedWallet>& wallets);
 
 /**
- * Helper function to get a wallet address for a specific chain
+ * Helper std::function to get a wallet address for a specific chain
  * @param data The wallet linking data
  * @param chain The chain to look for (case insensitive)
- * @returns The wallet address or empty string if not found
+ * @returns The wallet address or empty std::string if not found
  */
 std::string getWalletAddressForChain(const std::optional<WalletLinkingData>& data, const std::string& chain);
 

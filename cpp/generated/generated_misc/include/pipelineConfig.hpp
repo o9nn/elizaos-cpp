@@ -15,9 +15,9 @@ typedef z::infer<RepositoryConfigSchema> RepositoryConfig;
 typedef ScoringConfig ScoringRules;
 
 
-extern any ScoringConfigSchema;
-extern any TagTypeSchema;
-extern any TagConfigSchema;
-extern any RepositoryConfigSchema;
-extern any PipelineConfigSchema;
+extern std::any ScoringConfigSchema;
+extern std::any TagTypeSchema;
+extern std::any TagConfigSchema;
+extern std::any RepositoryConfigSchema;
+extern std::any PipelineConfigSchema;
 #endif

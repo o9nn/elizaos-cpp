@@ -23,7 +23,7 @@ std::shared_ptr<Promise<void>> Florence2Local::initialize()
         this->initialized = true;
         logger->info(std::string("[Florence2Local] Model initialized successfully"));
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("[Florence2Local] Failed to initialize model:"), error);
         this->initialized = true;
@@ -47,7 +47,7 @@ std::shared_ptr<Promise<std::shared_ptr<Florence2Result>>> Florence2Local::analy
             return std::async([=]() { this->enhancedFallback(imageBuffer); });
         }
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("[Florence2Local] Analysis failed:"), error);
         return std::async([=]() { this->enhancedFallback(imageBuffer); });
@@ -65,7 +65,7 @@ std::shared_ptr<Promise<std::shared_ptr<tf::Tensor3D>>> Florence2Local::preproce
 std::shared_ptr<Promise<std::shared_ptr<tf::Tensor>>> Florence2Local::runInference(std::shared_ptr<tf::Tensor3D> input)
 {
     if (!this->model) {
-        throw any(std::make_shared<Error>(std::string("Model not loaded")));
+        throw std::any(std::make_shared<Error>(std::string("Model not loaded")));
     }
     auto batched = input->expandDims(0);
     auto output = as<std::shared_ptr<tf::Tensor>>(this->model["predict"](batched));
@@ -86,14 +86,14 @@ std::shared_ptr<Promise<std::shared_ptr<Florence2Result>>> Florence2Local::parse
     };
 }
 
-string Florence2Local::generateCaptionFromFeatures(any features)
+std::string Florence2Local::generateCaptionFromFeatures(std::any features)
 {
     auto scenes = array<string>{ std::string("Indoor scene with various objects visible"), std::string("Person in a room with furniture"), std::string("Computer workspace with monitor and desk"), std::string("Living space with natural lighting"), std::string("Office environment with equipment") };
     auto index = Math->abs(const_(const_(features)[0])[0]) * scenes->get_length();
     return const_(scenes)[Math->floor(index) % scenes->get_length()];
 }
 
-array<string> Florence2Local::extractTagsFromCaption(string caption)
+array<string> Florence2Local::extractTagsFromCaption(std::string caption)
 {
     auto words = caption->toLowerCase()->split((new RegExp(std::string("\s"))));
     shared validTags = array<string>{ std::string("indoor"), std::string("outdoor"), std::string("person"), std::string("computer"), std::string("desk"), std::string("office"), std::string("room"), std::string("furniture"), std::string("monitor"), std::string("workspace") };

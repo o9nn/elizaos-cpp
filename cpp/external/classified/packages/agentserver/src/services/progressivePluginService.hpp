@@ -23,9 +23,9 @@ class ProgressivePluginService extends Service {
   static serviceName = 'PROGRESSIVE_PLUGIN';
   capabilityDescription = 'Manages progressive plugin registration for capability unlocks';
 
-  private availablePlugins: Record<string, Plugin[]>;
+  private availablePlugins: Record<std::string, Plugin[]>;
 
-  constructor(runtime?: IAgentRuntime, availablePlugins?: Record<string, Plugin[]>) {
+  constructor(runtime?: IAgentRuntime, availablePlugins?: Record<std::string, Plugin[]>) {
     super(runtime);
     if (!runtime) return; // For service construction pattern
 

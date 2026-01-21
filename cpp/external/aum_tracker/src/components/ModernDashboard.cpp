@@ -54,7 +54,7 @@ void initPerformanceChart() {
                                     padding: 12,
                                     displayColors: false,
                                     callbacks: {
-                                        label: function (context) {
+                                        label: std::function (context) {
                                             return formatCurrency(context.parsed.y);
                                             },
                                             },

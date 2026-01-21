@@ -27,7 +27,7 @@ std::shared_ptr<Action> getProtocolSlugAction = object{
         {
             auto svc = as<any>(runtime->getService(DefiLlamaService::serviceType));
             if (!svc) {
-                throw any(std::make_shared<Error>(std::string("DefiLlamaService not available")));
+                throw std::any(std::make_shared<Error>(std::string("DefiLlamaService not available")));
             }
             auto composedState = std::async([=]() { runtime->composeState(message, array<string>{ std::string("ACTION_STATE") }, true); });
             auto params = OR((composedState->data->actionParams), (object{}));
@@ -51,7 +51,7 @@ std::shared_ptr<Action> getProtocolSlugAction = object{
                 }
                 return errorResult;
             }
-            auto names = protocolsRaw->split(std::string(","))->map([=](auto s) mutable
+            auto names = protocolsRaw->split(std::string(","))->std::map([=](auto s) mutable
             {
                 return s->trim();
             }
@@ -83,7 +83,7 @@ std::shared_ptr<Action> getProtocolSlugAction = object{
             for (auto& query : names)
             {
                 auto candidates = std::async([=]() { svc->searchProtocolCandidates(query, 5); });
-                auto candidateInfos = candidates->map([=](auto protocol) mutable
+                auto candidateInfos = candidates->std::map([=](auto protocol) mutable
                 {
                     return (object{
                         object::pair{std::string("id"), protocol["id"]}, 
@@ -114,7 +114,7 @@ std::shared_ptr<Action> getProtocolSlugAction = object{
             }
             )->get_length();
             if (totalCandidates == 0) {
-                auto errorMsg = std::string("No protocols matched any of the provided names");
+                auto errorMsg = std::string("No protocols matched std::any of the provided names");
                 logger->error(std::string("[GET_PROTOCOL_SLUG] ") + errorMsg + string_empty);
                 auto errorResult = as<any>(object{
                     object::pair{std::string("text"), errorMsg}, 
@@ -150,7 +150,7 @@ std::shared_ptr<Action> getProtocolSlugAction = object{
                 object::pair{std::string("input"), inputParams}
             });
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             auto msg = (is<Error>(error)) ? error->message : String(error);
             logger->error(std::string("[GET_PROTOCOL_SLUG] Action failed: ") + msg + string_empty);

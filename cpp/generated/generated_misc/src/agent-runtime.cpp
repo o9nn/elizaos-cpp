@@ -11,7 +11,7 @@ AgentRuntimeManager::AgentRuntimeManager() {
         elizaLogger->debug = console->debug->bind(console);
         elizaLogger->success = [=](P0 msg) mutable
         {
-            return console->log(std::string("✓ ") + (type_of(msg) == std::string("string")) ? any(msg) : any(JSON->stringify(msg)) + string_empty);
+            return console->log(std::string("✓ ") + (type_of(msg) == std::string("string")) ? std::any(msg) : std::any(JSON->stringify(msg)) + string_empty);
         };
         auto logger = as<any>(elizaLogger);
         logger["notice"] = console->info->bind(console);
@@ -61,10 +61,10 @@ std::shared_ptr<Promise<std::shared_ptr<AgentRuntime>>> AgentRuntimeManager::get
         auto runtime = std::async([=]() { this->initializationPromise; });
         return runtime;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         this->initializationPromise = nullptr;
-        throw any(error);
+        throw std::any(error);
     }
 }
 
@@ -86,7 +86,7 @@ std::shared_ptr<Promise<std::shared_ptr<AgentRuntime>>> AgentRuntimeManager::cre
         if (AND((isProduction), (postgresUrl == DEFAULT_POSTGRES_URL))) {
             console->error(std::string("[AgentRuntime] ERROR: No database URL found in production!"));
             console->error(std::string("[AgentRuntime] Expected one of: DATABASE_POSTGRES_URL, DATABASE_URL_UNPOOLED, POSTGRES_URL, POSTGRES_DATABASE_URL"));
-            throw any(std::make_shared<Error>(std::string("Database connection failed: No database URL configured in production. ") + std::string("Vercel Neon Storage should provide DATABASE_POSTGRES_URL automatically. ") + std::string("Please check your Vercel project settings.")));
+            throw std::any(std::make_shared<Error>(std::string("Database connection failed: No database URL configured in production. ") + std::string("Vercel Neon Storage should provide DATABASE_POSTGRES_URL automatically. ") + std::string("Please check your Vercel project settings.")));
         }
     }
     if (AND((postgresUrl), (!postgresUrl->includes(std::string("localhost"))))) {
@@ -96,10 +96,10 @@ std::shared_ptr<Promise<std::shared_ptr<AgentRuntime>>> AgentRuntimeManager::cre
         }
         auto url = std::make_shared<URL>(postgresUrl->replace((new RegExp(std::string("^postgres(ql)?:\/\"))), std::string("http://")));
         if (OR((!url->hostname), (url->hostname == string_empty))) {
-            throw any(std::make_shared<Error>(std::string("Database connection failed: Invalid database URL format (missing hostname)")));
+            throw std::any(std::make_shared<Error>(std::string("Database connection failed: Invalid database URL format (missing hostname)")));
         }
     }
-    console->log(std::string("[AgentRuntime] Database config: ") + (postgresUrl->includes(std::string("localhost"))) ? any(std::string("localhost:") + dbPort) : any(std::string("remote (Vercel/Neon)")) + string_empty);
+    console->log(std::string("[AgentRuntime] Database config: ") + (postgresUrl->includes(std::string("localhost"))) ? std::any(std::string("localhost:") + dbPort) : std::any(std::string("remote (Vercel/Neon)")) + string_empty);
     auto RUNTIME_AGENT_ID = as<std::shared_ptr<UUID>>(std::string("b850bc30-45f8-0041-a00a-83df46d8555d"));
     this->runtime = std::make_shared<AgentRuntime>(as<any>(utils::assign(object{
         , 
@@ -142,7 +142,7 @@ std::shared_ptr<Promise<void>> AgentRuntimeManager::ensureBuiltInTables()
     console->log(std::string("[AgentRuntime] Using Eliza cache system for quote storage"));
 }
 
-std::shared_ptr<Promise<std::shared_ptr<Memory>>> AgentRuntimeManager::handleMessage(string roomId, string entityId, object content)
+std::shared_ptr<Promise<std::shared_ptr<Memory>>> AgentRuntimeManager::handleMessage(std::string roomId, std::string entityId, object content)
 {
     auto runtime = std::async([=]() { this->getRuntime(); });
     auto entityUuid = as<std::shared_ptr<UUID>>(stringToUuid(entityId));

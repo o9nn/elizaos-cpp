@@ -82,7 +82,7 @@ class OCRWorker {
 
     // Write combined results to buffer
 
-    // Notify main thread
+    // Notify main std::thread
 
     // Create buffer for full screen
 
@@ -112,7 +112,7 @@ class OCRWorker {
 
 // Worker entry point
 
-  // Handle messages from main thread
+  // Handle messages from main std::thread
 
   // Run the worker
 

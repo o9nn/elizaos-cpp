@@ -5,7 +5,7 @@
 #include "@elizaos/core.h"
 
 template <typename P0>
-any parsePositiveInteger(P0 value);
+std::any parsePositiveInteger(P0 value);
 
 template <typename T>
 array<T> limitSeries(array<T> series, double limit);
@@ -14,19 +14,19 @@ template <typename T>
 array<T> downsampleSeries(array<T> series, double maxPoints = 50);
 
 template <typename T>
-any calculateTvlSummary(array<T> series);
+std::any calculateTvlSummary(array<T> series);
 
 template <typename P3>
-std::shared_ptr<Promise<std::shared_ptr<ActionResult>>> respondWithError(any callback, string messageText, string errorCode, P3 details = undefined);
+std::shared_ptr<Promise<std::shared_ptr<ActionResult>>> respondWithError(std::any callback, std::string messageText, std::string errorCode, P3 details = undefined);
 
 extern std::shared_ptr<RegExp> CHAIN_NAME_PATTERN;
-any sanitizeChainName(any value);
+std::any sanitizeChainName(std::any value);
 
 extern std::shared_ptr<RegExp> FILTER_PATTERN;
-any sanitizeFilterSegment(any value);
+std::any sanitizeFilterSegment(std::any value);
 
 template <typename P0>
-any parsePositiveInteger(P0 value)
+std::any parsePositiveInteger(P0 value)
 {
     if (AND((AND((type_of(value) == std::string("number")), (Number->isInteger(value)))), (value > 0))) {
         return value;
@@ -70,12 +70,12 @@ array<T> downsampleSeries(array<T> series, double maxPoints)
 
 
 template <typename T>
-any calculateTvlSummary(array<T> series)
+std::any calculateTvlSummary(array<T> series)
 {
     if (series->get_length() == 0) {
         return nullptr;
     }
-    auto values = series->map([=](auto p) mutable
+    auto values = series->std::map([=](auto p) mutable
     {
         return p->totalLiquidityUsd;
     }
@@ -97,14 +97,14 @@ any calculateTvlSummary(array<T> series)
     auto lastDate = const_(series)[series->get_length() - 1]->date;
     auto athDaysAgo = Math->floor((lastDate - athDate) / 86400);
     auto fromAth = current - athValue;
-    auto fromAthPercent = (athValue != 0) ? any((fromAth / athValue) * 100) : any(0);
+    auto fromAthPercent = (athValue != 0) ? std::any((fromAth / athValue) * 100) : std::any(0);
     auto average = values->reduce([=](auto sum, auto val) mutable
     {
         return sum + val;
     }
     , 0) / values->get_length();
     auto change = current - first;
-    auto changePercent = (first != 0) ? any((change / first) * 100) : any(0);
+    auto changePercent = (first != 0) ? std::any((change / first) * 100) : std::any(0);
     return object{
         object::pair{std::string("current"), Math->round(current)}, 
         object::pair{std::string("min"), Math->round(min)}, 
@@ -125,7 +125,7 @@ any calculateTvlSummary(array<T> series)
 
 
 template <typename P3>
-std::shared_ptr<Promise<std::shared_ptr<ActionResult>>> respondWithError(any callback, string messageText, string errorCode, P3 details)
+std::shared_ptr<Promise<std::shared_ptr<ActionResult>>> respondWithError(std::any callback, std::string messageText, std::string errorCode, P3 details)
 {
     if (callback) {
         std::async([=]() { callback(object{

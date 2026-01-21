@@ -25,9 +25,9 @@ namespace elizaos {
 
 // DirectoryItem schema
 
-// Knowledge item can be a string, object with path, or DirectoryItem
+// Knowledge item can be a std::string, object with path, or DirectoryItem
 
-// TemplateType schema - can be string or function (we'll validate as string for JSON)
+// TemplateType schema - can be std::string or std::function (we'll validate as std::string for JSON)
 
 // Style configuration schema
 
@@ -53,8 +53,8 @@ struct CharacterValidationResult {
 CharacterValidationResult validateCharacter(const std::any& data);
 
 /**
- * Safely parses JSON string and validates as character
- * @param jsonString - JSON string to parse and validate
+ * Safely parses JSON std::string and validates as character
+ * @param jsonString - JSON std::string to parse and validate
  * @returns Validation result with success flag and either data or error
  */
 CharacterValidationResult parseAndValidateCharacter(const std::string& jsonString);

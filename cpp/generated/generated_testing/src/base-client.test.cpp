@@ -57,7 +57,7 @@ void Main(void)
                     object::pair{std::string("headers"), object{
                         object::pair{std::string("get"), [=](auto name) mutable
                         {
-                            return ((name == std::string("content-length")) ? any(std::string("100")) : any(nullptr));
+                            return ((name == std::string("content-length")) ? std::any(std::string("100")) : std::any(nullptr));
                         }
                         }
                     }}, 
@@ -94,7 +94,7 @@ void Main(void)
                     object::pair{std::string("headers"), object{
                         object::pair{std::string("get"), [=](auto name) mutable
                         {
-                            return ((name == std::string("content-length")) ? any(std::string("100")) : any(nullptr));
+                            return ((name == std::string("content-length")) ? std::any(std::string("100")) : std::any(nullptr));
                         }
                         }
                     }}, 
@@ -123,7 +123,7 @@ void Main(void)
                     object::pair{std::string("headers"), object{
                         object::pair{std::string("get"), [=](auto name) mutable
                         {
-                            return ((name == std::string("content-length")) ? any(std::string("100")) : any(nullptr));
+                            return ((name == std::string("content-length")) ? std::any(std::string("100")) : std::any(nullptr));
                         }
                         }
                     }}, 
@@ -156,7 +156,7 @@ void Main(void)
                     object::pair{std::string("headers"), object{
                         object::pair{std::string("get"), [=](auto name) mutable
                         {
-                            return ((name == std::string("content-length")) ? any(std::string("100")) : any(nullptr));
+                            return ((name == std::string("content-length")) ? std::any(std::string("100")) : std::any(nullptr));
                         }
                         }
                     }}, 
@@ -197,7 +197,7 @@ void Main(void)
                     object::pair{std::string("headers"), object{
                         object::pair{std::string("get"), [=](auto name) mutable
                         {
-                            return ((name == std::string("content-length")) ? any(std::string("100")) : any(nullptr));
+                            return ((name == std::string("content-length")) ? std::any(std::string("100")) : std::any(nullptr));
                         }
                         }
                     }}, 
@@ -213,7 +213,7 @@ void Main(void)
                 std::async([=]() { client->testGet(std::string("/api/test")); });
                 expect(true)->toBe(false);
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 expect(error)->toBeInstanceOf(ApiError);
                 expect((as<std::shared_ptr<ApiError>>(error))->code)->toBe(std::string("NOT_FOUND"));
@@ -227,14 +227,14 @@ void Main(void)
         {
             global->fetch = [=]() mutable
             {
-                throw any(std::make_shared<Error>(std::string("Network error")));
+                throw std::any(std::make_shared<Error>(std::string("Network error")));
             };
             try
             {
                 std::async([=]() { client->testGet(std::string("/api/test")); });
                 expect(true)->toBe(false);
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 expect(error)->toBeInstanceOf(ApiError);
                 expect((as<std::shared_ptr<ApiError>>(error))->code)->toBe(std::string("NETWORK_ERROR"));
@@ -259,7 +259,7 @@ void Main(void)
                     }}, 
                     object::pair{std::string("json"), [=]() mutable
                     {
-                        throw any(std::make_shared<Error>(std::string("No content to parse")));
+                        throw std::any(std::make_shared<Error>(std::string("No content to parse")));
                     }
                     }
                 });
@@ -281,13 +281,13 @@ void Main(void)
                     object::pair{std::string("headers"), object{
                         object::pair{std::string("get"), [=](auto name) mutable
                         {
-                            return ((name == std::string("content-length")) ? any(std::string("0")) : any(nullptr));
+                            return ((name == std::string("content-length")) ? std::any(std::string("0")) : std::any(nullptr));
                         }
                         }
                     }}, 
                     object::pair{std::string("json"), [=]() mutable
                     {
-                        throw any(std::make_shared<Error>(std::string("No content to parse")));
+                        throw std::any(std::make_shared<Error>(std::string("No content to parse")));
                     }
                     }
                 });
@@ -309,13 +309,13 @@ void Main(void)
                     object::pair{std::string("headers"), object{
                         object::pair{std::string("get"), [=](auto name) mutable
                         {
-                            return ((name == std::string("content-length")) ? any(std::string("10")) : any(nullptr));
+                            return ((name == std::string("content-length")) ? std::any(std::string("10")) : std::any(nullptr));
                         }
                         }
                     }}, 
                     object::pair{std::string("json"), [=]() mutable
                     {
-                        throw any(std::make_shared<Error>(std::string("Invalid JSON")));
+                        throw std::any(std::make_shared<Error>(std::string("Invalid JSON")));
                     }
                     }
                 });
@@ -342,7 +342,7 @@ void Main(void)
                     }}, 
                     object::pair{std::string("json"), [=]() mutable
                     {
-                        throw any(std::make_shared<Error>(std::string("No content")));
+                        throw std::any(std::make_shared<Error>(std::string("No content")));
                     }
                     }
                 }));

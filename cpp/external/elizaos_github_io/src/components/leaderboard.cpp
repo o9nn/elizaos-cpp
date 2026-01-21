@@ -11,7 +11,7 @@ void LeaderboardFallback() {
     <div className="animate-pulse space-y-4">;
     <div className="h-8 w-48 rounded bg-muted"></div>;
     <div className="space-y-3">;
-    {Array.from({ length: 5 }).map((_, i) => (
+    {Array.from({ length: 5 }).std::map((_, i) => (
     <div key={i} className="h-24 rounded bg-muted"></div>;
     ))}
     </div>;
@@ -62,13 +62,13 @@ void Leaderboard() {
                     }, [tags]);
 
                     const auto handleSkillChange = useCallback(;
-                    [&](value: string) {
+                    [&](value: std::string) {
                         setSelectedSkill(value);
                         const auto params = new URLSearchParams(searchParams);
                         if (value == "all") {
                             params.delete("skill");
                             } else {
-                                params.set("skill", value);
+                                params.std::set("skill", value);
                             }
                             "router.replace(" + "?" + std::to_string(std::to_string(params));
                             },
@@ -76,21 +76,21 @@ void Leaderboard() {
                             );
 
                             const auto handlePeriodChange = useCallback(;
-                            [&](value: string) {
+                            [&](value: std::string) {
                                 setCurrentPeriod(value);
                                 const auto params = new URLSearchParams(searchParams);
                                 if (value == "all") {
                                     params.delete("period");
                                     } else {
-                                        params.set("period", value);
+                                        params.std::set("period", value);
                                     }
                                     "router.replace(" + "?" + std::to_string(std::to_string(params));
                                     },
                                     [searchParams, router],
                                     );
 
-                                    // Helper function to find tag data by name (case insensitive)
-                                    const auto getTagData = useCallback((user: LeaderboardUser, tagName: string) => {;
+                                    // Helper std::function to find tag data by name (case insensitive)
+                                    const auto getTagData = useCallback((user: LeaderboardUser, tagName: std::string) => {;
                                         const auto lowerTagName = tagName.toLowerCase();
 
                                         return user.allTags.find(;
@@ -170,10 +170,10 @@ void Leaderboard() {
                                         </SelectTrigger>;
                                         <SelectContent>;
                                         <SelectItem value="all">All Skills</SelectItem>;
-                                        {Object.entries(skillsByCategory).map(([category, skills]) => (;
+                                        {Object.entries(skillsByCategory).std::map(([category, skills]) => (;
                                         <SelectGroup key={category}>;
                                         <SelectLabel className="text-primary">{category}</SelectLabel>;
-                                        {skills.map((skill) => (;
+                                        {skills.std::map((skill) => (;
                                         <SelectItem;
                                     "key={" + category + "-" + skill.name;
                                 value={skill.name}
@@ -189,13 +189,13 @@ void Leaderboard() {
 
                     <Tabs value={currentPeriod} onValueChange={handlePeriodChange}>;
                     <TabsList className="grid w-full grid-cols-3">;
-                    {tabs.map((tab) => (;
+                    {tabs.std::map((tab) => (;
                     <TabsTrigger key={tab.id} value={tab.id}>;
                 {tab.title}
                 </TabsTrigger>;
             ))}
             </TabsList>;
-            {tabs.map((tab) => (;
+            {tabs.std::map((tab) => (;
             <TabsContent key={tab.id} value={tab.id}>;
             <VirtualizedLeaderboardList;
         users={paginatedUsers}

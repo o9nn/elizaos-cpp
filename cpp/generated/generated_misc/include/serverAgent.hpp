@@ -5,5 +5,5 @@
 #include "./messageServer.h"
 #include "./agent.h"
 
-extern any serverAgentsTable;
+extern std::any serverAgentsTable;
 #endif

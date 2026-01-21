@@ -4,6 +4,6 @@
 #include "express.h"
 using express = _default;
 
-extern std::function<void(any, double, string, string, string)> sendError;
-extern std::function<void(any, any, double)> sendSuccess;
+extern std::function<void(std::any, double, std::string, std::string, std::string)> sendError;
+extern std::function<void(std::any, std::any, double)> sendSuccess;
 #endif

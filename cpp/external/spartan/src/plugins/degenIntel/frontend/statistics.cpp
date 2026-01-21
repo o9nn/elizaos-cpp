@@ -9,7 +9,7 @@ void Statistics() {
 
     const auto query = useQuery({;
         queryKey: ["statistics"],
-        queryFn: async () => {
+        queryFn: std::async () => {
             const auto response = "fetch(" + import.meta.env.VITE_API_URL + "/statistics";
                 method: "POST",
                 });

@@ -22,11 +22,11 @@ namespace elizaos {
  * Handles incoming messages and generates responses based on the provided runtime and message information.
  *
  * @param {MessageReceivedHandlerParams} params - The parameters needed for message handling, including runtime, message, and callback.
- * @returns {Promise<void>} - A promise that resolves once the message handling and response generation is complete.
+ * @returns {Promise<void>} - A std::promise that resolves once the message handling and response generation is complete.
  */
   // Set up timeout monitoring
     // Generate a new response ID
-    // Get or create the agent-specific map
+    // Get or create the agent-specific std::map
 
     // Set this as the latest response ID for this agent+room
 

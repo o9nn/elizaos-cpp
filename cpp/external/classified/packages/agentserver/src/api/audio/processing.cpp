@@ -12,7 +12,7 @@ std::string _validateSecureFilePath(const std::string& filePath) {
             throw std::runtime_error('File path is required');
         }
 
-        // Normalize and resolve the path to handle any ".." or other path issues
+        // Normalize and resolve the path to handle std::any ".." or other path issues
         const auto normalizedPath = path.normalize(filePath);
         const auto resolvedPath = path.resolve(normalizedPath);
 
@@ -58,7 +58,7 @@ express::Router createAudioProcessingRouter(const std::unordered_map<UUID, IAgen
         router.use(createFileSystemRateLimit());
 
         // Audio messages endpoints
-        router.post("/:agentId/audio-messages", agentAudioUpload().single("file"), async (req, res) => {
+        router.post("/:agentId/audio-messages", agentAudioUpload().single("file"), std::async (req, res) => {
             const auto audioReq = req;
             logger.debug('[AUDIO MESSAGE] Processing audio message');
             const auto agentId = validateUuid(req.params.agentId);
@@ -117,7 +117,7 @@ express::Router createAudioProcessingRouter(const std::unordered_map<UUID, IAgen
                 });
 
                 // Transcription endpoint
-                router.post("/:agentId/transcriptions", agentAudioUpload().single("file"), async (req, res) => {
+                router.post("/:agentId/transcriptions", agentAudioUpload().single("file"), std::async (req, res) => {
                     const auto audioReq = req;
                     logger.debug('[TRANSCRIPTION] Request to transcribe audio');
                     const auto agentId = validateUuid(req.params.agentId);

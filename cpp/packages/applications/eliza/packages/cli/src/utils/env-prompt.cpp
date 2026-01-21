@@ -103,7 +103,7 @@ std::future<std::string> promptForEnvVar(EnvVarConfig config) {
     const auto value = (config.secret;
     ? clack.password({
         "message: " + "Enter your " + config.name + ":"
-        validate: (input: string) => {
+        validate: (input: std::string) => {
             if (config.required && (!input || input.trim() == '')) {
                 return "This field is required";
             }
@@ -112,7 +112,7 @@ std::future<std::string> promptForEnvVar(EnvVarConfig config) {
             });
             : clack.text({
                 "message: " + "Enter your " + config.name + ":"
-                validate: (input: string) => {
+                validate: (input: std::string) => {
                     if (config.required && (!input || input.trim() == '')) {
                         return "This field is required";
                     }
@@ -125,7 +125,7 @@ std::future<std::string> promptForEnvVar(EnvVarConfig config) {
                         process.exit(0);
                     }
 
-                    // For optional fields, an empty string means skip
+                    // For std::optional fields, an empty std::string means skip
                     if (!config.required && (!value || value.trim() == '')) {
                         return "";
                     }
@@ -147,7 +147,7 @@ std::future<std::unordered_map<std::string, std::string>> promptForEnvVars(const
         return {}
     }
 
-    // Special messages for optional integrations
+    // Special messages for std::optional integrations
     if (pluginName.toLowerCase() == 'discord') {
         std::cout << colors.blue("\n== Discord Integration (Optional) ==") << std::endl;
         console.log(
@@ -187,7 +187,7 @@ std::future<std::unordered_map<std::string, std::string>> promptForEnvVars(const
 
             // Check each environment variable
             for (const auto& config : envVarConfigs)
-                // Skip if already set and valid
+                // Skip if already std::set and valid
                 if (
                 envVars[config.key] &&;
                 envVars[config.key] != "dummy_key" &&;
@@ -207,14 +207,14 @@ std::future<std::unordered_map<std::string, std::string>> promptForEnvVars(const
                     result[config.key] = value;
                     envVars[config.key] = value;
 
-                    // Also set in process.env for immediate use
+                    // Also std::set in process.env for immediate use
                     process.env[config.key] = value;
                 }
 
                 changes = true;
             }
 
-            // Save changes if any were made
+            // Save changes if std::any were made
             if (changes) {
                 writeEnvFile(envVars);
             }
@@ -233,7 +233,7 @@ std::future<bool> validateEnvVars(const std::string& pluginName) {
 
     const auto envVars = readEnvFile();
 
-    // Check if all required variables are set
+    // Check if all required variables are std::set
     for (const auto& config : envVarConfigs)
         if (config.required && (!envVars[config.key] || envVars[config.key] == 'dummy_key')) {
             return false;
@@ -269,7 +269,7 @@ std::future<> validatePluginEnvVars(const std::string& pluginName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     valid: boolean;
-    message: string;
+    message: std::string;
 
 }
 

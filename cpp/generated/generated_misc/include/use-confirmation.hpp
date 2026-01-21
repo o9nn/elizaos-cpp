@@ -10,17 +10,17 @@ class ConfirmationOptions;
 class ConfirmationOptions : public object, public std::enable_shared_from_this<ConfirmationOptions> {
 public:
     using std::enable_shared_from_this<ConfirmationOptions>::shared_from_this;
-    string title;
+    std::string title;
 
-    string description;
+    std::string description;
 
-    string confirmText;
+    std::string confirmText;
 
-    string cancelText;
+    std::string cancelText;
 
-    any variant;
+    std::any std::variant;
 };
 
-any useConfirmation();
+std::any useConfirmation();
 
 #endif

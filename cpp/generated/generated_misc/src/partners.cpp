@@ -10,7 +10,7 @@ std::shared_ptr<Promise<array<std::shared_ptr<Partner>>>> getAllPartners()
 };
 
 
-any handler(std::shared_ptr<NextApiRequest> req, std::shared_ptr<NextApiResponse> res)
+std::any handler(std::shared_ptr<NextApiRequest> req, std::shared_ptr<NextApiResponse> res)
 {
     if (req->method != std::string("GET")) {
         return res->status(405)->json(object{
@@ -20,7 +20,7 @@ any handler(std::shared_ptr<NextApiRequest> req, std::shared_ptr<NextApiResponse
     try
     {
         auto allPartners = std::async([=]() { getAllPartners(); });
-        auto formattedPartners = allPartners->map([=](auto partner) mutable
+        auto formattedPartners = allPartners->std::map([=](auto partner) mutable
         {
             return (object{
                 object::pair{std::string("address"), partner->owner}, 
@@ -34,12 +34,12 @@ any handler(std::shared_ptr<NextApiRequest> req, std::shared_ptr<NextApiResponse
             object::pair{std::string("partners"), formattedPartners}
         });
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("API Error:"), error);
         res->status(500)->json(object{
             object::pair{std::string("error"), std::string("Failed to fetch partner accounts")}, 
-            object::pair{std::string("details"), (is<Error>(error)) ? any(error->message) : any(std::string("Unknown error"))}
+            object::pair{std::string("details"), (is<Error>(error)) ? std::any(error->message) : std::any(std::string("Unknown error"))}
         });
     }
 };
@@ -88,7 +88,7 @@ array<std::shared_ptr<Partner>> mockPartners = array<std::shared_ptr<Partner>>{ 
 } };
 std::function<double(double, double)> calculateTrustScore = [=](auto amount, auto minAmount = 100000) mutable
 {
-    auto rawScore = (amount == 0) ? any(0) : any(Math->min(100, (amount / minAmount) * 10));
+    auto rawScore = (amount == 0) ? std::any(0) : std::any(Math->min(100, (amount / minAmount) * 10));
     return Number(rawScore->toFixed(1));
 };
 

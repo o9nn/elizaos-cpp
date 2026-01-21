@@ -27,7 +27,7 @@ namespace elizaos {
 
 std::future<QuoteMemory> getUserQuote(const std::string& walletAddress);
 
-    // Token metadata (optional)
+    // Token metadata (std::optional)
 
   // Generate consistent quote ID using the same method as QuoteService
 

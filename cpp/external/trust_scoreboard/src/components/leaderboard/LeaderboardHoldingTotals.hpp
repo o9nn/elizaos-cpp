@@ -35,7 +35,7 @@ const LeaderboardHoldingTotals: FC = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchData = std::async () => {
       try {
         const response = await fetch('/api/dashboard');
         if (!response.ok) {

@@ -25,9 +25,9 @@ public:
 
     std::shared_ptr<UUID> userId;
 
-    string content;
+    std::string content;
 
-    Record<string, any> metadata;
+    Record<std::string, any> metadata;
 
     double timeoutMs;
 };
@@ -35,7 +35,7 @@ public:
 class CreateJobResponse : public object, public std::enable_shared_from_this<CreateJobResponse> {
 public:
     using std::enable_shared_from_this<CreateJobResponse>::shared_from_this;
-    string jobId;
+    std::string jobId;
 
     JobStatus status;
 
@@ -55,7 +55,7 @@ public:
 class JobDetailsResponse : public object, public std::enable_shared_from_this<JobDetailsResponse> {
 public:
     using std::enable_shared_from_this<JobDetailsResponse>::shared_from_this;
-    string jobId;
+    std::string jobId;
 
     JobStatus status;
 
@@ -63,7 +63,7 @@ public:
 
     std::shared_ptr<UUID> userId;
 
-    string prompt;
+    std::string prompt;
 
     double createdAt;
 
@@ -71,9 +71,9 @@ public:
 
     std::shared_ptr<JobResult> result;
 
-    string error;
+    std::string error;
 
-    Record<string, any> metadata;
+    Record<std::string, any> metadata;
 };
 
 class PollOptions : public object, public std::enable_shared_from_this<PollOptions> {

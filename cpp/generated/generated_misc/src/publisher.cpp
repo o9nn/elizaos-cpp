@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/utils/publisher.h"
 
-std::shared_ptr<Promise<boolean>> testPublishToNpm(string cwd)
+std::shared_ptr<Promise<boolean>> testPublishToNpm(std::string cwd)
 {
     try
     {
@@ -17,7 +17,7 @@ std::shared_ptr<Promise<boolean>> testPublishToNpm(string cwd)
         logger->info(std::string("[✓] Have publish permissions"));
         return true;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Test failed:"), error);
         if (is<Error>(error)) {
@@ -29,7 +29,7 @@ std::shared_ptr<Promise<boolean>> testPublishToNpm(string cwd)
 };
 
 
-std::shared_ptr<Promise<boolean>> testPublishToGitHub(std::shared_ptr<PackageJson> packageJson, string username)
+std::shared_ptr<Promise<boolean>> testPublishToGitHub(std::shared_ptr<PackageJson> packageJson, std::string username)
 {
     try
     {
@@ -103,7 +103,7 @@ std::shared_ptr<Promise<boolean>> testPublishToGitHub(std::shared_ptr<PackageJso
         logger->info(std::string("[✓] Can create and update files"));
         return true;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Test failed:"), error);
         return false;
@@ -111,7 +111,7 @@ std::shared_ptr<Promise<boolean>> testPublishToGitHub(std::shared_ptr<PackageJso
 };
 
 
-std::shared_ptr<Promise<boolean>> publishToNpm(string cwd)
+std::shared_ptr<Promise<boolean>> publishToNpm(std::string cwd)
 {
     try
     {
@@ -128,7 +128,7 @@ std::shared_ptr<Promise<boolean>> publishToNpm(string cwd)
         }); });
         return true;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Failed to publish to npm:"), error);
         return false;

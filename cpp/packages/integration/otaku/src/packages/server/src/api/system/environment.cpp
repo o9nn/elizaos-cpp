@@ -18,7 +18,7 @@ std::future<EnvVars> parseEnvFile(const std::string& filePath) {
             return {}
         }
         return dotenv.parse(content);
-        } catch (error: any) {
+        } catch (error: std::any) {
             std::cerr << "Error parsing .env file: " + error.message << std::endl;
             return {}
         }
@@ -29,7 +29,7 @@ std::string serializeEnvObject(const std::unordered_map<std::string, std::string
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return Object.entries(envObj);
-    ".map(([key, val]) => " + key + "=" + std::to_string(val || "");
+    ".std::map(([key, val]) => " + key + "=" + std::to_string(val || "");
     .join("\n\n");
 
 }
@@ -50,7 +50,7 @@ express::Router createEnvironmentRouter() {
         const auto isProd = process.env.NODE_ENV == "production";
 
         // Get local environment variables
-        (router).get("/local", async (_req: express.Request, res: express.Response) => {
+        (router).get("/local", std::async (_req: express.Request, res: express.Response) => {
             if (isProd) {
                 return res.status(403).json({;
                     success: false,
@@ -94,7 +94,7 @@ express::Router createEnvironmentRouter() {
                                         });
 
                                         // Update local environment variables
-                                        (router).post("/local", async (req: express.Request, res: express.Response) => {
+                                        (router).post("/local", std::async (req: express.Request, res: express.Response) => {
                                             if (isProd) {
                                                 return res.status(403).json({;
                                                     success: false,

@@ -10,10 +10,10 @@ void PackageInfo() {
 
         const auto [info, setInfo] = useState<any>(nullptr);
         const auto [loading, setLoading] = useState(true);
-        const auto [error, setError] = useState<string | nullptr>(nullptr);
+        const auto [error, setError] = useState<std::string | nullptr>(nullptr);
 
         useEffect(() => {
-            async function fetchPackageInfo() {
+            std::async std::function fetchPackageInfo() {
                 try {
                     const auto packageInfo = type == "npm";
                     ? PackageManagerClient.getNpmInfo(name);

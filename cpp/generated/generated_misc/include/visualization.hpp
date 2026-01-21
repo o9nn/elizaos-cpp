@@ -10,7 +10,7 @@ class AnalyticsVisualization;
 class TimeSeriesDataPoint : public object, public std::enable_shared_from_this<TimeSeriesDataPoint> {
 public:
     using std::enable_shared_from_this<TimeSeriesDataPoint>::shared_from_this;
-    string date;
+    std::string date;
 
     double value;
 };

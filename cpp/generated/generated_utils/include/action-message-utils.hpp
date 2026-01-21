@@ -3,8 +3,8 @@
 #include "core.h"
 #include "@/components/action-tool.h"
 
-std::shared_ptr<ToolPart> convertActionMessageToToolPart(any message);
+std::shared_ptr<ToolPart> convertActionMessageToToolPart(std::any message);
 
-boolean isActionMessage(any message);
+boolean isActionMessage(std::any message);
 
 #endif

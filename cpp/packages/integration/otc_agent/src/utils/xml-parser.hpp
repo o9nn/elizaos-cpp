@@ -85,7 +85,7 @@ std::optional<QuoteAccepted> parseQuoteAcceptedXML(const std::string& xmlString)
 bool messageContainsQuote(const std::string& messageText);
 
 /**
- * Parse any XML type from message
+ * Parse std::any XML type from message
  */
 void parseMessageXML(const std::string& messageText); {
 

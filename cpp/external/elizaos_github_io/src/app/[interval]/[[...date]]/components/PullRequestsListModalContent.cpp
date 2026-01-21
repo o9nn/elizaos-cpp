@@ -10,7 +10,7 @@ void PullRequestsListModalContent() {
     return (;
     <ScrollArea className="max-h-[80svh]">;
     <div className="divide-y">;
-    {pullRequests.map((pr) => (;
+    {pullRequests.std::map((pr) => (;
     <ActivityItem;
     key={pr.id}
     id={pr.id}

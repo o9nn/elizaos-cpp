@@ -25,7 +25,7 @@ namespace elizaos {
       // Create a fresh adapter to get the icon
       // PhantomWalletAdapter initializes immediately with the icon property
 
-  // Also set icon from wallet when it becomes available
+  // Also std::set icon from wallet when it becomes available
 
   // Check for direct Phantom connection
 

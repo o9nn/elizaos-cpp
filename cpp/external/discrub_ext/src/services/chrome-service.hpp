@@ -24,7 +24,7 @@ namespace elizaos {
 
 using ChromeCallback = std::function<std::variant<std::future<void>, void, Maybe>(std::string)>;
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-std::any
 
   return getSettings();
 

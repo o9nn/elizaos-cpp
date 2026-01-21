@@ -30,7 +30,7 @@ struct IBuySignalOutput {
     std::string recommended_buy;
     std::string recommend_buy_address;
     std::string reason;
-    string | number buy_amount;
+    std::string | number buy_amount;
 };
 
 struct ConfigAccount {
@@ -105,7 +105,7 @@ class BuyService extends BaseTradeService {
     // run llm call
     // Retry if missing required fields
     // recommended_buy, recommend_buy_address, reason, buy_amount
-      // could use OBJECT_LARGE but this expects a string return type rn
+      // could use OBJECT_LARGE but this expects a std::string return type rn
       // not sure where OBJECT_LARGE does it's parsing...
 
     //const walletBalance = await this.walletService.getBalance();
@@ -118,7 +118,7 @@ class BuyService extends BaseTradeService {
 
     // for anchor
 
-    // Use the imported IDL for typing, cast to any to bypass potential strict type mismatch
+    // Use the imported IDL for typing, cast to std::any to bypass potential strict type mismatch
 
     // is this right?
 

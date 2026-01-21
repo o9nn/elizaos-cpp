@@ -16,7 +16,7 @@ namespace elizaos {
 
 
 class TechnicalAnalysisService extends BaseTradeService {
-  async calculateTechnicalSignals(marketData: any) {
+  std::async calculateTechnicalSignals(marketData: std::any) {
     const rsi = this.analyticsService.calculateRSI(marketData.priceHistory, 14);
     const macd = this.analyticsService.calculateMACD(marketData.priceHistory);
 

@@ -3,6 +3,6 @@
 #include "core.h"
 #include "./constants.h"
 
-any createTokenPrompt(any validatedData = undefined);
+std::any createTokenPrompt(std::any validatedData = undefined);
 
 #endif

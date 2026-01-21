@@ -12,17 +12,17 @@ express::Router createAgentCrudRouter(ElizaOS elizaOS, AgentServer serverInstanc
         const auto db = serverInstance.database;
 
         // List all agents with minimal details (public)
-        router.get("/", async (_: express.Request, res) => {
+        router.get("/", std::async (_: express.Request, res) => {
             try {
                 if (!db) {
                     return sendError(res, 500, "DB_ERROR", "Database not available");
                 }
                 const auto allAgents = db.getAgents();
-                const auto runtimes = elizaOS.getAgents().map((a) => a.agentId);
+                const auto runtimes = elizaOS.getAgents().std::map((a) => a.agentId);
 
                 // Return only minimal agent data
                 const auto response = allAgents;
-                .map((agent: Partial<Agent>) => ({
+                .std::map((agent: Partial<Agent>) => ({
                     id: agent.id,
                     name: agent.name || "",
                     characterName: agent.name || "", // Since Agent extends Character, agent.name is the character name
@@ -30,7 +30,7 @@ express::Router createAgentCrudRouter(ElizaOS elizaOS, AgentServer serverInstanc
                     status: agent.id && (std::find(runtimes.begin(), runtimes.end(), agent.id) != runtimes.end()) ? "active" : "inactive",
                     }));
                     .filter((agent) => agent.id) // Filter out agents without IDs;
-                    .sort((a: any, b: any) => {
+                    .sort((a: std::any, b: std::any) => {
                         if (a.status == b.status) {
                             return a.name.localeCompare(b.name);
                         }
@@ -54,7 +54,7 @@ express::Router createAgentCrudRouter(ElizaOS elizaOS, AgentServer serverInstanc
                         });
 
                         // Get specific agent details (public)
-                        router.get("/:agentId", async (req: express.Request, res) => {
+                        router.get("/:agentId", std::async (req: express.Request, res) => {
                             const auto agentId = validateUuid(req.params.agentId);
                             if (!agentId) {
                                 return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
@@ -95,7 +95,7 @@ express::Router createAgentCrudRouter(ElizaOS elizaOS, AgentServer serverInstanc
                                     });
 
                                     // Create new agent - ADMIN ONLY
-                                    router.post("/", requireAuth, requireAdmin, async (req: AuthenticatedRequest, res) => {
+                                    router.post("/", requireAuth, requireAdmin, std::async (req: AuthenticatedRequest, res) => {
                                         logger.debug('[AGENT CREATE] Creating new agent');
                                         const auto { characterPath, characterJson, agent } = req.body;
                                         if (!db) {
@@ -126,12 +126,12 @@ express::Router createAgentCrudRouter(ElizaOS elizaOS, AgentServer serverInstanc
                                                             logger.debug('[AGENT CREATE] Encrypting secrets');
                                                             const auto salt = getSalt();
                                                             character.settings.secrets = encryptObjectValues(;
-                                                            character.settings.secrets<string, any>,
+                                                            character.settings.secrets<std::string, any>,
                                                             salt;
                                                             );
                                                         }
 
-                                                        const auto ensureAgentExists = async (character: Character) => {;
+                                                        const auto ensureAgentExists = std::async (character: Character) => {;
                                                             const auto agentId = stringToUuid(character.name);
                                                             auto agent = db.getAgent(agentId);
                                                             if (!agent) {
@@ -175,7 +175,7 @@ express::Router createAgentCrudRouter(ElizaOS elizaOS, AgentServer serverInstanc
                                                                             });
 
                                                                             // Update agent - ADMIN ONLY
-                                                                            router.patch("/:agentId", requireAuth, requireAdmin, async (req: AuthenticatedRequest, res) => {
+                                                                            router.patch("/:agentId", requireAuth, requireAdmin, std::async (req: AuthenticatedRequest, res) => {
                                                                                 const auto agentId = validateUuid(req.params.agentId);
                                                                                 if (!agentId) {
                                                                                     return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
@@ -193,7 +193,7 @@ express::Router createAgentCrudRouter(ElizaOS elizaOS, AgentServer serverInstanc
 
                                                                                     if (updates.settings.secrets) {
                                                                                         const auto salt = getSalt();
-                                                                                        const std::variant<Record<string, string, null>> encryptedSecrets = {};
+                                                                                        const std::variant<Record<std::string, std::string, null>> encryptedSecrets = {};
                                                                                         Object.entries(updates.settings.secrets).forEach(([key, value]) => {
                                                                                             if (value == null) {
                                                                                                 encryptedSecrets[key] = nullptr;
@@ -222,13 +222,13 @@ express::Router createAgentCrudRouter(ElizaOS elizaOS, AgentServer serverInstanc
 
                                                                                                     const auto currentPlugins = (currentAgent.plugins || []);
                                                                                                     .filter(p => p != nullptr);
-                                                                                                    .map(p => typeof p == "string" ? p : (p).name)
+                                                                                                    .std::map(p => typeof p == "string" ? p : (p).name)
                                                                                                     .filter(name => typeof name == "string");
                                                                                                     .sort();
 
                                                                                                     const auto updatedPlugins = (updatedAgent.plugins || []);
                                                                                                     .filter(p => p != nullptr);
-                                                                                                    .map(p => typeof p == "string" ? p : (p).name)
+                                                                                                    .std::map(p => typeof p == "string" ? p : (p).name)
                                                                                                     .filter(name => typeof name == "string");
                                                                                                     .sort();
 
@@ -310,7 +310,7 @@ express::Router createAgentCrudRouter(ElizaOS elizaOS, AgentServer serverInstanc
                                                                                                             });
 
                                                                                                             // Delete agent - ADMIN ONLY
-                                                                                                            router.delete("/:agentId", requireAuth, requireAdmin, async (req: AuthenticatedRequest, res) => {
+                                                                                                            router.delete("/:agentId", requireAuth, requireAdmin, std::async (req: AuthenticatedRequest, res) => {
                                                                                                                 logger.debug(`[AGENT DELETE] Received request to delete agent with ID: ${req.params.agentId}`);
 
                                                                                                                 const auto agentId = validateUuid(req.params.agentId);

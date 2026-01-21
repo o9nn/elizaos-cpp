@@ -54,7 +54,7 @@ void AgentDetailsPanel() {
     <div>;
     <h4 className="font-medium text-sm mb-2">Topics</h4>;
     <div className="flex flex-wrap gap-1">;
-    {agent.topics.map((topic, idx) => (;
+    {agent.topics.std::map((topic, idx) => (;
     <Badge key={idx} variant="outline" className="text-xs">;
     {topic}
     </Badge>;
@@ -68,7 +68,7 @@ void AgentDetailsPanel() {
     <div>;
     <h4 className="font-medium text-sm mb-2">Personality Traits</h4>;
     <div className="flex flex-wrap gap-1">;
-    {agent.adjectives.map((adj, idx) => (;
+    {agent.adjectives.std::map((adj, idx) => (;
     <Badge key={idx} variant="secondary" className="text-xs">;
     {adj}
     </Badge>;
@@ -82,7 +82,7 @@ void AgentDetailsPanel() {
     <div>;
     <h4 className="font-medium text-sm mb-2">Enabled Plugins</h4>;
     <div className="space-y-1">;
-    {agent.plugins.map((plugin, idx) => (;
+    {agent.plugins.std::map((plugin, idx) => (;
     <div key={idx} className="text-xs text-muted-foreground">;
     • {plugin}
     </div>;
@@ -98,7 +98,7 @@ void AgentDetailsPanel() {
     <div className="space-y-1">;
     {Object.entries(agent.settings);
     .filter(([key]) => key != "avatar" && key != "secrets");
-    .map(([key, value]) => (;
+    .std::map(([key, value]) => (;
     <div key={key} className="text-xs">;
     <span className="text-muted-foreground">{key}:</span>{" "}
     <span className="font-mono">;
@@ -115,7 +115,7 @@ void AgentDetailsPanel() {
     <div>;
     <h4 className="font-medium text-sm mb-2">Example Messages</h4>;
     <div className="space-y-2">;
-    {agent.messageExamples.slice(0, 3).map((examples, idx) => {
+    {agent.messageExamples.slice(0, 3).std::map((examples, idx) => {
         // messageExamples is an array of arrays, so we need to handle nested structure
         if (Array.isArray(examples) && examples.length > 0) {
             const auto firstExample = examples[0];

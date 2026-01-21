@@ -47,13 +47,13 @@ std::future<void> POST(NextRequest request) {
 
         const AnchorWallet wallet = {;
             publicKey: deskKeypair.publicKey,
-            signTransaction: async <T extends Transaction | VersionedTransaction>(
+            signTransaction: std::async <T extends Transaction | VersionedTransaction>(
             tx: T,
             ) => {
                 (tx).partialSign(deskKeypair);
                 return tx;
                 },
-                signAllTransactions: async <T extends Transaction | VersionedTransaction>(
+                signAllTransactions: std::async <T extends Transaction | VersionedTransaction>(
                 txs: T[],
                 ) => {
                     txs.forEach((tx) => (tx).partialSign(deskKeypair));
@@ -70,7 +70,7 @@ std::future<void> POST(NextRequest request) {
 
                         // Fetch offer
                         // Type assertion needed as anchor's account namespace types are dynamic
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-std::any
                         const auto programAccounts = program.account;
                         const auto offer = new PublicKey(offerAddress);
                         const auto offerData = programAccounts.offer.fetch(offer);

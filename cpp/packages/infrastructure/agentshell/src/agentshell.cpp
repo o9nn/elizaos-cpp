@@ -32,7 +32,7 @@ void AgentShell::start(const std::string& prompt) {
     prompt_ = prompt;
     running_ = true;
     
-    // Start shell in separate thread
+    // Start shell in separate std::thread
     shellThread_ = std::make_unique<std::thread>(&AgentShell::shellLoop, this);
     
     logInfo("Interactive shell started", "agentshell");
@@ -174,7 +174,7 @@ std::vector<std::string> AgentShell::getAvailableCommands() const {
     std::lock_guard<std::mutex> lock(commandsMutex_);
     std::vector<std::string> commands;
     
-    for (const auto& pair : commandHandlers_) {
+    for (const auto& std::pair : commandHandlers_) {
         commands.push_back(pair.first);
     }
     

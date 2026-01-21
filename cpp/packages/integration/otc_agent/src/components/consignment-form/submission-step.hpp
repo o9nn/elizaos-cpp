@@ -48,11 +48,11 @@ struct SubmissionStepProps {
     std::string selectedTokenSymbol;
     std::optional<std::string> selectedTokenName;
     std::optional<std::string> selectedTokenAddress;
-    std::optional<string | null> selectedTokenLogoUrl;
+    std::optional<std::string | null> selectedTokenLogoUrl;
     () => Promise<string> onApproveToken;
     ( onCreateConsignment;
-    std::optional<(txHash: string) => void> onTxSubmitted;
-    (txHash: string) => string getBlockExplorerUrl;
+    std::optional<(txHash: std::string) => void> onTxSubmitted;
+    (txHash: std::string) => std::string getBlockExplorerUrl;
     () => void onBack;
 };
 

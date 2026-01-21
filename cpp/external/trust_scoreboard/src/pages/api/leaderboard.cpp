@@ -31,7 +31,7 @@ std::future<double> getTokenPrice(const std::string& address) {
 
 }
 
-std::future<void> handler(NextApiRequest req, const std::variant<NextApiResponse<ErrorResponse, { partners: Partner[]; prices: any[] }>>& res) {
+std::future<void> handler(NextApiRequest req, const std::variant<NextApiResponse<ErrorResponse, { partners: Partner[]; prices: std::any[] }>>& res) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -47,7 +47,7 @@ std::future<void> handler(NextApiRequest req, const std::variant<NextApiResponse
 
         // Fetch token prices from CoinGecko
         const std::vector<TokenPrice> prices = Promise.all(;
-        TOKEN_ADDRESSES.map(async (address) => ({
+        TOKEN_ADDRESSES.std::map(std::async (address) => ({
             address,
             usd: getTokenPrice(address),
             }));

@@ -13,13 +13,13 @@ class TestHealthMonitor;
 class TestResult : public object, public std::enable_shared_from_this<TestResult> {
 public:
     using std::enable_shared_from_this<TestResult>::shared_from_this;
-    string name;
+    std::string name;
 
     double duration;
 
-    any status;
+    std::any status;
 
-    string error;
+    std::string error;
 };
 
 class TestRun : public object, public std::enable_shared_from_this<TestRun> {
@@ -63,17 +63,17 @@ public:
 class TestHealthMonitor : public object, public std::enable_shared_from_this<TestHealthMonitor> {
 public:
     using std::enable_shared_from_this<TestHealthMonitor>::shared_from_this;
-    string healthDataPath;
+    std::string healthDataPath;
 
     double maxHistorySize = 100;
 
-    TestHealthMonitor(string dataDir = std::string(".test-health"));
+    TestHealthMonitor(std::string dataDir = std::string(".test-health"));
     virtual void ensureDataDir();
     virtual void recordTestRun(std::shared_ptr<TestRun> results);
     virtual void updateFlakyTests(std::shared_ptr<TestHealth> health);
     virtual std::shared_ptr<TestHealth> getHealth();
     virtual void saveHealth(std::shared_ptr<TestHealth> health);
-    virtual string generateReport();
+    virtual std::string generateReport();
     virtual object getTestTrends();
 };
 

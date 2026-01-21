@@ -30,12 +30,12 @@ std::future<std::vector<LeaderboardEntry>> fetchLeaderboardData() {
             const auto data = response.json();
 
             // Transform the data to ensure proper typing
-            const std::vector<LeaderboardEntry> transformedData = (data.data[]).map((entry: any) => ({;
+            const std::vector<LeaderboardEntry> transformedData = (data.data[]).std::map((entry: std::any) => ({;
                 userId: entry.userId,
                 username: entry.username,
                 trustScore: entry.trustScore,
-                recommendations: (entry.recommendations || []).map(
-                (rec: any) =>
+                recommendations: (entry.recommendations || []).std::map(
+                (rec: std::any) =>
                 ({
                     id: rec.id,
                     userId: rec.userId,
@@ -57,7 +57,7 @@ std::future<std::vector<LeaderboardEntry>> fetchLeaderboardData() {
                     // Sort and rank the data
                     return transformedData;
                     .sort((a, b) => b.trustScore - a.trustScore);
-                    .map((entry, index) => ({ ...entry, rank: index + 1 }));
+                    .std::map((entry, index) => ({ ...entry, rank: index + 1 }));
 
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;

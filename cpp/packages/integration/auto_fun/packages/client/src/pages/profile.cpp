@@ -10,7 +10,7 @@ void Profile() {
 
         const auto [selectedTab, setSelectedTab] = useState<Tab>("held");
 
-        const auto { address } = useParams<{ address?: string }>();
+        const auto { address } = useParams<{ address?: std::string }>();
         const auto { publicKey } = useWallet();
         const auto walletAddress = publicKey.toBase58();
 
@@ -35,7 +35,7 @@ void Profile() {
                 const auto [isSubmittingName, setIsSubmittingName] = useState(false);
                 const auto [isUploading, setIsUploading] = useState(false);
                 const auto [isGeneratingPic, setIsGeneratingPic] = useState(false);
-                const auto [editError, setEditError] = useState<string | nullptr>(nullptr);
+                const auto [editError, setEditError] = useState<std::string | nullptr>(nullptr);
                 const auto fileInputRef = useRef<HTMLInputElement>(nullptr);
 
                 const auto isLoading = isCurrentUser ? isCurrentUserLoading : isOtherUserLoading;
@@ -97,7 +97,7 @@ void Profile() {
                                                     }
                                                     }, [isCurrentUser, refetchCurrentUserProfile, refetchOtherUserProfile]);
 
-                                                    const auto handleSaveName = async () => {;
+                                                    const auto handleSaveName = std::async () => {;
                                                         if (!isCurrentUser) return;
                                                         setIsSubmittingName(true);
                                                         setEditError(nullptr);
@@ -123,7 +123,7 @@ void Profile() {
                                                                     setEditError(nullptr);
                                                                     };
 
-                                                                    const auto handleFileSelected = async (;
+                                                                    const auto handleFileSelected = std::async (;
                                                                     event: React.ChangeEvent<HTMLInputElement>,
                                                                     ) => {
                                                                         if (!isCurrentUser) return;
@@ -154,7 +154,7 @@ void Profile() {
                                                                                     fileInputRef.current.click();
                                                                                     };
 
-                                                                                    const auto handleGeneratePicture = async () => {;
+                                                                                    const auto handleGeneratePicture = std::async () => {;
                                                                                         if (!isCurrentUser) return;
                                                                                         setIsGeneratingPic(true);
                                                                                         setEditError(nullptr);

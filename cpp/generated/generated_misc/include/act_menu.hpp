@@ -7,6 +7,6 @@ using uuidv4 = v4;
 #include "../utils.h"
 #include "../constants.h"
 
-extern string menutext;
+extern std::string menutext;
 extern std::shared_ptr<Action> servicesMenu;
 #endif

@@ -7,8 +7,8 @@ using process = _default;
 #include "dotenv.h"
 using dotenv = _default;
 
-extern string ORG_NAME;
-extern string TARGET_BRANCH;
+extern std::string ORG_NAME;
+extern std::string TARGET_BRANCH;
 std::shared_ptr<Promise<void>> main();
 
 #endif

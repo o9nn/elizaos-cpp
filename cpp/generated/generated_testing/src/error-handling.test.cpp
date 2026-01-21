@@ -62,7 +62,7 @@ void Main(void)
                         std::async([=]() { action->handler(mockRuntime, mockMessage, mockState, object{}, mockCallback, array<any>()); });
                         expect(mockCallback)->toHaveBeenCalled();
                     }
-                    catch (const any& error)
+                    catch (const std::any& error)
                     {
                         expect(logger->error)->toHaveBeenCalled();
                     }
@@ -83,7 +83,7 @@ void Main(void)
                 {
                     std::async([=]() { StarterService::stop(mockRuntime); });
                 }
-                catch (const any& error)
+                catch (const std::any& error)
                 {
                     caughtError = error;
                     expect(error["message"])->toBe(std::string("Starter service not found"));
@@ -97,7 +97,7 @@ void Main(void)
                 auto mockServiceWithError = object{
                     object::pair{std::string("stop"), mock()->mockImplementation([=]() mutable
                     {
-                        throw any(std::make_shared<Error>(std::string("Error stopping service")));
+                        throw std::any(std::make_shared<Error>(std::string("Error stopping service")));
                     }
                     )}
                 };
@@ -109,7 +109,7 @@ void Main(void)
                 {
                     std::async([=]() { StarterService::stop(mockRuntime); });
                 }
-                catch (const any& error)
+                catch (const std::any& error)
                 {
                     caughtError = error;
                     expect(error["message"])->toBe(std::string("Error stopping service"));
@@ -143,7 +143,7 @@ void Main(void)
                         std::async([=]() { messageHandler(as<any>(mockParams)); });
                         expect(true)->toBe(true);
                     }
-                    catch (const any& error)
+                    catch (const std::any& error)
                     {
                         expect(error)->toBeDefined();
                     }
@@ -170,7 +170,7 @@ void Main(void)
                         std::async([=]() { provider->get(mockRuntime, mockMessage, mockState); });
                         expect(true)->toBe(true);
                     }
-                    catch (const any& error)
+                    catch (const std::any& error)
                     {
                         expect(logger->error)->toHaveBeenCalled();
                     }

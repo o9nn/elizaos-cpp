@@ -5,19 +5,19 @@
 
 class TestMemory;
 
-extern std::function<any(double)> fixedUuid;
-extern any embeddingTestAgentId;
-extern any embeddingTestRoomId;
-extern any embeddingTestEntityId;
-extern any embeddingTestWorldId;
+extern std::function<std::any(double)> fixedUuid;
+extern std::any embeddingTestAgentId;
+extern std::any embeddingTestRoomId;
+extern std::any embeddingTestEntityId;
+extern std::any embeddingTestWorldId;
 extern std::function<array<double>(double)> generateRandomVector;
-extern any embeddingTestAgent;
+extern std::any embeddingTestAgent;
 extern std::shared_ptr<Entity> embeddingTestEntity;
 extern std::shared_ptr<Room> embeddingTestRoom;
 class TestMemory : public Memory, public std::enable_shared_from_this<TestMemory> {
 public:
     using std::enable_shared_from_this<TestMemory>::shared_from_this;
-    string type;
+    std::string type;
 };
 
 extern array<std::shared_ptr<TestMemory>> embeddingTestMemories;

@@ -13,7 +13,7 @@ std::shared_ptr<VersionInfo> getVersionInfo()
             object::pair{std::string("uptime"), process->uptime()}
         };
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("Error getting version info:"), error);
         return object{

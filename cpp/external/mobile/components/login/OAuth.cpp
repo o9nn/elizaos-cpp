@@ -39,7 +39,7 @@ void OAuth() {
                 "instagram",
                 "linkedin",
                 "line",
-                ].map((provider) => (;
+                ].std::map((provider) => (;
                 <View key={provider}>;
                 <Button;
             "title={" + "Login with " + provider;

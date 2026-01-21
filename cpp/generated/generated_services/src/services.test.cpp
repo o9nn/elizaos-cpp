@@ -143,7 +143,7 @@ void Main(void)
             std::async([=]() { executeTaskMethod(testTask); });
             expect(mockRuntime->getTaskWorker)->toHaveBeenCalledWith(testTask["name"]);
             expect(mockErrorExecute)->toHaveBeenCalled();
-            expect(logger->error)->toHaveBeenCalledWith(std::string("[Bootstrap] Error executing task ") + testTask["id"] + std::string(":"), expect->any(Error));
+            expect(logger->error)->toHaveBeenCalledWith(std::string("[Bootstrap] Error executing task ") + testTask["id"] + std::string(":"), expect->std::any(Error));
         }
         );
     }
@@ -281,7 +281,7 @@ void Main(void)
             if (fileServiceDefinition) {
                 mockRuntime->getService = mock()->mockImplementation([=]() mutable
                 {
-                    throw any(std::make_shared<Error>(std::string("Service initialization failed")));
+                    throw std::any(std::make_shared<Error>(std::string("Service initialization failed")));
                 }
                 );
                 auto serviceInstance = (type_of(fileServiceDefinition) == std::string("function")) ? std::async([=]() { (as<any>(fileServiceDefinition))["start"](as<std::shared_ptr<IAgentRuntime>>(mockRuntime)); }) : std::async([=]() { (as<std::shared_ptr<PluginService>>(fileServiceDefinition))->init(as<std::shared_ptr<IAgentRuntime>>(mockRuntime)); });

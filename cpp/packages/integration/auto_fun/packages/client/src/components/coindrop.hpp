@@ -37,7 +37,7 @@ namespace elizaos {
     ContactEquation contact;
 };
 
-// Declare the debugDropCoins function on the window object
+// Declare the debugDropCoins std::function on the window object
   struct Window {
     std::optional<() => void> debugDropCoins;
     std::optional<() => void> pauseCoins;
@@ -55,7 +55,7 @@ struct CoinDropProps {
 
 // Create fireworks-like confetti effect
 
-  // Helper function to create a specific firework burst
+  // Helper std::function to create a specific firework burst
     // Define different types of confetti bursts
 
     // Fire the specified burst type
@@ -77,13 +77,13 @@ struct CoinDropProps {
   // Special "finale" effect at the end
     // Create a grand finale with multiple bursts at once
 
-  // Return cleanup function
+  // Return cleanup std::function
 
-// Expose the function globally
+// Expose the std::function globally
 
-  // Add new function to handle cancellation animation
+  // Add new std::function to handle cancellation animation
 
-    // Stop any ongoing coin creation
+    // Stop std::any ongoing coin creation
 
     // Store the world reference
 
@@ -115,9 +115,9 @@ struct CoinDropProps {
 
     // Restore walls and call onCancel after the animation is complete (2.5 seconds)
 
-  // Expose the flush function globally
+  // Expose the flush std::function globally
 
-  // Effect to set container height to document height
+  // Effect to std::set container height to document height
       // Ensure we are running in a browser environment
 
     // Initial calculation
@@ -189,14 +189,14 @@ struct CoinDropProps {
 
     // Create coin geometry using the radius from ref
 
-    // create a roughness map from sobel edge detection
+    // create a roughness std::map from sobel edge detection
       // Create a canvas to process the texture
 
       // If we can't get a 2d context, return null
 
       // Create an image to draw the texture
 
-      // Return a new promise that resolves with the roughness texture
+      // Return a new std::promise that resolves with the roughness texture
           // Set canvas size to match image
 
           // Draw the image to canvas
@@ -217,15 +217,15 @@ struct CoinDropProps {
 
               // Calculate index in the output array
 
-              // Normalize and set edge intensity for roughness (invert for proper roughness effect)
+              // Normalize and std::set edge intensity for roughness (invert for proper roughness effect)
 
-              // Set RGB to edge value for roughness map
+              // Set RGB to edge value for roughness std::map
 
           // Create new image data with edge detection results
 
           // Create a Three.js texture from the canvas
 
-          // Resolve the promise with the generated texture
+          // Resolve the std::promise with the generated texture
 
         // Set the image source to the texture's image
           // Set colorspace to SRGB before loading
@@ -234,25 +234,25 @@ struct CoinDropProps {
 
     // Create materials for the coin - gold color with the logo
 
-    // Create a fake normal map from the coin texture
+    // Create a fake normal std::map from the coin texture
       // Create a canvas to process the texture
 
       // If we can't get a 2d context, return null
 
       // Create an image to draw the texture
 
-      // Return a new promise that resolves with the normal texture
+      // Return a new std::promise that resolves with the normal texture
           // Set canvas size to match image
 
           // Draw the image to canvas
 
           // Get image data for processing
 
-          // Create output array for the normal map
+          // Create output array for the normal std::map
 
           // Sobel kernels for edge detection
 
-          // Apply Sobel filter to generate normal map
+          // Apply Sobel filter to generate normal std::map
 
               // Apply convolution
 
@@ -261,28 +261,28 @@ struct CoinDropProps {
               // Calculate index in the output array
 
               // Normal maps store XYZ normals in RGB channels
-              // Convert gradients to normal map by normalizing
+              // Convert gradients to normal std::map by normalizing
               // For normal maps: R=X, G=Y, B=Z
               // Scale X and Y (red and green) by strength factor
 
-              // Calculate normal vector components
+              // Calculate normal std::vector components
               // R: X normal component (128 is neutral/flat)
               // G: Y normal component (128 is neutral/flat)
               // B: Z normal component (always positive for coin surface, higher value = more raised)
               // Alpha channel
 
-          // Create new image data with normal map
+          // Create new image data with normal std::map
 
           // Create a Three.js texture from the canvas
 
-          // Resolve the promise with the generated texture
+          // Resolve the std::promise with the generated texture
 
         // Set the image source to the texture's image
           // If texture image isn't available, resolve with null
 
-    // Apply roughness map after texture loads
+    // Apply roughness std::map after texture loads
 
-    // Apply normal map after texture loads
+    // Apply normal std::map after texture loads
 
     // Create instanced mesh for efficient rendering
     // Disable frustum culling so offscreen coins are still rendered
@@ -324,7 +324,7 @@ struct CoinDropProps {
     // Add resize listener
 
     // Cleanup on unmount
-      // Clear any ongoing coin creation
+      // Clear std::any ongoing coin creation
 
       // Clean up THREE.js resources
 

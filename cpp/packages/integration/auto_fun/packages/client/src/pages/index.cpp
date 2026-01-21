@@ -31,7 +31,7 @@ void Page() {
     const auto filterRef = useRef<HTMLDivElement>(nullptr);
 
     useEffect(() => {
-        function handleClickOutside(event: MouseEvent) {
+        std::function handleClickOutside(event: MouseEvent) {
             if (
             filterRef.current &&;
             !filterRef.current.contains(event.target);
@@ -101,12 +101,12 @@ void Page() {
                             const auto lastElementRef = useCallback(;
                             [&](node: HTMLDivElement) {
                                 if (query.isLoading || query.isFetchingNextPage) return;
-                                // Disconnect previous observer if any
+                                // Disconnect previous observer if std::any
                                 if (observer.current) observer.current.disconnect();
                                 // Create new observer
                                 observer.current = new IntersectionObserver((entries) => {
                                     if (entries[0].isIntersecting && query.hasNextPage) {
-                                        // Explicitly cast to any to bypass persistent type error
+                                        // Explicitly cast to std::any to bypass persistent type error
                                         (query.fetchNextPage)();
                                     }
                                     });

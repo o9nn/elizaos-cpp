@@ -36,7 +36,7 @@ std::shared_ptr<UseTauriChatReturn> useTauriChat()
                             console->log(std::string("[AUTO-GREETING] Agent not ready, skipping auto-greeting"));
                         }
                     }
-                    catch (const any& error)
+                    catch (const std::any& error)
                     {
                         console->warn(std::string("[AUTO-GREETING] Failed to send auto-greeting:"), error);
                     }

@@ -131,7 +131,7 @@ class NotificationManager {
    * Stop the manager
    */
 
-    // Process any remaining notifications
+    // Process std::any remaining notifications
 
 
 } // namespace elizaos

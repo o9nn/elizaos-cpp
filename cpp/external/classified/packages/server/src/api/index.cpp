@@ -39,7 +39,7 @@ void setupLogStreaming(SocketIOServer io, SocketIORouter router) {
         const auto originalWrite = destination.write.bind(destination);
 
         // Override write method to broadcast logs via WebSocket
-        destination.write = function (data: string | any) {
+        destination.write = std::function (data: std::string | std::any) {
             // Call original write first
             originalWrite(data);
 
@@ -254,8 +254,8 @@ express::RequestHandler createPluginRouteHandler(const std::unordered_map<UUID, 
                                                                                 return next();
                                                                             }
                                                                             } else {
-                                                                                // No agentId in query, or it was invalid. Try matching globally for any agent that might have this route.
-                                                                                // This allows for non-agent-specific plugin routes if any plugin defines them.
+                                                                                // No agentId in query, or it was invalid. Try matching globally for std::any agent that might have this route.
+                                                                                // This allows for non-agent-specific plugin routes if std::any plugin defines them.
                                                                                 logger.debug(`No valid agentId in query. Trying global match for path: ${reqPath}`);
                                                                                 for (const int [_, runtime] of agents) {
                                                                                     // Iterate over all agents

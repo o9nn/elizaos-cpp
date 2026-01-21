@@ -42,11 +42,11 @@ public:
 
     boolean hasChanges = false;
 
-    std::shared_ptr<Map<string, string>> fileContents = std::make_shared<Map>();
+    std::shared_ptr<Map<std::string, string>> fileContents = std::make_shared<Map>();
 
-    string branchName = string_empty;
+    std::string branchName = string_empty;
 
-    std::shared_ptr<Map<string, double>> fileOffsets = std::make_shared<Map>();
+    std::shared_ptr<Map<std::string, double>> fileOffsets = std::make_shared<Map>();
 
     array<string> typeScriptFiles = array<string>();
 
@@ -54,12 +54,12 @@ public:
 
     DocumentationGenerator(std::shared_ptr<DirectoryTraversal> directoryTraversal_, std::shared_ptr<TypeScriptParser> typeScriptParser_, std::shared_ptr<JsDocAnalyzer> jsDocAnalyzer_, std::shared_ptr<JsDocGenerator> jsDocGenerator_, std::shared_ptr<GitManager> gitManager_, std::shared_ptr<Configuration> configuration_, std::shared_ptr<AIService> aiService_);
     virtual std::shared_ptr<Promise<object>> generate(double pullNumber = undefined);
-    virtual void processNode(std::shared_ptr<TSESTree::Node> node, string filePath, std::shared_ptr<TSESTree::Program> ast);
-    virtual std::shared_ptr<Promise<void>> updateFileWithJSDoc(string filePath, string jsDoc, double insertLine);
-    virtual string getNodeCode(string filePath, std::shared_ptr<TSESTree::Node> node);
-    virtual std::shared_ptr<Promise<string>> getFileContent(string contentsUrl);
+    virtual void processNode(std::shared_ptr<TSESTree::Node> node, std::string filePath, std::shared_ptr<TSESTree::Program> ast);
+    virtual std::shared_ptr<Promise<void>> updateFileWithJSDoc(std::string filePath, std::string jsDoc, double insertLine);
+    virtual std::string getNodeCode(std::string filePath, std::shared_ptr<TSESTree::Node> node);
+    virtual std::shared_ptr<Promise<string>> getFileContent(std::string contentsUrl);
     virtual std::shared_ptr<Promise<object>> generatePRContent(double pullNumber = undefined);
-    virtual string generateDefaultPRBody();
+    virtual std::string generateDefaultPRBody();
     virtual std::shared_ptr<Promise<object>> analyzeCodebase();
 };
 

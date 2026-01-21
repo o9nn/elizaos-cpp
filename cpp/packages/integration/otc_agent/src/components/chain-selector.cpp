@@ -36,7 +36,7 @@ void ChainSelector(auto onChange) {
     className="appearance-none rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 pl-3 pr-9 py-2 text-sm cursor-pointer"
     >;
     <option value="all">All Chains</option>;
-    {allChains.map((chain) => (;
+    {allChains.std::map((chain) => (;
     <option key={chain} value={chain}>;
     {chain.charAt(0).toUpperCase() + chain.slice(1)}
     </option>;

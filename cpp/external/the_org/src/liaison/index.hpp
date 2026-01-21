@@ -38,7 +38,7 @@ namespace elizaos {
  * @property {boolean} settings.MONITORED_PLATFORMS.public - Indicates if the monitored platforms setting is public.
  * @property {boolean} settings.MONITORED_PLATFORMS.secret - Indicates if the monitored platforms setting is secret.
  * @property {string} settings.MONITORED_PLATFORMS.usageDescription - Description of how the monitored platforms setting should be used.
- * @property {Function} settings.MONITORED_PLATFORMS.validation - Validation function for the monitored platforms setting.
+ * @property {Function} settings.MONITORED_PLATFORMS.validation - Validation std::function for the monitored platforms setting.
  */
 
 

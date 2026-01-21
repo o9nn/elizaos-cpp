@@ -17,7 +17,7 @@ std::shared_ptr<Promise<void>> TauriIntegrationRunner::runAll()
             std::async([=]() { this->runIntegrationTests(); });
             std::async([=]() { this->generateReport(); });
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             console->error(std::string("❌ Test runner failed:"), error);
             process->exit(1);
@@ -163,11 +163,11 @@ std::shared_ptr<Promise<void>> TauriIntegrationRunner::runIntegrationTests()
     {
         auto response = std::async([=]() { fetch(std::string("http://localhost:7777/health")); });
         if (!response->ok) {
-            throw any(std::make_shared<Error>(std::string("Health check failed: ") + response->status + string_empty));
+            throw std::any(std::make_shared<Error>(std::string("Health check failed: ") + response->status + string_empty));
         }
         auto data = std::async([=]() { response->json(); });
         if (data["status"] != std::string("healthy")) {
-            throw any(std::make_shared<Error>(std::string("Server not healthy: ") + data["status"] + string_empty));
+            throw std::any(std::make_shared<Error>(std::string("Server not healthy: ") + data["status"] + string_empty));
         }
     }
     ); });
@@ -175,11 +175,11 @@ std::shared_ptr<Promise<void>> TauriIntegrationRunner::runIntegrationTests()
     {
         auto response = std::async([=]() { fetch(std::string("http://localhost:7777/api/agents/default/status")); });
         if (!response->ok) {
-            throw any(std::make_shared<Error>(std::string("Agent status failed: ") + response->status + string_empty));
+            throw std::any(std::make_shared<Error>(std::string("Agent status failed: ") + response->status + string_empty));
         }
         auto data = std::async([=]() { response->json(); });
         if (!data["success"]) {
-            throw any(std::make_shared<Error>(std::string("Agent not ready: ") + JSON->stringify(data) + string_empty));
+            throw std::any(std::make_shared<Error>(std::string("Agent not ready: ") + JSON->stringify(data) + string_empty));
         }
     }
     ); });
@@ -187,7 +187,7 @@ std::shared_ptr<Promise<void>> TauriIntegrationRunner::runIntegrationTests()
     {
         auto statusResponse = std::async([=]() { fetch(std::string("http://localhost:7777/autonomy/status")); });
         if (!statusResponse->ok) {
-            throw any(std::make_shared<Error>(std::string("Failed to get autonomy status: ") + statusResponse->status + string_empty));
+            throw std::any(std::make_shared<Error>(std::string("Failed to get autonomy status: ") + statusResponse->status + string_empty));
         }
         auto currentStatus = std::async([=]() { statusResponse->json(); });
         auto wasEnabled = OR((currentStatus["data"]["enabled"]), (false));
@@ -195,16 +195,16 @@ std::shared_ptr<Promise<void>> TauriIntegrationRunner::runIntegrationTests()
             object::pair{std::string("method"), std::string("POST")}
         }); });
         if (!toggleResponse->ok) {
-            throw any(std::make_shared<Error>(std::string("Failed to toggle autonomy: ") + toggleResponse->status + string_empty));
+            throw std::any(std::make_shared<Error>(std::string("Failed to toggle autonomy: ") + toggleResponse->status + string_empty));
         }
         auto newStatusResponse = std::async([=]() { fetch(std::string("http://localhost:7777/autonomy/status")); });
         if (!newStatusResponse->ok) {
-            throw any(std::make_shared<Error>(std::string("Failed to verify autonomy status: ") + newStatusResponse->status + string_empty));
+            throw std::any(std::make_shared<Error>(std::string("Failed to verify autonomy status: ") + newStatusResponse->status + string_empty));
         }
         auto newStatus = std::async([=]() { newStatusResponse->json(); });
         auto isNowEnabled = OR((newStatus["data"]["enabled"]), (false));
         if (isNowEnabled == wasEnabled) {
-            throw any(std::make_shared<Error>(std::string("Autonomy toggle failed - state did not change")));
+            throw std::any(std::make_shared<Error>(std::string("Autonomy toggle failed - state did not change")));
         }
         auto restoreResponse = std::async([=]() { fetch(std::string("http://localhost:7777/autonomy/") + (wasEnabled) ? std::string("enable") : std::string("disable") + string_empty, object{
             object::pair{std::string("method"), std::string("POST")}
@@ -221,7 +221,7 @@ std::shared_ptr<Promise<void>> TauriIntegrationRunner::runIntegrationTests()
         {
             auto response = std::async([=]() { fetch(std::string("http://localhost:7777/api/agents/default/capabilities/") + capability + string_empty); });
             if (!response->ok) {
-                throw any(std::make_shared<Error>(std::string("Failed to get ") + capability + std::string(" status: ") + response->status + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("Failed to get ") + capability + std::string(" status: ") + response->status + string_empty));
             }
             auto data = std::async([=]() { response->json(); });
             console->log(std::string("  ") + capability + std::string(": ") + JSON->stringify(data) + string_empty);
@@ -233,12 +233,12 @@ std::shared_ptr<Promise<void>> TauriIntegrationRunner::runIntegrationTests()
         auto testMessage = std::string("Test message from integration runner");
         auto terminalResponse = std::async([=]() { fetch(std::string("http://localhost:7777/api/server/terminal-room")); });
         if (!terminalResponse->ok) {
-            throw any(std::make_shared<Error>(std::string("Failed to get terminal room: ") + terminalResponse->status + string_empty));
+            throw std::any(std::make_shared<Error>(std::string("Failed to get terminal room: ") + terminalResponse->status + string_empty));
         }
         auto terminalData = std::async([=]() { terminalResponse->json(); });
         auto terminalRoomId = terminalData["data"]["terminalRoomId"];
         if (!terminalRoomId) {
-            throw any(std::make_shared<Error>(std::string("Terminal room ID not found")));
+            throw std::any(std::make_shared<Error>(std::string("Terminal room ID not found")));
         }
         auto messageResponse = std::async([=]() { fetch(std::string("http://localhost:7777/api/messaging/ingest-external"), object{
             object::pair{std::string("method"), std::string("POST")}, 
@@ -262,11 +262,11 @@ std::shared_ptr<Promise<void>> TauriIntegrationRunner::runIntegrationTests()
             })}
         }); });
         if (!messageResponse->ok) {
-            throw any(std::make_shared<Error>(std::string("Failed to send message: ") + messageResponse->status + string_empty));
+            throw std::any(std::make_shared<Error>(std::string("Failed to send message: ") + messageResponse->status + string_empty));
         }
         auto messageData = std::async([=]() { messageResponse->json(); });
         if (!messageData["success"]) {
-            throw any(std::make_shared<Error>(std::string("Message sending failed: ") + JSON->stringify(messageData) + string_empty));
+            throw std::any(std::make_shared<Error>(std::string("Message sending failed: ") + JSON->stringify(messageData) + string_empty));
         }
     }
     ); });
@@ -293,7 +293,7 @@ std::shared_ptr<Promise<void>> TauriIntegrationRunner::runIntegrationTests()
     this->results->forEach([=](auto result) mutable
     {
         auto status = (result->passed) ? std::string("✅") : std::string("❌");
-        auto duration = (result->duration) ? any(std::string(" (") + result->duration + std::string("ms)")) : any(string_empty);
+        auto duration = (result->duration) ? std::any(std::string(" (") + result->duration + std::string("ms)")) : std::any(string_empty);
         console->log(string_empty + status + std::string(" ") + result->name + string_empty + duration + string_empty);
         if (result->error) {
             console->log(std::string("   Error: ") + result->error + string_empty);
@@ -308,12 +308,12 @@ std::shared_ptr<Promise<void>> TauriIntegrationRunner::runIntegrationTests()
     console->log(std::string("\
 Passed: ") + passed + std::string(", Failed: ") + failed + string_empty);
     if (failed > 0) {
-        throw any(std::make_shared<Error>(string_empty + failed + std::string(" tests failed")));
+        throw std::any(std::make_shared<Error>(string_empty + failed + std::string(" tests failed")));
     }
     return std::shared_ptr<Promise<void>>();
 }
 
-std::shared_ptr<Promise<void>> TauriIntegrationRunner::runTest(string name, std::function<std::shared_ptr<Promise<void>>()> testFn)
+std::shared_ptr<Promise<void>> TauriIntegrationRunner::runTest(std::string name, std::function<std::shared_ptr<Promise<void>>()> testFn)
 {
     auto startTime = Date->now();
     try
@@ -328,7 +328,7 @@ std::shared_ptr<Promise<void>> TauriIntegrationRunner::runTest(string name, std:
         });
         console->log(std::string("✅ ") + name + std::string(" passed (") + duration + std::string("ms)"));
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         auto duration = Date->now() - startTime;
         this->results->push(object{

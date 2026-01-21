@@ -18,9 +18,9 @@ public:
 
     std::shared_ptr<Map<double, std::shared_ptr<WalletClient>>> walletClients = std::make_shared<Map>();
 
-    string defaultRpcUrl;
+    std::string defaultRpcUrl;
 
-    MultiChainWallet(std::shared_ptr<Account> account, string defaultRpcUrl = undefined, double initialChainId = base->id);
+    MultiChainWallet(std::shared_ptr<Account> account, std::string defaultRpcUrl = undefined, double initialChainId = base->id);
     virtual std::shared_ptr<WalletClient> getWalletClient(double chainId);
     virtual std::shared_ptr<Promise<double>> getChainId();
     virtual std::shared_ptr<Promise<void>> switchChain(double chainId);
@@ -29,6 +29,6 @@ public:
     virtual std::shared_ptr<Account> getAccount();
 };
 
-std::shared_ptr<MultiChainWallet> createMultiChainWallet(std::shared_ptr<Account> account, string defaultRpcUrl = undefined);
+std::shared_ptr<MultiChainWallet> createMultiChainWallet(std::shared_ptr<Account> account, std::string defaultRpcUrl = undefined);
 
 #endif

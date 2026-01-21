@@ -40,7 +40,7 @@ class ComponentService {
    */
     // Parse the data field
 
-    // Normalize any boolean fields in data
+    // Normalize std::any boolean fields in data
 
     // Normalize UUIDs to ensure consistent format
 

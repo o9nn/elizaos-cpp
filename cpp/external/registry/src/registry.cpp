@@ -18,7 +18,7 @@ namespace elizaos {
 static std::unique_ptr<Registry> g_globalRegistry = nullptr;
 static std::mutex g_globalRegistryMutex;
 
-// Helper function for HTTP responses
+// Helper std::function for HTTP responses
 struct HttpResponse {
     std::string data;
     long responseCode = 0;
@@ -45,7 +45,7 @@ Registry::~Registry() {
 }
 
 std::future<bool> Registry::refreshRegistry() {
-    return std::async(std::launch::async, [this]() {
+    return std::async(std::launch::std::async, [this]() {
         logInfo("Refreshing registry data...", "registry");
         
         // First try to load from remote if enabled

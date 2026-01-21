@@ -116,7 +116,7 @@ LIQUIDITY: ") + token["liquidity"] + string_empty;
                 object::pair{std::string("error"), errorText}, 
                 object::pair{std::string("address"), responseContent->recommend_buy_address}
             });
-            throw any(std::make_shared<Error>(std::string("Birdeye marketcap request failed: ") + res->status + std::string(" ") + res->statusText + string_empty));
+            throw std::any(std::make_shared<Error>(std::string("Birdeye marketcap request failed: ") + res->status + std::string(" ") + res->statusText + string_empty));
         }
         auto resJson = std::async([=]() { res->json(); });
         auto marketcap = resJson["data"]["marketCap"];
@@ -128,7 +128,7 @@ LIQUIDITY: ") + token["liquidity"] + string_empty;
         }
         responseContent->marketcap = Number(OR((marketcap), (0)));
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Error fetching marketcap data:"), error);
         responseContent->marketcap = 0;
@@ -141,7 +141,7 @@ LIQUIDITY: ") + token["liquidity"] + string_empty;
     return true;
 }
 
-any BuySignal::getBalance()
+std::any BuySignal::getBalance()
 {
     auto url = std::string("https://zondra-wil7oz-fast-mainnet.helius-rpc.com");
     auto headers = object{
@@ -163,9 +163,9 @@ any BuySignal::getBalance()
     return lamportsBalance / 1000000000;
 }
 
-string DEGEN_WALLET = std::string("BzsJQeZ7cvk3pTHmKeuvdhNDkDxcZ6uCXxW2rjwC7RTq");
-string _rolePrompt = std::string("You are a buy signal analyzer.");
-string _template = std::string("\
+std::string DEGEN_WALLET = std::string("BzsJQeZ7cvk3pTHmKeuvdhNDkDxcZ6uCXxW2rjwC7RTq");
+std::string _rolePrompt = std::string("You are a buy signal analyzer.");
+std::string _template = std::string("\
 I want you to give a crypto buy signal based on both the sentiment analysis as well as the trending tokens.\
 Only choose a token that occurs in both the Trending Tokens list as well as the Sentiment analysis. This ensures we have the proper token address.\
 The sentiment score has a range of -100 to 100, with -100 indicating extreme negativity and 100 indicating extreme positiveness.\

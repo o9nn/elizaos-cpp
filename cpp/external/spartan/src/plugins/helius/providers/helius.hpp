@@ -26,7 +26,7 @@ namespace elizaos {
  * @property {string} name - The name of the provider
  * @property {string} description - Description of the provider
  * @property {number} position - The position of the provider
- * @property {Function} get - Asynchronous function to get actions that validate for a given message
+ * @property {Function} get - Asynchronous std::function to get actions that validate for a given message
  *
  * @param {IAgentRuntime} runtime - The agent runtime
  * @param {Memory} message - The message memory
@@ -36,11 +36,11 @@ namespace elizaos {
 
 class HeliusWebSocket {
   private ws: WebSocket | null = null;
-  private subscriptions: Map<string, number> = new Map();
+  private subscriptions: Map<std::string, number> = new Map();
   private pingInterval: NodeJS.Timer | null = null;
 
   constructor(
-    private apiKey: string,
+    private apiKey: std::string,
     private runtime: IAgentRuntime
   ) {}
 

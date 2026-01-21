@@ -22,15 +22,15 @@ namespace elizaos {
 class TeamUpdateTrackerService extends Service {
   private client: Client | null = null;
 
-  private telegramBot: any = null;
+  private telegramBot: std::any = null;
   private isJobRunning: boolean = false;
   static serviceType = 'team-update-tracker-service';
   capabilityDescription =
     'Manages team member updates, check-ins, and coordinates communication through Discord channels';
   // Store available Discord channels
-  private textChannels: Array<{ id: string; name: string; type: string }> = [];
+  private textChannels: Array<{ id: std::string; name: std::string; type: std::string }> = [];
 
-          // Test the getTeamMembers function with sample server IDs
+          // Test the getTeamMembers std::function with sample server IDs
                 // Log all users instead of just a sample
 
           // this is a Telegraf instance
@@ -123,7 +123,7 @@ class TeamUpdateTrackerService extends Service {
 
   // biome-ignore lint/complexity/noUselessLoneBlockStatements: <explanation>
 
-      // Dummy function for check-in service
+      // Dummy std::function for check-in service
         // Fetch all check-in schedules
 
           // Get current time in UTC

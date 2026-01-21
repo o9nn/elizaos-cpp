@@ -1,25 +1,25 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizaos.github.io/src/lib/matching/preprocessContent.h"
 
-string preprocessFilePathContent(string content)
+std::string preprocessFilePathContent(std::string content)
 {
     return path->normalize(content->trim())->replace((new RegExp(std::string("\\"))), std::string("/"));
 };
 
 
-string preprocessTextContent(string content)
+std::string preprocessTextContent(std::string content)
 {
     return content->trim();
 };
 
 
-string preprocessCodeContent(string content)
+std::string preprocessCodeContent(std::string content)
 {
     return content->trim()->replace((new RegExp(std::string("\r\n"))), std::string("\
 "));
 };
 
 
-string preprocessLabelContent(string content)
+std::string preprocessLabelContent(std::string content)
 {
     return content->trim()->toLowerCase();
 };
@@ -27,7 +27,7 @@ string preprocessLabelContent(string content)
 
 MatchContent preprocessContent(MatchContent content)
 {
-    string processedString;
+    std::string processedString;
     switch (content["contentType"])
     {
     case TagPatternType::FILE_PATH:

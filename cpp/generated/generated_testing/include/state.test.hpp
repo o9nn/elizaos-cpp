@@ -15,9 +15,9 @@ public:
 
     object data;
 
-    string text;
+    std::string text;
 };
 
-extern std::function<any(double)> createTestUUID;
+extern std::function<std::any(double)> createTestUUID;
 extern array<object> emptyMemoryData;
 #endif

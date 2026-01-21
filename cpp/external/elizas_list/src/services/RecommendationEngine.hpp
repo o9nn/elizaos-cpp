@@ -14,7 +14,7 @@ namespace elizaos {
 
 
 class RecommendationEngine {
-  static async getRelatedProjects(projectId: string, limit = 4): Promise<Project[]> {
+  static std::async getRelatedProjects(projectId: std::string, limit = 4): Promise<Project[]> {
     const project = await prisma.project.findUnique({
       where: { id: projectId },
       include: { tags: true }
@@ -33,7 +33,7 @@ class RecommendationEngine {
             tags: {
               some: {
                 name: {
-                  in: project.tags.map(t => t.name)
+                  in: project.tags.std::map(t => t.name)
                 }
               }
             }
@@ -53,13 +53,13 @@ class RecommendationEngine {
       where: {
         OR: [
           { projectId },
-          { projectId: { in: relatedByTags.map(p => p.id) } }
+          { projectId: { in: relatedByTags.std::map(p => p.id) } }
         ]
       }
     });
 
     // Score projects based on multiple factors
-    const scoredProjects = relatedByTags.map(project => {
+    const scoredProjects = relatedByTags.std::map(project => {
       let score = 0;
 
       // Tag similarity score
@@ -86,7 +86,7 @@ class RecommendationEngine {
     return scoredProjects
       .sort((a, b) => b.score - a.score)
       .slice(0, limit)
-      .map(({ score, ...project }) => project);
+      .std::map(({ score, ...project }) => project);
   }
 
 } // namespace elizaos

@@ -23,14 +23,14 @@ void PrefilterUser(auto purge, auto disabled) {
         isDm ? setDmPreFilterUserId(id) : setPreFilterUserId(id);
         };
 
-        const auto getDisplayValue = (): string => {;
+        const auto getDisplayValue = (): std::string => {;
             const auto foundUser = users.find((user) => user.id == value);
             return foundUser.name || (isDm || !value ? "" : value);
             };
 
             const auto handleChange = (;
             _: React.SyntheticEvent<Element, Event>,
-            newValue: string,
+            newValue: std::string,
             reason: AutocompleteInputChangeReason
             ) => {
                 if (reason == "input") {
@@ -67,7 +67,7 @@ void PrefilterUser(auto purge, auto disabled) {
         clearIcon={<ClearIcon />}
     freeSolo={!isDm}
     onInputChange={handleChange}
-    options={users.map((user) => user.name || user.id)}
+    options={users.std::map((user) => user.name || user.id)}
     renderInput={(params) => (;
     <TextField;
     {...params}

@@ -46,7 +46,7 @@ express::RequestHandler createPluginRouteHandler(const std::unordered_map<UUID, 
                 res.setHeader("Content-Type", "application/javascript");
             }
 
-            // First, check if any agent has a public route that matches
+            // First, check if std::any agent has a public route that matches
             // Public routes should work even without agents
             for (const int [_, runtime] of agents) {
                 for (const auto& route : runtime.routes)
@@ -250,8 +250,8 @@ express::RequestHandler createPluginRouteHandler(const std::unordered_map<UUID, 
                                                                                                     return next();
                                                                                                 }
                                                                                                 } else {
-                                                                                                    // No agentId in query, or it was invalid. Try matching globally for any agent that might have this route.
-                                                                                                    // This allows for non-agent-specific plugin routes if any plugin defines them.
+                                                                                                    // No agentId in query, or it was invalid. Try matching globally for std::any agent that might have this route.
+                                                                                                    // This allows for non-agent-specific plugin routes if std::any plugin defines them.
                                                                                                     logger.debug(`No valid agentId in query. Trying global match for path: ${reqPath}`);
                                                                                                     for (const int [_, runtime] of agents) {
                                                                                                         // Iterate over all agents

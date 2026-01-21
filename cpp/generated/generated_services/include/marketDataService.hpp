@@ -22,16 +22,16 @@ public:
 class MarketDataService : public object, public std::enable_shared_from_this<MarketDataService> {
 public:
     using std::enable_shared_from_this<MarketDataService>::shared_from_this;
-    string coingeckoApiKey;
+    std::string coingeckoApiKey;
 
-    string birdeyeApiKey;
+    std::string birdeyeApiKey;
 
     MarketDataService();
-    virtual std::shared_ptr<Promise<double>> fetchTokenPrice(string tokenAddress, std::shared_ptr<Chain> chain);
-    virtual std::shared_ptr<Promise<std::shared_ptr<TokenMarketData>>> fetchMarketData(string tokenAddress, std::shared_ptr<Chain> chain);
-    virtual std::shared_ptr<Promise<std::shared_ptr<TokenMarketData>>> fetchEVMData(string tokenAddress, std::shared_ptr<Chain> chain);
-    virtual std::shared_ptr<Promise<std::shared_ptr<TokenMarketData>>> fetchSolanaData(string tokenAddress);
-    virtual std::shared_ptr<Promise<void>> refreshTokenData(string tokenId, string tokenAddress, std::shared_ptr<Chain> chain);
+    virtual std::shared_ptr<Promise<double>> fetchTokenPrice(std::string tokenAddress, std::shared_ptr<Chain> chain);
+    virtual std::shared_ptr<Promise<std::shared_ptr<TokenMarketData>>> fetchMarketData(std::string tokenAddress, std::shared_ptr<Chain> chain);
+    virtual std::shared_ptr<Promise<std::shared_ptr<TokenMarketData>>> fetchEVMData(std::string tokenAddress, std::shared_ptr<Chain> chain);
+    virtual std::shared_ptr<Promise<std::shared_ptr<TokenMarketData>>> fetchSolanaData(std::string tokenAddress);
+    virtual std::shared_ptr<Promise<void>> refreshTokenData(std::string tokenId, std::string tokenAddress, std::shared_ptr<Chain> chain);
     virtual std::shared_ptr<Promise<void>> refreshAllTokenData(array<object> tokens);
 };
 

@@ -9,7 +9,7 @@ void Tweets() {
 
     const auto query = useQuery({;
         queryKey: ["tweets"],
-        queryFn: async () => {
+        queryFn: std::async () => {
             const auto response = "fetch(" + import.meta.env.VITE_API_URL + "/tweets";
                 method: "POST",
                 });
@@ -36,7 +36,7 @@ void Tweets() {
                 </TableRow>;
                 </TableHeader>;
                 <TableBody>;
-                {query.data.map((item) => (;
+                {query.data.std::map((item) => (;
                 "<TableRow key={" + item._id + "_" + item.likes;
                 <TableCell>{moment(item.timestamp).format("LLL")}</TableCell>;
                 <TableCell>;

@@ -130,7 +130,7 @@ std::string getProviderConfigMessage(InferenceProvider provider);
 /**
  * Set the selected provider
  */
-std::future<void> setSelectedProvider(IAgentRuntime runtime, string | null provider);
+std::future<void> setSelectedProvider(IAgentRuntime runtime, std::string | null provider);
 
 /**
  * Set provider preferences

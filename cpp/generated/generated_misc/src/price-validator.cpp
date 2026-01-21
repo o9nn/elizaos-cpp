@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/otc-agent/src/utils/price-validator.h"
 
-std::shared_ptr<Promise<std::shared_ptr<PriceValidationResult>>> checkPriceDivergence(string tokenAddress, std::shared_ptr<Chain> chain, double poolPriceUsd)
+std::shared_ptr<Promise<std::shared_ptr<PriceValidationResult>>> checkPriceDivergence(std::string tokenAddress, std::shared_ptr<Chain> chain, double poolPriceUsd)
 {
     if (OR((!poolPriceUsd), (poolPriceUsd <= 0))) {
         return object{
@@ -52,7 +52,7 @@ std::shared_ptr<Promise<std::shared_ptr<PriceValidationResult>>> checkPriceDiver
             object::pair{std::string("divergencePercent"), std::string("divergencePercent")}
         };
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->warn(std::string("Price validation failed:"), error);
         return object{
@@ -62,7 +62,7 @@ std::shared_ptr<Promise<std::shared_ptr<PriceValidationResult>>> checkPriceDiver
 };
 
 
-Record<string, string> COINGECKO_CHAIN_MAP = object{
+Record<std::string, string> COINGECKO_CHAIN_MAP = object{
     object::pair{std::string("base"), std::string("base")}, 
     object::pair{std::string("solana"), std::string("solana")}, 
     object::pair{std::string("bsc"), std::string("binance-smart-chain")}, 

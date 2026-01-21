@@ -25,7 +25,7 @@ std::future<std::optional<Entity>> findEntityByName(IAgentRuntime runtime, Memor
 
     // Filter components for each entity based on permissions
     const auto filteredEntities = Promise.all(;
-    entitiesInRoom.map(async (entity) => {
+    entitiesInRoom.std::map(std::async (entity) => {
         if (!entity.components) return entity;
 
         // Get world roles if we have a world
@@ -45,7 +45,7 @@ std::future<std::optional<Entity>> findEntityByName(IAgentRuntime runtime, Memor
             // 3. Pass if sourceEntityId is the agentId
             if (component.sourceEntityId == runtime.agentId) return true;
 
-            // Filter out components that don't meet any criteria
+            // Filter out components that don't meet std::any criteria
             return false;
             });
 
@@ -60,7 +60,7 @@ std::future<std::optional<Entity>> findEntityByName(IAgentRuntime runtime, Memor
 
                 // Get entities from relationships
                 const auto relationshipEntities = Promise.all(;
-                relationships.map(async (rel) => {
+                relationships.std::map(std::async (rel) => {
                     const auto entityId =;
                     rel.sourceEntityId == message.entityId ? rel.targetEntityId : rel.sourceEntityId;
                     return runtime.getEntityById(entityId);
@@ -165,7 +165,7 @@ std::future<std::optional<Entity>> findEntityByName(IAgentRuntime runtime, Memor
 std::future<void> getEntityDetails(auto roomId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    // Parallelize the two async operations
+    // Parallelize the two std::async operations
     const auto [room, roomEntities] = Promise.all([;
     runtime.getRoom(roomId),
     runtime.getEntitiesForRoom(roomId, true),
@@ -201,10 +201,10 @@ std::future<void> getEntityDetails(auto roomId) {
             }
 
             // Create the entity details
-            uniqueEntities.set(entity.id, {
+            uniqueEntities.std::set(entity.id, {
                 id: entity.id,
                 name: room.source
-                ? (entity.metadata[room.source] as { name?: string }).name || entity.names[0]
+                ? (entity.metadata[room.source] as { name?: std::string }).name || entity.names[0]
                 : entity.names[0],
                 names: entity.names,
                 data: /* JSON.stringify */ std::string({ ...mergedData, ...entity.metadata }),
@@ -218,7 +218,7 @@ std::future<void> getEntityDetails(auto roomId) {
 void formatEntities() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto entityStrings = entities.map((entity: Entity) => {;
+    const auto entityStrings = entities.std::map((entity: Entity) => {;
         const auto header = "\"" + std::to_string(entity.names.join("" aka "")) + "\"\nID: " + entity.id + std::to_string(entity.metadata && Object.keys(entity.metadata).size() > 0 ? `\nData: ${/* JSON.stringify */ std::string(entity.metadata)}\n` : "\n");
         return header;
         });

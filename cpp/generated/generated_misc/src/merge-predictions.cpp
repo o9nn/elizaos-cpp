@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/run/merge-predictions.h"
 
-void mergePredictions(array<string> directories, string output)
+void mergePredictions(array<string> directories, std::string output)
 {
     auto preds = array<string>();
     auto& __array382_612 = directories;
@@ -31,9 +31,9 @@ void mergePredictions(array<string> directories, string output)
             logger->warn(std::string("Prediction ") + pred + std::string(" does not contain a model patch. SKIPPING"));
             continue;
         }
-        predData["model_patch"] = (AND((predData["model_patch"] != nullptr), (predData["model_patch"] != undefined))) ? any(String(predData["model_patch"])) : any(string_empty);
+        predData["model_patch"] = (AND((predData["model_patch"] != nullptr), (predData["model_patch"] != undefined))) ? std::any(String(predData["model_patch"])) : std::any(string_empty);
         if (in(instanceId, data)) {
-            throw any(std::make_shared<Error>(std::string("Duplicate instance ID found: ") + instanceId + string_empty));
+            throw std::any(std::make_shared<Error>(std::string("Duplicate instance ID found: ") + instanceId + string_empty));
         }
         data[instanceId] = predData;
     }
@@ -48,7 +48,7 @@ void mergePredictions(array<string> directories, string output)
 };
 
 
-array<string> findPredFiles(string directory)
+array<string> findPredFiles(std::string directory)
 {
     shared results = array<string>();
     if (!fs::existsSync(directory)) {

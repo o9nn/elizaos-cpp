@@ -23,10 +23,10 @@ struct MessageServiceMessage {
     UUID channelId;
     UUID serverId;
     UUID; // UUID of a central user identity authorId;
-    std::optional<string; // Display name from central user identity> authorDisplayName;
+    std::optional<std::string; // Display name from central user identity> authorDisplayName;
     std::string content;
     std::optional<unknown> rawMessage;
-    std::optional<string; // original platform message ID> sourceId;
+    std::optional<std::string; // original platform message ID> sourceId;
     std::optional<std::string> sourceType;
     std::optional<UUID> inReplyToMessageId;
     double createdAt;
@@ -38,7 +38,7 @@ class MessageBusService extends Service {
   // serviceName will be automatically derived as "MessageBus" from class name
 
   capabilityDescription = 'Manages connection and message synchronization with the message server.';
-  private static instances: Map<string, MessageBusService> = new Map();
+  private static instances: Map<std::string, MessageBusService> = new Map();
 
   private boundHandleIncomingMessage: (data: unknown) => void;
   private boundHandleServerAgentUpdate: (data: unknown) => void;
@@ -58,7 +58,7 @@ class MessageBusService extends Service {
 
     // Check if instance already exists for this agent
 
-    // Remove any existing listeners before adding new ones
+    // Remove std::any existing listeners before adding new ones
 
     // Now add the listeners
 
@@ -74,13 +74,13 @@ class MessageBusService extends Service {
 
       // Fetch channels for each subscribed server
           // Use URL constructor for safe URL building
-              // Add channel IDs to the set
+              // Add channel IDs to the std::set
 
-      // First check if channel is in our cached set
+      // First check if channel is in our cached std::set
         // Try to verify the channel exists by fetching its details
         // Use URL constructor for safe URL building
 
-          // Channel exists, add it to our valid set for future use
+          // Channel exists, add it to our valid std::set for std::future use
 
       // Now fetch the participants
       // Use URL constructor for safe URL building
@@ -157,7 +157,7 @@ class MessageBusService extends Service {
 
       // Validate port range
 
-      // Remove any potentially dangerous URL components
+      // Remove std::any potentially dangerous URL components
 
     // Clear processed messages
 

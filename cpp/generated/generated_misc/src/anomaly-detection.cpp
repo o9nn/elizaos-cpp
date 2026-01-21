@@ -74,7 +74,7 @@ std::shared_ptr<Promise<array<double>>> AnomalyDetector::detectWithAutoencoder(a
 std::shared_ptr<Promise<array<double>>> AnomalyDetector::detectWithIsolationForest(array<array<double>> data)
 {
     this->isolationForest->fit(data);
-    return data->map([=](auto point) mutable
+    return data->std::map([=](auto point) mutable
     {
         return const_(this->isolationForest->predict(array<array<double>>{ point }))[0];
     }
@@ -85,7 +85,7 @@ array<double> AnomalyDetector::detectWithDBSCAN(array<array<double>> data)
 {
     auto clusters = this->dbscan->run(data, 0.5, 3);
     shared outliers = std::make_shared<Set>(this->dbscan->noise);
-    return data->map([=](auto _, auto index) mutable
+    return data->std::map([=](auto _, auto index) mutable
     {
         return (outliers->has(index)) ? 1 : 0;
     }
@@ -94,14 +94,14 @@ array<double> AnomalyDetector::detectWithDBSCAN(array<array<double>> data)
 
 array<std::shared_ptr<AnomalyResult>> AnomalyDetector::ensembleResults(array<array<double>> results)
 {
-    return const_(results)[0]->map([=](auto _, auto i) mutable
+    return const_(results)[0]->std::map([=](auto _, auto i) mutable
     {
         auto score = (const_(const_(results)[0])[i] + const_(const_(results)[1])[i] + const_(const_(results)[2])[i]) / 3;
         return object{
             object::pair{std::string("index"), i}, 
             object::pair{std::string("score"), std::string("score")}, 
             object::pair{std::string("isAnomaly"), score > this->threshold}, 
-            object::pair{std::string("confidence"), this->calculateConfidence(results->map([=](auto r) mutable
+            object::pair{std::string("confidence"), this->calculateConfidence(results->std::map([=](auto r) mutable
             {
                 return const_(r)[i];
             }

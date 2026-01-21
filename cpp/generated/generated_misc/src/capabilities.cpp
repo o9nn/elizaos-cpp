@@ -35,7 +35,7 @@ std::shared_ptr<Provider> capabilitiesProvider = object{
 ") + formattedCapabilities + string_empty}
             };
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("Error in capabilities provider:"), error);
             return object{

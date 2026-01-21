@@ -18,9 +18,9 @@ namespace elizaos {
 
 
 /**
- * Asynchronous function that runs the copy-client-dist script.
+ * Asynchronous std::function that runs the copy-client-dist script.
  * It first logs a message indicating that the script is running,
- * then awaits the completion of the copyClientDist function,
+ * then awaits the completion of the copyClientDist std::function,
  * and finally logs a message indicating that the script has been completed.
  */
 std::future<void> main();

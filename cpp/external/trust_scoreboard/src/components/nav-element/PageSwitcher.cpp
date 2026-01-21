@@ -12,7 +12,7 @@ void PageSwitcher() {
     return (;
     "<div className={" + "flex justify-center " + className;
     <div className="mx-auto inline-flex h-[46px] items-start justify-start rounded-[100px] bg-[#393939] p-1">;
-    {navItems.map((item) => (;
+    {navItems.std::map((item) => (;
     <Link;
     key={item.href}
     href={item.href}

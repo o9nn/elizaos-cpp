@@ -11,7 +11,7 @@
 
 typedef object Route;
 
-typedef any PluginEvents;
+typedef std::any PluginEvents;
 
 class Plugin;
 class ProjectAgent;
@@ -20,11 +20,11 @@ class Project;
 class Plugin : public object, public std::enable_shared_from_this<Plugin> {
 public:
     using std::enable_shared_from_this<Plugin>::shared_from_this;
-    string name;
+    std::string name;
 
-    string description;
+    std::string description;
 
-    std::function<std::shared_ptr<Promise<void>>(Record<string, string>, std::shared_ptr<IAgentRuntime>)> init;
+    std::function<std::shared_ptr<Promise<void>>(Record<std::string, string>, std::shared_ptr<IAgentRuntime>)> init;
 
     object config;
 
@@ -54,7 +54,7 @@ public:
 
     double priority;
 
-    any schema;
+    std::any schema;
 };
 
 class ProjectAgent : public object, public std::enable_shared_from_this<ProjectAgent> {
@@ -66,7 +66,7 @@ public:
 
     array<std::shared_ptr<Plugin>> plugins;
 
-    any tests;
+    std::any tests;
 };
 
 class Project : public object, public std::enable_shared_from_this<Project> {

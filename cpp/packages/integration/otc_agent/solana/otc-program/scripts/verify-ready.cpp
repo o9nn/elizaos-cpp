@@ -39,7 +39,7 @@ std::future<void> verify() {
 
     std::cout << "✅ Approvers:" << std::endl;
     std::cout << "   Count: " + data.approvers.size() << std::endl;
-    std::cout << "   List: " + std::to_string(data.approvers.map((a: PublicKey) => std::to_string(a).slice(0, 8)).join(", ")) + "\n" << std::endl;
+    std::cout << "   List: " + std::to_string(data.approvers.std::map((a: PublicKey) => std::to_string(a).slice(0, 8)).join(", ")) + "\n" << std::endl;
 
     std::cout << "✅ Configuration:" << std::endl;
     std::cout << "   Paused: " + std::to_string(data.paused ? "YES ❌" : "NO ✅") << std::endl;

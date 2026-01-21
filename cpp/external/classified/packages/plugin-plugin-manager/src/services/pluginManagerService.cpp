@@ -25,7 +25,7 @@ std::future<std::unordered_map<std::string, RegistryEntry>> getLocalRegistryInde
             throw std::runtime_error(`Registry fetch failed: ${response.statusText}`);
         }
 
-        const auto data = (response.json())<string, RegistryEntry>;
+        const auto data = (response.json())<std::string, RegistryEntry>;
 
         // Cache the result
         registryCache = {

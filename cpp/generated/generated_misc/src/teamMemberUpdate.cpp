@@ -19,11 +19,11 @@ std::shared_ptr<Promise<boolean>> postUpdateToDiscordChannel(std::shared_ptr<IAg
         }); });
         logger->info(std::string("Retrieved report channel configs:"), object{
             object::pair{std::string("count"), memories->length}, 
-            object::pair{std::string("configs"), memories->map([=](auto m) mutable
+            object::pair{std::string("configs"), memories->std::map([=](auto m) mutable
             {
                 return (object{
                     object::pair{std::string("type"), m["content"]->type}, 
-                    object::pair{std::string("channelId"), (m["content"]->config) ? any((as<std::shared_ptr<ReportChannelConfig>>(m["content"]->config))->channelId) : any(undefined)}
+                    object::pair{std::string("channelId"), (m["content"]->config) ? std::any((as<std::shared_ptr<ReportChannelConfig>>(m["content"]->config))->channelId) : std::any(undefined)}
                 });
             }
             )}
@@ -46,12 +46,12 @@ std::shared_ptr<Promise<boolean>> postUpdateToDiscordChannel(std::shared_ptr<IAg
         }
         shared config = memories->find([=](auto memory) mutable
         {
-            auto serverMatch = (targetGuild) ? any(targetGuild["id"]) : any(undefined);
+            auto serverMatch = (targetGuild) ? std::any(targetGuild["id"]) : std::any(undefined);
             auto configData = as<any>(memory["content"]["config"]);
             logger->info(std::string("Checking config:"), object{
                 object::pair{std::string("configType"), memory["content"]["type"]}, 
                 object::pair{std::string("configServerId"), configData->serverId}, 
-                object::pair{std::string("targetGuildId"), (targetGuild) ? any(targetGuild["id"]) : any(undefined)}, 
+                object::pair{std::string("targetGuildId"), (targetGuild) ? std::any(targetGuild["id"]) : std::any(undefined)}, 
                 object::pair{std::string("matches"), serverMatch}
             });
             return AND((memory["content"]["type"] == std::string("report-channel-config")), (serverMatch));
@@ -97,7 +97,7 @@ std::shared_ptr<Promise<boolean>> postUpdateToDiscordChannel(std::shared_ptr<IAg
                 }
             }
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("Error parsing answers JSON:"), error);
             updateMessage += std::string("\
@@ -129,7 +129,7 @@ std::shared_ptr<Promise<boolean>> postUpdateToDiscordChannel(std::shared_ptr<IAg
         logger->info(std::string("=== POST TEAM MEMBER UPDATE TO DISCORD END ==="));
         return true;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         auto err = as<std::shared_ptr<Error>>(error);
         logger->error(std::string("=== POST TEAM MEMBER UPDATE TO DISCORD ERROR ==="));
@@ -179,7 +179,7 @@ std::shared_ptr<Promise<boolean>> storeTeamMemberUpdate(std::shared_ptr<IAgentRu
         logger->info(std::string("=== STORE TEAM MEMBER UPDATE END ==="));
         return true;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         auto err = as<std::shared_ptr<Error>>(error);
         logger->error(std::string("=== STORE TEAM MEMBER UPDATE ERROR ==="));
@@ -220,7 +220,7 @@ std::shared_ptr<Promise<any>> parseTeamMemberUpdate(std::shared_ptr<IAgentRuntim
       }\
     }\
 \
-    For the "answers" field, extract any key-value pairs that look like questions and answers in the text.\
+    For the "answers" field, extract std::any key-value pairs that look like questions and answers in the text.\
     Include ALL information from the update in the answers object.\
 \
     Text to parse: "") + text + std::string(""");
@@ -231,29 +231,29 @@ std::shared_ptr<Promise<any>> parseTeamMemberUpdate(std::shared_ptr<IAgentRuntim
             object::pair{std::string("stopSequences"), array<any>()}
         }); });
         logger->info(std::string("Raw AI response:"), parsedResponse);
-        any parsedData;
+        std::any parsedData;
         try
         {
             auto cleanedResponse = parsedResponse->replace((new RegExp(std::string("```json\n?|\n?```"))), string_empty)->trim();
             parsedData = JSON->parse(cleanedResponse);
             logger->info(std::string("Successfully parsed fields from AI response:"), parsedData);
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("Failed to parse AI response as JSON:"), error);
             logger->error(std::string("Raw response that failed parsing:"), parsedResponse);
-            throw any(std::make_shared<Error>(std::string("PARSING_ERROR: AI response was not valid JSON")));
+            throw std::any(std::make_shared<Error>(std::string("PARSING_ERROR: AI response was not valid JSON")));
         }
         if (OR((!parsedData["serverName"]), (!parsedData["checkInType"]))) {
             logger->warn(std::string("Missing required basic fields:"), object{
                 object::pair{std::string("hasServerName"), !!parsedData["serverName"]}, 
                 object::pair{std::string("hasCheckInType"), !!parsedData["checkInType"]}
             });
-            throw any(std::make_shared<Error>(std::string("MISSING_FIELDS:serverName,checkInType")));
+            throw std::any(std::make_shared<Error>(std::string("MISSING_FIELDS:serverName,checkInType")));
         }
         if (OR((!parsedData["answers"]), (Object->keys(parsedData["answers"])->get_length() == 0))) {
             logger->warn(std::string("No answers were parsed from the update"));
-            throw any(std::make_shared<Error>(std::string("MISSING_FIELDS:answers")));
+            throw std::any(std::make_shared<Error>(std::string("MISSING_FIELDS:answers")));
         }
         auto entityById = std::async([=]() { runtime->getEntityById(message->entityId); });
         auto userName = OR((entityById->metadata->discord->userName), (entityById->metadata->telegram->name));
@@ -272,7 +272,7 @@ std::shared_ptr<Promise<any>> parseTeamMemberUpdate(std::shared_ptr<IAgentRuntim
         logger->info(std::string("=== PARSE TEAM MEMBER UPDATE END ==="));
         return update;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         auto err = as<std::shared_ptr<Error>>(error);
         logger->error(std::string("=== PARSE TEAM MEMBER UPDATE ERROR ==="));
@@ -281,7 +281,7 @@ std::shared_ptr<Promise<any>> parseTeamMemberUpdate(std::shared_ptr<IAgentRuntim
             object::pair{std::string("message"), OR((err->message), (std::string("No message")))}, 
             object::pair{std::string("stack"), OR((err->stack), (std::string("No stack trace")))}
         });
-        throw any(error);
+        throw std::any(error);
     }
 };
 
@@ -319,7 +319,7 @@ std::shared_ptr<Action> teamMemberUpdatesAction = object{
                 object::pair{std::string("fullMessage"), JSON->stringify(message)}
             });
             if (!callback) {
-                logger->warn(std::string("No callback function provided"));
+                logger->warn(std::string("No callback std::function provided"));
                 return false;
             }
             try
@@ -332,7 +332,7 @@ Server-name: [server name]\
 Check-in Type: [daily/weekly/sprint]\
 Current Progress: [what you've completed]\
 Next Steps: [upcoming tasks]\
-Blockers: [any blockers or "none"]\
+Blockers: [std::any blockers or "none"]\
 \
 End your message with "sending my updates"");
                     std::async([=]() { callback(object{
@@ -366,7 +366,7 @@ End your message with "sending my updates"");
                 logger->info(std::string("=== RECORD TEAM MEMBER UPDATES HANDLER END ==="));
                 return true;
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 auto err = as<std::shared_ptr<Error>>(error);
                 if (AND((err->message), (err->message->startsWith(std::string("MISSING_FIELDS:"))))) {
@@ -395,7 +395,7 @@ Remember to end your message with "sending my updates"")},
                 return false;
             }
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             auto err = as<std::shared_ptr<Error>>(error);
             logger->error(std::string("=== RECORD TEAM MEMBER UPDATES HANDLER ERROR ==="));

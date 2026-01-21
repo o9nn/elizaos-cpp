@@ -11,7 +11,7 @@ extern double SESSION_TTL;
 class SessionData : public object, public std::enable_shared_from_this<SessionData> {
 public:
     using std::enable_shared_from_this<SessionData>::shared_from_this;
-    string publicKey;
+    std::string publicKey;
 
     array<string> privileges;
 
@@ -20,8 +20,8 @@ public:
 
 std::shared_ptr<Promise<string>> createSession(std::shared_ptr<SessionData> data);
 
-std::shared_ptr<Promise<any>> getSession(string sid);
+std::shared_ptr<Promise<any>> getSession(std::string sid);
 
-void destroySession(string sid);
+void destroySession(std::string sid);
 
 #endif

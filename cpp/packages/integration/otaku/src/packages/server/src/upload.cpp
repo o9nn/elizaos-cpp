@@ -52,7 +52,7 @@ bool validateMediaFile(Express.Multer.File file) {
 
 std::future<> processUploadedFile(Express.Multer.File file, const std::string& targetId, const std::string& type) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    filename: string; path: string; url: string
+    filename: std::string; path: std::string; url: std::string
 }
 
 } // namespace elizaos

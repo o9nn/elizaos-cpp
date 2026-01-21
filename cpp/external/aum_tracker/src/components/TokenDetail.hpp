@@ -30,9 +30,9 @@ struct TokenDetailProps {
       // Update holders table
       void updateHoldersTable(auto holders);
       
-      // Copy token mint function
+      // Copy token mint std::function
 
-      // Copy address function
+      // Copy address std::function
       
       // Initialize on load
 } // namespace elizaos

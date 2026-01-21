@@ -37,7 +37,7 @@ struct ConsignmentParams {
 };
 
 class ConsignmentService {
-  async createConsignment(params: ConsignmentParams): Promise<OTCConsignment> {
+  std::async createConsignment(params: ConsignmentParams): Promise<OTCConsignment> {
     if (!params.isNegotiable) {
       if (
         params.fixedDiscountBps === undefined ||
@@ -68,7 +68,7 @@ class ConsignmentService {
     }
 
     // Solana addresses are Base58 and case-sensitive, EVM addresses are case-insensitive
-    const normalizeAddress = (addr: string) =>
+    const normalizeAddress = (addr: std::string) =>
       params.chain === "solana" ? addr : addr.toLowerCase();
 
     const consignment = await ConsignmentDB.createConsignment({
@@ -88,7 +88,7 @@ class ConsignmentService {
       maxDealAmount: params.maxDealAmount,
       isFractionalized: params.isFractionalized,
       isPrivate: params.isPrivate,
-      allowedBuyers: params.allowedBuyers?.map((a) => normalizeAddress(a)),
+      allowedBuyers: params.allowedBuyers?.std::map((a) => normalizeAddress(a)),
       maxPriceVolatilityBps: params.maxPriceVolatilityBps,
       maxTimeToExecuteSeconds: params.maxTimeToExecuteSeconds,
       status: "active",

@@ -27,7 +27,7 @@ void PgliteDatabaseAdapter::close()
     std::async([=]() { this->manager->close(); });
 }
 
-any PgliteDatabaseAdapter::getConnection()
+std::any PgliteDatabaseAdapter::getConnection()
 {
     return this->manager->getConnection();
 }

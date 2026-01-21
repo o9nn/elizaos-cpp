@@ -278,7 +278,7 @@ bool GoalManager::removeGoal(const UUID& goalId) {
     }
 
     // Remove from other goals' dependencies
-    for (auto& pair : goals_) {
+    for (auto& std::pair : goals_) {
         pair.second->removeDependency(goalId);
     }
 
@@ -306,7 +306,7 @@ std::vector<std::shared_ptr<Goal>> GoalManager::getAllGoals() const {
 
     std::vector<std::shared_ptr<Goal>> result;
     result.reserve(goals_.size());
-    for (const auto& pair : goals_) {
+    for (const auto& std::pair : goals_) {
         result.push_back(pair.second);
     }
     return result;
@@ -316,7 +316,7 @@ std::vector<std::shared_ptr<Goal>> GoalManager::getGoalsByStatus(GoalStatus stat
     std::lock_guard<std::mutex> lock(mutex_);
 
     std::vector<std::shared_ptr<Goal>> result;
-    for (const auto& pair : goals_) {
+    for (const auto& std::pair : goals_) {
         if (pair.second->getStatus() == status) {
             result.push_back(pair.second);
         }
@@ -328,7 +328,7 @@ std::vector<std::shared_ptr<Goal>> GoalManager::getGoalsByPriority(GoalPriority 
     std::lock_guard<std::mutex> lock(mutex_);
 
     std::vector<std::shared_ptr<Goal>> result;
-    for (const auto& pair : goals_) {
+    for (const auto& std::pair : goals_) {
         if (pair.second->getPriority() == priority) {
             result.push_back(pair.second);
         }
@@ -340,7 +340,7 @@ std::vector<std::shared_ptr<Goal>> GoalManager::getGoalsByType(GoalType type) co
     std::lock_guard<std::mutex> lock(mutex_);
 
     std::vector<std::shared_ptr<Goal>> result;
-    for (const auto& pair : goals_) {
+    for (const auto& std::pair : goals_) {
         if (pair.second->getType() == type) {
             result.push_back(pair.second);
         }
@@ -352,7 +352,7 @@ std::vector<std::shared_ptr<Goal>> GoalManager::getGoalsByTag(const std::string&
     std::lock_guard<std::mutex> lock(mutex_);
 
     std::vector<std::shared_ptr<Goal>> result;
-    for (const auto& pair : goals_) {
+    for (const auto& std::pair : goals_) {
         if (pair.second->hasTag(tag)) {
             result.push_back(pair.second);
         }
@@ -364,7 +364,7 @@ std::vector<std::shared_ptr<Goal>> GoalManager::getActiveGoals() const {
     std::lock_guard<std::mutex> lock(mutex_);
 
     std::vector<std::shared_ptr<Goal>> result;
-    for (const auto& pair : goals_) {
+    for (const auto& std::pair : goals_) {
         if (pair.second->isActive()) {
             result.push_back(pair.second);
         }
@@ -380,7 +380,7 @@ std::vector<std::shared_ptr<Goal>> GoalManager::getOverdueGoals() const {
     std::lock_guard<std::mutex> lock(mutex_);
 
     std::vector<std::shared_ptr<Goal>> result;
-    for (const auto& pair : goals_) {
+    for (const auto& std::pair : goals_) {
         if (pair.second->isOverdue() && !pair.second->isCompleted()) {
             result.push_back(pair.second);
         }
@@ -401,7 +401,7 @@ std::vector<std::shared_ptr<Goal>> GoalManager::getTopGoals(size_t count) const 
 
     // Get all eligible goals (pending or in progress, not blocked)
     std::vector<std::shared_ptr<Goal>> eligible;
-    for (const auto& pair : goals_) {
+    for (const auto& std::pair : goals_) {
         auto status = pair.second->getStatus();
         if (status == GoalStatus::PENDING || status == GoalStatus::ACTIVE ||
             status == GoalStatus::IN_PROGRESS) {
@@ -506,7 +506,7 @@ std::vector<UUID> GoalManager::getUnmetDependencies(const UUID& goalId) const {
 void GoalManager::updateBlockedGoals() {
     std::lock_guard<std::mutex> lock(mutex_);
 
-    for (auto& pair : goals_) {
+    for (auto& std::pair : goals_) {
         auto& goal = pair.second;
         if (goal->getStatus() == GoalStatus::BLOCKED) {
             // Check if dependencies are now met
@@ -615,7 +615,7 @@ bool GoalManager::completeGoal(const UUID& goalId) {
     notifyCompleted(it->second);
 
     // Update blocked goals
-    for (auto& pair : goals_) {
+    for (auto& std::pair : goals_) {
         if (pair.second->getStatus() == GoalStatus::BLOCKED) {
             const auto& deps = pair.second->getDependencies();
             if (deps.find(goalId) != deps.end()) {
@@ -736,7 +736,7 @@ size_t GoalManager::getActiveGoalCount() const {
     std::lock_guard<std::mutex> lock(mutex_);
 
     size_t count = 0;
-    for (const auto& pair : goals_) {
+    for (const auto& std::pair : goals_) {
         if (pair.second->isActive()) {
             ++count;
         }
@@ -748,7 +748,7 @@ size_t GoalManager::getCompletedGoalCount() const {
     std::lock_guard<std::mutex> lock(mutex_);
 
     size_t count = 0;
-    for (const auto& pair : goals_) {
+    for (const auto& std::pair : goals_) {
         if (pair.second->isCompleted()) {
             ++count;
         }
@@ -764,7 +764,7 @@ double GoalManager::getOverallProgress() const {
     }
 
     double total = 0.0;
-    for (const auto& pair : goals_) {
+    for (const auto& std::pair : goals_) {
         total += pair.second->getProgress();
     }
     return total / goals_.size();
@@ -774,7 +774,7 @@ std::unordered_map<GoalStatus, size_t> GoalManager::getGoalCountByStatus() const
     std::lock_guard<std::mutex> lock(mutex_);
 
     std::unordered_map<GoalStatus, size_t> counts;
-    for (const auto& pair : goals_) {
+    for (const auto& std::pair : goals_) {
         counts[pair.second->getStatus()]++;
     }
     return counts;
@@ -786,7 +786,7 @@ std::string GoalManager::serialize() const {
     std::ostringstream oss;
     oss << "GOALS:" << goals_.size() << "\n";
 
-    for (const auto& pair : goals_) {
+    for (const auto& std::pair : goals_) {
         const auto& g = pair.second;
         oss << "GOAL|" << g->getId() << "|" << g->getName() << "|"
             << goalStatusToString(g->getStatus()) << "|"

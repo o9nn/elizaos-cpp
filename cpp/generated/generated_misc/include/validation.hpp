@@ -4,7 +4,7 @@
 #include "zod.h"
 #include "./types.h"
 
-extern any GetPriceSchema;
-any isGetPriceContent(std::shared_ptr<GetPriceContent> content);
+extern std::any GetPriceSchema;
+std::any isGetPriceContent(std::shared_ptr<GetPriceContent> content);
 
 #endif

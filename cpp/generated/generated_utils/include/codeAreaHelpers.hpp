@@ -2,20 +2,20 @@
 #define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAOS_GITHUB_IO_SRC_LIB_PIPELINES_CODEAREAHELPERS_H
 #include "core.h"
 
-typedef any WorkItemType;
+typedef std::any WorkItemType;
 
 
 template <typename RET>
-RET categorizeWorkItem(string text);
+RET categorizeWorkItem(std::string text);
 
-any extractAreaFromPath(string path);
+std::any extractAreaFromPath(std::string path);
 
-boolean isRootConfigFile(string path);
+boolean isRootConfigFile(std::string path);
 
-std::shared_ptr<Map<string, double>> buildAreaMap(array<object> files);
+std::shared_ptr<Map<std::string, double>> buildAreaMap(array<object> files);
 
 template <typename RET>
-RET categorizeWorkItem(string text)
+RET categorizeWorkItem(std::string text)
 {
     auto lowercaseText = text->toLowerCase();
     if (OR((OR((lowercaseText->startsWith(std::string("feat"))), (lowercaseText->includes(std::string("feature"))))), (lowercaseText->includes(std::string("add "))))) {

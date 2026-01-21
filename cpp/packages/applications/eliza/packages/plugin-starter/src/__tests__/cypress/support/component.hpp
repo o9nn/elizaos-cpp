@@ -30,7 +30,7 @@ namespace elizaos {
     struct Chainable {
 };
 
-// Import React mount function
+// Import React mount std::function
 
 // Make mount available globally
 

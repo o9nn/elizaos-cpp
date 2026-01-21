@@ -25,7 +25,7 @@ std::future<void> sendCheckInReportForm(HandlerCallback callback, std::optional<
 
             // Prepare channel options for dropdown if channels are provided
             const auto channelOptions =;
-            channels.map((channel) => ({
+            channels.std::map((channel) => ({
                 label: channel.name,
                 value: channel.id,
                 "description: " + "Text channel: #" + channel.name

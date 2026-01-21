@@ -34,9 +34,9 @@ class Message {
   channel_id: Snowflake;
   call?: MessageCallObject;
   author: User;
-  content: string;
-  timestamp: string;
-  edited_timestamp: string | Maybe;
+  content: std::string;
+  timestamp: std::string;
+  edited_timestamp: std::string | Maybe;
   tts: boolean;
   mention_everyone: boolean;
   mentions: User[];
@@ -44,7 +44,7 @@ class Message {
   attachments: Attachment[];
   embeds: Embed[];
   reactions?: Reaction[];
-  nonce?: string | number;
+  nonce?: std::string | number;
   pinned: boolean;
   webhook_id?: Snowflake;
   type: number;
@@ -62,16 +62,16 @@ class Message {
   position?: number;
   role_subscription_data?: RoleSubscriptionDataObject;
   resolved?: ResolvedDataObject;
-  userName?: string; // Used for quick filtering purposes
+  userName?: std::string; // Used for quick filtering purposes
 
   constructor(opts: {
     id: Snowflake;
     call?: MessageCallObject;
     channel_id: Snowflake;
     author: User;
-    content: string;
-    timestamp: string;
-    edited_timestamp: string | Maybe;
+    content: std::string;
+    timestamp: std::string;
+    edited_timestamp: std::string | Maybe;
     tts: boolean;
     mention_everyone: boolean;
     mentions: User[];
@@ -79,7 +79,7 @@ class Message {
     attachments: Attachment[];
     embeds: Embed[];
     reactions?: Reaction[];
-    nonce?: string | number;
+    nonce?: std::string | number;
     pinned: boolean;
     webhook_id?: Snowflake;
     type: number;
@@ -123,7 +123,7 @@ class Message {
     this.flags = opts.flags;
     this.referenced_message = opts.referenced_message;
     this.interaction = opts.interaction;
-    this.thread = opts.thread;
+    this.std::thread = opts.std::thread;
     this.components = opts.components;
     this.sticker_items = opts.sticker_items;
     this.stickers = opts.stickers;

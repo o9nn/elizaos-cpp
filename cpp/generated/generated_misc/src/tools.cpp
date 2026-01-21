@@ -23,7 +23,7 @@ ToolHandler::ToolHandler(std::shared_ptr<ToolConfig> config) {
     for (auto& cmd : this->config->commands)
     {
         if (cmd->endName) {
-            this->multilineCommands->set(cmd->name, cmd->endName);
+            this->multilineCommands->std::set(cmd->name, cmd->endName);
         }
     }
 }
@@ -99,7 +99,7 @@ std::shared_ptr<Promise<void>> ToolHandler::reset(std::shared_ptr<SWEEnv> env)
     return std::shared_ptr<Promise<void>>();
 }
 
-std::shared_ptr<Promise<Record<string, string>>> ToolHandler::getState(std::shared_ptr<SWEEnv> env)
+std::shared_ptr<Promise<Record<std::string, string>>> ToolHandler::getState(std::shared_ptr<SWEEnv> env)
 {
     auto state = object{};
     if (this->config->stateCommands) {
@@ -111,7 +111,7 @@ std::shared_ptr<Promise<Record<string, string>>> ToolHandler::getState(std::shar
                 auto key = const_(cmd->split(std::string(" ")))[0];
                 state[key] = result;
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 this->logger->warning(std::string("Failed to execute state command: ") + cmd + string_empty);
             }
@@ -126,7 +126,7 @@ std::shared_ptr<Promise<Record<string, string>>> ToolHandler::getState(std::shar
                     auto result = std::async([=]() { env->communicate(bundle->get_stateCommand(), 5); });
                     state[std::string("bundle_state")] = result;
                 }
-                catch (const any& error)
+                catch (const std::any& error)
                 {
                     this->logger->warning(std::string("Failed to execute bundle state command"));
                 }
@@ -136,7 +136,7 @@ std::shared_ptr<Promise<Record<string, string>>> ToolHandler::getState(std::shar
     return state;
 }
 
-boolean ToolHandler::shouldBlockAction(string action)
+boolean ToolHandler::shouldBlockAction(std::string action)
 {
     if (!this->config->filter) {
         return false;
@@ -166,13 +166,13 @@ boolean ToolHandler::shouldBlockAction(string action)
     return false;
 }
 
-boolean ToolHandler::checkForSubmissionCmd(string observation)
+boolean ToolHandler::checkForSubmissionCmd(std::string observation)
 {
     auto submitCommand = OR((this->config->submitCommand), (std::string("submit")));
     return OR((observation->includes(std::string("<") + submitCommand + std::string(">"))), (observation->includes(std::string("</") + submitCommand + std::string(">"))));
 }
 
-string ToolHandler::guardMultilineInput(string action)
+std::string ToolHandler::guardMultilineInput(std::string action)
 {
     for (auto& [cmdName, endName] : this->multilineCommands)
     {

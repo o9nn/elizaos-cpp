@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizaos.github.io/src/lib/pipelines/pipelineConfig.h"
 
-any ScoringConfigSchema = z->object(object{
+std::any ScoringConfigSchema = z->object(object{
     object::pair{std::string("pullRequest"), z->object(object{
         object::pair{std::string("base"), z->number()->default(7)}, 
         object::pair{std::string("merged"), z->number()->default(3)}, 
@@ -16,7 +16,7 @@ any ScoringConfigSchema = z->object(object{
     object::pair{std::string("issue"), z->object(object{
         object::pair{std::string("base"), z->number()->default(5)}, 
         object::pair{std::string("perComment"), z->number()->default(0.5)}, 
-        object::pair{std::string("withLabelsMultiplier"), z->record(z->string(), z->number())->default(object{
+        object::pair{std::string("withLabelsMultiplier"), z->record(z->std::string(), z->number())->default(object{
             object::pair{std::string("bug"), 1.5}, 
             object::pair{std::string("enhancement"), 1.2}, 
             object::pair{std::string("documentation"), 1}
@@ -42,7 +42,7 @@ any ScoringConfigSchema = z->object(object{
     object::pair{std::string("reaction"), z->object(object{
         object::pair{std::string("base"), z->number()->default(0.2)}, 
         object::pair{std::string("received"), z->number()->default(0.1)}, 
-        object::pair{std::string("types"), z->record(z->string(), z->number())->default(object{
+        object::pair{std::string("types"), z->record(z->std::string(), z->number())->default(object{
             object::pair{std::string("thumbs_up"), 1}, 
             object::pair{std::string("thumbs_down"), 0.5}, 
             object::pair{std::string("laugh"), 1}, 
@@ -63,21 +63,21 @@ any ScoringConfigSchema = z->object(object{
         object::pair{std::string("testCoverageBonus"), z->number()->default(1.5)}
     })}
 });
-any TagTypeSchema = z->enum(array<string>{ std::string("AREA"), std::string("ROLE"), std::string("TECH") });
-any TagConfigSchema = z->object(object{
-    object::pair{std::string("name"), z->string()}, 
+std::any TagTypeSchema = z->enum(array<string>{ std::string("AREA"), std::string("ROLE"), std::string("TECH") });
+std::any TagConfigSchema = z->object(object{
+    object::pair{std::string("name"), z->std::string()}, 
     object::pair{std::string("category"), TagTypeSchema}, 
-    object::pair{std::string("patterns"), z->array(z->string())}, 
+    object::pair{std::string("patterns"), z->array(z->std::string())}, 
     object::pair{std::string("weight"), z->number()->default(1)}, 
-    object::pair{std::string("description"), z->string()->optional()}
+    object::pair{std::string("description"), z->std::string()->std::optional()}
 });
-any RepositoryConfigSchema = z->object(object{
-    object::pair{std::string("owner"), z->string()}, 
-    object::pair{std::string("name"), z->string()}, 
-    object::pair{std::string("defaultBranch"), z->string()->default(std::string("main"))}
+std::any RepositoryConfigSchema = z->object(object{
+    object::pair{std::string("owner"), z->std::string()}, 
+    object::pair{std::string("name"), z->std::string()}, 
+    object::pair{std::string("defaultBranch"), z->std::string()->default(std::string("main"))}
 });
-any PipelineConfigSchema = z->object(object{
-    object::pair{std::string("contributionStartDate"), z->string()->regex((new RegExp(std::string("^\d{4}-\d{2}-\d{2}"))))->optional()}, 
+std::any PipelineConfigSchema = z->object(object{
+    object::pair{std::string("contributionStartDate"), z->std::string()->regex((new RegExp(std::string("^\d{4}-\d{2}-\d{2}"))))->std::optional()}, 
     object::pair{std::string("repositories"), z->array(RepositoryConfigSchema)}, 
     object::pair{std::string("scoring"), ScoringConfigSchema}, 
     object::pair{std::string("tags"), z->object(object{
@@ -85,7 +85,7 @@ any PipelineConfigSchema = z->object(object{
         object::pair{std::string("role"), z->array(TagConfigSchema)}, 
         object::pair{std::string("tech"), z->array(TagConfigSchema)}
     })}, 
-    object::pair{std::string("botUsers"), z->array(z->string())->optional()}, 
+    object::pair{std::string("botUsers"), z->array(z->std::string())->std::optional()}, 
     object::pair{std::string("aiSummary"), AISummaryConfigSchema}, 
     object::pair{std::string("walletAddresses"), z->object(object{
         object::pair{std::string("enabled"), z->boolean()->default(true)}

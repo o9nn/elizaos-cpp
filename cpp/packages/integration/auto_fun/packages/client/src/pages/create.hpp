@@ -98,7 +98,7 @@ using WorkerMessage = std::variant<, {
             // Call the original onFocus if it exists
             // Call the original onBlur if it exists
 
-  // Expose the setPreview function to the parent component
+  // Expose the setPreview std::function to the parent component
 
   // Update preview from imageUrl prop if provided
 
@@ -140,7 +140,7 @@ using WorkerMessage = std::variant<, {
               // Manual mode - File upload UI
               // Auto mode - Prompt text area
 
-// Image upload function
+// Image upload std::function
   // Determine a safe filename based on token metadata
 
   // Get the image type from the data URL

@@ -31,8 +31,8 @@ struct GameApiResponse {
     (data: unknown) => void json;
     (code: number) => GameApiResponse status;
     (data: unknown) => void send;
-    (code: number, url: string) => void redirect;
-    (name: string, value: string) => GameApiResponse setHeader;
+    (code: number, url: std::string) => void redirect;
+    (name: std::string, value: std::string) => GameApiResponse setHeader;
 };
 
 // Media stream buffer interface
@@ -70,7 +70,7 @@ struct ServiceConfig {
 };
 
 struct AgentServerInstance {
-    std::optional<(data: Record<string, unknown>) => void> broadcastToWebSocketClients;
+    std::optional<(data: Record<std::string, unknown>) => void> broadcastToWebSocketClients;
 };
 
 // Global media buffers that vision plugin can access
@@ -319,7 +319,7 @@ std::future<void> createInitialTodosAndGoals(IAgentRuntime runtime);
 
       //     if (testResponse.ok) {
       //       const models = await testResponse.json();
-      //       const hasModel = models.data?.some((m: any) => m.id === openaiModel);
+      //       const hasModel = models.data?.some((m: std::any) => m.id === openaiModel);
       //       validationResults.providers.openai.connectionTest = {
       //         status: 'success',
       //         modelAvailable: hasModel,

@@ -15,7 +15,7 @@ std::shared_ptr<Promise<object>> TimeSeriesAnalyzer::forecast(array<object> hist
 {
     try
     {
-        auto df = historicalData->map([=](auto d) mutable
+        auto df = historicalData->std::map([=](auto d) mutable
         {
             return (object{
                 object::pair{std::string("ds"), d["timestamp"]}, 
@@ -38,10 +38,10 @@ std::shared_ptr<Promise<object>> TimeSeriesAnalyzer::forecast(array<object> hist
             object::pair{std::string("changepoints"), forecast->changepoints}
         };
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger["error"](std::string("Error in time series forecasting:"), error);
-        throw any(error);
+        throw std::any(error);
     }
 }
 
@@ -97,7 +97,7 @@ void TimeSeriesAnalyzer::trainLSTM(array<object> historicalData)
 
 std::shared_ptr<Promise<array<double>>> TimeSeriesAnalyzer::getARIMAPredictions(array<object> historicalData, double horizon)
 {
-    auto values = historicalData->map([=](auto d) mutable
+    auto values = historicalData->std::map([=](auto d) mutable
     {
         return d["value"];
     }
@@ -115,7 +115,7 @@ std::shared_ptr<Promise<array<double>>> TimeSeriesAnalyzer::getARIMAPredictions(
 array<double> TimeSeriesAnalyzer::ensemblePredictions(array<double> prophetPreds, array<double> lstmPreds, array<double> arimaPreds)
 {
     shared weights = array<double>{ 0.4, 0.4, 0.2 };
-    return prophetPreds->map([=](auto _, auto i) mutable
+    return prophetPreds->std::map([=](auto _, auto i) mutable
     {
         return const_(prophetPreds)[i] * const_(weights)[0] + const_(lstmPreds)[i] * const_(weights)[1] + const_(arimaPreds)[i] * const_(weights)[2];
     }

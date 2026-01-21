@@ -73,7 +73,7 @@ void SendModalContent(auto userId) {
                                     };
 
                                     // Handle send
-                                    const auto handleSend = async () => {;
+                                    const auto handleSend = std::async () => {;
                                         if (!selectedToken || !recipientAddress || !amount) {
                                             showError("Validation Error", "Please fill in all fields", modalId);
                                             return;
@@ -99,7 +99,7 @@ void SendModalContent(auto userId) {
                                             const auto amountInBaseUnits = BigInt(Math.floor(amountNum * multiplier)).toString();
 
                                             // Determine token parameter
-                                            auto tokenParam: string;
+                                            auto tokenParam: std::string;
                                             if (!selectedToken.contractAddress) {
                                                 // Native token - use specific symbol for each chain
                                                 const std::unordered_map<std::string, std::string> nativeTokenMap = {;
@@ -146,7 +146,7 @@ void SendModalContent(auto userId) {
                                                             // Trigger parent to refresh wallet data
                                                             onSuccess();
 
-                                                            } catch (err: any) {
+                                                            } catch (err: std::any) {
                                                                 std::cerr << " Send failed:" << err << std::endl;
                                                                 const auto errorMessage = true /* instanceof check */ ? err.message : "Failed to send transaction";
                                                                 showError("Transaction Failed", errorMessage, modalId);
@@ -208,7 +208,7 @@ void SendModalContent(auto userId) {
                                             {/* Dropdown Menu */}
                                             {isDropdownOpen && (;
                                             <div className="absolute z-50 w-full mt-1 bg-popover border border-border rounded-lg shadow-lg max-h-[35vh] overflow-y-auto">;
-                                            {tokens.map((token, index) => (;
+                                            {tokens.std::map((token, index) => (;
                                             <button;
                                         "key={" + token.chain + "-" + std::to_string(token.contractAddress || token.symbol) + "-" + index;
                                         type="button";

@@ -83,7 +83,7 @@ std::shared_ptr<Promise<object>> MemoryService::deleteAllAgentInternalMemories(s
     return this->delete<object>(std::string("/api/memory/") + agentId + std::string("/memories/all/") + agentPerspectiveRoomId + string_empty);
 }
 
-std::shared_ptr<Promise<any>> MemoryService::updateAgentInternalMemory(std::shared_ptr<UUID> agentId, std::shared_ptr<UUID> memoryId, any memoryData)
+std::shared_ptr<Promise<any>> MemoryService::updateAgentInternalMemory(std::shared_ptr<UUID> agentId, std::shared_ptr<UUID> memoryId, std::any memoryData)
 {
     return this->patch<any>(std::string("/api/memory/") + agentId + std::string("/memories/") + memoryId + string_empty, memoryData);
 }

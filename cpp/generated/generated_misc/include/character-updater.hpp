@@ -7,12 +7,12 @@
 
 std::shared_ptr<Character> applyOperationsToCharacter(std::shared_ptr<Character> character, array<std::shared_ptr<ModificationOperation>> operations);
 
-void addValue(any obj, string path, any value);
+void addValue(std::any obj, std::string path, std::any value);
 
-void modifyValue(any obj, string path, any value);
+void modifyValue(std::any obj, std::string path, std::any value);
 
-void deleteValue(any obj, string path);
+void deleteValue(std::any obj, std::string path);
 
-boolean validateCharacterStructure(any character);
+boolean validateCharacterStructure(std::any character);
 
 #endif

@@ -80,7 +80,7 @@ struct ChatProps {
     // For DM sessions, we don't need to join the central channel
     // The agent should respond directly to the session channel
 
-    // Cleanup function
+    // Cleanup std::function
 
   // --- Send Message Logic ---
 

@@ -4,7 +4,7 @@
 #include "@elizaos/core.h"
 #include "../services/coingecko.service.h"
 
-string formatMarketCap(double value);
+std::string formatMarketCap(double value);
 
 extern std::shared_ptr<Action> getTokenPriceChartAction;
 #endif

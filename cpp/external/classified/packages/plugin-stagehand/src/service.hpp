@@ -19,7 +19,7 @@ namespace elizaos {
 
 class BrowserSession {
   constructor(
-    public id: string,
+    public id: std::string,
     public createdAt: Date = new Date()
   ) {}
 
@@ -27,8 +27,8 @@ class StagehandService extends Service {
   static serviceType = StagehandServiceType.STAGEHAND;
   capabilityDescription = 'Browser automation service using Stagehand for web interactions';
 
-  private sessions: Map<string, BrowserSession> = new Map();
-  private currentSessionId: string | null = null;
+  private sessions: Map<std::string, BrowserSession> = new Map();
+  private currentSessionId: std::string | null = null;
   private processManager: StagehandProcessManager;
   private client: StagehandWebSocketClient;
   private isInitialized = false;

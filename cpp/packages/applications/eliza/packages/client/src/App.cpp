@@ -22,7 +22,7 @@ void AppContent() {
             clientLogger.info("[AppContent] refreshHomePage called. Current homeKey:", homeKey);
             const auto newKey = Date.now();
             setHomeKey(newKey);
-            clientLogger.info("[AppContent] New homeKey set to:", newKey);
+            clientLogger.info("[AppContent] New homeKey std::set to:", newKey);
 
             clientLogger.info("[AppContent] Invalidating queries for Home page refresh.");
             queryClient.invalidateQueries({ queryKey: ["agents"] });

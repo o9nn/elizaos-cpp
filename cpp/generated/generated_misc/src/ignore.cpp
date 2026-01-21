@@ -8,7 +8,7 @@ std::shared_ptr<Action> ignoreAction = as<std::shared_ptr<Action>>(object{
         return true;
     }
     }, 
-    object::pair{std::string("description"), std::string("Call this action if ignoring the user. If the user is aggressive, creepy or is finished with the conversation, use this action. Or, if both you and the user have already said goodbye, use this action instead of saying bye again. Use IGNORE any time the conversation has naturally ended. Do not use IGNORE if the user has engaged directly, or if something went wrong an you need to tell them. Only ignore if the user should be ignored.")}, 
+    object::pair{std::string("description"), std::string("Call this action if ignoring the user. If the user is aggressive, creepy or is finished with the conversation, use this action. Or, if both you and the user have already said goodbye, use this action instead of saying bye again. Use IGNORE std::any time the conversation has naturally ended. Do not use IGNORE if the user has engaged directly, or if something went wrong an you need to tell them. Only ignore if the user should be ignored.")}, 
     object::pair{std::string("handler"), [=](auto _runtime, auto _message, auto _state, auto _options, auto callback, auto responses = undefined) mutable
     {
         if (AND((callback), (const_(responses)[0]->content))) {
@@ -42,7 +42,7 @@ std::shared_ptr<Action> ignoreAction = as<std::shared_ptr<Action>>(object{
     } }, array<object>{ object{
         object::pair{std::string("name"), std::string("{{name1}}")}, 
         object::pair{std::string("content"), object{
-            object::pair{std::string("text"), std::string("Got any investment advice")}
+            object::pair{std::string("text"), std::string("Got std::any investment advice")}
         }}
     }, object{
         object::pair{std::string("name"), std::string("{{name2}}")}, 

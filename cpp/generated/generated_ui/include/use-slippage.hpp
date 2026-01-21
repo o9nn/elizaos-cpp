@@ -6,5 +6,5 @@
 typedef double TSlippage;
 
 
-extern std::function<any()> useSlippage;
+extern std::function<std::any()> useSlippage;
 #endif

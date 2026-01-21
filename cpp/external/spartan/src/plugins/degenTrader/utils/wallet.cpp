@@ -83,10 +83,10 @@ std::future<> executeTrade(IAgentRuntime runtime, const std::any& params) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     success: boolean;
-    signature?: string;
-    error?: string;
-    receivedAmount?: string;
-    receivedValue?: string;
+    signature?: std::string;
+    error?: std::string;
+    receivedAmount?: std::string;
+    receivedValue?: std::string;
 
 }
 
@@ -101,7 +101,7 @@ void extractTokenAddress(auto message) {
 
 std::future<> executeRaydiumTrade(IAgentRuntime runtime, std::optional<std::any> params) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    success: boolean; signature?: string; error?: string
+    success: boolean; signature?: std::string; error?: std::string
 }
 
 std::future<double> getChainWalletBalance(IAgentRuntime runtime, const std::string& _tokenAddress) {
@@ -145,7 +145,7 @@ std::future<void> getWalletBalances(IAgentRuntime runtime) {
 
             const auto balances = {;
                 solBalance: solBalance / 1e9,
-                tokens: tokenAccounts.value.map((account) => ({
+                tokens: tokenAccounts.value.std::map((account) => ({
                     mint: account.account.data.parsed.info.mint,
                     balance: account.account.data.parsed.info.tokenAmount.amount,
                     decimals: account.account.data.parsed.info.tokenAmount.decimals,
@@ -174,7 +174,7 @@ std::future<std::optional<TokenBalance>> getTokenBalance(IAgentRuntime runtime, 
 
         if (!token) {
             logger.warn(`No balance found for token ${tokenMint}`, {
-                availableTokens: balances.tokens.map((t) => t.mint),
+                availableTokens: balances.tokens.std::map((t) => t.mint),
                 });
             }
 

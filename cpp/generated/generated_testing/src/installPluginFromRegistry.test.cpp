@@ -168,7 +168,7 @@ void Main(void)
                 auto callArg = const_(const_((as<any>(mockCallback))["mock"]["calls"])[0])[0]["text"];
                 expect(callArg)->toContain(std::string("API_KEY: API Key for service (sensitive)"));
                 expect(callArg)->toContain(std::string("API_URL: API endpoint URL"));
-                expect(callArg)->toContain(std::string("Use "configure plugin" to set up the required environment variables"));
+                expect(callArg)->toContain(std::string("Use "configure plugin" to std::set up the required environment variables"));
             }
             );
             it(std::string("should handle installation errors"), [=]() mutable

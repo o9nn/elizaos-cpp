@@ -42,7 +42,7 @@ std::future<void> GET(NextRequest request) {
                 const auto allChannels = channelsResponse.json();
 
                 // Filter for DM channels between this user and agent
-                const auto dmChannels = allChannels.filter((channel: any) => {;
+                const auto dmChannels = allChannels.filter((channel: std::any) => {;
                     const auto metadata = channel.metadata || {};
 
                     // Check if it's a DM channel
@@ -62,7 +62,7 @@ std::future<void> GET(NextRequest request) {
                     });
 
                     // Sort by creation date (newest first)
-                    dmChannels.sort((a: any, b: any) => {
+                    dmChannels.sort((a: std::any, b: std::any) => {
                         const auto aDate = a.metadata.createdAt;
                         ? new Date(a.metadata.createdAt).getTime();
                         : 0;

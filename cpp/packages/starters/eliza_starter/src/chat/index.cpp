@@ -39,9 +39,9 @@ std::future<void> handleUserInput(auto input, auto agentId) {
 void startChat(auto characters) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    function chat() {
+    std::function chat() {
         const auto agentId = characters[0].name || "Agent";
-        rl.question("You: ", async (input) => {
+        rl.question("You: ", std::async (input) => {
             handleUserInput(input, agentId);
             if (input.toLowerCase() != "exit") {
                 chat(); // Loop back to ask another question;

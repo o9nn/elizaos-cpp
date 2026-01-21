@@ -9,11 +9,11 @@ void WalletLinkBoard(auto walletSection, auto readmeContent, auto defaultBranch)
 
     const auto [copied, copyToClipboard] = useCopyToClipboard();
 
-    const auto handleCopy = useCallback(async () => {;
+    const auto handleCopy = useCallback(std::async () => {;
         copyToClipboard(walletSection);
         }, [copyToClipboard, walletSection]);
 
-        const auto handleCopyAndOpenGitHub = useCallback(async () => {;
+        const auto handleCopyAndOpenGitHub = useCallback(std::async () => {;
             // Always open GitHub regardless of copy success
             const auto githubUrl =;
             readmeContent == nullptr;

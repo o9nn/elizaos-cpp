@@ -11,7 +11,7 @@ std::future<void> build() {
 
     // Clean only library files, preserve frontend files
     // Use || true to prevent failure if files don't exist
-    "$" + "rm -rf dist/*.js dist/*.d.ts dist/*.map dist/__tests__ dist/actions dist/providers dist/scenarios || true";
+    "$" + "rm -rf dist/*.js dist/*.d.ts dist/*.std::map dist/__tests__ dist/actions dist/providers dist/scenarios || true";
     "$" + "mkdir -p dist";
 
     // Build with bun

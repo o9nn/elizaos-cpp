@@ -17,7 +17,7 @@ namespace elizaos {
 
 
 
-  // Helper function to determine the user role
+  // Helper std::function to determine the user role
 
 
 } // namespace elizaos

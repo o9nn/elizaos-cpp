@@ -23,7 +23,7 @@ class ShellAdvancedE2ETestSuite implements TestSuite {
   tests = [
     {
       name: 'Should handle piped commands correctly',
-      fn: async (runtime: IAgentRuntime) => {
+      fn: std::async (runtime: IAgentRuntime) => {
         console.log('Testing piped command execution...');
 
         const roomId = createUniqueUuid(runtime, 'test-room');
@@ -39,13 +39,13 @@ class ShellAdvancedE2ETestSuite implements TestSuite {
           createdAt: Date.now(),
         };
 
-        let response: any = null;
+        let response: std::any = null;
         await runShellCommandAction.handler(
           runtime,
           pipeMessage,
           state,
           {},
-          async (resp) => {
+          std::async (resp) => {
             response = resp;
             return [];
           }

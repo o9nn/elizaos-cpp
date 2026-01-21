@@ -1,14 +1,14 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/degenTrader/utils/bignumber.h"
 
-string formatBN(std::shared_ptr<BigNumber> value, double decimals)
+std::string formatBN(std::shared_ptr<BigNumber> value, double decimals)
 {
     try
     {
         return value->dividedBy(((std::make_shared<BigNumber>(10)))->pow(decimals))->toFixed();
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
-        throw any(std::make_shared<Error>(std::string("Failed to format BigNumber: ") + value + string_empty));
+        throw std::any(std::make_shared<Error>(std::string("Failed to format BigNumber: ") + value + string_empty));
     }
 };
 

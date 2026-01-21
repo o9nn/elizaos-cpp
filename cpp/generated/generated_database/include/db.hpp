@@ -9,5 +9,5 @@ using path = _default;
 #include "./schema.h"
 
 extern std::shared_ptr<Database::Database> sqlite;
-extern any db;
+extern std::any db;
 #endif

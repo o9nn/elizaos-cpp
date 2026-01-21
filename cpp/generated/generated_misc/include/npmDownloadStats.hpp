@@ -23,45 +23,45 @@ class NpmDownloadStatsGenerator;
 class PackageInfo : public object, public std::enable_shared_from_this<PackageInfo> {
 public:
     using std::enable_shared_from_this<PackageInfo>::shared_from_this;
-    string name;
+    std::string name;
 
     array<string> versions;
 
-    string description;
+    std::string description;
 
-    string repository;
+    std::string repository;
 
     array<string> maintainers;
 
     array<string> keywords;
 
-    string license;
+    std::string license;
 
-    string createdDate;
+    std::string createdDate;
 
-    string modifiedDate;
+    std::string modifiedDate;
 };
 
 class VersionDownloads : public object, public std::enable_shared_from_this<VersionDownloads> {
 public:
     using std::enable_shared_from_this<VersionDownloads>::shared_from_this;
-    string packageName;
+    std::string packageName;
 
-    string version;
+    std::string version;
 
     double downloads;
 
-    string downloadsPeriod;
+    std::string downloadsPeriod;
 };
 
 class PackageDownloads : public object, public std::enable_shared_from_this<PackageDownloads> {
 public:
     using std::enable_shared_from_this<PackageDownloads>::shared_from_this;
-    string packageName;
+    std::string packageName;
 
     double totalDownloads;
 
-    string downloadsPeriod;
+    std::string downloadsPeriod;
 
     double weeklyDownloads;
 
@@ -73,19 +73,19 @@ public:
 class NpmDownloadStatsGenerator : public object, public std::enable_shared_from_this<NpmDownloadStatsGenerator> {
 public:
     using std::enable_shared_from_this<NpmDownloadStatsGenerator>::shared_from_this;
-    string NPM_REGISTRY_URL = std::string("https://registry.npmjs.org");
+    std::string NPM_REGISTRY_URL = std::string("https://registry.npmjs.org");
 
-    string NPM_DOWNLOADS_URL = std::string("https://api.npmjs.org/downloads");
+    std::string NPM_DOWNLOADS_URL = std::string("https://api.npmjs.org/downloads");
 
-    string OUTPUT_DIR = std::string("./assets");
+    std::string OUTPUT_DIR = std::string("./assets");
 
-    string OUTPUT_FILE = std::string("elizaos-npm-download-stats.xlsx");
+    std::string OUTPUT_FILE = std::string("elizaos-npm-download-stats.xlsx");
 
     virtual std::shared_ptr<Promise<void>> main();
     virtual std::shared_ptr<Promise<array<std::shared_ptr<PackageInfo>>>> fetchOrganizationPackages();
     virtual std::shared_ptr<Promise<array<std::shared_ptr<PackageDownloads>>>> fetchPackageDownloads(array<std::shared_ptr<PackageInfo>> packages);
     virtual std::shared_ptr<Promise<array<std::shared_ptr<VersionDownloads>>>> fetchVersionDownloads(array<std::shared_ptr<PackageInfo>> packages);
-    virtual std::shared_ptr<Promise<object>> getDownloadStats(string packageName, string period);
+    virtual std::shared_ptr<Promise<object>> getDownloadStats(std::string packageName, std::string period);
     virtual std::shared_ptr<Promise<void>> generateExcelReport(array<std::shared_ptr<PackageInfo>> packages, array<std::shared_ptr<PackageDownloads>> packageDownloads, array<std::shared_ptr<VersionDownloads>> versionDownloads);
     virtual void printSummary(array<std::shared_ptr<PackageInfo>> packages, array<std::shared_ptr<PackageDownloads>> packageDownloads);
     virtual std::shared_ptr<Promise<void>> delay(double ms);

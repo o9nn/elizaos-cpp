@@ -15,7 +15,7 @@ class TestGenerateParams;
 class TestGenerateParams : public object, public std::enable_shared_from_this<TestGenerateParams> {
 public:
     using std::enable_shared_from_this<TestGenerateParams>::shared_from_this;
-    string prompt;
+    std::string prompt;
 
     array<string> stopSequences;
 
@@ -28,5 +28,5 @@ public:
     double presencePenalty;
 };
 
-extern std::function<std::shared_ptr<Promise<object>>(any, std::function<std::shared_ptr<Promise<string>>(any, std::shared_ptr<TestGenerateParams>)>)> runCoreModelTests;
+extern std::function<std::shared_ptr<Promise<object>>(std::any, std::function<std::shared_ptr<Promise<string>>(std::any, std::shared_ptr<TestGenerateParams>)>)> runCoreModelTests;
 #endif

@@ -94,7 +94,7 @@ struct PostInfo {
     PostEngagement engagement;
     'public' | 'private' | 'followers' | 'friends' | 'unlisted' visibility;
     std::optional<UUID> replyTo;
-    std::optional<{> thread;
+    std::optional<{> std::thread;
     UUID id;
     double position;
     double total;
@@ -109,7 +109,7 @@ struct PostCreateOptions {
     std::optional<Date> scheduledAt;
     std::optional<PostInfo['visibility']> visibility;
     std::optional<UUID> replyTo;
-    std::optional<bool> thread;
+    std::optional<bool> std::thread;
     std::optional<PostLocation> location;
     std::optional<std::vector<std::string>> tags;
     std::optional<std::vector<UUID>> mentions;
@@ -213,7 +213,7 @@ abstract class IPostService extends Service {
    * @param comment - Optional comment when sharing
    * @returns Promise resolving to share ID
    */
-  abstract sharePost(postId: UUID, comment?: string): Promise<UUID>;
+  abstract sharePost(postId: UUID, comment?: std::string): Promise<UUID>;
 
   /**
    * Save/unsave a post
@@ -272,7 +272,7 @@ abstract class IPostService extends Service {
    * @param options - Search options
    * @returns Promise resolving to search results
    */
-  abstract searchPosts(query: string, options?: PostSearchOptions): Promise<PostInfo[]>;
+  abstract searchPosts(query: std::string, options?: PostSearchOptions): Promise<PostInfo[]>;
 }
 
 } // namespace elizaos

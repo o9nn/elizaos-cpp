@@ -12,7 +12,7 @@ express::Router createServersRouter(AgentServer serverInstance) {
     // NOTE: Do NOT apply global auth here. Keep read-only endpoints public for UI and services.
 
     // GET /central-servers
-    (router).get("/central-servers", async (_req: AuthenticatedRequest, res: express.Response) => {
+    (router).get("/central-servers", std::async (_req: AuthenticatedRequest, res: express.Response) => {
         try {
             const auto servers = serverInstance.getServers();
             res.json({ success: true, data: { servers } });
@@ -26,7 +26,7 @@ express::Router createServersRouter(AgentServer serverInstance) {
             });
 
             // POST /servers - Create a new server
-            (router).post("/servers", requireAuthOrApiKey, async (req: AuthenticatedRequest, res: express.Response) => {
+            (router).post("/servers", requireAuthOrApiKey, std::async (req: AuthenticatedRequest, res: express.Response) => {
                 const auto { id, name, sourceType, sourceId, metadata } = req.body;
 
                 if (!name || !sourceType) {
@@ -62,7 +62,7 @@ express::Router createServersRouter(AgentServer serverInstance) {
                             (router).post(;
                             "/servers/:serverId/agents",
                             requireAuthOrApiKey,
-                            async (req: AuthenticatedRequest, res: express.Response) => {
+                            std::async (req: AuthenticatedRequest, res: express.Response) => {
                                 const auto serverId =;
                                 req.params.serverId == DEFAULT_SERVER_ID;
                                 ? DEFAULT_SERVER_ID;
@@ -110,7 +110,7 @@ express::Router createServersRouter(AgentServer serverInstance) {
                                                 (router).delete(;
                                                 "/servers/:serverId/agents/:agentId",
                                                 requireAuthOrApiKey,
-                                                async (req: AuthenticatedRequest, res: express.Response) => {
+                                                std::async (req: AuthenticatedRequest, res: express.Response) => {
                                                     const auto serverId =;
                                                     req.params.serverId == DEFAULT_SERVER_ID;
                                                     ? DEFAULT_SERVER_ID;
@@ -157,7 +157,7 @@ express::Router createServersRouter(AgentServer serverInstance) {
                                                                     // GET /servers/:serverId/agents - List agents in server
                                                                     (router).get(;
                                                                     "/servers/:serverId/agents",
-                                                                    async (req: express.Request, res: express.Response) => {
+                                                                    std::async (req: express.Request, res: express.Response) => {
                                                                         const auto serverId =;
                                                                         req.params.serverId == DEFAULT_SERVER_ID;
                                                                         ? DEFAULT_SERVER_ID;
@@ -192,7 +192,7 @@ express::Router createServersRouter(AgentServer serverInstance) {
                                                                                     // GET /agents/:agentId/servers - List servers agent belongs to
                                                                                     (router).get(;
                                                                                     "/agents/:agentId/servers",
-                                                                                    async (req: express.Request, res: express.Response) => {
+                                                                                    std::async (req: express.Request, res: express.Response) => {
                                                                                         const auto agentId = validateUuid(req.params.agentId);
 
                                                                                         if (!agentId) {

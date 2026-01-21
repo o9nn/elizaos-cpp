@@ -21,7 +21,7 @@ std::shared_ptr<RelationshipV2> toV2Relationship(Relationship relationship, std:
         object::pair{std::string("sourceEntityId"), relationship->userA}, 
         object::pair{std::string("targetEntityId"), relationship->userB}, 
         object::pair{std::string("agentId"), agentId}, 
-        object::pair{std::string("tags"), (relationship->status) ? relationship->status->split(std::string(","))->map([=](auto s) mutable
+        object::pair{std::string("tags"), (relationship->status) ? relationship->status->split(std::string(","))->std::map([=](auto s) mutable
         {
             return s->trim();
         }
@@ -37,7 +37,7 @@ std::shared_ptr<RelationshipV2> toV2Relationship(Relationship relationship, std:
 
 array<Relationship> fromV2Relationships(array<std::shared_ptr<RelationshipV2>> relationshipsV2)
 {
-    return relationshipsV2->map([=](auto rel) mutable
+    return relationshipsV2->std::map([=](auto rel) mutable
     {
         return fromV2Relationship(rel);
     }
@@ -47,7 +47,7 @@ array<Relationship> fromV2Relationships(array<std::shared_ptr<RelationshipV2>> r
 
 array<std::shared_ptr<RelationshipV2>> toV2Relationships(array<Relationship> relationships, std::shared_ptr<UUID> agentId)
 {
-    return relationships->map([=](auto rel) mutable
+    return relationships->std::map([=](auto rel) mutable
     {
         return toV2Relationship(rel, agentId);
     }
@@ -55,7 +55,7 @@ array<std::shared_ptr<RelationshipV2>> toV2Relationships(array<Relationship> rel
 };
 
 
-string tagsToStatus(array<string> tags)
+std::string tagsToStatus(array<string> tags)
 {
     if (tags->get_length() == 0) return RELATIONSHIP_STATUSES["UNKNOWN"];
     auto statusMap = object{
@@ -77,7 +77,7 @@ string tagsToStatus(array<string> tags)
 };
 
 
-array<string> statusToTags(string status)
+array<string> statusToTags(std::string status)
 {
     if (!status) return array<any>();
     auto tagMap = object{
@@ -93,7 +93,7 @@ array<string> statusToTags(string status)
     if (const_(tagMap)[normalizedStatus]) {
         return const_(tagMap)[normalizedStatus];
     }
-    return status->split(std::string(","))->map([=](auto s) mutable
+    return status->split(std::string(","))->std::map([=](auto s) mutable
     {
         return s->trim();
     }
@@ -133,7 +133,7 @@ std::shared_ptr<RelationshipV2> toV2RelationshipEnhanced(Relationship relationsh
 };
 
 
-Relationship createV1Relationship(std::shared_ptr<UUID> userA, std::shared_ptr<UUID> userB, string status, std::shared_ptr<UUID> roomId)
+Relationship createV1Relationship(std::shared_ptr<UUID> userA, std::shared_ptr<UUID> userB, std::string status, std::shared_ptr<UUID> roomId)
 {
     return object{
         object::pair{std::string("id"), as<std::shared_ptr<UUID>>(string_empty + userA + std::string("-") + userB + std::string("-") + Date->now() + string_empty)}, 
@@ -153,7 +153,7 @@ boolean areRelationshipsEquivalent(Relationship rel1, Relationship rel2)
 };
 
 
-array<Relationship> filterRelationshipsByStatus(array<Relationship> relationships, string status)
+array<Relationship> filterRelationshipsByStatus(array<Relationship> relationships, std::string status)
 {
     return relationships->filter([=](auto rel) mutable
     {

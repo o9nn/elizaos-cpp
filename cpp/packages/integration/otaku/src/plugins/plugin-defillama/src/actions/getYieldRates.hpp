@@ -22,7 +22,7 @@ namespace elizaos {
 
       // Read parameters from state (extracted by multiStepDecisionTemplate)
 
-      // Extract optional parameters
+      // Extract std::optional parameters
 
       // Log what we're searching for
 

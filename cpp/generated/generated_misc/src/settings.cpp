@@ -6,55 +6,55 @@ std::shared_ptr<Setting> createSettingFromConfig(Omit<std::shared_ptr<Setting>, 
 };
 
 
-string getSalt()
+std::string getSalt()
 {
     return coreGetSalt();
 };
 
 
-string encryptStringValue(string value, string salt)
+std::string encryptStringValue(std::string value, std::string salt)
 {
     return coreEncryptStringValue(value, salt);
 };
 
 
-string decryptStringValue(string value, string salt)
+std::string decryptStringValue(std::string value, std::string salt)
 {
     return coreDecryptStringValue(value, salt);
 };
 
 
-std::shared_ptr<Setting> saltSettingValue(std::shared_ptr<Setting> setting, string salt)
+std::shared_ptr<Setting> saltSettingValue(std::shared_ptr<Setting> setting, std::string salt)
 {
     return coreSaltSettingValue(setting, salt);
 };
 
 
-std::shared_ptr<Setting> unsaltSettingValue(std::shared_ptr<Setting> setting, string salt)
+std::shared_ptr<Setting> unsaltSettingValue(std::shared_ptr<Setting> setting, std::string salt)
 {
     return coreUnsaltSettingValue(setting, salt);
 };
 
 
-std::shared_ptr<WorldSettings> saltWorldSettings(std::shared_ptr<WorldSettings> worldSettings, string salt)
+std::shared_ptr<WorldSettings> saltWorldSettings(std::shared_ptr<WorldSettings> worldSettings, std::string salt)
 {
     return coreSaltWorldSettings(worldSettings, salt);
 };
 
 
-std::shared_ptr<WorldSettings> unsaltWorldSettings(std::shared_ptr<WorldSettings> worldSettings, string salt)
+std::shared_ptr<WorldSettings> unsaltWorldSettings(std::shared_ptr<WorldSettings> worldSettings, std::string salt)
 {
     return coreUnsaltWorldSettings(worldSettings, salt);
 };
 
 
-std::shared_ptr<Promise<boolean>> updateWorldSettings(std::shared_ptr<IAgentRuntime> runtime, string serverId, std::shared_ptr<WorldSettings> worldSettings)
+std::shared_ptr<Promise<boolean>> updateWorldSettings(std::shared_ptr<IAgentRuntime> runtime, std::string serverId, std::shared_ptr<WorldSettings> worldSettings)
 {
     return coreUpdateWorldSettings(runtime, serverId, worldSettings);
 };
 
 
-std::shared_ptr<Promise<any>> getWorldSettings(std::shared_ptr<IAgentRuntime> runtime, string serverId)
+std::shared_ptr<Promise<any>> getWorldSettings(std::shared_ptr<IAgentRuntime> runtime, std::string serverId)
 {
     return coreGetWorldSettings(runtime, serverId);
 };
@@ -78,13 +78,13 @@ std::shared_ptr<Character> decryptedCharacter(std::shared_ptr<Character> charact
 };
 
 
-Record<string, any> encryptObjectValues(Record<string, any> obj, string salt)
+Record<std::string, any> encryptObjectValues(Record<std::string, any> obj, std::string salt)
 {
     return coreEncryptObjectValues(obj, salt);
 };
 
 
-Record<string, any> decryptObjectValues(Record<string, any> obj, string salt)
+Record<std::string, any> decryptObjectValues(Record<std::string, any> obj, std::string salt)
 {
     return coreDecryptObjectValues(obj, salt);
 };

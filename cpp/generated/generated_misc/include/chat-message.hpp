@@ -8,37 +8,37 @@ class ChatMessage;
 class ChatMessageAction : public object, public std::enable_shared_from_this<ChatMessageAction> {
 public:
     using std::enable_shared_from_this<ChatMessageAction>::shared_from_this;
-    string type;
+    std::string type;
 
-    string content;
+    std::string content;
 
-    Record<string, any> data;
+    Record<std::string, any> data;
 };
 
 class ChatMessage : public object, public std::enable_shared_from_this<ChatMessage> {
 public:
     using std::enable_shared_from_this<ChatMessage>::shared_from_this;
-    string id;
+    std::string id;
 
-    string name;
+    std::string name;
 
-    any text;
+    std::any text;
 
-    string senderId;
+    std::string senderId;
 
-    string roomId;
+    std::string roomId;
 
     double createdAt;
 
-    string source;
+    std::string source;
 
     boolean isLoading;
 
-    string thought;
+    std::string thought;
 
     boolean isUserMessage;
 
-    string serverMessageId;
+    std::string serverMessageId;
 
     object content;
 

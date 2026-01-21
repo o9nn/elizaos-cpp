@@ -40,7 +40,7 @@ struct ClaudeMessagesRequest {
     std::optional<double> top_p;
     std::optional<double> top_k;
     std::optional<std::vector<ClaudeTool>> tools;
-    std::optional<{ type: 'auto' | 'any' | 'tool'; name?: string }> tool_choice;
+    std::optional<{ type: 'auto' | 'any' | 'tool'; name?: std::string }> tool_choice;
 
 struct ClaudeResponse {
     std::string id;
@@ -65,7 +65,7 @@ struct OpenAIMessage {
     std::optional<Array<{> tool_calls;
     std::string id;
     'function' type;
-    { function;
+    { std::function;
     std::string name;
     std::string arguments;
     std::optional<std::string> tool_call_id;
@@ -122,7 +122,7 @@ class ClaudeProxy {
    */
 
   /**
-   * Convert Claude messages to a simple prompt string
+   * Convert Claude messages to a simple prompt std::string
    */
 
   /**

@@ -7,11 +7,11 @@ class MetricsService;
 class MetricsService : public object, public std::enable_shared_from_this<MetricsService> {
 public:
     using std::enable_shared_from_this<MetricsService>::shared_from_this;
-    static Record<string, double> metrics;
+    static Record<std::string, double> metrics;
 
-    static void recordApiLatency(string path, double latency);
-    static void recordProjectView(string projectId, string userId = undefined);
-    static any getMetrics();
+    static void recordApiLatency(std::string path, double latency);
+    static void recordProjectView(std::string projectId, std::string userId = undefined);
+    static std::any getMetrics();
 };
 
 #endif

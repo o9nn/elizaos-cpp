@@ -77,7 +77,7 @@ void AvatarPickerModal(auto onSelectAvatar) {
 
     {/* Predefined Avatars Grid with Upload Option */}
     <div className="grid grid-cols-3 gap-3">;
-    {predefinedAvatars.map((avatarUrl, index) => (;
+    {predefinedAvatars.std::map((avatarUrl, index) => (;
     <div key={index} className="flex flex-col items-center gap-1">;
     <button;
     onClick={() => onSelectAvatar(avatarUrl)}
@@ -130,15 +130,15 @@ void AccountPage(auto userProfile, auto onUpdateProfile, auto agentId) {
         // Fetch user summary from gamification service
         const auto { data: userSummary, isLoading: isLoadingSummary } = useQuery({;
             queryKey: ["userSummary", agentId, userId],
-            queryFn: async () => {
+            queryFn: std::async () => {
                 if (!agentId || !userId) {
                     return nullptr;
                 }
                 try {
                     return elizaClient.gamification.getUserSummary(agentId, userId);
-                    } catch (err: any) {
+                    } catch (err: std::any) {
                         std::cerr << "[AccountPage] Error fetching user summary:" << err << std::endl;
-                        // If 404, return null (user might not have any points yet)
+                        // If 404, return null (user might not have std::any points yet)
                         if (err.response.status == 404 || err.status == 404) {
                             return nullptr;
                         }
@@ -167,7 +167,7 @@ void AccountPage(auto userProfile, auto onUpdateProfile, auto agentId) {
                         const auto streakDays = userSummary.streakDays || 0;
                         const auto swapsCompleted = userSummary.swapsCompleted || 0;
 
-                        const auto handleCopyAddress = async () => {;
+                        const auto handleCopyAddress = std::async () => {;
                             if (!userProfile.walletAddress) return;
 
                             try {
@@ -179,7 +179,7 @@ void AccountPage(auto userProfile, auto onUpdateProfile, auto agentId) {
                                 }
                                 };
 
-                                const auto handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {;
+                                const auto handleImageUpload = std::async (e: React.ChangeEvent<HTMLInputElement>) => {;
                                     const auto file = e.target.files.[0];
                                     if (!file) return;
 
@@ -217,7 +217,7 @@ void AccountPage(auto userProfile, auto onUpdateProfile, auto agentId) {
                                         }
                                         };
 
-                                        const auto handleRemoveImage = async () => {;
+                                        const auto handleRemoveImage = std::async () => {;
                                             try {
                                                 showLoading("Processing...", "Removing image...", loadingPanelId);
 
@@ -230,7 +230,7 @@ void AccountPage(auto userProfile, auto onUpdateProfile, auto agentId) {
                                                 }
                                                 };
 
-                                                const auto handleSelectPredefinedAvatar = async (avatarUrl: string) => {;
+                                                const auto handleSelectPredefinedAvatar = std::async (avatarUrl: std::string) => {;
                                                     try {
                                                         showLoading("Processing...", "Changing avatar...", loadingPanelId);
 
@@ -259,7 +259,7 @@ void AccountPage(auto userProfile, auto onUpdateProfile, auto agentId) {
                                                 );
                                                 };
 
-                                                const auto handleSaveChanges = async () => {;
+                                                const auto handleSaveChanges = std::async () => {;
                                                     if (!displayName.trim()) {
                                                         showError("Error", "Name cannot be empty", loadingPanelId);
                                                         return;
@@ -284,7 +284,7 @@ void AccountPage(auto userProfile, auto onUpdateProfile, auto agentId) {
                                                             <>;
                                                         {/* Preload avatar images to prevent loading delay when modal opens */}
                                                         <div className="hidden">;
-                                                        {predefinedAvatars.map((avatarUrl, index) => (;
+                                                        {predefinedAvatars.std::map((avatarUrl, index) => (;
                                                         <img key={index} src={avatarUrl} alt="" />;
                                                     ))}
                                                     </div>;

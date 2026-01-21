@@ -8,7 +8,7 @@ object mockScreenCapture = object{
     object::pair{std::string("bitsPerPixel"), 32}, 
     object::pair{std::string("bytesPerPixel"), 4}
 };
-any getScreenSize = vi->fn([=]() mutable
+std::any getScreenSize = vi->fn([=]() mutable
 {
     return (object{
         object::pair{std::string("width"), 1920}, 
@@ -23,12 +23,12 @@ object screen = object{
     }
     )}
 };
-any moveMouse = vi->fn();
-any mouseClick = vi->fn();
-any typeString = vi->fn();
-any keyTap = vi->fn();
-any keyToggle = vi->fn();
-any getMousePos = vi->fn([=]() mutable
+std::any moveMouse = vi->fn();
+std::any mouseClick = vi->fn();
+std::any typeString = vi->fn();
+std::any keyTap = vi->fn();
+std::any keyToggle = vi->fn();
+std::any getMousePos = vi->fn([=]() mutable
 {
     return (object{
         object::pair{std::string("x"), 100}, 
@@ -36,13 +36,13 @@ any getMousePos = vi->fn([=]() mutable
     });
 }
 );
-any getPixelColor = vi->fn([=]() mutable
+std::any getPixelColor = vi->fn([=]() mutable
 {
     return std::string("ffffff");
 }
 );
-any setMouseDelay = vi->fn();
-any setKeyboardDelay = vi->fn();
+std::any setMouseDelay = vi->fn();
+std::any setKeyboardDelay = vi->fn();
 
 void Main(void)
 {

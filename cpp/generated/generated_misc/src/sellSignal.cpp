@@ -11,7 +11,7 @@ std::shared_ptr<Promise<boolean>> SellSignal::generateSignal()
         logger->info(std::string("sell-signal::generateSignal - Generating sell signal"));
         std::async([=]() { this->runtime->emitEvent(std::string("INTEL_SYNC_WALLET"), object{}); });
         auto walletBalances = std::async([=]() { getWalletBalances(this->runtime); });
-        auto walletData = walletBalances["tokens"]->map([=](auto token) mutable
+        auto walletData = walletBalances["tokens"]->std::map([=](auto token) mutable
         {
             return (object{
                 object::pair{std::string("mint"), token["mint"]}, 
@@ -132,7 +132,7 @@ TOKEN ANALYSIS:\
                     object::pair{std::string("error"), errorText}, 
                     object::pair{std::string("address"), responseContent->recommend_sell_address}
                 });
-                throw any(std::make_shared<Error>(std::string("Birdeye marketcap request failed: ") + res->status + std::string(" ") + res->statusText + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("Birdeye marketcap request failed: ") + res->status + std::string(" ") + res->statusText + string_empty));
             }
             auto resJson = std::async([=]() { res->json(); });
             auto marketcap = resJson["data"]["marketCap"];
@@ -144,7 +144,7 @@ TOKEN ANALYSIS:\
             }
             responseContent->marketcap = Number(OR((marketcap), (0)));
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("Error fetching marketcap data:"), error);
             responseContent->marketcap = 0;
@@ -166,14 +166,14 @@ TOKEN ANALYSIS:\
         }); });
         return true;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Error generating sell signal:"), error);
         return false;
     }
 }
 
-any SellSignal::getBalance()
+std::any SellSignal::getBalance()
 {
     auto url = std::string("https://zondra-wil7oz-fast-mainnet.helius-rpc.com");
     auto headers = object{
@@ -195,8 +195,8 @@ any SellSignal::getBalance()
     return lamportsBalance / 1000000000;
 }
 
-string rolePrompt = std::string("You are a sell signal analyzer.");
-string template = std::string("\
+std::string rolePrompt = std::string("You are a sell signal analyzer.");
+std::string template = std::string("\
 \
 I want you to give a crypto sell signal based on both the sentiment analysis as well as the wallet token data.\
 The sentiment score has a range of -100 to 100, with -100 indicating extreme negativity and 100 indicating extreme positiveness.\

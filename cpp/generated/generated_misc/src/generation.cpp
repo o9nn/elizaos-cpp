@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-env/generation.h"
 
-boolean canGenerateEnvVar(string varName, string type, string description)
+boolean canGenerateEnvVar(std::string varName, std::string type, std::string description)
 {
     auto lowerName = varName->toLowerCase();
     auto lowerDesc = OR((description->toLowerCase()), (string_empty));
@@ -25,7 +25,7 @@ boolean canGenerateEnvVar(string varName, string type, string description)
 };
 
 
-any generateScript(string varName, string type, string pluginName, string description)
+std::any generateScript(std::string varName, std::string type, std::string pluginName, std::string description)
 {
     auto lowerName = varName->toLowerCase();
     auto lowerDesc = OR((description->toLowerCase()), (string_empty));
@@ -74,7 +74,7 @@ any generateScript(string varName, string type, string pluginName, string descri
 };
 
 
-string getGenerationDescription(string varName, string type)
+std::string getGenerationDescription(std::string varName, std::string type)
 {
     auto lowerName = varName->toLowerCase();
     if (OR((type == std::string("private_key")), (lowerName->includes(std::string("private_key"))))) {

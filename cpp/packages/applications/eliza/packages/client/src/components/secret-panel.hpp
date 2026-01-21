@@ -18,12 +18,12 @@ using EnvVariable = {
 
 struct SecretPanelProps {
     Agent characterValue;
-    std::optional<(secrets: Record<string, string | null>) => void> onChange;
+    std::optional<(secrets: Record<std::string, std::string | null>) => void> onChange;
 };
 
 struct SecretPanelRef {
-    () => Record<string, string | null> getSecrets;
-    () => { isValid: boolean; missingSecrets: string[] } validateSecrets;
+    () => Record<std::string, std::string | null> getSecrets;
+    () => { isValid: boolean; missingSecrets: std::string[] } validateSecrets;
 
     // Raw editor modal state
 
@@ -43,11 +43,11 @@ struct SecretPanelRef {
 
       // Add a header comment
 
-      // Group by required vs optional
+      // Group by required vs std::optional
 
       // Add required secrets section
 
-      // Add optional secrets section
+      // Add std::optional secrets section
 
     // Parse raw editor content back to envs
 
@@ -72,12 +72,12 @@ struct SecretPanelRef {
 
       // Only reset if we're switching to a different agent or this is the first load
       // or if envs is empty (meaning we haven't initialized yet)
-        // Decrypt secrets from the server using the core decryption function
+        // Decrypt secrets from the server using the core decryption std::function
         // Ensure we're working with a plain object
 
           // Filter out process.env values - these should not be stored as actual values
 
-        // Create a map for quick lookup
+        // Create a std::map for quick lookup
 
         // Add required secrets that don't exist yet
 
@@ -121,7 +121,7 @@ struct SecretPanelRef {
         // Also check for secrets that should be removed
         // Get all env names that are currently in the list
 
-        // Check if there are any secrets in the character settings that are no longer in our envs
+        // Check if there are std::any secrets in the character settings that are no longer in our envs
         // This happens when a plugin is removed and its required secrets are cleaned up
             // Mark this secret for deletion
 
@@ -136,7 +136,7 @@ struct SecretPanelRef {
 
           // Sort: required secrets first, then alphabetically
 
-      // Close any other editing
+      // Close std::any other editing
 
       // Show the secret when editing
 

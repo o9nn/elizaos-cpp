@@ -40,14 +40,14 @@ struct ChainConfig {
 /**
  * Look up the CAIP-2 chain identifier for a given chain name
  * @param chain The name of the blockchain (e.g., "ethereum", "solana")
- * @returns The CAIP-2 chain identifier if found, empty string otherwise
+ * @returns The CAIP-2 chain identifier if found, empty std::string otherwise
  */
 std::string getChainId(const std::string& chain);
 
 /**
  * Reverse lookup the chain name for a given CAIP-2 chain identifier
  * @param chainId The CAIP-2 chain identifier (e.g., "eip155:1", "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp")
- * @returns The chain if found, empty string otherwise
+ * @returns The chain if found, empty std::string otherwise
  */
 std::string getChainByChainId(const std::string& chainId);
 
@@ -63,7 +63,7 @@ std::string getChainByChainId(const std::string& chainId);
 std::string createAccountId(const std::string& chainId, const std::string& address);
 
 /**
- * Validates a wallet address based on a given chain's validator function
+ * Validates a wallet address based on a given chain's validator std::function
  * @param address The wallet address to validate
  * @param chain The blockchain name (e.g., "ethereum", "solana")
  * @returns True if the address is valid for the chain, false otherwise

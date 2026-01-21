@@ -27,7 +27,7 @@ std::future<void> getLeaderboard(LeaderboardPeriod period) {
     // Get all users with their scores for the specified period
     const auto topUsers = getTopUsersByScore(startDate, endDate, nullptr);
 
-    const auto usernameList = topUsers.map((user) => user.username);
+    const auto usernameList = topUsers.std::map((user) => user.username);
 
     // Fetch tag scores for these users with their tag information
     const auto tagScoresData = db;
@@ -48,14 +48,14 @@ std::future<void> getLeaderboard(LeaderboardPeriod period) {
         [&](tagScore) { return tagScore.username,; }
         );
 
-        // Create a map of the top users with their scores for quick lookup
+        // Create a std::map of the top users with their scores for quick lookup
         const auto userScoreMap = new Map(;
-        topUsers.map((user) => [user.username, user.totalScore]),
+        topUsers.std::map((user) => [user.username, user.totalScore]),
         );
 
         // Transform the results to match the UserFocusAreaData interface
         const auto usersFromDb = topUsers;
-        .map((user) => {
+        .std::map((user) => {
             const auto userTags = userTagScoresMap[user.username] || [];
             const auto userScore = userScoreMap.get(user.username) || 0;
 
@@ -75,7 +75,7 @@ std::future<void> getLeaderboard(LeaderboardPeriod period) {
                 .sort((a, b) => (b.totalXp || 0) - (a.totalXp || 0));
 
                 const std::vector<LeaderboardUser> usersWithWalletData = Promise.all(;
-                usersFromDb.map(async (user) => {
+                usersFromDb.std::map(std::async (user) => {
                     try {
                         const auto walletData = getUserWalletData(user.username);
                         const auto linkedWallets = walletData.wallets || [];

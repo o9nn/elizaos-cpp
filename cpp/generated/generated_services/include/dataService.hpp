@@ -42,11 +42,11 @@ public:
     virtual std::shared_ptr<Promise<array<std::shared_ptr<TokenSignal>>>> getBirdeyeSignals();
     virtual std::shared_ptr<Promise<array<std::shared_ptr<TokenSignal>>>> getTwitterSignals();
     virtual std::shared_ptr<Promise<array<std::shared_ptr<TokenSignal>>>> getCMCSignals();
-    virtual std::shared_ptr<Promise<object>> getTokenMarketData(string tokenAddress);
+    virtual std::shared_ptr<Promise<object>> getTokenMarketData(std::string tokenAddress);
     virtual std::shared_ptr<Promise<any>> getTokensMarketData(array<string> tokenAddresses);
     virtual std::shared_ptr<Promise<array<string>>> getMonitoredTokens();
     virtual std::shared_ptr<Promise<array<any>>> getPositions();
-    virtual any getDefaultRecommendation();
+    virtual std::any getDefaultRecommendation();
 };
 
 #endif

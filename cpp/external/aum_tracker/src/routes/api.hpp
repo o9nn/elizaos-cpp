@@ -25,9 +25,9 @@ namespace elizaos {
 
 // Middleware
 
-// Helper function to handle errors
+// Helper std::function to handle errors
 
-// Helper function to validate wallet address
+// Helper std::function to validate wallet address
 
 // Portfolio endpoints
 

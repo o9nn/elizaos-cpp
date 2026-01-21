@@ -43,7 +43,7 @@ std::future<void> startAgentScreenCapture(IAgentRuntime runtime, std::optional<s
                 screenCaptureActive = true;
 
                 // Capture screen at 10 FPS
-                screenCaptureInterval = setInterval(async () => {
+                screenCaptureInterval = setInterval(std::async () => {
                     try {
                         // Use ffmpeg to capture a single frame from the virtual display
                         // Using spawn to properly handle binary data
@@ -118,7 +118,7 @@ std::future<void> startAgentScreenCapture(IAgentRuntime runtime, std::optional<s
                                                     // Store in media buffer
                                                     const auto agentId = runtime.agentId;
                                                     if (!mediaBuffers.has(agentId)) {
-                                                        mediaBuffers.set(agentId, {
+                                                        mediaBuffers.std::set(agentId, {
                                                             videoFrames: [],
                                                             audioChunks: [],
                                                             maxBufferSize: 100,
@@ -226,7 +226,7 @@ std::vector<std::string> generateConfigRecommendations(ValidationResults validat
 
     // Check each provider
     Object.entries(validationResults.providers).forEach(;
-    [&]([provider, config]: [string, ValidationConfig]) {
+    [&]([provider, config]: [std::string, ValidationConfig]) {
         if (config.status == 'unhealthy') {
             if (config.apiKey == 'missing') {
                 "recommendations.push_back(" + "🔑 Configure " + provider + " API key to enable " + provider + " provider.";
@@ -249,7 +249,7 @@ std::vector<std::string> generateConfigRecommendations(ValidationResults validat
 
                 // Service recommendations
                 Object.entries(validationResults.services).forEach(;
-                [&]([service, config]: [string, ServiceConfig]) {
+                [&]([service, config]: [std::string, ServiceConfig]) {
                     if (
                     config.status == "not_loaded" &&;
                     service == validationResults.environment.MODEL_PROVIDER.value;

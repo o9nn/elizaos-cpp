@@ -4,7 +4,7 @@
 
 using namespace elizaos;
 
-// Test function to verify basic functionality
+// Test std::function to verify basic functionality
 void testVercelAPI() {
     std::cout << "Testing Vercel API implementation...\n";
     

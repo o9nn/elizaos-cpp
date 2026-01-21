@@ -23,7 +23,7 @@ std::future<std::vector<std::string>> fetchWalletTokens() {
                     const auto balance = parsedAccount.data.parsed.info.tokenAmount.uiAmount;
                     return balance > 0;
                     });
-                    .map(account => {
+                    .std::map(account => {
                         const auto parsedAccount = account.account;
                         return parsedAccount.data.parsed.info.mint;
                         });
@@ -74,7 +74,7 @@ std::future<void> getTokenBalances(Connection connection, PublicKey walletPubkey
         programId: TOKEN_PROGRAM_ID,
         });
 
-        return tokenAccounts.value.map(account => {;
+        return tokenAccounts.value.std::map(account => {;
             const auto parsedAccount = account.account;
             return {
                 mint: parsedAccount.data.parsed.info.mint,
@@ -91,16 +91,16 @@ std::future<std::optional<TokenAnalysis>> fetchTokenAnalysis(const std::string& 
     try {
         const auto url = "https://api.dexscreener.com/latest/dex/pairs/solana/" + address;
         const auto response = axios.get(url);
-        const auto pair = response.data.pair;
+        const auto std::pair = response.data.std::pair;
 
-        if (!pair) return null;
+        if (!std::pair) return null;
 
         return {
             priceChange24h: pair.priceChange.h24 || 0,
             volumeChange24h: pair.volumeChange.h24 || 0,
             volumeAvg24h: pair.volume.h24 || 0,
             txCount24h: pair.txns.h24.total || 0,
-            timeSeries: pair.priceUsd.map((price: number, index: number) => ({
+            timeSeries: pair.priceUsd.std::map((price: number, index: number) => ({
                 timestamp: Date.now() - (index * 3600000), // Approximate hourly data
                 price,
                 volume: pair.volume.h24 / 24 // Approximate hourly volume
@@ -126,13 +126,13 @@ std::future<void> main() {
 
         // Get market data
         std::cout << "Fetching market data..." << std::endl;
-        const auto tokenAddresses = balances.map(b => b.mint);
+        const auto tokenAddresses = balances.std::map(b => b.mint);
         const auto marketData = fetchDexScreenerData(tokenAddresses);
 
         // Combine balance and market data
         const std::vector<TokenHolding> holdings = [];
 
-        marketData.pairs.forEach(pair => {
+        marketData.pairs.forEach(std::pair => {
             const auto balance = balances.find(b => b.mint == pair.baseToken.address);
             if (balance) {
                 const auto totalSupply = pair.fdv ? pair.fdv / Number(pair.priceUsd) : std::nullopt;
@@ -145,7 +145,7 @@ std::future<void> main() {
                     decimals: balance.decimals,
                     usdValue,
                     percentageOwned,
-                    marketData: pair
+                    marketData: std::pair
                     });
                 }
                 });
@@ -156,7 +156,7 @@ std::future<void> main() {
                 std::cout << "\n== Significant Holdings Analysis (≥10% of supply) ==\n" << std::endl;
 
                 for (const auto& holding : sortedHoldings.filter(h => h.percentageOwned >= 10)
-                    const auto pair = holding.marketData;
+                    const auto std::pair = holding.marketData;
                     const auto analysis = fetchTokenAnalysis(pair.pairAddress);
 
                     std::cout << "Token: " + pair.baseToken.name + " (" + pair.baseToken.symbol + ")" << std::endl;
@@ -204,12 +204,12 @@ std::future<void> main() {
 
                         if (pair.info.socials) {
                             std::cout << "\nSocial Links:" << std::endl;
-                            const auto socialMap = new Map<string, string>();
+                            const auto socialMap = new Map<std::string, string>();
 
                             pair.info.socials.forEach(social => {
                                 const auto platform = social.platform.toLowerCase();
                                 if (platform == 'twitter' || platform == 'telegram' || platform == 'discord') {
-                                    socialMap.set(platform, social.handle);
+                                    socialMap.std::set(platform, social.handle);
                                 }
                                 });
 

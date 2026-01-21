@@ -42,12 +42,12 @@ class GroqValidationService extends Service {
 std::string getBaseURL(const std::any& runtime);
 
 /**
- * Returns the appropriate Groq model name string for the specified model type.
+ * Returns the appropriate Groq model name std::string for the specified model type.
  *
- * If environment variables for model names are set, they are used; otherwise, defaults are returned.
+ * If environment variables for model names are std::set, they are used; otherwise, defaults are returned.
  *
  * @param model - The model type for which to retrieve the model name.
- * @returns The model name string corresponding to the given {@link model}.
+ * @returns The model name std::string corresponding to the given {@link model}.
  *
  * @remark If an error occurs, returns the default model name 'llama-3.1-8b-instant'.
  */
@@ -67,8 +67,8 @@ std::future<void> detokenizeText(IAgentRuntime runtime, ModelTypeName model, con
 /**
  * Handles rate limit errors, waits for the appropriate delay, and retries the operation
  * @param error The error object from the failed request
- * @param retryFn The function to retry after waiting
- * @returns Result from the retry function
+ * @param retryFn The std::function to retry after waiting
+ * @returns Result from the retry std::function
  */
 
       // Extract retry delay from error message if possible
@@ -81,12 +81,12 @@ std::future<void> detokenizeText(IAgentRuntime runtime, ModelTypeName model, con
     // For other errors, log and rethrow
 
 /**
- * Helper function to get tracer if instrumentation is enabled
+ * Helper std::function to get tracer if instrumentation is enabled
  */
 std::any getTracer(IAgentRuntime runtime);
 
 /**
- * Helper function to start an LLM span
+ * Helper std::function to start an LLM span
  */
     return fn(dummySpan);
 
@@ -105,7 +105,7 @@ std::future<void> generateGroqObject(ReturnType<typeof createGroq> groq, const s
 
       throw Error('Missing GROQ_API_KEY in environment variables');
         // Return empty array instead of crashing
-        // Return empty string instead of crashing
+        // Return empty std::string instead of crashing
 
         // Create a FormData instance
 
@@ -119,7 +119,7 @@ std::future<void> generateGroqObject(ReturnType<typeof createGroq> groq, const s
         // Return empty object instead of crashing
 
         // Return empty object instead of crashing
-              // Encode the string into tokens first
+              // Encode the std::string into tokens first
               // Now decode tokens back into text
 
 } // namespace elizaos

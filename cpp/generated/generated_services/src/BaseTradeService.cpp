@@ -4,17 +4,17 @@ BaseTradeService::BaseTradeService(std::shared_ptr<IAgentRuntime> runtime_, std:
     this->tradingConfig = DEFAULT_CONFIG;
 }
 
-any BaseTradeService::getWalletService()
+std::any BaseTradeService::getWalletService()
 {
     return this->walletService;
 }
 
-any BaseTradeService::getDataService()
+std::any BaseTradeService::getDataService()
 {
     return this->dataService;
 }
 
-any BaseTradeService::getAnalyticsService()
+std::any BaseTradeService::getAnalyticsService()
 {
     return this->analyticsService;
 }

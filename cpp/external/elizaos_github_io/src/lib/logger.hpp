@@ -24,12 +24,12 @@ using LogLevel = std::variant<"error", "warn", "info", "debug", "trace">;
  * Logger interface
  */
 struct Logger {
-    (message: string, data?: Record<string, unknown>) => void error;
-    (message: string, data?: Record<string, unknown>) => void warn;
-    (message: string, data?: Record<string, unknown>) => void info;
-    (message: string, data?: Record<string, unknown>) => void debug;
-    (message: string, data?: Record<string, unknown>) => void trace;
-    (name: string) => Logger child;
+    (message: std::string, data?: Record<std::string, unknown>) => void error;
+    (message: std::string, data?: Record<std::string, unknown>) => void warn;
+    (message: std::string, data?: Record<std::string, unknown>) => void info;
+    (message: std::string, data?: Record<std::string, unknown>) => void debug;
+    (message: std::string, data?: Record<std::string, unknown>) => void trace;
+    (name: std::string) => Logger child;
 };
 
 /**
@@ -38,7 +38,7 @@ struct Logger {
 struct LoggerConfig {
     LogLevel minLevel;
     std::optional<std::unordered_map<std::string, std::string>> context;
-    std::optional<string[]; // Changed from name to nameSegments> nameSegments;
+    std::optional<std::string[]; // Changed from name to nameSegments> nameSegments;
 };
 
 /**
@@ -54,7 +54,7 @@ struct LoggerConfig {
  */
 
 /**
- * Hash string to number
+ * Hash std::string to number
  */
 double hashString(const std::string& str);
 

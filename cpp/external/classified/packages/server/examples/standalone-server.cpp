@@ -60,7 +60,7 @@ std::future<void> startServer() {
         std::cout << "   WebSocket: ws://" + host + ":" + port + "/" << std::endl;
 
         // Graceful shutdown
-        const auto gracefulShutdown = async () => {;
+        const auto gracefulShutdown = std::async () => {;
             std::cout << "🛑 Graceful shutdown initiated..." << std::endl;
             server.stop();
             logger.success('✅ Server stopped successfully');

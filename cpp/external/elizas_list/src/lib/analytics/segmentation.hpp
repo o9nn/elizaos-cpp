@@ -22,7 +22,7 @@ struct UserSegment {
 };
 
 class UserSegmentation {
-  static async generateSegments(): Promise<UserSegment[]> {
+  static std::async generateSegments(): Promise<UserSegment[]> {
     return [
       {
         id: 'active',

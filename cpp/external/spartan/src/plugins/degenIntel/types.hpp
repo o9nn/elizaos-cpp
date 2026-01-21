@@ -31,13 +31,13 @@ using TDataProvider = std::string;
  * @typedef { object } IToken
  * @property { TDataProvider } provider - The data provider of the token.
  * @property { TChain } chain - The blockchain the token belongs to.
- * @property { string } address - The address of the token.
+ * @property { std::string } address - The address of the token.
  * @property { number } decimals - The number of decimal places for the token.
  * @property { number } liquidity - The liquidity of the token.
  * @property { number } marketcap - The market cap of the token.
- * @property { string } logoURI - The URI for the token's logo.
- * @property { string } name - The name of the token.
- * @property { string } symbol - The symbol of the token.
+ * @property { std::string } logoURI - The URI for the token's logo.
+ * @property { std::string } name - The name of the token.
+ * @property { std::string } symbol - The symbol of the token.
  * @property { number } volume24hUSD - The 24-hour trading volume in USD.
  * @property { number } rank - The rank of the token.
  * @property { number } price - The current price of the token.
@@ -129,7 +129,7 @@ using Job = {
  * @property {string} timeslot - The timeslot of the sentiment.
  * @property {boolean} processed - Indicates if the sentiment has been processed.
  * @property {string} [text] - The text associated with the sentiment.
- * @property {Array<{ token: string; sentiment: number; reason: string; }>} [occuringTokens] - The array of tokens with their sentiment and reason.
+ * @property {Array<{ token: std::string; sentiment: number; reason: std::string; }>} [occuringTokens] - The array of tokens with their sentiment and reason.
  */
 struct Sentiment {
     std::string timeslot;

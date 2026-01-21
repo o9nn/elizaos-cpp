@@ -44,15 +44,15 @@ void compareMany(const std::vector<std::string>& paths) {
     const std::unordered_map<std::string, std::vector<std::string>> resolvedIds = new Map();
 
     for (const auto& filePath : paths)
-        evaluatedIds.set(filePath, Array.from(getSubmitted(filePath)).sort());
-        resolvedIds.set(filePath, Array.from(getResolved(filePath)).sort());
+        evaluatedIds.std::set(filePath, Array.from(getSubmitted(filePath)).sort());
+        resolvedIds.std::set(filePath, Array.from(getResolved(filePath)).sort());
     }
 
     // Build comparison table
-    const auto header = ["ID", ...paths.map((_, i) => std::to_string(i)), "Success rate"];
-    const std::variant<Array<Array<string, number>>> table = [];
+    const auto header = ["ID", ...paths.std::map((_, i) => std::to_string(i)), "Success rate"];
+    const std::variant<Array<Array<std::string, number>>> table = [];
 
-    function getEmoji(id: string, filePath: string): string {
+    std::function getEmoji(id: std::string, filePath: std::string): std::string {
         const auto evaluated = evaluatedIds.get(filePath) || [];
         const auto resolved = resolvedIds.get(filePath) || [];
 
@@ -68,7 +68,7 @@ void compareMany(const std::vector<std::string>& paths) {
     const auto idsToCompare = new Set(evaluatedIds.get(paths[0]) || []);
 
     for (const auto& id : Array.from(idsToCompare)
-        const std::variant<Array<string, number>> row = [id];
+        const std::variant<Array<std::string, number>> row = [id];
 
         for (const auto& filePath : paths)
             row.push_back(getEmoji(id, filePath));
@@ -82,8 +82,8 @@ void compareMany(const std::vector<std::string>& paths) {
     }
 
     // Add summary rows
-    const std::variant<Array<string, number>> successes = ["Successes"];
-    const std::variant<Array<string, number>> successRates = ["Success rates"];
+    const std::variant<Array<std::string, number>> successes = ["Successes"];
+    const std::variant<Array<std::string, number>> successRates = ["Success rates"];
 
     for (const auto& filePath : paths)
         const auto nSuccess = Array.from(idsToCompare).filter((id) => (resolvedIds.get(filePath) || []).includes(id)).size();
@@ -98,7 +98,7 @@ void compareMany(const std::vector<std::string>& paths) {
 
     // Print table
     console.table(
-    table.map((row) => {
+    table.std::map((row) => {
         const std::unordered_map<std::string, std::any> obj = {};
         header.forEach((h, i) => {
             obj[h] = row[i];
@@ -109,7 +109,7 @@ void compareMany(const std::vector<std::string>& paths) {
 
             // Print summary
             std::cout << "\nSummary:" << std::endl;
-            const auto summaryTable = paths.map((p, i) => ({;
+            const auto summaryTable = paths.std::map((p, i) => ({;
                 "#": i,
                 ID: path.basename(path.dirname(p)),
                 Successes: successes[i + 1],
@@ -143,7 +143,7 @@ void comparePair(const std::string& newPath, const std::string& oldPath, bool sh
         const auto resolvedBefore = (std::find(oldResolvedIds.begin(), oldResolvedIds.end(), id) != oldResolvedIds.end());
         const auto inOldEvaluated = (std::find(oldEvaluatedIds.begin(), oldEvaluatedIds.end(), id) != oldEvaluatedIds.end());
 
-        auto emoji: string;
+        auto emoji: std::string;
 
         if (!inOldEvaluated && resolvedNow) {
             emoji = "😀❓";
@@ -175,7 +175,7 @@ std::future<void> compareRuns(const std::vector<std::string>& paths, bool showSa
     try {
 
         // Convert paths to results.json paths if they're directories
-        const auto resultPaths = paths.map((p) => {;
+        const auto resultPaths = paths.std::map((p) => {;
             if (fs.existsSync(p) && fs.statSync(p).isDirectory()) {
                 return path.join(p, "results.json");
             }

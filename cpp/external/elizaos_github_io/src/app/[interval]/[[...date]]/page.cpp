@@ -53,7 +53,7 @@ std::future<void> IntervalSummaryPage() {
 
         try {
             // If no date provided, use the latest date with proper formatting for the interval type
-            auto targetDate: string;
+            auto targetDate: std::string;
             if (!date || date.length == 0) {
                 // Format the latest date based on interval type
                 const auto latestDateObj = new UTCDate(latestDate);

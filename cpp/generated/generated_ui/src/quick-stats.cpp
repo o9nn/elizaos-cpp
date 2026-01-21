@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/run/quick-stats.h"
 
-std::shared_ptr<Promise<string>> quickStats(string directory)
+std::shared_ptr<Promise<string>> quickStats(std::string directory)
 {
     auto dir = path->resolve(directory);
     auto trajFiles = findTrajFiles(dir);
@@ -9,7 +9,7 @@ std::shared_ptr<Promise<string>> quickStats(string directory)
         return std::string("No .traj files found.");
     }
     auto apiCalls = array<double>();
-    auto filesByExitStatus = std::make_shared<Map<string, array<string>>>();
+    auto filesByExitStatus = std::make_shared<Map<std::string, array<string>>>();
     for (auto& filePath : trajFiles)
     {
         try
@@ -21,12 +21,12 @@ std::shared_ptr<Promise<string>> quickStats(string directory)
             if (data["info"]["exit_status"]) {
                 auto status = data["info"]["exit_status"];
                 if (!filesByExitStatus->has(status)) {
-                    filesByExitStatus->set(status, array<any>());
+                    filesByExitStatus->std::set(status, array<any>());
                 }
                 filesByExitStatus->get(status)->push(filePath);
             }
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("Error processing ") + filePath + std::string(": ") + error + string_empty);
         }
@@ -65,7 +65,7 @@ std::shared_ptr<Promise<string>> quickStats(string directory)
         {
             result->push(std::string("\
 ## `") + status + std::string("` - ") + files->get_length() + std::string(" trajectories"));
-            auto subdirs = std::make_shared<Set>(files->map([=](auto file) mutable
+            auto subdirs = std::make_shared<Set>(files->std::map([=](auto file) mutable
             {
                 return path->dirname(file);
             }
@@ -78,7 +78,7 @@ std::shared_ptr<Promise<string>> quickStats(string directory)
 };
 
 
-array<string> findTrajFiles(string directory)
+array<string> findTrajFiles(std::string directory)
 {
     shared results = array<string>();
     auto walk = [=](auto dir) mutable

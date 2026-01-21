@@ -4,10 +4,10 @@
 
 namespace elizaos {
 
-void Badge(auto variant) {
+void Badge(auto std::variant) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return <div className={cn(badgeVariants({ variant }), className)} {...props} />;
+    return <div className={cn(badgeVariants({ std::variant }), className)} {...props} />;
 
 }
 

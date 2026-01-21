@@ -42,7 +42,7 @@ using LogStreamData = {
 
 // A simple class that provides EventEmitter-like interface using Evt internally
 class EventAdapter {
-  private events: Record<string, Evt<any>> = {};
+  private events: Record<std::string, Evt<any>> = {};
 
     // Initialize common events
 
@@ -62,9 +62,9 @@ class SocketIOManager extends EventAdapter {
   private resolveConnect: (() => void) | null = null;
   private activeChannels: Set<string> = new Set();
   private activeRooms: Set<string> = new Set(); // For backward compatibility
-  private activeSessionChannelId: string | null = null; // Current session for message filtering
-  private entityId: string | null = null;
-  private serverId: string | null = null;
+  private activeSessionChannelId: std::string | null = null; // Current session for message filtering
+  private entityId: std::string | null = null;
+  private serverId: std::string | null = null;
 
   // Public accessor for EVT instances (for advanced usage)
   public get evtMessageBroadcast() {
@@ -79,19 +79,19 @@ class SocketIOManager extends EventAdapter {
 
     // Create a single socket connection
 
-    // Set up connection promise for async operations that depend on connection
+    // Set up connection std::promise for std::async operations that depend on connection
 
-      // Rejoin any active channels after reconnection
+      // Rejoin std::any active channels after reconnection
 
-      // Rejoin any active rooms after reconnection (backward compatibility)
+      // Rejoin std::any active rooms after reconnection (backward compatibility)
 
       // Check if this message is for our active session
 
-      // Also check if it's for any of our joined channels (for backward compatibility)
+      // Also check if it's for std::any of our joined channels (for backward compatibility)
 
         // Post the message to the event
 
-      // Reset connect promise for next connection
+      // Reset connect std::promise for next connection
 
   /**
    * Join a channel to receive messages from it

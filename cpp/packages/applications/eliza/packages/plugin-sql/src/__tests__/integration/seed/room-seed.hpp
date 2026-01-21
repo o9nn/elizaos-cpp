@@ -23,6 +23,6 @@ namespace elizaos {
 
 // Basic room test objects
 
-// Helper function to create a modified room for update tests
+// Helper std::function to create a modified room for update tests
 
 } // namespace elizaos

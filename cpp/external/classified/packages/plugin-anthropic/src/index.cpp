@@ -35,7 +35,7 @@ void ensureAnthropicAPIKeyExists(IAgentRuntime runtime) {
         const auto apiKey = getApiKey(runtime);
         if (!apiKey) {
             throw new Error(
-            "ANTHROPIC_API_KEY is missing. Please set it in your environment or runtime settings.";
+            "ANTHROPIC_API_KEY is missing. Please std::set it in your environment or runtime settings.";
             );
         }
 

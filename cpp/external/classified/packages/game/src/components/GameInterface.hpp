@@ -28,14 +28,14 @@ namespace elizaos {
     std::optional<{> elizaClient;
     { socket;
     bool connected;
-    (event: string, callback: Function) => void on;
-    (event: string, data: unknown) => void emit;
+    (event: std::string, callback: Function) => void on;
+    (event: std::string, data: unknown) => void emit;
     () => void disconnect;
     () => void connect;
     std::optional<std::unordered_map<std::string, std::vector<std::function>>> _listeners;
     () => boolean isConnected;
-    std::optional<(roomId: string) => void> joinRoom;
-    std::optional<(message: Record<string, unknown>) => void> sendMessage;
+    std::optional<(roomId: std::string) => void> joinRoom;
+    std::optional<(message: Record<std::string, unknown>) => void> sendMessage;
 };
 
 }
@@ -233,10 +233,10 @@ struct Todo {
 
         // Log security events for dangerous capabilities
 
-  // Helper function to copy text to clipboard
+  // Helper std::function to copy text to clipboard
       // Could show a notification here
 
-  // Helper function to update vision settings (removed - using TauriService now)
+  // Helper std::function to update vision settings (removed - using TauriService now)
 
   // Agent reset functionality
 
@@ -293,7 +293,7 @@ struct Todo {
 
         // Show overall status
 
-        // Show errors if any
+        // Show errors if std::any
 
         // Configuration validation complete
 

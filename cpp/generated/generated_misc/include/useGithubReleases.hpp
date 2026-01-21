@@ -13,21 +13,21 @@ public:
     using std::enable_shared_from_this<GitHubAsset>::shared_from_this;
     double id;
 
-    string name;
+    std::string name;
 
-    string label;
+    std::string label;
 
-    string content_type;
+    std::string content_type;
 
     double size;
 
     double download_count;
 
-    string browser_download_url;
+    std::string browser_download_url;
 
-    string created_at;
+    std::string created_at;
 
-    string updated_at;
+    std::string updated_at;
 };
 
 class GitHubRelease : public object, public std::enable_shared_from_this<GitHubRelease> {
@@ -35,43 +35,43 @@ public:
     using std::enable_shared_from_this<GitHubRelease>::shared_from_this;
     double id;
 
-    string tag_name;
+    std::string tag_name;
 
-    string name;
+    std::string name;
 
-    string body;
+    std::string body;
 
     boolean draft;
 
     boolean prerelease;
 
-    string created_at;
+    std::string created_at;
 
-    string published_at;
+    std::string published_at;
 
     array<std::shared_ptr<GitHubAsset>> assets;
 
-    string html_url;
+    std::string html_url;
 
-    string tarball_url;
+    std::string tarball_url;
 
-    string zipball_url;
+    std::string zipball_url;
 };
 
 class DownloadLink : public object, public std::enable_shared_from_this<DownloadLink> {
 public:
     using std::enable_shared_from_this<DownloadLink>::shared_from_this;
-    any platform;
+    std::any platform;
 
-    any architecture;
+    std::any architecture;
 
-    string filename;
+    std::string filename;
 
-    string size;
+    std::string size;
 
-    string downloadUrl;
+    std::string downloadUrl;
 
-    any type;
+    std::any type;
 };
 
 extern std::function<object()> useGithubReleases;

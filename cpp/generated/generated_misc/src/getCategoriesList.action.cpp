@@ -3,7 +3,7 @@
 std::shared_ptr<Action> getCategoriesListAction = object{
     object::pair{std::string("name"), std::string("GET_CATEGORIES_LIST")}, 
     object::pair{std::string("similes"), array<string>{ std::string("CATEGORIES_LIST"), std::string("COIN_CATEGORIES"), std::string("LIST_CATEGORIES"), std::string("CATEGORY_IDS") }}, 
-    object::pair{std::string("description"), std::string("Use this action to get the complete list of all coin categories (ID map) from CoinGecko. Returns category IDs and names that can be used to filter or search for tokens by category. Useful when the user wants to know what categories exist or needs category IDs for other queries.")}, 
+    object::pair{std::string("description"), std::string("Use this action to get the complete list of all coin categories (ID std::map) from CoinGecko. Returns category IDs and names that can be used to filter or search for tokens by category. Useful when the user wants to know what categories exist or needs category IDs for other queries.")}, 
     object::pair{std::string("parameters"), object{}}, 
     object::pair{std::string("validate"), [=](auto runtime) mutable
     {
@@ -21,7 +21,7 @@ std::shared_ptr<Action> getCategoriesListAction = object{
         {
             auto svc = as<any>(runtime->getService(CoinGeckoService::serviceType));
             if (!svc) {
-                throw any(std::make_shared<Error>(std::string("CoinGeckoService not available")));
+                throw std::any(std::make_shared<Error>(std::string("CoinGeckoService not available")));
             }
             logger->info(std::string("[GET_CATEGORIES_LIST] Fetching all coin categories"));
             auto categoriesList = std::async([=]() { svc->getCategoriesList(); });
@@ -30,7 +30,7 @@ std::shared_ptr<Action> getCategoriesListAction = object{
                 std::async([=]() { callback(object{
                     object::pair{std::string("text"), std::string("text")}, 
                     object::pair{std::string("actions"), array<string>{ std::string("GET_CATEGORIES_LIST") }}, 
-                    object::pair{std::string("content"), as<Record<string, any>>(as<any>(categoriesList))}, 
+                    object::pair{std::string("content"), as<Record<std::string, any>>(as<any>(categoriesList))}, 
                     object::pair{std::string("source"), message->content->source}
                 }); });
             }
@@ -41,7 +41,7 @@ std::shared_ptr<Action> getCategoriesListAction = object{
                 object::pair{std::string("values"), categoriesList}
             };
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             auto msg = (is<Error>(error)) ? error->message : String(error);
             logger->error(std::string("[GET_CATEGORIES_LIST] Action failed: ") + msg + string_empty);

@@ -62,7 +62,7 @@ std::string getCliInstallTag() {
         } else if ((std::find(version.begin(), version.end(), "beta") != version.end())) {
             return "beta";
         }
-        return ""; // Return empty string for stable or non-tagged versions (implies latest);
+        return ""; // Return empty std::string for stable or non-tagged versions (implies latest);
 
 }
 

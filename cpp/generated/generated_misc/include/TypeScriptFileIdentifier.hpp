@@ -11,8 +11,8 @@ class TypeScriptFileIdentifier;
 class TypeScriptFileIdentifier : public object, public std::enable_shared_from_this<TypeScriptFileIdentifier> {
 public:
     using std::enable_shared_from_this<TypeScriptFileIdentifier>::shared_from_this;
-    virtual boolean isTypeScriptFile(string file);
-    virtual array<string> getTypeScriptFiles(string directory);
+    virtual boolean isTypeScriptFile(std::string file);
+    virtual array<string> getTypeScriptFiles(std::string directory);
 };
 
 #endif

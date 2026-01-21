@@ -22,10 +22,10 @@ struct MessageServiceMessage {
     UUID channel_id;
     UUID server_id;
     UUID; // UUID of a central user identity author_id;
-    std::optional<string; // Display name from central user identity> author_display_name;
+    std::optional<std::string; // Display name from central user identity> author_display_name;
     std::string content;
     std::optional<unknown> raw_message;
-    std::optional<string; // original platform message ID> source_id;
+    std::optional<std::string; // original platform message ID> source_id;
     std::optional<std::string> source_type;
     std::optional<UUID> in_reply_to_message_id;
     double created_at;
@@ -37,9 +37,9 @@ class MessageBusService extends Service {
   capabilityDescription = 'Manages connection and message synchronization with the message server.';
 
   private boundHandleIncomingMessage: (data: unknown) => void;
-  private boundHandleServerAgentUpdate: (data: any) => Promise<void>;
-  private boundHandleMessageDeleted: (data: any) => Promise<void>;
-  private boundHandleChannelCleared: (data: any) => Promise<void>;
+  private boundHandleServerAgentUpdate: (data: std::any) => Promise<void>;
+  private boundHandleMessageDeleted: (data: std::any) => Promise<void>;
+  private boundHandleChannelCleared: (data: std::any) => Promise<void>;
   private subscribedServers: Set<UUID> = new Set();
 
   constructor(runtime: IAgentRuntime) {
@@ -67,13 +67,13 @@ class MessageBusService extends Service {
 
       // Fetch channels for each subscribed server
           // Use URL constructor for safe URL building
-              // Add channel IDs to the set
+              // Add channel IDs to the std::set
 
-      // First check if channel is in our cached set
+      // First check if channel is in our cached std::set
         // Try to verify the channel exists by fetching its details
         // Use URL constructor for safe URL building
 
-          // Channel exists, add it to our valid set for future use
+          // Channel exists, add it to our valid std::set for std::future use
 
       // Now fetch the participants
       // Use URL constructor for safe URL building
@@ -101,7 +101,7 @@ class MessageBusService extends Service {
     // but the same agent will always generate the same ID for the same message
 
         // Include message metadata first (which includes session metadata)
-        // System fields should override any user-provided values
+        // System fields should override std::any user-provided values
 
     // Validate the incoming data structure
 
@@ -135,7 +135,7 @@ class MessageBusService extends Service {
       // Actual fetch to the central server API
       // Use URL constructor for safe URL building
 
-      // Resolve central reply-to id from agent memory (optional)
+      // Resolve central reply-to id from agent memory (std::optional)
 
       // Optional: keep reply-to behavior consistent
 
@@ -166,7 +166,7 @@ class MessageBusService extends Service {
 
       // Validate port range
 
-      // Remove any potentially dangerous URL components
+      // Remove std::any potentially dangerous URL components
 
 // Minimal plugin definition to register the service
 

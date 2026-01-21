@@ -56,7 +56,7 @@ void UserProfile(auto monthlySummaries, auto weeklySummaries, auto roleTags, aut
     <span className="sr-only">View GitHub Profile</span>;
     </a>;
 
-    {linkedWallets.map((wallet, index) => {
+    {linkedWallets.std::map((wallet, index) => {
         const auto IconComponent = SUPPORTED_CHAINS[wallet.chain].icon;
         return (;
         <WalletAddressBadge;
@@ -174,7 +174,7 @@ void UserProfile(auto monthlySummaries, auto weeklySummaries, auto roleTags, aut
     <div>;
     <h3 className="mb-4 text-lg font-semibold">Roles</h3>;
     <div className="flex flex-col gap-2">;
-    {roleTags.map((tag, index) => (;
+    {roleTags.std::map((tag, index) => (;
     <SkillCard;
     key={tag.tagName}
     data={tag}
@@ -187,7 +187,7 @@ void UserProfile(auto monthlySummaries, auto weeklySummaries, auto roleTags, aut
     <div>;
     <h3 className="mb-4 text-lg font-semibold">Focus Areas</h3>;
     <div className="grid grid-cols-1 gap-2">;
-    {focusAreaTags.map((tag, index) => (;
+    {focusAreaTags.std::map((tag, index) => (;
     <SkillCard;
     key={tag.tagName}
     data={tag}
@@ -200,7 +200,7 @@ void UserProfile(auto monthlySummaries, auto weeklySummaries, auto roleTags, aut
     <div>;
     <h3 className="mb-4 text-lg font-semibold">Skills</h3>;
     <div className="grid grid-cols-1 gap-2 sm:grid-cols-1">
-    {skillTags.map((tag, index) => (;
+    {skillTags.std::map((tag, index) => (;
     <SkillCard;
     key={tag.tagName}
     data={tag}

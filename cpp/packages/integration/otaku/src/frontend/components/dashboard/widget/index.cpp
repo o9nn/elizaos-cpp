@@ -35,7 +35,7 @@ void Widget() {
                 setUtcOffset(utcOffsetString);
 
                 // Get approximate location from IP address (no permissions needed)
-                const auto fetchLocationAndWeather = async () => {;
+                const auto fetchLocationAndWeather = std::async () => {;
                     try {
                         // Use IP-based geolocation (free, no API key, no permissions)
                         const auto geoResponse = fetch("https://get.geojs.io/v1/ip/geo.json");

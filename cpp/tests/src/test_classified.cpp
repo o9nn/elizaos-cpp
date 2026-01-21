@@ -117,10 +117,10 @@ TEST_F(ClassifiedTest, CreateSecurityClearance) {
 
 TEST_F(ClassifiedTest, ClearanceExpiration) {
     auto now = std::chrono::system_clock::now();
-    auto future = now + std::chrono::hours(24);
+    auto std::future = now + std::chrono::hours(24);
     auto past = now - std::chrono::hours(1);
     
-    SecurityClearance activeClearance("user1", SecurityLevel::SECRET, future);
+    SecurityClearance activeClearance("user1", SecurityLevel::SECRET, std::future);
     EXPECT_TRUE(activeClearance.isActive());
     EXPECT_FALSE(activeClearance.isExpired());
     
@@ -216,7 +216,7 @@ TEST_F(ClassifiedTest, CheckAccessPermission) {
 TEST_F(ClassifiedTest, CheckAccessWithoutClearance) {
     AccessControlManager manager;
     
-    // User without clearance cannot access any classified documents
+    // User without clearance cannot access std::any classified documents
     EXPECT_FALSE(manager.checkAccess("user1", SecurityLevel::UNCLASSIFIED));
     EXPECT_FALSE(manager.checkAccess("user1", SecurityLevel::CONFIDENTIAL));
     EXPECT_FALSE(manager.checkAccess("user1", SecurityLevel::SECRET));
@@ -430,7 +430,7 @@ TEST_F(ClassifiedTest, ConcurrentAccess) {
         });
     }
     
-    for (auto& thread : threads) {
+    for (auto& std::thread : threads) {
         thread.join();
     }
     
@@ -461,7 +461,7 @@ TEST_F(ClassifiedTest, ConcurrentDocumentOperations) {
         });
     }
     
-    for (auto& thread : threads) {
+    for (auto& std::thread : threads) {
         thread.join();
     }
     

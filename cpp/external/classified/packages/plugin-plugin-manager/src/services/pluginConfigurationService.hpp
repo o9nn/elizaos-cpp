@@ -40,7 +40,7 @@ class PluginConfigurationService extends Service {
   /**
    * Get current plugin configuration status
    */
-    // Just return environment variables that are set
+    // Just return environment variables that are std::set
 
     // Common plugin environment variable patterns
 
@@ -48,7 +48,7 @@ class PluginConfigurationService extends Service {
    * Check if plugin has valid configuration
    */
 
-    // Check if all required variables are set
+    // Check if all required variables are std::set
 
   /**
    * Get missing environment variables for a plugin

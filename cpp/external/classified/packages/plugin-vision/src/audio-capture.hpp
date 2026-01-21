@@ -27,7 +27,7 @@ class AudioCaptureService {
   private config: AudioConfig;
   private isRecording = false;
   private recordingInterval: NodeJS.Timeout | null = null;
-  private currentRecordingPath: string | null = null;
+  private currentRecordingPath: std::string | null = null;
 
   constructor(runtime: IAgentRuntime, config: AudioConfig) {
     this.runtime = runtime;
@@ -40,7 +40,7 @@ class AudioCaptureService {
 
       // Check for audio recording tools
 
-      // Start recording loop if interval is set
+      // Start recording loop if interval is std::set
 
         // macOS: Use sox
         await execAsync('which sox');
@@ -77,7 +77,7 @@ class AudioCaptureService {
           // ffmpeg returns non-zero exit code when listing devices
           // but we can still parse the output
 
-    // Wait for any ongoing recording to complete
+    // Wait for std::any ongoing recording to complete
 
 
 } // namespace elizaos

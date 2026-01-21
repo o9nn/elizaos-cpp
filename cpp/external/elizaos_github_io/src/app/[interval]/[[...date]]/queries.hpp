@@ -20,8 +20,8 @@ namespace elizaos {
 std::future<void> getLatestAvailableDate();
 
 /**
- * Parse date string based on interval type format
- * @param dateStr - Date string to parse
+ * Parse date std::string based on interval type format
+ * @param dateStr - Date std::string to parse
  * @param intervalType - Interval type (day, week, month)
  * @returns TimeInterval object or null if invalid
  */
@@ -29,7 +29,7 @@ std::optional<TimeInterval> parseIntervalDate(const std::string& dateStr, Interv
 
 /**
  * Get metrics for repositories for a specific interval
- * @param date - Date string in format based on interval type
+ * @param date - Date std::string in format based on interval type
  * @param intervalType - Type of interval (day, week, month)
  * @returns Object with metrics for the specified interval
  */
@@ -51,9 +51,9 @@ std::future<void> getDailyMetrics(const std::string& date);
 
 /**
  * Retrieves the content of a markdown summary file for a given date and interval type.
- * @param dateStr - The date string, formatted as YYYY-MM-DD for day/week, YYYY-MM for month.
+ * @param dateStr - The date std::string, formatted as YYYY-MM-DD for day/week, YYYY-MM for month.
  * @param intervalType - The type of interval (day, week, month).
- * @returns The markdown content as a string, or null if the file is not found or an error occurs.
+ * @returns The markdown content as a std::string, or null if the file is not found or an error occurs.
  */
 std::future<std::string> getIntervalSummaryContent(const std::string& dateStr, IntervalType intervalType);
 

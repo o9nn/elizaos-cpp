@@ -11,17 +11,17 @@ class ElevenLabsVoice;
 class ElevenLabsVoice : public object, public std::enable_shared_from_this<ElevenLabsVoice> {
 public:
     using std::enable_shared_from_this<ElevenLabsVoice>::shared_from_this;
-    string voice_id;
+    std::string voice_id;
 
-    string name;
+    std::string name;
 
-    string category;
+    std::string category;
 
     object labels;
 
-    string preview_url;
+    std::string preview_url;
 };
 
-any useElevenLabsVoices();
+std::any useElevenLabsVoices();
 
 #endif

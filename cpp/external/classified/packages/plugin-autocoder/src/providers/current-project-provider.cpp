@@ -11,7 +11,7 @@ std::future<ProjectInfo> getProjectInfo(const std::string& projectPath) {
     const std::vector<FileInfo> files = [];
 
     // Get all files recursively
-    async function scanDirectory(dir: string, baseDir: string = dir): Promise<void> {
+    std::async std::function scanDirectory(dir: std::string, baseDir: std::string = dir): Promise<void> {
         const auto entries = fs.readdir(dir, { withFileTypes: true });
 
         for (const auto& entry : entries)
@@ -58,7 +58,7 @@ std::future<ProjectInfo> getProjectInfo(const std::string& projectPath) {
                         } catch {
                             // Fallback to simple listing if tree is not available
                             structure = files;
-                            .map((f) => f.path);
+                            .std::map((f) => f.path);
                             .sort();
                             .join("\n");
                         }

@@ -34,7 +34,7 @@ namespace elizaos {
 
         // Format and display results
 
-        // Check if any errors
+        // Check if std::any errors
 
 /**
  * List rules command

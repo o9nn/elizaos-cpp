@@ -100,10 +100,10 @@ std::future<std::optional<SolanaOracleInfo>> findRaydiumPool(const std::string& 
     }
 
     interface RaydiumPool {
-        baseMint: string;
-        quoteMint: string;
-        ammId: string;
-        liquidity?: string;
+        baseMint: std::string;
+        quoteMint: std::string;
+        ammId: std::string;
+        liquidity?: std::string;
     }
     const std::vector<RaydiumPool> pools = response.json();
 
@@ -144,7 +144,7 @@ void validateSolanaOracle(SolanaOracleInfo oracle) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     valid: boolean;
-    message: string;
+    message: std::string;
 
 }
 

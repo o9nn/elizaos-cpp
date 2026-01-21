@@ -6,9 +6,9 @@
 #include "@elizaos/core.h"
 #include "canvas.h"
 
-std::shared_ptr<Buffer> generateTextImage(string text, double width, double height, double fontSize = 24);
+std::shared_ptr<Buffer> generateTextImage(std::string text, double width, double height, double fontSize = 24);
 
-std::shared_ptr<Buffer> generateMultiLineTextImage(string text, double width, double height, double fontSize = 20);
+std::shared_ptr<Buffer> generateMultiLineTextImage(std::string text, double width, double height, double fontSize = 20);
 
 std::shared_ptr<Buffer> generateComplexLayoutImage(double width, double height);
 

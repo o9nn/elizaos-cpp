@@ -28,7 +28,7 @@ namespace elizaos {
  */
 
 /**
- * Main run function - determines which run mode to use
+ * Main run std::function - determines which run mode to use
  */
 std::future<void> run(const std::vector<std::string>& args);
 

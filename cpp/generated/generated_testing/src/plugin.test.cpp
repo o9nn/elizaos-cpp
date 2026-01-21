@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/project-starter/src/__tests__/plugin.test.h"
 
-void documentTestResult(string testName, any result, any error)
+void documentTestResult(std::string testName, std::any result, std::any error)
 {
     logger->info(std::string("✓ Testing: ") + testName + string_empty);
     if (error) {
@@ -22,11 +22,11 @@ void documentTestResult(string testName, any result, any error)
                 auto keys = Object->keys(result);
                 if (keys->get_length() > 0) {
                     auto preview = keys->slice(0, 3)->join(std::string(", "));
-                    auto more = (keys->get_length() > 3) ? any(std::string(" +") + (keys->get_length() - 3) + std::string(" more")) : any(string_empty);
+                    auto more = (keys->get_length() > 3) ? std::any(std::string(" +") + (keys->get_length() - 3) + std::string(" more")) : std::any(string_empty);
                     logger->info(std::string("  → {") + preview + string_empty + more + std::string("}"));
                 }
             }
-            catch (const any& e)
+            catch (const std::any& e)
             {
                 logger->info(std::string("  → [Complex object]"));
             }
@@ -35,7 +35,7 @@ void documentTestResult(string testName, any result, any error)
 };
 
 
-any createRealRuntime()
+std::any createRealRuntime()
 {
     shared services = std::make_shared<Map>();
     shared createService = [=](auto serviceType) mutable
@@ -88,14 +88,14 @@ any createRealRuntime()
         object::pair{std::string("getService"), [=](auto serviceType) mutable
         {
             if (!services->has(serviceType)) {
-                services->set(serviceType, createService(serviceType));
+                services->std::set(serviceType, createService(serviceType));
             }
             return services->get(serviceType);
         }
         }, 
         object::pair{std::string("registerService"), [=](auto serviceType, auto service) mutable
         {
-            services->set(serviceType, service);
+            services->std::set(serviceType, service);
         }
         }
     };
@@ -136,7 +136,7 @@ void Main(void)
         {
             expect(plugin->config)->toHaveProperty(std::string("EXAMPLE_PLUGIN_VARIABLE"));
             documentTestResult(std::string("Plugin config check"), object{
-                object::pair{std::string("hasExampleVariable"), (plugin->config) ? any(in(std::string("EXAMPLE_PLUGIN_VARIABLE"), plugin->config)) : any(false)}, 
+                object::pair{std::string("hasExampleVariable"), (plugin->config) ? std::any(in(std::string("EXAMPLE_PLUGIN_VARIABLE"), plugin->config)) : std::any(false)}, 
                 object::pair{std::string("configKeys"), Object->keys(OR((plugin->config), (object{})))}
             });
         }
@@ -161,7 +161,7 @@ void Main(void)
                         }, as<any>(runtime)); });
                         expect(true)->toBe(true);
                     }
-                    catch (const any& e)
+                    catch (const std::any& e)
                     {
                         error = as<std::shared_ptr<Error>>(e);
                         logger->error(std::string("Plugin initialization error:"), e);
@@ -190,7 +190,7 @@ void Main(void)
                     }, as<any>(runtime)); });
                     expect(true)->toBe(false);
                 }
-                catch (const any& e)
+                catch (const std::any& e)
                 {
                     error = as<std::shared_ptr<Error>>(e);
                     expect(error)->toBeTruthy();
@@ -254,7 +254,7 @@ void Main(void)
                     expect(type_of(result))->toBe(std::string("string"));
                     expect(result->get_length())->toBeGreaterThan(10);
                 }
-                catch (const any& e)
+                catch (const std::any& e)
                 {
                     error = as<std::shared_ptr<Error>>(e);
                     logger->error(std::string("TEXT_SMALL model test failed:"), e);
@@ -270,7 +270,7 @@ void Main(void)
         it(std::string("should start the service"), [=]() mutable
         {
             auto runtime = createRealRuntime();
-            any startResult;
+            std::any startResult;
             auto error = nullptr;
             try
             {
@@ -280,7 +280,7 @@ void Main(void)
                 expect(startResult["constructor"]["name"])->toBe(std::string("StarterService"));
                 expect(type_of(startResult["stop"]))->toBe(std::string("function"));
             }
-            catch (const any& e)
+            catch (const std::any& e)
             {
                 error = as<std::shared_ptr<Error>>(e);
                 logger->error(std::string("Service start error:"), e);
@@ -302,7 +302,7 @@ void Main(void)
                 std::async([=]() { StarterService::start(as<any>(runtime)); });
                 expect(true)->toBe(false);
             }
-            catch (const any& e)
+            catch (const std::any& e)
             {
                 startupError = as<std::shared_ptr<Error>>(e);
                 expect(e)->toBeTruthy();
@@ -325,7 +325,7 @@ void Main(void)
                 std::async([=]() { StarterService::stop(as<any>(runtime)); });
                 expect(stopSpy)->toHaveBeenCalled();
             }
-            catch (const any& e)
+            catch (const std::any& e)
             {
                 error = as<std::shared_ptr<Error>>(e);
                 logger->error(std::string("Service stop error:"), e);
@@ -349,7 +349,7 @@ void Main(void)
                 std::async([=]() { StarterService::stop(as<any>(runtime)); });
                 expect(true)->toBe(false);
             }
-            catch (const any& e)
+            catch (const std::any& e)
             {
                 error = as<std::shared_ptr<Error>>(e);
                 expect(error)->toBeTruthy();
@@ -375,7 +375,7 @@ void Main(void)
                 std::async([=]() { StarterService::stop(as<any>(runtime)); });
                 stopSuccess = true;
             }
-            catch (const any& e)
+            catch (const std::any& e)
             {
                 stopError = e;
                 expect(true)->toBe(false);
@@ -384,7 +384,7 @@ void Main(void)
                 object::pair{std::string("success"), stopSuccess}, 
                 object::pair{std::string("errorThrown"), !!stopError}, 
                 object::pair{std::string("errorMessage"), (is<Error>(stopError)) ? stopError->message : String(stopError)}
-            }, (is<Error>(stopError)) ? any(stopError) : any(nullptr));
+            }, (is<Error>(stopError)) ? std::any(stopError) : std::any(nullptr));
         }
         );
     }

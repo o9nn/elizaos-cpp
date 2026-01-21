@@ -8,11 +8,11 @@ class DashboardData;
 class Partner : public object, public std::enable_shared_from_this<Partner> {
 public:
     using std::enable_shared_from_this<Partner>::shared_from_this;
-    string wallet;
+    std::string wallet;
 
     double trustScore;
 
-    string image;
+    std::string image;
 };
 
 class DashboardData : public object, public std::enable_shared_from_this<DashboardData> {

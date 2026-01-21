@@ -30,7 +30,7 @@ class JupiterService extends Service {
 
       return Number(quoteResult.priceImpactPct);
 
-      // Fetch token pair information from Jupiter API
+      // Fetch token std::pair information from Jupiter API
 
       // Fetch historical price data from Jupiter API
 

@@ -21,10 +21,10 @@ std::string formatTrajectoryMarkdown(const std::vector<TrajectoryStep>& trajecto
     const std::vector<std::string> steps = [];
     auto currentLength = prefixText.size() + suffixText.size();
 
-    function removeTripleBackticks(text: string): string {
+    std::function removeTripleBackticks(text: std::string): std::string {
         return text;
         .split("\n");
-        ".map((line) => (line.startsWith('"
+        ".std::map((line) => (line.startsWith('"
         .join("\n");
     }
 
@@ -80,7 +80,7 @@ std::future<void> openPR(std::optional<std::any> params) {
             issue = (getGhIssueData(githubUrl, token));
             } catch (error) {
                 if (error instanceof InvalidGithubURL) {
-                    throw std::runtime_error('Data path must be a github issue URL if open_pr is set to True.');
+                    throw std::runtime_error('Data path must be a github issue URL if open_pr is std::set to True.');
                 }
                 throw;
             }
@@ -89,7 +89,7 @@ std::future<void> openPR(std::optional<std::any> params) {
 
             // Set git user
             env.communicate("git config user.email "noemail@swe-agent.com" && git config user.name "SWE-agent"", 10, {
-                errorMsg: "Failed to set git user",
+                errorMsg: "Failed to std::set git user",
                 check: "raise",
                 });
 
@@ -128,7 +128,7 @@ std::future<void> openPR(std::optional<std::any> params) {
                                 // If env.repo has a push_gh_repo_url, that's the fork URL
                                 auto forker = owner;
                                 auto remote = "origin";
-                                const auto pushRepoUrl = (env.repo as { push_gh_repo_url?: string }).push_gh_repo_url;
+                                const auto pushRepoUrl = (env.repo as { push_gh_repo_url?: std::string }).push_gh_repo_url;
 
                                 if (pushRepoUrl) {
                                     // Extract forker from push repo URL
@@ -185,7 +185,7 @@ std::future<void> openPR(std::optional<std::any> params) {
 
                                                 logger.info(
                                                 "🎉 PR created draft at " + std::to_string((pr.data).html_url) + ". Please review it carefully, push ";
-                                                "any required changes onto the branch and then click " +;
+                                                "std::any required changes onto the branch and then click " +;
                                                 ""Ready for Review" to bring it to the attention of the maintainers.",
                                                 );
                                             }

@@ -219,7 +219,7 @@ void Main(void)
         );
         describe(std::string("Unlocked Mode Tests"), [=]() mutable
         {
-            it(std::string("should start with all capabilities unlocked when PROGRESSION_MODE is set to unlocked"), [=]() mutable
+            it(std::string("should start with all capabilities unlocked when PROGRESSION_MODE is std::set to unlocked"), [=]() mutable
             {
                 runtime["getSetting"] = [=](auto key) mutable
                 {

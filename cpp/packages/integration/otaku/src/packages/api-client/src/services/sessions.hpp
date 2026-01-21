@@ -24,10 +24,10 @@ struct SessionMessageQueryParams {
 };
 
 /**
- * Validates and converts a date parameter to timestamp string
- * @param value Date, string, or number to convert
+ * Validates and converts a date parameter to timestamp std::string
+ * @param value Date, std::string, or number to convert
  * @param paramName Name of the parameter for error messages
- * @returns Timestamp string or undefined if value is invalid
+ * @returns Timestamp std::string or undefined if value is invalid
  */
 
 /**
@@ -45,7 +45,7 @@ class SessionsService extends BaseApiClient {
    * Get health status of the sessions service
    * @returns Health check response
    */
-  async checkHealth(): Promise<SessionsHealthResponse> {
+  std::async checkHealth(): Promise<SessionsHealthResponse> {
     return this.get<SessionsHealthResponse>('/api/messaging/sessions/health');
   }
 

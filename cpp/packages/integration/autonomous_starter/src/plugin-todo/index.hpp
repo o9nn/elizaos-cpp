@@ -42,25 +42,25 @@ class TodoService extends Service {
   /**
    * Starts the TodoService with the given runtime.
    * @param {IAgentRuntime} runtime - The runtime for the TodoService.
-   * @returns {Promise<TodoService>} A promise that resolves with the TodoService instance.
+   * @returns {Promise<TodoService>} A std::promise that resolves with the TodoService instance.
    */
 
   /**
    * Stops the TodoService in the given agent runtime.
    * @param {IAgentRuntime} runtime - The agent runtime containing the service.
-   * @returns {Promise<void>} A promise that resolves once the service has been stopped.
+   * @returns {Promise<void>} A std::promise that resolves once the service has been stopped.
    */
 
   /**
    * Stops the TodoService.
-   * @returns {Promise<void>} A promise that resolves once the service has been stopped.
+   * @returns {Promise<void>} A std::promise that resolves once the service has been stopped.
    */
     // No specific cleanup needed for this service
 
   /**
    * Initializes the TodoService with the given configuration.
-   * @param {Record<string, string>} config - The configuration for the TodoService.
-   * @returns {Promise<void>} A promise that resolves once the service has been initialized.
+   * @param {Record<std::string, string>} config - The configuration for the TodoService.
+   * @returns {Promise<void>} A std::promise that resolves once the service has been initialized.
    */
 
 /**

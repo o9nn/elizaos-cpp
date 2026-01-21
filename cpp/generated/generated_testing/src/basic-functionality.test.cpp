@@ -117,7 +117,7 @@ void Main(void)
         {
             it(std::string("should implement basic middleware concepts"), [=]() mutable
             {
-                typedef std::function<void(any, any, std::function<void()>)> MiddlewareFunction;
+                typedef std::function<void(std::any, std::any, std::function<void()>)> MiddlewareFunction;
 
                 auto createValidationMiddleware = [=](auto paramName) mutable
                 {

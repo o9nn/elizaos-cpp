@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizaos.github.io/src/lib/llm-formatter.h"
 
-string sanitizeBodyText(any text, double maxLength)
+std::string sanitizeBodyText(std::any text, double maxLength)
 {
     if (!text) return string_empty;
     auto processedText = text->replace((new RegExp(std::string("<!--[\s\S]*?-->"))), string_empty);
@@ -10,7 +10,7 @@ string sanitizeBodyText(any text, double maxLength)
 };
 
 
-string formatDataForLLM(std::shared_ptr<IntervalMetrics> metrics, any summaryContent, std::shared_ptr<FormatOptions> options)
+std::string formatDataForLLM(std::shared_ptr<IntervalMetrics> metrics, std::any summaryContent, std::shared_ptr<FormatOptions> options)
 {
     shared parts = array<string>();
     parts->push(std::string("## Metadata"));

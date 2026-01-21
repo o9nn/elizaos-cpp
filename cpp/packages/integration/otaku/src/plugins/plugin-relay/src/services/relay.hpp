@@ -18,8 +18,8 @@ namespace elizaos {
 class RelayService extends Service {
   static serviceType = "cross_chain_bridge" as const;
 
-  private apiUrl: string = "";
-  private apiKey?: string;
+  private apiUrl: std::string = "";
+  private apiKey?: std::string;
   private isTestnet: boolean = false;
 
   constructor(runtime: IAgentRuntime) {
@@ -82,7 +82,7 @@ class RelayService extends Service {
    * Index a transaction for faster processing
    */
 
-      // Don't throw, just log - indexing is optional
+      // Don't throw, just log - indexing is std::optional
 
 
 } // namespace elizaos

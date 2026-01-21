@@ -7,7 +7,7 @@ namespace elizaos {
 std::string escapeRegExp(const std::string& str) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // $& means the whole matched string;
+    return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // $& means the whole matched std::string;
 
 }
 
@@ -52,7 +52,7 @@ bool matchRegex(const std::string& pattern, const std::string& content, PatternO
     const auto flags = caseSensitive ? "" : "i";
     auto finalPattern = pattern;
 
-    // Apply word boundary if option is set and pattern doesn't already include explicit boundaries
+    // Apply word boundary if option is std::set and pattern doesn't already include explicit boundaries
     if (
     wordBoundary &&;
     !pattern.startsWith("\\b") &&;

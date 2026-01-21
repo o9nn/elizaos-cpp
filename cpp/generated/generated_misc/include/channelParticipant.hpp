@@ -4,5 +4,5 @@
 #include "drizzle-orm/pg-core.h"
 #include "./channel.h"
 
-extern any channelParticipantsTable;
+extern std::any channelParticipantsTable;
 #endif

@@ -8,16 +8,16 @@ class AgentTemplate;
 class AgentTemplate : public object, public std::enable_shared_from_this<AgentTemplate> {
 public:
     using std::enable_shared_from_this<AgentTemplate>::shared_from_this;
-    string id;
+    std::string id;
 
-    string label;
+    std::string label;
 
-    string description;
+    std::string description;
 
     Partial<std::shared_ptr<Agent>> template;
 };
 
 extern array<std::shared_ptr<AgentTemplate>> agentTemplates;
-any getTemplateById(string id);
+std::any getTemplateById(std::string id);
 
 #endif

@@ -94,7 +94,7 @@ std::future<void> setupReminderDemo(IAgentRuntime runtime) {
                             }
 
                             // Scenario 4: Future tasks with various deadlines
-                            std::cout << "\n📌 Scenario 4: Creating future tasks with deadlines..." << std::endl;
+                            std::cout << "\n📌 Scenario 4: Creating std::future tasks with deadlines..." << std::endl;
 
                             const auto futureTasks = [;
                             {
@@ -133,7 +133,7 @@ std::future<void> setupReminderDemo(IAgentRuntime runtime) {
                                                 dueDate,
                                                 tags: ["future"],
                                                 });
-                                                std::cout << "✅ Created future task: " + task.name + " (due in " + task.hoursFromNow + "h)" << std::endl;
+                                                std::cout << "✅ Created std::future task: " + task.name + " (due in " + task.hoursFromNow + "h)" << std::endl;
                                             }
 
                                             // Scenario 5: Aspirational tasks (no due date)
@@ -164,7 +164,7 @@ std::future<void> setupReminderDemo(IAgentRuntime runtime) {
                                                 std::cout << "- 1 overdue task (immediate high-priority reminder)" << std::endl;
                                                 std::cout << "- 1 task due in 15 minutes (upcoming reminder)" << std::endl;
                                                 std::cout << "- 3 daily recurring tasks (9 AM & 6 PM reminders)" << std::endl;
-                                                std::cout << "- 3 future tasks with various deadlines" << std::endl;
+                                                std::cout << "- 3 std::future tasks with various deadlines" << std::endl;
                                                 std::cout << "- 3 aspirational tasks (no reminders)" << std::endl;
 
                                                 // Force an immediate reminder check

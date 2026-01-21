@@ -10,22 +10,22 @@ std::shared_ptr<Chain> getChain()
 };
 
 
-string getRpcUrl()
+std::string getRpcUrl()
 {
     auto config = getEvmConfig();
     return config->rpc;
 };
 
 
-string getRpcUrlForChain(string chainType)
+std::string getRpcUrlForChain(std::string chainType)
 {
     static switch_type __switch1068_1734 = {
-        { any(std::string("base")), 1 },
-        { any(std::string("base-sepolia")), 2 },
-        { any(std::string("bsc")), 3 },
-        { any(std::string("bsc-testnet")), 4 },
-        { any(std::string("localhost")), 5 },
-        { any(std::string("anvil")), 6 }
+        { std::any(std::string("base")), 1 },
+        { std::any(std::string("base-sepolia")), 2 },
+        { std::any(std::string("bsc")), 3 },
+        { std::any(std::string("bsc-testnet")), 4 },
+        { std::any(std::string("localhost")), 5 },
+        { std::any(std::string("anvil")), 6 }
     };
     switch (__switch1068_1734[chainType])
     {

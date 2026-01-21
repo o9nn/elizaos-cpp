@@ -19,14 +19,14 @@ namespace elizaos {
 
 
     await displayBanner();
-      // Load env config first before any character loading
+      // Load env config first before std::any character loading
       await loadEnvConfig();
 
         // Validate and load characters from provided paths
 
         // Try to load project agents if no character files specified
 
-          // Check if we're in a directory that might contain agents - allow any directory with package.json
+          // Check if we're in a directory that might contain agents - allow std::any directory with package.json
           // except those explicitly detected as non-ElizaOS (covers projects, plugins, monorepos, etc.)
 
               // Log loaded agent names

@@ -25,7 +25,7 @@ namespace elizaos {
 // Create base test command with basic description only
     // Install plugin dependencies before running tests
 
-// This is the function that registers the command with the CLI
+// This is the std::function that registers the command with the CLI
 
 // Re-for backward compatibility
 * from './actions/component-tests';

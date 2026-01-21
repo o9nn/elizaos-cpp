@@ -18,7 +18,7 @@ std::shared_ptr<Provider> timeProvider = object{
             object::pair{std::string("values"), object{
                 object::pair{std::string("time"), humanReadable}
             }}, 
-            object::pair{std::string("text"), std::string("The current date and time is ") + humanReadable + std::string(". Please use this as your reference for any time-based operations or responses.")}
+            object::pair{std::string("text"), std::string("The current date and time is ") + humanReadable + std::string(". Please use this as your reference for std::any time-based operations or responses.")}
         };
     }
     }

@@ -24,9 +24,9 @@ public:
     std::shared_ptr<TradingConfig> tradingConfig;
 
     BaseTradeService(std::shared_ptr<IAgentRuntime> runtime_, std::shared_ptr<WalletService> walletService_, std::shared_ptr<DataService> dataService_, std::shared_ptr<AnalyticsService> analyticsService_);
-    virtual any getWalletService();
-    virtual any getDataService();
-    virtual any getAnalyticsService();
+    virtual std::any getWalletService();
+    virtual std::any getDataService();
+    virtual std::any getAnalyticsService();
 };
 
 #endif

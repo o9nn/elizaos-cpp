@@ -59,7 +59,7 @@ std::shared_ptr<Action> performScreenAction = object{
                 object::pair{std::string("text"), std::string("Screen actions completed: ") + actionSummary->join(std::string(", ")) + std::string(".")}
             }); });
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("[performScreenAction] Error executing screen actions:"), error);
             std::async([=]() { callback(object{

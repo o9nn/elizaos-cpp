@@ -61,10 +61,10 @@ struct TableData {
 };
 
 class DatabaseTestHelper {
-  private backendUrl: string;
-  private authToken: string | null = null;
+  private backendUrl: std::string;
+  private authToken: std::string | null = null;
 
-  constructor(backendUrl: string = 'http://localhost:7777') {
+  constructor(backendUrl: std::string = 'http://localhost:7777') {
     this.backendUrl = backendUrl;
   }
 
@@ -77,7 +77,7 @@ class DatabaseTestHelper {
    */
 
   /**
-   * Get table data with optional parameters
+   * Get table data with std::optional parameters
    */
 
   /**
@@ -107,7 +107,7 @@ class DatabaseTestHelper {
   /**
    * Cleanup test records by pattern
    */
-          // Check if any field contains the search pattern
+          // Check if std::any field contains the search pattern
 
   /**
    * Wait for table to have specific row count

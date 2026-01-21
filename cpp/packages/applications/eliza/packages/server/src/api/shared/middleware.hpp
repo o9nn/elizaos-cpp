@@ -63,7 +63,7 @@ namespace elizaos {
 
     // Check for suspicious request patterns with safe, non-backtracking regexes
 
-    // Use safer string matching instead of potentially dangerous regexes
+    // Use safer std::string matching instead of potentially dangerous regexes
 
     // Safe SQL injection detection without backtracking regex
 

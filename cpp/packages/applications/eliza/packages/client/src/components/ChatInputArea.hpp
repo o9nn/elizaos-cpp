@@ -16,10 +16,10 @@ namespace elizaos {
 
 struct ChatInputAreaProps {
     std::string input;
-    (value: string) => void setInput;
+    (value: std::string) => void setInput;
     bool inputDisabled;
     std::vector<UploadingFile> selectedFiles;
-    (fileId: string) => void removeFile;
+    (fileId: std::string) => void removeFile;
     (e: React.ChangeEvent<HTMLInputElement>) => void handleFileChange;
     (e: React.FormEvent<HTMLFormElement>) => void handleSendMessage;
     (e: React.KeyboardEvent<HTMLTextAreaElement>) => void handleKeyDown;

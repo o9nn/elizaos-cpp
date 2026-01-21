@@ -35,7 +35,7 @@ std::future<bool> verifyPluginImport(const std::string& repository, const std::s
 /**
  * Attempts to install a plugin in a specific directory
  * @param {string} repository - The plugin repository to install
- * @param {string} versionString - Version string for installation
+ * @param {string} versionString - Version std::string for installation
  * @param {string} directory - Directory to install in
  * @param {string} context - Description of the installation context for logging
  * @param {boolean} skipVerification - Whether to skip import verification

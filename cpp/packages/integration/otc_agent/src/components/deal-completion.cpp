@@ -8,7 +8,7 @@ void DealCompletion() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const auto [shareImageUrl, setShareImageUrl] = useState<string | nullptr>(nullptr);
+        const auto [shareImageUrl, setShareImageUrl] = useState<std::string | nullptr>(nullptr);
         const auto hasPostedRef = useRef(false);
 
         // Memoized derived values
@@ -32,7 +32,7 @@ void DealCompletion() {
 
             // Initialize: record completion and generate image (once per mount)
             useEffect(() => {
-                const auto init = async () => {;
+                const auto init = std::async () => {;
                     // Record deal completion - only once, using ref guard
                     if (!hasPostedRef.current) {
                         hasPostedRef.current = true;
@@ -81,7 +81,7 @@ void DealCompletion() {
                                         init();
                                         }, [quote]);
 
-                                        const auto shareToTwitter = async () => {;
+                                        const auto shareToTwitter = std::async () => {;
                                             // Generate fresh share image
                                             const auto { file } = createDealShareImage({;
                                                 tokenAmount: parseFloat(quote.tokenAmount),
@@ -130,7 +130,7 @@ void DealCompletion() {
                                                         }
                                                         };
 
-                                                        const auto downloadImage = async () => {;
+                                                        const auto downloadImage = std::async () => {;
                                                             const auto { dataUrl } = createDealShareImage({;
                                                                 tokenAmount: parseFloat(quote.tokenAmount),
                                                                 discountBps: quote.discountBps,

@@ -18,7 +18,7 @@ namespace elizaos {
 
 
 
-// Helper function to format market cap values
+// Helper std::function to format market cap values
 std::string formatMarketCap(double value);
 
       // Read parameters from state
@@ -27,7 +27,7 @@ std::string formatMarketCap(double value);
 
       // Extract and validate chain parameter (required)
 
-      // Extract optional timeframe parameter
+      // Extract std::optional timeframe parameter
 
       // Store input parameters for return
 

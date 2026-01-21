@@ -43,7 +43,7 @@ std::future<std::string> fetchWithRetry(const std::string& url, std::optional<Re
 
         return withRetryAndCache(;
         cacheKey,
-        async () => {
+        std::async () => {
             const auto response = fetch(url, options);
 
             // Treat 429 as an error for retry logic

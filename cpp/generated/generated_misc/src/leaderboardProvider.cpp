@@ -24,7 +24,7 @@ std::shared_ptr<Provider> leaderboardProvider = object{
                     object::pair{std::string("userRank"), std::string("userRank")}
                 }}, 
                 object::pair{std::string("data"), object{
-                    object::pair{std::string("topUsers"), topUsers->map([=](auto user) mutable
+                    object::pair{std::string("topUsers"), topUsers->std::map([=](auto user) mutable
                     {
                         return (object{
                             object::pair{std::string("userId"), user->userId}, 
@@ -38,7 +38,7 @@ std::shared_ptr<Provider> leaderboardProvider = object{
                 }}
             };
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             return object{
                 object::pair{std::string("text"), std::string("Unable to fetch leaderboard")}, 

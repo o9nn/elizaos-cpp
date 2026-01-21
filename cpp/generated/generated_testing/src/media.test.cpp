@@ -1,7 +1,7 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/api-client/src/__tests__/services/media.test.h"
 
-any TEST_AGENT_ID = as<std::shared_ptr<UUID>>(std::string("550e8400-e29b-41d4-a716-446655440001"));
-any TEST_CHANNEL_ID = as<std::shared_ptr<UUID>>(std::string("550e8400-e29b-41d4-a716-446655440002"));
+std::any TEST_AGENT_ID = as<std::shared_ptr<UUID>>(std::string("550e8400-e29b-41d4-a716-446655440001"));
+std::any TEST_CHANNEL_ID = as<std::shared_ptr<UUID>>(std::string("550e8400-e29b-41d4-a716-446655440002"));
 
 void Main(void)
 {
@@ -75,12 +75,12 @@ void Main(void)
                 (as<any>(mediaService))["request"]["mockResolvedValue"](mockResponse);
                 auto result = std::async([=]() { mediaService->uploadAgentMedia(TEST_AGENT_ID, params); });
                 expect((as<any>(mediaService))["request"])->toHaveBeenCalledWith(std::string("POST"), std::string("/api/media/agents/") + TEST_AGENT_ID + std::string("/upload-media"), expect->objectContaining(object{
-                    object::pair{std::string("body"), expect->any(FormData)}
+                    object::pair{std::string("body"), expect->std::any(FormData)}
                 }));
                 expect(result)->toEqual(mockResponse);
             }
             );
-            it(std::string("should handle file upload without optional parameters"), [=]() mutable
+            it(std::string("should handle file upload without std::optional parameters"), [=]() mutable
             {
                 auto paramsMinimal = object{
                     object::pair{std::string("file"), mockFile}
@@ -118,7 +118,7 @@ void Main(void)
                 (as<any>(mediaService))["request"]["mockResolvedValue"](mockResponse);
                 auto result = std::async([=]() { mediaService->uploadChannelMedia(TEST_CHANNEL_ID, mockFile); });
                 expect((as<any>(mediaService))["request"])->toHaveBeenCalledWith(std::string("POST"), std::string("/api/messaging/central-channels/") + TEST_CHANNEL_ID + std::string("/upload-media"), expect->objectContaining(object{
-                    object::pair{std::string("body"), expect->any(FormData)}
+                    object::pair{std::string("body"), expect->std::any(FormData)}
                 }));
                 expect(result)->toEqual(mockResponse);
             }

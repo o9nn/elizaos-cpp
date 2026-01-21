@@ -21,10 +21,10 @@ void setupSentimentGenerator(auto runtime) {
         // shouldn't plugin-solana and plugin-evm handle this?
         runtime.registerTaskWorker({
             name: "TRADER_SYNC_SENTIMENT",
-            validate: async (_runtime, _message, _state) => {
+            validate: std::async (_runtime, _message, _state) => {
                 return true; // TODO: validate after certain time;
                 },
-                execute: async (runtime, _options, task) => {
+                execute: std::async (runtime, _options, task) => {
                     try {
                         // do the thing
                         std::cout << "PLUGIN_TRADER_SENTIMENT" << std::endl;

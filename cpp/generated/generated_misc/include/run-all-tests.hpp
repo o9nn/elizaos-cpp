@@ -7,6 +7,6 @@
 #include "./component-tests.h"
 #include "./e2e-tests.h"
 
-std::shared_ptr<Promise<void>> runAllTests(any testPath, std::shared_ptr<TestCommandOptions> options);
+std::shared_ptr<Promise<void>> runAllTests(std::any testPath, std::shared_ptr<TestCommandOptions> options);
 
 #endif

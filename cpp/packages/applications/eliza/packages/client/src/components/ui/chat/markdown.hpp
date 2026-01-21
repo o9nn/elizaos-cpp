@@ -20,7 +20,7 @@ namespace elizaos {
 struct MarkdownProps {
     std::string children;
     std::optional<std::string> className;
-    std::optional<std::string> variant;
+    std::optional<std::string> std::variant;
 };
 
   // Code blocks

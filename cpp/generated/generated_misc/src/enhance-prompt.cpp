@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/server/src/prompts/enhance-prompt.h"
 
-any enhancePrompt(string userPrompt, any tokenMetadata)
+std::any enhancePrompt(std::string userPrompt, std::any tokenMetadata)
 {
     return std::string("Enhance this prompt for image generation by combining it with the token metadata. Create a single, coherent image prompt that incorporates both the user's ideas and the token's identity.\
 \

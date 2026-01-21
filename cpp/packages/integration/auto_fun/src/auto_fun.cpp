@@ -166,7 +166,7 @@ Result<BondingCurve> AutoFunClient::getBondingCurve(const Pubkey& token_mint) co
 
 std::vector<BondingCurve> AutoFunClient::getAllBondingCurves() const {
     std::vector<BondingCurve> curves;
-    for (const auto& pair : bonding_curves_) {
+    for (const auto& std::pair : bonding_curves_) {
         curves.push_back(pair.second);
     }
     return curves;
@@ -226,7 +226,7 @@ bool validateTokenSymbol(const std::string& symbol) {
 }
 
 bool validateURI(const std::string& uri) {
-    if (uri.empty()) return true; // URI is optional
+    if (uri.empty()) return true; // URI is std::optional
     
     // Basic URI validation
     std::regex uri_pattern(R"(^https?:\/\/.+)");

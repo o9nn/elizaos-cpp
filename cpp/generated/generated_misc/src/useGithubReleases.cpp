@@ -28,7 +28,7 @@ std::function<object()> useGithubReleases = [=]() mutable
             if (filename->includes(std::string(".dmg"))) {
                 links->push(object{
                     object::pair{std::string("platform"), std::string("macOS")}, 
-                    object::pair{std::string("architecture"), (filename->includes(std::string("universal"))) ? any(std::string("universal")) : any((filename->includes(std::string("arm64"))) ? std::string("arm64") : std::string("x64"))}, 
+                    object::pair{std::string("architecture"), (filename->includes(std::string("universal"))) ? std::any(std::string("universal")) : std::any((filename->includes(std::string("arm64"))) ? std::string("arm64") : std::string("x64"))}, 
                     object::pair{std::string("filename"), asset->name}, 
                     object::pair{std::string("size"), formatFileSize(asset->size)}, 
                     object::pair{std::string("downloadUrl"), asset->browser_download_url}, 
@@ -79,7 +79,7 @@ std::function<object()> useGithubReleases = [=]() mutable
             {
                 auto response = std::async([=]() { fetch(getApiReleasesUrl()); });
                 if (!response->ok) {
-                    throw any(std::make_shared<Error>(std::string("GitHub API error: ") + response->status + string_empty));
+                    throw std::any(std::make_shared<Error>(std::string("GitHub API error: ") + response->status + string_empty));
                 }
                 auto data = std::async([=]() { response->json(); });
                 auto latestStable = data->find([=](auto release) mutable
@@ -93,9 +93,9 @@ std::function<object()> useGithubReleases = [=]() mutable
                     setDownloadLinks(links);
                 }
             }
-            catch (const any& err)
+            catch (const std::any& err)
             {
-                setError((is<Error>(err)) ? any(err->message) : any(std::string("Failed to fetch releases")));
+                setError((is<Error>(err)) ? std::any(err->message) : std::any(std::string("Failed to fetch releases")));
             }
         }
     };

@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/plugin-specification/core-plugin-v1/src/__tests__/relationship.test.h"
 
-std::function<any(double)> createTestUUID = [=](auto num) mutable
+std::function<std::any(double)> createTestUUID = [=](auto num) mutable
 {
     return std::string("00000000-0000-0000-0000-") + num->toString()->padStart(12, std::string("0")) + string_empty;
 };
@@ -65,7 +65,7 @@ void Main(void)
         );
         describe(std::string("Enhanced conversion with status mapping"), [=]() mutable
         {
-            it(std::string("should map common V2 tags to V1 statuses"), [=]() mutable
+            it(std::string("should std::map common V2 tags to V1 statuses"), [=]() mutable
             {
                 expect(tagsToStatus(array<string>{ std::string("friend") }))->toBe(RELATIONSHIP_STATUSES["FRIEND"]);
                 expect(tagsToStatus(array<string>{ std::string("blocked") }))->toBe(RELATIONSHIP_STATUSES["BLOCKED"]);
@@ -75,7 +75,7 @@ void Main(void)
                 expect(tagsToStatus(array<string>{ std::string("acquaintance") }))->toBe(RELATIONSHIP_STATUSES["ACQUAINTANCE"]);
             }
             );
-            it(std::string("should map common V1 statuses to V2 tags"), [=]() mutable
+            it(std::string("should std::map common V1 statuses to V2 tags"), [=]() mutable
             {
                 expect(statusToTags(RELATIONSHIP_STATUSES["FRIEND"]))->toEqual(array<string>{ std::string("friend") });
                 expect(statusToTags(RELATIONSHIP_STATUSES["BLOCKED"]))->toEqual(array<string>{ std::string("blocked") });

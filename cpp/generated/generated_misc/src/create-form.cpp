@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-forms/src/actions/create-form.h"
 
-any extractFormType(string text)
+std::any extractFormType(std::string text)
 {
     auto formTypes = object{
         object::pair{std::string("contact"), array<string>{ std::string("contact"), std::string("reach out"), std::string("get in touch"), std::string("message") }}, 
@@ -42,7 +42,7 @@ std::shared_ptr<Action> createFormAction = object{
     {
         auto formsService = runtime->getService<std::shared_ptr<FormsService>>(std::string("forms"));
         if (!formsService) {
-            throw any(std::make_shared<Error>(std::string("Forms service not available")));
+            throw std::any(std::make_shared<Error>(std::string("Forms service not available")));
         }
         auto text = OR((message->content->text->toLowerCase()), (string_empty));
         auto templateName = OR((OR(((as<string>(options["template"]))), (extractFormType(text)))), (std::string("contact")));
@@ -72,7 +72,7 @@ Please provide the following information:");
                 requiredFields["forEach"]([=](auto field) mutable
                 {
                     responseText += std::string("\
-- ") + field["label"] + string_empty + (field["description"]) ? any(std::string(": ") + field["description"] + string_empty) : any(string_empty) + string_empty;
+- ") + field["label"] + string_empty + (field["description"]) ? std::any(std::string(": ") + field["description"] + string_empty) : std::any(string_empty) + string_empty;
                 }
                 );
             }

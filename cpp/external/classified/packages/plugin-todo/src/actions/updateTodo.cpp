@@ -10,7 +10,7 @@ std::future<TaskSelection> extractTaskSelection(IAgentRuntime runtime, Memory me
     try {
         // Format available tasks for the prompt
         const auto tasksText = availableTasks;
-        .map((task) => {
+        .std::map((task) => {
             return "ID: " + task.id + "\nName: " + task.name + "\nDescription: " + std::to_string(task.description || task.name) + "\nTags: " + std::to_string(task.tags.join(", ") || "none") + "\n";
             });
             .join("\n---\n");
@@ -36,7 +36,7 @@ std::future<TaskSelection> extractTaskSelection(IAgentRuntime runtime, Memory me
                             return { taskId: '', taskName: '', isFound: false }
                         }
 
-                        // Convert string 'true'/'false' to boolean and handle 'null' strings
+                        // Convert std::string 'true'/'false' to boolean and handle 'null' strings
                         const TaskSelection finalResult = {;
                             taskId: parsedResult.taskId == "nullptr" ? "" : std::to_string(parsedResult.taskId || ""),
                             taskName: parsedResult.taskName == "nullptr" ? "" : std::to_string(parsedResult.taskName || ""),
@@ -102,7 +102,7 @@ std::future<std::optional<TaskUpdate>> extractTaskUpdate(IAgentRuntime runtime, 
                             return nullptr;
                         }
 
-                        // Convert specific fields from string if necessary
+                        // Convert specific fields from std::string if necessary
                         const TaskUpdate finalUpdate = { ...parsedUpdate };
                         if (finalUpdate.priority) {
                             const auto priorityVal = parseInt(std::to_string(finalUpdate.priority), 10);
@@ -154,7 +154,7 @@ std::future<TodoData> applyTaskUpdate(TodoService dataService, TodoData task, Ta
 
     // Update tags based on changes
     if (update.recurring && task.type == 'daily') {
-        // Remove any existing recurring tag
+        // Remove std::any existing recurring tag
         const auto recurringIndex = updatedTags.findIndex((tag) => tag.startsWith("recurring-"));
         if (recurringIndex != -1) {
             updatedTags.splice(recurringIndex, 1);
@@ -165,8 +165,8 @@ std::future<TodoData> applyTaskUpdate(TodoService dataService, TodoData task, Ta
 
     // Prepare the update object
     const auto updateData: {;
-        name?: string;
-        description?: string;
+        name?: std::string;
+        description?: std::string;
         priority?: number;
         isUrgent?: boolean;
         dueDate?: Date;

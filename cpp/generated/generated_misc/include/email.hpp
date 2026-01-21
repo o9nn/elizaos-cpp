@@ -5,7 +5,7 @@
 #include "@react-email/render.h"
 #include "@/emails/ProjectNotification.h"
 
-extern any transporter;
-void sendProjectNotification(string to, object project);
+extern std::any transporter;
+void sendProjectNotification(std::string to, object project);
 
 #endif

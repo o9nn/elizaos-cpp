@@ -47,7 +47,7 @@ std::shared_ptr<Promise<array<string>>> resolveFiles(array<string> patterns)
                 resolved->push(const_(dirFiles)[0]);
             }
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             console->warn(std::string("Warning: Could not resolve pattern: ") + pattern + string_empty);
         }
@@ -56,7 +56,7 @@ std::shared_ptr<Promise<array<string>>> resolveFiles(array<string> patterns)
 };
 
 
-std::shared_ptr<Promise<array<string>>> findFilesInDir(string dir)
+std::shared_ptr<Promise<array<string>>> findFilesInDir(std::string dir)
 {
     auto files = array<string>();
     auto extensions = array<string>{ std::string(".py"), std::string(".ts"), std::string(".tsx") };
@@ -77,7 +77,7 @@ std::shared_ptr<Promise<array<string>>> findFilesInDir(string dir)
 };
 
 
-any program = std::make_shared<Command>();
+std::any program = std::make_shared<Command>();
 
 void Main(void)
 {
@@ -96,7 +96,7 @@ void Main(void)
             }
             console->log(std::string("Validating ") + resolvedFiles->get_length() + std::string(" file(s)..."));
             auto results = std::async([=]() { validateFiles(resolvedFiles); });
-            auto filteredResults = (options["quiet"]) ? results->map([=](auto r) mutable
+            auto filteredResults = (options["quiet"]) ? results->std::map([=](auto r) mutable
             {
                 return (utils::assign(object{
                     , 
@@ -119,7 +119,7 @@ void Main(void)
                 process->exit(1);
             }
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             console->error(std::string("Validation error:"), error);
             process->exit(1);
@@ -175,7 +175,7 @@ void Main(void)
             console->log(std::string("\
 Successfully exported ") + Object->keys(rules)->get_length() + std::string(" rule file(s) to ") + outputDir + string_empty);
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             console->error(std::string("Export error:"), error);
             process->exit(1);

@@ -62,7 +62,7 @@ std::future<bool> testScreenCapture() {
             stream.getTracks().forEach((track) => track.stop());
             std::cout << "✅ Screen capture test successful" << std::endl;
             return true;
-            } catch (error: any) {
+            } catch (error: std::any) {
                 if (error.name == 'NotAllowedError') {
                     std::cout << "ℹ️ Screen capture test cancelled by user" << std::endl;
                     return true; // API is available, user just cancelled;

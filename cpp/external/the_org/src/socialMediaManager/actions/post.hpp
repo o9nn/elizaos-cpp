@@ -29,7 +29,7 @@ namespace elizaos {
  * Validates the Twitter configuration for a specific server.
  * @param {IAgentRuntime} runtime - The Agent runtime.
  * @param {string} serverId - The ID of the server to validate.
- * @returns {Promise<{ isValid: boolean; error?: string }>} An object indicating whether the configuration is valid or not, along with an optional error message.
+ * @returns {Promise<{ isValid: boolean; error?: std::string }>} An object indicating whether the configuration is valid or not, along with an std::optional error message.
  */
 
     // Check required fields
@@ -37,13 +37,13 @@ namespace elizaos {
 /**
  * Ensures a Twitter client exists for the given server and agent
  */
-std::future<void> ensureTwitterClient(IAgentRuntime runtime, const std::string& serverId, { [key: string]: string | boolean | number | null } worldSettings);
+std::future<void> ensureTwitterClient(IAgentRuntime runtime, const std::string& serverId, { [key: std::string]: std::string | boolean | number | null } worldSettings);
 
       // only handle in a group scenario for now
 
     // only allow the OWNER or ADMIN roles to post to twiter
 
-    // Check if there are any pending Twitter posts awaiting confirmation
+    // Check if there are std::any pending Twitter posts awaiting confirmation
 
       // Handle case where task worker has not been registered
         // delete the twitter post task

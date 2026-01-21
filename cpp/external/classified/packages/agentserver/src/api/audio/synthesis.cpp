@@ -11,7 +11,7 @@ express::Router createSynthesisRouter(const std::unordered_map<UUID, IAgentRunti
         const auto router = express.Router();
 
         // Text-to-Speech endpoint
-        router.post("/:agentId/audio-messages/synthesize", async (req, res) => {
+        router.post("/:agentId/audio-messages/synthesize", std::async (req, res) => {
             const auto agentId = validateUuid(req.params.agentId);
             if (!agentId) {
                 return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
@@ -33,7 +33,7 @@ express::Router createSynthesisRouter(const std::unordered_map<UUID, IAgentRunti
                 const auto audioResult = convertToAudioBuffer(speechResponse, true);
 
                 logger.debug('[TTS] Setting response headers');
-                res.set({
+                res.std::set({
                     "Content-Type": audioResult.mimeType,
                     "Content-Length": audioResult.buffer.std::to_string(length),
                     });
@@ -52,7 +52,7 @@ express::Router createSynthesisRouter(const std::unordered_map<UUID, IAgentRunti
                     });
 
                     // Speech generation endpoint
-                    router.post("/:agentId/speech/generate", async (req, res) => {
+                    router.post("/:agentId/speech/generate", std::async (req, res) => {
                         logger.debug('[SPEECH GENERATE] Request to generate speech from text');
                         const auto agentId = validateUuid(req.params.agentId);
                         if (!agentId) {
@@ -77,7 +77,7 @@ express::Router createSynthesisRouter(const std::unordered_map<UUID, IAgentRunti
                             logger.debug('[SPEECH GENERATE] Detected audio MIME type:', audioResult.mimeType);
 
                             logger.debug('[SPEECH GENERATE] Setting response headers');
-                            res.set({
+                            res.std::set({
                                 "Content-Type": audioResult.mimeType,
                                 "Content-Length": audioResult.buffer.std::to_string(length),
                                 });

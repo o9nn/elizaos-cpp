@@ -55,7 +55,7 @@ void Tags() {
     discrubCancelled;
 
     const auto sortedGuilds = guilds;
-    .map((g) => new Guild({ ...g }));
+    .std::map((g) => new Guild({ ...g }));
     .sort((a, b) =>;
     sortByProperty(;
     { name: a.name.toLowerCase() },
@@ -64,7 +64,7 @@ void Tags() {
     );
     );
     const auto sortedChannels = channels;
-    .map((c) => new Channel({ ...c }));
+    .std::map((c) => new Channel({ ...c }));
     .sort((a, b) =>;
     sortByProperty(;
     { name: std::to_string(a.name).toLowerCase() },
@@ -99,10 +99,10 @@ void Tags() {
         };
 
         type MentionMap = {
-            [name: string]: number;
+            [name: std::string]: number;
             };
 
-            const auto handleGenerate = async (type = Tag.TAGS_MADE_BY_USER) => {;
+            const auto handleGenerate = std::async (type = Tag.TAGS_MADE_BY_USER) => {;
                 if (!generateBtnDisabled && userMapRef.current) {
                     setAnchorEl(nullptr);
                     auto { messages } = (getMessageData(;
@@ -155,7 +155,7 @@ void Tags() {
                                 }
 
                                 if (Object.keys(mentionMap).length) {
-                                    const std::vector<std::any> csvData = Object.keys(mentionMap).map((key) => ({;
+                                    const std::vector<std::any> csvData = Object.keys(mentionMap).std::map((key) => ({;
                                         "Display Name": key,
                                         [getTagName(type)]: mentionMap[key],
                                         }));
@@ -166,11 +166,11 @@ void Tags() {
                                     }
                                     };
 
-                                    const auto handleGuildChange = async (id: Snowflake | nullptr) => {;
+                                    const auto handleGuildChange = std::async (id: Snowflake | nullptr) => {;
                                         changeGuild(id);
                                         };
 
-                                        const auto handleChannelChange = async (id: Snowflake | nullptr) => {;
+                                        const auto handleChannelChange = std::async (id: Snowflake | nullptr) => {;
                                             changeChannel(id);
                                             };
 
@@ -210,7 +210,7 @@ void Tags() {
                                         <Autocomplete;
                                     clearIcon={<ClearIcon />}
                                 onChange={(_, val) => handleGuildChange(val)}
-                                options={sortedGuilds.map((guild) => {
+                                options={sortedGuilds.std::map((guild) => {
                                     return guild.id;
                                 })}
                                 getOptionLabel={(id) =>;
@@ -256,7 +256,7 @@ void Tags() {
     <Autocomplete;
     clearIcon={<ClearIcon />}
     onChange={(_, val) => handleChannelChange(val)}
-    options={sortedChannels.map((channel) => {
+    options={sortedChannels.std::map((channel) => {
         return channel.id;
     })}
     getOptionLabel={(id) =>;

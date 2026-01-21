@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-dynamic/actions/plugin-creation-actions.h"
 
-std::shared_ptr<Promise<std::shared_ptr<PluginSpecification>>> generatePluginSpecification(string description, std::shared_ptr<IAgentRuntime> runtime)
+std::shared_ptr<Promise<std::shared_ptr<PluginSpecification>>> generatePluginSpecification(std::string description, std::shared_ptr<IAgentRuntime> runtime)
 {
     shared lowerDesc = description->toLowerCase();
     auto name = std::string("@elizaos/plugin-");
@@ -92,37 +92,37 @@ std::shared_ptr<Promise<std::shared_ptr<PluginSpecification>>> generatePluginSpe
 };
 
 
-any PluginSpecificationSchema = z->object(object{
-    object::pair{std::string("name"), z->string()->regex((new RegExp(std::string("^@?[a-zA-Z0-9-_]+\/[a-zA-Z0-9-_]+"))), std::string("Invalid plugin name format"))}, 
-    object::pair{std::string("description"), z->string()->min(10, std::string("Description must be at least 10 characters"))}, 
-    object::pair{std::string("version"), z->string()->regex((new RegExp(std::string("^\d+\.\d+\.\d+"))), std::string("Version must be in semver format"))->optional()->default(std::string("1.0.0"))}, 
+std::any PluginSpecificationSchema = z->object(object{
+    object::pair{std::string("name"), z->std::string()->regex((new RegExp(std::string("^@?[a-zA-Z0-9-_]+\/[a-zA-Z0-9-_]+"))), std::string("Invalid plugin name format"))}, 
+    object::pair{std::string("description"), z->std::string()->min(10, std::string("Description must be at least 10 characters"))}, 
+    object::pair{std::string("version"), z->std::string()->regex((new RegExp(std::string("^\d+\.\d+\.\d+"))), std::string("Version must be in semver format"))->std::optional()->default(std::string("1.0.0"))}, 
     object::pair{std::string("actions"), z->array(z->object(object{
-        object::pair{std::string("name"), z->string()->regex((new RegExp(std::string("^[a-zA-Z][a-zA-Z0-9]*"))), std::string("Action name must be alphanumeric"))}, 
-        object::pair{std::string("description"), z->string()}, 
-        object::pair{std::string("parameters"), z->record(z->any())->optional()}
-    }))->optional()}, 
+        object::pair{std::string("name"), z->std::string()->regex((new RegExp(std::string("^[a-zA-Z][a-zA-Z0-9]*"))), std::string("Action name must be alphanumeric"))}, 
+        object::pair{std::string("description"), z->std::string()}, 
+        object::pair{std::string("parameters"), z->record(z->std::any())->std::optional()}
+    }))->std::optional()}, 
     object::pair{std::string("providers"), z->array(z->object(object{
-        object::pair{std::string("name"), z->string()->regex((new RegExp(std::string("^[a-zA-Z][a-zA-Z0-9]*"))), std::string("Provider name must be alphanumeric"))}, 
-        object::pair{std::string("description"), z->string()}, 
-        object::pair{std::string("dataStructure"), z->record(z->any())->optional()}
-    }))->optional()}, 
+        object::pair{std::string("name"), z->std::string()->regex((new RegExp(std::string("^[a-zA-Z][a-zA-Z0-9]*"))), std::string("Provider name must be alphanumeric"))}, 
+        object::pair{std::string("description"), z->std::string()}, 
+        object::pair{std::string("dataStructure"), z->record(z->std::any())->std::optional()}
+    }))->std::optional()}, 
     object::pair{std::string("services"), z->array(z->object(object{
-        object::pair{std::string("name"), z->string()->regex((new RegExp(std::string("^[a-zA-Z][a-zA-Z0-9]*"))), std::string("Service name must be alphanumeric"))}, 
-        object::pair{std::string("description"), z->string()}, 
-        object::pair{std::string("methods"), z->array(z->string())->optional()}
-    }))->optional()}, 
+        object::pair{std::string("name"), z->std::string()->regex((new RegExp(std::string("^[a-zA-Z][a-zA-Z0-9]*"))), std::string("Service name must be alphanumeric"))}, 
+        object::pair{std::string("description"), z->std::string()}, 
+        object::pair{std::string("methods"), z->array(z->std::string())->std::optional()}
+    }))->std::optional()}, 
     object::pair{std::string("evaluators"), z->array(z->object(object{
-        object::pair{std::string("name"), z->string()->regex((new RegExp(std::string("^[a-zA-Z][a-zA-Z0-9]*"))), std::string("Evaluator name must be alphanumeric"))}, 
-        object::pair{std::string("description"), z->string()}, 
-        object::pair{std::string("triggers"), z->array(z->string())->optional()}
-    }))->optional()}, 
-    object::pair{std::string("dependencies"), z->record(z->string())->optional()}, 
+        object::pair{std::string("name"), z->std::string()->regex((new RegExp(std::string("^[a-zA-Z][a-zA-Z0-9]*"))), std::string("Evaluator name must be alphanumeric"))}, 
+        object::pair{std::string("description"), z->std::string()}, 
+        object::pair{std::string("triggers"), z->array(z->std::string())->std::optional()}
+    }))->std::optional()}, 
+    object::pair{std::string("dependencies"), z->record(z->std::string())->std::optional()}, 
     object::pair{std::string("environmentVariables"), z->array(z->object(object{
-        object::pair{std::string("name"), z->string()}, 
-        object::pair{std::string("description"), z->string()}, 
+        object::pair{std::string("name"), z->std::string()}, 
+        object::pair{std::string("description"), z->std::string()}, 
         object::pair{std::string("required"), z->boolean()}, 
         object::pair{std::string("sensitive"), z->boolean()}
-    }))->optional()}
+    }))->std::optional()}
 });
 std::shared_ptr<Action> createPluginAction = object{
     object::pair{std::string("name"), std::string("createPlugin")}, 
@@ -184,7 +184,7 @@ std::shared_ptr<Action> createPluginAction = object{
                 auto parsed = JSON->parse(message->content->text);
                 specification = as<std::shared_ptr<PluginSpecification>>(PluginSpecificationSchema->parse(parsed));
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 if (is<z->ZodError>(error)) {
                     return std::string("Invalid plugin specification:\
@@ -199,7 +199,7 @@ std::shared_ptr<Action> createPluginAction = object{
             }
             auto apiKey = runtime->getSetting(std::string("ANTHROPIC_API_KEY"));
             if (!apiKey) {
-                return std::string("ANTHROPIC_API_KEY is not configured. Please set it to enable AI-powered plugin generation.");
+                return std::string("ANTHROPIC_API_KEY is not configured. Please std::set it to enable AI-powered plugin generation.");
             }
             auto jobId = std::async([=]() { service->createPlugin(specification, apiKey); });
             return std::string("Plugin creation job started successfully!\
@@ -209,7 +209,7 @@ Plugin: ") + specification->name + std::string("\
 \
 Use 'checkPluginCreationStatus' to monitor progress.");
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             return std::string("Failed to create plugin: ") + error["message"] + string_empty;
         }
@@ -254,7 +254,7 @@ std::shared_ptr<Action> checkPluginCreationStatusAction = object{
                 return std::string("No plugin creation jobs found.");
             }
             auto jobIdMatch = message->content->text->match((new RegExp(std::string("[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"))));
-            any targetJob;
+            std::any targetJob;
             if (jobIdMatch) {
                 targetJob = service->getJobStatus(const_(jobIdMatch)[0]);
                 if (!targetJob) {
@@ -333,7 +333,7 @@ std::shared_ptr<Action> checkPluginCreationStatusAction = object{
             }
             return response;
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             return std::string("Failed to check status: ") + error["message"] + string_empty;
         }
@@ -393,7 +393,7 @@ std::shared_ptr<Action> cancelPluginCreationAction = object{
 Job ID: ") + activeJob->id + std::string("\
 Plugin: ") + activeJob->specification->name + string_empty;
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             return std::string("Failed to cancel job: ") + error["message"] + string_empty;
         }
@@ -443,14 +443,14 @@ std::shared_ptr<Action> createPluginFromDescriptionAction = object{
             }
             auto apiKey = runtime->getSetting(std::string("ANTHROPIC_API_KEY"));
             if (!apiKey) {
-                return std::string("ANTHROPIC_API_KEY is not configured. Please set it to enable AI-powered plugin generation.");
+                return std::string("ANTHROPIC_API_KEY is not configured. Please std::set it to enable AI-powered plugin generation.");
             }
             auto specification = std::async([=]() { generatePluginSpecification(message->content->text, runtime); });
             try
             {
                 PluginSpecificationSchema->parse(specification);
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 if (is<z->ZodError>(error)) {
                     return std::string("Failed to generate valid specification:\
@@ -470,14 +470,14 @@ std::shared_ptr<Action> createPluginFromDescriptionAction = object{
 ") + std::string("🆔 Job ID: ") + jobId + std::string("\
 \
 ") + std::string("Components to be created:\
-") + string_empty + (specification->actions->get_length()) ? any(std::string("- ") + specification->actions->get_length() + std::string(" actions\
-")) : any(string_empty) + string_empty + string_empty + (specification->providers->get_length()) ? any(std::string("- ") + specification->providers->get_length() + std::string(" providers\
-")) : any(string_empty) + string_empty + string_empty + (specification->services->get_length()) ? any(std::string("- ") + specification->services->get_length() + std::string(" services\
-")) : any(string_empty) + string_empty + string_empty + (specification->evaluators->get_length()) ? any(std::string("- ") + specification->evaluators->get_length() + std::string(" evaluators\
-")) : any(string_empty) + std::string("\
+") + string_empty + (specification->actions->get_length()) ? std::any(std::string("- ") + specification->actions->get_length() + std::string(" actions\
+")) : std::any(string_empty) + string_empty + string_empty + (specification->providers->get_length()) ? std::any(std::string("- ") + specification->providers->get_length() + std::string(" providers\
+")) : std::any(string_empty) + string_empty + string_empty + (specification->services->get_length()) ? std::any(std::string("- ") + specification->services->get_length() + std::string(" services\
+")) : std::any(string_empty) + string_empty + string_empty + (specification->evaluators->get_length()) ? std::any(std::string("- ") + specification->evaluators->get_length() + std::string(" evaluators\
+")) : std::any(string_empty) + std::string("\
 ") + std::string("Use 'checkPluginCreationStatus' to monitor progress."));
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             return std::string("Failed to create plugin: ") + error["message"] + string_empty;
         }

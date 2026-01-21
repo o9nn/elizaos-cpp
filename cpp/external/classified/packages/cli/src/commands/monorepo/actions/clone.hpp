@@ -26,7 +26,7 @@ namespace elizaos {
  * @param destination - The directory where the repository will be cloned.
  *
  * @throws {Error} If the specified branch does not exist in the repository.
- * @throws {Error} If cloning fails for any other reason.
+ * @throws {Error} If cloning fails for std::any other reason.
  */
 std::future<void> cloneRepository(const std::string& repo, const std::string& branch, const std::string& destination);
 

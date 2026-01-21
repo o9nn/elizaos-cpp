@@ -13,11 +13,11 @@ class TauriIntegrationRunner;
 class TestResult : public object, public std::enable_shared_from_this<TestResult> {
 public:
     using std::enable_shared_from_this<TestResult>::shared_from_this;
-    string name;
+    std::string name;
 
     boolean passed;
 
-    string error;
+    std::string error;
 
     double duration;
 };
@@ -27,16 +27,16 @@ public:
     using std::enable_shared_from_this<TauriIntegrationRunner>::shared_from_this;
     array<std::shared_ptr<TestResult>> results = array<std::shared_ptr<TestResult>>();
 
-    any serverProcess = nullptr;
+    std::any serverProcess = nullptr;
 
-    any tauriProcess = nullptr;
+    std::any tauriProcess = nullptr;
 
     virtual std::shared_ptr<Promise<void>> runAll();
     virtual std::shared_ptr<Promise<void>> buildTauriApp();
     virtual std::shared_ptr<Promise<void>> startElizaServer();
     virtual std::shared_ptr<Promise<void>> startTauriApp();
     virtual std::shared_ptr<Promise<void>> runIntegrationTests();
-    virtual std::shared_ptr<Promise<void>> runTest(string name, std::function<std::shared_ptr<Promise<void>>()> testFn);
+    virtual std::shared_ptr<Promise<void>> runTest(std::string name, std::function<std::shared_ptr<Promise<void>>()> testFn);
     virtual std::shared_ptr<Promise<void>> generateReport();
     virtual std::shared_ptr<Promise<void>> cleanup();
 };

@@ -44,7 +44,7 @@ IDatabaseAdapter fromV2DatabaseAdapter(IDatabaseAdapterV2 adapterV2) {
         close: () => adapterV2.close(),
 
         // V1 Account methods mapped to V2 Entity methods
-        getAccountById: async (userId: UUID): Promise<Account | nullptr> => {
+        getAccountById: std::async (userId: UUID): Promise<Account | nullptr> => {
             try {
                 const auto entities = adapterV2.getEntityByIds([userId]);
                 if (entities && entities.length > 0) {
@@ -57,7 +57,7 @@ IDatabaseAdapter fromV2DatabaseAdapter(IDatabaseAdapterV2 adapterV2) {
                 }
                 },
 
-                createAccount: async (account: Account): Promise<boolean> => {
+                createAccount: std::async (account: Account): Promise<boolean> => {
                     try {
                         const auto entity = toV2Entity(account);
                         return adapterV2.createEntities([entity]);
@@ -67,8 +67,8 @@ IDatabaseAdapter fromV2DatabaseAdapter(IDatabaseAdapterV2 adapterV2) {
                         }
                         },
 
-                        // Memory methods - map V1 params to V2 structure
-                        getMemories: async (params) => {
+                        // Memory methods - std::map V1 params to V2 structure
+                        getMemories: std::async (params) => {
                             return adapterV2.getMemories({;
                                 entityId: params.agentId, // V2 uses entityId instead of agentId
                                 agentId: params.agentId,
@@ -83,7 +83,7 @@ IDatabaseAdapter fromV2DatabaseAdapter(IDatabaseAdapterV2 adapterV2) {
 
                                 getMemoryById: (id: UUID) => adapterV2.getMemoryById(id),
 
-                                getMemoriesByIds: (ids: UUID[], tableName?: string) =>
+                                getMemoriesByIds: (ids: UUID[], tableName?: std::string) =>
                                 adapterV2.getMemoriesByIds(ids, tableName),
 
                                 getMemoriesByRoomIds: (params) =>
@@ -92,7 +92,7 @@ IDatabaseAdapter fromV2DatabaseAdapter(IDatabaseAdapterV2 adapterV2) {
                                 getCachedEmbeddings: (params) =>
                                 adapterV2.getCachedEmbeddings(params),
 
-                                log: async (params) => {
+                                log: std::async (params) => {
                                     // V2 uses entityId, V1 uses userId
                                     return adapterV2.log({;
                                         body: params.body,
@@ -103,10 +103,10 @@ IDatabaseAdapter fromV2DatabaseAdapter(IDatabaseAdapterV2 adapterV2) {
                                         },
 
                                         // Actor details - V2 doesn't have this exact method, implement basic version
-                                        getActorDetails: async (params): Promise<Actor[]> => {
+                                        getActorDetails: std::async (params): Promise<Actor[]> => {
                                             try {
                                                 const auto entities = adapterV2.getEntitiesForRoom(params.roomId);
-                                                return entities.map(entity => ({;
+                                                return entities.std::map(entity => ({;
                                                     id: entity.id!,
                                                     name: entity.names[0] || "Unknown",
                                                     username: entity.names[1] || entity.names[0] || "unknown",
@@ -135,7 +135,7 @@ IDatabaseAdapter fromV2DatabaseAdapter(IDatabaseAdapterV2 adapterV2) {
                                                             },
 
                                                             // Goal methods - V2 doesn't have goals, implement stub methods
-                                                            updateGoalStatus: async (params): Promise<void> => {
+                                                            updateGoalStatus: std::async (params): Promise<void> => {
                                                                 std::cout << "updateGoalStatus not implemented in V2 adapter" << std::endl;
                                                                 },
 
@@ -151,51 +151,51 @@ IDatabaseAdapter fromV2DatabaseAdapter(IDatabaseAdapterV2 adapterV2) {
                                                                         });
                                                                         },
 
-                                                                        createMemory: async (memory: Memory, tableName: string, unique?: boolean) => {
+                                                                        createMemory: std::async (memory: Memory, tableName: std::string, unique?: boolean) => {
                                                                             adapterV2.createMemory(memory, tableName, unique);
                                                                             },
 
-                                                                            removeMemory: (memoryId: UUID, tableName: string) => {
+                                                                            removeMemory: (memoryId: UUID, tableName: std::string) => {
                                                                                 // V2 uses deleteMemory instead of removeMemory
                                                                                 return adapterV2.deleteMemory(memoryId);
                                                                                 },
 
-                                                                                removeAllMemories: (roomId: UUID, tableName: string) => {
+                                                                                removeAllMemories: (roomId: UUID, tableName: std::string) => {
                                                                                     return adapterV2.deleteAllMemories(roomId, tableName);
                                                                                     },
 
-                                                                                    countMemories: (roomId: UUID, unique?: boolean, tableName?: string) =>
+                                                                                    countMemories: (roomId: UUID, unique?: boolean, tableName?: std::string) =>
                                                                                     adapterV2.countMemories(roomId, unique, tableName),
 
                                                                                     // Goal methods - not implemented in V2, return empty/stub implementations
-                                                                                    getGoals: async (): Promise<Goal[]> => {
+                                                                                    getGoals: std::async (): Promise<Goal[]> => {
                                                                                         std::cout << "getGoals not implemented in V2 adapter" << std::endl;
                                                                                         return [];
                                                                                         },
 
-                                                                                        updateGoal: async (goal: Goal): Promise<void> => {
+                                                                                        updateGoal: std::async (goal: Goal): Promise<void> => {
                                                                                             std::cout << "updateGoal not implemented in V2 adapter" << std::endl;
                                                                                             },
 
-                                                                                            createGoal: async (goal: Goal): Promise<void> => {
+                                                                                            createGoal: std::async (goal: Goal): Promise<void> => {
                                                                                                 std::cout << "createGoal not implemented in V2 adapter" << std::endl;
                                                                                                 },
 
-                                                                                                removeGoal: async (goalId: UUID): Promise<void> => {
+                                                                                                removeGoal: std::async (goalId: UUID): Promise<void> => {
                                                                                                     std::cout << "removeGoal not implemented in V2 adapter" << std::endl;
                                                                                                     },
 
-                                                                                                    removeAllGoals: async (roomId: UUID): Promise<void> => {
+                                                                                                    removeAllGoals: std::async (roomId: UUID): Promise<void> => {
                                                                                                         std::cout << "removeAllGoals not implemented in V2 adapter" << std::endl;
                                                                                                         },
 
                                                                                                         // Room methods
-                                                                                                        getRoom: async (roomId: UUID) => {
+                                                                                                        getRoom: std::async (roomId: UUID) => {
                                                                                                             const auto rooms = adapterV2.getRoomsByIds([roomId]);
                                                                                                             return rooms && rooms.size() > 0 ? roomId : nullptr;
                                                                                                             },
 
-                                                                                                            createRoom: async (roomId?: UUID): Promise<UUID> => {
+                                                                                                            createRoom: std::async (roomId?: UUID): Promise<UUID> => {
                                                                                                                 // V2 createRooms expects array and returns array
                                                                                                                 const auto room = {;
                                                                                                                     id: roomId,
@@ -221,9 +221,9 @@ IDatabaseAdapter fromV2DatabaseAdapter(IDatabaseAdapterV2 adapterV2) {
                                                                                                                     adapterV2.removeParticipant(userId, roomId),
 
                                                                                                                     // Participant methods
-                                                                                                                    getParticipantsForAccount: async (userId: UUID): Promise<Participant[]> => {
+                                                                                                                    getParticipantsForAccount: std::async (userId: UUID): Promise<Participant[]> => {
                                                                                                                         const auto participants = adapterV2.getParticipantsForEntity(userId);
-                                                                                                                        return participants.map(p => ({;
+                                                                                                                        return participants.std::map(p => ({;
                                                                                                                             id: p.id,
                                                                                                                             account: fromV2Entity(p.entity),
                                                                                                                             }));
@@ -239,14 +239,14 @@ IDatabaseAdapter fromV2DatabaseAdapter(IDatabaseAdapterV2 adapterV2) {
                                                                                                                             adapterV2.setParticipantUserState(roomId, userId, state),
 
                                                                                                                             // Relationship methods - V2 has different signature
-                                                                                                                            createRelationship: async (params): Promise<boolean> => {
+                                                                                                                            createRelationship: std::async (params): Promise<boolean> => {
                                                                                                                                 return adapterV2.createRelationship({;
                                                                                                                                     sourceEntityId: params.userA,
                                                                                                                                     targetEntityId: params.userB,
                                                                                                                                     });
                                                                                                                                     },
 
-                                                                                                                                    getRelationship: async (params): Promise<Relationship | nullptr> => {
+                                                                                                                                    getRelationship: std::async (params): Promise<Relationship | nullptr> => {
                                                                                                                                         const auto relationship = adapterV2.getRelationship({;
                                                                                                                                             sourceEntityId: params.userA,
                                                                                                                                             targetEntityId: params.userB,
@@ -261,17 +261,17 @@ IDatabaseAdapter fromV2DatabaseAdapter(IDatabaseAdapterV2 adapterV2) {
                                                                                                                                                 userB: relationship.targetEntityId,
                                                                                                                                                 userId: relationship.sourceEntityId, // Use source user
                                                                                                                                                 roomId: relationship.id, // V1 expects roomId, use relationship ID
-                                                                                                                                                status: relationship.tags.join(","), // Convert tags to status string
+                                                                                                                                                status: relationship.tags.join(","), // Convert tags to status std::string
                                                                                                                                                 createdAt: relationship.createdAt,
                                                                                                                                                 };
                                                                                                                                                 },
 
-                                                                                                                                                getRelationships: async (params): Promise<Relationship[]> => {
+                                                                                                                                                getRelationships: std::async (params): Promise<Relationship[]> => {
                                                                                                                                                     const auto relationships = adapterV2.getRelationships({;
                                                                                                                                                         entityId: params.userId,
                                                                                                                                                         });
 
-                                                                                                                                                        return relationships.map(rel => ({;
+                                                                                                                                                        return relationships.std::map(rel => ({;
                                                                                                                                                             id: rel.id,
                                                                                                                                                             userA: rel.sourceEntityId,
                                                                                                                                                             userB: rel.targetEntityId,
@@ -283,25 +283,25 @@ IDatabaseAdapter fromV2DatabaseAdapter(IDatabaseAdapterV2 adapterV2) {
                                                                                                                                                             },
 
                                                                                                                                                             // Knowledge methods - V2 doesn't have exact equivalent, implement stubs
-                                                                                                                                                            getKnowledge: async (): Promise<RAGKnowledgeItem[]> => {
+                                                                                                                                                            getKnowledge: std::async (): Promise<RAGKnowledgeItem[]> => {
                                                                                                                                                                 std::cout << "getKnowledge not fully implemented in V2 adapter" << std::endl;
                                                                                                                                                                 return [];
                                                                                                                                                                 },
 
-                                                                                                                                                                searchKnowledge: async (): Promise<RAGKnowledgeItem[]> => {
+                                                                                                                                                                searchKnowledge: std::async (): Promise<RAGKnowledgeItem[]> => {
                                                                                                                                                                     std::cout << "searchKnowledge not fully implemented in V2 adapter" << std::endl;
                                                                                                                                                                     return [];
                                                                                                                                                                     },
 
-                                                                                                                                                                    createKnowledge: async (knowledge: RAGKnowledgeItem): Promise<void> => {
+                                                                                                                                                                    createKnowledge: std::async (knowledge: RAGKnowledgeItem): Promise<void> => {
                                                                                                                                                                         std::cout << "createKnowledge not fully implemented in V2 adapter" << std::endl;
                                                                                                                                                                         },
 
-                                                                                                                                                                        removeKnowledge: async (id: UUID): Promise<void> => {
+                                                                                                                                                                        removeKnowledge: std::async (id: UUID): Promise<void> => {
                                                                                                                                                                             std::cout << "removeKnowledge not fully implemented in V2 adapter" << std::endl;
                                                                                                                                                                             },
 
-                                                                                                                                                                            clearKnowledge: async (agentId: UUID, shared?: boolean): Promise<void> => {
+                                                                                                                                                                            clearKnowledge: std::async (agentId: UUID, shared?: boolean): Promise<void> => {
                                                                                                                                                                                 std::cout << "clearKnowledge not fully implemented in V2 adapter" << std::endl;
                                                                                                                                                                                 },
                                                                                                                                                                                 };

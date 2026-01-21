@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-experience/tests/experienceService.test.h"
 
-any mockRuntime = as<std::shared_ptr<IAgentRuntime>>(as<any>(object{
+std::any mockRuntime = as<std::shared_ptr<IAgentRuntime>>(as<any>(object{
     object::pair{std::string("agentId"), as<std::shared_ptr<const>>(std::string("test-agent-123"))}, 
     object::pair{std::string("getService"), vi->fn()}, 
     object::pair{std::string("useModel"), vi->fn()}, 
@@ -91,7 +91,7 @@ void Main(void)
                 }));
             }
             );
-            it(std::string("should handle missing optional fields with defaults"), [=]() mutable
+            it(std::string("should handle missing std::optional fields with defaults"), [=]() mutable
             {
                 auto experienceData = object{
                     object::pair{std::string("context"), std::string("Minimal context")}, 

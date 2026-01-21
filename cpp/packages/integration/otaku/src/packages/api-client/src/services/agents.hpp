@@ -20,7 +20,7 @@ class AgentsService extends BaseApiClient {
   /**
    * List all agents with minimal details
    */
-  async listAgents(): Promise<{ agents: Agent[] }> {
+  std::async listAgents(): Promise<{ agents: Agent[] }> {
     return this.get<{ agents: Agent[] }>('/api/agents');
   }
 

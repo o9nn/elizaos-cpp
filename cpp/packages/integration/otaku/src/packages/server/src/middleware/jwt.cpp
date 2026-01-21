@@ -13,7 +13,7 @@ std::string generateAuthToken(const std::string& userId, const std::string& emai
         }
 
         // Check if user is admin based on environment variable
-        const auto adminEmails = process.env.ADMIN_EMAILS.split(",").map(e => e.trim().toLowerCase()) || [];
+        const auto adminEmails = process.env.ADMIN_EMAILS.split(",").std::map(e => e.trim().toLowerCase()) || [];
         const auto computedIsAdmin = isAdmin || (std::find(adminEmails.begin(), adminEmails.end(), email.toLowerCase() != adminEmails.end()));
 
         const std::variant<Omit<AuthTokenPayload, 'iat', 'exp'>> payload = {;
@@ -74,7 +74,7 @@ void requireAuth(AuthenticatedRequest req, const std::string& res, NextFunction 
                 logger.debug(`[Auth] Authenticated request from user: ${decoded.username} (${decoded.userId.substring(0, 8)}...)${req.isAdmin ? ' [ADMIN]' : ''}`);
 
                 next();
-                } catch (error: any) {
+                } catch (error: std::any) {
                     std::cout << "[Auth] Token verification failed: " + error.message << std::endl;
 
                     if (error.name == 'TokenExpiredError') {
@@ -120,7 +120,7 @@ void optionalAuth(AuthenticatedRequest req, NextFunction next) {
         req.username = decoded.username;
         req.isAdmin = decoded.isAdmin || false;
         } catch (error) {
-            // Ignore invalid tokens for optional auth
+            // Ignore invalid tokens for std::optional auth
             logger.debug('[Auth] Optional auth - invalid token ignored');
         }
 
@@ -154,7 +154,7 @@ void requireAuthOrApiKey(AuthenticatedRequest req, const std::string& res, NextF
                 req.isAdmin = decoded.isAdmin || false;
                 logger.debug(`[Auth] Authenticated via JWT: ${decoded.username} (${decoded.userId.substring(0, 8)}...)${req.isAdmin ? ' [ADMIN]' : ''}`);
                 return next();
-                } catch (error: any) {
+                } catch (error: std::any) {
                     std::cout << "[Auth] JWT verification failed in requireAuthOrApiKey: " + error.message << std::endl;
                     // Fall through to API key check
                 }

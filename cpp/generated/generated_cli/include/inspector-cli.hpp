@@ -14,21 +14,21 @@ class TrajectoryInspector;
 class TrajectoryStep : public object, public std::enable_shared_from_this<TrajectoryStep> {
 public:
     using std::enable_shared_from_this<TrajectoryStep>::shared_from_this;
-    string thought;
+    std::string thought;
 
-    string action;
+    std::string action;
 
-    string observation;
+    std::string observation;
 
-    string response;
+    std::string response;
 
     double execution_time;
 
-    Record<string, any> state;
+    Record<std::string, any> state;
 
     array<object> query;
 
-    Record<string, any> extraInfo;
+    Record<std::string, any> extraInfo;
 };
 
 class TrajectoryData : public object, public std::enable_shared_from_this<TrajectoryData> {
@@ -36,11 +36,11 @@ public:
     using std::enable_shared_from_this<TrajectoryData>::shared_from_this;
     array<std::shared_ptr<TrajectoryStep>> trajectory;
 
-    Record<string, any> info;
+    Record<std::string, any> info;
 
     array<object> history;
 
-    Record<string, any> replay_config;
+    Record<std::string, any> replay_config;
 };
 
 class TrajectoryInspector : public object, public std::enable_shared_from_this<TrajectoryInspector> {
@@ -52,9 +52,9 @@ public:
 
     boolean showFull = false;
 
-    string goldPatch;
+    std::string goldPatch;
 
-    TrajectoryInspector(string trajPath, string dataPath = undefined);
+    TrajectoryInspector(std::string trajPath, std::string dataPath = undefined);
     virtual double get_nSteps();
     virtual void showStep();
     virtual void showInfo();
@@ -62,8 +62,8 @@ public:
     virtual std::shared_ptr<Promise<void>> run();
 };
 
-array<string> findTrajFiles(string dir);
+array<string> findTrajFiles(std::string dir);
 
-std::shared_ptr<Promise<void>> inspectorCli(string trajectoryPath = std::string("."), string dataPath = undefined);
+std::shared_ptr<Promise<void>> inspectorCli(std::string trajectoryPath = std::string("."), std::string dataPath = undefined);
 
 #endif

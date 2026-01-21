@@ -365,7 +365,7 @@ public:
             AudioData audio = AudioProcessor::loadAudioFile(file_path);
             result = transcribe(audio);
             if (result.success) {
-                result.text = "Transcription of " + fs::path(file_path).filename().string() + ": " + result.text;
+                result.text = "Transcription of " + fs::path(file_path).filename().std::string() + ": " + result.text;
             }
         } catch (const std::exception& e) {
             result.success = false;
@@ -525,14 +525,14 @@ std::vector<DatasetPreparator::MetadataEntry> DatasetPreparator::createDataset(
     for (const auto& entry : fs::recursive_directory_iterator(input_dir)) {
         if (!entry.is_regular_file()) continue;
         
-        std::string ext = entry.path().extension().string();
+        std::string ext = entry.path().extension().std::string();
         std::transform(ext.begin(), ext.end(), ext.begin(),
             [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
         std::transform(ext.begin(), ext.end(), ext.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
         
         // Check if it's an audio file
         if (ext == ".wav" || ext == ".mp3" || ext == ".flac" || ext == ".ogg") {
-            std::string input_file = entry.path().string();
+            std::string input_file = entry.path().std::string();
             
             try {
                 // Load audio file

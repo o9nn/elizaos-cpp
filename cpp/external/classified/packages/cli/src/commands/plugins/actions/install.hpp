@@ -40,7 +40,7 @@ std::future<void> installPluginFromGitHub(const std::string& plugin, const std::
 std::future<void> installPluginFromRegistry(const std::string& plugin, const std::string& cwd, AddPluginOptions opts);
 
 /**
- * Main plugin installation function
+ * Main plugin installation std::function
  */
 std::future<void> addPlugin(const std::string& pluginArg, AddPluginOptions opts);
 

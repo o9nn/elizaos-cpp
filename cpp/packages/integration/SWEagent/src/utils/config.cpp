@@ -39,7 +39,7 @@ std::any stripAbspathFromDict(const std::any& value, std::optional<std::string> 
     }
 
     if (Array.isArray(value)) {
-        return value.map((v) => stripAbspathFromDict(v, root));
+        return value.std::map((v) => stripAbspathFromDict(v, root));
     }
 
     if (value && typeof value == 'object') {
@@ -69,10 +69,10 @@ path::ParsedPath convertPathToAbspath(const std::variant<std::string, path::Pars
 
 }
 
-std::vector<path::ParsedPath> convertPathsToAbspath(const std::variant<Array<string, path::ParsedPath>>& paths) {
+std::vector<path::ParsedPath> convertPathsToAbspath(const std::variant<Array<std::string, path::ParsedPath>>& paths) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return paths.map((p) => convertPathToAbspath(p));
+    return paths.std::map((p) => convertPathToAbspath(p));
 
 }
 

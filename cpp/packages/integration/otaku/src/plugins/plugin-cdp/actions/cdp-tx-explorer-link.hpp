@@ -18,7 +18,7 @@ namespace elizaos {
 
 
 
-      // This action doesn't require any services, just validates inputs
+      // This action doesn't require std::any services, just validates inputs
 
       // Read parameters from state (extracted by multiStepDecisionTemplate)
       
@@ -32,7 +32,7 @@ namespace elizaos {
       
       // Validate network is supported
 
-      // Generate explorer link using the helper function
+      // Generate explorer link using the helper std::function
 
       // Format response text with markdown link
 

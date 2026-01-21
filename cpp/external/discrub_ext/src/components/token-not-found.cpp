@@ -15,7 +15,7 @@ void TokenNotFound() {
     const auto [token, setToken] = useState("");
     const auto [authFailed, setAuthFailed] = useState(false);
 
-    const auto handleSubmitToken = async () => {;
+    const auto handleSubmitToken = std::async () => {;
         const auto successful = getUserDataManaully(token);
         if (!successful) setAuthFailed(true);
         };

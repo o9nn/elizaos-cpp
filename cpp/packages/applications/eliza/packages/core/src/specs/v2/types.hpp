@@ -19,8 +19,8 @@ namespace elizaos {
 using UUID = `${string}-${string}-${string}-${string}-${string}`;
 
 /**
- * Helper function to safely cast a string to strongly typed UUID
- * @param id The string UUID to validate and cast
+ * Helper std::function to safely cast a std::string to strongly typed UUID
+ * @param id The std::string UUID to validate and cast
  * @returns The same UUID with branded type information
  */
 UUID asUUID(const std::string& id);
@@ -85,7 +85,7 @@ struct ServiceTypeRegistry {
 };
 
 /**
- * Type for service names that includes both core services and any plugin-registered services
+ * Type for service names that includes both core services and std::any plugin-registered services
  */
 using ServiceTypeName = ServiceTypeRegistry[keyof ServiceTypeRegistry];
 
@@ -130,8 +130,8 @@ struct ServiceClassMap {
  * understanding at a point in time. It includes:
  * - `values`: A key-value store for general state variables, often populated by providers.
  * - `data`: Another key-value store, potentially for more structured or internal data.
- * - `text`: A string representation of the current context, often a summary or concatenated history.
- * The `[key: string]: any;` allows for dynamic properties, though `EnhancedState` offers better typing.
+ * - `text`: A std::string representation of the current context, often a summary or concatenated history.
+ * The `[key: std::string]: std::any;` allows for dynamic properties, though `EnhancedState` offers better typing.
  * This state object is passed to handlers for actions, evaluators, and providers.
  */
 struct State {
@@ -151,7 +151,7 @@ using MemoryTypeAlias = std::string;
  * - `FRAGMENT`: A chunk or segment of a `DOCUMENT`, often created for embedding and search.
  * - `MESSAGE`: A conversational message, typically from a user or the agent.
  * - `DESCRIPTION`: A descriptive piece of information, perhaps about an entity or concept.
- * - `CUSTOM`: For any other type of memory not covered by the built-in types.
+ * - `CUSTOM`: For std::any other type of memory not covered by the built-in types.
  * This enum is used in `MemoryMetadata` to categorize memories and influences how they are processed or queried.
  */
 enum MemoryType {
@@ -174,10 +174,10 @@ using MemoryScope = std::variant<'shared', 'private', 'room'>;
  * Base interface for all memory metadata types.
  * It includes common properties for all memories, such as:
  * - `type`: The kind of memory (e.g., `MemoryType.MESSAGE`, `MemoryType.DOCUMENT`).
- * - `source`: An optional string indicating the origin of the memory (e.g., 'discord', 'user_input').
- * - `sourceId`: An optional UUID linking to a source entity or object.
+ * - `source`: An std::optional std::string indicating the origin of the memory (e.g., 'discord', 'user_input').
+ * - `sourceId`: An std::optional UUID linking to a source entity or object.
  * - `scope`: The visibility scope of the memory (`shared`, `private`, or `room`).
- * - `timestamp`: An optional numerical timestamp (e.g., milliseconds since epoch) of when the memory was created or relevant.
+ * - `timestamp`: An std::optional numerical timestamp (e.g., milliseconds since epoch) of when the memory was created or relevant.
  * - `tags`: Optional array of strings for categorizing or filtering memories.
  * Specific metadata types like `DocumentMetadata` or `MessageMetadata` extend this base.
  */
@@ -216,7 +216,7 @@ struct Log {
     std::optional<UUID> id;
     UUID entityId;
     std::optional<UUID> roomId;
-    { [key: string]: unknown } body;
+    { [key: std::string]: unknown } body;
 
 /**
  * Example message for demonstration
@@ -227,17 +227,17 @@ struct MessageExample {
 };
 
 /**
- * Handler function type for processing messages
+ * Handler std::function type for processing messages
  */
 using Handler = (
 
 /**
- * Callback function type for handlers
+ * Callback std::function type for handlers
  */
-using HandlerCallback = (response: Content, files?: any) => Promise<Memory[]>;
+using HandlerCallback = (response: Content, files?: std::any) => Promise<Memory[]>;
 
 /**
- * Validator function type for actions/evaluators
+ * Validator std::function type for actions/evaluators
  */
 using Validator = (
 
@@ -324,7 +324,7 @@ struct Component {
 struct Entity {
     std::optional<UUID> id;
     std::vector<std::string> names;
-    std::optional<{ [key: string]: any }> metadata;
+    std::optional<{ [key: std::string]: std::any }> metadata;
 
 using World = {
 
@@ -391,8 +391,8 @@ using PluginEvents = std::vector<{
 struct Plugin {
     std::string name;
     std::string description;
-    std::optional<(config: Record<string, string>, runtime: IAgentRuntime) => Promise<void>> init;
-    std::optional<{ [key: string]: any }> config;
+    std::optional<(config: Record<std::string, string>, runtime: IAgentRuntime) => Promise<void>> init;
+    std::optional<{ [key: std::string]: std::any }> config;
 
 struct ProjectAgent {
     Character character;
@@ -405,7 +405,7 @@ struct Project {
     std::vector<ProjectAgent> agents;
 };
 
-using TemplateType = std::variant<, std::string, ((options: { state: State, { [key: string]: string } }) => string)>;
+using TemplateType = std::variant<, std::string, ((options: { state: State, { [key: std::string]: std::string } }) => std::string)>;
 
 /**
  * Configuration for an agent's character, defining its personality, knowledge, and capabilities.
@@ -414,7 +414,7 @@ using TemplateType = std::variant<, std::string, ((options: { state: State, { [k
  * - `id`: Optional unique identifier for the character.
  * - `name`, `username`: Identifying names for the character.
  * - `system`: A system prompt that guides the agent's overall behavior.
- * - `templates`: A map of prompt templates for various situations (e.g., message generation, summarization).
+ * - `templates`: A std::map of prompt templates for various situations (e.g., message generation, summarization).
  * - `bio`: A textual biography or description of the character.
  * - `messageExamples`, `postExamples`: Examples of how the character communicates.
  * - `topics`, `adjectives`: Keywords describing the character's knowledge areas and traits.
@@ -429,7 +429,7 @@ struct Character {
     std::optional<std::string> username;
     std::optional<std::string> system;
     std::optional<{> templates;
-    std::vector<string | string> bio;
+    std::vector<std::string | string> bio;
     std::optional<std::vector<std::vector<MessageExample>>> messageExamples;
     std::optional<std::vector<std::string>> postExamples;
     std::optional<std::vector<std::string>> topics;
@@ -486,7 +486,7 @@ struct IDatabaseAdapter {
     std::string query_field_name;
     std::string query_field_sub_name;
     double query_match_count;
-    { [key: string]: unknown } body;
+    { [key: std::string]: unknown } body;
 
 /**
  * Result interface for embedding similarity searches
@@ -537,7 +537,7 @@ struct MultiRoomMemoryOptions {
 struct UnifiedMemoryOptions {
     UUID roomId;
     std::optional<number; // Unified naming (replacing 'count')> limit;
-    std::optional<UUID; // Common optional parameter> agentId;
+    std::optional<UUID; // Common std::optional parameter> agentId;
     std::optional<boolean; // Common flag for duplication control> unique;
     std::optional<number; // Pagination start> start;
     std::optional<number; // Pagination end> end;
@@ -551,12 +551,12 @@ struct UnifiedMemoryOptions {
  * Information describing the target of a message.
  */
 struct TargetInfo {
-    string; // Platform identifier (e.g., 'discord', 'telegram', 'websocket-api') source;
+    std::string; // Platform identifier (e.g., 'discord', 'telegram', 'websocket-api') source;
     std::optional<UUID; // Target room ID (platform-specific or runtime-specific)> roomId;
-    std::optional<string; // Platform-specific channel/chat ID> channelId;
-    std::optional<string; // Platform-specific server/guild ID> serverId;
+    std::optional<std::string; // Platform-specific channel/chat ID> channelId;
+    std::optional<std::string; // Platform-specific server/guild ID> serverId;
     std::optional<UUID; // Target user ID (for DMs)> entityId;
-    std::optional<string; // Platform-specific thread ID (e.g., Telegram topics)> threadId;
+    std::optional<std::string; // Platform-specific std::thread ID (e.g., Telegram topics)> threadId;
 };
 
 /**
@@ -591,8 +591,8 @@ using SendHandlerFunction = (
   // easy/compat wrappers
 
   /**
-   * Registers a handler function responsible for sending messages to a specific source/platform.
-   * @param source - The unique identifier string for the source (e.g., 'discord', 'telegram').
+   * Registers a handler std::function responsible for sending messages to a specific source/platform.
+   * @param source - The unique identifier std::string for the source (e.g., 'discord', 'telegram').
    * @param handler - The SendHandlerFunction to be called for this source.
    */
 
@@ -607,14 +607,14 @@ using SendHandlerFunction = (
  * Interface for settings object with key-value pairs.
  */
 /**
- * Interface representing settings with string key-value pairs.
+ * Interface representing settings with std::string key-value pairs.
  */
 struct RuntimeSettings {
 };
 
 /**
  * Represents a single item of knowledge that can be processed and stored by the agent.
- * Knowledge items consist of content (text and optional structured data) and metadata.
+ * Knowledge items consist of content (text and std::optional structured data) and metadata.
  * These items are typically added to the agent's knowledge base via `AgentRuntime.addKnowledge`
  * and retrieved using `AgentRuntime.getKnowledge`.
  * The `id` is a unique identifier for the knowledge item, often derived from its source or content.
@@ -650,7 +650,7 @@ enum CacheKeyPrefix {
  * When an agent's `Character.knowledge` configuration includes a directory, this type
  * is used to specify the path to that directory and whether its contents should be treated as shared.
  * - `directory`: The path to the directory containing knowledge files.
- * - `shared`: An optional boolean (defaults to false) indicating if the knowledge from this directory is considered shared or private.
+ * - `shared`: An std::optional boolean (defaults to false) indicating if the knowledge from this directory is considered shared or private.
  */
 struct DirectoryItem {
     std::string directory;
@@ -676,7 +676,7 @@ struct ChunkRow {
  */
 using GenerateTextParams = {
   /** The `AgentRuntime` instance, providing access to models and other services. */
-  /** The input string or prompt that the language model will use to generate text. */
+  /** The input std::string or prompt that the language model will use to generate text. */
   /** Specifies the type of text generation model to use (e.g., TEXT_LARGE, REASONING_SMALL). */
   /** Optional. The maximum number of tokens to generate in the response. */
   /** Optional. Controls randomness (0.0-1.0). Lower values are more deterministic, higher are more creative. */
@@ -685,7 +685,7 @@ using GenerateTextParams = {
   /** Optional. A list of sequences at which the model will stop generating further tokens. */
 
 /**
- * Parameters for tokenizing text, i.e., converting a string into a sequence of numerical tokens.
+ * Parameters for tokenizing text, i.e., converting a std::string into a sequence of numerical tokens.
  * This is a common preprocessing step for many language models.
  * This structure is used with `AgentRuntime.useModel` when the `modelType` is `ModelType.TEXT_TOKENIZER_ENCODE`.
  */
@@ -706,8 +706,8 @@ struct DetokenizeTextParams {
 
 /**
  * Represents a test case for evaluating agent or plugin functionality.
- * Each test case has a name and a function that contains the test logic.
- * The test function receives the `IAgentRuntime` instance, allowing it to interact with the agent's capabilities.
+ * Each test case has a name and a std::function that contains the test logic.
+ * The test std::function receives the `IAgentRuntime` instance, allowing it to interact with the agent's capabilities.
  * Test cases are typically grouped into `TestSuite`s.
  */
 struct TestCase {
@@ -733,7 +733,7 @@ struct TestSuite {
  * generating a new keypair and attestation each time.
  */
 struct TeeAgent {
-    string; // Primary key id;
+    std::string; // Primary key id;
     std::string agentId;
     std::string agentName;
     double createdAt;
@@ -804,14 +804,14 @@ enum TeeType {
 /**
  * Configuration options specific to a particular Trusted Execution Environment (TEE) vendor.
  * This allows for vendor-specific settings to be passed to the TEE plugin or service.
- * The structure is a generic key-value map, as configurations can vary widely between vendors.
+ * The structure is a generic key-value std::map, as configurations can vary widely between vendors.
  */
 struct TeeVendorConfig {
 };
 
 /**
  * Configuration for a TEE (Trusted Execution Environment) plugin.
- * This allows specifying the TEE vendor and any vendor-specific configurations.
+ * This allows specifying the TEE vendor and std::any vendor-specific configurations.
  * It's used to initialize and configure TEE-related functionalities within the agent system.
  */
 struct TeePluginConfig {
@@ -828,13 +828,13 @@ struct TaskWorker {
     std::string name;
     ( execute;
     IAgentRuntime runtime;
-    { [key: string]: unknown } options;
+    { [key: std::string]: unknown } options;
 
 /**
  * Defines metadata associated with a `Task`.
  * This can include scheduling information like `updateInterval` or UI-related details
  * for presenting task options to a user.
- * The `[key: string]: unknown;` allows for additional, unspecified metadata fields.
+ * The `[key: std::string]: unknown;` allows for additional, unspecified metadata fields.
  */
 using TaskMetadata = {
   /** Optional. If the task is recurring, this specifies the interval in milliseconds between updates or executions. */
@@ -874,16 +874,16 @@ enum Role {
 
 struct Setting {
     std::string name;
-    string; // Used in chat context when discussing the setting description;
-    string; // Used during settings to guide users usageDescription;
-    string | boolean | null value;
+    std::string; // Used in chat context when discussing the setting description;
+    std::string; // Used during settings to guide users usageDescription;
+    std::string | boolean | null value;
     bool required;
     std::optional<boolean; // If true, shown in public channels> public;
     std::optional<boolean; // If true, value is masked and only shown during settings> secret;
-    std::optional<(value: any) => boolean> validation;
+    std::optional<(value: std::any) => boolean> validation;
     std::optional<std::vector<std::string>> dependsOn;
-    std::optional<(value: any) => string> onSetAction;
-    std::optional<(settings: { [key: string]: Setting }) => boolean> visibleIf;
+    std::optional<(value: std::any) => string> onSetAction;
+    std::optional<(settings: { [key: std::string]: Setting }) => boolean> visibleIf;
 
 struct WorldSettings {
 };
@@ -1092,7 +1092,7 @@ struct EventPayload {
  * @typedef {Object} MessageReceivedHandlerParams
  * @property {IAgentRuntime} runtime - The agent runtime associated with the message.
  * @property {Memory} message - The message received.
- * @property {HandlerCallback} callback - The callback function to be executed after handling the message.
+ * @property {HandlerCallback} callback - The callback std::function to be executed after handling the message.
  */
 using MessageReceivedHandlerParams = {
 
@@ -1103,7 +1103,7 @@ struct EventPayloadMap {
 };
 
 /**
- * Event handler function type
+ * Event handler std::function type
  */
 
 /**
@@ -1124,7 +1124,7 @@ enum SOCKET_MESSAGE_TYPE {
  */
 
 /**
- * Factory function to create a new message memory with proper defaults
+ * Factory std::function to create a new message memory with proper defaults
  */
 
 /**
@@ -1139,11 +1139,11 @@ enum SOCKET_MESSAGE_TYPE {
   /**
    * Process an input with this service
    * @param input The input to process
-   * @returns A promise resolving to the result
+   * @returns A std::promise resolving to the result
    */
 
 /**
- * Generic factory function to create a typed service instance
+ * Generic factory std::function to create a typed service instance
  * @param runtime The agent runtime
  * @param serviceType The type of service to get
  * @returns The service instance or null if not available
@@ -1206,7 +1206,7 @@ struct ServiceError {
 std::string getMemoryText(Memory memory, auto defaultValue = '');
 
 /**
- * Safely create a ServiceError from any caught error
+ * Safely create a ServiceError from std::any caught error
  */
 ServiceError createServiceError(unknown error, auto code = 'UNKNOWN_ERROR');
 
@@ -1223,7 +1223,7 @@ ServiceError createServiceError(unknown error, auto code = 'UNKNOWN_ERROR');
 using StateValue = std::variant<std::string, double, bool, nullptr, StateObject, StateArray>;
 /**
  * Represents a generic object structure within the agent's state, where keys are strings
- * and values can be any `StateValue`. This allows for nested objects within the state.
+ * and values can be std::any `StateValue`. This allows for nested objects within the state.
  * It's a fundamental part of the `EnhancedState` interface.
  */
 struct StateObject {
@@ -1241,7 +1241,7 @@ using StateArray = std::vector<StateValue>;
  * This interface provides a more structured representation of an agent's conversational state,
  * building upon the base `State` by typing `values` and `data` as `StateObject`.
  * The `text` property typically holds a textual summary or context derived from the state.
- * Additional dynamic properties are still allowed via the index signature `[key: string]: StateValue;`.
+ * Additional dynamic properties are still allowed via the index signature `[key: std::string]: StateValue;`.
  */
 struct EnhancedState {
     StateObject values;
@@ -1252,7 +1252,7 @@ struct EnhancedState {
 // Replace 'any' in component data
 /**
  * A generic type for the `data` field within a `Component`.
- * While `Record<string, unknown>` allows for flexibility, developers are encouraged
+ * While `Record<std::string, unknown>` allows for flexibility, developers are encouraged
  * to define more specific types for component data where possible to improve type safety
  * and code maintainability. This type serves as a base for various component implementations.
  */
@@ -1295,14 +1295,14 @@ using MetadataObject = std::unordered_map<std::string, unknown>;
 // Replace 'any' in model handlers
 /**
  * Defines the structure for a model handler registration within the `AgentRuntime`.
- * Each model (e.g., for text generation, embedding) is associated with a handler function,
- * the name of the provider (plugin or system) that registered it, and an optional priority.
+ * Each model (e.g., for text generation, embedding) is associated with a handler std::function,
+ * the name of the provider (plugin or system) that registered it, and an std::optional priority.
  * The `priority` (higher is more preferred) helps in selecting which handler to use if multiple
  * handlers are registered for the same model type. The `registrationOrder` (not in type, but used in runtime)
  * serves as a tie-breaker. See `AgentRuntime.registerModel` and `AgentRuntime.getModel`.
  */
 struct ModelHandler {
-    (runtime: IAgentRuntime, params: Record<string, unknown>) => Promise<unknown> handler;
+    (runtime: IAgentRuntime, params: Record<std::string, unknown>) => Promise<unknown> handler;
     std::string provider;
     std::optional<number; // Optional priority for selection order> priority;
     std::optional<double> registrationOrder;
@@ -1317,7 +1317,7 @@ struct ModelHandler {
  */
 using ServiceConfig = std::unordered_map<std::string, unknown>;
 
-// Allowable vector dimensions
+// Allowable std::vector dimensions
 
 /**
  * Interface for control messages sent from the backend to the frontend

@@ -6,6 +6,6 @@
 #include "../../types/base.h"
 #include "@elizaos/core.h"
 
-extern any TEST_AGENT_ID;
-extern any TEST_CHANNEL_ID;
+extern std::any TEST_AGENT_ID;
+extern std::any TEST_CHANNEL_ID;
 #endif

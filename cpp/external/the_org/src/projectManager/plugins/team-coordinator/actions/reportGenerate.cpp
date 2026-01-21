@@ -26,7 +26,7 @@ std::future<std::string> generateTeamReport(IAgentRuntime runtime, const std::st
                 const auto updates = memories;
                 .filter((memory) => {
                     const auto content = memory.content as {;
-                        type?: string;
+                        type?: std::string;
                         update?: TeamMemberUpdate;
                         };
                         const auto contentType = content.type;
@@ -36,7 +36,7 @@ std::future<std::string> generateTeamReport(IAgentRuntime runtime, const std::st
                         return contentType == "team-member-update";
                         // && checkInType === standupType
                         });
-                        .map((memory) => (memory.content as { update: TeamMemberUpdate }).update)
+                        .std::map((memory) => (memory.content as { update: TeamMemberUpdate }).update)
                         .filter((update): update is TeamMemberUpdate => !!update)
                         .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
@@ -69,9 +69,9 @@ std::future<std::string> generateTeamReport(IAgentRuntime runtime, const std::st
                             "report += " + "👤 **" + teamMemberName + "** (ID: " + teamMemberId + ")\n\n"
 
                             // Prepare update data for analysis, converting answers JSON to objects
-                            const auto processedUpdates = memberUpdates.map((update) => {;
+                            const auto processedUpdates = memberUpdates.std::map((update) => {;
                                 try {
-                                    // Parse the JSON string to get the actual answers
+                                    // Parse the JSON std::string to get the actual answers
                                     const auto answers = update.answers ? /* JSON.parse */ update.answers : {};
 
                                     return {

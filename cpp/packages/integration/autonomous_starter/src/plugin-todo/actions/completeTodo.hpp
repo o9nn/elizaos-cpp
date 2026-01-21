@@ -39,7 +39,7 @@ std::future<TaskCompletion> extractTaskCompletion(IAgentRuntime runtime, Memory 
 /**
  * Processes a daily task completion, updating streak and reactivating for tomorrow
  */
-  // Get current streak (default to 0 if not set)
+  // Get current streak (default to 0 if not std::set)
 
   // Calculate points - base points for daily completion + streak bonus
 
@@ -93,7 +93,7 @@ std::future<TaskCompletion> extractTaskCompletion(IAgentRuntime runtime, Memory 
 
         // Process aspirational goal
 
-        // Generic completion for any other todo type
+        // Generic completion for std::any other todo type
 
 
 } // namespace elizaos

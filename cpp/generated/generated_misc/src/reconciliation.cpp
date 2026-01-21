@@ -12,15 +12,15 @@ ReconciliationService::ReconciliationService() {
         this->otcAddress = getContractAddress();
         console->log(std::string("[ReconciliationService] Using contract address: ") + this->otcAddress + std::string(" for network: ") + (OR((process->env->NETWORK), (std::string("localnet")))) + string_empty);
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("[ReconciliationService] Failed to get contract address:"), error);
-        throw any(error);
+        throw std::any(error);
     }
     this->abi = as<std::shared_ptr<Abi>>(otcArtifact->abi);
 }
 
-std::shared_ptr<Promise<object>> ReconciliationService::reconcileQuote(string quoteId)
+std::shared_ptr<Promise<object>> ReconciliationService::reconcileQuote(std::string quoteId)
 {
     auto dbQuote = std::async([=]() { QuoteDB::getQuoteByQuoteId(quoteId); });
     if (!dbQuote->offerId) {
@@ -31,7 +31,7 @@ std::shared_ptr<Promise<object>> ReconciliationService::reconcileQuote(string qu
         };
     }
     auto contractOffer = std::async([=]() { this->readContractOffer(dbQuote->offerId); });
-    auto contractStatus = (contractOffer->fulfilled) ? any(std::string("executed")) : any((contractOffer->cancelled) ? any(std::string("rejected")) : any((OR((contractOffer->paid), (contractOffer->approved))) ? std::string("approved") : std::string("active")));
+    auto contractStatus = (contractOffer->fulfilled) ? std::any(std::string("executed")) : std::any((contractOffer->cancelled) ? std::any(std::string("rejected")) : std::any((OR((contractOffer->paid), (contractOffer->approved))) ? std::string("approved") : std::string("active")));
     if (dbQuote->status == contractStatus) {
         return object{
             object::pair{std::string("updated"), false}, 
@@ -59,7 +59,7 @@ std::shared_ptr<Promise<object>> ReconciliationService::reconcileAllActive()
     console->log(std::string("[Reconciliation] Starting reconciliation..."));
     auto activeQuotes = std::async([=]() { QuoteDB::getActiveQuotes(); });
     console->log(std::string("[Reconciliation] Found ") + activeQuotes->get_length() + std::string(" active quotes"));
-    auto results = std::async([=]() { Promise->all(activeQuotes->map([=](auto quote) mutable
+    auto results = std::async([=]() { Promise->all(activeQuotes->std::map([=](auto quote) mutable
     {
         return this->reconcileQuote(quote->quoteId);
     }
@@ -76,7 +76,7 @@ std::shared_ptr<Promise<object>> ReconciliationService::reconcileAllActive()
     };
 }
 
-std::shared_ptr<Promise<object>> ReconciliationService::verifyQuoteState(string quoteId)
+std::shared_ptr<Promise<object>> ReconciliationService::verifyQuoteState(std::string quoteId)
 {
     auto result = std::async([=]() { this->reconcileQuote(quoteId); });
     return object{
@@ -86,7 +86,7 @@ std::shared_ptr<Promise<object>> ReconciliationService::verifyQuoteState(string 
 
 std::shared_ptr<Promise<object>> ReconciliationService::healthCheck()
 {
-    if (!this->otcAddress) throw any(std::make_shared<Error>(std::string("OTC address not configured")));
+    if (!this->otcAddress) throw std::any(std::make_shared<Error>(std::string("OTC address not configured")));
     auto blockNumber = std::async([=]() { this->client->getBlockNumber(); });
     std::async([=]() { this->client->readContract(object{
         object::pair{std::string("address"), this->otcAddress}, 
@@ -126,7 +126,7 @@ std::shared_ptr<Promise<void>> runReconciliationTask()
 };
 
 
-any reconciliationServiceInstance = nullptr;
+std::any reconciliationServiceInstance = nullptr;
 
 void Main(void)
 {

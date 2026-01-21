@@ -8,15 +8,15 @@
 class UserSegment;
 class UserSegmentation;
 
-extern any prisma;
+extern std::any prisma;
 class UserSegment : public object, public std::enable_shared_from_this<UserSegment> {
 public:
     using std::enable_shared_from_this<UserSegment>::shared_from_this;
-    string id;
+    std::string id;
 
-    string name;
+    std::string name;
 
-    Record<string, any> characteristics;
+    Record<std::string, any> characteristics;
 
     double size;
 };

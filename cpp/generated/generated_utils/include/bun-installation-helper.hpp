@@ -12,15 +12,15 @@ public:
     using std::enable_shared_from_this<BunInstallationResult>::shared_from_this;
     boolean installed;
 
-    string message;
+    std::string message;
 
-    string error;
+    std::string error;
 };
 
 std::shared_ptr<Promise<std::shared_ptr<BunInstallationResult>>> checkBunInstallation();
 
 void displayBunInstallInstructions();
 
-string displayBunInstallationTipCompact();
+std::string displayBunInstallationTipCompact();
 
 #endif

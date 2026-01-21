@@ -14,7 +14,7 @@ void ModalProvider() {
         options: std::nullopt,
         });
 
-        const auto showModal = useCallback((content: ReactNode, id?: string, options?: ModalOptions) => {;
+        const auto showModal = useCallback((content: ReactNode, id?: std::string, options?: ModalOptions) => {;
             setState({
                 isVisible: true,
                 content,
@@ -23,7 +23,7 @@ void ModalProvider() {
                 });
                 }, []);
 
-                const auto hideModal = useCallback((id?: string) => {;
+                const auto hideModal = useCallback((id?: std::string) => {;
                     setState(prev => {
                         // If an ID is provided, only hide if it matches the current ID
                         // This prevents race conditions where one component hides another's modal

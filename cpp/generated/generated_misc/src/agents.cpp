@@ -47,7 +47,7 @@ std::shared_ptr<Promise<object>> AgentsService::addAgentToWorld(std::shared_ptr<
     });
 }
 
-std::shared_ptr<Promise<std::shared_ptr<AgentWorldSettings>>> AgentsService::updateAgentWorldSettings(std::shared_ptr<UUID> agentId, std::shared_ptr<UUID> worldId, Record<string, any> settings)
+std::shared_ptr<Promise<std::shared_ptr<AgentWorldSettings>>> AgentsService::updateAgentWorldSettings(std::shared_ptr<UUID> agentId, std::shared_ptr<UUID> worldId, Record<std::string, any> settings)
 {
     return this->patch<std::shared_ptr<AgentWorldSettings>>(std::string("/api/agents/") + agentId + std::string("/worlds/") + worldId + string_empty, object{
         object::pair{std::string("settings"), std::string("settings")}
@@ -57,7 +57,7 @@ std::shared_ptr<Promise<std::shared_ptr<AgentWorldSettings>>> AgentsService::upd
 std::shared_ptr<Promise<object>> AgentsService::getAgentPanels(std::shared_ptr<UUID> agentId)
 {
     auto response = std::async([=]() { this->get<array<object>>(std::string("/api/agents/") + agentId + std::string("/panels")); });
-    auto panels = ((Array->isArray(response)) ? response : array<any>())->map([=](auto panel, auto index) mutable
+    auto panels = ((Array->isArray(response)) ? response : array<any>())->std::map([=](auto panel, auto index) mutable
     {
         return (object{
             object::pair{std::string("id"), string_empty + panel["name"] + std::string("-") + index + string_empty}, 

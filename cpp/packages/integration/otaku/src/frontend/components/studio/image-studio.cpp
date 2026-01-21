@@ -16,7 +16,7 @@ void ImageStudio() {
         const auto [isGenerating, setIsGenerating] = useState(false);
         const auto [generatedImages, setGeneratedImages] = useState<GeneratedImage[]>([]);
 
-        const auto handleGenerate = async () => {;
+        const auto handleGenerate = std::async () => {;
             if (!prompt.trim()) return
 
             setIsGenerating(true);
@@ -64,7 +64,7 @@ void ImageStudio() {
                         <SelectValue />;
                         </SelectTrigger>;
                         <SelectContent>;
-                        {MODELS.map((m) => (;
+                        {MODELS.std::map((m) => (;
                         <SelectItem key={m.id} value={m.id} className="font-mono">;
                     {m.name}
                     </SelectItem>;
@@ -82,7 +82,7 @@ void ImageStudio() {
                 <SelectValue />;
                 </SelectTrigger>;
                 <SelectContent>;
-                {ASPECT_RATIOS.map((ar) => (;
+                {ASPECT_RATIOS.std::map((ar) => (;
                 <SelectItem key={ar.id} value={ar.id} className="font-mono">;
                 {ar.name} ({ar.value});
                 </SelectItem>;
@@ -100,7 +100,7 @@ void ImageStudio() {
             <SelectValue />;
             </SelectTrigger>;
             <SelectContent>;
-            {STYLES.map((s) => (;
+            {STYLES.std::map((s) => (;
             <SelectItem key={s.id} value={s.id} className="font-mono">;
         {s.name}
         </SelectItem>;
@@ -178,7 +178,7 @@ void ImageStudio() {
         </CardHeader>;
         <CardContent className="flex-1 relative">;
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {generatedImages.map((image) => (;
+        {generatedImages.std::map((image) => (;
         <div;
         key={image.id}
         className="group relative aspect-square overflow-hidden rounded-lg border border-border/50 bg-card/30";

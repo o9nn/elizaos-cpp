@@ -57,7 +57,7 @@ public:
     void fetchTokenOverview(TokenOverviewParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
     void fetchTokenCreationInfo(TokenCreationInfoParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
     void fetchTokenTrending(std::optional<TokenTrendingParams> params, std::optional<{ headers: Record<string> options, auto string> } = {});
-    void fetchTokenListV2_POST(FetchParams<Record<string params, auto never>>);
+    void fetchTokenListV2_POST(FetchParams<Record<std::string params, auto never>>);
     void fetchTokenNewListing(std::optional<NewListingParams> params, std::optional<{ headers: Record<string> options, auto string> } = {});
     void fetchTokenTopTraders(TopTradersParams params, std::optional<{ headers: Record<string> options, auto string> } = {});
     void fetchTokenAllMarketsList(AllMarketsParams params, std::optional<{ headers: Record<string> options, auto string> } = {});

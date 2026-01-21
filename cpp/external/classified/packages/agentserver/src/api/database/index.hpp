@@ -26,7 +26,7 @@ struct ColumnInfo {
 };
 
 /**
- * Database router factory function for the main API router
+ * Database router factory std::function for the main API router
  */
 
 } // namespace elizaos

@@ -4,9 +4,9 @@
 #include "@synthetixio/synpress.h"
 #include "@synthetixio/synpress/playwright.h"
 
-extern string SEED_PHRASE;
-extern string PASSWORD;
-extern any setupWallet;
-extern string walletPassword;
-extern string seedPhrase;
+extern std::string SEED_PHRASE;
+extern std::string PASSWORD;
+extern std::any setupWallet;
+extern std::string walletPassword;
+extern std::string seedPhrase;
 #endif

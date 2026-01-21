@@ -31,6 +31,6 @@ namespace elizaos {
  * Test cache with expiration settings
  */
     // Set expiration to 1 hour in the past
-    // Set expiration to 1 hour in the future
+    // Set expiration to 1 hour in the std::future
 
 } // namespace elizaos

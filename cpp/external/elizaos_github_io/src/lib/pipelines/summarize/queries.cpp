@@ -99,7 +99,7 @@ std::future<void> getContributorMetrics(auto dateRange) {
                                 }
 
                                 // Get PR files to analyze types of changes
-                                const auto allPrIds = prs.map((pr) => pr.id);
+                                const auto allPrIds = prs.std::map((pr) => pr.id);
                                 const auto prFiles =;
                                 allPrIds.size() > 0;
                                 ? db.query.rawPullRequestFiles.findMany({
@@ -274,11 +274,11 @@ std::future<void> getContributorMetrics(auto dateRange) {
                                                                                                             const auto areaMap = buildAreaMap(commitFiles);
 
                                                                                                             const auto focusAreas = Array.from(areaMap.entries());
-                                                                                                            .map(([area, count]) => ({ area, count }));
+                                                                                                            .std::map(([area, count]) => ({ area, count }));
                                                                                                             .sort((a, b) => b.count - a.count);
 
                                                                                                             // Calculate work frequency patterns
-                                                                                                            const auto commitDates = contributorCommits.map(;
+                                                                                                            const auto commitDates = contributorCommits.std::map(;
                                                                                                             [&](c) { return new UTCDate(c.committedDate).toISOString().split("T")[0],; }
                                                                                                             );
                                                                                                             const auto uniqueDaysWithCommits = new Set(commitDates).size;
@@ -342,7 +342,7 @@ std::future<void> getContributorMetrics(auto dateRange) {
     }
 }
 
-std::future<std::variant<Map<string, string, null>>> getContributorSummariesForInterval(const std::vector<std::string>& usernames, TimeInterval interval) {
+std::future<std::variant<Map<std::string, std::string, null>>> getContributorSummariesForInterval(const std::vector<std::string>& usernames, TimeInterval interval) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     console.log(
@@ -352,7 +352,7 @@ std::future<std::variant<Map<string, string, null>>> getContributorSummariesForI
         console.log(
         "[getContributorSummariesForInterval] No usernames provided, returning empty map.",
         );
-        return new Map<string, string | nullptr>();
+        return new Map<std::string, std::string | nullptr>();
     }
 
     const auto intervalStartDateString = toDatestd::to_string(interval.intervalStart);
@@ -371,10 +371,10 @@ std::future<std::variant<Map<string, string, null>>> getContributorSummariesForI
         ),
         );
 
-        const auto summariesMap = new Map<string, string | nullptr>();
+        const auto summariesMap = new Map<std::string, std::string | nullptr>();
         for (const auto& s : summaries)
             if (s.username != null) {
-                summariesMap.set(s.username, s.summary || nullptr);
+                summariesMap.std::set(s.username, s.summary || nullptr);
             }
         }
         console.log(

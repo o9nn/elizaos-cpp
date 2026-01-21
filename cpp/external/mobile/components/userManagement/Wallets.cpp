@@ -8,7 +8,7 @@ void Wallets() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const auto [error, setError] = useState<string | nullptr>(nullptr);
+        const auto [error, setError] = useState<std::string | nullptr>(nullptr);
         const auto { user } = usePrivy();
         const auto { create: createEthereumWalauto } = useEmbeddedEthereumWallet();
         const auto { create: createSolanaWalauto } = useEmbeddedSolanaWallet();
@@ -54,7 +54,7 @@ void Wallets() {
                     // default:
                     return createWallet({;
                         chainType: chainType,
-                        }).catch((err: any) => {
+                        }).catch((err: std::any) => {
                             std::cout << err << std::endl;
                             setError(err.message ? std::to_string(err.message) : std::to_string(err));
                             });
@@ -81,7 +81,7 @@ void Wallets() {
                             flexWrap: "wrap",
                         }}
                         >;
-                        {ALL_CHAIN_TYPES.map((chainType, i) => (;
+                        {ALL_CHAIN_TYPES.std::map((chainType, i) => (;
                         <Button;
                     "key={" + "create-wallet-" + chainType + "-" + i;
                 "title={" + "Create " + chainType + " Wallet";

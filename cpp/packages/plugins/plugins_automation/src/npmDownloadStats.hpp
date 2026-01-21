@@ -48,7 +48,7 @@ class NpmDownloadStatsGenerator {
   private readonly OUTPUT_DIR = "./assets";
   private readonly OUTPUT_FILE = "elizaos-npm-download-stats.xlsx";
 
-  async main(): Promise<void> {
+  std::async main(): Promise<void> {
     console.log(chalk.blue("🚀 Starting npm download statistics generation for @elizaos"));
     
     try {

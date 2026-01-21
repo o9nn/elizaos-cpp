@@ -15,15 +15,15 @@ public:
     using std::enable_shared_from_this<WalletOperationResult>::shared_from_this;
     boolean success;
 
-    string signature;
+    std::string signature;
 
-    string error;
+    std::string error;
 
-    string outAmount;
+    std::string outAmount;
 
-    string receivedAmount;
+    std::string receivedAmount;
 
-    string swapUsdValue;
+    std::string swapUsdValue;
 };
 
 class WalletService : public object, public std::enable_shared_from_this<WalletService> {
@@ -31,16 +31,16 @@ public:
     using std::enable_shared_from_this<WalletService>::shared_from_this;
     std::shared_ptr<IAgentRuntime> runtime;
 
-    any connection = nullptr;
+    std::any connection = nullptr;
 
-    any keypair = nullptr;
+    std::any keypair = nullptr;
 
-    any CONFIRMATION_CONFIG;
+    std::any CONFIRMATION_CONFIG;
 
     WalletService(std::shared_ptr<IAgentRuntime> runtime_);
     virtual std::shared_ptr<Promise<void>> initialize();
     virtual std::shared_ptr<Promise<void>> stop();
-    virtual any getWallet();
+    virtual std::any getWallet();
     virtual std::shared_ptr<Promise<double>> getBalance();
 };
 

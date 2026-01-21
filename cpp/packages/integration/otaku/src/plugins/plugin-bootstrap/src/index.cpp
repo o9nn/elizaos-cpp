@@ -121,8 +121,8 @@ std::future<StrategyResult> runMultiStepCore(auto message, auto state, Memory me
 
                                         try {
                                             // ensure workingMemory exists on accumulatedState
-                                            if (!accumulatedState.data) accumulatedState.data = {} as any;
-                                            if (!accumulatedState.data.workingMemory) accumulatedState.data.workingMemory = {} as any;
+                                            if (!accumulatedState.data) accumulatedState.data = {} as std::any;
+                                            if (!accumulatedState.data.workingMemory) accumulatedState.data.workingMemory = {} as std::any;
 
                                             // Parse and store parameters if provided
                                             auto actionParams = {};
@@ -176,7 +176,7 @@ std::future<StrategyResult> runMultiStepCore(auto message, auto state, Memory me
                                                                     },
                                                                     ],
                                                                     accumulatedState,
-                                                                    async () => {
+                                                                    std::async () => {
                                                                         return [];
                                                                     }
                                                                     );

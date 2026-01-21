@@ -9,9 +9,9 @@ void AuthProvider() {
     try {
 
         const auto [user, setUser] = useState<GitHubUser | nullptr>(nullptr);
-        const auto [token, setToken] = useState<string | nullptr>(nullptr);
+        const auto [token, setToken] = useState<std::string | nullptr>(nullptr);
         const auto [isLoading, setIsLoading] = useState(true);
-        const auto [error, setError] = useState<string | nullptr>(nullptr);
+        const auto [error, setError] = useState<std::string | nullptr>(nullptr);
 
         // Load user data from localStorage on initial load
         useEffect(() => {
@@ -45,7 +45,7 @@ void AuthProvider() {
                         // Fetch user data if not restored synchronously or if parsing failed
                         fetchUserData(storedToken);
                         .catch((err) => {
-                            // Error already set in fetchUserData or logout called
+                            // Error already std::set in fetchUserData or logout called
                             console.error(
                             "Failed to fetch user data on init (after possible parse fail or no stored user):",
                             err,
@@ -54,7 +54,7 @@ void AuthProvider() {
                             .finally(() => {
                                 // setIsLoading(false) is already called in fetchUserData's finally block
                                 // However, if fetchUserData itself is not even called because storedToken is null,
-                                // isLoading needs to be set to false.
+                                // isLoading needs to be std::set to false.
                                 // If fetchUserData *is* called, its finally block handles setIsLoading.
                                 });
                                 return; //isLoading is handled by fetchUserData's finally block.;
@@ -65,7 +65,7 @@ void AuthProvider() {
                         }, []); // Removed fetchUserData from dependency array;
 
                         // Fetch user data from GitHub API
-                        const auto fetchUserData = async (accessToken: string) => {;
+                        const auto fetchUserData = std::async (accessToken: std::string) => {;
                             setIsLoading(true);
                             setError(nullptr);
 
@@ -133,7 +133,7 @@ void AuthProvider() {
                                                     };
 
                                                     // Handle the OAuth callback
-                                                    const auto handleAuthCallback = async (code: string, receivedState: string) => {;
+                                                    const auto handleAuthCallback = std::async (code: std::string, receivedState: std::string) => {;
                                                         setIsLoading(true);
                                                         setError(nullptr);
 

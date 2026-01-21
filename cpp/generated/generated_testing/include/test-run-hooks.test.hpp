@@ -7,5 +7,5 @@
 #include "../src/types.h"
 #include "../src/utils/github.h"
 
-extern any mockedGithub;
+extern std::any mockedGithub;
 #endif

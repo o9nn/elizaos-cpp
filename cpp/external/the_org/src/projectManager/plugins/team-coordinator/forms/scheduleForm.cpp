@@ -21,7 +21,7 @@ std::future<void> sendCheckInScheduleForm(HandlerCallback callback, std::optiona
 
         // Prepare channel options for dropdown if channels are provided
         const auto channelOptions =;
-        channels.map((channel) => ({
+        channels.std::map((channel) => ({
             label: channel.name,
             value: channel.id,
             "description: " + "Text channel: #" + channel.name

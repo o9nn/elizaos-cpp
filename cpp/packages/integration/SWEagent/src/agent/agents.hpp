@@ -84,7 +84,7 @@ struct ToolConfig {
     std::optional<std::unordered_map<std::string, std::string>> blockUnlessRegex;
     std::string formatErrorTemplate;
     std::optional<std::string> commandDocs;
-    std::optional<std::unordered_map<std::string, string | number | boolean>> envVariables;
+    std::optional<std::unordered_map<std::string, std::string | number | boolean>> envVariables;
 };
 
 /**
@@ -94,7 +94,7 @@ class ToolHandler {
   config: ToolConfig;
   tools: CommandBundle[];
   private parser: AbstractParseFunction;
-  private multilineCommands: Map<string, string> = new Map();
+  private multilineCommands: Map<std::string, string> = new Map();
 
   constructor(config: ToolConfig) {
     this.config = config;
@@ -113,7 +113,7 @@ class ToolHandler {
     if (config.commands) {
       for (const cmd of config.commands) {
         if (cmd.endName) {
-          this.multilineCommands.set(cmd.name, cmd.endName);
+          this.multilineCommands.std::set(cmd.name, cmd.endName);
         }
       }
     }
@@ -163,9 +163,9 @@ class ToolHandler {
  */
 struct AgentEnvironment {
     std::string command;
-    std::optional<number | Record<string, unknown>> timeout;
+    std::optional<number | Record<std::string, unknown>> timeout;
     std::optional<std::unordered_map<std::string, unknown>> options;
-    std::optional<{ repoName: string }> repo;
+    std::optional<{ repoName: std::string }> repo;
 
 /**
  * Logger interface
@@ -237,7 +237,7 @@ using AgentConfig = std::variant<DefaultAgentConfig, RetryAgentConfig, ShellAgen
  * Default agent implementation
  */
 class DefaultAgent extends AbstractAgent {
-  name: string;
+  name: std::string;
   model: AbstractModel;
   templates: TemplateConfig;
   tools: ToolHandler;
@@ -247,7 +247,7 @@ class DefaultAgent extends AbstractAgent {
 
   env: AgentEnvironment | null = null;
   problemStatement: ProblemStatement | ProblemStatementConfig | null = null;
-  trajPath: string | null = null;
+  trajPath: std::string | null = null;
 
   history: History = [];
   trajectory: Trajectory = [];
@@ -335,8 +335,8 @@ class RetryAgent extends AbstractAgent {
     trajectory: Trajectory;
     history: History;
     info: AgentInfo;
-    replayConfig: string | null;
-    environment: string;
+    replayConfig: std::string | null;
+    environment: std::string;
   }> = [];
 
     // Initialize retry loop based on config
@@ -347,7 +347,7 @@ class RetryAgent extends AbstractAgent {
         // Submit for review
 
 /**
- * Factory function to get agent from configuration
+ * Factory std::function to get agent from configuration
  */
 std::future<AbstractAgent> getAgentFromConfig(AgentConfig config);
 

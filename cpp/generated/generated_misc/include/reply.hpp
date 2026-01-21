@@ -2,5 +2,5 @@
 #define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PLUGINS_PLUGIN-BOOTSTRAP_SRC_TEMPLATES_REPLY_H
 #include "core.h"
 
-extern string replyTemplate;
+extern std::string replyTemplate;
 #endif

@@ -44,7 +44,7 @@ std::string extractSearchQuery(const std::string& text);
       // Add related plugins if available
       // This functionality will be re-enabled once the API supports it
       // if (details.relatedPlugins && details.relatedPlugins.length > 0) {
-      //   responseText += `\n💡 **Related Plugins:**\n${details.relatedPlugins.map((p) => `• ${p.name} (${p.reason})`).join('\n')}`;
+      //   responseText += `\n💡 **Related Plugins:**\n${details.relatedPlugins.std::map((p) => `• ${p.name} (${p.reason})`).join('\n')}`;
       // }
 
 

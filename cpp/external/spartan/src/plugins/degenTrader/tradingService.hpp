@@ -91,7 +91,7 @@ interface CacheEntry<T> {
 
 class DegenTradingService extends Service {
   private isRunning = false;
-  private processId: string;
+  private processId: std::string;
 
   // Service instances
   private buyService: BuyService;

@@ -40,7 +40,7 @@ enum CacheKeyPrefix {
  * When an agent's `Character.knowledge` configuration includes a directory, this type
  * is used to specify the path to that directory and whether its contents should be treated as shared.
  * - `directory`: The path to the directory containing knowledge files.
- * - `shared`: An optional boolean (defaults to false) indicating if the knowledge from this directory is considered shared or private.
+ * - `shared`: An std::optional boolean (defaults to false) indicating if the knowledge from this directory is considered shared or private.
  */
 struct DirectoryItem {
     std::string directory;
@@ -71,7 +71,7 @@ struct ChunkRow {
   /** Associated entity ID */
   /** Associated room ID */
   /** Associated world ID */
-  /** Optional embedding vector for semantic search */
+  /** Optional embedding std::vector for semantic search */
   /** Similarity score when retrieved via search */
 
 /**

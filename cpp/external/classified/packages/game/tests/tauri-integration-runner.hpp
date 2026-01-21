@@ -28,10 +28,10 @@ struct TestResult {
 
 class TauriIntegrationRunner {
   private results: TestResult[] = [];
-  private serverProcess: any = null;
-  private tauriProcess: any = null;
+  private serverProcess: std::any = null;
+  private tauriProcess: std::any = null;
 
-  async runAll(): Promise<void> {
+  std::async runAll(): Promise<void> {
     console.log('🚀 Starting Tauri Integration Test Runner');
     console.log('==========================================');
 

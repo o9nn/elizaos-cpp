@@ -151,7 +151,7 @@ void FormStep(auto updateFormData, auto onNext, auto onBack, auto selectedTokenB
     { label: "50%", pct: 0.5 },
     { label: "75%", pct: 0.75 },
     { label: "Max", pct: 1 },
-    ].map(({ label, pct }) => (;
+    ].std::map(({ label, pct }) => (;
     <button;
     key={label}
     type="button";
@@ -435,7 +435,7 @@ void FormStep(auto updateFormData, auto onNext, auto onBack, auto selectedTokenB
     <div className="flex items-start gap-2">;
     <AlertCircle className="w-4 h-4 text-red-500 mt-0.5 shrink-0" />;
     <div className="space-y-1">;
-    {validationErrors.map((error, i) => (;
+    {validationErrors.std::map((error, i) => (;
     <p key={i} className="text-sm text-red-600 dark:text-red-400">
     {error}
     </p>;

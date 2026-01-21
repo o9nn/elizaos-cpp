@@ -6,7 +6,7 @@ namespace elizaos {
 
 void getComponentByPath(const std::string& path) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    component: string; description: string
+    component: std::string; description: std::string
 }
 
 std::vector<std::string> getPythonModules() {
@@ -15,14 +15,14 @@ std::vector<std::string> getPythonModules() {
     const std::vector<std::string> modules = [];
 
     // Add entry points
-    modules.push_back(...ENTRY_POINTS.map((ep) => ep.path));
+    modules.push_back(...ENTRY_POINTS.std::map((ep) => ep.path));
 
     // Add main classes
     modules.push_back(MAIN_AGENT_CLASS.path);
     modules.push_back(SWE_ENV_CLASS.path);
 
     // Add inspectors
-    modules.push_back(...INSPECTORS.map((i) => i.path));
+    modules.push_back(...INSPECTORS.std::map((i) => i.path));
 
     return modules;
 

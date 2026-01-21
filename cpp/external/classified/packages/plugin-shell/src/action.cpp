@@ -68,7 +68,7 @@ std::string quoteShellArgs(const std::string& command) {
     }
 
     return commandParts;
-    .map((part, index) => {
+    .std::map((part, index) => {
         if (index == 0) {
             return part;
             } // Don't quote the command itself;

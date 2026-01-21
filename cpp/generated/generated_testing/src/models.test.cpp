@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/project-starter/src/__tests__/models.test.h"
 
-std::function<std::shared_ptr<Promise<object>>(any, std::function<std::shared_ptr<Promise<string>>(any, std::shared_ptr<TestGenerateParams>)>)> runCoreModelTests = [=](auto modelType, auto modelFn) mutable
+std::function<std::shared_ptr<Promise<object>>(std::any, std::function<std::shared_ptr<Promise<string>>(std::any, std::shared_ptr<TestGenerateParams>)>)> runCoreModelTests = [=](auto modelType, auto modelFn) mutable
 {
     auto mockRuntime = createMockRuntime();
     auto basicParams = object{
@@ -16,7 +16,7 @@ std::function<std::shared_ptr<Promise<object>>(any, std::function<std::shared_pt
         expect(basicResponse)->toBeTruthy();
         expect(type_of(basicResponse))->toBe(std::string("string"));
     }
-    catch (const any& e)
+    catch (const std::any& e)
     {
         basicError = as<std::shared_ptr<Error>>(e);
         logger->error(string_empty + modelType + std::string(" model call failed:"), e);
@@ -30,7 +30,7 @@ std::function<std::shared_ptr<Promise<object>>(any, std::function<std::shared_pt
     {
         emptyResponse = std::async([=]() { modelFn(mockRuntime, emptyParams); });
     }
-    catch (const any& e)
+    catch (const std::any& e)
     {
         emptyError = as<std::shared_ptr<Error>>(e);
         logger->error(string_empty + modelType + std::string(" empty prompt test failed:"), e);
@@ -49,7 +49,7 @@ std::function<std::shared_ptr<Promise<object>>(any, std::function<std::shared_pt
     {
         fullResponse = std::async([=]() { modelFn(mockRuntime, fullParams); });
     }
-    catch (const any& e)
+    catch (const std::any& e)
     {
         fullError = as<std::shared_ptr<Error>>(e);
         logger->error(string_empty + modelType + std::string(" all parameters test failed:"), e);

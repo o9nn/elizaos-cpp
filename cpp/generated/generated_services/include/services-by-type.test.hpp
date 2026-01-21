@@ -16,11 +16,11 @@ class MockPdfService;
 class MockWalletService1 : public Service, public std::enable_shared_from_this<MockWalletService1> {
 public:
     using std::enable_shared_from_this<MockWalletService1>::shared_from_this;
-    static any override;
+    static std::any override;
 
-    string serviceType = ServiceType["WALLET"];
+    std::string serviceType = ServiceType["WALLET"];
 
-    string capabilityDescription = std::string("Mock wallet service 1");
+    std::string capabilityDescription = std::string("Mock wallet service 1");
 
     MockWalletService1(std::shared_ptr<IAgentRuntime> runtime);
     static std::shared_ptr<Promise<std::shared_ptr<MockWalletService1>>> start(std::shared_ptr<IAgentRuntime> runtime);
@@ -30,11 +30,11 @@ public:
 class MockWalletService2 : public Service, public std::enable_shared_from_this<MockWalletService2> {
 public:
     using std::enable_shared_from_this<MockWalletService2>::shared_from_this;
-    static any override;
+    static std::any override;
 
-    string serviceType = ServiceType["WALLET"];
+    std::string serviceType = ServiceType["WALLET"];
 
-    string capabilityDescription = std::string("Mock wallet service 2");
+    std::string capabilityDescription = std::string("Mock wallet service 2");
 
     MockWalletService2(std::shared_ptr<IAgentRuntime> runtime);
     static std::shared_ptr<Promise<std::shared_ptr<MockWalletService2>>> start(std::shared_ptr<IAgentRuntime> runtime);
@@ -44,11 +44,11 @@ public:
 class MockPdfService : public Service, public std::enable_shared_from_this<MockPdfService> {
 public:
     using std::enable_shared_from_this<MockPdfService>::shared_from_this;
-    static any override;
+    static std::any override;
 
-    string serviceType = ServiceType["PDF"];
+    std::string serviceType = ServiceType["PDF"];
 
-    string capabilityDescription = std::string("Mock PDF service");
+    std::string capabilityDescription = std::string("Mock PDF service");
 
     MockPdfService(std::shared_ptr<IAgentRuntime> runtime);
     static std::shared_ptr<Promise<std::shared_ptr<MockPdfService>>> start(std::shared_ptr<IAgentRuntime> runtime);

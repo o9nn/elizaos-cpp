@@ -32,7 +32,7 @@ struct SceneDescription {
     std::vector<PersonInfo> people;
     bool sceneChanged;
     double changePercentage;
-    std::optional<string; // Latest audio transcription> audioTranscription;
+    std::optional<std::string; // Latest audio transcription> audioTranscription;
 };
 
 struct DetectedObject {
@@ -136,13 +136,13 @@ struct OCRResult {
 interface EnhancedSceneDescription extends SceneDescription {
   screenCapture?: ScreenCapture;
   screenAnalysis?: {
-    fullScreenOCR?: string;
+    fullScreenOCR?: std::string;
     activeTile?: TileAnalysis;
-    gridSummary?: string;
-    focusedApp?: string;
+    gridSummary?: std::string;
+    focusedApp?: std::string;
     uiElements?: Array<{
-      type: string;
-      text: string;
+      type: std::string;
+      text: std::string;
       position: BoundingBox;
     }>;
   };
@@ -240,7 +240,7 @@ struct WorldState {
     std::string worldId;
     std::unordered_map<std::string, TrackedEntity> entities;
     double lastUpdate;
-    string[]; // Currently visible activeEntities;
+    std::string[]; // Currently visible activeEntities;
     Array<{ recentlyLeft;
     std::string entityId;
     double leftAt;

@@ -38,7 +38,7 @@ namespace elizaos {
 // Gateway SSE endpoints (must match run-gateway-sse.sh)
 
 /**
- * Main agent function
+ * Main agent std::function
  */
 std::future<void> main();
 

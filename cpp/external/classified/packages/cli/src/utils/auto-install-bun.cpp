@@ -48,7 +48,7 @@ std::future<bool> isBunInstalled() {
         const auto result = bunExec("bun", ["--version"], { stdio: "ignore" });
         return result.success;
         } catch (error) {
-            // Handle any unexpected errors
+            // Handle std::any unexpected errors
             logger.debug('Error checking if Bun is installed:', error);
             return false;
         }

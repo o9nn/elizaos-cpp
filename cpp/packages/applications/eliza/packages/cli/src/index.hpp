@@ -19,7 +19,7 @@ namespace elizaos {
 
 
 /**
- * Asynchronous function that serves as the main entry point for the application.
+ * Asynchronous std::function that serves as the main entry point for the application.
  * It loads environment variables, initializes the CLI program, and parses the command line arguments.
  * @returns {Promise<void>}
  */

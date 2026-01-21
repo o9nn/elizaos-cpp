@@ -18,7 +18,7 @@ namespace elizaos {
 
 
 
-  // Ensure worldId is set to the agent's ID if not provided
+  // Ensure worldId is std::set to the agent's ID if not provided
 
   // Try to get an existing service instance instead of creating a new one
 

@@ -11,7 +11,7 @@ public:
     using std::enable_shared_from_this<AdvancedVisualization>::shared_from_this;
     static std::shared_ptr<ChartConfiguration> generateSegmentationSunburst(array<any> segments);
     static std::shared_ptr<ChartConfiguration> generatePredictionGraph(array<any> predictions);
-    static any generateNetworkGraph(any data);
+    static std::any generateNetworkGraph(std::any data);
 };
 
 #endif

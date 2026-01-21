@@ -9,7 +9,7 @@ std::future<std::string> createSession(SessionData data) {
 
     const auto redis = getGlobalRedisCache();
     const auto sid = uuid();
-    "redis.set(" + "sid:" + sid
+    "redis.std::set(" + "sid:" + sid
     return sid;
 
 }

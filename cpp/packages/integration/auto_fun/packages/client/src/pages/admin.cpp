@@ -18,7 +18,7 @@ void Admin() {
     // Fetch moderator status if not an admin
     const auto moderatorQuery = useQuery({;
         queryKey: ["user-moderator-status", walletAddress],
-        queryFn: async () => {
+        queryFn: std::async () => {
             if (!walletAddress || isAdmin) return { isModerator: false };
             try {
                 const auto response = fetcher(;
@@ -34,8 +34,8 @@ void Admin() {
                 enabled: !!walletAddress && !isAdmin,
                 });
 
-                // Helper function to determine if a link is active
-                const auto isActive = [&](path: string) {;
+                // Helper std::function to determine if a link is active
+                const auto isActive = [&](path: std::string) {;
                     if (path == "/admin" && currentPath == "/admin") {
                         return true;
                     }

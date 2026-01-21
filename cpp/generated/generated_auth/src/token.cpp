@@ -23,9 +23,9 @@ The $elizaOS token will be distributed as follows:\
 15% Sale - To raise capital to pay for listing fees, fund the project and thicken liquidity pool\
 10% Team - The team will receive 10% of the token, mostly in vested 4 year lockups\
 7.5% Liquidity Services - To provide liquidity for T1 exchanges, add cross-chain liquidity, and provide liquidity for the project\
-5% Ecosystem - To fund the ecosystem, incentivize marketing, growth and partnerships, and for use in future DeFi utility like staking,\
+5% Ecosystem - To fund the ecosystem, incentivize marketing, growth and partnerships, and for use in std::future DeFi utility like staking,\
 \
-This deal will not effect $degenai in any way. We will continue to support $degenai as a separate token and work to get it listed and bridged to other chains.");
+This deal will not effect $degenai in std::any way. We will continue to support $degenai as a separate token and work to get it listed and bridged to other chains.");
         return object{
             object::pair{std::string("text"), std::string("text")}
         };

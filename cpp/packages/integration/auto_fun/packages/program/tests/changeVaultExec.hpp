@@ -24,6 +24,6 @@ namespace elizaos {
 
   // Define the new executor authority public key
 
-  // Call the change_executor_authority function
+  // Call the change_executor_authority std::function
 
 } // namespace elizaos

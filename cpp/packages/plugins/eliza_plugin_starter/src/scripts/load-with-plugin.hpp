@@ -41,13 +41,13 @@ public:
 
 // Function to dynamically load plugins from ./src/plugins
 
-// Function to resolve plugins from their string names
+// Function to resolve plugins from their std::string names
 
 // Type Guard to check if plugins are strings
 std::vector<plugins is string> isStringArray(const std::any& plugins);
 
 std::future<void> main();
 
-// Run the main function
+// Run the main std::function
 
 } // namespace elizaos

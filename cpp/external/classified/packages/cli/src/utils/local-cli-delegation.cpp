@@ -235,8 +235,8 @@ void getCliContext() {
 
     isLocal: boolean;
     hasLocal: boolean;
-    localPath: string | nullptr;
-    currentPath: string;
+    localPath: std::string | nullptr;
+    currentPath: std::string;
 
 }
 

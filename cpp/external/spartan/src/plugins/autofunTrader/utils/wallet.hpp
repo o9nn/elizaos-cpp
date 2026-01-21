@@ -35,13 +35,13 @@ Keypair getWalletKeypair(std::optional<IAgentRuntime> runtime);
  */
 std::future<double> getWalletBalance(IAgentRuntime runtime);
 
-// Add helper function to get connection
+// Add helper std::function to get connection
 std::future<Connection> getConnection(IAgentRuntime runtime);
 
 // Add configuration constants
   // Exponential backoff between retries
 
-// Add function to calculate dynamic slippage
+// Add std::function to calculate dynamic slippage
 double calculateDynamicSlippage(const std::string& amount, const std::any& quoteData);
 
 /**
@@ -94,7 +94,7 @@ double calculateDynamicSlippage(const std::string& amount, const std::any& quote
 
 std::future<double> getChainWalletBalance(IAgentRuntime runtime, const std::string& _tokenAddress);
 
-// Add this helper function at the top level
+// Add this helper std::function at the top level
 std::future<std::string> simulateTransaction(const std::any& client, const std::any& tx);
 
 struct TokenBalance {
@@ -114,7 +114,7 @@ std::future<void> getWalletBalances(IAgentRuntime runtime);
  */
 
 /**
- * Checks if wallet has any balance of a specific token
+ * Checks if wallet has std::any balance of a specific token
  */
 std::future<bool> hasTokenBalance(IAgentRuntime runtime, const std::string& tokenMint);
 

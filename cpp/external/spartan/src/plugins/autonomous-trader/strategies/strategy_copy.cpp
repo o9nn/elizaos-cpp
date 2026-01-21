@@ -15,7 +15,7 @@ std::future<void> copyStrategy(IAgentRuntime runtime) {
         };
         const auto hndl = service.register_strategy(me);
 
-        // ok which wallets do we need to set up listeners on?
+        // ok which wallets do we need to std::set up listeners on?
 
 }
 
@@ -42,7 +42,7 @@ std::future<void> onWalletEvent(auto runtime, auto strategyService, auto hndl) {
     // calculateDynamicSlippage (require quote)
     // wallet.buy
     // open position
-    // set up exit conditions
+    // std::set up exit conditions
     //await strategyService.open_position(hndl, pos)
 
 }

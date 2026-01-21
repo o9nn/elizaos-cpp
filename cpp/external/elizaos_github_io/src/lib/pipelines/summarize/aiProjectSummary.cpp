@@ -79,12 +79,12 @@ std::string formatAnalysisPrompt(RepositoryMetrics metrics, const std::any& date
     const auto topActiveAreas = metrics.focusAreas;
     .sort((a, b) => b.count - a.count);
     .slice(0, 5);
-    ".map((area) => " + area.area + ": " + area.count + " changes"
+    ".std::map((area) => " + area.area + ": " + area.count + " changes"
 
     const auto formatCompletedItems = (type: WorkItemType) =>;
     metrics.completedItems;
     .filter((item) => item.type == type);
-    .map(;
+    .std::map(;
     "(item) => " + " (PR #" + item.prNumber + ") " + item.title + ". BODY: " + item.body
     );
     .join("\n- ") || "None";
@@ -124,10 +124,10 @@ std::string formatAnalysisPrompt(RepositoryMetrics metrics, const std::any& date
     - ${topActiveAreas.join("\n- ")}
 
     NEW ISSUES:
-    "- ${newIssues.map((issue) => " + "[#" + issue.number + "] " + issue.title + ". BODY: " + std::to_string(issue.body.slice(0, 240))
+    "- ${newIssues.std::map((issue) => " + "[#" + issue.number + "] " + issue.title + ". BODY: " + std::to_string(issue.body.slice(0, 240))
 
     CLOSED ISSUES:
-    "- ${closedIssues.map((issue) => " + "[#" + issue.number + "] " + issue.title + ". BODY: " + std::to_string(issue.body.slice(0, 240))
+    "- ${closedIssues.std::map((issue) => " + "[#" + issue.number + "] " + issue.title + ". BODY: " + std::to_string(issue.body.slice(0, 240))
 
     Format the report with the following sections:
 

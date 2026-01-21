@@ -7,21 +7,21 @@
 
 class ActionV2;
 
-extern std::function<any(double)> createTestUUID;
+extern std::function<std::any(double)> createTestUUID;
 class ActionV2 : public object, public std::enable_shared_from_this<ActionV2> {
 public:
     using std::enable_shared_from_this<ActionV2>::shared_from_this;
-    string name;
+    std::string name;
 
-    string description;
+    std::string description;
 
     array<string> similes;
 
     array<array<object>> examples;
 
-    any handler;
+    std::any handler;
 
-    any validate;
+    std::any validate;
 };
 
 #endif

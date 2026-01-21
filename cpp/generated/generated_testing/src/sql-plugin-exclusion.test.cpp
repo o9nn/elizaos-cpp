@@ -23,7 +23,7 @@ void Main(void)
                                 object::pair{std::string("name"), std::string("sql_test")}, 
                                 object::pair{std::string("fn"), [=]() mutable
                                 {
-                                    throw any(std::make_shared<Error>(std::string("SQL test should not run!")));
+                                    throw std::any(std::make_shared<Error>(std::string("SQL test should not run!")));
                                 }
                                 }
                             } }}
@@ -89,7 +89,7 @@ void Main(void)
                         object::pair{std::string("name"), std::string("sql_test")}, 
                         object::pair{std::string("fn"), [=]() mutable
                         {
-                            throw any(std::make_shared<Error>(std::string("Plugin tests should not run!")));
+                            throw std::any(std::make_shared<Error>(std::string("Plugin tests should not run!")));
                         }
                         }
                     } }}
@@ -104,7 +104,7 @@ void Main(void)
                         object::pair{std::string("name"), std::string("my_test")}, 
                         object::pair{std::string("fn"), [=]() mutable
                         {
-                            throw any(std::make_shared<Error>(std::string("Plugin tests should not run!")));
+                            throw std::any(std::make_shared<Error>(std::string("Plugin tests should not run!")));
                         }
                         }
                     } }}

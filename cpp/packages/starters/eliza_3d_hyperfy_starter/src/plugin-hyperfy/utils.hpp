@@ -37,9 +37,9 @@ void getMimeTypeFromPath(auto filePath);
  */
 
 /**
- * Formats the provided actions into a detailed string listing each action's name and description, separated by commas and newlines.
+ * Formats the provided actions into a detailed std::string listing each action's name and description, separated by commas and newlines.
  * @param actions - An array of `Action` objects to format.
- * @returns A detailed string of actions, including names and descriptions.
+ * @returns A detailed std::string of actions, including names and descriptions.
  */
 void formatActions(const std::vector<Action>& actions);
 

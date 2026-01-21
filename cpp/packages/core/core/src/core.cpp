@@ -29,7 +29,7 @@ TruthValue TruthValue::implication(const TruthValue& other) const {
     return TruthValue(implStrength, std::min(confidence, other.confidence));
 }
 
-// Utility function to generate UUIDs (simplified version)
+// Utility std::function to generate UUIDs (simplified version)
 std::string generateUUID() {
     static std::random_device rd;
     static std::mt19937 gen(rd());

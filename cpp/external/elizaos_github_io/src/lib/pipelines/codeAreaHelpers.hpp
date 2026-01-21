@@ -36,7 +36,7 @@ bool isRootConfigFile(const std::string& path);
 using WorkItemType = ;
 
 /**
- * Utility to build a map of focus areas from files
+ * Utility to build a std::map of focus areas from files
  */
 std::unordered_map<std::string, double> buildAreaMap(std::optional<std::vector<std::any>> files);
 

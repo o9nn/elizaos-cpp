@@ -16,14 +16,14 @@ namespace elizaos {
 
 class StagehandError extends Error {
   public recoverable: boolean;
-  public details?: any;
+  public details?: std::any;
 
   constructor(
-    message: string,
-    public code: string,
-    public userMessage: string,
+    message: std::string,
+    public code: std::string,
+    public userMessage: std::string,
     isRetryable: boolean = true,
-    details?: any
+    details?: std::any
   ) {
     super(message);
     this.name = 'StagehandError';
@@ -43,7 +43,7 @@ class BrowserServiceNotAvailableError extends StagehandError {
   }
 
 class BrowserSessionError extends StagehandError {
-  constructor(message: string, details?: any) {
+  constructor(message: std::string, details?: std::any) {
     super(
       message,
       'BROWSER_SESSION_ERROR',
@@ -54,7 +54,7 @@ class BrowserSessionError extends StagehandError {
   }
 
 class BrowserNavigationError extends StagehandError {
-  constructor(url: string, originalError?: Error) {
+  constructor(url: std::string, originalError?: Error) {
     const message = originalError
       ? `Failed to navigate to ${url}: ${originalError.message}`
       : `Failed to navigate to ${url}`;
@@ -69,7 +69,7 @@ class BrowserNavigationError extends StagehandError {
   }
 
 class BrowserActionError extends StagehandError {
-  constructor(action: string, target: string, originalError?: Error) {
+  constructor(action: std::string, target: std::string, originalError?: Error) {
     const message = originalError
       ? `Failed to ${action} on ${target}: ${originalError.message}`
       : `Failed to ${action} on ${target}`;
@@ -84,9 +84,9 @@ class BrowserActionError extends StagehandError {
   }
 
 class BrowserSecurityError extends StagehandError {
-  public details?: any;
+  public details?: std::any;
 
-  constructor(message: string, details?: any) {
+  constructor(message: std::string, details?: std::any) {
     super(message, 'SECURITY_ERROR', 'This action was blocked for security reasons.', false);
     this.details = details;
   }

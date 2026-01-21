@@ -51,7 +51,7 @@ std::future<std::vector<Character>> loadCharacters(const std::string& characterP
         if (isAllStrings(character.plugins)) {
             elizaLogger.info("Plugins are: ", character.plugins);
             const auto importedPlugins = Promise.all(;
-            character.plugins.map(async (plugin: any) => {
+            character.plugins.std::map(std::async (plugin: std::any) => {
                 const auto importedPlugin = import(plugin);
                 return importedPlugin.default;
                 }),

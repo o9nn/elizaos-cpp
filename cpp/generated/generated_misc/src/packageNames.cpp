@@ -19,7 +19,7 @@ std::shared_ptr<Promise<void>> main()
     {
         auto& repo = const_(__array542_4459)[__indx542_4459];
         {
-            any fileData;
+            std::any fileData;
             try
             {
                 std::async([=]() { octokit->repos->getBranch(object{
@@ -28,13 +28,13 @@ std::shared_ptr<Promise<void>> main()
                     object::pair{std::string("branch"), TARGET_BRANCH}
                 }); });
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 if (error["status"] == 404) {
                     console->log(std::string("Skipping ") + ORG_NAME + std::string("/") + repo->name + std::string(" (no ") + TARGET_BRANCH + std::string(" branch)"));
                     continue;
                 }
-                throw any(error);
+                throw std::any(error);
             }
             try
             {
@@ -49,13 +49,13 @@ std::shared_ptr<Promise<void>> main()
                 }
                 fileData = response->data;
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 if (error["status"] == 404) {
                     console->log(std::string("Skipping ") + ORG_NAME + std::string("/") + repo->name + std::string(" (no package.json on ") + TARGET_BRANCH + std::string(")"));
                     continue;
                 }
-                throw any(error);
+                throw std::any(error);
             }
             auto raw = Buffer::from(fileData["content"], std::string("base64"))->toString(std::string("utf8"));
             auto pkg = as<object>(JSON->parse(raw));
@@ -68,7 +68,7 @@ std::shared_ptr<Promise<void>> main()
                 console->log(std::string("Skipping ") + ORG_NAME + std::string("/") + repo->name + std::string(" (package name doesn't match expected pattern: ") + oldName + std::string(")"));
                 continue;
             }
-            string newName;
+            std::string newName;
             if (!oldName) {
                 newName = std::string("@elizaos/") + repo->name + string_empty;
                 console->log(std::string("Adding missing package name for ") + ORG_NAME + std::string("/") + repo->name + std::string(": ") + newName + string_empty);
@@ -116,8 +116,8 @@ std::shared_ptr<Promise<void>> main()
 };
 
 
-string ORG_NAME = std::string("elizaos-plugins");
-string TARGET_BRANCH = std::string("1.x");
+std::string ORG_NAME = std::string("elizaos-plugins");
+std::string TARGET_BRANCH = std::string("1.x");
 
 void Main(void)
 {

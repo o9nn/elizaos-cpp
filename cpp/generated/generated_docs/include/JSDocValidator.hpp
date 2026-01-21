@@ -24,10 +24,10 @@ public:
     };
 
     JSDocValidator(std::shared_ptr<AIService> aiService_);
-    virtual std::shared_ptr<Promise<string>> validateAndFixJSDoc(string fileName, string code, string originalComment);
-    virtual boolean isValidTypeScript(string code);
-    virtual string fixCommonJSDocIssues(string comment);
-    virtual std::shared_ptr<Promise<string>> regenerateJSDoc(string code);
+    virtual std::shared_ptr<Promise<string>> validateAndFixJSDoc(std::string fileName, std::string code, std::string originalComment);
+    virtual boolean isValidTypeScript(std::string code);
+    virtual std::string fixCommonJSDocIssues(std::string comment);
+    virtual std::shared_ptr<Promise<string>> regenerateJSDoc(std::string code);
 };
 
 #endif

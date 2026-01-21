@@ -11,13 +11,13 @@ class PackageJson;
 class PackageJson : public object, public std::enable_shared_from_this<PackageJson> {
 public:
     using std::enable_shared_from_this<PackageJson>::shared_from_this;
-    string name;
+    std::string name;
 
-    string version;
+    std::string version;
 
-    string description;
+    std::string description;
 
-    string author;
+    std::string author;
 
     object repository;
 
@@ -25,24 +25,24 @@ public:
 
     array<string> categories;
 
-    any platform;
+    std::any platform;
 
-    any packageType;
+    std::any packageType;
 
-    string type;
+    std::string type;
 };
 
-std::shared_ptr<Promise<boolean>> testPublishToNpm(string cwd);
+std::shared_ptr<Promise<boolean>> testPublishToNpm(std::string cwd);
 
-std::shared_ptr<Promise<boolean>> testPublishToGitHub(std::shared_ptr<PackageJson> packageJson, string username);
+std::shared_ptr<Promise<boolean>> testPublishToGitHub(std::shared_ptr<PackageJson> packageJson, std::string username);
 
-std::shared_ptr<Promise<boolean>> publishToNpm(string cwd);
-
-template <typename RET>
-RET publishToGitHub(string cwd, std::shared_ptr<PackageJson> packageJson, string username, boolean skipRegistry = false, boolean isTest = false);
+std::shared_ptr<Promise<boolean>> publishToNpm(std::string cwd);
 
 template <typename RET>
-RET publishToGitHub(string cwd, std::shared_ptr<PackageJson> packageJson, string username, boolean skipRegistry, boolean isTest)
+RET publishToGitHub(std::string cwd, std::shared_ptr<PackageJson> packageJson, std::string username, boolean skipRegistry = false, boolean isTest = false);
+
+template <typename RET>
+RET publishToGitHub(std::string cwd, std::shared_ptr<PackageJson> packageJson, std::string username, boolean skipRegistry, boolean isTest)
 {
     auto credentials = std::async([=]() { getGitHubCredentials(); });
     if (!credentials) {
@@ -67,7 +67,7 @@ RET publishToGitHub(string cwd, std::shared_ptr<PackageJson> packageJson, string
     if (!isTest) {
         auto repoName = packageJson->name->replace((new RegExp(std::string("^@[^/]+\"))), string_empty);
         auto description = OR((packageJson->description), (std::string("ElizaOS ") + packageJson->packageType + string_empty));
-        any topic;
+        std::any topic;
         if (packageJson->packageType == std::string("plugin")) {
             topic = std::string("elizaos-plugins");
         } else if (packageJson->packageType == std::string("project")) {
@@ -108,7 +108,7 @@ RET publishToGitHub(string cwd, std::shared_ptr<PackageJson> packageJson, string
     auto settings = std::async([=]() { getRegistrySettings(); });
     auto [registryOwner, registryRepo] = settings->defaultRegistry->split(std::string("/"));
     auto hasFork = std::async([=]() { forkExists(token, registryRepo, username); });
-    string forkFullName;
+    std::string forkFullName;
     if (AND((!hasFork), (!isTest))) {
         logger->info(std::string("Creating fork of ") + settings->defaultRegistry + std::string("..."));
         auto fork = std::async([=]() { forkRepository(token, registryOwner, registryRepo); });
@@ -128,7 +128,7 @@ RET publishToGitHub(string cwd, std::shared_ptr<PackageJson> packageJson, string
     }
     auto entityType = packageJson->packageType;
     auto packageNameWithoutScope = packageJson->name->replace((new RegExp(std::string("^@[^/]+\"))), string_empty);
-    string branchName;
+    std::string branchName;
     if (AND((entityType == std::string("plugin")), (packageNameWithoutScope->startsWith(std::string("plugin-"))))) {
         branchName = string_empty + packageNameWithoutScope + std::string("-") + packageJson->version + string_empty;
         logger->info(std::string("Using package name directly to avoid duplicate plugin prefix: ") + branchName + string_empty);
@@ -205,7 +205,7 @@ RET publishToGitHub(string cwd, std::shared_ptr<PackageJson> packageJson, string
                 return false;
             }
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("Failed to update index.json: ") + (is<Error>(error)) ? error->message : String(error) + string_empty);
             return false;

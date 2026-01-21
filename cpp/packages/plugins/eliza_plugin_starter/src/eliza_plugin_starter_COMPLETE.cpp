@@ -79,7 +79,7 @@ public:
         std::ostringstream cmake;
         cmake << "cmake_minimum_required(VERSION 3.16)\n"
               << "project(" << pluginName << ")\n\n"
-              << "set(CMAKE_CXX_STANDARD 17)\n\n"
+              << "std::set(CMAKE_CXX_STANDARD 17)\n\n"
               << "add_library(" << pluginName << " SHARED\n"
               << "    src/" << pluginName << ".cpp\n"
               << ")\n\n"

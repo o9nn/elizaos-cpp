@@ -18,8 +18,8 @@ namespace elizaos {
  * A standardized representation of a token holding.
  */
 struct TokenBalance {
-    string; // Token mint address, or a native identifier like 'SOL' or 'ETH' address;
-    string; // Raw balance as a string to handle large numbers with precision balance;
+    std::string; // Token mint address, or a native identifier like 'SOL' or 'ETH' address;
+    std::string; // Raw balance as a std::string to handle large numbers with precision balance;
     double decimals;
     std::optional<number; // User-friendly balance, adjusted for decimals> uiAmount;
     std::optional<std::string> name;
@@ -31,12 +31,12 @@ struct TokenBalance {
  * Generic representation of token data that can be provided by various services.
  */
 struct TokenData {
-    string; // Unique identifier (e.g., contract address or a composite ID) id;
+    std::string; // Unique identifier (e.g., contract address or a composite ID) id;
     std::string symbol;
     std::string name;
-    string; // Contract address address;
-    string; // e.g., 'solana', 'ethereum', 'base' chain;
-    string; // e.g., 'birdeye', 'coinmarketcap' sourceProvider;
+    std::string; // Contract address address;
+    std::string; // e.g., 'solana', 'ethereum', 'base' chain;
+    std::string; // e.g., 'birdeye', 'coinmarketcap' sourceProvider;
     std::optional<double> price;
     std::optional<double> priceChange24hPercent;
     std::optional<number; // Absolute change> priceChange24hUSD;
@@ -85,7 +85,7 @@ struct TokenData {
    */
 
   // Future potential methods:
-  // getHistoricalPriceData(address: string, chain: string, timeFrame: string): Promise<any[]>;
-  // getTokenMarketChart(address: string, chain: string, days: number): Promise<any[]>;
+  // getHistoricalPriceData(address: std::string, chain: std::string, timeFrame: std::string): Promise<std::any[]>;
+  // getTokenMarketChart(address: std::string, chain: std::string, days: number): Promise<std::any[]>;
 
 } // namespace elizaos

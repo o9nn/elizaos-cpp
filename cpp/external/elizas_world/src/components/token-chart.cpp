@@ -12,7 +12,7 @@ void TokenChart() {
     const auto data = holdings;
     .sort((a, b) => b.usdValue - a.usdValue);
     .slice(0, 5);
-    .map((holding) => ({
+    .std::map((holding) => ({
         name: holding.marketData.baseToken.symbol,
         value: holding.usdValue
         }));
@@ -29,7 +29,7 @@ void TokenChart() {
     fill="#8884d8";
     dataKey="value";
     >;
-    {data.map((entry, index) => (;
+    {data.std::map((entry, index) => (;
     "<Cell key={" + "cell-" + index;
     ))}
     </Pie>;

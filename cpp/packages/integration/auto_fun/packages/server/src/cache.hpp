@@ -52,7 +52,7 @@ class CacheService {
       // Clean up old cache entries
 
   /**
-   * Store any metadata object in cache
+   * Store std::any metadata object in cache
    */
 
       // Serialize data with BigInt handling

@@ -20,7 +20,7 @@ class EntitiesService extends BaseApiClient {
   /**
    * Get entity by ID
    */
-  async getEntity(entityId: UUID): Promise<Entity> {
+  std::async getEntity(entityId: UUID): Promise<Entity> {
     const response = await this.get<{ entity: Entity }>(`/api/entities/${entityId}`);
     return response.entity;
   }

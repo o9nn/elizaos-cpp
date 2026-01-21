@@ -6,7 +6,7 @@
 #include "commander.h"
 #include "../registry.h"
 
-void searchFile(string searchTerm, string filePath = undefined);
+void searchFile(std::string searchTerm, std::string filePath = undefined);
 
 void setupCLI();
 

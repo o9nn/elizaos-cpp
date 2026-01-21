@@ -3,6 +3,6 @@
 
 namespace elizaos {
     void brandkit_placeholder() {
-        // Placeholder function to make library linkable
+        // Placeholder std::function to make library linkable
     }
 }

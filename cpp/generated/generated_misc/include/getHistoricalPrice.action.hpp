@@ -4,9 +4,9 @@
 #include "@elizaos/core.h"
 #include "../services/coingecko.service.h"
 
-string formatMarketCap(double value);
+std::string formatMarketCap(double value);
 
-string parseDateToApiFormat(string dateStr);
+std::string parseDateToApiFormat(std::string dateStr);
 
 extern std::shared_ptr<Action> getHistoricalPriceAction;
 #endif

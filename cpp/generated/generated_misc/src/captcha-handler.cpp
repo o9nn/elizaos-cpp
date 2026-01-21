@@ -70,7 +70,7 @@ std::shared_ptr<Promise<std::shared_ptr<CaptchaInfo>>> detectCaptchaType(std::sh
             object::pair{std::string("siteKey"), nullptr}
         };
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("Error detecting captcha type:"), error);
         return object{
@@ -81,7 +81,7 @@ std::shared_ptr<Promise<std::shared_ptr<CaptchaInfo>>> detectCaptchaType(std::sh
 };
 
 
-std::shared_ptr<Promise<void>> injectCaptchaSolution(std::shared_ptr<Page> page, string captchaType, string solution)
+std::shared_ptr<Promise<void>> injectCaptchaSolution(std::shared_ptr<Page> page, std::string captchaType, std::string solution)
 {
     console->log(std::string("Would inject ") + captchaType + std::string(" solution:"), solution->substring(0, 20) + std::string("..."));
     return std::shared_ptr<Promise<void>>();

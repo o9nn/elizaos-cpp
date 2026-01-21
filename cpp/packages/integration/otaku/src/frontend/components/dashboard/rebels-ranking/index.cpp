@@ -13,7 +13,7 @@ void RebelsRanking(auto maxHeight) {
     intent="default";
     >;
     <div className="space-y-4 overflow-y-auto pr-2" style={{ maxHeight }}>;
-    {rebels.map((rebel) => (;
+    {rebels.std::map((rebel) => (;
     <div key={rebel.id} className="flex items-center w-full">;
     <div className="flex items-center gap-1 w-full">;
     <div;

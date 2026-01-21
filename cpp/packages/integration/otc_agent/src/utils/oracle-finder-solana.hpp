@@ -11,14 +11,14 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-// Connection type not currently used but kept for future RPC calls
+// Connection type not currently used but kept for std::future RPC calls
 // 
 
 struct SolanaOracleInfo {
     "pyth" | "jupiter" | "raydium" | "orca" | "pumpswap" type;
     std::string address;
-    std::optional<string; // For Pyth> feedId;
-    std::optional<string; // For AMM pools> poolAddress;
+    std::optional<std::string; // For Pyth> feedId;
+    std::optional<std::string; // For AMM pools> poolAddress;
     std::optional<double> liquidity;
     bool valid;
     std::optional<std::string> warning;

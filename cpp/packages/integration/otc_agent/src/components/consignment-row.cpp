@@ -12,12 +12,12 @@ void ConsignmentRow() {
         const auto [isLoadingToken, setIsLoadingToken] = useState(true);
         const auto [dealCount, setDealCount] = useState<number>(0);
         const auto [isWithdrawing, setIsWithdrawing] = useState(false);
-        const auto [withdrawTxHash, setWithdrawTxHash] = useState<string | nullptr>(nullptr);
-        const auto [withdrawError, setWithdrawError] = useState<string | nullptr>(nullptr);
+        const auto [withdrawTxHash, setWithdrawTxHash] = useState<std::string | nullptr>(nullptr);
+        const auto [withdrawError, setWithdrawError] = useState<std::string | nullptr>(nullptr);
         const auto [isWithdrawn, setIsWithdrawn] = useState(;
         consignment.status == "withdrawn",
         );
-        const auto fetchedTokenId = useRef<string | nullptr>(nullptr);
+        const auto fetchedTokenId = useRef<std::string | nullptr>(nullptr);
         const auto { withdrawConsignment } = useOTC();
         const auto { address } = useAccount();
         const auto publicClient = usePublicClient();
@@ -25,7 +25,7 @@ void ConsignmentRow() {
         useEffect(() => {
             if (fetchedTokenId.current == consignment.tokenId) return;
 
-            async function loadData() {
+            std::async std::function loadData() {
                 fetchedTokenId.current = consignment.tokenId;
                 setIsLoadingToken(true);
 
@@ -37,11 +37,11 @@ void ConsignmentRow() {
                         setToken(tokenData.token);
                         } else if (publicClient) {
                             const auto tokenIdParts = consignment.tokenId.split("-") || [];
-                            const auto tokenAddress = "tokenIdParts[2] as " + "0x" + string;
+                            const auto tokenAddress = "tokenIdParts[2] as " + "0x" + std::string;
 
                             if (tokenAddress.startsWith("0x")) {
                                 try {
-                                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                    // eslint-disable-next-line @typescript-eslint/no-explicit-std::any
                                     const auto readContract = publicClient.readContract.bind(;
                                     publicClient,
                                     );
@@ -118,7 +118,7 @@ void ConsignmentRow() {
                                         const auto tokenSymbol = token.symbol || "TOKEN";
                                         const auto tokenDecimals = token.decimals || 18;
 
-                                        const auto formatAmount = [&](amount: string) {;
+                                        const auto formatAmount = [&](amount: std::string) {;
                                             const auto num = Number(amount) / Math.pow(10, tokenDecimals);
                                             if (num >= 1000000) return `${(num / 1000000).toFixed(2)}M`;
                                             if (num >= 1000) return `${(num / 1000).toFixed(2)}K`;
@@ -129,7 +129,7 @@ void ConsignmentRow() {
                                             (Number(consignment.remainingAmount) / Number(consignment.totalAmount)) *;
                                             100;
 
-                                            const auto handleWithdraw = async () => {;
+                                            const auto handleWithdraw = std::async () => {;
                                                 setWithdrawError(nullptr);
                                                 setWithdrawTxHash(nullptr);
 
@@ -222,7 +222,7 @@ void ConsignmentRow() {
                                                                             </div>;
                                                                             </div>;
                                                                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                                                                            {[1, 2, 3, 4].map((i) => (;
+                                                                            {[1, 2, 3, 4].std::map((i) => (;
                                                                             <div key={i}>;
                                                                             <div className="h-4 bg-zinc-200 dark:bg-zinc-700 rounded w-16 mb-1" />
                                                                             <div className="h-5 bg-zinc-200 dark:bg-zinc-700 rounded w-20" />

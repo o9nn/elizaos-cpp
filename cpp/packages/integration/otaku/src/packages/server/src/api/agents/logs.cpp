@@ -11,7 +11,7 @@ express::Router createAgentLogsRouter(ElizaOS elizaOS) {
         const auto router = express.Router();
 
         // Get Agent Logs
-        router.get("/:agentId/logs", async (req, res) => {
+        router.get("/:agentId/logs", std::async (req, res) => {
             const auto agentId = validateUuid(req.params.agentId);
             const auto { roomId, type, count, offset, excludeTypes } = req.query;
             if (!agentId) {
@@ -86,7 +86,7 @@ express::Router createAgentLogsRouter(ElizaOS elizaOS) {
                         });
 
                         // Delete specific log
-                        router.delete("/:agentId/logs/:logId", async (req, res) => {
+                        router.delete("/:agentId/logs/:logId", std::async (req, res) => {
                             const auto agentId = validateUuid(req.params.agentId);
                             const auto logId = validateUuid(req.params.logId);
                             if (!agentId || !logId) {

@@ -19,7 +19,7 @@ namespace elizaos {
 
 
 /**
- * Template string for deciding if the agent should mute a room and stop responding unless explicitly mentioned.
+ * Template std::string for deciding if the agent should mute a room and stop responding unless explicitly mentioned.
  *
  * @type {string}
  */
@@ -37,10 +37,10 @@ namespace elizaos {
  * @type {Action}
  *
  * @property {string} name - The name of the action
- * @property {string[]} similes - Similar actions related to muting a room
+ * @property {std::string[]} similes - Similar actions related to muting a room
  * @property {string} description - Description of the action
- * @property {Function} validate - Validation function to check if the room is not already muted
- * @property {Function} handler - Handler function to handle muting the room
+ * @property {Function} validate - Validation std::function to check if the room is not already muted
+ * @property {Function} handler - Handler std::function to handle muting the room
  * @property {ActionExample[][]} examples - Examples of using the action
  */
 

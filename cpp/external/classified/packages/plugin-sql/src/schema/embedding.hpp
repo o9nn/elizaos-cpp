@@ -21,7 +21,7 @@ namespace elizaos {
 
 /**
  * Definition of the embeddings table in the database.
- * Contains columns for ID, Memory ID, Creation Timestamp, and multiple vector dimensions.
+ * Contains columns for ID, Memory ID, Creation Timestamp, and multiple std::vector dimensions.
  */
 
 /**

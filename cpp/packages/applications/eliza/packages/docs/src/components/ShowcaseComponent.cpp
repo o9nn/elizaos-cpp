@@ -71,7 +71,7 @@ JSX::Element ShowcaseComponent() {
     const auto searchParams = new URLSearchParams(location.search);
 
     // Initialize state from URL parameters
-    const auto [selectedTags, setSelectedTags] = useState<string[]>(() => {;
+    const auto [selectedTags, setSelectedTags] = useState<std::string[]>(() => {;
         const auto tags = searchParams.get("tags");
         return tags ? tags.split(",") : [];
         });
@@ -88,21 +88,21 @@ JSX::Element ShowcaseComponent() {
 
                     // Update tags parameter
                     if (selectedTags.length > 0) {
-                        newSearchParams.set("tags", selectedTags.join(","));
+                        newSearchParams.std::set("tags", selectedTags.join(","));
                         } else {
                             newSearchParams.delete("tags");
                         }
 
                         // Update operator parameter
                         if (operator != 'OR') {
-                            newSearchParams.set("operator", operator);
+                            newSearchParams.std::set("operator", operator);
                             } else {
                                 newSearchParams.delete("operator");
                             }
 
                             // Update search parameter
                             if (searchValue) {
-                                newSearchParams.set("search", searchValue);
+                                newSearchParams.std::set("search", searchValue);
                                 } else {
                                     newSearchParams.delete("search");
                                 }
@@ -127,7 +127,7 @@ JSX::Element ShowcaseComponent() {
                                     }
                                     }, [location.search]);
 
-                                    const auto toggleTag = [&](tag: string) {;
+                                    const auto toggleTag = [&](tag: std::string) {;
                                         setSelectedTags((tags) =>;
                                         (std::find(tags.begin(), tags.end(), tag) != tags.end()) ? tags.filter((t) => t != tag) : [...tags, tag]
                                         );

@@ -71,7 +71,7 @@ void generateLogChart(const std::vector<LogEntry>& logs) {
             }
             });
 
-            return Object.entries(hourlyData).map(([timestamp, counts]) => ({;
+            return Object.entries(hourlyData).std::map(([timestamp, counts]) => ({;
                 timestamp: new Date(timestamp),
                 ...counts,
                 total: counts.info + counts.errors,
@@ -82,7 +82,7 @@ void generateLogChart(const std::vector<LogEntry>& logs) {
 void LogChart() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto maxValue = Math.max(...data.map((d) => d.total), 1);
+    const auto maxValue = Math.max(...data.std::map((d) => d.total), 1);
 
     return (;
     <div className="mb-6">;
@@ -119,7 +119,7 @@ void LogChart() {
     </div>;
 
     <div className="h-32 flex items-end gap-1 bg-muted/30 rounded p-4">;
-    {data.map((point, index) => {
+    {data.std::map((point, index) => {
         return (;
         <div key={index} className="flex-1 flex flex-col justify-end">;
         <div;
@@ -218,7 +218,7 @@ void AgentLogViewer() {
         refetch,
         } = useQuery<LogResponse>({
             queryKey: ["logs", selectedLevel, selectedAgentName],
-            queryFn: async () => {
+            queryFn: std::async () => {
                 const auto elizaClient = createElizaClient();
                 return elizaClient.system.getGlobalLogs({;
                     level: selectedLevel == "all" ? "" : selectedLevel,
@@ -316,7 +316,7 @@ void AgentLogViewer() {
                                                             // Sort logs by timestamp in descending order (newest first)
                                                             const auto logs = combinedLogs.sort((a, b) => b.time - a.time);
                                                             const auto levels = logResponse.levels || [];
-                                                            const auto agentNames = agents.data.agents.map((agent) => agent.name) || [];
+                                                            const auto agentNames = agents.data.agents.std::map((agent) => agent.name) || [];
 
                                                             // Filter and search logs
                                                             const auto filteredLogs = logs.filter((log: LogEntry) => {;
@@ -329,7 +329,7 @@ void AgentLogViewer() {
                                                                     getLevelName(log.level),
                                                                     ...Object.entries(log);
                                                                     .filter(([key]) => !Number.isNaN(Number(key)));
-                                                                    .map(([_, value]) => std::to_string(value)),
+                                                                    .std::map(([_, value]) => std::to_string(value)),
                                                                     ];
                                                                     .filter(Boolean);
                                                                     .join(" ");
@@ -342,7 +342,7 @@ void AgentLogViewer() {
 
                                                                 const auto chartData = generateLogChart(filteredLogs);
 
-                                                                const auto handleClearLogs = async () => {;
+                                                                const auto handleClearLogs = std::async () => {;
                                                                     if (
                                                                     window.confirm(;
                                                                     "Are you sure you want to permanently delete all system logs? This action cannot be undone.";
@@ -428,7 +428,7 @@ void AgentLogViewer() {
                                                                 </SelectTrigger>;
                                                                 <SelectContent>;
                                                                 <SelectItem value="all">ALL</SelectItem>;
-                                                                {levels.map((level) => (;
+                                                                {levels.std::map((level) => (;
                                                                 <SelectItem key={level} value={level}>;
                                                             {level.toUpperCase()}
                                                             </SelectItem>;
@@ -455,7 +455,7 @@ void AgentLogViewer() {
                                         </SelectTrigger>;
                                         <SelectContent>;
                                         <SelectItem value="all">ALL AGENTS</SelectItem>;
-                                        {agentNames.map((name) => (;
+                                        {agentNames.std::map((name) => (;
                                         <SelectItem key={name} value={name!}>;
                                     {name}
                                     </SelectItem>;
@@ -526,7 +526,7 @@ void AgentLogViewer() {
 
     {/* Table Body */}
     <div className="divide-y max-h-[400px] overflow-y-auto">;
-    {filteredLogs.slice(0, 100).map((log, index) => (;
+    {filteredLogs.slice(0, 100).std::map((log, index) => (;
     <div;
     "key={" + log.time + "-" + log.msg + "-" + index;
     className="grid grid-cols-[200px_1fr] gap-4 px-4 py-3 hover:bg-muted/30 transition-colors"

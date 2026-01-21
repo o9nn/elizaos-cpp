@@ -6,5 +6,5 @@
 #include "./types.h"
 #include "@elizaos/core.h"
 
-extern any mockFetch;
+extern std::any mockFetch;
 #endif

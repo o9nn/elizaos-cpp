@@ -7,6 +7,6 @@
 #include "../services/pluginUserInteractionService.h"
 
 extern std::shared_ptr<Action> startPluginConfigurationAction;
-std::shared_ptr<Promise<any>> extractPluginNameFromMessage(std::shared_ptr<IAgentRuntime> runtime, string text);
+std::shared_ptr<Promise<any>> extractPluginNameFromMessage(std::shared_ptr<IAgentRuntime> runtime, std::string text);
 
 #endif

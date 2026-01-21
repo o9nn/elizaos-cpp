@@ -17,7 +17,7 @@ namespace elizaos {
 
 
 class RunsService extends BaseApiClient {
-  async listRuns(
+  std::async listRuns(
     agentId: UUID,
     params?: ListRunsParams
   ): Promise<{ runs: RunSummary[]; total: number; hasMore: boolean }> {

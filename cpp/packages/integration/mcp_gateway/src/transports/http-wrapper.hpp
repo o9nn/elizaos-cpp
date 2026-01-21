@@ -32,14 +32,14 @@ struct Session {
 };
 
 class HTTPGatewayWrapper {
-  private sessions = new Map<string, Session>();
+  private sessions = new Map<std::string, Session>();
   private paymentMiddleware?: PaymentMiddleware;
-  private config: any;
+  private config: std::any;
   private logger: Console;
   private port: number;
-  private gatewayCommand: string[];
+  private gatewayCommand: std::string[];
 
-  constructor(configPath: string, port: number, logger: Console = console) {
+  constructor(configPath: std::string, port: number, logger: Console = console) {
     this.logger = logger;
     this.port = port;
 

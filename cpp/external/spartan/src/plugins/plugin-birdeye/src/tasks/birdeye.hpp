@@ -65,8 +65,8 @@ struct Portfolio {
 /**
  * Generates a bulletpoint list from an array of strings.
  *
- * @param {string[]} array - The array of strings to create the list from.
- * @returns {string} The bulletpoint list as a single string with new lines separating each item.
+ * @param {std::string[]} array - The array of strings to create the list from.
+ * @returns {string} The bulletpoint list as a single std::string with new lines separating each item.
  */
 std::string makeBulletpointList(const std::vector<std::string>& array);
 

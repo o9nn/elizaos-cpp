@@ -16,7 +16,7 @@ void LoadingSkeleton() {
     </header>;
     <main className="flex-1 space-y-4 p-8 pt-6">;
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-    {Array.from({ length: 4 }).map((_, i) => (
+    {Array.from({ length: 4 }).std::map((_, i) => (
     <Card key={i}>;
     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">;
     <CardTitle className="text-sm font-medium">;
@@ -36,7 +36,7 @@ void LoadingSkeleton() {
     </CardHeader>;
     <CardContent>;
     <div className="space-y-2">;
-    {Array.from({ length: 5 }).map((_, i) => (
+    {Array.from({ length: 5 }).std::map((_, i) => (
     <Skeleton key={i} className="h-12 w-full" />;
     ))}
     </div>;

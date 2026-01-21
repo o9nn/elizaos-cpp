@@ -21,7 +21,7 @@ namespace elizaos {
 
 // Test IDs
 
-// Random vector generator for testing
+// Random std::vector generator for testing
 
 // Test Entity
 

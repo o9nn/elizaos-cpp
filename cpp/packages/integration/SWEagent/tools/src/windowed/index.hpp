@@ -27,7 +27,7 @@ struct WindowState {
 
 class WindowedEditor {
   private state: WindowState;
-  private stateFile: string;
+  private stateFile: std::string;
 
   constructor() {
     // Use ROOT environment variable or temp directory for state file
@@ -54,7 +54,7 @@ class WindowedEditor {
 // CLI if run directly
 // CLI setup
 
-// Only set up CLI commands if running as a script
+// Only std::set up CLI commands if running as a script
 void setupCLI();
 
 // Set up and parse CLI

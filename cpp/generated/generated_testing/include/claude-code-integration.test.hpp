@@ -9,9 +9,9 @@ class ClaudeCodeIntegrationTestSuite;
 class ClaudeCodeIntegrationTestSuite : public TestSuite, public std::enable_shared_from_this<ClaudeCodeIntegrationTestSuite> {
 public:
     using std::enable_shared_from_this<ClaudeCodeIntegrationTestSuite>::shared_from_this;
-    string name = std::string("claude-code-integration");
+    std::string name = std::string("claude-code-integration");
 
-    string description = std::string("Tests actual Claude Code SDK integration and generation");
+    std::string description = std::string("Tests actual Claude Code SDK integration and generation");
 
     array<object> tests = array<object>{ object{
         object::pair{std::string("name"), std::string("should verify Code Generation Service is properly configured")}, 
@@ -20,7 +20,7 @@ public:
             console->log(std::string("🧪 Testing Code Generation Service configuration..."));
             auto codeGenService = runtime->getService<std::shared_ptr<CodeGenerationService>>(std::string("code-generation"));
             if (!codeGenService) {
-                throw any(std::make_shared<Error>(std::string("CodeGenerationService not available")));
+                throw std::any(std::make_shared<Error>(std::string("CodeGenerationService not available")));
             }
             auto anthropicKey = runtime->getSetting(std::string("ANTHROPIC_API_KEY"));
             auto openaiKey = runtime->getSetting(std::string("OPENAI_API_KEY"));
@@ -44,7 +44,7 @@ public:
             }
             auto codeGenService = runtime->getService<std::shared_ptr<CodeGenerationService>>(std::string("code-generation"));
             if (!codeGenService) {
-                throw any(std::make_shared<Error>(std::string("CodeGenerationService not available")));
+                throw std::any(std::make_shared<Error>(std::string("CodeGenerationService not available")));
             }
             try
             {
@@ -56,15 +56,15 @@ public:
                     object::pair{std::string("apis"), array<any>()}
                 }); });
                 if (!result->success) {
-                    throw any(std::make_shared<Error>(std::string("Generation failed: ") + result->errors->join(std::string(", ")) + string_empty));
+                    throw std::any(std::make_shared<Error>(std::string("Generation failed: ") + result->errors->join(std::string(", ")) + string_empty));
                 }
                 console->log(std::string("✅ Basic generation test successful"));
                 console->log(std::string("   Generated ") + (OR((result->files->length), (0))) + std::string(" files"));
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("❌ Basic generation test failed:"), error);
-                throw any(error);
+                throw std::any(error);
             }
         }
         }
@@ -81,7 +81,7 @@ public:
             }
             auto codeGenService = runtime->getService<std::shared_ptr<CodeGenerationService>>(std::string("code-generation"));
             if (!codeGenService) {
-                throw any(std::make_shared<Error>(std::string("CodeGenerationService not available")));
+                throw std::any(std::make_shared<Error>(std::string("CodeGenerationService not available")));
             }
             try
             {
@@ -93,7 +93,7 @@ public:
                     object::pair{std::string("apis"), array<any>()}
                 }); });
                 if (!result->success) {
-                    throw any(std::make_shared<Error>(std::string("Plugin generation failed: ") + result->errors->join(std::string(", ")) + string_empty));
+                    throw std::any(std::make_shared<Error>(std::string("Plugin generation failed: ") + result->errors->join(std::string(", ")) + string_empty));
                 }
                 auto hasTypeScript = result->files->some([=](auto f) mutable
                 {
@@ -106,14 +106,14 @@ public:
                 }
                 );
                 if (OR((!hasTypeScript), (!hasTsConfig))) {
-                    throw any(std::make_shared<Error>(std::string("Missing TypeScript files or configuration")));
+                    throw std::any(std::make_shared<Error>(std::string("Missing TypeScript files or configuration")));
                 }
                 console->log(std::string("✅ Plugin structure test successful"));
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("❌ Plugin structure test failed:"), error);
-                throw any(error);
+                throw std::any(error);
             }
         }
         }
@@ -130,7 +130,7 @@ public:
             }
             auto codeGenService = runtime->getService<std::shared_ptr<CodeGenerationService>>(std::string("code-generation"));
             if (!codeGenService) {
-                throw any(std::make_shared<Error>(std::string("CodeGenerationService not available")));
+                throw std::any(std::make_shared<Error>(std::string("CodeGenerationService not available")));
             }
             console->log(std::string("✅ File operations test setup successful (actual operations happen in sandbox)"));
         }
@@ -148,7 +148,7 @@ public:
             }
             auto codeGenService = runtime->getService<std::shared_ptr<CodeGenerationService>>(std::string("code-generation"));
             if (!codeGenService) {
-                throw any(std::make_shared<Error>(std::string("CodeGenerationService not available")));
+                throw std::any(std::make_shared<Error>(std::string("CodeGenerationService not available")));
             }
             try
             {
@@ -161,12 +161,12 @@ public:
                     object::pair{std::string("testScenarios"), array<string>{ std::string("Test plugin loads correctly"), std::string("Test action responds to hello") }}
                 }); });
                 if (!result->success) {
-                    throw any(std::make_shared<Error>(std::string("Code generation failed: ") + result->errors->join(std::string(", ")) + string_empty));
+                    throw std::any(std::make_shared<Error>(std::string("Code generation failed: ") + result->errors->join(std::string(", ")) + string_empty));
                 }
                 if (OR((!result->files), (result->files->length == 0))) {
-                    throw any(std::make_shared<Error>(std::string("No files generated")));
+                    throw std::any(std::make_shared<Error>(std::string("No files generated")));
                 }
-                auto fileNames = result->files->map([=](auto f) mutable
+                auto fileNames = result->files->std::map([=](auto f) mutable
                 {
                     return f["path"];
                 }
@@ -175,7 +175,7 @@ public:
                 for (auto& file : requiredFiles)
                 {
                     if (!fileNames->includes(file)) {
-                        throw any(std::make_shared<Error>(std::string("Missing required file: ") + file + string_empty));
+                        throw std::any(std::make_shared<Error>(std::string("Missing required file: ") + file + string_empty));
                     }
                 }
                 auto indexFile = result->files->find([=](auto f) mutable
@@ -184,11 +184,11 @@ public:
                 }
                 );
                 if (!indexFile) {
-                    throw any(std::make_shared<Error>(std::string("Missing index.ts file")));
+                    throw std::any(std::make_shared<Error>(std::string("Missing index.ts file")));
                 }
                 auto indexContent = indexFile->content->toLowerCase();
                 if (OR((!indexContent->includes(std::string("plugin"))), (!indexContent->includes(std::string("action"))))) {
-                    throw any(std::make_shared<Error>(std::string("Generated index.ts missing plugin structure")));
+                    throw std::any(std::make_shared<Error>(std::string("Generated index.ts missing plugin structure")));
                 }
                 console->log(std::string("✅ CodeGenerationService test successful - generated ") + result->files->length + std::string(" files"));
                 if (result->executionResults) {
@@ -199,10 +199,10 @@ public:
                     console->log(std::string("  Build: ") + (result->executionResults->buildPass) ? std::string("✅") : std::string("❌") + string_empty);
                 }
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("❌ CodeGenerationService test failed:"), error);
-                throw any(error);
+                throw std::any(error);
             }
         }
         }
@@ -218,7 +218,7 @@ public:
             }
             auto codeGenService = runtime->getService<std::shared_ptr<CodeGenerationService>>(std::string("code-generation"));
             if (!codeGenService) {
-                throw any(std::make_shared<Error>(std::string("CodeGenerationService not available")));
+                throw std::any(std::make_shared<Error>(std::string("CodeGenerationService not available")));
             }
             try
             {
@@ -242,20 +242,20 @@ public:
                     if (OR((errorMessage["includes"](std::string("timeout"))), (errorMessage["includes"](std::string("timed out"))))) {
                         console->log(std::string("✅ Timeout detected and handled correctly"));
                     } else {
-                        throw any(std::make_shared<Error>(std::string("Non-timeout error: ") + result->errors->join(std::string(", ")) + string_empty));
+                        throw std::any(std::make_shared<Error>(std::string("Non-timeout error: ") + result->errors->join(std::string(", ")) + string_empty));
                     }
                 } else {
                     console->log(std::string("✅ Generation successful - no timeout issues"));
                 }
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 auto errorMessage = (as<std::shared_ptr<Error>>(error))->message->toLowerCase();
                 if (OR((errorMessage->includes(std::string("timeout"))), (errorMessage->includes(std::string("timed out"))))) {
                     console->log(std::string("✅ Timeout error properly caught and handled"));
                 } else {
                     console->error(std::string("❌ Timeout test failed:"), error);
-                    throw any(error);
+                    throw std::any(error);
                 }
             }
         }
@@ -272,7 +272,7 @@ public:
             }
             auto codeGenService = runtime->getService<std::shared_ptr<CodeGenerationService>>(std::string("code-generation"));
             if (!codeGenService) {
-                throw any(std::make_shared<Error>(std::string("CodeGenerationService not available")));
+                throw std::any(std::make_shared<Error>(std::string("CodeGenerationService not available")));
             }
             try
             {
@@ -293,10 +293,10 @@ Make it a production-ready, enterprise-grade plugin.");
                 if (type_of(serviceAsAny["generateCodeInChunks"]) == std::string("function")) {
                     auto chunkResult = std::async([=]() { serviceAsAny["generateCodeInChunks"](testPrompt, 8000); });
                     if (!chunkResult) {
-                        throw any(std::make_shared<Error>(std::string("Chunked generation returned no result")));
+                        throw std::any(std::make_shared<Error>(std::string("Chunked generation returned no result")));
                     }
                     if (type_of(chunkResult) != std::string("string")) {
-                        throw any(std::make_shared<Error>(std::string("Chunked generation result is not a string")));
+                        throw std::any(std::make_shared<Error>(std::string("Chunked generation result is not a string")));
                     }
                     auto chunks = array<string>{ std::string("Core Structure"), std::string("Services and Actions"), std::string("Documentation and Tests") };
                     auto chunksFound = 0;
@@ -307,7 +307,7 @@ Make it a production-ready, enterprise-grade plugin.");
                         }
                     }
                     if (chunksFound == 0) {
-                        throw any(std::make_shared<Error>(std::string("No chunk headers found in result")));
+                        throw std::any(std::make_shared<Error>(std::string("No chunk headers found in result")));
                     }
                     console->log(std::string("✅ Chunked generation successful - ") + chunksFound + std::string("/") + chunks->get_length() + std::string(" chunks found"));
                     console->log(std::string("   Result length: ") + chunkResult->get_length() + std::string(" characters"));
@@ -346,10 +346,10 @@ Make it a production-ready, enterprise-grade plugin.");
                     }
                 }
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("❌ Chunked generation test failed:"), error);
-                throw any(error);
+                throw std::any(error);
             }
         }
         }
@@ -366,7 +366,7 @@ Make it a production-ready, enterprise-grade plugin.");
             }
             auto codeGenService = runtime->getService<std::shared_ptr<CodeGenerationService>>(std::string("code-generation"));
             if (!codeGenService) {
-                throw any(std::make_shared<Error>(std::string("CodeGenerationService not available")));
+                throw std::any(std::make_shared<Error>(std::string("CodeGenerationService not available")));
             }
             try
             {
@@ -378,13 +378,13 @@ Make it a production-ready, enterprise-grade plugin.");
                     object::pair{std::string("apis"), array<any>()}
                 }); });
                 if (!result->success) {
-                    throw any(std::make_shared<Error>(std::string("Code generation failed: ") + result->errors->join(std::string(", ")) + string_empty));
+                    throw std::any(std::make_shared<Error>(std::string("Code generation failed: ") + result->errors->join(std::string(", ")) + string_empty));
                 }
                 if (OR((!result->files), (result->files->length == 0))) {
-                    throw any(std::make_shared<Error>(std::string("No files generated")));
+                    throw std::any(std::make_shared<Error>(std::string("No files generated")));
                 }
                 if (!result->projectPath) {
-                    throw any(std::make_shared<Error>(std::string("No project path returned")));
+                    throw std::any(std::make_shared<Error>(std::string("No project path returned")));
                 }
                 console->log(std::string("✅ Code generation with local file system successful"));
                 console->log(std::string("   Generated ") + result->files->length + std::string(" files"));
@@ -397,10 +397,10 @@ Make it a production-ready, enterprise-grade plugin.");
                     console->log(std::string("   Build: ") + (result->executionResults->buildPass) ? std::string("✅") : std::string("❌") + string_empty);
                 }
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("❌ Local file system test failed:"), error);
-                throw any(error);
+                throw std::any(error);
             }
         }
         }

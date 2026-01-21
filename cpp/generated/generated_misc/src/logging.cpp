@@ -20,7 +20,7 @@ std::shared_ptr<express::Router> createLoggingRouter()
         try
         {
             auto recentLogs = destination["recentLogs"]();
-            shared requestedLevelValue = (requestedLevel == std::string("all")) ? any(0) : any(OR((const_(LOG_LEVELS)[as<any>(requestedLevel)]), (LOG_LEVELS["info"])));
+            shared requestedLevelValue = (requestedLevel == std::string("all")) ? std::any(0) : std::any(OR((const_(LOG_LEVELS)[as<any>(requestedLevel)]), (LOG_LEVELS["info"])));
             auto logsWithAgentNames = recentLogs->filter([=](auto l) mutable
             {
                 return l->agentName;
@@ -32,8 +32,8 @@ std::shared_ptr<express::Router> createLoggingRouter()
             }
             )->get_length();
             auto totalLogs = recentLogs->get_length();
-            auto agentNamePopulationRate = (totalLogs > 0) ? any(logsWithAgentNames / totalLogs) : any(0);
-            auto agentIdPopulationRate = (totalLogs > 0) ? any(logsWithAgentIds / totalLogs) : any(0);
+            auto agentNamePopulationRate = (totalLogs > 0) ? std::any(logsWithAgentNames / totalLogs) : std::any(0);
+            auto agentIdPopulationRate = (totalLogs > 0) ? std::any(logsWithAgentIds / totalLogs) : std::any(0);
             shared isAgentNameDataSparse = agentNamePopulationRate < 0.1;
             shared isAgentIdDataSparse = agentIdPopulationRate < 0.1;
             auto filtered = recentLogs->filter([=](auto log) mutable
@@ -75,12 +75,12 @@ std::shared_ptr<express::Router> createLoggingRouter()
                 object::pair{std::string("agentIdPopulationRate"), Math->round(agentIdPopulationRate * 100) + std::string("%")}, 
                 object::pair{std::string("isAgentNameDataSparse"), std::string("isAgentNameDataSparse")}, 
                 object::pair{std::string("isAgentIdDataSparse"), std::string("isAgentIdDataSparse")}, 
-                object::pair{std::string("sampleLogAgentNames"), recentLogs->slice(0, 5)->map([=](auto log) mutable
+                object::pair{std::string("sampleLogAgentNames"), recentLogs->slice(0, 5)->std::map([=](auto log) mutable
                 {
                     return log->agentName;
                 }
                 )}, 
-                object::pair{std::string("uniqueAgentNamesInLogs"), (array<any>{ std::make_shared<Set>(recentLogs->map([=](auto log) mutable
+                object::pair{std::string("uniqueAgentNamesInLogs"), (array<any>{ std::make_shared<Set>(recentLogs->std::map([=](auto log) mutable
                 {
                     return log->agentName;
                 }
@@ -101,11 +101,11 @@ std::shared_ptr<express::Router> createLoggingRouter()
                 object::pair{std::string("levels"), Object->keys(LOG_LEVELS)}
             });
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             res->status(500)->json(object{
                 object::pair{std::string("error"), std::string("Failed to retrieve logs")}, 
-                object::pair{std::string("message"), (is<Error>(error)) ? any(error->message) : any(std::string("Unknown error"))}
+                object::pair{std::string("message"), (is<Error>(error)) ? std::any(error->message) : std::any(std::string("Unknown error"))}
             });
         }
     };
@@ -129,11 +129,11 @@ std::shared_ptr<express::Router> createLoggingRouter()
                 object::pair{std::string("message"), std::string("Logs cleared successfully")}
             });
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             res->status(500)->json(object{
                 object::pair{std::string("error"), std::string("Failed to clear logs")}, 
-                object::pair{std::string("message"), (is<Error>(error)) ? any(error->message) : any(std::string("Unknown error"))}
+                object::pair{std::string("message"), (is<Error>(error)) ? std::any(error->message) : std::any(std::string("Unknown error"))}
             });
         }
     };

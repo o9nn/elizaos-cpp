@@ -4,7 +4,7 @@ std::shared_ptr<Promise<std::shared_ptr<TaskSelection>>> extractTaskSelection(st
 {
     try
     {
-        auto tasksText = availableTasks->map([=](auto task) mutable
+        auto tasksText = availableTasks->std::map([=](auto task) mutable
         {
             return std::string("ID: ") + task->id + std::string("\
 Name: ") + task->name + std::string("\
@@ -36,13 +36,13 @@ Tags: ") + (OR((task->tags->join(std::string(", "))), (std::string("none")))) + 
             };
         }
         auto finalResult = object{
-            object::pair{std::string("taskId"), (parsedResult->taskId == std::string("null")) ? any(string_empty) : any(OR((parsedResult->taskId), (string_empty)))}, 
-            object::pair{std::string("taskName"), (parsedResult->taskName == std::string("null")) ? any(string_empty) : any(OR((parsedResult->taskName), (string_empty)))}, 
+            object::pair{std::string("taskId"), (parsedResult->taskId == std::string("null")) ? std::any(string_empty) : std::any(OR((parsedResult->taskId), (string_empty)))}, 
+            object::pair{std::string("taskName"), (parsedResult->taskName == std::string("null")) ? std::any(string_empty) : std::any(OR((parsedResult->taskName), (string_empty)))}, 
             object::pair{std::string("isFound"), String(parsedResult->isFound)->toLowerCase() == std::string("true")}
         };
         return finalResult;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Error extracting task selection information:"), error);
         return object{
@@ -144,7 +144,7 @@ std::shared_ptr<Promise<any>> extractTaskUpdate(std::shared_ptr<IAgentRuntime> r
         }
         return finalUpdate;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Error extracting task update information:"), error);
         return nullptr;
@@ -211,7 +211,7 @@ std::shared_ptr<Promise<std::shared_ptr<Task>>> applyTaskUpdate(std::shared_ptr<
 };
 
 
-string extractTaskTemplate = std::string("\
+std::string extractTaskTemplate = std::string("\
 # Task: Extract Task Selection Information\
 \
 ## User Message\
@@ -246,7 +246,7 @@ If no matching task was found:\
   <isFound>false</isFound>\
 </response>\
 ");
-string extractUpdateTemplate = std::string("\
+std::string extractUpdateTemplate = std::string("\
 # Task: Extract Task Update Information\
 \
 ## User Message\
@@ -295,7 +295,7 @@ std::shared_ptr<Action> updateTodoAction = object{
             );
             return activeTasks->length > 0;
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("Error validating UPDATE_TODO action:"), error);
             return false;
@@ -317,7 +317,7 @@ std::shared_ptr<Action> updateTodoAction = object{
             );
             if (availableTasks->length == 0) {
                 std::async([=]() { callback(object{
-                    object::pair{std::string("text"), std::string("You don't have any active tasks to update. Would you like to create a new task?")}, 
+                    object::pair{std::string("text"), std::string("You don't have std::any active tasks to update. Would you like to create a new task?")}, 
                     object::pair{std::string("actions"), array<string>{ std::string("UPDATE_TODO_NO_TASKS") }}, 
                     object::pair{std::string("source"), message->content->source}
                 }); });
@@ -328,7 +328,7 @@ std::shared_ptr<Action> updateTodoAction = object{
                 std::async([=]() { callback(object{
                     object::pair{std::string("text"), std::string("I couldn't determine which task you want to update. Could you be more specific? Here are your current tasks:\
 \
-") + availableTasks->map([=](auto task) mutable
+") + availableTasks->std::map([=](auto task) mutable
                     {
                         return std::string("- ") + task["name"] + string_empty;
                     }
@@ -368,7 +368,7 @@ std::shared_ptr<Action> updateTodoAction = object{
                 object::pair{std::string("source"), message->content->source}
             }); });
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("Error in updateTodo handler:"), error);
             std::async([=]() { callback(object{

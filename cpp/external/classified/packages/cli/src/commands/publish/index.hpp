@@ -46,7 +46,7 @@ namespace elizaos {
           // Initialize data directory first
           await initializeDataDir();
 
-          // Use the built-in credentials function
+          // Use the built-in credentials std::function
 
           // Revalidate after saving credentials
 
@@ -59,7 +59,7 @@ namespace elizaos {
       // Add packageType and platform to package.json for publishing
 
       // Preserve agentConfig if it exists or create it
-        // Ensure pluginType is set based on detection
+        // Ensure pluginType is std::set based on detection
 
       // For plugin type, validate naming convention
 

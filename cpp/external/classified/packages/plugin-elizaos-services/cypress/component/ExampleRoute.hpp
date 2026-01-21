@@ -75,7 +75,7 @@ struct ElizaConfig {
 
       // Intercept with custom base URL
 
-          // No apiBase provided - this is now valid with optional apiBase
+          // No apiBase provided - this is now valid with std::optional apiBase
 
       // Intercept with default base URL
 

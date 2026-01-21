@@ -6,7 +6,7 @@ namespace elizaos {
 
 void validateAgainstRules(const std::string& code, CodingGuidelines guidelines) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    valid: boolean; violations: string[]
+    valid: boolean; violations: std::string[]
 }
 
 std::vector<CodingRule> getApplicableRules(const std::string& filePath, std::optional<std::string> language) {

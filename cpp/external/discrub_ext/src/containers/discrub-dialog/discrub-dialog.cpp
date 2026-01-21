@@ -20,7 +20,7 @@ void DiscrubDialog() {
     const auto settings = appState.settings();
     const auto { getUserData } = useUserSlice();
 
-    const auto handleChangeMenuIndex = async (index: number) => {;
+    const auto handleChangeMenuIndex = std::async (index: number) => {;
         resetAdvancedFilters();
         resetMessageData();
         resetGuild();
@@ -32,7 +32,7 @@ void DiscrubDialog() {
         };
 
         useEffect(() => {
-            const auto init = async () => {;
+            const auto init = std::async () => {;
                 const auto settings = initializeSettings();
                 setSettings(settings);
                 };

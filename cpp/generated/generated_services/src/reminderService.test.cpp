@@ -78,7 +78,7 @@ void Main(void)
             }));
             expect(mockRuntime->updateTask)->toHaveBeenCalledWith(std::string("task1"), expect->objectContaining(object{
                 object::pair{std::string("metadata"), expect->objectContaining(object{
-                    object::pair{std::string("lastReminderSent"), expect->any(String)}
+                    object::pair{std::string("lastReminderSent"), expect->std::any(String)}
                 })}
             }));
         }

@@ -10,7 +10,7 @@ std::optional<IAgentRuntime> createMockRuntime(std::optional<IAgentRuntime> over
     return {
         agentId: asUUID("test-agent-id"),
         services: new Map(),
-        getService: (name: string) => nullptr,
+        getService: (name: std::string) => nullptr,
         registerService: (service: typeof Service) => Promise.resolve(),
         ...overrides,
         };

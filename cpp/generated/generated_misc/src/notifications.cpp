@@ -18,7 +18,7 @@ std::shared_ptr<Promise<boolean>> sendWelcomeNotification(double fid)
         auto result = std::async([=]() { response->json(); });
         return result["state"] == std::string("success");
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("Failed to send welcome notification:"), error);
         return false;

@@ -29,7 +29,7 @@ void Main(void)
             })->signers(array<any>{ signerWallet, tokenKp })->rpc(); });
             console->log(std::string("Transaction successful with signature:"), tx);
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             console->error(std::string("Transaction failed:"), error);
         }

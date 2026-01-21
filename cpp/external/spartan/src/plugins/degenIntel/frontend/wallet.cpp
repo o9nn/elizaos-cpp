@@ -9,7 +9,7 @@ void Wallet() {
 
     const auto query = useQuery({;
         queryKey: ["wallet"],
-        queryFn: async () => {
+        queryFn: std::async () => {
             const auto response = "fetch(" + import.meta.env.VITE_API_URL + "/wallet";
                 method: "POST",
                 });
@@ -30,7 +30,7 @@ void Wallet() {
                 <div className="flex flex-col gap-4">;
                 <h3 className="font-semibold text-2xl">Live Portfolio</h3>;
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {portfolio.items.map((asset, idx: number) => {
+                {portfolio.items.std::map((asset, idx: number) => {
                     if (Number(asset.valueUsd) <= 50) return null;
                     return (;
                     <Card;

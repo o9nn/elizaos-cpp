@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/run/remove-unfinished.h"
 
-std::shared_ptr<Promise<void>> removeUnfinished(string baseDir, boolean dryRun)
+std::shared_ptr<Promise<void>> removeUnfinished(std::string baseDir, boolean dryRun)
 {
     auto basePath = path->resolve(baseDir);
     auto toRemove = array<string>();
@@ -21,7 +21,7 @@ std::shared_ptr<Promise<void>> removeUnfinished(string baseDir, boolean dryRun)
             {
                 return file->endsWith(std::string(".traj"));
             }
-            )->map([=](auto file) mutable
+            )->std::map([=](auto file) mutable
             {
                 return path->join(directory, file);
             }
@@ -49,7 +49,7 @@ std::shared_ptr<Promise<void>> removeUnfinished(string baseDir, boolean dryRun)
                     continue;
                 }
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 logger->warn(std::string("Error loading trajectory ") + const_(trajs)[0] + std::string(": ") + error + std::string(". Adding to remove list."));
                 toRemove->push(directory);

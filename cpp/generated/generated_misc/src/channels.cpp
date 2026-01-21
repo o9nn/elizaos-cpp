@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/server/src/api/media/channels.h"
 
-std::shared_ptr<Promise<object>> saveUploadedFile(std::shared_ptr<Express::Multer::File> file, string channelId)
+std::shared_ptr<Promise<object>> saveUploadedFile(std::shared_ptr<Express::Multer::File> file, std::string channelId)
 {
     auto uploadDir = path->join(process->cwd(), std::string(".eliza/data/uploads/channels"), channelId);
     if (!fs->existsSync(uploadDir)) {
@@ -65,7 +65,7 @@ std::shared_ptr<express::Router> createChannelMediaRouter()
                 }}
             });
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("[Channel Media Upload] Error processing upload for channel ") + channelId + std::string(": ") + error["message"] + string_empty, error);
             res["status"](500)["json"](object{
@@ -79,8 +79,8 @@ std::shared_ptr<express::Router> createChannelMediaRouter()
 };
 
 
-any storage = multer->memoryStorage();
-any upload = multer(object{
+std::any storage = multer->memoryStorage();
+std::any upload = multer(object{
     object::pair{std::string("storage"), std::string("storage")}, 
     object::pair{std::string("limits"), object{
         object::pair{std::string("fileSize"), MAX_FILE_SIZE}, 

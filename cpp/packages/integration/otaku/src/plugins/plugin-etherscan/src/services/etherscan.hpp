@@ -22,7 +22,7 @@ struct TransactionReceipt {
     std::string transactionIndex;
     std::string from;
     std::string to;
-    string | null contractAddress;
+    std::string | null contractAddress;
     std::string gasUsed;
     std::string cumulativeGasUsed;
     std::string effectiveGasPrice;
@@ -42,8 +42,8 @@ using SupportedChain = keyof typeof CHAIN_IDS;
 class EtherscanService extends Service {
   static serviceType = "ETHERSCAN" as const;
 
-  private apiKey: string = "";
-  private baseUrl: string = "https://api.etherscan.io/v2/api";
+  private apiKey: std::string = "";
+  private baseUrl: std::string = "https://api.etherscan.io/v2/api";
   private defaultChainId: number = 1; // Ethereum mainnet
 
   private readonly defaultFetchOptions: EtherscanFetchOptions = {
@@ -62,7 +62,7 @@ class EtherscanService extends Service {
 
   /**
    * Get the chain ID for a specific chain name
-   * @param chain Chain name or identifier (optional, defaults to Ethereum)
+   * @param chain Chain name or identifier (std::optional, defaults to Ethereum)
    * @returns Chain ID for Etherscan V2 API
    */
 
@@ -70,7 +70,7 @@ class EtherscanService extends Service {
    * Get transaction receipt including confirmation status
    * Uses Etherscan V2 API with chainid parameter
    * @param txHash Transaction hash to check
-   * @param chain Chain name (optional, defaults to Ethereum)
+   * @param chain Chain name (std::optional, defaults to Ethereum)
    * @returns Transaction receipt with confirmation details
    */
 
@@ -80,7 +80,7 @@ class EtherscanService extends Service {
    * Check transaction execution status
    * Uses Etherscan V2 API with chainid parameter
    * @param txHash Transaction hash to check
-   * @param chain Chain name (optional, defaults to Ethereum)
+   * @param chain Chain name (std::optional, defaults to Ethereum)
    * @returns Transaction status (success/failure with error description)
    */
 
@@ -88,7 +88,7 @@ class EtherscanService extends Service {
    * Check transaction receipt status (simple success/fail check)
    * Uses Etherscan V2 API with chainid parameter
    * @param txHash Transaction hash to check
-   * @param chain Chain name (optional, defaults to Ethereum)
+   * @param chain Chain name (std::optional, defaults to Ethereum)
    * @returns Receipt status
    */
 
@@ -96,7 +96,7 @@ class EtherscanService extends Service {
    * Get transaction details by hash
    * Uses Etherscan V2 API with chainid parameter
    * @param txHash Transaction hash
-   * @param chain Chain name (optional, defaults to Ethereum)
+   * @param chain Chain name (std::optional, defaults to Ethereum)
    * @returns Transaction details
    */
 

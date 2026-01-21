@@ -147,7 +147,7 @@ struct PoolInfo {
   // Estimate TVL: Base Reserve * 2 (assuming 50/50 pool value)
   // This works for both volatile and stable pools roughly
 
-  // Normalize liquidity for the estimateTVL function which expects "units" roughly matching V3
+  // Normalize liquidity for the estimateTVL std::function which expects "units" roughly matching V3
   // But for V2 style, we can just calculate USD value directly
 
 /**

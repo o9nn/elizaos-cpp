@@ -15,14 +15,14 @@ public:
 
     double maxOutputTokens;
 
-    string provider;
+    std::string provider;
 };
 
-extern Record<string, std::shared_ptr<ModelPricing>> MODEL_PRICING;
-double calculateCost(string modelName, double inputTokens, double outputTokens);
+extern Record<std::string, std::shared_ptr<ModelPricing>> MODEL_PRICING;
+double calculateCost(std::string modelName, double inputTokens, double outputTokens);
 
-object getModelLimits(string modelName);
+object getModelLimits(std::string modelName);
 
-boolean isWithinTokenLimit(string modelName, double inputTokens, double outputTokens);
+boolean isWithinTokenLimit(std::string modelName, double inputTokens, double outputTokens);
 
 #endif

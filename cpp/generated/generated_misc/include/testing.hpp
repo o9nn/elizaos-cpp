@@ -9,15 +9,15 @@ class TestSuite;
 class TestCase : public object, public std::enable_shared_from_this<TestCase> {
 public:
     using std::enable_shared_from_this<TestCase>::shared_from_this;
-    string name;
+    std::string name;
 
-    std::function<any(std::shared_ptr<IAgentRuntime>)> fn;
+    std::function<std::any(std::shared_ptr<IAgentRuntime>)> fn;
 };
 
 class TestSuite : public object, public std::enable_shared_from_this<TestSuite> {
 public:
     using std::enable_shared_from_this<TestSuite>::shared_from_this;
-    string name;
+    std::string name;
 
     array<std::shared_ptr<TestCase>> tests;
 };

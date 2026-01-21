@@ -6,8 +6,8 @@
 #include "../services/SamTTSService.h"
 
 extern std::shared_ptr<Action> sayAloudAction;
-string extractTextToSpeak(string messageText);
+std::string extractTextToSpeak(std::string messageText);
 
-std::shared_ptr<SamTTSOptions> extractVoiceOptions(string messageText);
+std::shared_ptr<SamTTSOptions> extractVoiceOptions(std::string messageText);
 
 #endif

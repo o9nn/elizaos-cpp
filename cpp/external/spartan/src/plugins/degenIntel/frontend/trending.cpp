@@ -9,7 +9,7 @@ void Trending() {
 
     const auto query = useQuery({;
         queryKey: ["trending"],
-        queryFn: async () => {
+        queryFn: std::async () => {
             const auto response = "fetch(" + import.meta.env.VITE_API_URL + "/trending";
                 method: "POST",
                 });
@@ -49,7 +49,7 @@ void Trending() {
                     </TableRow>;
                     </TableHeader>;
                     <TableBody>;
-                    {query.data.map((item) => (;
+                    {query.data.std::map((item) => (;
                     "<TableRow key={" + item._id + "_" + item.price;
                     <TableCell>;
                     <img;
@@ -132,7 +132,7 @@ void Trending() {
                     "href: " + "https://solscan.io/token/" + item.address
                     disabled: item.chain != "solana",
                     },
-                    ].map((item, _) => (;
+                    ].std::map((item, _) => (;
                     <a;
                 href={item.disabled ? "#" : item.href}
                 target="_blank";

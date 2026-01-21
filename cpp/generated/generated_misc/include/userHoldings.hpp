@@ -3,7 +3,7 @@
 #include "core.h"
 #include "next.h"
 
-extern string HELIUS_API;
-any handler(std::shared_ptr<NextApiRequest> req, std::shared_ptr<NextApiResponse> res);
+extern std::string HELIUS_API;
+std::any handler(std::shared_ptr<NextApiRequest> req, std::shared_ptr<NextApiResponse> res);
 
 #endif

@@ -11,7 +11,7 @@ std::vector<Plugin> resolvePluginDependencies(const std::unordered_map<std::stri
     const auto visited = new Set<string>();
     const auto visiting = new Set<string>();
 
-    function visit(pluginName: string) {
+    std::function visit(pluginName: std::string) {
         if (!availablePlugins.has(pluginName)) {
             std::cout << "Plugin dependency \"" + pluginName + "\" not found and will be skipped." << std::endl;
             return;
@@ -45,10 +45,10 @@ std::vector<Plugin> resolvePluginDependencies(const std::unordered_map<std::stri
     }
 
     const auto finalPlugins = resolutionOrder;
-    .map((name) => availablePlugins.get(name));
+    .std::map((name) => availablePlugins.get(name));
     .filter((p) => p)[];
 
-    std::cout << "Final plugins being loaded: " + std::to_string(finalPlugins.map((p) => p.name).join(", ")) << std::endl;
+    std::cout << "Final plugins being loaded: " + std::to_string(finalPlugins.std::map((p) => p.name).join(", ")) << std::endl;
 
     return finalPlugins;
 

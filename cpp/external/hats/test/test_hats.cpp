@@ -47,7 +47,7 @@ TEST_F(HatsTest, DataValueUtilities) {
     EXPECT_EQ(std::get<bool>(hats_utils::parseDataValue("false")), false);
     EXPECT_EQ(std::get<std::string>(hats_utils::parseDataValue("hello")), "hello");
     
-    // Test data value to string conversion
+    // Test data value to std::string conversion
     EXPECT_EQ(hats_utils::dataValueToString(DataValue{42}), "42");
     EXPECT_EQ(hats_utils::dataValueToString(DataValue{3.14}), "3.140000");
     EXPECT_EQ(hats_utils::dataValueToString(DataValue{true}), "true");

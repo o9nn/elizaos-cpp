@@ -104,7 +104,7 @@ std::vector<JsonValue> AgentAction::searchActions(const std::string& search_text
             JsonValue metadata_map;
             if (std::holds_alternative<CustomMetadata>(memory->getMetadata())) {
                 const auto& customMeta = std::get<CustomMetadata>(memory->getMetadata());
-                for (const auto& pair : customMeta.customData) {
+                for (const auto& std::pair : customMeta.customData) {
                     metadata_map[pair.first] = pair.second;
                 }
             }
@@ -150,7 +150,7 @@ void AgentAction::addToActionHistory(const std::string& action_name, const JsonV
     CustomMetadata customMeta;
     customMeta.customData["success"] = success ? "true" : "false";
     
-    // Convert JsonValue arguments to string metadata (simplified)
+    // Convert JsonValue arguments to std::string metadata (simplified)
     for (const auto& arg : arguments) {
         customMeta.customData[arg.first] = "value"; // Simplified serialization
     }
@@ -179,7 +179,7 @@ std::vector<JsonValue> AgentAction::getActionHistory(int n_results) {
         JsonValue metadata_map;
         if (std::holds_alternative<CustomMetadata>(memory->getMetadata())) {
             const auto& customMeta = std::get<CustomMetadata>(memory->getMetadata());
-            for (const auto& pair : customMeta.customData) {
+            for (const auto& std::pair : customMeta.customData) {
                 metadata_map[pair.first] = pair.second;
             }
         }
@@ -219,7 +219,7 @@ JsonValue AgentAction::getFormattedActions(const std::string& search_text) {
     
     auto available_actions = getAvailableActions(search_text, 5);
     
-    // Create formatted actions string
+    // Create formatted actions std::string
     std::stringstream formatted_actions;
     formatted_actions << "Available actions for me to choose from:\n";
     
@@ -234,7 +234,7 @@ JsonValue AgentAction::getFormattedActions(const std::string& search_text) {
         formatted_actions << document << "\n";
     }
     
-    // Create short actions string
+    // Create short actions std::string
     std::stringstream short_actions;
     short_actions << "Available actions (name): ";
     
@@ -279,7 +279,7 @@ JsonValue AgentAction::getActionFromMemory(const std::string& action_name) {
                 
                 // Convert metadata to JsonValue
                 JsonValue metadata_map;
-                for (const auto& pair : customMeta.customData) {
+                for (const auto& std::pair : customMeta.customData) {
                     metadata_map[pair.first] = pair.second;
                 }
                 action_data["metadata"] = metadata_map;

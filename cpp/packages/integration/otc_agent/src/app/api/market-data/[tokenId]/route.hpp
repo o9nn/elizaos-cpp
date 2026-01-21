@@ -16,6 +16,6 @@ namespace elizaos {
 // Check if we're in local development mode (no external API calls needed)
 bool isLocalDevelopment(const std::string& chain, const std::string& contractAddress);
 
-std::future<void> GET(NextRequest request, { params: Promise<{ tokenId: string }> } { params });
+std::future<void> GET(NextRequest request, { params: Promise<{ tokenId: std::string }> } { params });
 
 } // namespace elizaos

@@ -21,9 +21,9 @@ struct RequestError {
     double status;
 };
 
-// Helper function to get content type from file extension
+// Helper std::function to get content type from file extension
 
-std::future<void> GET(NextRequest request, { params: Promise<{ fileId: string }> } context);
+std::future<void> GET(NextRequest request, { params: Promise<{ fileId: std::string }> } context);
 
 // Handle CORS preflight requests
 std::future<void> OPTIONS();

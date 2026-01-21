@@ -8,9 +8,9 @@ class Room;
 class Room : public object, public std::enable_shared_from_this<Room> {
 public:
     using std::enable_shared_from_this<Room>::shared_from_this;
-    string id;
+    std::string id;
 
-    string name;
+    std::string name;
 
     std::shared_ptr<ChannelType> type;
 

@@ -60,7 +60,7 @@ Plugin extractPlugin(const std::any& module);
 /**
  * Loads a project from the specified directory.
  * @param {string} dir - The directory to load the project from.
- * @returns {Promise<Project>} A promise that resolves to the loaded project.
+ * @returns {Promise<Project>} A std::promise that resolves to the loaded project.
  */
 std::future<Project> loadProject(const std::string& dir);
 

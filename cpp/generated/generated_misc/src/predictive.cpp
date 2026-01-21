@@ -10,7 +10,7 @@ void PredictiveAnalytics::initialize()
     std::async([=]() { this->mlPredictor->loadModel(); });
 }
 
-std::shared_ptr<Promise<object>> PredictiveAnalytics::predictProjectSuccess(string projectId)
+std::shared_ptr<Promise<object>> PredictiveAnalytics::predictProjectSuccess(std::string projectId)
 {
     try
     {
@@ -22,14 +22,14 @@ std::shared_ptr<Promise<object>> PredictiveAnalytics::predictProjectSuccess(stri
             object::pair{std::string("recommendations"), this->generateRecommendations(features, score)}
         };
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger["error"](std::string("Error predicting project success:"), error);
-        throw any(error);
+        throw std::any(error);
     }
 }
 
-std::shared_ptr<Promise<object>> PredictiveAnalytics::predictUserEngagement(string userId)
+std::shared_ptr<Promise<object>> PredictiveAnalytics::predictUserEngagement(std::string userId)
 {
     auto userFeatures = std::async([=]() { this->extractUserFeatures(userId); });
     auto likelihood = std::async([=]() { this->mlPredictor->predictEngagement(userFeatures); });

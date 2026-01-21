@@ -94,10 +94,10 @@ void Main(void)
                         result = std::async([=]() { helloWorldAction->validate(runtime, mockMessage, mockState); });
                         expect(result)->toBe(true);
                     }
-                    catch (const any& e)
+                    catch (const std::any& e)
                     {
                         error = as<std::shared_ptr<Error>>(e);
-                        logger->error(std::string("Validate function error:"), e);
+                        logger->error(std::string("Validate std::function error:"), e);
                     }
                     documentTestResult(std::string("HELLO_WORLD action validate"), result, error);
                 }
@@ -124,10 +124,10 @@ void Main(void)
                         expect(callbackResponse["actions"])->toContain(std::string("HELLO_WORLD"));
                         expect(callbackResponse)->toHaveProperty(std::string("source"), std::string("test"));
                     }
-                    catch (const any& e)
+                    catch (const std::any& e)
                     {
                         error = as<std::shared_ptr<Error>>(e);
-                        logger->error(std::string("Handler function error:"), e);
+                        logger->error(std::string("Handler std::function error:"), e);
                     }
                     documentTestResult(std::string("HELLO_WORLD action handler"), callbackResponse, error);
                 }

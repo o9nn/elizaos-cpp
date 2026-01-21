@@ -17,12 +17,12 @@ void Main(void)
                 object::pair{std::string("managerAuthority"), std::make_shared<anchor->web3->PublicKey>(std::string("autozgbVb1EvhrTZTkpLekJRN4sN5hhGYpMMiY9kQ5S"))}
             };
             auto [vault] = anchor->web3->PublicKey->findProgramAddressSync(array<std::shared_ptr<Buffer>>{ Buffer::from(vaultConfigSeed) }, program->programId);
-            any vaultConfigInfo;
+            std::any vaultConfigInfo;
             try
             {
                 vaultConfigInfo = std::async([=]() { program->account->vaultConfig->fetch(vault); });
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 std::async([=]() { program->rpc->initialize(vaultConfig, object{
                     object::pair{std::string("accounts"), object{

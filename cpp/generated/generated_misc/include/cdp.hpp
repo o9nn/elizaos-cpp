@@ -24,85 +24,85 @@ class CoinGeckoToken;
 class SearchTokenResponse;
 class CdpService;
 
-extern string NATIVE_TOKEN_ADDRESS;
+extern std::string NATIVE_TOKEN_ADDRESS;
 class Token : public object, public std::enable_shared_from_this<Token> {
 public:
     using std::enable_shared_from_this<Token>::shared_from_this;
-    string symbol;
+    std::string symbol;
 
-    string name;
+    std::string name;
 
-    string balance;
+    std::string balance;
 
-    string balanceFormatted;
+    std::string balanceFormatted;
 
     double usdValue;
 
     double usdPrice;
 
-    any contractAddress;
+    std::any contractAddress;
 
-    string chain;
+    std::string chain;
 
     double decimals;
 
-    string icon;
+    std::string icon;
 };
 
 class NFT : public object, public std::enable_shared_from_this<NFT> {
 public:
     using std::enable_shared_from_this<NFT>::shared_from_this;
-    string chain;
+    std::string chain;
 
-    string contractAddress;
+    std::string contractAddress;
 
-    string tokenId;
+    std::string tokenId;
 
-    string name;
+    std::string name;
 
-    string description;
+    std::string description;
 
-    string image;
+    std::string image;
 
-    string contractName;
+    std::string contractName;
 
-    string tokenType;
+    std::string tokenType;
 
-    string balance;
+    std::string balance;
 };
 
 class Transaction : public object, public std::enable_shared_from_this<Transaction> {
 public:
     using std::enable_shared_from_this<Transaction>::shared_from_this;
-    string chain;
+    std::string chain;
 
-    string hash;
+    std::string hash;
 
-    string from;
+    std::string from;
 
-    string to;
+    std::string to;
 
-    string value;
+    std::string value;
 
-    string asset;
+    std::string asset;
 
-    string category;
+    std::string category;
 
     double timestamp;
 
-    string blockNum;
+    std::string blockNum;
 
-    string explorerUrl;
+    std::string explorerUrl;
 
-    any direction;
+    std::any direction;
 };
 
 class WalletInfo : public object, public std::enable_shared_from_this<WalletInfo> {
 public:
     using std::enable_shared_from_this<WalletInfo>::shared_from_this;
-    string address;
+    std::string address;
 
-    string accountName;
+    std::string accountName;
 };
 
 class TokensResponse : public object, public std::enable_shared_from_this<TokensResponse> {
@@ -112,7 +112,7 @@ public:
 
     double totalUsdValue;
 
-    string address;
+    std::string address;
 
     boolean fromCache;
 
@@ -124,7 +124,7 @@ public:
     using std::enable_shared_from_this<NFTsResponse>::shared_from_this;
     array<std::shared_ptr<NFT>> nfts;
 
-    string address;
+    std::string address;
 
     boolean fromCache;
 
@@ -136,75 +136,75 @@ public:
     using std::enable_shared_from_this<TransactionHistoryResponse>::shared_from_this;
     array<std::shared_ptr<Transaction>> transactions;
 
-    string address;
+    std::string address;
 };
 
 class SendTokenRequest : public object, public std::enable_shared_from_this<SendTokenRequest> {
 public:
     using std::enable_shared_from_this<SendTokenRequest>::shared_from_this;
-    string network;
+    std::string network;
 
-    string to;
+    std::string to;
 
-    string token;
+    std::string token;
 
-    string amount;
+    std::string amount;
 };
 
 class SendTokenResponse : public object, public std::enable_shared_from_this<SendTokenResponse> {
 public:
     using std::enable_shared_from_this<SendTokenResponse>::shared_from_this;
-    string transactionHash;
+    std::string transactionHash;
 
-    string from;
+    std::string from;
 
-    string to;
+    std::string to;
 
-    string amount;
+    std::string amount;
 
-    string token;
+    std::string token;
 
-    string network;
+    std::string network;
 };
 
 class SendNFTRequest : public object, public std::enable_shared_from_this<SendNFTRequest> {
 public:
     using std::enable_shared_from_this<SendNFTRequest>::shared_from_this;
-    string network;
+    std::string network;
 
-    string to;
+    std::string to;
 
-    string contractAddress;
+    std::string contractAddress;
 
-    string tokenId;
+    std::string tokenId;
 };
 
 class SendNFTResponse : public object, public std::enable_shared_from_this<SendNFTResponse> {
 public:
     using std::enable_shared_from_this<SendNFTResponse>::shared_from_this;
-    string transactionHash;
+    std::string transactionHash;
 
-    string from;
+    std::string from;
 
-    string to;
+    std::string to;
 
-    string contractAddress;
+    std::string contractAddress;
 
-    string tokenId;
+    std::string tokenId;
 
-    string network;
+    std::string network;
 };
 
 class SwapPriceRequest : public object, public std::enable_shared_from_this<SwapPriceRequest> {
 public:
     using std::enable_shared_from_this<SwapPriceRequest>::shared_from_this;
-    string network;
+    std::string network;
 
-    string fromToken;
+    std::string fromToken;
 
-    string toToken;
+    std::string toToken;
 
-    string fromAmount;
+    std::string fromAmount;
 };
 
 class SwapPriceResponse : public object, public std::enable_shared_from_this<SwapPriceResponse> {
@@ -212,29 +212,29 @@ public:
     using std::enable_shared_from_this<SwapPriceResponse>::shared_from_this;
     boolean liquidityAvailable;
 
-    string toAmount;
+    std::string toAmount;
 
-    string minToAmount;
+    std::string minToAmount;
 
-    string fromAmount;
+    std::string fromAmount;
 
-    string fromToken;
+    std::string fromToken;
 
-    string toToken;
+    std::string toToken;
 
-    string network;
+    std::string network;
 };
 
 class SwapRequest : public object, public std::enable_shared_from_this<SwapRequest> {
 public:
     using std::enable_shared_from_this<SwapRequest>::shared_from_this;
-    string network;
+    std::string network;
 
-    string fromToken;
+    std::string fromToken;
 
-    string toToken;
+    std::string toToken;
 
-    string fromAmount;
+    std::string fromAmount;
 
     double slippageBps;
 };
@@ -242,57 +242,57 @@ public:
 class SwapResponse : public object, public std::enable_shared_from_this<SwapResponse> {
 public:
     using std::enable_shared_from_this<SwapResponse>::shared_from_this;
-    string transactionHash;
+    std::string transactionHash;
 
-    string from;
+    std::string from;
 
-    string fromToken;
+    std::string fromToken;
 
-    string toToken;
+    std::string toToken;
 
-    string fromAmount;
+    std::string fromAmount;
 
-    string toAmount;
+    std::string toAmount;
 
-    string network;
+    std::string network;
 
-    string method;
+    std::string method;
 };
 
 class SearchTokenRequest : public object, public std::enable_shared_from_this<SearchTokenRequest> {
 public:
     using std::enable_shared_from_this<SearchTokenRequest>::shared_from_this;
-    string query;
+    std::string query;
 
-    string chain;
+    std::string chain;
 };
 
 class CoinGeckoToken : public object, public std::enable_shared_from_this<CoinGeckoToken> {
 public:
     using std::enable_shared_from_this<CoinGeckoToken>::shared_from_this;
-    string id;
+    std::string id;
 
-    string symbol;
+    std::string symbol;
 
-    string name;
+    std::string name;
 
-    any contractAddress;
+    std::any contractAddress;
 
-    any chain;
+    std::any chain;
 
-    any icon;
+    std::any icon;
 
-    any price;
+    std::any price;
 
-    Record<string, string> platforms;
+    Record<std::string, string> platforms;
 
     double decimals;
 
-    any marketCap;
+    std::any marketCap;
 
-    any volume24h;
+    std::any volume24h;
 
-    any priceChange24h;
+    std::any priceChange24h;
 };
 
 class SearchTokenResponse : public object, public std::enable_shared_from_this<SearchTokenResponse> {
@@ -304,11 +304,11 @@ public:
 class CdpService : public BaseApiClient, public std::enable_shared_from_this<CdpService> {
 public:
     using std::enable_shared_from_this<CdpService>::shared_from_this;
-    virtual std::shared_ptr<Promise<std::shared_ptr<WalletInfo>>> getOrCreateWallet(string name);
-    virtual std::shared_ptr<Promise<std::shared_ptr<TokensResponse>>> getTokens(string chain = undefined);
-    virtual std::shared_ptr<Promise<std::shared_ptr<TokensResponse>>> syncTokens(string chain = undefined);
-    virtual std::shared_ptr<Promise<std::shared_ptr<NFTsResponse>>> getNFTs(string chain = undefined);
-    virtual std::shared_ptr<Promise<std::shared_ptr<NFTsResponse>>> syncNFTs(string chain = undefined);
+    virtual std::shared_ptr<Promise<std::shared_ptr<WalletInfo>>> getOrCreateWallet(std::string name);
+    virtual std::shared_ptr<Promise<std::shared_ptr<TokensResponse>>> getTokens(std::string chain = undefined);
+    virtual std::shared_ptr<Promise<std::shared_ptr<TokensResponse>>> syncTokens(std::string chain = undefined);
+    virtual std::shared_ptr<Promise<std::shared_ptr<NFTsResponse>>> getNFTs(std::string chain = undefined);
+    virtual std::shared_ptr<Promise<std::shared_ptr<NFTsResponse>>> syncNFTs(std::string chain = undefined);
     virtual std::shared_ptr<Promise<std::shared_ptr<TransactionHistoryResponse>>> getHistory();
     virtual std::shared_ptr<Promise<std::shared_ptr<SendTokenResponse>>> sendToken(std::shared_ptr<SendTokenRequest> request);
     virtual std::shared_ptr<Promise<std::shared_ptr<SendNFTResponse>>> sendNFT(std::shared_ptr<SendNFTRequest> request);

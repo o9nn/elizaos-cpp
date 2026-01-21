@@ -18,10 +18,10 @@ namespace elizaos {
 
 
 
-// Helper function to format market cap values
+// Helper std::function to format market cap values
 std::string formatMarketCap(double value);
 
-// Helper function to convert natural date to dd-mm-yyyy format
+// Helper std::function to convert natural date to dd-mm-yyyy format
 std::string parseDateToApiFormat(const std::string& dateStr);
 
       // Read parameters from state
@@ -32,7 +32,7 @@ std::string parseDateToApiFormat(const std::string& dateStr);
 
       // Parse date to API format (dd-mm-yyyy)
 
-      // Extract optional chain parameter (default to base for contract addresses)
+      // Extract std::optional chain parameter (default to base for contract addresses)
 
       // Store input parameters for return
 

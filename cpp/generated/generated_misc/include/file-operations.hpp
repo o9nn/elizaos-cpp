@@ -11,10 +11,10 @@ std::shared_ptr<Promise<string>> getGlobalEnvPath();
 
 std::shared_ptr<Promise<any>> getLocalEnvPath();
 
-std::shared_ptr<Promise<EnvVars>> parseEnvFile(string filePath);
+std::shared_ptr<Promise<EnvVars>> parseEnvFile(std::string filePath);
 
-std::shared_ptr<Promise<void>> writeEnvFile(string filePath, EnvVars envVars);
+std::shared_ptr<Promise<void>> writeEnvFile(std::string filePath, EnvVars envVars);
 
-std::shared_ptr<Promise<boolean>> resetEnvFile(string filePath);
+std::shared_ptr<Promise<boolean>> resetEnvFile(std::string filePath);
 
 #endif

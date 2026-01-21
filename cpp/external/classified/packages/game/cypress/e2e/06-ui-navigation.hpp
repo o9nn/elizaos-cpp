@@ -131,7 +131,7 @@ namespace elizaos {
 
       // Click through tabs quickly to catch loading states
 
-        // Look for any loading indicators
+        // Look for std::any loading indicators
 
 // UI Summary Test
     // Verify tabs navigation

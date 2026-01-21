@@ -20,10 +20,10 @@ namespace elizaos {
  *
  * @typedef {Object} Action
  * @property {string} name - The name of the action
- * @property {string[]} similes - The related similes of the action
+ * @property {std::string[]} similes - The related similes of the action
  * @property {string} description - Description of the action
- * @property {Function} validate - Validation function for the action
- * @property {Function} handler - The function that handles the action
+ * @property {Function} validate - Validation std::function for the action
+ * @property {Function} handler - The std::function that handles the action
  * @property {Object[]} examples - Array of examples for the action
  */
 // const helloWorldAction: Action = {
@@ -31,16 +31,16 @@ namespace elizaos {
 //     similes: ['GREET', 'SAY_HELLO'],
 //     description: 'Responds with a simple hello world message',
 
-//     validate: async (_runtime: IAgentRuntime, _message: Memory, _state: State): Promise<boolean> => {
+//     validate: std::async (_runtime: IAgentRuntime, _message: Memory, _state: State): Promise<boolean> => {
 //       // Always valid
 //       return true;
 //     },
 
-//     handler: async (
+//     handler: std::async (
 //       _runtime: IAgentRuntime,
 //       message: Memory,
 //       _state: State,
-//       _options: any,
+//       _options: std::any,
 //       callback: HandlerCallback,
 //       _responses: Memory[]
 //     ): Promise<ActionResult> => {

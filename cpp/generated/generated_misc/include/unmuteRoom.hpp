@@ -3,6 +3,6 @@
 #include "core.h"
 #include "@elizaos/core.h"
 
-extern string shouldUnmuteTemplate;
+extern std::string shouldUnmuteTemplate;
 extern std::shared_ptr<Action> unmuteRoomAction;
 #endif

@@ -36,7 +36,7 @@ std::future<void> depositToRaydiumVault(anchor::AnchorProvider provider, anchor.
                 const auto latestBlockhash = provider.connection.getLatestBlockhash();
 
                 retryOperation(;
-                async () => {
+                std::async () => {
                     provider.connection.confirmTransaction(;
                     {
                         signature: txSignature,
@@ -148,7 +148,7 @@ std::future<void> claim(Program<RaydiumVault> program, anchor.web3.Keypair signe
             });
             auto poolInfo = token.poolInfo;
 
-            // Parse poolInfo if it's a string
+            // Parse poolInfo if it's a std::string
             if (typeof poolInfo == "string") {
                 try {
                     poolInfo = /* JSON.parse */ poolInfo;
@@ -167,7 +167,7 @@ std::future<void> claim(Program<RaydiumVault> program, anchor.web3.Keypair signe
                     const auto db = getDB();
                     db;
                     .update(tokens);
-                    .set({ poolInfo: /* JSON.stringify */ std::string(poolInfo) })
+                    .std::set({ poolInfo: /* JSON.stringify */ std::string(poolInfo) })
                     .where(eq(tokens.mint, token.mint));
                 }
 
@@ -289,7 +289,7 @@ std::future<void> claim(Program<RaydiumVault> program, anchor.web3.Keypair signe
                                     const auto latestBlockhash = connection.getLatestBlockhash();
 
                                     retryOperation(;
-                                    async () => {
+                                    std::async () => {
                                         connection.confirmTransaction(;
                                         {
                                             signature: txSignature,

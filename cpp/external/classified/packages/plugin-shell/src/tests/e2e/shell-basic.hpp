@@ -23,7 +23,7 @@ class ShellBasicE2ETestSuite implements TestSuite {
   tests = [
     {
       name: 'Should execute simple echo command',
-      fn: async (runtime: IAgentRuntime) => {
+      fn: std::async (runtime: IAgentRuntime) => {
         console.log('Testing simple echo command execution...');
 
         // Create a test message
@@ -38,7 +38,7 @@ class ShellBasicE2ETestSuite implements TestSuite {
         };
 
         let callbackCalled = false;
-        let callbackResponse: any = null;
+        let callbackResponse: std::any = null;
 
         const state: State = { values: {}, data: {}, text: '' };
         await runShellCommandAction.handler(
@@ -46,7 +46,7 @@ class ShellBasicE2ETestSuite implements TestSuite {
           message,
           state,
           {},
-          async (response) => {
+          std::async (response) => {
             callbackCalled = true;
             callbackResponse = response;
             return [];

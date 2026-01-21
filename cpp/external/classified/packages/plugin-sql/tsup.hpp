@@ -16,6 +16,6 @@ namespace elizaos {
 
 
 
-  // Improve source map configuration
+  // Improve source std::map configuration
 
 } // namespace elizaos

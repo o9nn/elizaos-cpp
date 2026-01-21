@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-bootstrap/actions/choice.h"
 
-string optionExtractionTemplate = std::string("# Task: Extract selected task and option from user message\
+std::string optionExtractionTemplate = std::string("# Task: Extract selected task and option from user message\
 \
 # Recent Messages:\
 {{recentMessages}}\
@@ -23,7 +23,7 @@ Available options:\
 \
 Return an XML response like this:\
 <response>\
-  <taskId>string | null</taskId>\
+  <taskId>std::string | null</taskId>\
   <selectedOption>OPTION_NAME | null</selectedOption>\
 </response>\
 \
@@ -67,7 +67,7 @@ std::shared_ptr<Action> choiceAction = object{
             if (!pendingTasks->length) {
                 logger->warn(std::string("[choiceAction] No pending tasks found in handler, though validation passed."));
                 std::async([=]() { callback(object{
-                    object::pair{std::string("text"), std::string("I don't see any pending choices right now.")}, 
+                    object::pair{std::string("text"), std::string("I don't see std::any pending choices right now.")}, 
                     object::pair{std::string("actions"), array<string>{ std::string("NONE") }}, 
                     object::pair{std::string("source"), message->content->source}
                 }); });
@@ -94,7 +94,7 @@ std::shared_ptr<Action> choiceAction = object{
             if (tasksWithOptions->length == 1) {
                 auto singleTask = const_(tasksWithOptions)[0];
                 targetTaskFullId = singleTask->id;
-                auto availableOptions = (OR(((as<array<any>>(singleTask->metadata->options))), (array<any>())))->map([=](auto opt) mutable
+                auto availableOptions = (OR(((as<array<any>>(singleTask->metadata->options))), (array<any>())))->std::map([=](auto opt) mutable
                 {
                     return (type_of(opt) == std::string("string")) ? object{
                         object::pair{std::string("name"), opt}, 
@@ -115,7 +115,7 @@ std::shared_ptr<Action> choiceAction = object{
 ") + message->content->text + std::string("\
 \
 ## Available Options for this task:\
-") + availableOptions->map([=](auto opt) mutable
+") + availableOptions->std::map([=](auto opt) mutable
                 {
                     return std::string("- ") + opt["name"] + std::string(": ") + opt["description"] + string_empty;
                 }
@@ -146,7 +146,7 @@ Your response MUST ONLY include the <response> XML block.");
                     logger->warn(std::string("[choiceAction] Failed to extract option even for single task."));
                 }
             } else {
-                auto formattedTasks = tasksWithOptions->map([=](auto task) mutable
+                auto formattedTasks = tasksWithOptions->std::map([=](auto task) mutable
                 {
                     try
                     {
@@ -156,17 +156,17 @@ Your response MUST ONLY include the <response> XML block.");
                             object::pair{std::string("taskId"), shortId}, 
                             object::pair{std::string("fullId"), task["id"]}, 
                             object::pair{std::string("name"), task["name"]}, 
-                            object::pair{std::string("options"), optionsMeta->map([=](auto opt) mutable
+                            object::pair{std::string("options"), optionsMeta->std::map([=](auto opt) mutable
                             {
                                 return (object{
-                                    object::pair{std::string("name"), (type_of(opt) == std::string("string")) ? any(opt) : any(opt["name"])}, 
-                                    object::pair{std::string("description"), (type_of(opt) == std::string("string")) ? any(opt) : any(OR((opt["description"]), (opt["name"])))}
+                                    object::pair{std::string("name"), (type_of(opt) == std::string("string")) ? std::any(opt) : std::any(opt["name"])}, 
+                                    object::pair{std::string("description"), (type_of(opt) == std::string("string")) ? std::any(opt) : std::any(OR((opt["description"]), (opt["name"])))}
                                 });
                             }
                             )}
                         };
                     }
-                    catch (const any& mapError)
+                    catch (const std::any& mapError)
                     {
                         logger->error(std::string("[choiceAction] Error formatting task ") + task["id"] + std::string(":"), mapError);
                         return nullptr;
@@ -192,7 +192,7 @@ Your response MUST ONLY include the <response> XML block.");
                 auto parsed = parseKeyValueXml(result);
                 logger->debug(std::string("[choiceAction] Multi-task XML Parsing Result:"), parsed);
                 if (AND((AND((parsed), (parsed->taskId))), (parsed->selectedOption))) {
-                    auto taskMap = std::make_shared<Map>(formattedTasks->map([=](auto task) mutable
+                    auto taskMap = std::make_shared<Map>(formattedTasks->std::map([=](auto task) mutable
                     {
                         return array<any>{ task["taskId"], task };
                     }
@@ -249,10 +249,10 @@ Your response MUST ONLY include the <response> XML block.");
                 }
                 auto handlerWorkerName = string_empty;
                 static switch_type __switch12240_13500 = {
-                    { any(std::string("CREATE_TODO")), 1 },
-                    { any(std::string("UPDATE_TODO")), 2 },
-                    { any(std::string("CANCEL_TODO")), 3 },
-                    { any(std::string("TWITTER_POST")), 4 }
+                    { std::any(std::string("CREATE_TODO")), 1 },
+                    { std::any(std::string("UPDATE_TODO")), 2 },
+                    { std::any(std::string("CANCEL_TODO")), 3 },
+                    { std::any(std::string("TWITTER_POST")), 4 }
                 };
                 switch (__switch12240_13500[originalAction])
                 {
@@ -302,7 +302,7 @@ Your response MUST ONLY include the <response> XML block.");
                         object::pair{std::string("source"), message->content->source}
                     }); });
                 }
-                catch (const any& updateError)
+                catch (const std::any& updateError)
                 {
                     logger->error(std::string("[choiceAction] Failed to update task ") + selectedTask->id + std::string(" to trigger handler:"), updateError);
                     std::async([=]() { callback(object{
@@ -321,13 +321,13 @@ Your response MUST ONLY include the <response> XML block.");
                     auto shortId = task["id"]["substring"](0, 8);
                     optionsText += std::string("**") + task["name"] + std::string("** (ID: ") + shortId + std::string("):\
 ");
-                    auto options = (OR(((as<array<any>>(task["metadata"]["options"]))), (array<any>())))->map([=](auto opt) mutable
+                    auto options = (OR(((as<array<any>>(task["metadata"]["options"]))), (array<any>())))->std::map([=](auto opt) mutable
                     {
-                        return ((type_of(opt) == std::string("string")) ? any(opt) : any(opt["name"]));
+                        return ((type_of(opt) == std::string("string")) ? std::any(opt) : std::any(opt["name"]));
                     }
                     );
                     options->push(std::string("ABORT"));
-                    optionsText += options->map([=](auto opt) mutable
+                    optionsText += options->std::map([=](auto opt) mutable
                     {
                         return std::string("- ") + opt + string_empty;
                     }
@@ -345,7 +345,7 @@ Your response MUST ONLY include the <response> XML block.");
                 }); });
             }
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("Error in select option handler:"), error);
             std::async([=]() { callback(object{

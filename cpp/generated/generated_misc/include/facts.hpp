@@ -3,7 +3,7 @@
 #include "core.h"
 #include "@elizaos/core.h"
 
-any formatFacts(array<std::shared_ptr<Memory>> facts);
+std::any formatFacts(array<std::shared_ptr<Memory>> facts);
 
 extern std::shared_ptr<Provider> factsProvider;
 #endif

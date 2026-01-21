@@ -37,7 +37,7 @@ std::shared_ptr<Action> getYieldRatesAction = object{
         {
             auto svc = as<any>(runtime->getService(DefiLlamaService::serviceType));
             if (!svc) {
-                throw any(std::make_shared<Error>(std::string("DefiLlamaService not available")));
+                throw std::any(std::make_shared<Error>(std::string("DefiLlamaService not available")));
             }
             auto composedState = std::async([=]() { runtime->composeState(message, array<string>{ std::string("ACTION_STATE") }, true); });
             auto params = OR((composedState->data->actionParams), (object{}));
@@ -48,7 +48,7 @@ std::shared_ptr<Action> getYieldRatesAction = object{
             if (protocol) searchCriteria->push(std::string("protocol: ") + protocol + string_empty);
             if (token) searchCriteria->push(std::string("token: ") + token + string_empty);
             if (chain) searchCriteria->push(std::string("chain: ") + chain + string_empty);
-            auto searchDesc = (searchCriteria->get_length() > 0) ? any(searchCriteria->join(std::string(", "))) : any(std::string("all yields"));
+            auto searchDesc = (searchCriteria->get_length() > 0) ? std::any(searchCriteria->join(std::string(", "))) : std::any(std::string("all yields"));
             logger->info(std::string("[GET_YIELD_RATES] Searching for yields: ") + searchDesc + string_empty);
             auto inputParams = object{
                 object::pair{std::string("protocol"), std::string("protocol")}, 
@@ -81,7 +81,7 @@ std::shared_ptr<Action> getYieldRatesAction = object{
                 }
                 return errorResult;
             }
-            auto formattedResults = results->map([=](auto pool) mutable
+            auto formattedResults = results->std::map([=](auto pool) mutable
             {
                 return (object{
                     object::pair{std::string("protocol"), pool["project"]}, 
@@ -117,7 +117,7 @@ std::shared_ptr<Action> getYieldRatesAction = object{
                 object::pair{std::string("input"), inputParams}
             });
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             auto msg = (is<Error>(error)) ? error->message : String(error);
             logger->error(std::string("[GET_YIELD_RATES] Action failed: ") + msg + string_empty);

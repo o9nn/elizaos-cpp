@@ -17,7 +17,7 @@ namespace elizaos {
 /**
  * Define the configuration schema for the plugin with the following properties:
  *
- * @param {string} EXAMPLE_PLUGIN_VARIABLE - The name of the plugin (min length of 1, optional)
+ * @param {string} EXAMPLE_PLUGIN_VARIABLE - The name of the plugin (min length of 1, std::optional)
  * @returns {object} - The configured schema object
  */
 
@@ -30,10 +30,10 @@ namespace elizaos {
  *
  * @typedef {Object} Action
  * @property {string} name - The name of the action
- * @property {string[]} similes - The related similes of the action
+ * @property {std::string[]} similes - The related similes of the action
  * @property {string} description - Description of the action
- * @property {Function} validate - Validation function for the action
- * @property {Function} handler - The function that handles the action
+ * @property {Function} validate - Validation std::function for the action
+ * @property {Function} handler - The std::function that handles the action
  * @property {Object[]} examples - Array of examples for the action
  */
 

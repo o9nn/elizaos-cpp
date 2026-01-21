@@ -12,32 +12,32 @@
 class ISellSignalOutput;
 class SellSignal;
 
-extern string rolePrompt;
-extern string template;
+extern std::string rolePrompt;
+extern std::string template;
 class ISellSignalOutput : public object, public std::enable_shared_from_this<ISellSignalOutput> {
 public:
     using std::enable_shared_from_this<ISellSignalOutput>::shared_from_this;
-    string recommended_sell;
+    std::string recommended_sell;
 
-    string recommend_sell_address;
+    std::string recommend_sell_address;
 
     double marketcap;
 
-    string reason;
+    std::string reason;
 
-    string sell_amount;
+    std::string sell_amount;
 };
 
 class SellSignal : public object, public std::enable_shared_from_this<SellSignal> {
 public:
     using std::enable_shared_from_this<SellSignal>::shared_from_this;
-    string apiKey;
+    std::string apiKey;
 
     std::shared_ptr<IAgentRuntime> runtime;
 
     SellSignal(std::shared_ptr<IAgentRuntime> runtime);
     virtual std::shared_ptr<Promise<boolean>> generateSignal();
-    virtual any getBalance();
+    virtual std::any getBalance();
 };
 
 using _default = SellSignal;

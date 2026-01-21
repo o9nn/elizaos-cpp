@@ -27,7 +27,7 @@ struct Token {
     std::string balanceFormatted;
     number | null usdValue;
     number | null usdPrice;
-    string | null contractAddress;
+    std::string | null contractAddress;
     std::string chain;
     double decimals;
     std::optional<std::string> icon;

@@ -57,7 +57,7 @@ struct WebSocketOutgoingMessage {
 
 class WebSocketRouter {
   private agents: Map<UUID, IAgentRuntime>;
-  private connections: Map<WebSocket, { agentId?: UUID; channelId?: string }>;
+  private connections: Map<WebSocket, { agentId?: UUID; channelId?: std::string }>;
 
     // Initialize connection metadata
 
@@ -75,7 +75,7 @@ class WebSocketRouter {
 
       // Create a message to route through the server's message ingestion system
 
-      // Convert channel ID to UUID (use existing string or generate new UUID)
+      // Convert channel ID to UUID (use existing std::string or generate new UUID)
 
       // Create message in the database first
 

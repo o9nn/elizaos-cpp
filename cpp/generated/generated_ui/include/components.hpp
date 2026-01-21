@@ -6,7 +6,7 @@
 #include "./runtime.h"
 #include "./state.h"
 
-typedef std::function<std::shared_ptr<Promise<array<std::shared_ptr<Memory>>>>(std::shared_ptr<Content>, any)> HandlerCallback;
+typedef std::function<std::shared_ptr<Promise<array<std::shared_ptr<Memory>>>>(std::shared_ptr<Content>, std::any)> HandlerCallback;
 
 typedef std::function<std::shared_ptr<Promise<any>>(std::shared_ptr<IAgentRuntime>, std::shared_ptr<Memory>, std::shared_ptr<State>, object, HandlerCallback, array<std::shared_ptr<Memory>>)> Handler;
 
@@ -22,7 +22,7 @@ class Provider;
 class ActionExample : public object, public std::enable_shared_from_this<ActionExample> {
 public:
     using std::enable_shared_from_this<ActionExample>::shared_from_this;
-    string name;
+    std::string name;
 
     std::shared_ptr<Content> content;
 };
@@ -32,13 +32,13 @@ public:
     using std::enable_shared_from_this<Action>::shared_from_this;
     array<string> similes;
 
-    string description;
+    std::string description;
 
     array<array<std::shared_ptr<ActionExample>>> examples;
 
     Handler handler;
 
-    string name;
+    std::string name;
 
     Validator validate;
 };
@@ -46,11 +46,11 @@ public:
 class EvaluationExample : public object, public std::enable_shared_from_this<EvaluationExample> {
 public:
     using std::enable_shared_from_this<EvaluationExample>::shared_from_this;
-    string prompt;
+    std::string prompt;
 
     array<std::shared_ptr<ActionExample>> messages;
 
-    string outcome;
+    std::string outcome;
 };
 
 class Evaluator : public object, public std::enable_shared_from_this<Evaluator> {
@@ -58,7 +58,7 @@ public:
     using std::enable_shared_from_this<Evaluator>::shared_from_this;
     boolean alwaysRun;
 
-    string description;
+    std::string description;
 
     array<string> similes;
 
@@ -66,7 +66,7 @@ public:
 
     Handler handler;
 
-    string name;
+    std::string name;
 
     Validator validate;
 };
@@ -78,15 +78,15 @@ public:
 
     object data;
 
-    string text;
+    std::string text;
 };
 
 class Provider : public object, public std::enable_shared_from_this<Provider> {
 public:
     using std::enable_shared_from_this<Provider>::shared_from_this;
-    string name;
+    std::string name;
 
-    string description;
+    std::string description;
 
     boolean dynamic;
 

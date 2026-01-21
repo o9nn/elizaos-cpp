@@ -18,7 +18,7 @@ void SwapModalContent(auto userId) {
         const auto [toAmount, setToAmount] = useState("");
         const auto [slippage, setSlippage] = useState("1"); // 1% default;
         const auto [isLoadingPrice, setIsLoadingPrice] = useState(false);
-        const auto [warning, setWarning] = useState<string | nullptr>(nullptr);
+        const auto [warning, setWarning] = useState<std::string | nullptr>(nullptr);
         const auto [isFromDropdownOpen, setIsFromDropdownOpen] = useState(false);
         const auto [isToDropdownOpen, setIsToDropdownOpen] = useState(false);
         const auto [fromSearchQuery, setFromSearchQuery] = useState("");
@@ -51,7 +51,7 @@ void SwapModalContent(auto userId) {
                 };
 
                 // Helper: Filter tokens by chain and exclude a specific token
-                const auto filterTokensByChainAndExclude = (tokenList: Token[], chain: string, excludeToken: Token | nullptr): Token[] => {;
+                const auto filterTokensByChainAndExclude = (tokenList: Token[], chain: std::string, excludeToken: Token | nullptr): Token[] => {;
                     return tokenList.filter(t => {;
                         // If chain is provided and not empty, filter by chain
                         if (chain && t.chain != chain) return false;
@@ -62,7 +62,7 @@ void SwapModalContent(auto userId) {
                         };
 
                         // Filter tokens based on search query
-                        const auto filterTokens = (tokenList: Token[], query: string): Token[] => {;
+                        const auto filterTokens = (tokenList: Token[], query: std::string): Token[] => {;
                             if (!query.trim()) return tokenList;
 
                             const auto lowerQuery = query.toLowerCase().trim();
@@ -84,7 +84,7 @@ void SwapModalContent(auto userId) {
                                     const auto existingAddresses = new Set(;
                                     walletTokens;
                                     .filter(t => t.contractAddress);
-                                    .map(t => t.contractAddress!.toLowerCase());
+                                    .std::map(t => t.contractAddress!.toLowerCase());
                                     );
 
                                     // Add CoinGecko tokens that aren't already in wallet
@@ -98,7 +98,7 @@ void SwapModalContent(auto userId) {
                                     };
 
                                     // Helper: Convert CoinGecko token to Token interface
-                                    const auto convertCoinGeckoToken = (t: any, chain: string): Token => ({;
+                                    const auto convertCoinGeckoToken = (t: std::any, chain: std::string): Token => ({;
                                         symbol: t.symbol,
                                         name: t.name,
                                         balance: "0",
@@ -112,9 +112,9 @@ void SwapModalContent(auto userId) {
                                         isExternal: true,
                                         });
 
-                                        // Helper function to convert amount to base units without scientific notation
-                                        const auto convertToBaseUnits = (amount: string, decimals: number, maxBalance?: string): string => {;
-                                            // Remove any existing decimals and convert to integer string
+                                        // Helper std::function to convert amount to base units without scientific notation
+                                        const auto convertToBaseUnits = (amount: std::string, decimals: number, maxBalance?: std::string): std::string => {;
+                                            // Remove std::any existing decimals and convert to integer std::string
                                             const auto [intPart, decPart = ""] = amount.split(".");
                                             const auto paddedDecPart = decPart.padEnd(decimals, "0").slice(0, decimals);
                                             auto result = intPart + paddedDecPart;
@@ -174,7 +174,7 @@ void SwapModalContent(auto userId) {
                                                                         return;
                                                                     }
 
-                                                                    const auto fetchTopAndTrending = async () => {;
+                                                                    const auto fetchTopAndTrending = std::async () => {;
                                                                         setIsLoadingTopAndTrending(true);
                                                                         try {
                                                                             const auto response = (elizaClient.cdp).getTopAndTrendingTokens({;
@@ -183,12 +183,12 @@ void SwapModalContent(auto userId) {
                                                                                 });
 
                                                                                 const auto top = (response.topTokens || []);
-                                                                                .filter((t: any) => t.contractAddress && t.chain == fromToken.chain)
-                                                                                .map((t: any) => convertCoinGeckoToken(t, fromToken.chain));
+                                                                                .filter((t: std::any) => t.contractAddress && t.chain == fromToken.chain)
+                                                                                .std::map((t: std::any) => convertCoinGeckoToken(t, fromToken.chain));
 
                                                                                 const auto trending = (response.trendingTokens || []);
-                                                                                .filter((t: any) => t.contractAddress && t.chain == fromToken.chain)
-                                                                                .map((t: any) => convertCoinGeckoToken(t, fromToken.chain));
+                                                                                .filter((t: std::any) => t.contractAddress && t.chain == fromToken.chain)
+                                                                                .std::map((t: std::any) => convertCoinGeckoToken(t, fromToken.chain));
 
                                                                                 setTopTokens(top);
                                                                                 setTrendingTokens(trending);
@@ -211,7 +211,7 @@ void SwapModalContent(auto userId) {
                                                                                             return;
                                                                                         }
 
-                                                                                        const auto searchCoinGecko = async () => {;
+                                                                                        const auto searchCoinGecko = std::async () => {;
                                                                                             setIsSearchingTo(true);
                                                                                             try {
                                                                                                 const auto response = (elizaClient.cdp).searchTokens({;
@@ -221,8 +221,8 @@ void SwapModalContent(auto userId) {
 
                                                                                                     // Convert CoinGecko tokens to our Token interface
                                                                                                     const std::vector<Token> externalTokens = response.tokens;
-                                                                                                    .filter((t: any) => t.contractAddress && t.chain && t.chain == fromToken.chain)
-                                                                                                    .map((t: any) => convertCoinGeckoToken(t, fromToken.chain));
+                                                                                                    .filter((t: std::any) => t.contractAddress && t.chain && t.chain == fromToken.chain)
+                                                                                                    .std::map((t: std::any) => convertCoinGeckoToken(t, fromToken.chain));
 
                                                                                                     setToCoinGeckoResults(externalTokens);
                                                                                                     } catch (error) {
@@ -244,14 +244,14 @@ void SwapModalContent(auto userId) {
                                                                                                                 return;
                                                                                                             }
 
-                                                                                                            const auto timeoutId = setTimeout(async () => {;
+                                                                                                            const auto timeoutId = setTimeout(std::async () => {;
                                                                                                                 estimateSwapPrice();
                                                                                                                 }, 500);
 
                                                                                                                 return [&]() { return clearTimeout(timeoutId); };
                                                                                                                 }, [fromToken, toToken, fromAmount]);
 
-                                                                                                                const auto estimateSwapPrice = async () => {;
+                                                                                                                const auto estimateSwapPrice = std::async () => {;
                                                                                                                     if (!fromToken || !toToken || !fromAmount || parseFloat(fromAmount) <= 0) {
                                                                                                                         return;
                                                                                                                     }
@@ -267,7 +267,7 @@ void SwapModalContent(auto userId) {
                                                                                                                     setWarning(nullptr);
 
                                                                                                                     try {
-                                                                                                                        // Ensure fromAmount is a string
+                                                                                                                        // Ensure fromAmount is a std::string
                                                                                                                         const auto amountStr = std::to_string(fromAmount).trim();
                                                                                                                         if (!amountStr || isNaN(parseFloat(amountStr))) {
                                                                                                                             throw std::runtime_error('Invalid amount');
@@ -279,17 +279,17 @@ void SwapModalContent(auto userId) {
                                                                                                                         const auto balanceInBaseUnits = convertToBaseUnits(fromToken.balance, fromToken.decimals);
                                                                                                                         const auto amountInBaseUnits = convertToBaseUnits(amountStr, fromToken.decimals, balanceInBaseUnits);
 
-                                                                                                                        // Ensure amountInBaseUnits is a string (not a number)
+                                                                                                                        // Ensure amountInBaseUnits is a std::string (not a number)
                                                                                                                         const auto amountInBaseUnitsStr = std::to_string(amountInBaseUnits);
 
-                                                                                                                        // Validate it's a valid BigInt string (no decimals, only digits)
+                                                                                                                        // Validate it's a valid BigInt std::string (no decimals, only digits)
                                                                                                                         if (!/^\d+$/.test(amountInBaseUnitsStr)) {
                                                                                                                             throw std::runtime_error(`Invalid base units format: ${amountInBaseUnitsStr}`);
                                                                                                                         }
 
                                                                                                                         // Resolve token addresses - prefer contractAddress, fallback to symbol
                                                                                                                         // For native tokens, use specific symbols (eth, pol, etc.)
-                                                                                                                        auto fromTokenAddress: string;
+                                                                                                                        auto fromTokenAddress: std::string;
                                                                                                                         if (fromToken.contractAddress) {
                                                                                                                             fromTokenAddress = fromToken.contractAddress;
                                                                                                                             } else {
@@ -304,7 +304,7 @@ void SwapModalContent(auto userId) {
                                                                                                                                     fromTokenAddress = nativeTokenMap[fromToken.chain.toLowerCase()] || fromToken.symbol.toLowerCase();
                                                                                                                                 }
 
-                                                                                                                                auto toTokenAddress: string;
+                                                                                                                                auto toTokenAddress: std::string;
                                                                                                                                 if (toToken.contractAddress) {
                                                                                                                                     toTokenAddress = toToken.contractAddress;
                                                                                                                                     } else {
@@ -353,7 +353,7 @@ void SwapModalContent(auto userId) {
                                                                                                                                                             setToAmount("");
                                                                                                                                                             setWarning("Insufficient liquidity for this swap");
                                                                                                                                                         }
-                                                                                                                                                        } catch (err: any) {
+                                                                                                                                                        } catch (err: std::any) {
                                                                                                                                                             std::cerr << "Error estimating swap price:" << err << std::endl;
                                                                                                                                                             const auto errorMessage = err.response.data.message || err.message || "Failed to get swap price";
                                                                                                                                                             setToAmount("");
@@ -363,7 +363,7 @@ void SwapModalContent(auto userId) {
                                                                                                                                                             }
                                                                                                                                                             };
 
-                                                                                                                                                            const auto handleSwap = async () => {;
+                                                                                                                                                            const auto handleSwap = std::async () => {;
                                                                                                                                                                 if (!fromToken || !toToken || !fromAmount || parseFloat(fromAmount) <= 0) {
                                                                                                                                                                     showError("Validation Error", "Please enter a valid amount", modalId);
                                                                                                                                                                     return;
@@ -376,7 +376,7 @@ void SwapModalContent(auto userId) {
                                                                                                                                                                 }
 
                                                                                                                                                                 // Validate amount doesn't exceed balance
-                                                                                                                                                                // Use raw balance (decimal string) and convert both to base units for accurate comparison
+                                                                                                                                                                // Use raw balance (decimal std::string) and convert both to base units for accurate comparison
                                                                                                                                                                 const auto amount = parseFloat(fromAmount);
                                                                                                                                                                 const auto balance = parseFloat(fromToken.balance);
 
@@ -411,7 +411,7 @@ void SwapModalContent(auto userId) {
 
                                                                                                                                                                     // Resolve token addresses - prefer contractAddress, fallback to symbol
                                                                                                                                                                     // For native tokens, use specific symbols (eth, pol, etc.)
-                                                                                                                                                                    auto fromTokenAddress: string;
+                                                                                                                                                                    auto fromTokenAddress: std::string;
                                                                                                                                                                     if (fromToken.contractAddress) {
                                                                                                                                                                         fromTokenAddress = fromToken.contractAddress;
                                                                                                                                                                         } else {
@@ -426,7 +426,7 @@ void SwapModalContent(auto userId) {
                                                                                                                                                                                 fromTokenAddress = nativeTokenMap[fromToken.chain.toLowerCase()] || fromToken.symbol.toLowerCase();
                                                                                                                                                                             }
 
-                                                                                                                                                                            auto toTokenAddress: string;
+                                                                                                                                                                            auto toTokenAddress: std::string;
                                                                                                                                                                             if (toToken.contractAddress) {
                                                                                                                                                                                 toTokenAddress = toToken.contractAddress;
                                                                                                                                                                                 } else {
@@ -470,7 +470,7 @@ void SwapModalContent(auto userId) {
                                                                                                                                                                                             setToAmount("");
                                                                                                                                                                                             }, 500);
 
-                                                                                                                                                                                            } catch (err: any) {
+                                                                                                                                                                                            } catch (err: std::any) {
                                                                                                                                                                                                 std::cerr << "Error executing swap:" << err << std::endl;
                                                                                                                                                                                                 showError("Swap Failed", err.message || "Failed to execute swap. Please try again.", modalId);
                                                                                                                                                                                             }
@@ -488,7 +488,7 @@ void SwapModalContent(auto userId) {
                                                                                                                                                                                                 setToToken(temp);
                                                                                                                                                                                                 setFromAmount("");
                                                                                                                                                                                                 setToAmount("");
-                                                                                                                                                                                                setIsLoadingPrice(false); // Stop any ongoing price calculation;
+                                                                                                                                                                                                setIsLoadingPrice(false); // Stop std::any ongoing price calculation;
                                                                                                                                                                                                 setWarning(nullptr);
                                                                                                                                                                                                 };
 
@@ -579,7 +579,7 @@ void SwapModalContent(auto userId) {
                                                                                                                                                                                                         <button;
                                                                                                                                                                                                     "key={" + token.chain + "-" + std::to_string(token.contractAddress || token.symbol) + "-" + index;
                                                                                                                                                                                                     type="button";
-                                                                                                                                                                                                    onClick={async () => {
+                                                                                                                                                                                                    onClick={std::async () => {
                                                                                                                                                                                                         // If this is an external token without contract address, try to search for it
                                                                                                                                                                                                         auto selectedToken = token;
                                                                                                                                                                                                         if (token.isExternal && !token.contractAddress && token.symbol) {
@@ -589,7 +589,7 @@ void SwapModalContent(auto userId) {
                                                                                                                                                                                                                     chain: token.chain,
                                                                                                                                                                                                                     });
                                                                                                                                                                                                                     const auto foundToken = searchResult.tokens.find(;
-                                                                                                                                                                                                                    [&](t: any) { return t.symbol.toUpperCase() == token.symbol.toUpperCase() && t.chain == token.chain; }
+                                                                                                                                                                                                                    [&](t: std::any) { return t.symbol.toUpperCase() == token.symbol.toUpperCase() && t.chain == token.chain; }
                                                                                                                                                                                                                     );
                                                                                                                                                                                                                     if (foundToken && foundToken.contractAddress) {
                                                                                                                                                                                                                         selectedToken = {
@@ -693,7 +693,7 @@ void SwapModalContent(auto userId) {
                                                                                                                                             if (!toToken) return true;
                                                                                                                                             return !isTokenMatch(token, toToken);
                                                                                                                                             });
-                                                                                                                                            .map((token, index) => {
+                                                                                                                                            .std::map((token, index) => {
                                                                                                                                                 return (;
                                                                                                                                                 <button;
                                                                                                                                             "key={" + token.chain + "-" + std::to_string(token.contractAddress || token.symbol) + "-" + index;
@@ -855,7 +855,7 @@ void SwapModalContent(auto userId) {
         ),
         fromToken.chain,
         fromToken;
-        ).map((token, index) => renderTokenButton(token, index));
+        ).std::map((token, index) => renderTokenButton(token, index));
         ) : (
         // Show sections: Wallet tokens, Top tokens, Trending tokens
         <>;
@@ -871,7 +871,7 @@ void SwapModalContent(auto userId) {
             <div className="px-3 py-2 text-xs font-semibold text-muted-foreground sticky top-0 bg-popover border-b border-border">;
             Your Tokens;
             </div>;
-        {walletTokens.map((token, index) => renderTokenButton(token, index))}
+        {walletTokens.std::map((token, index) => renderTokenButton(token, index))}
         </>;
         );
         })()}
@@ -888,7 +888,7 @@ void SwapModalContent(auto userId) {
             <div className="px-3 py-2 text-xs font-semibold text-muted-foreground sticky top-0 bg-popover border-b border-border">;
             Top by Market Cap;
             </div>;
-        {filteredTopTokens.map((token, index) => renderTokenButton(token, index))}
+        {filteredTopTokens.std::map((token, index) => renderTokenButton(token, index))}
         </>;
         );
         })()}
@@ -905,7 +905,7 @@ void SwapModalContent(auto userId) {
             <div className="px-3 py-2 text-xs font-semibold text-muted-foreground sticky top-0 bg-popover border-b border-border">;
             Trending;
             </div>;
-        {filteredTrendingTokens.map((token, index) => renderTokenButton(token, index))}
+        {filteredTrendingTokens.std::map((token, index) => renderTokenButton(token, index))}
         </>;
         );
         })()}
@@ -970,7 +970,7 @@ void SwapModalContent(auto userId) {
         <div className="space-y-2 mt-2">;
         <label className="text-xs text-muted-foreground">Slippage Tolerance (%)</label>;
         <div className="flex gap-2">;
-        {["0.5", "1", "2"].map((value) => (;
+        {["0.5", "1", "2"].std::map((value) => (;
         <Button;
         key={value}
         onClick={() => setSlippage(value)}

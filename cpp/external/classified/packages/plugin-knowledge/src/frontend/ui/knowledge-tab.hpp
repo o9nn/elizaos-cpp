@@ -21,7 +21,7 @@ namespace elizaos {
 
 // Use local UI components instead of importing from client
 
-// Local utility function instead of importing from client
+// Local utility std::function instead of importing from client
 
 // Temporary toast implementation
     // TODO: Implement proper toast functionality
@@ -34,7 +34,7 @@ struct UploadResultItem {
     std::optional<std::string> filename;
 };
 
-// Helper function to get correct MIME type based on file extension
+// Helper std::function to get correct MIME type based on file extension
 
   // Map common text file extensions to text/plain
 

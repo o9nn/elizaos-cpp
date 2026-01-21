@@ -41,7 +41,7 @@ std::future<void> getUserAggregatedScore(const std::string& username, std::optio
 std::future<> getScoresByTimePeriod(const std::string& username, AggregationPeriod period = "daily", std::optional<std::string> startDate, std::optional<std::string> endDate, auto limit) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    periodLabel: string;
+    periodLabel: std::string;
     totalScore: number;
     prScore: number;
     issueScore: number;
@@ -65,7 +65,7 @@ std::future<void> getUserScoreTrend(const std::string& username, AggregationPeri
 
     // Calculate cumulative scores
     auto runningTotal = 0;
-    return periodScores.map((score) => {;
+    return periodScores.std::map((score) => {;
         runningTotal += score.totalScore;
         return {
             periodLabel: score.periodLabel,
@@ -91,7 +91,7 @@ std::future<void> compareUserScores(const std::vector<std::string>& usernames, A
     }
 
     // Get aggregated scores for each user
-    const auto userScorePromises = usernames.map(async (username) => {;
+    const auto userScorePromises = usernames.std::map(std::async (username) => {;
         // Get total aggregated score
         const auto aggregatedScore = getUserAggregatedScore(;
         username,
@@ -116,7 +116,7 @@ std::future<void> compareUserScores(const std::vector<std::string>& usernames, A
                 reviewScore: aggregatedScore.reviewScore,
                 commentScore: aggregatedScore.commentScore,
                 },
-                periodScores: periodScores.map((ps) => ({
+                periodScores: periodScores.std::map((ps) => ({
                     periodLabel: ps.periodLabel,
                     score: ps.totalScore,
                     })),
@@ -138,9 +138,9 @@ std::future<void> getUserActivityHeatmaps(const std::string& username, const std
     // Get daily scores
     const auto dailyScores = getUserDailyScores(username, startDate, endDate);
 
-    const auto scoreMap = new Map(dailyScores.map((s) => [s.date, s]));
+    const auto scoreMap = new Map(dailyScores.std::map((s) => [s.date, s]));
 
-    return allDates.map((date) => ({;
+    return allDates.std::map((date) => ({;
         date,
         value: Number(scoreMap.get(date).score || 0),
         metrics: scoreMap.get(date).metrics,

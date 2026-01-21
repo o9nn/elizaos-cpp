@@ -22,7 +22,7 @@ std::future<void> handler(NextApiRequest req, NextApiResponse res) {
             const auto scores = Object.entries(mockTrustScores).reduce((acc, [address, amount]) => {;
                 acc[address] = calculateTrustScore(amount).score;
                 return acc;
-                }, {}<string, number>);
+                }, {}<std::string, number>);
 
                 return res.status(200).json(scores);
                 } catch (error) {

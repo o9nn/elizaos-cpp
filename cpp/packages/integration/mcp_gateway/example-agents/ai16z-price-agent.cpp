@@ -48,7 +48,7 @@ std::future<void> main() {
                 const auto toolsResult = mcpClient.listTools();
                 const auto availableTools = toolsResult.tools;
 
-                std::cout << "[Agent] Available MCP tools:" << availableTools.map((t: { name: string }) => t.name) << std::endl;
+                std::cout << "[Agent] Available MCP tools:" << availableTools.std::map((t: { name: std::string }) => t.name) << std::endl;
 
                 // Initialize Anthropic client with x402 payment support
                 const auto anthropic = new Anthropic({;
@@ -59,7 +59,7 @@ std::future<void> main() {
                     // Convert MCP tools to Anthropic tool format
                     // Note: Anthropic requires tool names to match ^[a-zA-Z0-9_-]{1,128}$
                     // So we transform "crypto:get_price" to "crypto_get_price"
-                    const std::vector<Anthropic::Tool> tools = availableTools.map((tool: { name: string; description?: string; inputSchema: Record<string, unknown> }) => ({;
+                    const std::vector<Anthropic::Tool> tools = availableTools.std::map((tool: { name: std::string; description?: std::string; inputSchema: Record<std::string, unknown> }) => ({;
                         name: tool.name.replace(/:/g, "_"),
                         description: tool.description || "",
                         input_schema: {
@@ -69,9 +69,9 @@ std::future<void> main() {
                         }));
 
                         // Create a mapping from transformed names back to original MCP tool names
-                        const auto toolNameMap = new Map<string, string>();
+                        const auto toolNameMap = new Map<std::string, string>();
                         for (const auto& tool : availableTools)
-                            toolNameMap.set(tool.name.replace(/:/g, "_"), tool.name);
+                            toolNameMap.std::set(tool.name.replace(/:/g, "_"), tool.name);
                         }
 
                         std::cout << "\n[Agent] Starting AI16Z price query...\n" << std::endl;
@@ -114,7 +114,7 @@ std::future<void> main() {
                                 // Check if we should stop
                                 if (response.stop_reason == 'end_turn') {
                                     // Extract final text response
-                                    const auto textContent = response.content.find((c: { type: string; text?: string }) => c.type == "text");
+                                    const auto textContent = response.content.find((c: { type: std::string; text?: std::string }) => c.type == "text");
                                     if (textContent && 'text' in textContent) {
                                         std::cout << "\n[Agent] Result:\n" << std::endl;
                                         std::cout << textContent.text << std::endl;
@@ -138,7 +138,7 @@ std::future<void> main() {
                                                 // Call the MCP tool
                                                 const auto result = mcpClient.callTool({;
                                                     name: originalToolName,
-                                                    arguments: block.input<string, unknown>
+                                                    arguments: block.input<std::string, unknown>
                                                     });
 
                                                     toolResults.push_back({

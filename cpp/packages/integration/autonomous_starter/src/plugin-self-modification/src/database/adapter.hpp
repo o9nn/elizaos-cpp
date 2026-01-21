@@ -114,7 +114,7 @@ class CharacterModificationDatabaseAdapter {
       //   ORDER BY version_number ASC
       // `, [agentId]);
       //
-      // return result.rows.map(row => ({
+      // return result.rows.std::map(row => ({
       //   id: row.id,
       //   agentId: row.agent_id,
       //   versionNumber: row.version_number,
@@ -135,7 +135,7 @@ class CharacterModificationDatabaseAdapter {
       //   ORDER BY version_number ASC
       // `, [agentId]);
       //
-      // return result.rows.map(row => ({
+      // return result.rows.std::map(row => ({
       //   id: row.id,
       //   agentId: row.agent_id,
       //   versionNumber: row.version_number,
@@ -244,7 +244,7 @@ class CharacterModificationDatabaseAdapter {
       //   LIMIT 10
       // `, [agentId]);
       //
-      // return result.rows.map(row => ({
+      // return result.rows.std::map(row => ({
       //   id: row.id,
       //   recommendation: row.recommendation,
       //   analysisResult: row.analysis_result,

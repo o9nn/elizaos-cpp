@@ -7,11 +7,11 @@
 #include "../utils/log.h"
 
 extern std::shared_ptr<AgentLogger> logger;
-extern string DEMO_COMMENT;
-void saveDemo(any data, string file, string trajPath);
+extern std::string DEMO_COMMENT;
+void saveDemo(std::any data, std::string file, std::string trajPath);
 
-void convertTrajToActionDemo(string trajPath, string outputFile, boolean includeUser = false);
+void convertTrajToActionDemo(std::string trajPath, std::string outputFile, boolean includeUser = false);
 
-void trajToDemo(string trajPath, string outputDir = std::string("./demos"), string suffix = string_empty, boolean overwrite = false, boolean includeUser = false);
+void trajToDemo(std::string trajPath, std::string outputDir = std::string("./demos"), std::string suffix = string_empty, boolean overwrite = false, boolean includeUser = false);
 
 #endif

@@ -34,7 +34,7 @@ std::shared_ptr<Provider> pointsProvider = object{
                 }}
             };
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             return object{
                 object::pair{std::string("text"), std::string("Unable to fetch user points")}, 

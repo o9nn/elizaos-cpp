@@ -7,7 +7,7 @@ namespace elizaos {
 void parseQuoteRequest(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    tokenAmount?: string;
+    tokenAmount?: std::string;
     discountBps?: number;
     paymentCurrency?: "ETH" | "USDC";
 
@@ -16,7 +16,7 @@ void parseQuoteRequest(const std::string& text) {
 void parseNegotiationRequest(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    tokenAmount?: string;
+    tokenAmount?: std::string;
     requestedDiscountBps?: number;
     lockupMonths?: number;
     paymentCurrency?: "ETH" | "USDC";
@@ -92,8 +92,8 @@ std::future<> negotiateTerms(IAgentRuntime _runtime, const std::any& request, co
     lockupMonths: number;
     discountBps: number;
     paymentCurrency: "ETH" | "USDC";
-    reasoning: string;
-    consignmentId?: string;
+    reasoning: std::string;
+    consignmentId?: std::string;
 
 }
 

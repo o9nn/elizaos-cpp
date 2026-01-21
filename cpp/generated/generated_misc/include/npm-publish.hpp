@@ -8,6 +8,6 @@ using fs = promises;
 using path = _default;
 #include "../types.h"
 
-std::shared_ptr<Promise<void>> publishToNpm(string cwd, std::shared_ptr<PackageJson> packageJson, string npmUsername);
+std::shared_ptr<Promise<void>> publishToNpm(std::string cwd, std::shared_ptr<PackageJson> packageJson, std::string npmUsername);
 
 #endif

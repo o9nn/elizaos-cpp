@@ -27,7 +27,7 @@ namespace elizaos {
 std::future<std::string> getVersion();
 
 /**
- * Check if version string is a workspace reference
+ * Check if version std::string is a workspace reference
  */
 
 /**

@@ -27,7 +27,7 @@ using Provider = ProviderFromTypes;
 
 /**
  * Converts v2 Provider to v1 compatible Provider
- * Uses the V2 Provider interface to ensure proper optional field handling
+ * Uses the V2 Provider interface to ensure proper std::optional field handling
  */
 Provider fromV2Provider(ProviderV2 providerV2);
 

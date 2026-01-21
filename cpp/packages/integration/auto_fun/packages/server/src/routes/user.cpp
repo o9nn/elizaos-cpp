@@ -45,7 +45,7 @@ std::future<User> ensureUserProfile(const std::string& address) {
                         throw std::runtime_error(`Failed find user profile immediately after creation for ${address}`);
                     }
                     std::cout << "[ensureUserProfile] User " + address + " created and fetched successfully." << std::endl;
-                    } catch (insertError: any) {
+                    } catch (insertError: std::any) {
                         std::cerr << "[ensureUserProfile] FAILED to insert new user profile for " + address + ":" << insertError << std::endl;
                         std::cerr << "[ensureUserProfile] Insert error code: " + insertError.code << "constraint: ${insertError.constraint}" << std::endl;
                         // Attempt to fetch again in case of race condition
@@ -76,13 +76,13 @@ std::future<User> ensureUserProfile(const std::string& address) {
                                 std::cout << "[ensureUserProfile] Updating user " + address + " with defaults:" << updatePayload << std::endl;
                                 db;
                                 .update(usersTable);
-                                .set(updatePayload);
+                                .std::set(updatePayload);
                                 .where(eq(usersTable.address, address));
                                 // Update the local user object after successful DB update
                                 if (updatePayload.display_name) user.display_name = updatePayload.display_name;
                                 if (updatePayload.profile_picture_url) user.profile_picture_url = updatePayload.profile_picture_url;
                                 std::cout << "[ensureUserProfile] Updated user " + address + " with defaults successfully." << std::endl;
-                                } catch (updateError: any) {
+                                } catch (updateError: std::any) {
                                     std::cerr << "[ensureUserProfile] FAILED to update profile defaults for " + address + ":" << updateError << std::endl;
                                     // Continue with the fetched user, defaults might not be critical immediately
                                 }

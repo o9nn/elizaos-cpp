@@ -153,7 +153,7 @@ std::future<void> setupPgLite(const std::string& dbDir, const std::string& envPa
             // Set up the .env file with the full template first
             setupEnvFile(targetEnvPath);
 
-            // Then ensure PGLITE_DATA_DIR is properly set in the .env file
+            // Then ensure PGLITE_DATA_DIR is properly std::set in the .env file
             // This handles both new and existing .env files
             storePgliteDataDir(targetDbDir, targetEnvPath);
 
@@ -428,7 +428,7 @@ std::future<std::string> promptAndStoreOpenAIKey(const std::string& envFilePath)
                 },
                 },
                 ],
-                storeFunction: async (results, envPath) => {
+                storeFunction: std::async (results, envPath) => {
                     const auto isValid = isValidOpenAIKey(results.key);
                     if (!isValid) {
                         clack.log.warn("Invalid API key format detected. Expected format: sk-...");
@@ -439,7 +439,7 @@ std::future<std::string> promptAndStoreOpenAIKey(const std::string& envFilePath)
                     successMessage: "OpenAI integration configured",
                     };
 
-                    const auto result = promptAndStoreProviderConfig<{ key: string }>(config, envFilePath);
+                    const auto result = promptAndStoreProviderConfig<{ key: std::string }>(config, envFilePath);
                     return result.key || nullptr;
 
 }
@@ -462,7 +462,7 @@ std::future<std::string> promptAndStoreAnthropicKey(const std::string& envFilePa
                 },
                 },
                 ],
-                storeFunction: async (results, envPath) => {
+                storeFunction: std::async (results, envPath) => {
                     const auto isValid = isValidAnthropicKey(results.key);
                     if (!isValid) {
                         clack.log.warn("Invalid API key format detected. Expected format: sk-ant-...");
@@ -473,7 +473,7 @@ std::future<std::string> promptAndStoreAnthropicKey(const std::string& envFilePa
                     successMessage: "Claude integration configured",
                     };
 
-                    const auto result = promptAndStoreProviderConfig<{ key: string }>(config, envFilePath);
+                    const auto result = promptAndStoreProviderConfig<{ key: std::string }>(config, envFilePath);
                     return result.key || nullptr;
 
 }
@@ -536,12 +536,12 @@ std::future<void> storeOllamaConfig(const std::any& config, const std::string& e
 
 std::future<> promptAndStoreOllamaEmbeddingConfig(const std::string& envFilePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    endpoint: string; embeddingModel: string
+    endpoint: std::string; embeddingModel: std::string
 }
 
 std::future<> promptAndStoreOllamaConfig(const std::string& envFilePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    endpoint: string; model: string
+    endpoint: std::string; model: std::string
 }
 
 std::future<std::string> promptAndStoreGoogleKey(const std::string& envFilePath) {
@@ -562,7 +562,7 @@ std::future<std::string> promptAndStoreGoogleKey(const std::string& envFilePath)
                 },
                 },
                 ],
-                storeFunction: async (results, envPath) => {
+                storeFunction: std::async (results, envPath) => {
                     const auto isValid = isValidGoogleKey(results.key);
                     if (!isValid) {
                         clack.log.warn(;
@@ -575,7 +575,7 @@ std::future<std::string> promptAndStoreGoogleKey(const std::string& envFilePath)
                     successMessage: "Google Generative AI integration configured",
                     };
 
-                    const auto result = promptAndStoreProviderConfig<{ key: string }>(config, envFilePath);
+                    const auto result = promptAndStoreProviderConfig<{ key: std::string }>(config, envFilePath);
                     return result.key || nullptr;
 
 }
@@ -643,7 +643,7 @@ std::future<std::string> promptAndStoreOpenRouterKey(const std::string& envFileP
                 },
                 },
                 ],
-                storeFunction: async (results, envPath) => {
+                storeFunction: std::async (results, envPath) => {
                     const auto isValid = isValidOpenRouterKey(results.key);
                     if (!isValid) {
                         clack.log.warn("Invalid API key format detected. Expected format: sk-or-...");
@@ -654,7 +654,7 @@ std::future<std::string> promptAndStoreOpenRouterKey(const std::string& envFileP
                     successMessage: "OpenRouter integration configured",
                     };
 
-                    const auto result = promptAndStoreProviderConfig<{ key: string }>(config, envFilePath);
+                    const auto result = promptAndStoreProviderConfig<{ key: std::string }>(config, envFilePath);
                     return result.key || nullptr;
 
 }
@@ -682,7 +682,7 @@ std::future<std::string> configureDatabaseSettings(auto reconfigure) {
         return process.env.POSTGRES_URL;
     }
 
-    // If we already have PGLITE_DATA_DIR set in env and not reconfiguring, use PGLite
+    // If we already have PGLITE_DATA_DIR std::set in env and not reconfiguring, use PGLite
     if (pgliteDataDir && !reconfigure) {
         logger.debug(`Using existing PGLite configuration: ${pgliteDataDir}`);
 

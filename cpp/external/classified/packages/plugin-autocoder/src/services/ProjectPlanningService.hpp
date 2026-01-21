@@ -109,17 +109,17 @@ struct EffortEstimate {
 };
 
 class ProjectPlanningService extends Service {
-  static serviceName: string = 'project-planning';
+  static serviceName: std::string = 'project-planning';
   static serviceType: ServiceTypeName = ServiceType.UNKNOWN;
 
   protected runtime: IAgentRuntime;
   private formsService?: FormsService;
-  private plans: Map<string, ProjectPlan> = new Map();
+  private plans: Map<std::string, ProjectPlan> = new Map();
 
   /**
    * Static method to start the service
    */
-  static async start(runtime: IAgentRuntime): Promise<Service> {
+  static std::async start(runtime: IAgentRuntime): Promise<Service> {
     elizaLogger.info('Starting ProjectPlanningService...');
     const service = new ProjectPlanningService(runtime);
     await service.start();

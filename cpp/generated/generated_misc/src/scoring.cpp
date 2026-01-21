@@ -2,7 +2,7 @@
 
 std::shared_ptr<Promise<array<std::shared_ptr<TokenSignal>>>> ScoringService::scoreTokenSignals(array<std::shared_ptr<TokenSignal>> signals)
 {
-    auto tokenMap = std::make_shared<Map<string, std::shared_ptr<TokenSignal>>>();
+    auto tokenMap = std::make_shared<Map<std::string, std::shared_ptr<TokenSignal>>>();
     for (auto& signal : signals)
     {
         if (tokenMap->has(signal->address)) {
@@ -10,10 +10,10 @@ std::shared_ptr<Promise<array<std::shared_ptr<TokenSignal>>>> ScoringService::sc
             existing->reasons->push(const_(signal->reasons)[0]);
             existing->score += signal->score;
         } else {
-            tokenMap->set(signal->address, signal);
+            tokenMap->std::set(signal->address, signal);
         }
     }
-    auto scoredTokens = std::async([=]() { Promise->all(Array->from(tokenMap->values())->map([=](auto token) mutable
+    auto scoredTokens = std::async([=]() { Promise->all(Array->from(tokenMap->values())->std::map([=](auto token) mutable
     {
         auto score = 0;
         if (token->technicalSignals) {

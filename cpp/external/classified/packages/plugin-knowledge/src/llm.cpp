@@ -18,7 +18,7 @@ std::future<> generateTextEmbedding(IAgentRuntime runtime, const std::string& te
 
 std::future<std::vector> generateTextEmbeddingsBatch(IAgentRuntime runtime, const std::vector<std::string>& texts, double batchSize = 20) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    embedding: number[] | nullptr; success: boolean; error?: any; index: number
+    embedding: number[] | nullptr; success: boolean; error?: std::any; index: number
 }
 
 std::future<> generateOpenAIEmbedding(const std::string& text, ModelConfig config, double dimensions) {
@@ -36,7 +36,7 @@ std::future<> generateOllamaEmbedding(const std::string& text, ModelConfig confi
     embedding: number[]
 }
 
-std::future<GenerateTextResult<any, any>> generateText(IAgentRuntime runtime, const std::string& prompt, std::optional<std::string> system, std::optional<TextGenerationOptions> overrideConfig) {
+std::future<GenerateTextResult<std::any, any>> generateText(IAgentRuntime runtime, const std::string& prompt, std::optional<std::string> system, std::optional<TextGenerationOptions> overrideConfig) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -83,7 +83,7 @@ std::future<GenerateTextResult<any, any>> generateText(IAgentRuntime runtime, co
     }
 }
 
-std::future<GenerateTextResult<any, any>> generateAnthropicText(ModelConfig config, const std::string& prompt, const std::string& system, const std::string& modelName, double maxTokens) {
+std::future<GenerateTextResult<std::any, any>> generateAnthropicText(ModelConfig config, const std::string& prompt, const std::string& system, const std::string& modelName, double maxTokens) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -112,7 +112,7 @@ std::future<GenerateTextResult<any, any>> generateAnthropicText(ModelConfig conf
                         );
 
                         return result;
-                        } catch (error: any) {
+                        } catch (error: std::any) {
                             // Check if it's a rate limit error (status 429)
                             const auto isRateLimit =;
                             error.status == 429 ||;
@@ -142,7 +142,7 @@ std::future<GenerateTextResult<any, any>> generateAnthropicText(ModelConfig conf
     }
 }
 
-std::future<GenerateTextResult<any, any>> generateOpenAIText(ModelConfig config, const std::string& prompt, const std::string& system, const std::string& modelName, double maxTokens) {
+std::future<GenerateTextResult<std::any, any>> generateOpenAIText(ModelConfig config, const std::string& prompt, const std::string& system, const std::string& modelName, double maxTokens) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto openai = createOpenAI({;
@@ -169,7 +169,7 @@ std::future<GenerateTextResult<any, any>> generateOpenAIText(ModelConfig config,
 
 }
 
-std::future<GenerateTextResult<any, any>> generateGoogleText(const std::string& prompt, const std::string& system, const std::string& modelName, double maxTokens, ModelConfig config) {
+std::future<GenerateTextResult<std::any, any>> generateGoogleText(const std::string& prompt, const std::string& system, const std::string& modelName, double maxTokens, ModelConfig config) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Use the google provider directly
@@ -199,7 +199,7 @@ std::future<GenerateTextResult<any, any>> generateGoogleText(const std::string& 
 
 }
 
-std::future<GenerateTextResult<any, any>> generateOpenRouterText(ModelConfig config, const std::string& prompt, const std::string& system, const std::string& modelName, double maxTokens, std::optional<std::string> cacheDocument, std::optional<std::any> cacheOptions, auto autoCacheContextualRetrieval) {
+std::future<GenerateTextResult<std::any, any>> generateOpenRouterText(ModelConfig config, const std::string& prompt, const std::string& system, const std::string& modelName, double maxTokens, std::optional<std::string> cacheDocument, std::optional<std::any> cacheOptions, auto autoCacheContextualRetrieval) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto openrouter = createOpenRouter({;
@@ -268,7 +268,7 @@ std::future<GenerateTextResult<any, any>> generateOpenRouterText(ModelConfig con
 
 }
 
-std::future<GenerateTextResult<any, any>> generateClaudeWithCaching(const std::string& promptText, const std::string& system, const std::any& modelInstance, const std::string& modelName, double maxTokens, const std::string& documentForCaching) {
+std::future<GenerateTextResult<std::any, any>> generateClaudeWithCaching(const std::string& promptText, const std::string& system, const std::any& modelInstance, const std::string& modelName, double maxTokens, const std::string& documentForCaching) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     logger.debug(`[Document Processor] Using explicit prompt caching with Claude ${modelName}`);
@@ -355,7 +355,7 @@ std::future<GenerateTextResult<any, any>> generateClaudeWithCaching(const std::s
 
 }
 
-std::future<GenerateTextResult<any, any>> generateGeminiWithCaching(const std::string& promptText, const std::string& system, const std::any& modelInstance, const std::string& modelName, double maxTokens, const std::string& documentForCaching, bool isGemini25Model) {
+std::future<GenerateTextResult<std::any, any>> generateGeminiWithCaching(const std::string& promptText, const std::string& system, const std::any& modelInstance, const std::string& modelName, double maxTokens, const std::string& documentForCaching, bool isGemini25Model) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Gemini models support implicit caching as of 2.5 models
@@ -422,7 +422,7 @@ std::future<GenerateTextResult<any, any>> generateGeminiWithCaching(const std::s
 
 }
 
-std::future<GenerateTextResult<any, any>> generateStandardOpenRouterText(const std::string& prompt, const std::string& system, const std::any& modelInstance, const std::string& modelName, double maxTokens) {
+std::future<GenerateTextResult<std::any, any>> generateStandardOpenRouterText(const std::string& prompt, const std::string& system, const std::any& modelInstance, const std::string& modelName, double maxTokens) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto result = aiGenerateText({;
@@ -449,10 +449,10 @@ std::future<GenerateTextResult<any, any>> generateStandardOpenRouterText(const s
 
 }
 
-void logCacheMetrics(GenerateTextResult<any, any> result) {
+void logCacheMetrics(GenerateTextResult<std::any, any> result) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (result.usage && (result.usage as any).cacheTokens) {
+    if (result.usage && (result.usage as std::any).cacheTokens) {
         logger.debug(
         "[Document Processor] Cache metrics - tokens: " + std::to_string((result.usage).cacheTokens) + ", discount: " + std::to_string((result.usage).cacheDiscount)
         );
@@ -460,7 +460,7 @@ void logCacheMetrics(GenerateTextResult<any, any> result) {
 
 }
 
-std::future<GenerateTextResult<any, any>> generateOllamaText(ModelConfig config, const std::string& prompt, const std::string& system, const std::string& modelName, double maxTokens) {
+std::future<GenerateTextResult<std::any, any>> generateOllamaText(ModelConfig config, const std::string& prompt, const std::string& system, const std::string& modelName, double maxTokens) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -506,7 +506,7 @@ std::future<GenerateTextResult<any, any>> generateOllamaText(ModelConfig config,
                             completionTokens: estimatedCompletionTokens,
                             totalTokens: estimatedTotalTokens,
                             },
-                            }<any, any>;
+                            }<std::any, any>;
                             } catch (error) {
                                 std::cerr << "[Document Processor] Ollama text generation error:" << error << std::endl;
                                 throw;

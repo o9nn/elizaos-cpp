@@ -33,7 +33,7 @@ void CombinedEnvHooks::onInit(std::shared_ptr<EnvironmentInstance> env)
         {
             hook->onInit(env);
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             console->error(std::string("Hook error in onInit:"), error);
         }
@@ -48,7 +48,7 @@ void CombinedEnvHooks::onStartDeployment()
         {
             hook->onStartDeployment();
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             console->error(std::string("Hook error in onStartDeployment:"), error);
         }
@@ -63,7 +63,7 @@ void CombinedEnvHooks::onInstallEnvStarted()
         {
             hook->onInstallEnvStarted();
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             console->error(std::string("Hook error in onInstallEnvStarted:"), error);
         }
@@ -78,7 +78,7 @@ void CombinedEnvHooks::onClose()
         {
             hook->onClose();
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             console->error(std::string("Hook error in onClose:"), error);
         }
@@ -93,7 +93,7 @@ void CombinedEnvHooks::onEnvironmentStartup()
         {
             hook->onEnvironmentStartup();
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             console->error(std::string("Hook error in onEnvironmentStartup:"), error);
         }

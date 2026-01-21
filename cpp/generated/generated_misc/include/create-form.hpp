@@ -5,6 +5,6 @@
 #include "../services/forms-service.h"
 
 extern std::shared_ptr<Action> createFormAction;
-any extractFormType(string text);
+std::any extractFormType(std::string text);
 
 #endif

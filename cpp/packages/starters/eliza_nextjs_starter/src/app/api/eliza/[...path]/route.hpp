@@ -13,13 +13,13 @@ namespace elizaos {
 
 
 
-std::future<void> GET(NextRequest request, { params: Promise<{ path: string[] }> } { params });
+std::future<void> GET(NextRequest request, { params: Promise<{ path: std::string[] }> } { params });
 
-std::future<void> POST(NextRequest request, { params: Promise<{ path: string[] }> } { params });
+std::future<void> POST(NextRequest request, { params: Promise<{ path: std::string[] }> } { params });
 
-std::future<void> PUT(NextRequest request, { params: Promise<{ path: string[] }> } { params });
+std::future<void> PUT(NextRequest request, { params: Promise<{ path: std::string[] }> } { params });
 
-std::future<void> DELETE(NextRequest request, { params: Promise<{ path: string[] }> } { params });
+std::future<void> DELETE(NextRequest request, { params: Promise<{ path: std::string[] }> } { params });
 
 std::future<void> OPTIONS();
 

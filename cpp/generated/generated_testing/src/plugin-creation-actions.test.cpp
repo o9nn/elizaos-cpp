@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-dynamic/__tests__/plugin-creation-actions.test.h"
 
-std::function<any(string)> createMockMemory = [=](auto text) mutable
+std::function<std::any(std::string)> createMockMemory = [=](auto text) mutable
 {
     return as<std::shared_ptr<Memory>>(as<any>((object{
         object::pair{std::string("id"), as<any>(crypto->randomUUID())}, 
@@ -13,7 +13,7 @@ std::function<any(string)> createMockMemory = [=](auto text) mutable
         object::pair{std::string("createdAt"), Date->now()}
     })));
 };
-std::function<any()> createMockRuntime = [=]() mutable
+std::function<std::any()> createMockRuntime = [=]() mutable
 {
     auto service = as<std::shared_ptr<PluginCreationService>>(as<any>(object{
         object::pair{std::string("getAllJobs"), vi->fn()->mockReturnValue(array<any>())}, 

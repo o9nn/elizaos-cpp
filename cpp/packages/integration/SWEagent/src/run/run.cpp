@@ -20,7 +20,7 @@ std::future<void> run(const std::vector<std::string>& args) {
     .option("-a, --agent <json>", "Agent configuration (JSON)");
     .option("-p, --problem <text>", "Problem statement text");
     .option("-o, --output <dir>", "Output directory", "DEFAULT");
-    .action(async (options) => {
+    .action(std::async (options) => {
         std::cout << "Running single instance" << std::endl;
 
         // Load config
@@ -58,7 +58,7 @@ std::future<void> run(const std::vector<std::string>& args) {
             .option("-o, --output <dir>", "Output directory", "DEFAULT");
             .option("-w, --workers <n>", "Number of parallel workers", "1");
             .option("--redo", "Redo existing instances");
-            .action(async (options) => {
+            .action(std::async (options) => {
                 std::cout << "Running batch" << std::endl;
 
                 // Load config
@@ -97,7 +97,7 @@ std::future<void> run(const std::vector<std::string>& args) {
                     .argument("<traj-path>", "Path to trajectory file");
                     .option("-o, --output <dir>", "Output directory", "DEFAULT");
                     .option("-d, --deployment <json>", "Deployment configuration (JSON)");
-                    .action(async (trajPath, options) => {
+                    .action(std::async (trajPath, options) => {
                         std::cout << "Replaying trajectory" << std::endl;
 
                         const std::optional<RunReplayConfig> config = {;

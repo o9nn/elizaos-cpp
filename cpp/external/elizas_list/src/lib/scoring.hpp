@@ -15,7 +15,7 @@ namespace elizaos {
 
 
 class ProjectScorer {
-  static async calculateScore(currentProject: Project, candidateProject: Project): Promise<number> {
+  static std::async calculateScore(currentProject: Project, candidateProject: Project): Promise<number> {
     const scores = await Promise.all([
       this.calculateTagScore(currentProject, candidateProject),
       this.calculateMetricsScore(candidateProject),

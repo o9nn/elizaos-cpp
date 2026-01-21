@@ -131,7 +131,7 @@ TEST_F(ElizasWorldTest, AgentMovement) {
     auto agent = world->getAgent(testAgent.agentId);
     EXPECT_TRUE(agent.has_value());
     
-    // Velocity should be set towards target
+    // Velocity should be std::set towards target
     EXPECT_GT(agent->velocity.x, 0);
     EXPECT_GT(agent->velocity.y, 0);
     

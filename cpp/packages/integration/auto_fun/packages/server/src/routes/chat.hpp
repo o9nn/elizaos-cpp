@@ -23,7 +23,7 @@ namespace elizaos {
 // Env type is now imported from ../env.ts
 
 // Adjust User type to match Hono context expectation (based on linter errors)
-using User = { publicKey: string }; // Assuming publicKey is in JWT payload's 'sub'
+using User = { publicKey: std::string }; // Assuming publicKey is in JWT payload's 'sub'
 
 using Variables = {
 
@@ -64,7 +64,7 @@ using ChatTier = (typeof allowedTiers)[number];
 
               // Adjust column names if they differ in your schema.users table
 
-              // Use optional chaining or provide fallbacks if profile might be missing
+              // Use std::optional chaining or provide fallbacks if profile might be missing
           // Proceed with messages lacking profile info if fetch fails
           // Ensure timestamps are still formatted
          // Ensure timestamps are formatted even if no authors/profiles to fetch
@@ -131,7 +131,7 @@ using ChatTier = (typeof allowedTiers)[number];
 
     // Get replies for this message
 
-// Get message thread (parent and replies)
+// Get message std::thread (parent and replies)
 
     // Get the parent message
 

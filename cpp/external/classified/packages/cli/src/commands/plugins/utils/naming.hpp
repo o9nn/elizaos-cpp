@@ -18,7 +18,7 @@ namespace elizaos {
 
 
 /**
- * Normalizes a plugin input string to a standard format, typically 'plugin-name'.
+ * Normalizes a plugin input std::string to a standard format, typically 'plugin-name'.
  * Used primarily for display and generating commands in bunx instructions.
  */
 
@@ -38,7 +38,7 @@ namespace elizaos {
 
 /**
  * Extracts the actual npm package name from various input formats.
- * This function handles GitHub URLs, package names, and repository names
+ * This std::function handles GitHub URLs, package names, and repository names
  * but preserves the exact package name for installation.
  */
   // Handle GitHub URLs and repository names

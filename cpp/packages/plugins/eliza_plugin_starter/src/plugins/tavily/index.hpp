@@ -23,8 +23,8 @@ struct TavilySearchResponse {
 };
 
 class TavilySearchPlugin implements SearchPlugin {
-  readonly name: string = "tavily-search";
-  readonly description: string = "Search the web using Tavily API";
+  readonly name: std::string = "tavily-search";
+  readonly description: std::string = "Search the web using Tavily API";
   config: TavilyPluginConfig;
   private rateLimiter = createRateLimiter(60, 60000); // 60 requests per minute
 

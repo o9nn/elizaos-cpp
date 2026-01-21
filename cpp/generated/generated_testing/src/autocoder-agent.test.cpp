@@ -32,7 +32,7 @@ void Main(void)
         it(std::string("should have autocoder plugin loaded"), [=]() mutable
         {
             auto services = runtime->services;
-            console->log(std::string("Available services:"), Array->from(services->values())->map([=](auto s) mutable
+            console->log(std::string("Available services:"), Array->from(services->values())->std::map([=](auto s) mutable
             {
                 return s->constructor->name;
             }
@@ -48,7 +48,7 @@ void Main(void)
         it(std::string("should have autocoder actions available"), [=]() mutable
         {
             auto actions = runtime->actions;
-            console->log(std::string("Available actions:"), actions->map([=](auto a) mutable
+            console->log(std::string("Available actions:"), actions->std::map([=](auto a) mutable
             {
                 return a["name"];
             }
@@ -76,7 +76,7 @@ void Main(void)
         it(std::string("should have autocoder providers available"), [=]() mutable
         {
             auto providers = runtime->providers;
-            console->log(std::string("Available providers:"), providers->map([=](auto p) mutable
+            console->log(std::string("Available providers:"), providers->std::map([=](auto p) mutable
             {
                 return p["name"];
             }

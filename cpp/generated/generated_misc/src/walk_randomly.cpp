@@ -32,7 +32,7 @@ std::shared_ptr<Action> hyperfyWalkRandomlyAction = object{
             return std::shared_ptr<Promise<void>>();
         }
         auto command = OR((options["command"]), (std::string("start")));
-        auto intervalMs = (options["interval"]) ? any(options["interval"] * 1000) : any(RANDOM_WALK_DEFAULT_INTERVAL);
+        auto intervalMs = (options["interval"]) ? std::any(options["interval"] * 1000) : std::any(RANDOM_WALK_DEFAULT_INTERVAL);
         auto maxDistance = OR((options["distance"]), (RANDOM_WALK_DEFAULT_MAX_DISTANCE));
         if (command == std::string("stop")) {
             if (controls->getIsWalkingRandomly()) {

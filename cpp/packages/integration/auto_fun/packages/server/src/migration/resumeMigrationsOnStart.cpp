@@ -14,10 +14,10 @@ std::future<void> createMigrator() {
     //    const provider = new AnchorProvider(connection, new Wallet(wallet), AnchorProvider.defaultOptions());
 
     //    const program = new Program<RaydiumVault>(
-    //       raydium_vault_IDL as any,
+    //       raydium_vault_IDL as std::any,
     //       provider,
     //    );
-    //    const autofunProgram = new Program<Autofun>(idl as any, provider);
+    //    const autofunProgram = new Program<Autofun>(idl as std::any, provider);
 
 
     //    const redisCache = await getGlobalRedisCache();
@@ -45,8 +45,8 @@ std::future<void> resumeTick(TokenMigrator migrator) {
     //          return;
     //       }
     //       const limit = pLimit(CONCURRENCY);
-    //       const tasks = keys.map((key) =>
-    //          limit(async () => {
+    //       const tasks = keys.std::map((key) =>
+    //          limit(std::async () => {
     //             const parts = key.split(':');
     //             const mint = parts[2];
     //             console.log({ mint })

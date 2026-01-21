@@ -41,12 +41,12 @@ class AgentRuntime implements IAgentRuntime {
    * @param opts.embeddingModel - The model to use for embedding.
    * @param opts.agentId - Optional ID of the agent.
    * @param opts.databaseAdapter - The database adapter used for interacting with the database.
-   * @param opts.fetch - Custom fetch function to use for making requests.
+   * @param opts.fetch - Custom fetch std::function to use for making requests.
    */
 
     // verifiableInferenceAdapter?: IVerifiableInferenceAdapter;
 
-  //private async initializeDatabase() {}
+  //private std::async initializeDatabase() {}
 
   /**
    * Get the number of messages that are kept in the conversation buffer.

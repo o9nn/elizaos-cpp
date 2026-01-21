@@ -1,8 +1,8 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/plugin-sql/src/__tests__/integration/seed/relationship-seed.h"
 
-any relationshipTestAgentId = as<std::shared_ptr<UUID>>(uuidv4());
-any relationshipTestSourceEntityId = as<std::shared_ptr<UUID>>(uuidv4());
-any relationshipTestTargetEntityId = as<std::shared_ptr<UUID>>(uuidv4());
+std::any relationshipTestAgentId = as<std::shared_ptr<UUID>>(uuidv4());
+std::any relationshipTestSourceEntityId = as<std::shared_ptr<UUID>>(uuidv4());
+std::any relationshipTestTargetEntityId = as<std::shared_ptr<UUID>>(uuidv4());
 std::shared_ptr<Agent> relationshipTestAgent = object{
     object::pair{std::string("id"), relationshipTestAgentId}, 
     object::pair{std::string("name"), std::string("Relationship Test Agent")}, 
@@ -56,7 +56,7 @@ array<std::shared_ptr<Relationship>> relationshipTestRelationships = array<std::
     }}, 
     object::pair{std::string("createdAt"), ((std::make_shared<Date>()))->getTime()->toString()}
 } };
-std::function<any(any, any, array<string>, std::shared_ptr<Record<string, any>>)> createTestRelationship = [=](auto sourceId, auto targetId, auto tags = array<string>(), auto metadata = object{}) mutable
+std::function<std::any(std::any, std::any, array<string>, std::shared_ptr<Record<std::string, any>>)> createTestRelationship = [=](auto sourceId, auto targetId, auto tags = array<string>(), auto metadata = object{}) mutable
 {
     return object{
         object::pair{std::string("id"), as<std::shared_ptr<UUID>>(uuidv4())}, 

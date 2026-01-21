@@ -11,11 +11,11 @@ public:
     using std::enable_shared_from_this<UseTauriChatReturn>::shared_from_this;
     boolean isConnected;
 
-    std::function<std::shared_ptr<Promise<void>>(string)> sendMessage;
+    std::function<std::shared_ptr<Promise<void>>(std::string)> sendMessage;
 
     array<std::shared_ptr<TauriMessage>> messages;
 
-    any error;
+    std::any error;
 
     boolean isLoading;
 };

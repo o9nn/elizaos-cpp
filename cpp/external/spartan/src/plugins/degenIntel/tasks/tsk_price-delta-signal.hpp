@@ -59,7 +59,7 @@ struct IBuySignalOutput {
 
     // Retry if missing required fields
     // recommended_buy, recommend_buy_address, reason, buy_amount
-      // could use OBJECT_LARGE but this expects a string return type rn
+      // could use OBJECT_LARGE but this expects a std::string return type rn
       // not sure where OBJECT_LARGE does it's parsing...
 
     // Fetch the recommended buys current marketcap

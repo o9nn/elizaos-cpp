@@ -14,7 +14,7 @@ public:
     using std::enable_shared_from_this<StreamingAudioConfig>::shared_from_this;
     boolean enabled;
 
-    string device;
+    std::string device;
 
     double sampleRate;
 
@@ -46,7 +46,7 @@ public:
 
     std::shared_ptr<StreamingAudioConfig> config;
 
-    any captureProcess = nullptr;
+    std::any captureProcess = nullptr;
 
     boolean isCapturing = false;
 
@@ -56,13 +56,13 @@ public:
 
     double lastSpeechTime = 0;
 
-    any silenceTimer = nullptr;
+    std::any silenceTimer = nullptr;
 
     boolean transcriptionInProgress = false;
 
-    string currentTranscription = string_empty;
+    std::string currentTranscription = string_empty;
 
-    any responseTimer = nullptr;
+    std::any responseTimer = nullptr;
 
     StreamingAudioCaptureService(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<StreamingAudioConfig> config);
     virtual std::shared_ptr<Promise<void>> initialize();
@@ -75,11 +75,11 @@ public:
     virtual std::shared_ptr<Buffer> getRecentAudioData();
     virtual std::shared_ptr<Promise<any>> transcribeAudio(std::shared_ptr<Buffer> audioData);
     virtual std::shared_ptr<Buffer> rawToWav(std::shared_ptr<Buffer> rawData);
-    virtual std::shared_ptr<Promise<void>> generateResponse(string transcription);
-    virtual std::shared_ptr<Promise<void>> createAudioMemory(string transcription);
+    virtual std::shared_ptr<Promise<void>> generateResponse(std::string transcription);
+    virtual std::shared_ptr<Promise<void>> createAudioMemory(std::string transcription);
     virtual std::shared_ptr<Promise<void>> stop();
     virtual boolean isActive();
-    virtual string getCurrentTranscription();
+    virtual std::string getCurrentTranscription();
     virtual boolean isSpeechActive();
     StreamingAudioCaptureService(std::shared_ptr<EventEmitterOptions> options = undefined);
 };

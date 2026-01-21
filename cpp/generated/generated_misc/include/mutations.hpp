@@ -6,8 +6,8 @@
 #include "@/lib/data/schema.h"
 #include "@date-fns/utc.h"
 
-std::shared_ptr<Promise<void>> storeDailySummary(string username, string date, string summary, std::shared_ptr<IntervalType> intervalType);
+std::shared_ptr<Promise<void>> storeDailySummary(std::string username, std::string date, std::string summary, std::shared_ptr<IntervalType> intervalType);
 
-std::shared_ptr<Promise<void>> storeRepoSummary(string repoId, string date, string summary, std::shared_ptr<IntervalType> intervalType);
+std::shared_ptr<Promise<void>> storeRepoSummary(std::string repoId, std::string date, std::string summary, std::shared_ptr<IntervalType> intervalType);
 
 #endif

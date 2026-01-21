@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-sam/src/actions/sayAloud.h"
 
-string extractTextToSpeak(string messageText)
+std::string extractTextToSpeak(std::string messageText)
 {
     shared text = messageText->toLowerCase()->trim();
     auto quotedPatterns = array<std::shared_ptr<RegExp>>{ (new RegExp(std::string("say ["']([^"']+)["'"))), (new RegExp(std::string("speak ["']([^"']+)["'"))), (new RegExp(std::string("read ["']([^"']+)["'"))), (new RegExp(std::string("announce ["']([^"']+)["'"))), (new RegExp(std::string("["']([^"']+)["'"))) };
@@ -33,7 +33,7 @@ string extractTextToSpeak(string messageText)
 };
 
 
-std::shared_ptr<SamTTSOptions> extractVoiceOptions(string messageText)
+std::shared_ptr<SamTTSOptions> extractVoiceOptions(std::string messageText)
 {
     auto text = messageText->toLowerCase();
     auto options = object{};

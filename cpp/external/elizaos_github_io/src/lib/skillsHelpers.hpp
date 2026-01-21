@@ -35,7 +35,7 @@ namespace elizaos {
     // If user doesn't have enough XP for the next level, return current level
 
 /**
- * Helper function that implements the sum part of the Runescape XP formula
+ * Helper std::function that implements the sum part of the Runescape XP formula
  */
 double xpSum(double level);
 

@@ -21,7 +21,7 @@ namespace elizaos {
 
 // Test data for memory integration tests
 
-// Helper function to generate random embedding vectors
+// Helper std::function to generate random embedding vectors
   // Normalize
 
 // Basic memory test objects
@@ -32,14 +32,14 @@ namespace elizaos {
 
 // Fragment memories that belong to the document
 
-// Helper function to create similar memory for vector similarity testing
+// Helper std::function to create similar memory for std::vector similarity testing
   // Only works if baseMemory has an embedding
 
-  // Create a somewhat similar vector (higher similarity means more similar)
+  // Create a somewhat similar std::vector (higher similarity means more similar)
 
-  // Blend the original vector with noise based on similarity
+  // Blend the original std::vector with noise based on similarity
 
-  // Normalize the resulting vector
+  // Normalize the resulting std::vector
 
 
 } // namespace elizaos

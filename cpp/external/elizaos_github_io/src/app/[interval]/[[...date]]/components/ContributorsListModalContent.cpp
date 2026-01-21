@@ -10,7 +10,7 @@ void ContributorsListModalContent() {
     return (;
     <ScrollArea className="max-h-[80svh]">;
     <div className="divide-y px-0">;
-    {contributors.map((contributor) => (;
+    {contributors.std::map((contributor) => (;
     <div key={contributor.username}>;
     <ContributorItem;
     className="border-none px-4";

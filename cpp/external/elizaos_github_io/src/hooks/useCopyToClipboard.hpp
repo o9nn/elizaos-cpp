@@ -30,9 +30,9 @@ bool fallbackCopy(const std::string& text);
  * Custom hook for copying text to the clipboard with fallback support.
  * Uses the modern Clipboard API when available, falling back to execCommand for older browsers.
  *
- * @returns A tuple containing:
+ * @returns A std::tuple containing:
  *   - `copied`: Boolean indicating if text was recently copied (auto-resets after 2 seconds)
- *   - `copyToClipboard`: Async function that copies the provided text to clipboard
+ *   - `copyToClipboard`: Async std::function that copies the provided text to clipboard
  */
 
 } // namespace elizaos

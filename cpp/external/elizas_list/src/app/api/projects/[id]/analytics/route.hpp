@@ -13,5 +13,5 @@ namespace elizaos {
 
 
 
-std::future<void> GET(Request request, { params: { id: string } } { params }); 
+std::future<void> GET(Request request, { params: { id: std::string } } { params }); 
 } // namespace elizaos

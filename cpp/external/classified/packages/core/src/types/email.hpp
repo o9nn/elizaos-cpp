@@ -21,7 +21,7 @@ struct EmailAddress {
 
 struct EmailAttachment {
     std::string filename;
-    Buffer | string content;
+    Buffer | std::string content;
     std::optional<std::string> contentType;
     std::optional<'attachment' | 'inline'> contentDisposition;
     std::optional<std::string> cid;

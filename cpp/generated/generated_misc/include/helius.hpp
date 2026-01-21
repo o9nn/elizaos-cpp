@@ -11,20 +11,20 @@ class IToken;
 class HeliusWebSocket : public object, public std::enable_shared_from_this<HeliusWebSocket> {
 public:
     using std::enable_shared_from_this<HeliusWebSocket>::shared_from_this;
-    string apiKey;
+    std::string apiKey;
 
     std::shared_ptr<IAgentRuntime> runtime;
 
-    any ws = nullptr;
+    std::any ws = nullptr;
 
-    std::shared_ptr<Map<string, double>> subscriptions = std::make_shared<Map>();
+    std::shared_ptr<Map<std::string, double>> subscriptions = std::make_shared<Map>();
 
-    any pingInterval = nullptr;
+    std::any pingInterval = nullptr;
 
-    HeliusWebSocket(string apiKey_, std::shared_ptr<IAgentRuntime> runtime_);
+    HeliusWebSocket(std::string apiKey_, std::shared_ptr<IAgentRuntime> runtime_);
     virtual std::shared_ptr<Promise<void>> connect();
-    virtual std::shared_ptr<Promise<any>> subscribeToWallet(string walletAddress);
-    virtual std::shared_ptr<Promise<boolean>> unsubscribeFromWallet(string walletAddress);
+    virtual std::shared_ptr<Promise<any>> subscribeToWallet(std::string walletAddress);
+    virtual std::shared_ptr<Promise<boolean>> unsubscribeFromWallet(std::string walletAddress);
     virtual void startPing();
     virtual void cleanup();
     virtual void disconnect();
@@ -33,11 +33,11 @@ public:
 class IToken : public object, public std::enable_shared_from_this<IToken> {
 public:
     using std::enable_shared_from_this<IToken>::shared_from_this;
-    string symbol;
+    std::string symbol;
 
-    string name;
+    std::string name;
 
-    string address;
+    std::string address;
 
     double decimals;
 

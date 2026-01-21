@@ -22,7 +22,7 @@ namespace elizaos {
  * @param timeZone Time zone of the team member
  * @returns Boolean indicating if the member is available
  */
-bool isAvailableNow(const std::vector<std::string>& workDays, { start: string; end: string } workHours, const std::string& timeZone);
+bool isAvailableNow(const std::vector<std::string>& workDays, { start: std::string; end: std::string } workHours, const std::string& timeZone);
 
 /**
  * Calculates the next check-in time for a team member
@@ -32,13 +32,13 @@ bool isAvailableNow(const std::vector<std::string>& workDays, { start: string; e
  * @param frequencyHours How often to check in (in hours)
  * @returns Date object for the next check-in
  */
-Date calculateNextCheckIn(const std::vector<std::string>& workDays, { start: string; end: string } workHours, const std::string& timeZone, number = 24 frequencyHours);
+Date calculateNextCheckIn(const std::vector<std::string>& workDays, { start: std::string; end: std::string } workHours, const std::string& timeZone, number = 24 frequencyHours);
 
 /**
- * Formats a date to a human-readable string
+ * Formats a date to a human-readable std::string
  * @param date Date to format
  * @param timeZone Optional timezone
- * @returns Formatted date string
+ * @returns Formatted date std::string
  */
 std::string formatDate(Date date, std::optional<std::string> timeZone);
 
@@ -46,7 +46,7 @@ std::string formatDate(Date date, std::optional<std::string> timeZone);
  * Calculates if a project is on track, at risk, or delayed
  * @param completionPercentage Percentage of completed tasks
  * @param elapsedTimePercentage Percentage of elapsed time
- * @returns Status string
+ * @returns Status std::string
  */
 
 } // namespace elizaos

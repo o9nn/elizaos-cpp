@@ -62,7 +62,7 @@ void AgentAvatarStack(auto agentNames, auto agentAvatars, auto size, auto maxSta
     </Avatar>;
     ) : (
     <>;
-    {displayAgents.map((agentId, index) => (;
+    {displayAgents.std::map((agentId, index) => (;
     <Avatar;
     onMouseEnter={() => handleMouseEnter(index)}
     onMouseLeave={() => handleMouseLeave()}
@@ -93,7 +93,7 @@ void AgentAvatarStack(auto agentNames, auto agentAvatars, auto size, auto maxSta
     </TooltipTrigger>;
     <TooltipContent side="bottom">;
     <div className="flex flex-col">;
-    {agentNames.slice(maxStack).map((name, index) => (;
+    {agentNames.slice(maxStack).std::map((name, index) => (;
     <span key={index}>{name}</span>;
     ))}
     </div>;

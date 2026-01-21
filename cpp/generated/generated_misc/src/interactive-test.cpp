@@ -45,7 +45,7 @@ void InteractiveClaudeCodeTester::start()
             console->log(std::string("⚠️  Code generation service not available"));
         }
         if (AND((!e2bService), (process->env->E2B_API_KEY))) {
-            console->log(std::string("⚠️  E2B service not available (but API key is set)"));
+            console->log(std::string("⚠️  E2B service not available (but API key is std::set)"));
         }
         console->log(std::string("\
 📋 Available Services:"));
@@ -57,7 +57,7 @@ void InteractiveClaudeCodeTester::start()
 ✅ Runtime initialized successfully"));
         this->showMainMenu();
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("❌ Failed to initialize runtime:"), error);
         process->exit(1);
@@ -83,17 +83,17 @@ void InteractiveClaudeCodeTester::showMainMenu()
     );
 }
 
-void InteractiveClaudeCodeTester::handleMenuChoice(string choice)
+void InteractiveClaudeCodeTester::handleMenuChoice(std::string choice)
 {
     try
     {
         static switch_type __switch3403_4597 = {
-            { any(std::string("1")), 1 },
-            { any(std::string("2")), 2 },
-            { any(std::string("3")), 3 },
-            { any(std::string("4")), 4 },
-            { any(std::string("5")), 5 },
-            { any(std::string("6")), 6 }
+            { std::any(std::string("1")), 1 },
+            { std::any(std::string("2")), 2 },
+            { std::any(std::string("3")), 3 },
+            { std::any(std::string("4")), 4 },
+            { std::any(std::string("5")), 5 },
+            { std::any(std::string("6")), 6 }
         };
         switch (__switch3403_4597[choice])
         {
@@ -147,14 +147,14 @@ void InteractiveClaudeCodeTester::handleMenuChoice(string choice)
             break;
         }
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("❌ Error:"), error);
         this->showMainMenu();
     }
 }
 
-void InteractiveClaudeCodeTester::callClaude(string prompt)
+void InteractiveClaudeCodeTester::callClaude(std::string prompt)
 {
     console->log(std::string("🤖 Calling Claude..."));
     console->log(std::string("📝 Prompt: ") + prompt + string_empty);
@@ -163,13 +163,13 @@ void InteractiveClaudeCodeTester::callClaude(string prompt)
         console->log(std::string("✅ Claude responded (mock response)"));
         this->showMainMenu();
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("❌ Error calling Claude:"), error);
     }
 }
 
-void InteractiveClaudeCodeTester::generateProject(string description)
+void InteractiveClaudeCodeTester::generateProject(std::string description)
 {
     console->log(std::string("\
 🚀 Generating project..."));
@@ -177,7 +177,7 @@ void InteractiveClaudeCodeTester::generateProject(string description)
     auto startTime = Date->now();
     auto codeGenService = as<std::shared_ptr<CodeGenService>>(as<any>(this->session->runtime->getService(std::string("code-generation"))));
     if (!codeGenService) {
-        throw any(std::make_shared<Error>(std::string("Code generation service not available")));
+        throw std::any(std::make_shared<Error>(std::string("Code generation service not available")));
     }
     auto request = object{
         object::pair{std::string("projectName"), std::string("generated-project-") + Date->now() + string_empty}, 
@@ -208,7 +208,7 @@ void InteractiveClaudeCodeTester::generateProject(string description)
     this->showMainMenu();
 }
 
-void InteractiveClaudeCodeTester::runSandboxCommand(string command)
+void InteractiveClaudeCodeTester::runSandboxCommand(std::string command)
 {
     console->log(std::string("\
 🔧 Running: ") + command + string_empty);
@@ -235,7 +235,7 @@ print("EXIT_CODE:", result.returncode)\
     this->showMainMenu();
 }
 
-void InteractiveClaudeCodeTester::writeFile(string filename, string content)
+void InteractiveClaudeCodeTester::writeFile(std::string filename, std::string content)
 {
     console->log(std::string("\
 📝 Writing file: ") + filename + string_empty);
@@ -254,7 +254,7 @@ print(f"✅ File '{filename}' written successfully")\
     this->showMainMenu();
 }
 
-void InteractiveClaudeCodeTester::readFile(string filename)
+void InteractiveClaudeCodeTester::readFile(std::string filename)
 {
     console->log(std::string("\
 📖 Reading file: ") + filename + string_empty);
@@ -281,7 +281,7 @@ except FileNotFoundError:\
     this->showMainMenu();
 }
 
-void InteractiveClaudeCodeTester::listFiles(string path)
+void InteractiveClaudeCodeTester::listFiles(std::string path)
 {
     console->log(std::string("\
 📁 Listing files in: ") + path + string_empty);

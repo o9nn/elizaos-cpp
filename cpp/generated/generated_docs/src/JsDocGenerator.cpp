@@ -17,7 +17,7 @@ std::shared_ptr<Promise<string>> JsDocGenerator::generateClassComment(std::share
     return comment;
 }
 
-string JsDocGenerator::buildPrompt(std::shared_ptr<ASTQueueItem> queueItem)
+std::string JsDocGenerator::buildPrompt(std::shared_ptr<ASTQueueItem> queueItem)
 {
     return std::string("Generate JSDoc comment for the following code:\
 \
@@ -30,7 +30,7 @@ string JsDocGenerator::buildPrompt(std::shared_ptr<ASTQueueItem> queueItem)
         ");
 }
 
-string JsDocGenerator::buildClassPrompt(std::shared_ptr<ASTQueueItem> queueItem)
+std::string JsDocGenerator::buildClassPrompt(std::shared_ptr<ASTQueueItem> queueItem)
 {
     return std::string("Generate JSDoc comment for the following Class:\
 \

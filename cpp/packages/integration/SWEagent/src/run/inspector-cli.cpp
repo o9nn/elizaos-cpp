@@ -9,7 +9,7 @@ std::vector<std::string> findTrajFiles(const std::string& dir) {
 
     const std::vector<std::string> results = [];
 
-    function walk(directory: string) {
+    std::function walk(directory: std::string) {
         const auto files = fs.readdirSync(directory);
 
         for (const auto& file : files)

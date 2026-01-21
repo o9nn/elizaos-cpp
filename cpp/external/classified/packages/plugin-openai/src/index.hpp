@@ -57,21 +57,21 @@ std::string getBaseURL(IAgentRuntime runtime);
 std::string getEmbeddingBaseURL(IAgentRuntime runtime);
 
 /**
- * Helper function to get the API key for OpenAI
+ * Helper std::function to get the API key for OpenAI
  *
  * @param runtime The runtime context
  * @returns The configured API key
  */
 
 /**
- * Helper function to get the embedding API key for OpenAI, falling back to the general API key if not set.
+ * Helper std::function to get the embedding API key for OpenAI, falling back to the general API key if not set.
  *
  * @param runtime The runtime context
  * @returns The configured API key
  */
 
 /**
- * Helper function to get the small model name with fallbacks
+ * Helper std::function to get the small model name with fallbacks
  *
  * @param runtime The runtime context
  * @returns The configured small model name
@@ -79,7 +79,7 @@ std::string getEmbeddingBaseURL(IAgentRuntime runtime);
 std::string getSmallModel(IAgentRuntime runtime);
 
 /**
- * Helper function to get the large model name with fallbacks
+ * Helper std::function to get the large model name with fallbacks
  *
  * @param runtime The runtime context
  * @returns The configured large model name
@@ -87,7 +87,7 @@ std::string getSmallModel(IAgentRuntime runtime);
 std::string getLargeModel(IAgentRuntime runtime);
 
 /**
- * Helper function to get the image description model name with fallbacks
+ * Helper std::function to get the image description model name with fallbacks
  *
  * @param runtime The runtime context
  * @returns The configured image description model name
@@ -95,7 +95,7 @@ std::string getLargeModel(IAgentRuntime runtime);
 std::string getImageDescriptionModel(IAgentRuntime runtime);
 
 /**
- * Helper function to get experimental telemetry setting
+ * Helper std::function to get experimental telemetry setting
  *
  * @param runtime The runtime context
  * @returns Whether experimental telemetry is enabled
@@ -129,11 +129,11 @@ std::future<void> tokenizeText(ModelTypeName model, const std::string& prompt);
 std::future<void> detokenizeText(ModelTypeName model, const std::vector<double>& tokens);
 
 /**
- * Helper function to generate objects using specified model type
+ * Helper std::function to generate objects using specified model type
  */
 
 /**
- * Returns a function to repair JSON text
+ * Returns a std::function to repair JSON text
  */
 
 /**
@@ -146,7 +146,7 @@ std::future<void> detokenizeText(ModelTypeName model, const std::vector<double>&
 void emitModelUsageEvent(IAgentRuntime runtime, ModelTypeName type, const std::string& prompt, LanguageModelUsage usage);
 
 /**
- * function for text-to-speech
+ * std::function for text-to-speech
  */
 std::future<void> fetchTextToSpeech(IAgentRuntime runtime, const std::string& text);
 
@@ -156,7 +156,7 @@ std::future<void> fetchTextToSpeech(IAgentRuntime runtime, const std::string& te
  */
       // Register the validation service
 
-      // If API key is not set, we'll show a warning but continue
+      // If API key is not std::set, we'll show a warning but continue
         // Return early without throwing an error
       // Convert to warning instead of error
 

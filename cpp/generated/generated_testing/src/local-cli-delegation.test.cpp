@@ -1,7 +1,7 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/tests/unit/utils/local-cli-delegation.test.h"
 
-any mockSpawn = mock();
-any mockExistsSync = mock();
+std::any mockSpawn = mock();
+std::any mockExistsSync = mock();
 object mockLogger = object{
     object::pair{std::string("info"), mock()}, 
     object::pair{std::string("debug"), mock()}, 
@@ -294,7 +294,7 @@ void Main(void)
         );
         describe(std::string("Environment Setup"), [=]() mutable
         {
-            it(std::string("should set up proper environment variables for local execution"), [=]() mutable
+            it(std::string("should std::set up proper environment variables for local execution"), [=]() mutable
             {
                 process->argv = array<string>{ std::string("node"), std::string("/usr/bin/elizaos"), std::string("start") };
                 mockExistsSync->mockReturnValue(true);
@@ -366,7 +366,7 @@ void Main(void)
                 shared testError = std::make_shared<Error>(std::string("Spawn failed"));
                 mockSpawn->mockImplementation([=]() mutable
                 {
-                    throw any(testError);
+                    throw std::any(testError);
                 }
                 );
                 auto result = std::async([=]() { tryDelegateToLocalCli(); });
@@ -400,7 +400,7 @@ void Main(void)
                 {
                     std::async([=]() { tryDelegateToLocalCli(); });
                 }
-                catch (const any& error)
+                catch (const std::any& error)
                 {
                     expect(error)->toBe(testError);
                 }

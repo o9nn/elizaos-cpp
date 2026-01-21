@@ -9,9 +9,9 @@ using uuidv4 = v4;
 #include "../service.h"
 #include "../types.h"
 
-extern any testUserIdGlobalForService;
-extern std::function<any(any, any, any)> createFullMockComponentForSvcTest;
-extern std::function<any(string, double, any, any, any, double, any)> createMockRecForSvcTest;
+extern std::any testUserIdGlobalForService;
+extern std::function<std::any(std::any, std::any, std::any)> createFullMockComponentForSvcTest;
+extern std::function<std::any(std::string, double, std::any, std::any, std::any, double, std::any)> createMockRecForSvcTest;
 extern array<std::shared_ptr<TestCase>> calculateUserTrustScoreTestCases;
 extern array<std::shared_ptr<TestCase>> resolveTickerTestCases;
 extern array<std::shared_ptr<TestCase>> getTokenAPIDataTestCases;

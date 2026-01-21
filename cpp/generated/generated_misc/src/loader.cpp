@@ -1,36 +1,36 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/commands/start/utils/loader.h"
 
-any tryLoadFile(string filePath)
+std::any tryLoadFile(std::string filePath)
 {
     return serverTryLoadFile(filePath);
 };
 
 
-std::shared_ptr<Promise<array<std::shared_ptr<Character>>>> loadCharactersFromUrl(string url)
+std::shared_ptr<Promise<array<std::shared_ptr<Character>>>> loadCharactersFromUrl(std::string url)
 {
     return serverLoadCharactersFromUrl(url);
 };
 
 
-std::shared_ptr<Promise<std::shared_ptr<Character>>> jsonToCharacter(any character)
+std::shared_ptr<Promise<std::shared_ptr<Character>>> jsonToCharacter(std::any character)
 {
     return serverJsonToCharacter(character);
 };
 
 
-std::shared_ptr<Promise<std::shared_ptr<Character>>> loadCharacter(string filePath)
+std::shared_ptr<Promise<std::shared_ptr<Character>>> loadCharacter(std::string filePath)
 {
     return serverLoadCharacter(filePath);
 };
 
 
-std::shared_ptr<Promise<std::shared_ptr<Character>>> loadCharacterTryPath(string characterPath)
+std::shared_ptr<Promise<std::shared_ptr<Character>>> loadCharacterTryPath(std::string characterPath)
 {
     return serverLoadCharacterTryPath(characterPath);
 };
 
 
-std::shared_ptr<Promise<array<std::shared_ptr<Character>>>> loadCharacters(string charactersArg)
+std::shared_ptr<Promise<array<std::shared_ptr<Character>>>> loadCharacters(std::string charactersArg)
 {
     auto loadedCharacters = std::async([=]() { serverLoadCharacters(charactersArg); });
     if (loadedCharacters->length == 0) {
@@ -41,7 +41,7 @@ std::shared_ptr<Promise<array<std::shared_ptr<Character>>>> loadCharacters(strin
 };
 
 
-std::function<any()> hasValidRemoteUrls = [=]() mutable
+std::function<std::any()> hasValidRemoteUrls = [=]() mutable
 {
     return serverHasValidRemoteUrls();
 };

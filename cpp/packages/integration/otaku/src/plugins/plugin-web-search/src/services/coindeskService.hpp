@@ -40,18 +40,18 @@ struct CoinDeskNewsResponse {
 };
 
 struct CoinDeskSearchOptions {
-    std::optional<string;                    // Search query for article content> query;
-    std::optional<string[];               // Specific keywords to filter by> keywords;
+    std::optional<std::string;                    // Search query for article content> query;
+    std::optional<std::string[];               // Specific keywords to filter by> keywords;
     std::optional<number;                    // Number of results (1-100)> limit;
     std::optional<number;                   // Pagination offset> offset;
     std::optional<number;                     // Page number> page;
-    std::optional<string[];             // Filter by categories (e.g., 'markets', 'tech', 'policy', 'defi')> categories;
-    std::optional<string[];                   // Filter by tags> tags;
-    std::optional<string[];                // Filter by author names> authors;
-    std::optional<string;                // Start date (YYYY-MM-DD or ISO 8601)> startDate;
-    std::optional<string;                  // End date (YYYY-MM-DD or ISO 8601)> endDate;
-    std::optional<string;           // Articles published after this timestamp> publishedAfter;
-    std::optional<string;          // Articles published before this timestamp> publishedBefore;
+    std::optional<std::string[];             // Filter by categories (e.g., 'markets', 'tech', 'policy', 'defi')> categories;
+    std::optional<std::string[];                   // Filter by tags> tags;
+    std::optional<std::string[];                // Filter by author names> authors;
+    std::optional<std::string;                // Start date (YYYY-MM-DD or ISO 8601)> startDate;
+    std::optional<std::string;                  // End date (YYYY-MM-DD or ISO 8601)> endDate;
+    std::optional<std::string;           // Articles published after this timestamp> publishedAfter;
+    std::optional<std::string;          // Articles published before this timestamp> publishedBefore;
     std::optional<'published' | 'updated' | 'relevance';  // Sort field> sortBy;
     std::optional<'asc' | 'desc';        // Sort direction> sortOrder;
     std::optional<boolean;             // Include full article body> includeBody;
@@ -63,10 +63,10 @@ class CoinDeskService extends Service {
     static serviceType = "COINDESK_NEWS" as const;
     capabilityDescription = "Fetch cryptocurrency news articles from CoinDesk API";
     
-    private apiKey: string;
-    private baseUrl: string = "https://data-api.coindesk.com";
+    private apiKey: std::string;
+    private baseUrl: std::string = "https://data-api.coindesk.com";
 
-    static async start(runtime: IAgentRuntime): Promise<CoinDeskService> {
+    static std::async start(runtime: IAgentRuntime): Promise<CoinDeskService> {
         const service = new CoinDeskService();
         await service.initialize(runtime);
         return service;

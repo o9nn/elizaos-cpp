@@ -15,7 +15,7 @@ public:
 
     std::shared_ptr<AnomalyDetector> anomalyDetector;
 
-    Record<string, double> alertThresholds;
+    Record<std::string, double> alertThresholds;
 
     RealTimeMonitor();
     virtual void startMonitoring();

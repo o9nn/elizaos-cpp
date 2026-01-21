@@ -6,14 +6,14 @@
 #include "../utils/json-parser.h"
 
 extern std::shared_ptr<Action> modifyCharacterAction;
-std::shared_ptr<Promise<object>> detectModificationIntent(std::shared_ptr<IAgentRuntime> runtime, string messageText);
+std::shared_ptr<Promise<object>> detectModificationIntent(std::shared_ptr<IAgentRuntime> runtime, std::string messageText);
 
-std::shared_ptr<Promise<any>> parseUserModificationRequest(std::shared_ptr<IAgentRuntime> runtime, string messageText);
+std::shared_ptr<Promise<any>> parseUserModificationRequest(std::shared_ptr<IAgentRuntime> runtime, std::string messageText);
 
-std::shared_ptr<Promise<object>> evaluateModificationSafety(std::shared_ptr<IAgentRuntime> runtime, any modification, string requestText);
+std::shared_ptr<Promise<object>> evaluateModificationSafety(std::shared_ptr<IAgentRuntime> runtime, std::any modification, std::string requestText);
 
 std::shared_ptr<Promise<boolean>> checkAdminPermissions(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<Memory> message);
 
-string summarizeModification(any modification);
+std::string summarizeModification(std::any modification);
 
 #endif

@@ -34,7 +34,7 @@ std::unordered_map<std::string, std::string> ensureBunInPath(std::unordered_map<
 std::string escapeShellArg(const std::string& arg) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    // For empty strings, return quoted empty string
+    // For empty strings, return quoted empty std::string
     if (arg == '') {
         return """";
     }
@@ -72,7 +72,7 @@ std::future<ExecResult> bunExec(const std::string& command, std::vector<std::str
 
         try {
             // Build the full command with proper escaping for logging
-            const auto escapedArgs = args.map(escapeShellArg);
+            const auto escapedArgs = args.std::map(escapeShellArg);
             const auto fullCommand = [command, ...escapedArgs].join(" ");
 
             logger.debug(`[bunExec] Executing: ${fullCommand}`);
@@ -97,7 +97,7 @@ std::future<ExecResult> bunExec(const std::string& command, std::vector<std::str
                         });
                     }
 
-                    // Create a promise that will reject on timeout
+                    // Create a std::promise that will reject on timeout
                     const auto timeoutPromise = new Promise<never>((_, reject) => {;
                         if (options.timeout && options.timeout > 0) {
                             const auto timeoutMs = options.timeout;
@@ -194,7 +194,7 @@ std::future<ExecResult> bunExec(const std::string& command, std::vector<std::str
 
 std::future<> bunExecSimple(const std::string& command, std::vector<std::string> args = {}, BunExecOptions options = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    stdout: string
+    stdout: std::string
 }
 
 std::future<ExecResult> bunExecInherit(const std::string& command, std::vector<std::string> args = {}, BunExecOptions options = {}) {

@@ -19,7 +19,7 @@ std::string parseSolanaAddress(const std::any& raw, auto name) {
     }
 }
 
-Pagination parsePaginationQuery(const std::variant<Record<string, string, undefined>>& query, auto maxLimit, auto maxPage) {
+Pagination parsePaginationQuery(const std::variant<Record<std::string, std::string, undefined>>& query, auto maxLimit, auto maxPage) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto rawLimit = parseInt(query.limit || "", 10);

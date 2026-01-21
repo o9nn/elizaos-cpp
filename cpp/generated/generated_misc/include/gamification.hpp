@@ -16,23 +16,23 @@ public:
     using std::enable_shared_from_this<LeaderboardEntry>::shared_from_this;
     double rank;
 
-    string userId;
+    std::string userId;
 
     double points;
 
     double level;
 
-    string levelName;
+    std::string levelName;
 
-    string username;
+    std::string username;
 
-    string avatar;
+    std::string avatar;
 };
 
 class LeaderboardResponse : public object, public std::enable_shared_from_this<LeaderboardResponse> {
 public:
     using std::enable_shared_from_this<LeaderboardResponse>::shared_from_this;
-    any scope;
+    std::any scope;
 
     array<std::shared_ptr<LeaderboardEntry>> entries;
 
@@ -44,7 +44,7 @@ public:
 class UserSummary : public object, public std::enable_shared_from_this<UserSummary> {
 public:
     using std::enable_shared_from_this<UserSummary>::shared_from_this;
-    string userId;
+    std::string userId;
 
     double allTimePoints;
 
@@ -54,11 +54,11 @@ public:
 
     double level;
 
-    string levelName;
+    std::string levelName;
 
     object nextMilestone;
 
-    any lastLoginDate;
+    std::any lastLoginDate;
 
     double swapsCompleted;
 };
@@ -76,11 +76,11 @@ public:
 class ReferralCodeResponse : public object, public std::enable_shared_from_this<ReferralCodeResponse> {
 public:
     using std::enable_shared_from_this<ReferralCodeResponse>::shared_from_this;
-    string code;
+    std::string code;
 
     std::shared_ptr<ReferralStats> stats;
 
-    string referralLink;
+    std::string referralLink;
 };
 
 class GamificationService : public BaseApiClient, public std::enable_shared_from_this<GamificationService> {

@@ -6,7 +6,7 @@ namespace elizaos {
 
 std::future<> executeSwap(Connection connection, PublicKey walletPubkey, SwapParams params) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    signature: string
+    signature: std::string
 }
 
 std::future<TransactionInstruction> createSwapInstruction(Connection _connection, PublicKey walletPubkey, SwapParams params) {

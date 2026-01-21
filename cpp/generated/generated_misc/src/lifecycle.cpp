@@ -32,7 +32,7 @@ std::shared_ptr<express::Router> createAgentLifecycleRouter(std::shared_ptr<Map<
             std::async([=]() { serverInstance->startAgent(agent); });
             auto runtime = agents->get(agentId);
             if (!runtime) {
-                throw any(std::make_shared<Error>(std::string("Failed to start agent")));
+                throw std::any(std::make_shared<Error>(std::string("Failed to start agent")));
             }
             logger->debug(std::string("[AGENT START] Successfully started agent: ") + agent->name + string_empty);
             sendSuccess(res, object{
@@ -41,7 +41,7 @@ std::shared_ptr<express::Router> createAgentLifecycleRouter(std::shared_ptr<Map<
                 object::pair{std::string("status"), std::string("active")}
             });
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("[AGENT START] Error starting agent:"), error);
             sendError(res, 500, std::string("START_ERROR"), std::string("Error starting agent"), (is<Error>(error)) ? error->message : String(error));

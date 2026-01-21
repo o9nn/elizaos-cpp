@@ -35,7 +35,7 @@ std::string preprocessLabelContent(const std::string& content) {
 MatchContent preprocessContent(MatchContent content) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    auto processedString: string;
+    auto processedString: std::string;
     switch (content.contentType) {
         case TagPatternType.FILE_PATH:
         processedString = preprocessFilePathContent(content.content);
@@ -55,7 +55,7 @@ MatchContent preprocessContent(MatchContent content) {
         processedString = preprocessLabelContent(content.content);
         break;
         // Add cases for other TagPatternType if they need specific preprocessing
-        // e.g., PR_CLOSES_ISSUE, REACTION might not need string preprocessing
+        // e.g., PR_CLOSES_ISSUE, REACTION might not need std::string preprocessing
         // default:
         processedString = content.content; // No preprocessing needed;
         break;

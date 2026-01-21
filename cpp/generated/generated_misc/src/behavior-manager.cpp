@@ -37,7 +37,7 @@ std::shared_ptr<Promise<void>> BehaviorManager::runLoop()
         {
             std::async([=]() { this->executeBehavior(); });
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("[BehaviorManager] Error in behavior:"), error);
         }
@@ -51,7 +51,7 @@ std::shared_ptr<Promise<void>> BehaviorManager::runLoop()
     return std::shared_ptr<Promise<void>>();
 }
 
-any BehaviorManager::getService()
+std::any BehaviorManager::getService()
 {
     return this->runtime->getService<std::shared_ptr<HyperfyService>>(HyperfyService::serviceType);
 }
@@ -92,7 +92,7 @@ std::shared_ptr<Promise<void>> BehaviorManager::executeBehavior()
     };
     auto state = std::async([=]() { this->runtime->composeState(newMessage); });
     auto actionsData = std::async([=]() { getHyperfyActions(this->runtime, newMessage, state, array<string>{ std::string("HYPERFY_GOTO_ENTITY"), std::string("HYPERFY_WALK_RANDOMLY"), std::string("HYPERFY_USE_ITEM"), std::string("HYPERFY_UNUSE_ITEM"), std::string("HYPERFY_AMBIENT_SPEECH"), std::string("REPLY"), std::string("IGNORE") }); });
-    auto actionsText = (actionsData->get_length() > 0) ? any(formatActions(actionsData)) : any(string_empty);
+    auto actionsText = (actionsData->get_length() > 0) ? std::any(formatActions(actionsData)) : std::any(string_empty);
     auto responsePrompt = composePromptFromState(object{
         object::pair{std::string("state"), std::string("state")}, 
         object::pair{std::string("template"), autoTemplate(actionsText)}

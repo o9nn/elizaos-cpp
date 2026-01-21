@@ -12,7 +12,7 @@ std::future<void> runE2ETests() {
     // Create runtime with shell service
     const auto runtime = createMockRuntime();
     const auto shellService = ShellService.start(runtime);
-    runtime.getService = <T extends any>(name: string): T | nullptr => {
+    runtime.getService = <T extends any>(name: std::string): T | nullptr => {
         if (name == 'SHELL') {
             return shellService;
         }

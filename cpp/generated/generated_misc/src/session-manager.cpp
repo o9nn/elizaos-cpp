@@ -3,17 +3,17 @@
 SessionManager::SessionManager(std::shared_ptr<Logger> logger_, std::shared_ptr<PlaywrightInstaller> playwrightInstaller_) : logger(logger_), playwrightInstaller(playwrightInstaller_)  {
 }
 
-std::shared_ptr<Promise<std::shared_ptr<BrowserSession>>> SessionManager::createSession(string sessionId, string clientId)
+std::shared_ptr<Promise<std::shared_ptr<BrowserSession>>> SessionManager::createSession(std::string sessionId, std::string clientId)
 {
     if (!this->playwrightInstaller->isReady()) {
         try
         {
             std::async([=]() { this->playwrightInstaller->ensurePlaywrightInstalled(); });
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             this->logger->error(std::string("Failed to install Playwright:"), error);
-            throw any(std::make_shared<Error>(std::string("Playwright is not installed and installation failed. Please install Playwright manually.")));
+            throw std::any(std::make_shared<Error>(std::string("Playwright is not installed and installation failed. Please install Playwright manually.")));
         }
     }
     auto clientSessions = this->getClientSessions(clientId);
@@ -65,16 +65,16 @@ std::shared_ptr<Promise<std::shared_ptr<BrowserSession>>> SessionManager::create
         object::pair{std::string("stagehand"), std::string("stagehand")}, 
         object::pair{std::string("createdAt"), std::make_shared<Date>()}
     };
-    this->sessions->set(sessionId, session);
+    this->sessions->std::set(sessionId, session);
     return session;
 }
 
-any SessionManager::getSession(string sessionId)
+std::any SessionManager::getSession(std::string sessionId)
 {
     return this->sessions->get(sessionId);
 }
 
-std::shared_ptr<Promise<void>> SessionManager::destroySession(string sessionId)
+std::shared_ptr<Promise<void>> SessionManager::destroySession(std::string sessionId)
 {
     auto session = this->sessions->get(sessionId);
     if (session) {
@@ -83,7 +83,7 @@ std::shared_ptr<Promise<void>> SessionManager::destroySession(string sessionId)
         {
             std::async([=]() { session->stagehand->close(); });
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             this->logger->error(std::string("Error closing session ") + sessionId + std::string(":"), error);
         }
@@ -92,7 +92,7 @@ std::shared_ptr<Promise<void>> SessionManager::destroySession(string sessionId)
     return std::shared_ptr<Promise<void>>();
 }
 
-array<std::shared_ptr<BrowserSession>> SessionManager::getClientSessions(string clientId)
+array<std::shared_ptr<BrowserSession>> SessionManager::getClientSessions(std::string clientId)
 {
     return Array->from(this->sessions->values())->filter([=](auto session) mutable
     {
@@ -101,7 +101,7 @@ array<std::shared_ptr<BrowserSession>> SessionManager::getClientSessions(string 
     );
 }
 
-std::shared_ptr<Promise<void>> SessionManager::cleanupClientSessions(string clientId)
+std::shared_ptr<Promise<void>> SessionManager::cleanupClientSessions(std::string clientId)
 {
     auto sessions = this->getClientSessions(clientId);
     for (auto& session : sessions)

@@ -76,7 +76,7 @@ struct Attachment {
     std::optional<std::string> url;
 };
 
-using AttachmentInput = std::variant<std::string, Attachment, (string, std::vector<Attachment)>>;
+using AttachmentInput = std::variant<std::string, Attachment, (std::string, std::vector<Attachment)>>;
 
 struct MessageContentWithAttachments {
     std::optional<AttachmentInput> attachments;

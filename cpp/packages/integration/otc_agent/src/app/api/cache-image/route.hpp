@@ -20,7 +20,7 @@ namespace elizaos {
 /**
  * Cache external images to Vercel Blob storage
  * GET /api/cache-image?url=<external_url>
- * Returns { cachedUrl: string } or { error: string }
+ * Returns { cachedUrl: std::string } or { error: std::string }
  */
 std::future<void> GET(NextRequest request);
 

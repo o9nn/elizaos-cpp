@@ -162,7 +162,7 @@ std::future<void> setAgentConfig(OptionValues opts) {
 
             std::cout << "Updating configuration for agent " + resolvedAgentId << std::endl;
 
-            auto config: Record<string, unknown>;
+            auto config: Record<std::string, unknown>;
             if (opts.config) {
                 try {
                     config = /* JSON.parse */ opts.config;
@@ -180,7 +180,7 @@ std::future<void> setAgentConfig(OptionValues opts) {
                                 );
                             }
                             } else {
-                                throw std::runtime_error('Please provide either a config JSON string (-c) or a config file path (-f)');
+                                throw std::runtime_error('Please provide either a config JSON std::string (-c) or a config file path (-f)');
                             }
 
                             // API Endpoint: PATCH /agents/:agentId
@@ -197,7 +197,7 @@ std::future<void> setAgentConfig(OptionValues opts) {
                                     );
                                 }
 
-                                const auto data = safeJsonParse<ApiResponse<{ id: string }>>(response);
+                                const auto data = safeJsonParse<ApiResponse<{ id: std::string }>>(response);
                                 const auto result = data.data || nullptr;
 
                                 std::cout << "Successfully updated configuration for agent " + std::to_string(result.id || resolvedAgentId) << std::endl;

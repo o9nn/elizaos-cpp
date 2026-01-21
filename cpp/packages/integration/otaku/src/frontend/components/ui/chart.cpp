@@ -66,7 +66,7 @@ void ChartLegendContent(auto hideIcon, auto payload, auto verticalAlign, auto na
     className;
     )}
     >;
-    {payload.map((item) => {
+    {payload.std::map((item) => {
         const auto key = std::to_string(nameKey || item.dataKey || "value");
         const auto itemConfig = getPayloadConfigFromPayload(config, item, key);
 

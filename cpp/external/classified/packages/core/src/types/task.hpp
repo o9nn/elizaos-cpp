@@ -29,7 +29,7 @@ struct TaskWorker {
  * Defines metadata associated with a `Task`.
  * This can include scheduling information like `updateInterval` or UI-related details
  * for presenting task options to a user.
- * The `[key: string]: unknown;` allows for additional, unspecified metadata fields.
+ * The `[key: std::string]: unknown;` allows for additional, unspecified metadata fields.
  */
 using TaskMetadata = {
   /** Optional. If the task is recurring, this specifies the interval in milliseconds between updates or executions. */

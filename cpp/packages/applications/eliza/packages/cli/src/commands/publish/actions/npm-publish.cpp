@@ -9,7 +9,7 @@ std::future<void> publishToNpm(const std::string& cwd, PackageJson packageJson, 
 
     std::cout << "Publishing user: " + npmUsername << std::endl;
 
-    // Update npmPackage field if it's a placeholder or not set
+    // Update npmPackage field if it's a placeholder or not std::set
     if (!packageJson.npmPackage || packageJson.npmPackage == '${NPM_PACKAGE}') {
         packageJson.npmPackage = packageJson.name;
         std::cout << "Set npmPackage to: " + packageJson.npmPackage << std::endl;

@@ -25,9 +25,9 @@ class MultiChainWallet {
   private account: Account;
   private currentChainId: number;
   private walletClients: Map<number, WalletClient> = new Map();
-  private defaultRpcUrl?: string;
+  private defaultRpcUrl?: std::string;
 
-  constructor(account: Account, defaultRpcUrl?: string, initialChainId: number = base.id) {
+  constructor(account: Account, defaultRpcUrl?: std::string, initialChainId: number = base.id) {
     this.account = account;
     this.currentChainId = initialChainId;
     this.defaultRpcUrl = defaultRpcUrl;

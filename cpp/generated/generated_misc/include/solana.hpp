@@ -9,7 +9,7 @@
 #include "./util.h"
 
 extern std::shared_ptr<Autofun> idl;
-any initSolanaConfig();
+std::any initSolanaConfig();
 
-extern std::function<any(any, any)> getProgram;
+extern std::function<std::any(std::any, std::any)> getProgram;
 #endif

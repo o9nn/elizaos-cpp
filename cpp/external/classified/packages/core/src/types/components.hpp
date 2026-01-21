@@ -28,17 +28,17 @@ struct ActionExample {
 };
 
 /**
- * Callback function type for handlers
+ * Callback std::function type for handlers
  */
 using HandlerCallback = std::function<std::future<std::vector<Memory>>(Content, std::any)>;
 
 /**
- * Handler function type for processing messages
+ * Handler std::function type for processing messages
  */
 using Handler = std::function<std::variant<Promise<ActionResult, void, undefined>>(IAgentRuntime, Memory, State, std::any, HandlerCallback, std::vector<Memory>)>;
 
 /**
- * Validator function type for actions/evaluators
+ * Validator std::function type for actions/evaluators
  */
 using Validator = std::function<std::future<bool>(IAgentRuntime, Memory, State)>;
 
@@ -110,7 +110,7 @@ struct ActionContext {
 };
 
 /**
- * Helper function to create ActionResult with proper defaults
+ * Helper std::function to create ActionResult with proper defaults
  */
 ActionResult createActionResult(std::optional<ActionResult> partial = {});
 

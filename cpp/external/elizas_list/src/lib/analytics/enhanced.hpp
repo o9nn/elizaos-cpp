@@ -23,10 +23,10 @@ struct UserSession {
 };
 
 class EnhancedAnalytics {
-  static async trackProjectView(
-    projectId: string,
+  static std::async trackProjectView(
+    projectId: std::string,
     session: UserSession,
-    referrer?: string
+    referrer?: std::string
   ) {
     try {
       const [view, sessionData] = await Promise.all([

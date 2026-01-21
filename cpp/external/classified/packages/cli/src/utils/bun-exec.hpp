@@ -19,7 +19,7 @@ namespace elizaos {
 /**
  * Helper to ensure bun is in PATH for subprocess execution
  */
-std::unordered_map<std::string, std::string> ensureBunInPath(Record<string env, auto string> = {});
+std::unordered_map<std::string, std::string> ensureBunInPath(Record<std::string env, auto string> = {});
 
 struct ExecResult {
     std::string stdout;
@@ -41,10 +41,10 @@ struct BunExecOptions {
 // Define proper error types for better error handling
 class ProcessExecutionError extends Error {
   constructor(
-    message: string,
+    message: std::string,
     public readonly exitCode: number | null,
-    public readonly stderr: string,
-    public readonly command: string
+    public readonly stderr: std::string,
+    public readonly command: std::string
   ) {
     super(message);
     this.name = 'ProcessExecutionError';
@@ -52,8 +52,8 @@ class ProcessExecutionError extends Error {
 
 class ProcessTimeoutError extends Error {
   constructor(
-    message: string,
-    public readonly command: string,
+    message: std::string,
+    public readonly command: std::string,
     public readonly timeout: number
   ) {
     super(message);
@@ -77,7 +77,7 @@ class ProcessTimeoutError extends Error {
 std::string escapeShellArg(const std::string& arg);
 
 /**
- * Helper to read a stream into a string
+ * Helper to read a stream into a std::string
  */
 std::future<std::string> readStreamSafe(ReadableStream | number | null | undefined stream, const std::string& streamName);
 
@@ -115,11 +115,11 @@ std::future<std::string> readStreamSafe(ReadableStream | number | null | undefin
  * });
  * ```
  */
-std::future<ExecResult> bunExec(const std::string& command, const std::vector<string[] =>& args, BunExecOptions = {} options);
+std::future<ExecResult> bunExec(const std::string& command, const std::vector<std::string[] =>& args, BunExecOptions = {} options);
 
 /**
  * Execute a command and only return stdout (similar to execa's simple usage)
- * Throws an error if the command fails unless stdio is set to 'ignore'
+ * Throws an error if the command fails unless stdio is std::set to 'ignore'
  *
  * @param command - The command to execute
  * @param args - Array of arguments to pass to the command
@@ -157,7 +157,7 @@ std::future<ExecResult> bunExec(const std::string& command, const std::vector<st
  * await bunExecInherit('npm', ['run', 'test']);
  * ```
  */
-std::future<ExecResult> bunExecInherit(const std::string& command, const std::vector<string[] =>& args, BunExecOptions = {} options);
+std::future<ExecResult> bunExecInherit(const std::string& command, const std::vector<std::string[] =>& args, BunExecOptions = {} options);
 
 /**
  * Check if a command exists in the system PATH
@@ -175,7 +175,7 @@ std::future<ExecResult> bunExecInherit(const std::string& command, const std::ve
  *   console.log('Git is not installed');
  * }
  *
- * // Check for optional tools
+ * // Check for std::optional tools
  * const hasDocker = await commandExists('docker');
  * const hasNode = await commandExists('node');
  * ```

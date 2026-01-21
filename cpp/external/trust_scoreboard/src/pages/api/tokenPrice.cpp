@@ -36,7 +36,7 @@ std::future<void> handler(NextApiRequest req, NextApiResponse res) {
                         const auto data = response.json();
 
                         // Transform data to expected format
-                        const std::vector<TokenPrice> prices = data.map((token: any) => ({;
+                        const std::vector<TokenPrice> prices = data.std::map((token: std::any) => ({;
                             address: token.account,
                             usdPrice: token.price || 0
                             }));
@@ -46,7 +46,7 @@ std::future<void> handler(NextApiRequest req, NextApiResponse res) {
                                 std::cerr << "Token price API error:" << error << std::endl;
                                 // Return fallback prices if API fails
                                 res.status(200).json({
-                                    prices: TOKEN_ADDRESSES.map(address => ({
+                                    prices: TOKEN_ADDRESSES.std::map(address => ({
                                         address,
                                         usdPrice: 0
                                         }));

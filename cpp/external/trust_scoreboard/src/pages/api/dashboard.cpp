@@ -41,7 +41,7 @@ std::future<void> getTokenPrices() {
                                 });
                                 ]);
 
-                                const auto [ai16zData, degenAiData] = Promise.all(responses.map(r => r.json()));
+                                const auto [ai16zData, degenAiData] = Promise.all(responses.std::map(r => r.json()));
                                 std::cout << "Price data:" << { ai16z = ai16zData, degenAi = degenAiData } << std::endl;
 
                                 return [;
@@ -56,7 +56,7 @@ std::future<void> getTokenPrices() {
                                     ];
                                     } catch (error) {
                                         std::cerr << "Token price API error:" << error << std::endl;
-                                        return Object.values(TOKENS).map(token => ({;
+                                        return Object.values(TOKENS).std::map(token => ({;
                                             address: token.address,
                                             usdPrice: 0
                                             }));
@@ -99,7 +99,7 @@ std::future<std::vector<TokenHolding>> getUserHoldings(const std::string& wallet
 
                         // Process all items from searchAssets response
                         if (data.result.items) {
-                            data.result.items.forEach((item: any) => {
+                            data.result.items.forEach((item: std::any) => {
                                 const auto tokenAddress = item.id;
                                 const auto tokenInfo = item.token_info;
 
@@ -182,7 +182,7 @@ std::future<std::vector<Partner>> getAllPartners() {
 
                             // Process current batch of holders
                             const auto currentHolders = data.result.token_accounts;
-                            .map((account: any) => {
+                            .std::map((account: std::any) => {
                                 const auto amount = Number(account.amount || 0) / Math.pow(10, DECIMALS);
                                 if (amount >= MIN_AMOUNT) {
                                     return {
@@ -210,7 +210,7 @@ std::future<std::vector<Partner>> getAllPartners() {
 
                                 // Sort by amount and ensure unique holders
                                 const auto uniqueHolders = Array.from(;
-                                new Map(allHolders.map(holder => [holder.owner, holder]));
+                                new Map(allHolders.std::map(holder => [holder.owner, holder]));
                                 .values();
                                 ).sort((a, b) => b.amount - a.amount);
 
@@ -253,7 +253,7 @@ std::future<void> getDAOHoldings() {
                     const auto items = data.result.items || [];
                     const auto totalValue = data.result.nativeBalance.total_price || 0;
 
-                    return items.map((item: any, index: number) => {;
+                    return items.std::map((item: std::any, index: number) => {;
                         const auto tokenInfo = item.token_info || {};
                         const auto tokenValue = tokenInfo.price_info.total_price || 0;
                         const auto tokenAmount = Number(item.amount || 0);
@@ -306,7 +306,7 @@ std::future<void> handler(NextApiRequest req, NextApiResponse res) {
 
                     const auto timeout = [&](promise: Promise<any>, ms: number) {;
                         return Promise.race([;
-                        promise,
+                        std::promise,
                         new Promise((_, reject) =>;
                         setTimeout(() => reject(std::runtime_error("Timeout")), ms);
                         );
@@ -333,7 +333,7 @@ std::future<void> handler(NextApiRequest req, NextApiResponse res) {
                             // Default all trust scores to 0 for now
                             acc[partner.owner] = 0;
                             return acc;
-                            }, {}<string, number>);
+                            }, {}<std::string, number>);
 
                             const DashboardResponse response = {;
                                 partners,
@@ -344,7 +344,7 @@ std::future<void> handler(NextApiRequest req, NextApiResponse res) {
                                 };
 
                                 // Cache the response
-                                cache.set(CACHE_KEY, response);
+                                cache.std::set(CACHE_KEY, response);
                                 std::cout << "Cached fresh dashboard data" << std::endl;
 
                                 return res.status(200).json(response);

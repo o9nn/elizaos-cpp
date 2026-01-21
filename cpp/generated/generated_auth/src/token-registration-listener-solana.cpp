@@ -42,7 +42,7 @@ void startSolanaListener()
         );
         console->log(std::string("[Solana Listener] Now listening for token registrations"));
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("[Solana Listener] Failed to start:"), error);
         isListening = false;
@@ -86,14 +86,14 @@ void backfillSolanaEvents(array<string> signatures)
 {
     auto programId = process->env->NEXT_PUBLIC_SOLANA_PROGRAM_ID;
     if (!programId) {
-        throw any(std::make_shared<Error>(std::string("SOLANA_PROGRAM_ID not configured")));
+        throw std::any(std::make_shared<Error>(std::string("SOLANA_PROGRAM_ID not configured")));
     }
     auto rpcUrl = OR((process->env->NEXT_PUBLIC_SOLANA_RPC), (std::string("https://api.mainnet-beta.solana.com")));
     auto conn = std::make_shared<Connection>(rpcUrl, std::string("confirmed"));
     console->log(std::string("[Solana Backfill] Fetching recent transactions for program"), programId);
     auto sigs = OR((signatures), ((std::async([=]() { conn->getSignaturesForAddress(std::make_shared<PublicKey>(programId), object{
         object::pair{std::string("limit"), 100}
-    }); }))->map([=](auto s) mutable
+    }); }))->std::map([=](auto s) mutable
     {
         return s["signature"];
     }
@@ -118,7 +118,7 @@ void backfillSolanaEvents(array<string> signatures)
                 }
             }
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             console->warn(std::string("[Solana Backfill] Failed to process signature ") + sig + std::string(":"), error);
         }
@@ -128,7 +128,7 @@ void backfillSolanaEvents(array<string> signatures)
 
 
 boolean isListening = false;
-any connection = nullptr;
+std::any connection = nullptr;
 
 void Main(void)
 {

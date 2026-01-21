@@ -45,7 +45,7 @@ std::shared_ptr<Promise<string>> extractProjectType(std::shared_ptr<IAgentRuntim
 };
 
 
-array<string> extractRequirements(string text)
+array<string> extractRequirements(std::string text)
 {
     shared requirements = array<string>();
     auto lines = text->split(std::string("\
@@ -75,7 +75,7 @@ array<string> extractRequirements(string text)
 };
 
 
-array<string> extractAPIs(string text)
+array<string> extractAPIs(std::string text)
 {
     shared apis = array<string>();
     auto apiPatterns = array<std::shared_ptr<RegExp>>{ (new RegExp(std::string("(\w+)\s+API/"))), (new RegExp(std::string("API[:\s]+(\w+)/"))), (new RegExp(std::string("uses?\s+(\w+)/"))), (new RegExp(std::string("integrates?\s+with\s+(\w+)/"))) };
@@ -94,7 +94,7 @@ array<string> extractAPIs(string text)
 };
 
 
-any extractProjectName(string text)
+std::any extractProjectName(std::string text)
 {
     auto quotedMatch = text->match((new RegExp(std::string("["']([^"']+)["'"))));
     if (quotedMatch) {
@@ -108,7 +108,7 @@ any extractProjectName(string text)
 };
 
 
-string getNextStepPrompt(any form, string completedStepId)
+std::string getNextStepPrompt(std::any form, std::string completedStepId)
 {
     auto steps = OR((form["steps"]), (array<any>()));
     auto currentStepIndex = steps["findIndex"]([=](auto s) mutable
@@ -124,7 +124,7 @@ string getNextStepPrompt(any form, string completedStepId)
 };
 
 
-any extractProjectData(any formData)
+std::any extractProjectData(std::any formData)
 {
     auto data = object{
         object::pair{std::string("projectName"), OR((OR((formData["projectName"]), (formData["project_name"]))), (std::string("unnamed-project")))}, 
@@ -317,7 +317,7 @@ This may take a few minutes. I'll:\
                 }
                 successMessage += std::string("\
 \
-🎉 Your ") + projectData["targetType"] + std::string(" is ready! Let me know if you need any modifications.");
+🎉 Your ") + projectData["targetType"] + std::string(" is ready! Let me know if you need std::any modifications.");
                 if (callback) {
                     std::async([=]() { callback(object{
                         object::pair{std::string("text"), successMessage}, 

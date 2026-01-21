@@ -10,15 +10,15 @@ class PackageManagerClient;
 class PackageInfo : public object, public std::enable_shared_from_this<PackageInfo> {
 public:
     using std::enable_shared_from_this<PackageInfo>::shared_from_this;
-    string name;
+    std::string name;
 
-    string version;
+    std::string version;
 
-    string description;
+    std::string description;
 
     double downloads;
 
-    string repository;
+    std::string repository;
 
     array<string> dependencies;
 };
@@ -26,8 +26,8 @@ public:
 class PackageManagerClient : public object, public std::enable_shared_from_this<PackageManagerClient> {
 public:
     using std::enable_shared_from_this<PackageManagerClient>::shared_from_this;
-    static std::shared_ptr<Promise<std::shared_ptr<PackageInfo>>> getNpmInfo(string packageName);
-    static std::shared_ptr<Promise<std::shared_ptr<PackageInfo>>> getPyPiInfo(string packageName);
+    static std::shared_ptr<Promise<std::shared_ptr<PackageInfo>>> getNpmInfo(std::string packageName);
+    static std::shared_ptr<Promise<std::shared_ptr<PackageInfo>>> getPyPiInfo(std::string packageName);
 };
 
 #endif

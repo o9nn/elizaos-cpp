@@ -114,7 +114,7 @@ std::shared_ptr<WebPage> ContentManager::getPage(const std::string& page_id) con
 
 std::vector<std::shared_ptr<WebPage>> ContentManager::getAllPages() const {
     std::vector<std::shared_ptr<WebPage>> result;
-    for (const auto& pair : pages_) {
+    for (const auto& std::pair : pages_) {
         result.push_back(pair.second);
     }
     return result;
@@ -122,7 +122,7 @@ std::vector<std::shared_ptr<WebPage>> ContentManager::getAllPages() const {
 
 std::vector<std::shared_ptr<WebPage>> ContentManager::getPagesByTemplate(const std::string& template_name) const {
     std::vector<std::shared_ptr<WebPage>> result;
-    for (const auto& pair : pages_) {
+    for (const auto& std::pair : pages_) {
         if (pair.second->template_name == template_name) {
             result.push_back(pair.second);
         }
@@ -149,7 +149,7 @@ bool ContentManager::loadPagesFromDirectory(const std::filesystem::path& directo
                 auto metadata = parsePageMetadata(content);
                 std::string clean_content = stripMetadata(content);
                 
-                std::string title = metadata.count("title") ? metadata["title"] : entry.path().stem().string();
+                std::string title = metadata.count("title") ? metadata["title"] : entry.path().stem().std::string();
                 
                 WebPage page(page_id, title, clean_content);
                 page.source_path = entry.path();
@@ -239,7 +239,7 @@ std::string ContentManager::stripMetadata(const std::string& content) const {
 }
 
 std::string ContentManager::generatePageId(const std::filesystem::path& file_path) const {
-    std::string id = file_path.stem().string();
+    std::string id = file_path.stem().std::string();
     std::replace(id.begin(), id.end(), ' ', '_');
     std::transform(id.begin(), id.end(), id.begin(),
         [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
@@ -248,7 +248,7 @@ std::string ContentManager::generatePageId(const std::filesystem::path& file_pat
 }
 
 bool ContentManager::isMarkdownFile(const std::filesystem::path& file_path) const {
-    std::string ext = file_path.extension().string();
+    std::string ext = file_path.extension().std::string();
     std::transform(ext.begin(), ext.end(), ext.begin(),
         [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
     std::transform(ext.begin(), ext.end(), ext.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
@@ -256,7 +256,7 @@ bool ContentManager::isMarkdownFile(const std::filesystem::path& file_path) cons
 }
 
 bool ContentManager::isHtmlFile(const std::filesystem::path& file_path) const {
-    std::string ext = file_path.extension().string();
+    std::string ext = file_path.extension().std::string();
     std::transform(ext.begin(), ext.end(), ext.begin(),
         [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
     std::transform(ext.begin(), ext.end(), ext.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });

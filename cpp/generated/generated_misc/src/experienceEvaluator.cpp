@@ -1,10 +1,10 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-experience/evaluators/experienceEvaluator.h"
 
-string extractContext(array<std::shared_ptr<Memory>> messages)
+std::string extractContext(array<std::shared_ptr<Memory>> messages)
 {
     if (OR((!messages), (messages->get_length() == 0))) return std::string("Unknown context");
     auto recentMessages = messages->slice(-3);
-    return recentMessages->map([=](auto m) mutable
+    return recentMessages->std::map([=](auto m) mutable
     {
         return m->content->text;
     }
@@ -12,7 +12,7 @@ string extractContext(array<std::shared_ptr<Memory>> messages)
 };
 
 
-string extractAction(string text)
+std::string extractAction(std::string text)
 {
     auto actionPatterns = array<std::shared_ptr<RegExp>>{ (new RegExp(std::string("trying to (.+?)(?:\.|,|$)"))), (new RegExp(std::string("attempted to (.+?)(?:\.|,|$)"))), (new RegExp(std::string("executed (.+?)(?:\.|,|$)"))), (new RegExp(std::string("ran (.+?)(?:\.|,|$)"))), (new RegExp(std::string("performed (.+?)(?:\.|,|$)"))) };
     for (auto& pattern : actionPatterns)
@@ -24,7 +24,7 @@ string extractAction(string text)
 };
 
 
-string extractError(string text)
+std::string extractError(std::string text)
 {
     auto errorMatch = text->match((new RegExp(std::string("error:?\s*(.+?)(?:\.|$)"))));
     if (errorMatch) return (*const_(errorMatch))[1]->trim();
@@ -34,7 +34,7 @@ string extractError(string text)
 };
 
 
-string extractDiscovery(string text)
+std::string extractDiscovery(std::string text)
 {
     auto patterns = array<std::shared_ptr<RegExp>>{ (new RegExp(std::string("found (?:that )?(.+?)(?:\.|,|$)"))), (new RegExp(std::string("discovered (?:that )?(.+?)(?:\.|,|$)"))), (new RegExp(std::string("realized (?:that )?(.+?)(?:\.|,|$)"))), (new RegExp(std::string("noticed (?:that )?(.+?)(?:\.|,|$)"))) };
     for (auto& pattern : patterns)
@@ -46,14 +46,14 @@ string extractDiscovery(string text)
 };
 
 
-string extractLearning(string text, string type)
+std::string extractLearning(std::string text, std::string type)
 {
     auto learningMatch = text->match((new RegExp(std::string("(?:learned|learning|lesson):?\s*(.+?)(?:\.|$)"))));
     if (learningMatch) return (*const_(learningMatch))[1]->trim();
     static switch_type __switch14928_15422 = {
-        { any(std::string("correction")), 1 },
-        { any(std::string("discovery")), 2 },
-        { any(std::string("success")), 3 }
+        { std::any(std::string("correction")), 1 },
+        { std::any(std::string("discovery")), 2 },
+        { std::any(std::string("success")), 3 }
     };
     switch (__switch14928_15422[type])
     {
@@ -61,16 +61,16 @@ string extractLearning(string text, string type)
         return std::string("Corrected approach works better than initial attempt");
     case 2:
         auto discovery = extractDiscovery(text);
-        return (discovery != std::string("made a discovery")) ? any(discovery) : any(std::string("New capability or information discovered"));
+        return (discovery != std::string("made a discovery")) ? std::any(discovery) : std::any(std::string("New capability or information discovered"));
     case 3:
         return std::string("This approach successfully completes the task");
     default:
-        return std::string("Experience recorded for future reference");
+        return std::string("Experience recorded for std::future reference");
     }
 };
 
 
-string extractHypothesis(string text)
+std::string extractHypothesis(std::string text)
 {
     auto patterns = array<std::shared_ptr<RegExp>>{ (new RegExp(std::string("i (?:think|believe) (?:that )?(.+?)(?:\.|$)"))), (new RegExp(std::string("hypothesis:?\s*(.+?)(?:\.|$)"))), (new RegExp(std::string("theory:?\s*(.+?)(?:\.|$)"))) };
     for (auto& pattern : patterns)
@@ -82,7 +82,7 @@ string extractHypothesis(string text)
 };
 
 
-string detectDomain(string text)
+std::string detectDomain(std::string text)
 {
     auto domains = object{
         object::pair{std::string("shell"), array<string>{ std::string("command"), std::string("terminal"), std::string("bash"), std::string("shell"), std::string("execute"), std::string("script") }}, 

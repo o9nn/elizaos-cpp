@@ -126,7 +126,7 @@ void Main(void)
                         object::pair{std::string("database/tasks.json"), true}, 
                         object::pair{std::string("database/server_agents.json"), true}
                     };
-                    return (const_(entries)[path]) ? any(object{}) : any(nullptr);
+                    return (const_(entries)[path]) ? std::any(object{}) : std::any(nullptr);
                 }
                 );
                 mockZip["readAsText"]["mockImplementation"]([=](auto entry) mutable
@@ -204,7 +204,7 @@ void Main(void)
                 };
                 mockZip["getEntry"]["mockImplementation"]([=](auto path) mutable
                 {
-                    return (path == std::string("manifest.json")) ? any(object{}) : any(nullptr);
+                    return (path == std::string("manifest.json")) ? std::any(object{}) : std::any(nullptr);
                 }
                 );
                 mockZip["readAsText"]["mockReturnValue"](JSON->stringify(manifest));
@@ -212,7 +212,7 @@ void Main(void)
                 std::async([=]() { expect(importService->importFromZip(zipBuffer))->rejects->toThrow(std::string("Missing expected table in export: entities")); });
             }
             );
-            it(std::string("should handle memories with vector embeddings"), [=]() mutable
+            it(std::string("should handle memories with std::vector embeddings"), [=]() mutable
             {
                 shared manifest = object{
                     object::pair{std::string("version"), std::string("1.0.0")}, 
@@ -381,7 +381,7 @@ void Main(void)
                 mockDb["transaction"]["mockImplementation"]([=](auto callback) mutable
                 {
                     std::async([=]() { callback(mockTx); });
-                    throw any(std::make_shared<Error>(std::string("Transaction failed")));
+                    throw std::any(std::make_shared<Error>(std::string("Transaction failed")));
                 }
                 );
                 auto zipBuffer = Buffer::from(std::string("mock-zip-data"));

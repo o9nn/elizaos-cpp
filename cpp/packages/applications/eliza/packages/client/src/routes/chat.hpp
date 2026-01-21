@@ -18,7 +18,7 @@ namespace elizaos {
 
 
 /**
- * Displays the agent chat interface with an optional details sidebar in a resizable layout.
+ * Displays the agent chat interface with an std::optional details sidebar in a resizable layout.
  *
  * Renders the chat panel for a specific agent, and conditionally shows a sidebar with agent details based on user interaction. If no agent ID is present in the URL, displays a "No data." message.
  */

@@ -45,8 +45,8 @@ class VisionModels {
   private poseDetector: poseDetection.PoseDetector | null = null;
   private initialized = false;
   private florence2Model: Florence2Model | null = null;
-  private cocoSsdModel: any = null;
-  private posenetModel: any = null;
+  private cocoSsdModel: std::any = null;
+  private posenetModel: std::any = null;
 
   constructor(runtime: IAgentRuntime, config?: VisionModelConfig) {
     this.runtime = runtime;

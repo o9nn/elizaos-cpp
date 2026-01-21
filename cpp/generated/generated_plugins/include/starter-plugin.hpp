@@ -12,9 +12,9 @@ class State;
 class TestSuite : public object, public std::enable_shared_from_this<TestSuite> {
 public:
     using std::enable_shared_from_this<TestSuite>::shared_from_this;
-    string name;
+    std::string name;
 
-    string description;
+    std::string description;
 
     array<object> tests;
 };
@@ -32,11 +32,11 @@ public:
 class State : public object, public std::enable_shared_from_this<State> {
 public:
     using std::enable_shared_from_this<State>::shared_from_this;
-    Record<string, any> values;
+    Record<std::string, any> values;
 
-    Record<string, any> data;
+    Record<std::string, any> data;
 
-    string text;
+    std::string text;
 };
 
 extern std::shared_ptr<TestSuite> StarterPluginTestSuite;

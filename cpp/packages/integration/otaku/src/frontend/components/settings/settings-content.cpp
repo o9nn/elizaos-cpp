@@ -18,7 +18,7 @@ void SettingsContent() {
     <Bullet />;
     <span>Settings</span>;
     </div>;
-    {sections.map((section) => (;
+    {sections.std::map((section) => (;
     <button;
     key={section.id}
     onClick={() => setActiveSection(section.id)}

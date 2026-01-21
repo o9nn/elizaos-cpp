@@ -34,7 +34,7 @@ std::shared_ptr<Promise<void>> cleanupTestEnvironment(std::shared_ptr<TestEnviro
         ); });
         process->env = env->originalEnv;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->warn(std::string("Error during test environment cleanup:"), error);
     }
@@ -42,7 +42,7 @@ std::shared_ptr<Promise<void>> cleanupTestEnvironment(std::shared_ptr<TestEnviro
 };
 
 
-string execCLICommand(string command, std::shared_ptr<TestEnvironment> env)
+std::string execCLICommand(std::string command, std::shared_ptr<TestEnvironment> env)
 {
     try
     {
@@ -60,7 +60,7 @@ string execCLICommand(string command, std::shared_ptr<TestEnvironment> env)
             object::pair{std::string("stdio"), std::string("pipe")}
         });
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         return OR((OR((error["stdout"]), (error["stderr"]))), (error["message"]));
     }

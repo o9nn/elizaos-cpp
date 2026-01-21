@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/server/src/s3Client.h"
 
-std::shared_ptr<Promise<void>> ensureMinioBucketExists(std::shared_ptr<S3Client> client, string bucketName)
+std::shared_ptr<Promise<void>> ensureMinioBucketExists(std::shared_ptr<S3Client> client, std::string bucketName)
 {
     try
     {
@@ -10,7 +10,7 @@ std::shared_ptr<Promise<void>> ensureMinioBucketExists(std::shared_ptr<S3Client>
         })); });
         logger["log"](std::string("[MinIO Check] Bucket '") + bucketName + std::string("' already exists."));
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         if (OR((OR((error["name"] == std::string("NotFound")), (error["name"] == std::string("NoSuchBucket")))), (error["$metadata"]["httpStatusCode"] == 404))) {
             logger["log"](std::string("[MinIO Check] Bucket '") + bucketName + std::string("' not found. Attempting to create..."));
@@ -21,14 +21,14 @@ std::shared_ptr<Promise<void>> ensureMinioBucketExists(std::shared_ptr<S3Client>
                 })); });
                 logger["log"](std::string("[MinIO Check] Successfully created bucket '") + bucketName + std::string("'."));
             }
-            catch (const any& createError)
+            catch (const std::any& createError)
             {
                 logger["error"](std::string("[MinIO Check] Failed to create bucket '") + bucketName + std::string("':"), createError);
-                throw any(std::make_shared<Error>(std::string("Failed to create necessary MinIO bucket: ") + bucketName + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("Failed to create necessary MinIO bucket: ") + bucketName + string_empty));
             }
         } else {
             logger["error"](std::string("[MinIO Check] Error checking for bucket '") + bucketName + std::string("':"), error);
-            throw any(std::make_shared<Error>(std::string("Error checking for MinIO bucket: ") + bucketName + string_empty));
+            throw std::any(std::make_shared<Error>(std::string("Error checking for MinIO bucket: ") + bucketName + string_empty));
         }
     }
     return std::shared_ptr<Promise<void>>();
@@ -45,7 +45,7 @@ std::shared_ptr<Promise<object>> getS3Client()
         };
     }
     if (isInitialized) {
-        throw any(std::make_shared<Error>(std::string("S3 Client was marked initialized but instance/details are missing.")));
+        throw std::any(std::make_shared<Error>(std::string("S3 Client was marked initialized but instance/details are missing.")));
     }
     isInitialized = true;
     auto minioEndpointEnv = process->env->MINIO_ENDPOINT;
@@ -91,7 +91,7 @@ std::shared_ptr<Promise<object>> getS3Client()
                 logger["log"](std::string("[S3 Client Setup] Detected R2 endpoint, using public base URL: ") + resolvedPublicBaseUrl + string_empty);
             } else {
                 resolvedPublicBaseUrl = string_empty + s3EndpointEnv + std::string("/") + s3BucketNameEnv + string_empty;
-                logger["warn"](std::string("[S3 Client Setup] Using generic S3 endpoint. Constructed public base URL: ") + resolvedPublicBaseUrl + std::string(". Verify this is correct or set S3_PUBLIC_BASE_URL."));
+                logger["warn"](std::string("[S3 Client Setup] Using generic S3 endpoint. Constructed public base URL: ") + resolvedPublicBaseUrl + std::string(". Verify this is correct or std::set S3_PUBLIC_BASE_URL."));
             }
             logger["log"](std::string("[S3 Client Setup] S3 Compatible Client initialized. Bucket: ") + resolvedBucketName + string_empty);
         } else {
@@ -116,7 +116,7 @@ std::shared_ptr<Promise<object>> getS3Client()
             std::async([=]() { ensureMinioBucketExists(s3ClientInstance, resolvedBucketName); });
         }
         if (OR((OR((!s3ClientInstance), (!resolvedBucketName))), (!resolvedPublicBaseUrl))) {
-            throw any(std::make_shared<Error>(std::string("S3 client initialization failed unexpectedly after configuration attempt.")));
+            throw std::any(std::make_shared<Error>(std::string("S3 client initialization failed unexpectedly after configuration attempt.")));
         }
         return object{
             object::pair{std::string("client"), s3ClientInstance}, 
@@ -124,25 +124,25 @@ std::shared_ptr<Promise<object>> getS3Client()
             object::pair{std::string("publicBaseUrl"), resolvedPublicBaseUrl}
         };
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         isInitialized = false;
         logger["error"](std::string("[S3 Client Setup] Critical error during S3 client initialization:"), error);
-        throw any(error);
+        throw std::any(error);
     }
 };
 
 
-string PUBLIC_STORAGE_BASE_URL = OR((process->env->PUBLIC_STORAGE_BASE_URL), (std::string("https://storage.auto.fun")));
-string DEFAULT_MINIO_ENDPOINT = std::string("http://localhost:9000");
-string DEFAULT_MINIO_ACCESS_KEY = std::string("minio_user");
-string DEFAULT_MINIO_SECRET_KEY = std::string("minio_password");
-string DEFAULT_MINIO_BUCKET = std::string("autofun");
-string DEFAULT_MINIO_REGION = std::string("us-east-1");
-any s3ClientInstance = nullptr;
+std::string PUBLIC_STORAGE_BASE_URL = OR((process->env->PUBLIC_STORAGE_BASE_URL), (std::string("https://storage.auto.fun")));
+std::string DEFAULT_MINIO_ENDPOINT = std::string("http://localhost:9000");
+std::string DEFAULT_MINIO_ACCESS_KEY = std::string("minio_user");
+std::string DEFAULT_MINIO_SECRET_KEY = std::string("minio_password");
+std::string DEFAULT_MINIO_BUCKET = std::string("autofun");
+std::string DEFAULT_MINIO_REGION = std::string("us-east-1");
+std::any s3ClientInstance = nullptr;
 boolean isUsingMinio = false;
-any resolvedBucketName = nullptr;
-any resolvedPublicBaseUrl = nullptr;
+std::any resolvedBucketName = nullptr;
+std::any resolvedPublicBaseUrl = nullptr;
 boolean isInitialized = false;
 
 void Main(void)

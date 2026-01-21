@@ -14,41 +14,41 @@ namespace elizaos {
 // https://discord.com/developers/docs/resources/user#user-object
 class User {
   id: Snowflake;
-  username: string;
-  discriminator: string;
-  global_name: string | Maybe;
-  avatar: string | Maybe;
+  username: std::string;
+  discriminator: std::string;
+  global_name: std::string | Maybe;
+  avatar: std::string | Maybe;
   bot?: boolean;
   system?: boolean;
   mfa_enabled?: boolean;
-  banner?: string | Maybe;
+  banner?: std::string | Maybe;
   accent_color?: number | Maybe;
-  locale?: string;
+  locale?: std::string;
   verified?: boolean;
-  email?: string | Maybe;
+  email?: std::string | Maybe;
   flags?: number;
   premium_type?: number;
   public_flags?: number;
-  avatar_decoration?: string | Maybe;
+  avatar_decoration?: std::string | Maybe;
 
   constructor(opts: {
     id: Snowflake;
-    username: string;
-    discriminator: string;
-    global_name: string | Maybe;
-    avatar: string | Maybe;
+    username: std::string;
+    discriminator: std::string;
+    global_name: std::string | Maybe;
+    avatar: std::string | Maybe;
     bot?: boolean;
     system?: boolean;
     mfa_enabled?: boolean;
-    banner?: string | Maybe;
+    banner?: std::string | Maybe;
     accent_color?: number | Maybe;
-    locale?: string;
+    locale?: std::string;
     verified?: boolean;
-    email?: string | Maybe;
+    email?: std::string | Maybe;
     flags?: number;
     premium_type?: number;
     public_flags?: number;
-    avatar_decoration?: string | Maybe;
+    avatar_decoration?: std::string | Maybe;
   }) {
     this.id = opts.id;
     this.username = opts.username;

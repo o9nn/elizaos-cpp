@@ -5,7 +5,7 @@
 
 Partial<std::shared_ptr<IAgentRuntime>> createMockRuntime(Partial<std::shared_ptr<IAgentRuntime>> overrides = object{});
 
-std::shared_ptr<Memory> createMockMemory(string text, Partial<std::shared_ptr<Memory>> overrides = object{});
+std::shared_ptr<Memory> createMockMemory(std::string text, Partial<std::shared_ptr<Memory>> overrides = object{});
 
 std::shared_ptr<State> createMockState(Partial<std::shared_ptr<State>> overrides = object{});
 

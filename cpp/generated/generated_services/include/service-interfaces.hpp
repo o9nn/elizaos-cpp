@@ -18,7 +18,7 @@ public:
 class TodoNotificationService : public object, public std::enable_shared_from_this<TodoNotificationService> {
 public:
     using std::enable_shared_from_this<TodoNotificationService>::shared_from_this;
-    virtual std::shared_ptr<Promise<void>> sendNotification(string message, string roomId) = 0;
+    virtual std::shared_ptr<Promise<void>> sendNotification(std::string message, std::string roomId) = 0;
 };
 
 class TodoDailyResetService : public object, public std::enable_shared_from_this<TodoDailyResetService> {
@@ -30,15 +30,15 @@ public:
 class ContentWithText : public object, public std::enable_shared_from_this<ContentWithText> {
 public:
     using std::enable_shared_from_this<ContentWithText>::shared_from_this;
-    string text;
+    std::string text;
 };
 
 class ServiceClass : public object, public std::enable_shared_from_this<ServiceClass> {
 public:
     using std::enable_shared_from_this<ServiceClass>::shared_from_this;
-    string serviceType;
+    std::string serviceType;
 
-    string serviceName;
+    std::string serviceName;
 };
 
 class MockFunction : public object, public std::enable_shared_from_this<MockFunction> {

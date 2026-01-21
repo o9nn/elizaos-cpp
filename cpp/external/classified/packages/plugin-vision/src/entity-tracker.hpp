@@ -20,7 +20,7 @@ class EntityTracker {
   private readonly MISSING_THRESHOLD = 5000; // 5 seconds
   private readonly CLEANUP_THRESHOLD = 60000; // 1 minute
 
-  constructor(worldId: string) {
+  constructor(worldId: std::string) {
     this.worldState = {
       worldId,
       entities: new Map(),

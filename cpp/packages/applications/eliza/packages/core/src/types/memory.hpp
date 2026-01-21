@@ -23,7 +23,7 @@ using MemoryTypeAlias = std::string;
  * - `FRAGMENT`: A chunk or segment of a `DOCUMENT`, often created for embedding and search.
  * - `MESSAGE`: A conversational message, typically from a user or the agent.
  * - `DESCRIPTION`: A descriptive piece of information, perhaps about an entity or concept.
- * - `CUSTOM`: For any other type of memory not covered by the built-in types.
+ * - `CUSTOM`: For std::any other type of memory not covered by the built-in types.
  * This enum is used in `MemoryMetadata` to categorize memories and influences how they are processed or queried.
  */
 enum MemoryType {
@@ -46,10 +46,10 @@ using MemoryScope = std::variant<'shared', 'private', 'room'>;
  * Base interface for all memory metadata types.
  * It includes common properties for all memories, such as:
  * - `type`: The kind of memory (e.g., `MemoryType.MESSAGE`, `MemoryType.DOCUMENT`).
- * - `source`: An optional string indicating the origin of the memory (e.g., 'discord', 'user_input').
- * - `sourceId`: An optional UUID linking to a source entity or object.
+ * - `source`: An std::optional std::string indicating the origin of the memory (e.g., 'discord', 'user_input').
+ * - `sourceId`: An std::optional UUID linking to a source entity or object.
  * - `scope`: The visibility scope of the memory (`shared`, `private`, or `room`).
- * - `timestamp`: An optional numerical timestamp (e.g., milliseconds since epoch) of when the memory was created or relevant.
+ * - `timestamp`: An std::optional numerical timestamp (e.g., milliseconds since epoch) of when the memory was created or relevant.
  * - `tags`: Optional array of strings for categorizing or filtering memories.
  * Specific metadata types like `DocumentMetadata` or `MessageMetadata` extend this base.
  */
@@ -86,7 +86,7 @@ struct Memory {
  */
 
 /**
- * Factory function to create a new message memory with proper defaults
+ * Factory std::function to create a new message memory with proper defaults
  */
 
 /**

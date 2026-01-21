@@ -16,7 +16,7 @@ namespace elizaos {
 // Interface compatible with @solana/wallet-adapter-react for downstream components
 struct SolanaTransaction {
     Array<{ signatures;
-    { toBase58(): string } publicKey;
+    { toBase58(): std::string } publicKey;
     Uint8Array | null signature;
 };
 

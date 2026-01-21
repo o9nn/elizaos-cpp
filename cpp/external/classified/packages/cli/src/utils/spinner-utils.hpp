@@ -41,7 +41,7 @@ struct CommandResult {
 };
 
 /**
- * Core function to run any command with a spinner
+ * Core std::function to run std::any command with a spinner
  */
 std::future<CommandResult> runCommandWithSpinner(const std::string& command, const std::vector<std::string>& args, SpinnerCommandOptions options);
 

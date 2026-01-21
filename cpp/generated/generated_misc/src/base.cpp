@@ -4,7 +4,7 @@ form::form() {
     this->fields = array<any>();
 }
 
-void form::addField(any type, any name, any value, any label, any validation, any options)
+void form::addField(std::any type, std::any name, std::any value, std::any label, std::any validation, std::any options)
 {
     this->fields["push"](object{
         object::pair{std::string("type"), std::string("type")}, 

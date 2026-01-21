@@ -8,13 +8,13 @@ std::shared_ptr<Promise<array<std::shared_ptr<Task>>>> TaskService::getTasks(obj
     try
     {
         auto tasks = std::async([=]() { this->runtime->getTasks(params); });
-        return tasks->map([=](auto task) mutable
+        return tasks->std::map([=](auto task) mutable
         {
             return this->normalizeTask(task);
         }
         );
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("[TaskService] Error getting tasks:"), error);
         return array<any>();
@@ -28,7 +28,7 @@ std::shared_ptr<Promise<any>> TaskService::createTask(object params)
         auto taskId = std::async([=]() { this->runtime->createTask(as<any>(params)); });
         return taskId;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("[TaskService] Error creating task:"), error);
         return nullptr;
@@ -42,7 +42,7 @@ std::shared_ptr<Promise<boolean>> TaskService::updateTask(std::shared_ptr<UUID> 
         std::async([=]() { this->runtime->updateTask(taskId, updates); });
         return true;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("[TaskService] Error updating task:"), error);
         return false;
@@ -68,25 +68,25 @@ std::shared_ptr<Task> TaskService::normalizeTask(std::shared_ptr<Task> task)
     if (task->metadata) {
         if (task->metadata->dueDate) {
             auto parsedDate = dbCompat->parseDate(task->metadata->dueDate);
-            task->metadata->dueDate = (parsedDate) ? any(parsedDate->toISOString()) : any(undefined);
+            task->metadata->dueDate = (parsedDate) ? std::any(parsedDate->toISOString()) : std::any(undefined);
         }
         if (task->metadata->completedAt) {
             auto parsedDate = dbCompat->parseDate(task->metadata->completedAt);
-            task->metadata->completedAt = (parsedDate) ? any(parsedDate->toISOString()) : any(undefined);
+            task->metadata->completedAt = (parsedDate) ? std::any(parsedDate->toISOString()) : std::any(undefined);
         }
         if (task->metadata->lastCompletedAt) {
             auto parsedDate = dbCompat->parseDate(task->metadata->lastCompletedAt);
-            task->metadata->lastCompletedAt = (parsedDate) ? any(parsedDate->getTime()) : any(undefined);
+            task->metadata->lastCompletedAt = (parsedDate) ? std::any(parsedDate->getTime()) : std::any(undefined);
         }
         if (task->metadata->lastReminderSent) {
             auto parsedDate = dbCompat->parseDate(task->metadata->lastReminderSent);
-            task->metadata->lastReminderSent = (parsedDate) ? any(parsedDate->toISOString()) : any(undefined);
+            task->metadata->lastReminderSent = (parsedDate) ? std::any(parsedDate->toISOString()) : std::any(undefined);
         }
     }
     return task;
 }
 
-std::shared_ptr<Promise<array<std::shared_ptr<Task>>>> TaskService::searchTasksByName(string name, object params)
+std::shared_ptr<Promise<array<std::shared_ptr<Task>>>> TaskService::searchTasksByName(std::string name, object params)
 {
     auto allTasks = std::async([=]() { this->getTasks(params); });
     shared searchLower = name->toLowerCase();

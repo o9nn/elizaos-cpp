@@ -4,6 +4,6 @@
 #include "execa.h"
 #include "./bun-installation-helper.h"
 
-std::shared_ptr<Promise<void>> runBunCommand(array<string> args, string cwd);
+std::shared_ptr<Promise<void>> runBunCommand(array<string> args, std::string cwd);
 
 #endif

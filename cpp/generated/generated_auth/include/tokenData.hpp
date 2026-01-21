@@ -25,7 +25,7 @@ public:
 
     boolean lock;
 
-    string lastStep;
+    std::string lastStep;
 };
 
 class WithdrawnAmountsData : public object, public std::enable_shared_from_this<WithdrawnAmountsData> {
@@ -39,59 +39,59 @@ public:
 class PoolInfoData : public object, public std::enable_shared_from_this<PoolInfoData> {
 public:
     using std::enable_shared_from_this<PoolInfoData>::shared_from_this;
-    string id;
+    std::string id;
 
-    string lpMint;
+    std::string lpMint;
 
-    string baseVault;
+    std::string baseVault;
 
-    string quoteVault;
+    std::string quoteVault;
 };
 
 class TokenData : public object, public std::enable_shared_from_this<TokenData> {
 public:
     using std::enable_shared_from_this<TokenData>::shared_from_this;
-    string id;
+    std::string id;
 
-    string name;
+    std::string name;
 
-    string ticker;
+    std::string ticker;
 
-    string url;
+    std::string url;
 
-    string image;
+    std::string image;
 
-    string twitter;
+    std::string twitter;
 
-    string telegram;
+    std::string telegram;
 
-    string farcaster;
+    std::string farcaster;
 
-    string website;
+    std::string website;
 
-    string discord;
+    std::string discord;
 
-    string description;
+    std::string description;
 
-    string mint;
+    std::string mint;
 
-    string creator;
+    std::string creator;
 
-    string nftMinted;
+    std::string nftMinted;
 
-    string lockId;
+    std::string lockId;
 
-    string lockedAmount;
+    std::string lockedAmount;
 
     std::shared_ptr<Date> lockedAt;
 
     std::shared_ptr<Date> harvestedAt;
 
-    string status;
+    std::string status;
 
     std::shared_ptr<Date> createdAt;
 
-    string lastUpdated;
+    std::string lastUpdated;
 
     std::shared_ptr<Date> completedAt;
 
@@ -99,11 +99,11 @@ public:
 
     std::shared_ptr<Date> migratedAt;
 
-    string marketId;
+    std::string marketId;
 
-    string baseVault;
+    std::string baseVault;
 
-    string quoteVault;
+    std::string quoteVault;
 
     double withdrawnAmount;
 
@@ -141,17 +141,17 @@ public:
 
     double holderCount;
 
-    string txId;
+    std::string txId;
 
     std::shared_ptr<MigrationData> migration;
 
-    any withdrawnAmounts;
+    std::any withdrawnAmounts;
 
     std::shared_ptr<PoolInfoData> poolInfo;
 
-    string lockLpTxId;
+    std::string lockLpTxId;
 
-    string tokenSupply;
+    std::string tokenSupply;
 
     double tokenSupplyUiAmount;
 
@@ -163,43 +163,43 @@ public:
 class TokenDBData : public object, public std::enable_shared_from_this<TokenDBData> {
 public:
     using std::enable_shared_from_this<TokenDBData>::shared_from_this;
-    string id;
+    std::string id;
 
-    string name;
+    std::string name;
 
-    string ticker;
+    std::string ticker;
 
-    string url;
+    std::string url;
 
-    string image;
+    std::string image;
 
-    string twitter;
+    std::string twitter;
 
-    string telegram;
+    std::string telegram;
 
-    string farcaster;
+    std::string farcaster;
 
-    string website;
+    std::string website;
 
-    string discord;
+    std::string discord;
 
-    string description;
+    std::string description;
 
-    string mint;
+    std::string mint;
 
-    string creator;
+    std::string creator;
 
-    string nftMinted;
+    std::string nftMinted;
 
-    string lockId;
+    std::string lockId;
 
-    string lockedAmount;
+    std::string lockedAmount;
 
     std::shared_ptr<Date> lockedAt;
 
     std::shared_ptr<Date> harvestedAt;
 
-    string status;
+    std::string status;
 
     std::shared_ptr<Date> createdAt;
 
@@ -211,11 +211,11 @@ public:
 
     std::shared_ptr<Date> migratedAt;
 
-    string marketId;
+    std::string marketId;
 
-    string baseVault;
+    std::string baseVault;
 
-    string quoteVault;
+    std::string quoteVault;
 
     double withdrawnAmount;
 
@@ -253,15 +253,15 @@ public:
 
     double holderCount;
 
-    string txId;
+    std::string txId;
 
-    string migration;
+    std::string migration;
 
-    string withdrawnAmounts;
+    std::string withdrawnAmounts;
 
-    string poolInfo;
+    std::string poolInfo;
 
-    string lockLpTxId;
+    std::string lockLpTxId;
 };
 
 #endif

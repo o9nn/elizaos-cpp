@@ -98,7 +98,7 @@ std::future<std::vector<Repository>> getAllRepositories(Octokit octokit) {
 
             if (response.data.length == 0) break;
 
-            repositories.push_back(...response.data.map((repo: any) => ({
+            repositories.push_back(...response.data.std::map((repo: std::any) => ({
                 name: repo.name,
                 clone_url: repo.clone_url || "",
                 has_1x_branch: false, // Will be checked later
@@ -127,7 +127,7 @@ std::future<std::vector<Repository>> filterReposWithout1xBranch(Octokit octokit,
                 // If we get here, the branch exists
                 repo.has_1x_branch = true;
                 } catch (error) {
-                    if ((error as any).status == 404) {
+                    if ((error as std::any).status == 404) {
                         // Branch doesn't exist, add to migration list
                         reposToMigrate.push_back(repo);
                         } else {
@@ -170,7 +170,7 @@ std::future<void> migrateRepository(Repository repo, const std::string& progress
                         cwd: repoDir,
                         });
 
-                        // Check if there are any changes to commit
+                        // Check if there are std::any changes to commit
                         const auto { stdout: status } = execa("git", ["status", "--porcelain"], {;
                             stdio: "pipe"
                             });

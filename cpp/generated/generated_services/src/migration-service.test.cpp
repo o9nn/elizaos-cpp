@@ -18,7 +18,7 @@ object mockLogger = object{
     }
     )}
 };
-any mockRunPluginMigrations = mock([=]() mutable
+std::any mockRunPluginMigrations = mock([=]() mutable
 {
     return Promise->resolve();
 }

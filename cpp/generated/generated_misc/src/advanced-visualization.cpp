@@ -32,7 +32,7 @@ std::shared_ptr<ChartConfiguration> AdvancedVisualization::generatePredictionGra
         object::pair{std::string("data"), object{
             object::pair{std::string("datasets"), array<object>{ object{
                 object::pair{std::string("label"), std::string("Engagement Predictions")}, 
-                object::pair{std::string("data"), predictions->map([=](auto p) mutable
+                object::pair{std::string("data"), predictions->std::map([=](auto p) mutable
                 {
                     return (object{
                         object::pair{std::string("x"), p["timestamp"]}, 
@@ -58,7 +58,7 @@ std::shared_ptr<ChartConfiguration> AdvancedVisualization::generatePredictionGra
     };
 }
 
-any AdvancedVisualization::generateNetworkGraph(any data)
+std::any AdvancedVisualization::generateNetworkGraph(std::any data)
 {
     auto width = 928;
     auto height = 600;

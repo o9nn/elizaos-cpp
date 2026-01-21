@@ -142,7 +142,7 @@ void IdlProcessor::serializeString(std::vector<u8>& buffer, const std::string& s
 }
 
 void IdlProcessor::serializePubkey(std::vector<u8>& buffer, const Pubkey& pubkey) {
-    // For simplicity, just serialize as string
+    // For simplicity, just serialize as std::string
     serializeString(buffer, pubkey);
 }
 

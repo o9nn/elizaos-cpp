@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/game/src/types/tauri-utils.h"
 
-array<std::shared_ptr<MemoryEntry>> extractMemoriesFromResponse(any response)
+array<std::shared_ptr<MemoryEntry>> extractMemoriesFromResponse(std::any response)
 {
     if (OR((!response), (type_of(response) != std::string("object")))) {
         return array<any>();
@@ -22,7 +22,7 @@ array<std::shared_ptr<MemoryEntry>> extractMemoriesFromResponse(any response)
 };
 
 
-array<std::shared_ptr<LogEntry>> extractLogsFromResponse(any response)
+array<std::shared_ptr<LogEntry>> extractLogsFromResponse(std::any response)
 {
     if (OR((!response), (type_of(response) != std::string("object")))) {
         return array<any>();
@@ -35,18 +35,18 @@ array<std::shared_ptr<LogEntry>> extractLogsFromResponse(any response)
 };
 
 
-any isSuccessfulTauriResponse(any response)
+std::any isSuccessfulTauriResponse(std::any response)
 {
     return (AND((AND((AND((response != nullptr), (type_of(response) == std::string("object")))), (in(std::string("success"), response)))), ((as<std::shared_ptr<TauriMemoryResponse>>(response))->success == true)));
 };
 
 
-array<Record<string, any>> convertToRecordArray(array<any> data)
+array<Record<std::string, any>> convertToRecordArray(array<any> data)
 {
-    return data->map([=](auto item) mutable
+    return data->std::map([=](auto item) mutable
     {
         if (AND((type_of(item) == std::string("object")), (item != nullptr))) {
-            return as<Record<string, any>>(item);
+            return as<Record<std::string, any>>(item);
         }
         return object{
             object::pair{std::string("value"), item}

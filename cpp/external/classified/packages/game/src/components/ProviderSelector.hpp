@@ -24,7 +24,7 @@ struct Provider {
 struct ProviderStatus {
     std::vector<Provider> providers;
     std::string active;
-    string | null selected;
+    std::string | null selected;
     std::vector<std::string> preferences;
 };
 
@@ -34,7 +34,7 @@ struct ProviderResponse {
 };
 
 struct ProviderSelectorProps {
-    std::optional<(provider: string) => void> onProviderChange;
+    std::optional<(provider: std::string) => void> onProviderChange;
 };
 
   // Check if we're in Tauri environment

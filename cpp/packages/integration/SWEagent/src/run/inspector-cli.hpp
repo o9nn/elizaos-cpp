@@ -24,12 +24,12 @@ struct TrajectoryStep {
     std::optional<std::string> response;
     std::optional<double> execution_time;
     std::optional<std::unordered_map<std::string, unknown>> state;
-    std::optional<std::vector<{ role: string; content: string; messageType?: string }>> query;
+    std::optional<std::vector<{ role: std::string; content: std::string; messageType?: std::string }>> query;
 
 struct TrajectoryData {
     std::vector<TrajectoryStep> trajectory;
     std::unordered_map<std::string, unknown> info;
-    std::optional<std::vector<{ role: string; content: string | Record<string, unknown>; [key: string]: unknown }>> history;
+    std::optional<std::vector<{ role: std::string; content: std::string | Record<std::string, unknown>; [key: std::string]: unknown }>> history;
 
 /**
  * Inspector CLI class
@@ -38,10 +38,10 @@ class TrajectoryInspector {
   private trajData: TrajectoryData;
   private currentStep: number = -1;
   private showFull: boolean = false;
-  // private trajPath: string;  // Currently unused
-  private goldPatch?: string;
+  // private trajPath: std::string;  // Currently unused
+  private goldPatch?: std::string;
 
-  constructor(trajPath: string, dataPath?: string) {
+  constructor(trajPath: std::string, dataPath?: std::string) {
     // this.trajPath = trajPath;  // Currently unused
 
     // Load trajectory
@@ -54,7 +54,7 @@ class TrajectoryInspector {
 
     // Load gold patch if available
     if (dataPath) {
-      const data = loadFile(dataPath) as Record<string, { patch?: string }> | null;
+      const data = loadFile(dataPath) as Record<std::string, { patch?: std::string }> | null;
       const instanceId = path.basename(path.dirname(trajPath));
       this.goldPatch = data?.[instanceId]?.patch;
     }
@@ -79,8 +79,8 @@ class TrajectoryInspector {
 std::vector<std::string> findTrajFiles(const std::string& dir);
 
 /**
- * Main function for inspector CLI
+ * Main std::function for inspector CLI
  */
-std::future<void> inspectorCli(string = '.' trajectoryPath, std::optional<std::string> dataPath);
+std::future<void> inspectorCli(std::string = '.' trajectoryPath, std::optional<std::string> dataPath);
 
 } // namespace elizaos

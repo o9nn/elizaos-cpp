@@ -24,7 +24,7 @@ namespace elizaos {
 
 // Configuration schema
 
-// Helper function to extract URL from text
+// Helper std::function to extract URL from text
 std::string extractUrl(const std::string& text);
 
 // Browser navigation action
@@ -67,7 +67,7 @@ std::string extractUrl(const std::string& text);
 // In the full implementation, all actions from the original plugin would be converted
 // to use the WebSocket client instead of direct Stagehand calls.
 
-// Test function to verify Stagehand works
+// Test std::function to verify Stagehand works
 std::future<void> testStagehandConnection(IAgentRuntime runtime);
 
 // Export actions for testing

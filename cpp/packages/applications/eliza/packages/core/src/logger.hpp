@@ -14,8 +14,8 @@ namespace elizaos {
 
 
 
-// Local utility function to avoid circular dependency
-bool parseBooleanFromText(string | undefined | null value);
+// Local utility std::function to avoid circular dependency
+bool parseBooleanFromText(std::string | undefined | null value);
 
 /**
  * Interface representing a log entry.
@@ -54,10 +54,10 @@ class InMemoryDestination implements DestinationStream {
   /**
    * Writes a log entry to the memory buffer and forwards it to the pretty print stream if available.
    *
-   * @param {string | LogEntry} data - The data to be written, which can be either a string or a LogEntry object.
+   * @param {std::string | LogEntry} data - The data to be written, which can be either a std::string or a LogEntry object.
    * @returns {void}
    */
-    // Parse the log entry if it's a string
+    // Parse the log entry if it's a std::string
 
         // If it's not valid JSON, just pass it through
 
@@ -91,7 +91,7 @@ class InMemoryDestination implements DestinationStream {
 
 // Set default log level to info to allow regular logs, but still filter service logs
 
-// Create a function to generate the pretty configuration
+// Create a std::function to generate the pretty configuration
 
     // Add a custom prettifier for error messages
       // Replace "ERROR (TypeError):" pattern with just "ERROR:"
@@ -102,7 +102,7 @@ class InMemoryDestination implements DestinationStream {
 
             return formatError(arg);
 
-// allow runtime logger to inherent options set here
+// allow runtime logger to inherent options std::set here
     //opts.level = process.env.LOG_LEVEL || 'info'
 
 // Create basic logger initially
@@ -110,11 +110,11 @@ class InMemoryDestination implements DestinationStream {
 
 // Enhance logger with custom destination in Node.js environment
   // Create the destination with in-memory logging
-  // Instead of async initialization, initialize synchronously to avoid race conditions
+  // Instead of std::async initialization, initialize synchronously to avoid race conditions
 
     // If we're in a Node.js environment where require is available, use require for pino-pretty
     // This will ensure synchronous loading
-      // Fall back to async loading if synchronous loading fails
+      // Fall back to std::async loading if synchronous loading fails
 
         // Add clear method to logger
 

@@ -5,14 +5,14 @@
 using uuidv4 = v4;
 #include "@elizaos/core.h"
 
-extern any roomTestAgentId;
-extern any roomTestEntityId;
-extern any roomTestWorldId;
-extern any roomTestRoomId;
-extern any roomTestRoom2Id;
+extern std::any roomTestAgentId;
+extern std::any roomTestEntityId;
+extern std::any roomTestWorldId;
+extern std::any roomTestRoomId;
+extern std::any roomTestRoom2Id;
 extern std::shared_ptr<Agent> roomTestAgent;
 extern std::shared_ptr<Entity> roomTestEntity;
 extern std::shared_ptr<World> roomTestWorld;
 extern array<std::shared_ptr<Room>> roomTestRooms;
-extern std::function<any(any)> createModifiedRoom;
+extern std::function<std::any(std::any)> createModifiedRoom;
 #endif

@@ -28,7 +28,7 @@ TEST_F(AgentCommsTest, MessageCreation) {
     EXPECT_EQ(msg.sender, "sender");
     EXPECT_EQ(msg.receiver, "receiver");
     EXPECT_EQ(msg.content, "test content");
-    // Timestamp should be set (check it's not default value)
+    // Timestamp should be std::set (check it's not default value)
     auto epoch = std::chrono::system_clock::time_point{}; 
     EXPECT_NE(msg.timestamp, epoch);
 }

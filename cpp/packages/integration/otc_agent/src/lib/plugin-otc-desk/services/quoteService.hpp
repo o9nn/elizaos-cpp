@@ -17,10 +17,10 @@ namespace elizaos {
 // Single source of truth registered with runtime.getService("QuoteService")
 
 class QuoteService extends Service {
-  static serviceType = "QuoteService" as any;
+  static serviceType = "QuoteService" as std::any;
   static serviceName = "QuoteService";
 
-  get serviceType(): string {
+  get serviceType(): std::string {
     return "QuoteService";
   }
 
@@ -31,7 +31,7 @@ class QuoteService extends Service {
     // Generate deterministic quote ID from entityId
     // Use a hash of entityId + current day to allow one quote per wallet per day
 
-    // Token metadata (optional but recommended)
+    // Token metadata (std::optional but recommended)
 
     // Check if quote already exists
 
@@ -51,7 +51,7 @@ class QuoteService extends Service {
 
       // Find quotes with matching entityId that weren't indexed
 
-      // Fix the index in batch if we found any
+      // Fix the index in batch if we found std::any
 
     // Fetch all quotes in parallel
 

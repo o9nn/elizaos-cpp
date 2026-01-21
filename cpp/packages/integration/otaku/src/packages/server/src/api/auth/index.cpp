@@ -17,17 +17,17 @@ express::Router createAuthRouter() {
         * Uses CDP's userId as the primary identifier.
         *
         * Request body:
-        * - email: string (user's email from CDP)
-        * - username: string (user's display name from CDP)
-        * - cdpUserId: string (CDP's user identifier - UUID)
+        * - email: std::string (user's email from CDP)
+        * - username: std::string (user's display name from CDP)
+        * - cdpUserId: std::string (CDP's user identifier - UUID)
         *
         * Response:
-        * - token: string (JWT token for authenticated requests)
-        * - userId: string (same as cdpUserId)
-        * - username: string (user's display name)
-        * - expiresIn: string (token expiration time)
+        * - token: std::string (JWT token for authenticated requests)
+        * - userId: std::string (same as cdpUserId)
+        * - username: std::string (user's display name)
+        * - expiresIn: std::string (token expiration time)
         */
-        router.post("/login", async (req, res) => {
+        router.post("/login", std::async (req, res) => {
             try {
                 const auto { email, username, cdpUserId } = req.body;
 
@@ -71,7 +71,7 @@ express::Router createAuthRouter() {
                     username,
                     expiresIn: "7d"
                     });
-                    } catch (error: any) {
+                    } catch (error: std::any) {
                         std::cerr << "[Auth] Login error:" << error << std::endl;
                         return sendError(res, 500, "AUTH_ERROR", error.message);
                     }
@@ -86,13 +86,13 @@ express::Router createAuthRouter() {
                     * - Authorization: Bearer <token>
                     *
                     * Response:
-                    * - token: string (new JWT token)
-                    * - userId: string
-                    * - expiresIn: string
+                    * - token: std::string (new JWT token)
+                    * - userId: std::string
+                    * - expiresIn: std::string
                     *
                     * This allows extending user sessions without requiring re-authentication
                     */
-                    router.post("/refresh", async (req: AuthenticatedRequest, res) => {
+                    router.post("/refresh", std::async (req: AuthenticatedRequest, res) => {
                         try {
                             const auto authHeader = req.headers.authorization;
 
@@ -121,12 +121,12 @@ express::Router createAuthRouter() {
                                     username: decoded.username,
                                     expiresIn: "7d"
                                     });
-                                    } catch (error: any) {
+                                    } catch (error: std::any) {
                                         // Token verification failed
                                         std::cout << "[Auth] Token refresh failed: " + error.message << std::endl;
                                         return sendError(res, 401, "INVALID_TOKEN", "Invalid or expired token");
                                     }
-                                    } catch (error: any) {
+                                    } catch (error: std::any) {
                                         std::cerr << "[Auth] Refresh error:" << error << std::endl;
                                         return sendError(res, 500, "REFRESH_ERROR", error.message);
                                     }
@@ -142,10 +142,10 @@ express::Router createAuthRouter() {
                                     * - Authorization: Bearer <token>
                                     *
                                     * Response:
-                                    * - userId: string
-                                    * - email: string
+                                    * - userId: std::string
+                                    * - email: std::string
                                     */
-                                    router.get("/me", async (req: AuthenticatedRequest, res) => {
+                                    router.get("/me", std::async (req: AuthenticatedRequest, res) => {
                                         try {
                                             const auto authHeader = req.headers.authorization;
 
@@ -168,10 +168,10 @@ express::Router createAuthRouter() {
                                                     email: decoded.email,
                                                     username: decoded.username
                                                     });
-                                                    } catch (error: any) {
+                                                    } catch (error: std::any) {
                                                         return sendError(res, 401, "INVALID_TOKEN", "Invalid or expired token");
                                                     }
-                                                    } catch (error: any) {
+                                                    } catch (error: std::any) {
                                                         std::cerr << "[Auth] Get user info error:" << error << std::endl;
                                                         return sendError(res, 500, "AUTH_ERROR", error.message);
                                                     }

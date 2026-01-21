@@ -4,6 +4,6 @@
 #include "express.h"
 #include "@elizaos/core.h"
 
-any apiKeyAuthMiddleware(std::shared_ptr<Request> req, std::shared_ptr<Response> res, std::shared_ptr<NextFunction> next);
+std::any apiKeyAuthMiddleware(std::shared_ptr<Request> req, std::shared_ptr<Response> res, std::shared_ptr<NextFunction> next);
 
 #endif

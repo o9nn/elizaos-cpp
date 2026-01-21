@@ -1,13 +1,13 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/plugin-sql/src/__tests__/integration/seed/embedding-seed.h"
 
-std::function<any(double)> fixedUuid = [=](auto n) mutable
+std::function<std::any(double)> fixedUuid = [=](auto n) mutable
 {
     return string_empty + std::string("0")->repeat(8) + std::string("-") + std::string("0")->repeat(4) + std::string("-") + std::string("0")->repeat(4) + std::string("-") + std::string("0")->repeat(4) + std::string("-") + n->toString()->padStart(12, std::string("0")) + string_empty;
 };
-any embeddingTestAgentId = fixedUuid(1);
-any embeddingTestRoomId = fixedUuid(2);
-any embeddingTestEntityId = fixedUuid(3);
-any embeddingTestWorldId = fixedUuid(4);
+std::any embeddingTestAgentId = fixedUuid(1);
+std::any embeddingTestRoomId = fixedUuid(2);
+std::any embeddingTestEntityId = fixedUuid(3);
+std::any embeddingTestWorldId = fixedUuid(4);
 std::function<array<double>(double)> generateRandomVector = [=](auto size) mutable
 {
     return Array->from(object{
@@ -18,7 +18,7 @@ std::function<array<double>(double)> generateRandomVector = [=](auto size) mutab
     }
     );
 };
-any embeddingTestAgent = as<std::shared_ptr<Agent>>(object{
+std::any embeddingTestAgent = as<std::shared_ptr<Agent>>(object{
     object::pair{std::string("id"), embeddingTestAgentId}, 
     object::pair{std::string("name"), std::string("Embedding Test Agent")}, 
     object::pair{std::string("username"), std::string("embedding_test_agent")}, 

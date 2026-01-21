@@ -23,12 +23,12 @@ using LiveKitAudioData = {
 class VoiceManager {
   private runtime: IAgentRuntime;
   private userStates: Map<
-    string,
+    std::string,
     {
       buffers: Buffer[];
       totalLength: number;
       lastActive: number;
-      transcriptionText: string;
+      transcriptionText: std::string;
     }
 
       bool isLoudEnough(Buffer pcmBuffer, auto threshold = 1000);

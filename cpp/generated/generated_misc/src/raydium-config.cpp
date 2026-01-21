@@ -1,12 +1,12 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/raydium/src/raydium-config.h"
 
-std::function<string()> getRpcUrl = [=]() mutable
+std::function<std::string()> getRpcUrl = [=]() mutable
 {
     auto env = process->env;
     return (process->env->NETWORK == std::string("devnet")) ? process->env->DEVNET_SOLANA_RPC_URL : process->env->MAINNET_SOLANA_RPC_URL;
 };
-any txVersion = TxVersion->V0;
-any raydium;
+std::any txVersion = TxVersion->V0;
+std::any raydium;
 std::function<std::shared_ptr<Promise<any>>(object)> initSdk = [=](auto params) mutable
 {
     auto cluster = as<Cluster>(process->env->NETWORK);

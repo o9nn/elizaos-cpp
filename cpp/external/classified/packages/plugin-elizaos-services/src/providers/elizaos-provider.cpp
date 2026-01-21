@@ -71,8 +71,8 @@ std::future<ElizaOSAPIResponse> makeElizaOSRequest(IAgentRuntime runtime, ElizaO
                     });
 
                     if (!response.ok) {
-                        auto errorDetails: any;
-                        auto errorText: string;
+                        auto errorDetails: std::any;
+                        auto errorText: std::string;
 
                         try {
                             errorDetails = response.json();

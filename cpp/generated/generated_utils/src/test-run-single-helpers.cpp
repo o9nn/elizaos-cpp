@@ -24,7 +24,7 @@ std::shared_ptr<Promise<std::shared_ptr<ReadFileResponse>>> MockRuntime::readFil
 
 std::shared_ptr<Promise<void>> MockRuntime::writeFile(std::shared_ptr<WriteFileRequest> request)
 {
-    this->files->set(request->path, request->content);
+    this->files->std::set(request->path, request->content);
     return std::shared_ptr<Promise<void>>();
 }
 

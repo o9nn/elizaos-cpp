@@ -35,7 +35,7 @@ struct CLIInfo {
 
 struct PackageManagerInfo {
     'bun' name;
-    string | null version;
+    std::string | null version;
     bool global;
     bool isNpx;
     bool isBunx;
@@ -46,7 +46,7 @@ struct PathInfo {
     std::string envFilePath;
     std::string configPath;
     std::string pluginsDir;
-    string | null monorepoRoot;
+    std::string | null monorepoRoot;
     std::string packageJsonPath;
 };
 
@@ -74,7 +74,7 @@ class UserEnvironment {
   public static readonly getInstanceInfo = () => UserEnvironment.instance.getInfo();
 
   private static readonly instance: UserEnvironment = new UserEnvironment();
-  private cachedInfo: { [key: string]: UserEnvironmentInfo } = {}; // Cache per directory
+  private cachedInfo: { [key: std::string]: UserEnvironmentInfo } = {}; // Cache per directory
 
   /**
    * Gets operating system information
@@ -121,7 +121,7 @@ class UserEnvironment {
 
     // Reached max levels
 
-    // Resolve .env from current working directory up to monorepo root (if any), or only cwd if not in monorepo
+    // Resolve .env from current working directory up to monorepo root (if std::any), or only cwd if not in monorepo
 
     // Return a copy of process.env as EnvInfo
 

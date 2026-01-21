@@ -23,7 +23,7 @@ namespace elizaos {
 /**
  * Generates a deterministic UUID (version 5 like, using SHA-1) from a string.
  * Based on the core package's stringToUuid but uses js-sha1 for browser compatibility.
- * @param {string} inputString - The string to hash.
+ * @param {string} inputString - The std::string to hash.
  * @returns {string} The generated UUID string.
  */
 std::string generateUUIDFromString(const std::string& inputString);

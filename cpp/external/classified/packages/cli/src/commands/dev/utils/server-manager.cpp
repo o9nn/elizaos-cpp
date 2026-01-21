@@ -68,7 +68,7 @@ std::future<void> startServerProcess(std::vector<std::string> args = {}) {
     const auto nodeExecutable = process.execPath;
     const auto localCliPath = getLocalCliPath();
 
-    auto scriptPath: string;
+    auto scriptPath: std::string;
     if (localCliPath) {
         std::cout << "Using local @elizaos/cli installation" << std::endl;
         scriptPath = localCliPath;

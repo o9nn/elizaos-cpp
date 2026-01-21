@@ -23,13 +23,13 @@ public:
 
     array<OverwriteObject> permission_overwrites;
 
-    any name;
+    std::any name;
 
-    any topic;
+    std::any topic;
 
     boolean nsfw;
 
-    any last_message_id;
+    std::any last_message_id;
 
     double bitrate;
 
@@ -39,7 +39,7 @@ public:
 
     array<std::shared_ptr<User>> recipients;
 
-    any icon;
+    std::any icon;
 
     std::shared_ptr<Snowflake> owner_id;
 
@@ -47,11 +47,11 @@ public:
 
     boolean managed;
 
-    any parent_id;
+    std::any parent_id;
 
-    any last_pin_timestamp;
+    std::any last_pin_timestamp;
 
-    any rtc_region;
+    std::any rtc_region;
 
     double video_quality_mode;
 
@@ -65,7 +65,7 @@ public:
 
     double default_auto_archive_duration;
 
-    string permissions;
+    std::string permissions;
 
     double flags;
 
@@ -75,11 +75,11 @@ public:
 
     array<std::shared_ptr<Snowflake>> applied_tags;
 
-    any default_reaction_emoji;
+    std::any default_reaction_emoji;
 
     double default_thread_rate_limit_per_user;
 
-    any default_sort_order;
+    std::any default_sort_order;
 
     double default_forum_layout;
 

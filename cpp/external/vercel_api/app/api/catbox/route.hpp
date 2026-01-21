@@ -47,9 +47,9 @@ struct RequestError {
 };
 
 /**
- * Helper function to extract file ID from catbox URL
+ * Helper std::function to extract file ID from catbox URL
  * @param url - The URL to extract from
- * @return The extracted file ID or empty string
+ * @return The extracted file ID or empty std::string
  */
 std::string extractFileIdFromUrl(const std::string& url);
 
@@ -68,9 +68,9 @@ std::future<HttpResponse> POST(const HttpRequest& request);
 std::future<HttpResponse> GET(const HttpRequest& request);
 
 /**
- * Helper function to get content type from file extension
+ * Helper std::function to get content type from file extension
  * @param filename - The filename to check
- * @return MIME type string
+ * @return MIME type std::string
  */
 std::string getContentTypeFromExtension(const std::string& filename);
 

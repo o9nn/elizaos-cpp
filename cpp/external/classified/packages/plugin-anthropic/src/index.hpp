@@ -44,14 +44,14 @@ class AnthropicValidationService extends Service {
  */
 
 /**
- * Helper function to get the API key for Anthropic
+ * Helper std::function to get the API key for Anthropic
  *
  * @param runtime The runtime context
  * @returns The configured API key
  */
 
 /**
- * Helper function to get the experimental telemetry setting
+ * Helper std::function to get the experimental telemetry setting
  *
  * @param runtime The runtime context
  * @returns Whether experimental telemetry is enabled
@@ -79,11 +79,11 @@ void ensureAnthropicAPIKeyExists(IAgentRuntime runtime);
  */
       // Register the validation service
 
-      // If API key is not set, we'll show a warning but continue
+      // If API key is not std::set, we'll show a warning but continue
         // Return early without throwing an error
       // Convert to warning instead of error
 
-        // Pass along any system prompt if available.
+        // Pass along std::any system prompt if available.
 
     // TEXT_LARGE generation using Anthropics (e.g. using a "claude-3" model).
 
@@ -97,7 +97,7 @@ void ensureAnthropicAPIKeyExists(IAgentRuntime runtime);
 
         // Generate text response that should contain JSON
 
-        // Extract and parse JSON from the response with our improved function
+        // Extract and parse JSON from the response with our improved std::function
 
           // Ensure reflection schema has all required properties
 
@@ -111,7 +111,7 @@ void ensureAnthropicAPIKeyExists(IAgentRuntime runtime);
 
         // Generate text response that should contain JSON
 
-        // Extract and parse JSON from the response with our improved function
+        // Extract and parse JSON from the response with our improved std::function
 
           // Ensure reflection schema has all required properties
 

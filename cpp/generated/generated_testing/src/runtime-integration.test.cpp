@@ -114,7 +114,7 @@ void Main(void)
                 }, 
                 object::pair{std::string("getRoomsByIds"), [=](auto ids) mutable
                 {
-                    return ids->map([=](auto id) mutable
+                    return ids->std::map([=](auto id) mutable
                     {
                         return (object{
                             object::pair{std::string("id"), std::string("id")}
@@ -153,7 +153,7 @@ void Main(void)
                 }, 
                 object::pair{std::string("getParticipantsByIds"), [=](auto ids) mutable
                 {
-                    return ids->map([=](auto id) mutable
+                    return ids->std::map([=](auto id) mutable
                     {
                         return (object{
                             object::pair{std::string("id"), std::string("id")}
@@ -207,7 +207,7 @@ void Main(void)
                 }, 
                 object::pair{std::string("getMemoriesByIds"), [=](auto ids) mutable
                 {
-                    return ids->map([=](auto id) mutable
+                    return ids->std::map([=](auto id) mutable
                     {
                         return (object{
                             object::pair{std::string("id"), std::string("id")}
@@ -241,7 +241,7 @@ void Main(void)
                 }, 
                 object::pair{std::string("getEntitiesByIds"), [=](auto ids) mutable
                 {
-                    return ids->map([=](auto id) mutable
+                    return ids->std::map([=](auto id) mutable
                     {
                         return (object{
                             object::pair{std::string("id"), std::string("id")}
@@ -308,7 +308,7 @@ void Main(void)
                 std::async([=]() { runtime->initialize(); });
                 elizaLogger->info(std::string("Runtime initialized successfully"));
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 elizaLogger->warn(std::string("Runtime initialization failed:"), error);
             }
@@ -326,7 +326,7 @@ void Main(void)
                         {
                             std::async([=]() { (as<any>(service))["stop"](); });
                         }
-                        catch (const any& error)
+                        catch (const std::any& error)
                         {
                         }
                     }

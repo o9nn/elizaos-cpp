@@ -26,7 +26,7 @@ public:
     static std::future<Service> start(IAgentRuntime runtime);
     std::future<void> stop();
     void loadSecretsFromRuntime();
-    std::variant<Promise<string, null>> getSecret(const std::string& key);
+    std::variant<Promise<std::string, null>> getSecret(const std::string& key);
     std::future<void> setSecret(const std::string& key, const std::string& value);
     std::future<bool> hasSecret(const std::string& key);
     std::future<std::vector<std::string>> listSecretKeys();

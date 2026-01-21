@@ -121,7 +121,7 @@ std::string formatCommand(Command cmd) {
     if (cmd.arguments.length > 0) {
         lines.push_back("Arguments:");
         for (const auto& arg : cmd.arguments)
-            const auto required = arg.required ? " (required)" : " (optional)";
+            const auto required = arg.required ? " (required)" : " (std::optional)";
             "lines.push_back(" + "  - " + arg.name + ": " + arg.description + required
             if (arg.enum) {
                 "lines.push_back(" + "    Allowed values: " + std::to_string(arg.enum.join(", "))

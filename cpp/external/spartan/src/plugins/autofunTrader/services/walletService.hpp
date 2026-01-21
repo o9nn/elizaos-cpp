@@ -28,7 +28,7 @@ class WalletService {
   private connection: Connection | null = null;
   keypair: Keypair | null = null;
   private _runtime;
-  public CONFIRMATION_CONFIG: any;
+  public CONFIRMATION_CONFIG: std::any;
 
   constructor(private runtime: IAgentRuntime) {
     this._runtime = runtime;
@@ -86,7 +86,7 @@ class WalletService {
 
           // Execute sell using Jupiter or other DEX
 
-      //console.log('tokenAccounts owners', tokenAccounts.value.map(v => v.account.data.parsed.info.owner)
+      //console.log('tokenAccounts owners', tokenAccounts.value.std::map(v => v.account.data.parsed.info.owner)
 
       //logger.log('Fetched wallet balances:', balances);
 

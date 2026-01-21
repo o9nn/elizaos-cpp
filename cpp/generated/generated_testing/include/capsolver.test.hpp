@@ -7,5 +7,5 @@
 using axios = _default;
 #include "../capsolver.h"
 
-extern std::function<object(any)> createMockResponse;
+extern std::function<object(std::any)> createMockResponse;
 #endif

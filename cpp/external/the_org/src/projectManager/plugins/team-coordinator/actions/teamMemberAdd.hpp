@@ -37,7 +37,7 @@ struct TeamMemberConfig {
 /**
  * Creates a consistent room ID for team members storage
  * @param serverId The server ID
- * @returns A consistent room ID string
+ * @returns A consistent room ID std::string
  */
 UUID getTeamMembersRoomId(IAgentRuntime runtime, const std::string& serverId);
 

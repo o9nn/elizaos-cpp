@@ -22,7 +22,7 @@ struct PackageJson {
 
 struct ImportStrategy {
     std::string name;
-    (repository: string) => Promise<any | null> tryImport;
+    (repository: std::string) => Promise<std::any | null> tryImport;
 };
 
 /**
@@ -31,19 +31,19 @@ struct ImportStrategy {
 std::string getGlobalNodeModulesPath();
 
 /**
- * Helper function to resolve a path within node_modules
+ * Helper std::function to resolve a path within node_modules
  */
 std::string resolveNodeModulesPath(const std::string& repository, const std::vector<std::string>& ...segments);
 
 /**
- * Helper function to read and parse package.json
+ * Helper std::function to read and parse package.json
  */
 std::future<PackageJson | null> readPackageJson(const std::string& repository);
 
 /**
  * Attempts to import a module from a given path and logs the outcome.
  */
-std::future<any | null> tryImporting(const std::string& importPath, const std::string& strategy, const std::string& repository);
+std::future<std::any | null> tryImporting(const std::string& importPath, const std::string& strategy, const std::string& repository);
 
 /**
  * Collection of import strategies
@@ -80,6 +80,6 @@ std::vector<ImportStrategy> getStrategiesForPlugin(const std::string& repository
  * @param repository - The plugin repository/package name to load.
  * @returns The loaded plugin module or null if loading fails after all attempts.
  */
-std::future<any | null> loadPluginModule(const std::string& repository);
+std::future<std::any | null> loadPluginModule(const std::string& repository);
 
 } // namespace elizaos

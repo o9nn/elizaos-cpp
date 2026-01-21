@@ -14,17 +14,17 @@ class Florence2Local;
 class Florence2LocalConfig : public object, public std::enable_shared_from_this<Florence2LocalConfig> {
 public:
     using std::enable_shared_from_this<Florence2LocalConfig>::shared_from_this;
-    string modelPath;
+    std::string modelPath;
 
-    string modelUrl;
+    std::string modelUrl;
 
-    string cacheDir;
+    std::string cacheDir;
 };
 
 class Florence2Local : public object, public std::enable_shared_from_this<Florence2Local> {
 public:
     using std::enable_shared_from_this<Florence2Local>::shared_from_this;
-    any model = nullptr;
+    std::any model = nullptr;
 
     boolean initialized = false;
 
@@ -40,8 +40,8 @@ public:
     virtual std::shared_ptr<Promise<std::shared_ptr<tf::Tensor3D>>> preprocessImage(std::shared_ptr<Buffer> imageBuffer);
     virtual std::shared_ptr<Promise<std::shared_ptr<tf::Tensor>>> runInference(std::shared_ptr<tf::Tensor3D> input);
     virtual std::shared_ptr<Promise<std::shared_ptr<Florence2Result>>> parseModelOutput(std::shared_ptr<tf::Tensor> predictions);
-    virtual string generateCaptionFromFeatures(any features);
-    virtual array<string> extractTagsFromCaption(string caption);
+    virtual std::string generateCaptionFromFeatures(std::any features);
+    virtual array<string> extractTagsFromCaption(std::string caption);
     virtual std::shared_ptr<Promise<std::shared_ptr<Florence2Result>>> enhancedFallback(std::shared_ptr<Buffer> imageBuffer);
     virtual boolean isInitialized();
     virtual std::shared_ptr<Promise<void>> dispose();

@@ -26,7 +26,7 @@ void Main(void)
                 expect(config->plugin)->toBe(std::string("test-plugin"));
             }
             );
-            it(std::string("should allow optional fields"), [=]() mutable
+            it(std::string("should allow std::optional fields"), [=]() mutable
             {
                 auto config = object{
                     object::pair{std::string("type"), std::string("secret")}, 
@@ -157,7 +157,7 @@ void Main(void)
                 expect(type_of(script->createdAt))->toBe(std::string("number"));
             }
             );
-            it(std::string("should allow optional fields"), [=]() mutable
+            it(std::string("should allow std::optional fields"), [=]() mutable
             {
                 auto script = object{
                     object::pair{std::string("variableName"), std::string("API_KEY")}, 

@@ -14,7 +14,7 @@ namespace elizaos {
 
 
 class AdvancedVisualization {
-  static generateSegmentationSunburst(segments: any[]): ChartConfiguration {
+  static generateSegmentationSunburst(segments: std::any[]): ChartConfiguration {
     return {
       type: 'sunburst',
       data: this.transformSegmentData(segments),
@@ -24,7 +24,7 @@ class AdvancedVisualization {
           legend: { position: 'right' },
           tooltip: {
             callbacks: {
-              label: (ctx: any) => `${ctx.raw.value} users`
+              label: (ctx: std::any) => `${ctx.raw.value} users`
             }
           }
         }

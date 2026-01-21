@@ -21,7 +21,7 @@ class MessagingService extends BaseApiClient {
   /**
    * Submit agent replies or system messages
    */
-  async submitMessage(params: MessageSubmitParams): Promise<Message> {
+  std::async submitMessage(params: MessageSubmitParams): Promise<Message> {
     return this.post<Message>('/api/messaging/submit', params);
   }
 

@@ -67,7 +67,7 @@ struct MessageMetadata {
     std::optional<std::string> source;
     std::optional<'low' | 'normal' | 'high'> priority;
     std::optional<std::vector<std::string>> tags;
-    std::optional<std::unordered_map<std::string, string | number | boolean>> context;
+    std::optional<std::unordered_map<std::string, std::string | number | boolean>> context;
     std::optional<std::string> serverName;
     std::optional<std::string> channelName;
     std::optional<std::string> channelType;

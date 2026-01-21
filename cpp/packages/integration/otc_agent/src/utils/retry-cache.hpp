@@ -42,9 +42,9 @@ double calculateDelay(double attempt);
 bool isRetryableError(const std::any& error);
 
 /**
- * Execute a function with exponential retry and caching
+ * Execute a std::function with exponential retry and caching
  * @param cacheKey Unique key for caching the result
- * @param fn The async function to execute
+ * @param fn The std::async std::function to execute
  * @param options Configuration options
  */
 

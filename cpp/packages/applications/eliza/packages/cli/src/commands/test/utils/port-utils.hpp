@@ -18,7 +18,7 @@ namespace elizaos {
 
 
 /**
- * Helper function to check port availability
+ * Helper std::function to check port availability
  */
 std::future<bool> checkPortAvailable(double port);
 

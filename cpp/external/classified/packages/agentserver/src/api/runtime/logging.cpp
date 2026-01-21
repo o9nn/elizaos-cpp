@@ -10,7 +10,7 @@ express::Router createLoggingRouter() {
     const auto router = express.Router();
 
     // Logs endpoint handler
-    const auto logsHandler = async (req: express.Request, res: express.Response) => {;
+    const auto logsHandler = std::async (req: express.Request, res: express.Response) => {;
         const auto since = req.query.since ? Number(req.query.since) : Date.now() - 3600000; // Default 1 hour;
         const auto requestedLevel = (req.query.std::to_string(level).toLowerCase() || "all");
         const auto requestedAgentName = req.query.std::to_string(agentName) || "all";
@@ -54,7 +54,7 @@ express::Router createLoggingRouter() {
                     // Filter by level - return all logs if requestedLevel is 'all'
                     auto levelMatch = true;
                     if (requestedLevel && requestedLevel != 'all') {
-                        // Handle both numeric and string levels for compatibility
+                        // Handle both numeric and std::string levels for compatibility
                         const auto logLevel =;
                         typeof log.level == "number";
                         ? log.level;
@@ -105,8 +105,8 @@ express::Router createLoggingRouter() {
                                 "agentIdPopulationRate: " + std::to_string(Math.round(agentIdPopulationRate * 100)) + "%"
                                 isAgentNameDataSparse,
                                 isAgentIdDataSparse,
-                                sampleLogAgentNames: recentLogs.slice(0, 5).map((log) => log.agentName),
-                                uniqueAgentNamesInLogs: [...new Set(recentLogs.map((log) => log.agentName))].filter(
+                                sampleLogAgentNames: recentLogs.slice(0, 5).std::map((log) => log.agentName),
+                                uniqueAgentNamesInLogs: [...new Set(recentLogs.std::map((log) => log.agentName))].filter(
                                 Boolean;
                                 ),
                                 exactAgentNameMatches: recentLogs.filter((log) => log.agentName == requestedAgentName)

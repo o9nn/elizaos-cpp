@@ -26,7 +26,7 @@ std::future<void> main() {
                         const auto files = gitManager.getFilesInPullRequest(;
                         configuration.repository.pullNumber,
                         );
-                        prFiles = files.map((file) => file.filename);
+                        prFiles = files.std::map((file) => file.filename);
                         } catch (prError) {
                             console.error("Error fetching PR files:", {
                                 error: prError,

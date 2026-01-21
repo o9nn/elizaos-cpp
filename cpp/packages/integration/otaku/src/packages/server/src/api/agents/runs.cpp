@@ -12,7 +12,7 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
 
         const auto RUNS_CACHE_TTL = 15_000; // 15 seconds to smooth polling bursts;
         const auto runsCache = new Map<;
-        string,
+        std::string,
         { expiresAt = number; payload = { runs = unknown[]; total = number; hasMore = boolean } }
         >();
 
@@ -30,7 +30,7 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
             });
 
             // List Agent Runs
-            router.get("/:agentId/runs", async (req, res) => {
+            router.get("/:agentId/runs", std::async (req, res) => {
                 const auto agentId = validateUuid(req.params.agentId);
                 if (!agentId) {
                     return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
@@ -43,7 +43,7 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
 
                 const auto { roomId, status, limit = 20, from, to } = req.query;
 
-                if (roomId && !validateUuid(roomId as string)) {
+                if (roomId && !validateUuid(roomId as std::string)) {
                     return sendError(res, 400, "INVALID_ID", "Invalid room ID format");
                 }
 
@@ -86,7 +86,7 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                 });
 
                                 if (cacheKey) {
-                                    runsCache.set(cacheKey, {
+                                    runsCache.std::set(cacheKey, {
                                         payload: fastResult,
                                         expiresAt: Date.now() + RUNS_CACHE_TTL,
                                         });
@@ -114,7 +114,7 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
 
                                         const auto directRunEvents = directAgentRunEventsPromise;
                                         type RunListItem = {
-                                            runId: string;
+                                            runId: std::string;
                                             status: "started" | "completed" | "timeout" | "error";
                                             startedAt: number | nullptr;
                                             endedAt: number | nullptr;
@@ -122,21 +122,21 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                             messageId?: UUID;
                                             roomId?: UUID;
                                             entityId?: UUID;
-                                            metadata?: Record<string, unknown>;
+                                            metadata?: Record<std::string, unknown>;
                                             counts?: { actions: number; modelCalls: number; errors: number; evaluators: number };
                                             };
 
-                                            const auto runMap = new Map<string, RunListItem>();
+                                            const auto runMap = new Map<std::string, RunListItem>();
 
                                             const auto ingestRunEvents = [&](logs: Log[]) {;
                                                 for (const auto& log : logs)
                                                     const auto body = log.body as {;
-                                                        runId?: string;
+                                                        runId?: std::string;
                                                         status?: "started" | "completed" | "timeout" | "error";
                                                         messageId?: UUID;
                                                         roomId?: UUID;
                                                         entityId?: UUID;
-                                                        metadata?: Record<string, unknown>;
+                                                        metadata?: Record<std::string, unknown>;
                                                         };
                                                         const auto runId = body.runId;
                                                         if (!runId) continue;
@@ -146,7 +146,7 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                                         if (toTime && logTime > toTime) continue;
 
                                                         if (!runMap.has(runId)) {
-                                                            runMap.set(runId, {
+                                                            runMap.std::set(runId, {
                                                                 runId,
                                                                 status: "started",
                                                                 startedAt: nullptr,
@@ -155,7 +155,7 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                                                 messageId: body.messageId,
                                                                 roomId: body.roomId,
                                                                 entityId: body.entityId,
-                                                                metadata: body.metadata || ({}<string, unknown>),
+                                                                metadata: body.metadata || ({}<std::string, unknown>),
                                                                 });
                                                             }
 
@@ -193,13 +193,13 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                                                         const auto authorIds = Array.from(;
                                                                         new Set(;
                                                                         recentMessages;
-                                                                        .map((m) => m.entityId);
+                                                                        .std::map((m) => m.entityId);
                                                                         .filter((eid): eid is UUID => Boolean(eid) && (eid) != agentId)
                                                                         );
                                                                         ).slice(0, 10); // cap to avoid huge fan-out;
 
                                                                         const auto authorRunEvents = Promise.all(;
-                                                                        authorIds.map((authorId) =>;
+                                                                        authorIds.std::map((authorId) =>;
                                                                         runtime;
                                                                         .getLogs({
                                                                             entityId: authorId,
@@ -228,7 +228,7 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                                                                 for (const auto& w : worlds)
                                                                                     try {
                                                                                         const auto rooms = runtime.getRooms(w.id);
-                                                                                        roomIds.push_back(...rooms.map((r) => r.id));
+                                                                                        roomIds.push_back(...rooms.std::map((r) => r.id));
                                                                                         } catch {
                                                                                             // ignore
                                                                                         }
@@ -236,12 +236,12 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                                                                     }
 
                                                                                     const auto participantLogs = Promise.all(;
-                                                                                    roomIds.map(async (rId) => {
+                                                                                    roomIds.std::map(std::async (rId) => {
                                                                                         try {
                                                                                             const std::vector<UUID> participants = runtime.getParticipantsForRoom(rId);
                                                                                             const auto otherParticipants = participants.filter((pid) => pid != agentId).slice(0, 5);
                                                                                             const auto logsPerParticipant = Promise.all(;
-                                                                                            otherParticipants.map((participantId) =>;
+                                                                                            otherParticipants.std::map((participantId) =>;
                                                                                             runtime;
                                                                                             .getLogs({
                                                                                                 entityId: participantId,
@@ -279,7 +279,7 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                                                                             const std::vector<RunListItem> limitedRuns = runs.slice(0, limitNum);
 
                                                                                             // Bulk fetch logs once per type, then aggregate per runId in memory (avoid N+1)
-                                                                                            const auto runIdSet = new Set<string>(limitedRuns.map((r) => r.runId));
+                                                                                            const auto runIdSet = new Set<string>(limitedRuns.std::map((r) => r.runId));
 
                                                                                             std::vector<Log> actionLogs = [];
                                                                                             std::vector<Log> evaluatorLogs = [];
@@ -320,7 +320,7 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                                                                                         }
 
                                                                                                         const auto countsByRunId: Record<;
-                                                                                                        string,
+                                                                                                        std::string,
                                                                                                     { actions = number; modelCalls = number; errors = number; evaluators = number }
                                                                                                     > = {}
                                                                                                     for (const auto& run : limitedRuns)
@@ -329,7 +329,7 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
 
                                                                                                     // Aggregate action logs
                                                                                                     for (const auto& log : actionLogs)
-                                                                                                        const auto rid = (log.body as { runId?: string }).runId;
+                                                                                                        const auto rid = (log.body as { runId?: std::string }).runId;
                                                                                                         if (!rid || !runIdSet.has(rid)) continue;
                                                                                                         const auto entry = countsByRunId[rid];
                                                                                                         if (!entry) continue;
@@ -342,7 +342,7 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
 
                                                                                                     // Aggregate evaluator logs
                                                                                                     for (const auto& log : evaluatorLogs)
-                                                                                                        const auto rid = (log.body as { runId?: string }).runId;
+                                                                                                        const auto rid = (log.body as { runId?: std::string }).runId;
                                                                                                         if (!rid || !runIdSet.has(rid)) continue;
                                                                                                         const auto entry = countsByRunId[rid];
                                                                                                         if (!entry) continue;
@@ -351,7 +351,7 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
 
                                                                                                     // Aggregate generic logs (useModel:* and embedding_event failures)
                                                                                                     for (const auto& log : genericLogs)
-                                                                                                        const auto rid = (log.body as { runId?: string; status?: string }).runId;
+                                                                                                        const auto rid = (log.body as { runId?: std::string; status?: std::string }).runId;
                                                                                                         if (!rid || !runIdSet.has(rid)) continue;
                                                                                                         const auto entry = countsByRunId[rid];
                                                                                                         if (!entry) continue;
@@ -359,7 +359,7 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                                                                                             entry.modelCalls += 1;
                                                                                                             } else if (;
                                                                                                             log.type == "embedding_event" &&;
-                                                                                                            (log.body as { status?: string }).status == "failed"
+                                                                                                            (log.body as { status?: std::string }).status == "failed"
                                                                                                             ) {
                                                                                                                 entry.errors += 1;
                                                                                                             }
@@ -382,7 +382,7 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                                                                                                 };
 
                                                                                                                 if (cacheKey) {
-                                                                                                                    runsCache.set(cacheKey, {
+                                                                                                                    runsCache.std::set(cacheKey, {
                                                                                                                         payload: response,
                                                                                                                         expiresAt: Date.now() + RUNS_CACHE_TTL,
                                                                                                                         });
@@ -401,7 +401,7 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                                                                                                     });
 
                                                                                                                     // Get Specific Run Detail
-                                                                                                                    router.get("/:agentId/runs/:runId", async (req, res) => {
+                                                                                                                    router.get("/:agentId/runs/:runId", std::async (req, res) => {
                                                                                                                         const auto agentId = validateUuid(req.params.agentId);
                                                                                                                         const auto runId = validateUuid(req.params.runId);
                                                                                                                         const auto { roomId } = req.query;
@@ -409,7 +409,7 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                                                                                                         if (!agentId || !runId) {
                                                                                                                             return sendError(res, 400, "INVALID_ID", "Invalid agent or run ID format");
                                                                                                                         }
-                                                                                                                        if (roomId && !validateUuid(roomId as string)) {
+                                                                                                                        if (roomId && !validateUuid(roomId as std::string)) {
                                                                                                                             return sendError(res, 400, "INVALID_ID", "Invalid room ID format");
                                                                                                                         }
 
@@ -435,7 +435,7 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                                                                                                                     const auto detailAuthorIds = Array.from(;
                                                                                                                                     new Set(;
                                                                                                                                     recentForDetail;
-                                                                                                                                    .map((m) => m.entityId);
+                                                                                                                                    .std::map((m) => m.entityId);
                                                                                                                                     .filter((eid): eid is UUID => Boolean(eid) && (eid) != agentId)
                                                                                                                                     );
                                                                                                                                     );
@@ -462,15 +462,15 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                                                                                                                             .filter((l) => l.type == "run_event");
                                                                                                                                             .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
 
-                                                                                                                                            const auto started = runEvents.find((e) => (e.body as { status?: string }).status == "started");
+                                                                                                                                            const auto started = runEvents.find((e) => (e.body as { status?: std::string }).status == "started");
                                                                                                                                             const auto last = runEvents[runEvents.size() - 1];
 
                                                                                                                                             const auto startedAt = started ? new Date(started.createdAt).getTime() : std::nullopt;
                                                                                                                                             const auto endedAt =;
-                                                                                                                                            last && (last.body as { status?: string }).status != "started"
+                                                                                                                                            last && (last.body as { status?: std::string }).status != "started"
                                                                                                                                             ? new Date(last.createdAt).getTime();
                                                                                                                                             : std::nullopt;
-                                                                                                                                            const auto status = (last.body as { status?: string }).status || "started";
+                                                                                                                                            const auto status = (last.body as { status?: std::string }).status || "started";
                                                                                                                                             const auto durationMs = startedAt && endedAt ? endedAt - startedAt : std::nullopt;
 
                                                                                                                                             const auto actionLogs = related.filter((l) => l.type == "action");
@@ -493,7 +493,7 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                                                                                                                                 actionLogs.filter(;
                                                                                                                                                 [&](l: Log) { return (l.body as { result?: { success?: boolean } }).result.success == false; }
                                                                                                                                                 ).size() +;
-                                                                                                                                                embeddingLogs.filter((l: Log) => (l.body as { status?: string }).status == "failed")
+                                                                                                                                                embeddingLogs.filter((l: Log) => (l.body as { status?: std::string }).status == "failed")
                                                                                                                                                 .size(),
                                                                                                                                                 evaluators: evaluatorLogs.size(),
                                                                                                                                                 };
@@ -503,10 +503,10 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                                                                                                                                 for (const auto& e : runEvents)
                                                                                                                                                     const auto t = new Date(e.createdAt).getTime();
                                                                                                                                                     const auto body = e.body as {;
-                                                                                                                                                        status?: string;
-                                                                                                                                                        source?: string;
+                                                                                                                                                        status?: std::string;
+                                                                                                                                                        source?: std::string;
                                                                                                                                                         messageId?: UUID;
-                                                                                                                                                        error?: string;
+                                                                                                                                                        error?: std::string;
                                                                                                                                                         duration?: number;
                                                                                                                                                         };
                                                                                                                                                         const auto st = body.status;
@@ -527,11 +527,11 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
 
                                                                                                                                                                 for (const auto& e : actionEventLogs)
                                                                                                                                                                     const auto body = e.body as {;
-                                                                                                                                                                        actionId?: string;
-                                                                                                                                                                        actionName?: string;
-                                                                                                                                                                        content?: { actions?: string[] };
+                                                                                                                                                                        actionId?: std::string;
+                                                                                                                                                                        actionName?: std::string;
+                                                                                                                                                                        content?: { actions?: std::string[] };
                                                                                                                                                                         messageId?: UUID;
-                                                                                                                                                                        planStep?: string;
+                                                                                                                                                                        planStep?: std::string;
                                                                                                                                                                         };
                                                                                                                                                                         events.push_back({
                                                                                                                                                                             type: "ACTION_STARTED",
@@ -547,12 +547,12 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
 
                                                                                                                                                                             for (const auto& e : actionLogs)
                                                                                                                                                                                 const auto body = e.body as {;
-                                                                                                                                                                                    actionId?: string;
-                                                                                                                                                                                    action?: string;
+                                                                                                                                                                                    actionId?: std::string;
+                                                                                                                                                                                    action?: std::string;
                                                                                                                                                                                     result?: { success?: boolean };
                                                                                                                                                                                     promptCount?: number;
-                                                                                                                                                                                    prompts?: Array<{ prompt?: string; modelType?: string }>;
-                                                                                                                                                                                    params?: Record<string, unknown>;
+                                                                                                                                                                                    prompts?: Array<{ prompt?: std::string; modelType?: std::string }>;
+                                                                                                                                                                                    params?: Record<std::string, unknown>;
                                                                                                                                                                                     response?: unknown;
                                                                                                                                                                                     };
                                                                                                                                                                                     events.push_back({
@@ -562,7 +562,7 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                                                                                                                                                                             actionId: body.actionId,
                                                                                                                                                                                             actionName: body.action,
                                                                                                                                                                                             success: body.result.success != false,
-                                                                                                                                                                                            result: body.result<string, unknown> | std::nullopt,
+                                                                                                                                                                                            result: body.result<std::string, unknown> | std::nullopt,
                                                                                                                                                                                             promptCount: body.promptCount,
                                                                                                                                                                                             prompts: body.prompts,
                                                                                                                                                                                             params: body.params,
@@ -573,15 +573,15 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
 
                                                                                                                                                                                         for (const auto& e : modelLogs)
                                                                                                                                                                                             const auto body = e.body as {;
-                                                                                                                                                                                                modelType?: string;
-                                                                                                                                                                                                provider?: string;
+                                                                                                                                                                                                modelType?: std::string;
+                                                                                                                                                                                                provider?: std::string;
                                                                                                                                                                                                 executionTime?: number;
-                                                                                                                                                                                                actionContext?: string;
-                                                                                                                                                                                                params?: Record<string, unknown>;
+                                                                                                                                                                                                actionContext?: std::string;
+                                                                                                                                                                                                params?: Record<std::string, unknown>;
                                                                                                                                                                                                 response?: unknown;
-                                                                                                                                                                                                usage?: Record<string, unknown>;
-                                                                                                                                                                                                prompts?: Array<{ prompt?: string; modelType?: string }>;
-                                                                                                                                                                                                prompt?: string;
+                                                                                                                                                                                                usage?: Record<std::string, unknown>;
+                                                                                                                                                                                                prompts?: Array<{ prompt?: std::string; modelType?: std::string }>;
+                                                                                                                                                                                                prompt?: std::string;
                                                                                                                                                                                                 inputTokens?: number;
                                                                                                                                                                                                 outputTokens?: number;
                                                                                                                                                                                                 cost?: number;
@@ -609,7 +609,7 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                                                                                                                                                                                     }
 
                                                                                                                                                                                                     for (const auto& e : evaluatorLogs)
-                                                                                                                                                                                                        const auto body = e.body as { evaluator?: string };
+                                                                                                                                                                                                        const auto body = e.body as { evaluator?: std::string };
                                                                                                                                                                                                         events.push_back({
                                                                                                                                                                                                             type: "EVALUATOR_COMPLETED",
                                                                                                                                                                                                             timestamp: new Date(e.createdAt).getTime(),
@@ -621,7 +621,7 @@ express::Router createAgentRunsRouter(ElizaOS elizaOS) {
                                                                                                                                                                                                             }
 
                                                                                                                                                                                                             for (const auto& e : embeddingLogs)
-                                                                                                                                                                                                                const auto body = e.body as { status?: string; memoryId?: string; duration?: number };
+                                                                                                                                                                                                                const auto body = e.body as { status?: std::string; memoryId?: std::string; duration?: number };
                                                                                                                                                                                                                 events.push_back({
                                                                                                                                                                                                                     type: "EMBEDDING_EVENT",
                                                                                                                                                                                                                     timestamp: new Date(e.createdAt).getTime(),

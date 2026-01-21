@@ -27,7 +27,7 @@ std::shared_ptr<Promise<std::shared_ptr<BunInstallationResult>>> checkBunInstall
             };
         }
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         return object{
             object::pair{std::string("installed"), false}, 
@@ -60,7 +60,7 @@ void displayBunInstallInstructions()
 };
 
 
-string displayBunInstallationTipCompact()
+std::string displayBunInstallationTipCompact()
 {
     return std::string("Please install Bun from https://bun.sh");
 };

@@ -10,7 +10,7 @@ public:
     using std::enable_shared_from_this<ContentQualityResult>::shared_from_this;
     boolean isValid;
 
-    string reason;
+    std::string reason;
 
     double score;
 };
@@ -22,24 +22,24 @@ extern std::shared_ptr<RegExp> EMOJI_REGEX;
 extern std::shared_ptr<RegExp> URL_REGEX;
 extern std::shared_ptr<RegExp> SPECIAL_CHAR_REGEX;
 extern array<std::shared_ptr<RegExp>> SPAM_PHRASES;
-double calculateEntropy(string text);
+double calculateEntropy(std::string text);
 
-object checkRepeatedChars(string text);
+object checkRepeatedChars(std::string text);
 
-object checkRepeatedWords(string text);
+object checkRepeatedWords(std::string text);
 
-object checkKeyboardMash(string text);
+object checkKeyboardMash(std::string text);
 
-object checkEmojiSpam(string text);
+object checkEmojiSpam(std::string text);
 
-object checkUrlSpam(string text);
+object checkUrlSpam(std::string text);
 
-object checkSpecialCharSpam(string text);
+object checkSpecialCharSpam(std::string text);
 
-boolean checkSpamPhrases(string text);
+boolean checkSpamPhrases(std::string text);
 
-std::shared_ptr<ContentQualityResult> checkContentQuality(string text);
+std::shared_ptr<ContentQualityResult> checkContentQuality(std::string text);
 
-boolean quickSpamCheck(string text);
+boolean quickSpamCheck(std::string text);
 
 #endif

@@ -30,7 +30,7 @@ namespace elizaos {
  * Reads the current .env file content
  */
     return readFileSync(envPath, 'utf-8');
-    // File doesn't exist, return empty string
+    // File doesn't exist, return empty std::string
 
 /**
  * Writes content to the .env file

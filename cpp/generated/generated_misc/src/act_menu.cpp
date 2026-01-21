@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/autonomous-trader/actions/act_menu.h"
 
-string menutext = std::string("Heres what you can do");
+std::string menutext = std::string("Heres what you can do");
 std::shared_ptr<Action> servicesMenu = object{
     object::pair{std::string("name"), std::string("SERVICES_MENU")}, 
     object::pair{std::string("similes"), array<any>()}, 

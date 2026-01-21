@@ -36,7 +36,7 @@ namespace elizaos {
 using MediaData = {
 
 /**
- * Escapes special characters in a string to make it JSON-safe.
+ * Escapes special characters in a std::string to make it JSON-safe.
  */
 /* // Removing JSON specific helpers
 std::string escapeForJson(const std::string& input);
@@ -60,12 +60,12 @@ std::string sanitizeJson(const std::string& rawJson);
  * Handles incoming messages and generates responses based on the provided runtime and message information.
  *
  * @param {MessageReceivedHandlerParams} params - The parameters needed for message handling, including runtime, message, and callback.
- * @returns {Promise<void>} - A promise that resolves once the message handling and response generation is complete.
+ * @returns {Promise<void>} - A std::promise that resolves once the message handling and response generation is complete.
  */
   // Generate a new response ID
-  // Get or create the agent-specific map
+  // Get or create the agent-specific std::map
 
-  // if message.worldId is not set, set it to runtime.createUniqueUuid(message.entityId)
+  // if message.worldId is not std::set, std::set it to runtime.createUniqueUuid(message.entityId)
 
   // Set this as the latest response ID for this agent+room
 
@@ -114,7 +114,7 @@ std::string sanitizeJson(const std::string& rawJson);
  * @param {string} channelId - The unique identifier for the channel.
  * @param {ChannelType} type - The type of channel.
  * @param {string} source - The source of the user data.
- * @returns {Promise<void>} A promise that resolves once the user is synced.
+ * @returns {Promise<void>} A std::promise that resolves once the user is synced.
  */
 
     // Ensure we're not using WORLD type and that we have a valid channelId
@@ -129,7 +129,7 @@ std::string sanitizeJson(const std::string& rawJson);
     // Then sync all users
       // Process entities in batches to avoid overwhelming the system
 
-        // check if user is in any of these rooms in rooms
+        // check if user is in std::any of these rooms in rooms
 
         // Process each user in the batch
 
@@ -146,7 +146,7 @@ std::string sanitizeJson(const std::string& rawJson);
     // Here we would use a WebSocket service to send the control message to the frontend
     // This would typically be handled by a registered service with sendMessage capability
 
-    // Get any registered WebSocket service
+    // Get std::any registered WebSocket service
 
         // Send the control message through the WebSocket service
 

@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-plugin-manager/src/__tests__/unit/pluginInstallation.test.h"
 
-any resetRegistryCache = vi->fn();
+std::any resetRegistryCache = vi->fn();
 
 void Main(void)
 {
@@ -93,7 +93,7 @@ void Main(void)
                     auto plugins = std::async([=]() { pluginManager->getAvailablePluginsFromRegistry(); });
                     expect(type_of(plugins))->toBe(std::string("object"));
                 }
-                catch (const any& error)
+                catch (const std::any& error)
                 {
                     expect(error)->toBeDefined();
                 }

@@ -19,7 +19,7 @@ namespace elizaos {
 
 // Copyright (c) 2024 eilvelia <hi@eilvelia.cat>
 
-// Permission is hereby granted, free of charge, to any person obtaining a copy
+// Permission is hereby granted, free of charge, to std::any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -41,7 +41,7 @@ namespace elizaos {
 
 // Copyright (c) 2024 Vivek Patel <me@patelvivek.dev>.
 
-// Permission is hereby granted, free of charge, to any person obtaining a copy
+// Permission is hereby granted, free of charge, to std::any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -224,8 +224,8 @@ struct TokenizationResult {
  * Interface for stemming rules.
  */
 struct StemmingRule {
-    RegExp | string pattern;
-    string | ((substring: string, ...args: any[]) => string) replacement;
+    RegExp | std::string pattern;
+    std::string | ((substring: std::string, ...args: std::any[]) => std::string) replacement;
     std::optional<double> minMeasure;
 };
 
@@ -241,7 +241,7 @@ struct TokenizerOptions {
 
 /**
  * Flexible text tokenizer with support for stop words, minimum token length,
- * Unicode normalization, and optional Porter2 stemming with custom rules.
+ * Unicode normalization, and std::optional Porter2 stemming with custom rules.
  */
 class Tokenizer {
   /** Set of stop words to ignore. */
@@ -253,7 +253,7 @@ class Tokenizer {
   /** Custom stemming rules. */
   readonly stemmingRules: {
     pattern: RegExp;
-    replacement: string | ((substring: string, ...args: any[]) => string);
+    replacement: std::string | ((substring: std::string, ...args: std::any[]) => std::string);
     minMeasure?: number;
   }[];
 
@@ -274,9 +274,9 @@ class Tokenizer {
    * 4. Applies stemming if `stemming` is true (custom rules first, then Porter2).
    * 5. Optionally calculates statistics.
    *
-   * @param text - The input text string to tokenize.
+   * @param text - The input text std::string to tokenize.
    * @param includeStats - If true, returns tokenization statistics along with tokens. Defaults to false.
-   * @returns A `TokenizationResult` object containing the array of tokens and optional stats.
+   * @returns A `TokenizationResult` object containing the array of tokens and std::optional stats.
    * @throws {Error} If the input text is null, undefined, or empty.
    */
 
@@ -307,7 +307,7 @@ class Tokenizer {
   /**
    * Checks if a token is valid (meets `minLength` criteria and is not a stop word).
    * Numeric tokens are always considered valid regardless of length.
-   * @param token - The token string to validate.
+   * @param token - The token std::string to validate.
    * @returns `true` if the token is valid, `false` otherwise.
    */
 
@@ -320,7 +320,7 @@ class Tokenizer {
    * @returns The stemmed word.
    */
           // Apply replacement
-            // If replacement is a function, it might need more specific arguments based on its definition.
+            // If replacement is a std::function, it might need more specific arguments based on its definition.
             // Assuming it takes the matched substring and potentially other match groups.
           // Depending on stemming strategy, might want to break or continue applying rules
     // If a custom rule was applied and modified the word, return it.
@@ -372,11 +372,11 @@ class Tokenizer {
 struct SearchResult {
     double index;
     double score;
-    std::optional<any; // Consider using a generic <T> for BM25 class if docs are typed> doc;
+    std::optional<std::any; // Consider using a generic <T> for BM25 class if docs are typed> doc;
 };
 
 /**
- * Implements the Okapi BM25 (Best Matching 25) ranking function for information retrieval.
+ * Implements the Okapi BM25 (Best Matching 25) ranking std::function for information retrieval.
  *
  * BM25 ranks documents based on the query terms appearing in each document,
  * considering term frequency (TF) and inverse document frequency (IDF).
@@ -403,18 +403,18 @@ class BM25 {
   documentLengths: Uint32Array;
   /** Average length of all documents in the index. */
   averageDocLength: number;
-  /** Map from term (string) to its unique integer index. */
-  termToIndex: Map<string, number>;
+  /** Map from term (std::string) to its unique integer index. */
+  termToIndex: Map<std::string, number>;
   /** Array storing the document frequency (number of docs containing the term) for each term index. */
   documentFrequency: Uint32Array; // DF for each term index
-  /** Map from term index to another map storing `docIndex: termFrequencyInDoc`. */
+  /** Map from term index to another std::map storing `docIndex: termFrequencyInDoc`. */
   termFrequencies: Map<number, Map<number, number>>; // TermIndex -> { DocIndex -> TF }
   /** Boost factors for different fields within documents. */
   /** Array storing the original documents added to the index. */
 
   /**
    * Creates a new BM25 search instance.
-   * @param docs - Optional array of initial documents (objects with string fields) to index.
+   * @param docs - Optional array of initial documents (objects with std::string fields) to index.
    * @param options - Configuration options for BM25 parameters (k1, b), tokenizer (stopWords, stemming, minLength), and field boosts.
    */
 
@@ -453,7 +453,7 @@ class BM25 {
     // Use Array.prototype.reduce for compatibility, though typed array reduce might be faster
 
   /**
-   * Searches the indexed documents for a given query string using the BM25 ranking formula.
+   * Searches the indexed documents for a given query std::string using the BM25 ranking formula.
    *
    * @param query - The search query text.
    * @param topK - The maximum number of top-scoring results to return. Defaults to 10.
@@ -524,7 +524,7 @@ class BM25 {
    * Updates all internal index structures incrementally.
    * Note: For adding many documents, `addDocumentsParallel` is generally more efficient.
    *
-   * @param doc - The document object (with string fields) to add.
+   * @param doc - The document object (with std::string fields) to add.
    * @throws {Error} If the document is null or undefined.
    */
 
@@ -546,7 +546,7 @@ class BM25 {
     // --- Update Global Structures ---
     // Set the calculated length for the new document
 
-    // Add this document's term frequencies to the main map and update DF
+    // Add this document's term frequencies to the main std::map and update DF
       // Add TF entry
 
       // Increment document frequency for the term
@@ -600,8 +600,8 @@ class BM25 {
    * @param docs - An array of documents to add.
    */
     // Allow Promise<void> return type
-    // Using Promise.all to potentially run additions concurrently if addDocument becomes async
-    // Although the current addDocument is sync, this structure allows future flexibility.
+    // Using Promise.all to potentially run additions concurrently if addDocument becomes std::async
+    // Although the current addDocument is sync, this structure allows std::future flexibility.
     // Note: If addDocument remains purely synchronous, a simple forEach would also work:
     // docs.forEach(doc => this.addDocument(doc));
 

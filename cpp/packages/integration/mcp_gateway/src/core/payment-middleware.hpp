@@ -45,13 +45,13 @@ struct PaymentRequirements {
  */
 class PaymentMiddleware {
   private config: GatewayConfig;
-  private apiKeyCache = new Map<string, ApiKeyConfig>();
+  private apiKeyCache = new Map<std::string, ApiKeyConfig>();
   private logger: Console;
-  private verifyPaymentFunc: (payment: PaymentPayload, requirements: any) => Promise<any>;
-  private settlePaymentFunc: (payment: PaymentPayload, requirements: any) => Promise<any>;
+  private verifyPaymentFunc: (payment: PaymentPayload, requirements: std::any) => Promise<any>;
+  private settlePaymentFunc: (payment: PaymentPayload, requirements: std::any) => Promise<any>;
 
   // USDC contract addresses by network
-  private static readonly USDC_ADDRESSES: Record<string, string> = {
+  private static readonly USDC_ADDRESSES: Record<std::string, string> = {
     'base-sepolia': '0x036CbD53842c5426634e7929541eC2318f3dCF7e',
     'base': '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
     'ethereum': '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
@@ -97,7 +97,7 @@ class PaymentMiddleware {
 
       // Build payment requirements using x402 SDK
       
-      // Use x402 SDK to process price to atomic amount
+      // Use x402 SDK to process price to std::atomic amount
 
       // Construct requirements exactly as x402 SDK expects
 
@@ -124,12 +124,12 @@ class PaymentMiddleware {
     
     // Get checksummed address (required by x402)
 
-    // Use x402 SDK to process price to atomic amount
+    // Use x402 SDK to process price to std::atomic amount
 
     // Add EIP-712 info if available
 
   /**
-   * Convert dollar amount to atomic units (USDC has 6 decimals)
+   * Convert dollar amount to std::atomic units (USDC has 6 decimals)
    */
 
     // USDC has 6 decimals

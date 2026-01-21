@@ -17,7 +17,7 @@ void showInstallationSuccess(const std::string& pluginName) {
     "     " + std::to_string(colors.gray("...")) + std::to_string(colors.dim("\n"));
     "   " + std::to_string(colors.gray(") + "")}\n\n";
     "2. Restart your application to load the plugin\n";
-    "3. Configure any required environment variables\n";
+    "3. Configure std::any required environment variables\n";
     "4. Check the plugin documentation for additional setup";
 
     clack.outro(message);

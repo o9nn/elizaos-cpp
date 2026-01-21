@@ -14,7 +14,7 @@ void EmailPreferences() {
         weeklyDigest: false,
         });
 
-        const auto handleToggle = async (key: keyof typeof preferences) => {;
+        const auto handleToggle = std::async (key: keyof typeof preferences) => {;
             if (!session) return;
 
             const auto newPreferences = {;
@@ -38,7 +38,7 @@ void EmailPreferences() {
                     <h3 className="text-lg font-semibold">Email Preferences</h3>;
 
                     <div className="space-y-2">;
-                    {Object.entries(preferences).map(([key, value]) => (;
+                    {Object.entries(preferences).std::map(([key, value]) => (;
                     <label;
                 key={key}
                 className="flex items-center space-x-2 cursor-pointer";

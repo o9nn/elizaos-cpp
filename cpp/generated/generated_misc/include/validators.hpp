@@ -16,7 +16,7 @@ public:
     using std::enable_shared_from_this<ValidationResult>::shared_from_this;
     boolean valid;
 
-    string file;
+    std::string file;
 
     array<std::shared_ptr<Violation>> violations;
 
@@ -26,45 +26,45 @@ public:
 class Violation : public object, public std::enable_shared_from_this<Violation> {
 public:
     using std::enable_shared_from_this<Violation>::shared_from_this;
-    string rule;
+    std::string rule;
 
     double line;
 
     double column;
 
-    string message;
+    std::string message;
 
-    any severity;
+    std::any severity;
 };
 
 class PythonValidator : public object, public std::enable_shared_from_this<PythonValidator> {
 public:
     using std::enable_shared_from_this<PythonValidator>::shared_from_this;
     PythonValidator(array<std::shared_ptr<CodingRule>> _rules = PYTHON_CODING_RULES);
-    virtual std::shared_ptr<ValidationResult> validate(string code, string filePath = undefined);
-    virtual boolean hasTypeAnnotations(string code);
-    virtual double getLineNumber(string code, double index);
-    virtual boolean isMainScript(string filePath);
-    virtual double calculateCommentDensity(string code);
+    virtual std::shared_ptr<ValidationResult> validate(std::string code, std::string filePath = undefined);
+    virtual boolean hasTypeAnnotations(std::string code);
+    virtual double getLineNumber(std::string code, double index);
+    virtual boolean isMainScript(std::string filePath);
+    virtual double calculateCommentDensity(std::string code);
 };
 
 class TypeScriptValidator : public object, public std::enable_shared_from_this<TypeScriptValidator> {
 public:
     using std::enable_shared_from_this<TypeScriptValidator>::shared_from_this;
     TypeScriptValidator(array<std::shared_ptr<CodingRule>> _rules = TYPESCRIPT_CODING_RULES);
-    virtual std::shared_ptr<ValidationResult> validate(string code, string filePath = undefined);
-    virtual double getLineNumber(string code, double index);
-    virtual double calculateCommentDensity(string code);
+    virtual std::shared_ptr<ValidationResult> validate(std::string code, std::string filePath = undefined);
+    virtual double getLineNumber(std::string code, double index);
+    virtual double calculateCommentDensity(std::string code);
 };
 
 template <typename RET, typename P0>
 RET getValidator(P0 language);
 
-std::shared_ptr<Promise<std::shared_ptr<ValidationResult>>> validateFile(string filePath);
+std::shared_ptr<Promise<std::shared_ptr<ValidationResult>>> validateFile(std::string filePath);
 
 std::shared_ptr<Promise<array<std::shared_ptr<ValidationResult>>>> validateFiles(array<string> filePaths);
 
-string formatValidationResults(array<std::shared_ptr<ValidationResult>> results);
+std::string formatValidationResults(array<std::shared_ptr<ValidationResult>> results);
 
 template <typename RET, typename P0>
 RET getValidator(P0 language)

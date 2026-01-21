@@ -13,9 +13,9 @@ class ProviderV2;
 class ProviderV2 : public object, public std::enable_shared_from_this<ProviderV2> {
 public:
     using std::enable_shared_from_this<ProviderV2>::shared_from_this;
-    string name;
+    std::string name;
 
-    string description;
+    std::string description;
 
     boolean dynamic;
 
@@ -23,9 +23,9 @@ public:
 
     boolean private;
 
-    std::function<std::shared_ptr<Promise<any>>(any, any, any)> get;
+    std::function<std::shared_ptr<Promise<any>>(std::any, std::any, std::any)> get;
 };
 
-extern any mockRuntime;
-extern any mockMessage;
+extern std::any mockRuntime;
+extern std::any mockMessage;
 #endif

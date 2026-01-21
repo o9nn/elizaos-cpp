@@ -45,7 +45,7 @@ namespace elizaos {
 
         // If we are purging or exporting, we need to allow those respective slices to handle this.
 
-          // Max offset is 5000, need to reset offset and update/set searchBeforeDate
+          // Max offset is 5000, need to reset offset and update/std::set searchBeforeDate
 
 
 } // namespace elizaos

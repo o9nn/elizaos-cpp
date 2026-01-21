@@ -1209,7 +1209,7 @@ std::string extractDomain(const std::string& url) {
         start += 4;
     }
 
-    // Find end of domain (path or query string)
+    // Find end of domain (path or query std::string)
     size_t end = url.find('/', start);
     if (end == std::string::npos) {
         end = url.find('?', start);

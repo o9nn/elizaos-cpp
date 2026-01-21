@@ -31,7 +31,7 @@ class AgentControls extends System {
   // --- Navigation State --- >
   // <------------------------
 
-  // Method for the agent script to set a key state
+  // Method for the agent script to std::set a key state
       // If the key doesn't exist or isn't a button state, log a warning or initialize
 
     // Check if the state actually changed to avoid redundant updates

@@ -10,7 +10,7 @@ std::future<std::vector<std::string>> findProjectFiles() {
     const std::vector<std::string> files = [];
     const auto extensions = [".py", ".ts", ".tsx"];
 
-    async function walk(dir: string) {
+    std::async std::function walk(dir: std::string) {
         const auto entries = fs.promises.readdir(dir, { withFileTypes: true });
 
         for (const auto& entry : entries)

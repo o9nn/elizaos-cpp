@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/tests/test-problem-statement-multimodal.test.h"
 
-any mockedChildProcess = as<std::shared_ptr<jest::Mocked<child_process>>>(child_process);
+std::any mockedChildProcess = as<std::shared_ptr<jest::Mocked<child_process>>>(child_process);
 
 void Main(void)
 {
@@ -91,7 +91,7 @@ Content-Length: 1234
             {
                 mockedChildProcess->execSync->mockImplementationOnce(as<any>(([=]() mutable
                 {
-                    throw any(std::make_shared<Error>(std::string("Network error")));
+                    throw std::any(std::make_shared<Error>(std::string("Network error")));
                 }
                 )));
                 auto problemStatement = std::make_shared<SWEBenchMultimodalProblemStatement>(object{
@@ -198,7 +198,7 @@ Content-Length: 20971520
                 )))->mockImplementationOnce(as<any>(([=](auto command, auto _options = undefined) mutable
                 {
                     if (AND((type_of(command) == std::string("string")), (command->includes(std::string("base64"))))) {
-                        throw any(std::make_shared<Error>(std::string("curl: (63) Maximum file size exceeded")));
+                        throw std::any(std::make_shared<Error>(std::string("curl: (63) Maximum file size exceeded")));
                     }
                     return string_empty;
                 }
@@ -296,7 +296,7 @@ Content-Length: 1234
                 }
                 )))->mockImplementationOnce(as<any>(([=](auto _command, auto _options = undefined) mutable
                 {
-                    throw any(std::make_shared<Error>(std::string("Failed to load")));
+                    throw std::any(std::make_shared<Error>(std::string("Failed to load")));
                 }
                 )));
                 auto problemStatement = std::make_shared<SWEBenchMultimodalProblemStatement>(object{
@@ -315,7 +315,7 @@ Content-Length: 1234
                 mockedChildProcess->execSync->mockImplementationOnce(as<any>(([=](auto command, auto _options = undefined) mutable
                 {
                     if (AND((type_of(command) == std::string("string")), (command->includes(std::string("-I"))))) {
-                        throw any(std::make_shared<Error>(std::string("curl: (22) The requested URL returned error: 404 Not Found")));
+                        throw std::any(std::make_shared<Error>(std::string("curl: (22) The requested URL returned error: 404 Not Found")));
                     }
                     return string_empty;
                 }

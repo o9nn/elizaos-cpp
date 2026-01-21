@@ -6,6 +6,6 @@
 #include "../systems/actions.h"
 #include "../systems/controls.h"
 
-extern string useItemTemplate;
+extern std::string useItemTemplate;
 extern std::shared_ptr<Action> hyperfyUseItemAction;
 #endif

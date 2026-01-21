@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizaos.github.io/src/lib/decode.h"
 
-string decodeBase64(string encodedString)
+std::string decodeBase64(std::string encodedString)
 {
     try
     {
@@ -13,9 +13,9 @@ string decodeBase64(string encodedString)
         auto decodedContent = ((std::make_shared<TextDecoder>()))->decode(bytes);
         return decodedContent;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
-        throw any(std::make_shared<Error>(std::string("Failed to decode base64 string: ") + (is<Error>(error)) ? any(error->message) : any(std::string("Unknown error")) + string_empty));
+        throw std::any(std::make_shared<Error>(std::string("Failed to decode base64 string: ") + (is<Error>(error)) ? std::any(error->message) : std::any(std::string("Unknown error")) + string_empty));
     }
 };
 

@@ -50,7 +50,7 @@ namespace elizaos {
 
       // Create a root logger
 
-      // If --all is passed, ensure contributionStartDate is set
+      // If --all is passed, ensure contributionStartDate is std::set
 
       // Calculate date range using shared helper
 
@@ -66,11 +66,11 @@ namespace elizaos {
 
       // Validate summary type
 
-      // If --all is passed, ensure contributionStartDate is set
+      // If --all is passed, ensure contributionStartDate is std::set
 
       // Calculate date range using shared helper
 
-      // If no interval flags are set, enable all intervals
+      // If no interval flags are std::set, enable all intervals
 
       // Create summarizer context
 

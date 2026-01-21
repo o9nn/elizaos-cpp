@@ -45,7 +45,7 @@ namespace elizaos {
 
 // Custom command to send message via API
 
-    // Handle both string and object formats
+    // Handle both std::string and object formats
 
     // Add API key if configured
 

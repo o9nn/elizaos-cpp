@@ -17,7 +17,7 @@ namespace elizaos {
 
 /**
  * Represents a single item of knowledge that can be processed and stored by the agent.
- * Knowledge items consist of content (text and optional structured data) and metadata.
+ * Knowledge items consist of content (text and std::optional structured data) and metadata.
  * These items are typically added to the agent's knowledge base via `AgentRuntime.addKnowledge`
  * and retrieved using `AgentRuntime.getKnowledge`.
  * The `id` is a unique identifier for the knowledge item, often derived from its source or content.
@@ -50,7 +50,7 @@ enum CacheKeyPrefix {
  * When an agent's `Character.knowledge` configuration includes a directory, this type
  * is used to specify the path to that directory and whether its contents should be treated as shared.
  * - `directory`: The path to the directory containing knowledge files.
- * - `shared`: An optional boolean (defaults to false) indicating if the knowledge from this directory is considered shared or private.
+ * - `shared`: An std::optional boolean (defaults to false) indicating if the knowledge from this directory is considered shared or private.
  */
 struct DirectoryItem {
     std::string directory;

@@ -17,20 +17,20 @@ namespace elizaos {
  */
 
 // Type for parsed YAML data
-using YamlData = std::variant<std::string, double, bool, nullptr, std::vector<YamlData>, { [key: string]: YamlData }>;
+using YamlData = std::variant<std::string, double, bool, nullptr, std::vector<YamlData>, { [key: std::string]: YamlData }>;
 
 /**
- * Parse a simple YAML string
+ * Parse a simple YAML std::string
  */
 YamlData parseYAML(const std::string& yamlString);
 
 /**
- * Parse a multiline string (| or > indicators)
+ * Parse a multiline std::string (| or > indicators)
  */
 void parseMultilineString(const std::vector<std::string>& lines, double startIndex, double expectedIndent); {
 
 /**
- * Parse a key-value pair string into an object
+ * Parse a key-value std::pair std::string into an object
  */
 std::unordered_map<std::string, std::any> parseKeyValue(const std::string& str);
 
@@ -40,7 +40,7 @@ std::unordered_map<std::string, std::any> parseKeyValue(const std::string& str);
 YamlData parseValue(const std::string& value);
 
 /**
- * Convert an object to YAML string
+ * Convert an object to YAML std::string
  */
 std::string stringifyYAML(YamlData obj, number = 0 indent);
 

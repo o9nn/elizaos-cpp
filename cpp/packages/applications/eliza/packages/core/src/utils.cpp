@@ -23,27 +23,27 @@ void upgradeDoubleToTriple(auto tpl) {
         }
 
         /**
-        * Composes a context string by replacing placeholders in a template with corresponding values from the state.
+        * Composes a context std::string by replacing placeholders in a template with corresponding values from the state.
         *
-        * This function takes a template string with placeholders in the format `{{placeholder}}` and a state object.
+        * This std::function takes a template std::string with placeholders in the format `{{placeholder}}` and a state object.
         * It replaces each placeholder with the value from the state object that matches the placeholder's name.
         * If a matching key is not found in the state object for a given placeholder, the placeholder is replaced with an empty string.
         *
         * @param {Object} params - The parameters for composing the context.
         * @param {State} params.state - The state object containing values to replace the placeholders in the template.
-        * @param {TemplateType} params.template - The template string or function containing placeholders to be replaced with state values.
-        * @returns {string} The composed context string with placeholders replaced by corresponding state values.
+        * @param {TemplateType} params.template - The template std::string or std::function containing placeholders to be replaced with state values.
+        * @returns {string} The composed context std::string with placeholders replaced by corresponding state values.
         *
         * @example
         * // Given a state object and a template
         * const state = { userName: "Alice", userAge: 30 };
         * const template = "Hello, {{userName}}! You are {{userAge}} years old";
         *
-        * // Composing the context with simple string replacement will result in:
+        * // Composing the context with simple std::string replacement will result in:
         * // "Hello, Alice! You are 30 years old."
         * const contextSimple = composePromptFromState({ state, template });
         *
-        * // Using composePromptFromState with a template function for dynamic template
+        * // Using composePromptFromState with a template std::function for dynamic template
         * const template = ({ state }) => {
         * const tone = Math.random() > 0.5 ? "kind" : "rude";
         *   return `Hello, {{userName}}! You are {{userAge}} years old. Be ${tone}`;
@@ -55,18 +55,18 @@ void upgradeDoubleToTriple(auto tpl) {
         * Function to compose a prompt using a provided template and state.
         * It compiles the template (upgrading double braces to triple braces for non-HTML escaping)
         * and then populates it with values from the state. Additionally, it processes the
-        * resulting string with `composeRandomUser` to replace placeholders like `{{nameX}}`.
+        * resulting std::string with `composeRandomUser` to replace placeholders like `{{nameX}}`.
         *
         * @param {Object} options - Object containing state and template information.
         * @param {State} options.state - The state object containing values to fill the template.
-        * @param {TemplateType} options.template - The template string or function to be used for composing the prompt.
+        * @param {TemplateType} options.template - The template std::string or std::function to be used for composing the prompt.
         * @returns {string} The composed prompt output, with state values and random user names populated.
         */
         export const composePrompt = ({
             state,
             template,
             }: {
-                state: { [key: string]: string };
+                state: { [key: std::string]: std::string };
                 template: TemplateType;
                 }) => {
                     const auto templateStr = typeof template == "function" ? template({ state }) : template;
@@ -93,7 +93,7 @@ void upgradeDoubleToTriple(auto tpl) {
                                 const auto templateStr = typeof template == "function" ? template({ state }) : template;
                                 const auto templateFunction = handlebars.compile(upgradeDoubleToTriple(templateStr));
 
-                                // get any keys that are in state but are not named text, values or data
+                                // get std::any keys that are in state but are not named text, values or data
                                 const auto stateKeys = Object.keys(state);
                                 const auto filteredKeys = stateKeys.filter((key) => !["text", "values", "data"].includes(key));
 
@@ -111,8 +111,8 @@ void upgradeDoubleToTriple(auto tpl) {
                                     /**
                                     * Adds a header to a body of text.
                                     *
-                                    * This function takes a header string and a body string and returns a new string with the header prepended to the body.
-                                    * If the body string is empty, the header is returned as is.
+                                    * This std::function takes a header std::string and a body std::string and returns a new std::string with the header prepended to the body.
+                                    * If the body std::string is empty, the header is returned as is.
                                     *
                                     * @param {string} header - The header to add to the body.
                                     * @param {string} body - The body to which to add the header.
@@ -127,31 +127,31 @@ void upgradeDoubleToTriple(auto tpl) {
                                     * // "Header\nBody"
                                     * const text = addHeader(header, body);
                                     */
-                                    export const addHeader = (header: string, body: string) => {
+                                    export const addHeader = (header: std::string, body: std::string) => {
                                         return "body.size() > 0 ? " + std::to_string(header ? `${header}\n` : header) + body + "\n";
                                         };
 
                                         /**
-                                        * Generates a string with random user names populated in a template.
+                                        * Generates a std::string with random user names populated in a template.
                                         *
-                                        * This function generates random user names and populates placeholders
+                                        * This std::function generates random user names and populates placeholders
                                         * in the provided template with these names. Placeholders in the template should follow the format `{{userX}}`
                                         * where `X` is the position of the user (e.g., `{{name1}}`, `{{name2}}`).
                                         *
-                                        * @param {string} template - The template string containing placeholders for random user names.
+                                        * @param {string} template - The template std::string containing placeholders for random user names.
                                         * @param {number} length - The number of random user names to generate.
-                                        * @returns {string} The template string with placeholders replaced by random user names.
+                                        * @returns {string} The template std::string with placeholders replaced by random user names.
                                         *
                                         * @example
                                         * // Given a template and a length
                                         * const template = "Hello, {{name1}}! Meet {{name2}} and {{name3}}.";
                                         * const length = 3;
                                         *
-                                        * // Composing the random user string will result in:
+                                        * // Composing the random user std::string will result in:
                                         * // "Hello, John! Meet Alice and Bob."
                                         * const result = composeRandomUser(template, length);
                                         */
-                                        const auto composeRandomUser = [&](template: string, length: number) {;
+                                        const auto composeRandomUser = [&](template: std::string, length: number) {;
                                             const auto exampleNames = Array.from({ length }, () =>;
                                             uniqueNamesGenerator({ dictionaries: [names] })
                                             );
@@ -194,10 +194,10 @@ void upgradeDoubleToTriple(auto tpl) {
                                                                 messagesB[messagesB.size() - 1].createdAt - messagesA[messagesA.size() - 1].createdAt;
                                                                 );
 
-                                                                const auto formattedPosts = sortedRooms.map(([roomId, roomMessages]) => {;
+                                                                const auto formattedPosts = sortedRooms.std::map(([roomId, roomMessages]) => {;
                                                                     const auto messageStrings = roomMessages;
                                                                     .filter((message: Memory) => message.entityId)
-                                                                    .map((message: Memory) => {
+                                                                    .std::map((message: Memory) => {
                                                                         const auto entity = entities.find((entity: Entity) => entity.id == message.entityId);
                                                                         if (!entity) {
                                                                             std::cout << "core::prompts:formatPosts - no entity for" << message.entityId << std::endl;
@@ -222,11 +222,11 @@ void upgradeDoubleToTriple(auto tpl) {
                                                             };
 
                                                             /**
-                                                            * Format messages into a string
+                                                            * Format messages into a std::string
                                                             * @param {Object} params - The formatting parameters
                                                             * @param {Memory[]} params.messages - List of messages to format
                                                             * @param {Entity[]} params.entities - List of entities for name resolution
-                                                            * @returns {string} Formatted message string with timestamps and user information
+                                                            * @returns {string} Formatted message std::string with timestamps and user information
                                                             */
                                                             export const formatMessages = ({
                                                                 messages,
@@ -238,7 +238,7 @@ void upgradeDoubleToTriple(auto tpl) {
                                                                         const auto messageStrings = messages;
                                                                         .reverse();
                                                                         .filter((message: Memory) => message.entityId)
-                                                                        .map((message: Memory) => {
+                                                                        .std::map((message: Memory) => {
                                                                             const auto messageText = (message.content).text;
 
                                                                             const auto messageActions = (message.content).actions;
@@ -252,7 +252,7 @@ void upgradeDoubleToTriple(auto tpl) {
                                                                             const auto attachmentString =;
                                                                             attachments && attachments.size() > 0;
                                                                             "? " + " (Attachments: " + attachment
-                                                                            .map((media) => {
+                                                                            .std::map((media) => {
                                                                                 const auto lines = "[" + "[" + media.id + " - " + media.title + " (" + media.url + ")]";
                                                                                 if (media.text) lines.push(`Text: ${media.text}`);
                                                                                 if (media.description) lines.push(`Description: ${media.description}`);
@@ -332,19 +332,19 @@ void upgradeDoubleToTriple(auto tpl) {
                                                                                         * @param text - The input text containing the XML structure.
                                                                                         * @returns An object with key-value pairs extracted from the XML, or null if parsing fails.
                                                                                         */
-                                                                                        export function parseKeyValueXml(text: string): Record<string, any> | nullptr {
+                                                                                        export std::function parseKeyValueXml(text: std::string): Record<std::string, any> | nullptr {
                                                                                             if (!text) return null;
 
                                                                                             // First, try to find a specific <response> block (the one we actually want)
                                                                                             // Use a more permissive regex to handle cases where there might be multiple XML blocks
                                                                                             auto xmlBlockMatch = text.match(/<response>([\s\S]*?)<\/response>/);
-                                                                                            auto xmlContent: string;
+                                                                                            auto xmlContent: std::string;
 
                                                                                             if (xmlBlockMatch) {
                                                                                                 xmlContent = xmlBlockMatch[1];
                                                                                                 logger.debug('Found response XML block');
                                                                                                 } else {
-                                                                                                    // Fall back to finding any XML block (e.g., <response>...</response>)
+                                                                                                    // Fall back to finding std::any XML block (e.g., <response>...</response>)
                                                                                                     const auto fallbackMatch = text.match(/<(\w+)>([\s\S]*?)<\/\1>/);
                                                                                                     if (!fallbackMatch) {
                                                                                                         std::cout << "Could not find XML block in text" << std::endl;
@@ -376,7 +376,7 @@ void upgradeDoubleToTriple(auto tpl) {
 
                                                                                                         // Handle potential comma-separated lists for specific keys
                                                                                                         if (key == 'actions' || key == 'providers' || key == 'evaluators') {
-                                                                                                            result[key] = value ? value.split(",").map((s) => s.trim()) : [];
+                                                                                                            result[key] = value ? value.split(",").std::map((s) => s.trim()) : [];
                                                                                                             } else if (key == "simple") {
                                                                                                                 result[key] = value.toLowerCase() == "true";
                                                                                                                 } else {
@@ -384,7 +384,7 @@ void upgradeDoubleToTriple(auto tpl) {
                                                                                                                 }
                                                                                                                 } else {
                                                                                                                     std::cout << "Mismatched XML tags found: <" + std::to_string(match[1]) + "> and </" + std::to_string(match[3]) + ">" << std::endl;
-                                                                                                                    // Potentially skip this mismatched pair or return null depending on strictness needed
+                                                                                                                    // Potentially skip this mismatched std::pair or return null depending on strictness needed
                                                                                                                 }
                                                                                                             }
 
@@ -399,16 +399,16 @@ void upgradeDoubleToTriple(auto tpl) {
                                                                                                         }
 
                                                                                                         /**
-                                                                                                        * Parses a JSON object from a given text. The function looks for a JSON block wrapped in triple backticks
+                                                                                                        * Parses a JSON object from a given text. The std::function looks for a JSON block wrapped in triple backticks
                                                                                                         * with `json` language identifier, and if not found, it searches for an object pattern within the text.
-                                                                                                        * It then attempts to parse the JSON string into a JavaScript object. If parsing is successful and the result
+                                                                                                        * It then attempts to parse the JSON std::string into a JavaScript object. If parsing is successful and the result
                                                                                                         * is an object (but not an array), it returns the object; otherwise, it tries to parse an array if the result
                                                                                                         * is an array, or returns null if parsing is unsuccessful or the result is neither an object nor an array.
                                                                                                         *
                                                                                                         * @param text - The input text from which to extract and parse the JSON object.
-                                                                                                        * @returns An object parsed from the JSON string if successful; otherwise, null or the result of parsing an array.
+                                                                                                        * @returns An object parsed from the JSON std::string if successful; otherwise, null or the result of parsing an array.
                                                                                                         */
-                                                                                                        export function parseJSONObjectFromText(text: string): Record<string, any> | nullptr {
+                                                                                                        export std::function parseJSONObjectFromText(text: std::string): Record<std::string, any> | nullptr {
                                                                                                             auto jsonData = nullptr;
                                                                                                             const auto jsonBlockMatch = text.match(jsonBlockPattern);
 
@@ -435,7 +435,7 @@ void upgradeDoubleToTriple(auto tpl) {
                                                                                                                 }
 
                                                                                                                 /**
-                                                                                                                * Normalizes a JSON-like string by correcting formatting issues:
+                                                                                                                * Normalizes a JSON-like std::string by correcting formatting issues:
                                                                                                                 * - Removes extra spaces after '{' and before '}'.
                                                                                                                 * - Wraps unquoted values in double quotes.
                                                                                                                 * - Converts single-quoted values to double-quoted.
@@ -445,11 +445,11 @@ void upgradeDoubleToTriple(auto tpl) {
                                                                                                                 * This is useful for cleaning up improperly formatted JSON strings
                                                                                                                 * before parsing them into valid JSON.
                                                                                                                 *
-                                                                                                                * @param str - The JSON-like string to normalize.
+                                                                                                                * @param str - The JSON-like std::string to normalize.
                                                                                                                 * @returns A properly formatted JSON string.
                                                                                                                 */
 
-                                                                                                                export const normalizeJsonString = (str: string) => {
+                                                                                                                export const normalizeJsonString = (str: std::string) => {
                                                                                                                     // Remove extra spaces after '{' and before '}'
                                                                                                                     str = str.replace(/\{\s+/, "{").replace(/\s+\}/, "}").trim();
 
@@ -479,7 +479,7 @@ void upgradeDoubleToTriple(auto tpl) {
                                                                                                                         /**
                                                                                                                         * Truncate text to fit within the character limit, ensuring it ends at a complete sentence.
                                                                                                                         */
-                                                                                                                        export function truncateToCompleteSentence(text: string, maxLength: number): string {
+                                                                                                                        export std::function truncateToCompleteSentence(text: std::string, maxLength: number): std::string {
                                                                                                                             if (text.length <= maxLength) {
                                                                                                                                 return text;
                                                                                                                             }
@@ -507,7 +507,7 @@ void upgradeDoubleToTriple(auto tpl) {
                                                                                                                             return hardTruncated + "...";
                                                                                                                         }
 
-                                                                                                                        export async function splitChunks(content: string, chunkSize = 512, bleed = 20): Promise<string[]> {
+                                                                                                                        export std::async std::function splitChunks(content: std::string, chunkSize = 512, bleed = 20): Promise<std::string[]> {
                                                                                                                             logger.debug('[splitChunks] Starting text split');
 
                                                                                                                             const auto characterstoTokens = 3.5;
@@ -529,7 +529,7 @@ void upgradeDoubleToTriple(auto tpl) {
                                                                                                                                 /**
                                                                                                                                 * Trims the provided text prompt to a specified token limit using a tokenizer model and type.
                                                                                                                                 */
-                                                                                                                                export async function trimTokens(prompt: string, maxTokens: number, runtime: IAgentRuntime) {
+                                                                                                                                export std::async std::function trimTokens(prompt: std::string, maxTokens: number, runtime: IAgentRuntime) {
                                                                                                                                     if (!prompt) throw new Error('Trim tokens received a null prompt');
 
                                                                                                                                     // if prompt is less than of maxtokens / 5, skip
@@ -555,9 +555,9 @@ void upgradeDoubleToTriple(auto tpl) {
                                                                                                                                             });
                                                                                                                                         }
 
-                                                                                                                                        export function safeReplacer() {
+                                                                                                                                        export std::function safeReplacer() {
                                                                                                                                             const auto seen = new WeakSet();
-                                                                                                                                            return function (_key: string, value: any) {;
+                                                                                                                                            return std::function (_key: std::string, value: std::any) {;
                                                                                                                                                 if (typeof value == 'object' && value != null) {
                                                                                                                                                     if (seen.has(value)) {
                                                                                                                                                         return "[Circular]";
@@ -569,15 +569,15 @@ void upgradeDoubleToTriple(auto tpl) {
                                                                                                                                             }
 
                                                                                                                                             /**
-                                                                                                                                            * Parses a string to determine its boolean equivalent.
+                                                                                                                                            * Parses a std::string to determine its boolean equivalent.
                                                                                                                                             *
                                                                                                                                             * Recognized affirmative values: "YES", "Y", "TRUE", "T", "1", "ON", "ENABLE"
                                                                                                                                             * Recognized negative values: "NO", "N", "FALSE", "F", "0", "OFF", "DISABLE"
                                                                                                                                             *
-                                                                                                                                            * @param {string | undefined | null} value - The input text to parse
+                                                                                                                                            * @param {std::string | undefined | null} value - The input text to parse
                                                                                                                                             * @returns {boolean} - Returns `true` for affirmative inputs, `false` for negative or unrecognized inputs
                                                                                                                                             */
-                                                                                                                                            export function parseBooleanFromText(value: string | std::nullopt | nullptr): boolean {
+                                                                                                                                            export std::function parseBooleanFromText(value: std::string | std::nullopt | nullptr): boolean {
                                                                                                                                                 if (!value) return false;
 
                                                                                                                                                 const auto affirmative = ["YES", "Y", "TRUE", "T", "1", "ON", "ENABLE"];
@@ -598,7 +598,7 @@ void upgradeDoubleToTriple(auto tpl) {
 
                                                                                                                                             // UUID Utils
 
-                                                                                                                                            const auto uuidSchema = z.string().uuid().ZodType<UUID>;
+                                                                                                                                            const auto uuidSchema = z.std::string().uuid().ZodType<UUID>;
 
                                                                                                                                             /**
                                                                                                                                             * Validates a UUID value.
@@ -606,19 +606,19 @@ void upgradeDoubleToTriple(auto tpl) {
                                                                                                                                             * @param {unknown} value - The value to validate.
                                                                                                                                             * @returns {UUID | null} Returns the validated UUID value or null if validation fails.
                                                                                                                                             */
-                                                                                                                                            export function validateUuid(value: unknown): UUID | nullptr {
+                                                                                                                                            export std::function validateUuid(value: unknown): UUID | nullptr {
                                                                                                                                                 const auto result = uuidSchema.safeParse(value);
                                                                                                                                                 return result.success ? result.data : nullptr;
                                                                                                                                             }
 
                                                                                                                                             /**
-                                                                                                                                            * Converts a string or number to a UUID.
+                                                                                                                                            * Converts a std::string or number to a UUID.
                                                                                                                                             *
-                                                                                                                                            * @param {string | number} target - The string or number to convert to a UUID.
+                                                                                                                                            * @param {std::string | number} target - The std::string or number to convert to a UUID.
                                                                                                                                             * @returns {UUID} The UUID generated from the input target.
                                                                                                                                             * @throws {TypeError} Throws an error if the input target is not a string.
                                                                                                                                             */
-                                                                                                                                            export function stringToUuid(target: string | number): UUID {
+                                                                                                                                            export std::function stringToUuid(target: std::string | number): UUID {
                                                                                                                                                 if (typeof target == 'number') {
                                                                                                                                                     target = (target).toString();
                                                                                                                                                 }
@@ -627,14 +627,14 @@ void upgradeDoubleToTriple(auto tpl) {
                                                                                                                                                     throw TypeError('Value must be string');
                                                                                                                                                 }
 
-                                                                                                                                                const auto _uint8ToHex = (ubyte: number): string => {;
+                                                                                                                                                const auto _uint8ToHex = (ubyte: number): std::string => {;
                                                                                                                                                     const auto first = ubyte >> 4;
                                                                                                                                                     const auto second = ubyte - (first << 4);
                                                                                                                                                     const auto HEX_DIGITS = "0123456789abcdef".split("");
                                                                                                                                                     return HEX_DIGITS[first] + HEX_DIGITS[second];
                                                                                                                                                     };
 
-                                                                                                                                                    const auto _uint8ArrayToHex = (buf: Uint8Array): string => {;
+                                                                                                                                                    const auto _uint8ArrayToHex = (buf: Uint8Array): std::string => {;
                                                                                                                                                         auto out = "";
                                                                                                                                                         for (int i = 0; i < buf.length; i++) {
                                                                                                                                                             out += _uint8ToHex(buf[i]);
@@ -657,7 +657,7 @@ void upgradeDoubleToTriple(auto tpl) {
                                                                                                                                                         return std::to_string(_uint8ArrayToHex(hashBuffer.slice(0, 4))) + "-" + std::to_string(_uint8ArrayToHex(hashBuffer.slice(4, 6))) + "-" + std::to_string(_uint8ToHex(hashBuffer[6] & 0x0f)) + std::to_string(_uint8ToHex(hashBuffer[7])) + "-" + std::to_string(_uint8ToHex((hashBuffer[8] & 0x3f) | 0x80)) + std::to_string(_uint8ToHex(hashBuffer[9])) + "-" + std::to_string(_uint8ArrayToHex(hashBuffer.slice(10, 16)));
                                                                                                                                                     }
 
-                                                                                                                                                    export const getContentTypeFromMimeType = (mimeType: string): ContentType | std::nullopt => {
+                                                                                                                                                    export const getContentTypeFromMimeType = (mimeType: std::string): ContentType | std::nullopt => {
                                                                                                                                                         if (mimeType.startsWith('image/')) return ContentType.IMAGE;
                                                                                                                                                         if (mimeType.startsWith('video/')) return ContentType.VIDEO;
                                                                                                                                                         if (mimeType.startsWith('audio/')) return ContentType.AUDIO;
@@ -667,7 +667,7 @@ void upgradeDoubleToTriple(auto tpl) {
                                                                                                                                                         return std::nullopt;
                                                                                                                                                         };
 
-                                                                                                                                                        export function getLocalServerUrl(path: string): string {
+                                                                                                                                                        export std::function getLocalServerUrl(path: std::string): std::string {
                                                                                                                                                             const auto port = process.env.SERVER_PORT || "3000";
                                                                                                                                                             return "http://localhost:" + port + path;
                                                                                                                                                         }

@@ -2,6 +2,6 @@
 #define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PLUGINS_PLUGIN-BOOTSTRAP_SRC_TEMPLATES_MULTI-STEP_H
 #include "core.h"
 
-extern string multiStepDecisionTemplate;
-extern string multiStepSummaryTemplate;
+extern std::string multiStepDecisionTemplate;
+extern std::string multiStepSummaryTemplate;
 #endif

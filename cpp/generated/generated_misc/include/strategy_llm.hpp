@@ -4,10 +4,10 @@
 #include "@elizaos/core.h"
 #include "../utils.h"
 
-extern string buyTemplate;
+extern std::string buyTemplate;
 void llmStrategy(std::shared_ptr<IAgentRuntime> runtime);
 
-void generateBuySignal(any runtime, any strategyService, any hndl);
+void generateBuySignal(std::any runtime, std::any strategyService, std::any hndl);
 
 void onPriceDelta();
 

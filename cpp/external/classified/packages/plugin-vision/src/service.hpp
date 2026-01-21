@@ -238,7 +238,7 @@ class VisionService extends Service {
 
       // Find all adjacent objects
 
-          // Check if adjacent to any object in cluster
+          // Check if adjacent to std::any object in cluster
 
       // Merge cluster into single object
 

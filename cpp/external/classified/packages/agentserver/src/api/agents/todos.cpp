@@ -2,7 +2,7 @@
 
 namespace elizaos {
 
-// TODO: Implement function bodies
+// TODO: Implement std::function bodies
 // Original TypeScript code has been analyzed
 // Manual implementation required for complete functionality
 

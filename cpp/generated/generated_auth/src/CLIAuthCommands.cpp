@@ -60,7 +60,7 @@ std::shared_ptr<Promise<void>> CLIAuthCommands::handleAuthStatus()
         for (auto& [provider, result] : Object->entries(status->providers))
         {
             auto icon = (result->isValid) ? std::string("✅") : std::string("❌");
-            auto keyType = (result->keyType == std::string("test")) ? any(std::string("🧪 TEST")) : any((result->keyType == std::string("production")) ? std::string("🚀 PROD") : std::string("❌ INVALID"));
+            auto keyType = (result->keyType == std::string("test")) ? std::any(std::string("🧪 TEST")) : std::any((result->keyType == std::string("production")) ? std::string("🚀 PROD") : std::string("❌ INVALID"));
             console->log(string_empty + icon + std::string(" ") + provider->toUpperCase() + string_empty);
             console->log(std::string("   Type: ") + keyType + string_empty);
             console->log(std::string("   Capabilities: ") + (OR((result->capabilities->join(std::string(", "))), (std::string("None")))) + string_empty);
@@ -80,9 +80,9 @@ std::shared_ptr<Promise<void>> CLIAuthCommands::handleAuthStatus()
             console->log(std::string("🎉 All systems operational!"));
         }
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
-        console->error(std::string("❌ Failed to check authentication status:"), (is<Error>(error)) ? any(error->message) : any(error));
+        console->error(std::string("❌ Failed to check authentication status:"), (is<Error>(error)) ? std::any(error->message) : std::any(error));
         process->exit(1);
     }
     return std::shared_ptr<Promise<void>>();
@@ -110,9 +110,9 @@ std::shared_ptr<Promise<void>> CLIAuthCommands::handleAuthTest()
 "));
             }
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
-            console->log(std::string("💥 ") + provider + std::string(": Test crashed - ") + (is<Error>(error)) ? any(error->message) : any(error) + std::string("\
+            console->log(std::string("💥 ") + provider + std::string(": Test crashed - ") + (is<Error>(error)) ? std::any(error->message) : std::any(error) + std::string("\
 "));
             results[provider] = object{
                 object::pair{std::string("success"), false}, 
@@ -158,9 +158,9 @@ std::shared_ptr<Promise<void>> CLIAuthCommands::handleAuthValidate(object args)
             console->log(std::string("   Error: ") + (OR((result->errorMessage), (std::string("Unknown error")))) + string_empty);
         }
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
-        console->error(std::string("❌ Validation failed:"), (is<Error>(error)) ? any(error->message) : any(error));
+        console->error(std::string("❌ Validation failed:"), (is<Error>(error)) ? std::any(error->message) : std::any(error));
         process->exit(1);
     }
     return std::shared_ptr<Promise<void>>();
@@ -241,12 +241,12 @@ std::shared_ptr<Promise<void>> CLIAuthCommands::handleSetup()
     return std::shared_ptr<Promise<void>>();
 }
 
-string CLIAuthCommands::getStatusIcon(string status)
+std::string CLIAuthCommands::getStatusIcon(std::string status)
 {
     static switch_type __switch9751_9941 = {
-        { any(std::string("healthy")), 1 },
-        { any(std::string("degraded")), 2 },
-        { any(std::string("failed")), 3 }
+        { std::any(std::string("healthy")), 1 },
+        { std::any(std::string("degraded")), 2 },
+        { std::any(std::string("failed")), 3 }
     };
     switch (__switch9751_9941[status])
     {

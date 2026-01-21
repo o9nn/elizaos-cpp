@@ -18,7 +18,7 @@ std::shared_ptr<Promise<std::shared_ptr<ClaudeResponse>>> ClaudeProxy::processRe
     case InferenceProvider::OLLAMA:
         return this->handleOllamaRequest(claudeRequest);
     default:
-        throw any(std::make_shared<Error>(std::string("Unsupported provider: ") + provider + string_empty));
+        throw std::any(std::make_shared<Error>(std::string("Unsupported provider: ") + provider + string_empty));
     }
 }
 
@@ -26,7 +26,7 @@ std::shared_ptr<Promise<std::shared_ptr<ClaudeResponse>>> ClaudeProxy::makeAnthr
 {
     auto apiKey = this->runtime->getSetting(std::string("ANTHROPIC_API_KEY"));
     if (!apiKey) {
-        throw any(std::make_shared<Error>(std::string("ANTHROPIC_API_KEY not configured")));
+        throw std::any(std::make_shared<Error>(std::string("ANTHROPIC_API_KEY not configured")));
     }
     auto baseUrl = OR((this->runtime->getSetting(std::string("ANTHROPIC_API_URL"))), (std::string("https://api.anthropic.com")));
     try
@@ -42,15 +42,15 @@ std::shared_ptr<Promise<std::shared_ptr<ClaudeResponse>>> ClaudeProxy::makeAnthr
         }); });
         if (!response->ok) {
             auto errorBody = std::async([=]() { response->text(); });
-            throw any(std::make_shared<Error>(std::string("Anthropic API error: ") + response->status + std::string(" - ") + errorBody + string_empty));
+            throw std::any(std::make_shared<Error>(std::string("Anthropic API error: ") + response->status + std::string(" - ") + errorBody + string_empty));
         }
         auto data = as<std::shared_ptr<ClaudeResponse>>((std::async([=]() { response->json(); })));
         return data;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("[CLAUDE_PROXY] Error making Anthropic proxy request:"), error);
-        throw any(error);
+        throw std::any(error);
     }
 }
 
@@ -63,7 +63,7 @@ std::shared_ptr<Promise<InferenceProvider>> ClaudeProxy::selectProvider()
             return provider;
         }
     }
-    throw any(std::make_shared<Error>(std::string("No inference providers available")));
+    throw std::any(std::make_shared<Error>(std::string("No inference providers available")));
 }
 
 std::shared_ptr<Promise<boolean>> ClaudeProxy::isProviderAvailable(InferenceProvider provider)
@@ -134,7 +134,7 @@ array<std::shared_ptr<OpenAIMessage>> ClaudeProxy::convertClaudeToOpenAI(std::sh
                 {
                     return c["type"] == std::string("text");
                 }
-                )->map([=](auto c) mutable
+                )->std::map([=](auto c) mutable
                 {
                     return c["text"];
                 }
@@ -156,7 +156,7 @@ array<std::shared_ptr<OpenAIMessage>> ClaudeProxy::convertClaudeToOpenAI(std::sh
                 {
                     return c["type"] == std::string("text");
                 }
-                )->map([=](auto c) mutable
+                )->std::map([=](auto c) mutable
                 {
                     return c["text"];
                 }
@@ -177,7 +177,7 @@ array<std::shared_ptr<OpenAIMessage>> ClaudeProxy::convertClaudeToOpenAI(std::sh
     return openAIMessages;
 }
 
-string ClaudeProxy::convertClaudeToPrompt(std::shared_ptr<ClaudeMessagesRequest> claudeRequest)
+std::string ClaudeProxy::convertClaudeToPrompt(std::shared_ptr<ClaudeMessagesRequest> claudeRequest)
 {
     auto prompt = string_empty;
     if (claudeRequest->system) {
@@ -193,7 +193,7 @@ string ClaudeProxy::convertClaudeToPrompt(std::shared_ptr<ClaudeMessagesRequest>
             {
                 return c["type"] == std::string("text");
             }
-            )->map([=](auto c) mutable
+            )->std::map([=](auto c) mutable
             {
                 return c["text"];
             }
@@ -211,7 +211,7 @@ string ClaudeProxy::convertClaudeToPrompt(std::shared_ptr<ClaudeMessagesRequest>
     return prompt->trim();
 }
 
-string ClaudeProxy::formatOpenAIPrompt(array<std::shared_ptr<OpenAIMessage>> messages, string system)
+std::string ClaudeProxy::formatOpenAIPrompt(array<std::shared_ptr<OpenAIMessage>> messages, std::string system)
 {
     auto prompt = string_empty;
     if (system) {
@@ -225,7 +225,7 @@ string ClaudeProxy::formatOpenAIPrompt(array<std::shared_ptr<OpenAIMessage>> mes
             continue;
         }
         auto role = (message->role == std::string("user")) ? std::string("User") : std::string("Assistant");
-        auto content = (type_of(message->content) == std::string("string")) ? message->content : message->content->map([=](auto c) mutable
+        auto content = (type_of(message->content) == std::string("string")) ? message->content : message->content->std::map([=](auto c) mutable
         {
             return c["text"];
         }
@@ -238,7 +238,7 @@ string ClaudeProxy::formatOpenAIPrompt(array<std::shared_ptr<OpenAIMessage>> mes
     return prompt->trim();
 }
 
-std::shared_ptr<ClaudeResponse> ClaudeProxy::formatClaudeResponse(string text, string model)
+std::shared_ptr<ClaudeResponse> ClaudeProxy::formatClaudeResponse(std::string text, std::string model)
 {
     return object{
         object::pair{std::string("id"), std::string("msg_") + Math->random()->toString(36)->substr(2, 9) + string_empty}, 
@@ -257,7 +257,7 @@ std::shared_ptr<ClaudeResponse> ClaudeProxy::formatClaudeResponse(string text, s
     };
 }
 
-any createClaudeHandler(std::shared_ptr<IAgentRuntime> runtime)
+std::any createClaudeHandler(std::shared_ptr<IAgentRuntime> runtime)
 {
     shared proxy = std::make_shared<ClaudeProxy>(runtime);
     return [=](auto request) mutable
@@ -266,10 +266,10 @@ any createClaudeHandler(std::shared_ptr<IAgentRuntime> runtime)
         {
             return std::async([=]() { proxy->processRequest(request); });
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("[CLAUDE_PROXY] Error processing request:"), error);
-            throw any(error);
+            throw std::any(error);
         }
     };
 };

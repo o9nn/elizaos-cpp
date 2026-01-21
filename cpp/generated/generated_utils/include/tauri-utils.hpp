@@ -3,19 +3,19 @@
 #include "core.h"
 #include "./shared.h"
 
-array<std::shared_ptr<MemoryEntry>> extractMemoriesFromResponse(any response);
+array<std::shared_ptr<MemoryEntry>> extractMemoriesFromResponse(std::any response);
 
-array<std::shared_ptr<LogEntry>> extractLogsFromResponse(any response);
+array<std::shared_ptr<LogEntry>> extractLogsFromResponse(std::any response);
 
-any isSuccessfulTauriResponse(any response);
-
-template <typename T>
-array<T> extractDataFromResponse(any response, any dataKey = undefined);
-
-array<Record<string, any>> convertToRecordArray(array<any> data);
+std::any isSuccessfulTauriResponse(std::any response);
 
 template <typename T>
-array<T> extractDataFromResponse(any response, any dataKey)
+array<T> extractDataFromResponse(std::any response, std::any dataKey = undefined);
+
+array<Record<std::string, any>> convertToRecordArray(array<any> data);
+
+template <typename T>
+array<T> extractDataFromResponse(std::any response, std::any dataKey)
 {
     if (OR((!isSuccessfulTauriResponse(response)), (!response->data))) {
         return array<any>();

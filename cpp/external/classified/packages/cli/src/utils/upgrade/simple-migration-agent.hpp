@@ -35,8 +35,8 @@ struct SimpleMigrationResult {
  * unintended multiple executions of the same handler.
  */
 class SimpleMigrationAgent extends EventTarget {
-  private handlers = new Map<string, Map<(data?: unknown) => void, EventListener>>();
-  private repoPath: string;
+  private handlers = new Map<std::string, Map<(data?: unknown) => void, EventListener>>();
+  private repoPath: std::string;
   private abortController: AbortController;
   private verbose: boolean;
   private guideLoader: MigrationGuideLoader;
@@ -51,7 +51,7 @@ class SimpleMigrationAgent extends EventTarget {
   private lastTokenUpdate = Date.now();
   private lastCostSummary = Date.now();
 
-  constructor(repoPath: string, options: { verbose?: boolean } = {}) {
+  constructor(repoPath: std::string, options: { verbose?: boolean } = {}) {
     super();
     this.repoPath = repoPath;
     this.abortController = new AbortController();
@@ -116,21 +116,21 @@ class SimpleMigrationAgent extends EventTarget {
               // Handle content as array (newer format)
 
                     // Show all important updates immediately
-                      // Clear any pending tool indicator
+                      // Clear std::any pending tool indicator
 
                       // Add token info to important GATE updates
 
                       // In verbose mode, show more detailed updates
                     // Enhanced tool usage tracking
-                      // Complete previous tool if any
+                      // Complete previous tool if std::any
 
                       // Start new tool indicator
-                  // Clear any pending tool indicator
+                  // Clear std::any pending tool indicator
 
           // Enhanced tool completion tracking
 
           // Enhanced final result messages
-            // Clear any pending tool indicator
+            // Clear std::any pending tool indicator
 
             // Enhanced cost and token reporting
 
@@ -138,7 +138,7 @@ class SimpleMigrationAgent extends EventTarget {
           // Enhanced error handling
 
         // Enhanced progress updates with time-based throttling and token/cost info
-          // Clear any pending tool indicator for progress update
+          // Clear std::any pending tool indicator for progress update
 
           // Enhanced progress display with token/cost info
 
@@ -147,11 +147,11 @@ class SimpleMigrationAgent extends EventTarget {
         // Update token and cost tracking from message metadata
 
           // Show periodic cost summaries during long operations (every 30 seconds)
-            // Clear any pending tool indicator for cost update
+            // Clear std::any pending tool indicator for cost update
 
             // Restore tool indicator if there was one
 
-      // Clean up any remaining tool indicator and spinner
+      // Clean up std::any remaining tool indicator and spinner
 
       // Get list of guides that were available
 
@@ -161,9 +161,9 @@ class SimpleMigrationAgent extends EventTarget {
 
       // Migration recovery suggestions
 
-    // Clean up any active spinner
+    // Clean up std::any active spinner
 
-    // Show final token/cost summary if any usage occurred
+    // Show final token/cost summary if std::any usage occurred
 
   /**
    * Get migration help for specific issues

@@ -35,9 +35,9 @@ struct ValidationResult {
  * Unified service for managing environment files
  */
 class EnvFileService {
-  private filePath: string;
+  private filePath: std::string;
 
-  constructor(filePath?: string) {
+  constructor(filePath?: std::string) {
     this.filePath = filePath || '';
   }
 
@@ -72,10 +72,10 @@ class EnvFileService {
 
         // Write existing entries with their comments
 
-        // Add any new entries
+        // Add std::any new entries
 
       // Write remaining variables
-        // Only write string values (env vars must be strings)
+        // Only write std::string values (env vars must be strings)
 
           // Update process.env if requested
 

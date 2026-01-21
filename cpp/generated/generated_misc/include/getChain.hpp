@@ -7,8 +7,8 @@
 extern std::shared_ptr<Chain> anvil;
 std::shared_ptr<Chain> getChain();
 
-string getRpcUrl();
+std::string getRpcUrl();
 
-string getRpcUrlForChain(string chainType);
+std::string getRpcUrlForChain(std::string chainType);
 
 #endif

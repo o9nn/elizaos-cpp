@@ -1,7 +1,7 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza-3d-hyperfy-starter/src/plugin-hyperfy/events.h"
 
 object hyperfyEvents = object{
-    object::pair{hyperfyEventType::MESSAGE_RECEIVED, array<std::function<std::shared_ptr<Promise<void>>(any)>>{ [=](auto payload) mutable
+    object::pair{hyperfyEventType::MESSAGE_RECEIVED, array<std::function<std::shared_ptr<Promise<void>>(std::any)>>{ [=](auto payload) mutable
     {
         std::async([=]() { messageReceivedHandler(object{
             object::pair{std::string("runtime"), payload->runtime}, 
@@ -11,7 +11,7 @@ object hyperfyEvents = object{
         }); });
     }
      }}, 
-    object::pair{hyperfyEventType::VOICE_MESSAGE_RECEIVED, array<std::function<std::shared_ptr<Promise<void>>(any)>>{ [=](auto payload) mutable
+    object::pair{hyperfyEventType::VOICE_MESSAGE_RECEIVED, array<std::function<std::shared_ptr<Promise<void>>(std::any)>>{ [=](auto payload) mutable
     {
         std::async([=]() { messageReceivedHandler(object{
             object::pair{std::string("runtime"), payload->runtime}, 

@@ -19,8 +19,8 @@ namespace elizaos {
 /**
  * Custom hook to manage state backed by Local Storage.
  * @param key The key to use in Local Storage.
- * @param initialValue The initial value or a function to generate it if not found in Local Storage.
- * @returns A stateful value, and a function to update it.
+ * @param initialValue The initial value or a std::function to generate it if not found in Local Storage.
+ * @returns A stateful value, and a std::function to update it.
  */
   // Get initial value from local storage or use the provided initial value
       // Return initialValue on the server
@@ -29,7 +29,7 @@ namespace elizaos {
 
   // Function to update the state and local storage
 
-      // Allow value to be a function so we have same API as useState
+      // Allow value to be a std::function so we have same API as useState
       // Save state
       // Save to local storage
 

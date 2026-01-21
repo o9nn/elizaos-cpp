@@ -30,7 +30,7 @@ using MarketPositionsInput = {
 
 using MarketPositionsActionResult = ActionResult;
 
-// Helper function to format market position data
+// Helper std::function to format market position data
 void formatMarketPositionData(const std::vector<UserPosition>& positions);
 
  * Action: GET_MORPHO_MARKET_POSITIONS

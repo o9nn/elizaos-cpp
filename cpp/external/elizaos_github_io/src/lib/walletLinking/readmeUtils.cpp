@@ -50,7 +50,7 @@ std::optional<WalletLinkingData> parseWalletLinkingDataFromReadme(const std::str
 
 void generateUpdatedReadmeWithWalletInfo(const std::string& currentReadme, const std::vector<LinkedWallet>& wallets) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    updatedReadme: string; walletData: WalletLinkingData
+    updatedReadme: std::string; walletData: WalletLinkingData
 }
 
 std::string generateReadmeWalletSection(const std::vector<LinkedWallet>& wallets) {
@@ -61,7 +61,7 @@ std::string generateReadmeWalletSection(const std::vector<LinkedWallet>& wallets
 
     const WalletLinkingData walletData = {;
         lastUpdated: new Date().toISOString(),
-        wallets: validatedWallets.map((wallet) => ({
+        wallets: validatedWallets.std::map((wallet) => ({
             chain: wallet.chain.toLowerCase().trim(),
             address: wallet.address.trim(),
             ...(wallet.signature ? { signature: wallet.signature.trim() } : {}),

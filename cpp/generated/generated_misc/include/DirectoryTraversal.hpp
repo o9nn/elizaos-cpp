@@ -19,10 +19,10 @@ public:
     static array<string> FORCED_EXCLUDED_DIRS;
 
     DirectoryTraversal(std::shared_ptr<Configuration> config_, array<string> prFiles_ = array<string>());
-    virtual string getAbsolutePath(string filePath);
-    virtual string getRelativePath(string filePath);
+    virtual std::string getAbsolutePath(std::string filePath);
+    virtual std::string getRelativePath(std::string filePath);
     virtual array<string> traverse();
-    virtual boolean isExcluded(string absolutePath);
+    virtual boolean isExcluded(std::string absolutePath);
 };
 
 #endif

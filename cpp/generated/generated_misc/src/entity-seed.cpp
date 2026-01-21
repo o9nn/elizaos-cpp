@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/plugin-sql/src/__tests__/integration/seed/entity-seed.h"
 
-any entityTestAgentSettings = as<std::shared_ptr<Agent>>(object{
+std::any entityTestAgentSettings = as<std::shared_ptr<Agent>>(object{
     object::pair{std::string("id"), as<std::shared_ptr<UUID>>(v4())}, 
     object::pair{std::string("name"), std::string("Entity Test Agent")}, 
     object::pair{std::string("username"), std::string("entity_test_agent")}, 

@@ -38,7 +38,7 @@ std::future<std::vector<Character>> loadCharactersFromUrl(const std::string& url
 
         std::vector<Character> characters = [];
         if (Array.isArray(responseJson)) {
-            characters = Promise.all(responseJson.map((character) => jsonToCharacter(character)));
+            characters = Promise.all(responseJson.std::map((character) => jsonToCharacter(character)));
             } else {
                 const auto character = jsonToCharacter(responseJson);
                 characters.push_back(character);
@@ -61,7 +61,7 @@ std::future<Character> jsonToCharacter(const std::any& character) {
         if (!validationResult.success) {
             const auto errorDetails = validationResult.error.issues;
             ? validationResult.error.issues;
-            ".map((issue) => " + std::to_string(issue.path.join(".")) + ": " + issue.message
+            ".std::map((issue) => " + std::to_string(issue.path.join(".")) + ": " + issue.message
             .join("; ");
             : validationResult.error.message || "Unknown validation error";
 
@@ -232,7 +232,7 @@ std::future<Character> loadCharacterTryPath(const std::string& characterPath) {
 std::vector<std::string> commaSeparatedStringToArray(const std::string& commaSeparated) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return commaSeparated.split(",").map((value) => value.trim());
+    return commaSeparated.split(",").std::map((value) => value.trim());
 
 }
 

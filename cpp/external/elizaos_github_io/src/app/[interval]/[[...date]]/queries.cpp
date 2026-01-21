@@ -47,7 +47,7 @@ std::optional<TimeInterval> parseIntervalDate(const std::string& dateStr, Interv
                     return nullptr; // Should not happen with IntervalType;
                 }
 
-                // Use the centralized helper function to get interval boundaries
+                // Use the centralized helper std::function to get interval boundaries
                 const auto { intervalStart, intervalEnd } = calculateIntervalBoundaries(;
                 referenceDate,
                 intervalType,
@@ -108,19 +108,19 @@ std::future<void> getMetricsForInterval(const std::string& date, IntervalType in
                                 ...repoMetrics.pullRequests.mergedPRs,
                                 ...repoMetrics.pullRequests.newPRs,
                                 ];
-                                const auto uniquePrs = [...new Set(totalPrs.map((pr) => pr.id))];
+                                const auto uniquePrs = [...new Set(totalPrs.std::map((pr) => pr.id))];
                                 const auto totalIssues = [;
                                 ...repoMetrics.issues.newIssues,
                                 ...repoMetrics.issues.closedIssues,
                                 ];
-                                const auto uniqueIssues = [...new Set(totalIssues.map((issue) => issue.id))];
+                                const auto uniqueIssues = [...new Set(totalIssues.std::map((issue) => issue.id))];
 
                                 // Initialize detailed contributor summaries
-                                std::variant<Record<string, string, null>> detailedContributorSummaries = {};
+                                std::variant<Record<std::string, std::string, null>> detailedContributorSummaries = {};
 
                                 // Fetch contributor summaries if top contributors exist
                                 if (repoMetrics.topContributors && repoMetrics.topContributors.length > 0) {
-                                    const auto usernames = repoMetrics.topContributors.map((c) => c.username);
+                                    const auto usernames = repoMetrics.topContributors.std::map((c) => c.username);
                                     console.log(
                                     "[getMetricsForInterval] Attempting to fetch contributor summaries for " + usernames.size() + " users: " + std::to_string(usernames.join(", "))
                                     );
@@ -184,7 +184,7 @@ std::future<std::string> getIntervalSummaryContent(const std::string& dateStr, I
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        auto actualDateForFileName: string;
+        auto actualDateForFileName: std::string;
 
         if (intervalType == "month") {
             // dateStr is YYYY-MM, summaries are saved as YYYY-MM-01.md

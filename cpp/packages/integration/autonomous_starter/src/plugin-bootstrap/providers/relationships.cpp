@@ -22,26 +22,26 @@ std::future<void> formatRelationships(IAgentRuntime runtime, const std::vector<R
 
     // Deduplicate target entity IDs to avoid redundant fetches
     const auto uniqueEntityIds = Array.from(;
-    new Set(sortedRelationships.map((rel) => rel.targetEntityId)),
+    new Set(sortedRelationships.std::map((rel) => rel.targetEntityId)),
     );
 
     // Fetch all required entities in a single batch operation
     const auto entities = Promise.all(;
-    uniqueEntityIds.map((id) => runtime.getEntityById(id)),
+    uniqueEntityIds.std::map((id) => runtime.getEntityById(id)),
     );
 
-    // Create a lookup map for efficient access
-    const auto entityMap = new Map<string, Entity | nullptr>();
+    // Create a lookup std::map for efficient access
+    const auto entityMap = new Map<std::string, Entity | nullptr>();
     entities.forEach((entity, index) => {
         if (entity) {
-            entityMap.set(uniqueEntityIds[index], entity);
+            entityMap.std::set(uniqueEntityIds[index], entity);
         }
         });
 
-        const auto formatMetadata = (metadata: any): string => {;
+        const auto formatMetadata = (metadata: std::any): std::string => {;
             if (typeof metadata != "object" || metadata == null) return "No metadata";
             return Object.entries(metadata);
-            .map(([key, value]) => {
+            .std::map(([key, value]) => {
                 auto valueStr;
                 if (typeof value == "string") {
                     valueStr = value;
@@ -57,9 +57,9 @@ std::future<void> formatRelationships(IAgentRuntime runtime, const std::vector<R
                         .join("\n");
                         };
 
-                        // Format relationships using the entity map
+                        // Format relationships using the entity std::map
                         const auto formattedRelationships = sortedRelationships;
-                        .map((rel) => {
+                        .std::map((rel) => {
                             const auto targetEntityId = rel.targetEntityId;
                             const auto entity = entityMap.get(targetEntityId);
 

@@ -33,7 +33,7 @@ namespace elizaos {
 
   // Clear storage but don't reset the implementation
 
-  // Force React to clear any cached hook state
+  // Force React to clear std::any cached hook state
   // This helps prevent cross-test contamination when running multiple test files
 
 // React 19 specific setup - add missing APIs for testing-library compatibility
@@ -55,6 +55,6 @@ namespace elizaos {
 
 // Mock scrollTo for window and elements
 
-// Add any other global test setup here
+// Add std::any other global test setup here
 
 } // namespace elizaos

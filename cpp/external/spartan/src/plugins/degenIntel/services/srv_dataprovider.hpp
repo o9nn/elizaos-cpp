@@ -20,7 +20,7 @@ class TradeDataProviderService extends Service {
   static serviceType = 'TRADER_DATAPROVIDER';
   capabilityDescription = 'The agent is able to get information about blockchains';
 
-  // config (key/string)
+  // config (key/std::string)
 
   constructor(public runtime: IAgentRuntime) {
     super(runtime); // sets this.runtime

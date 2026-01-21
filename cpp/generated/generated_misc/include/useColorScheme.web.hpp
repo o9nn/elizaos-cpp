@@ -2,6 +2,6 @@
 #define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_MOBILE_HOOKS_USECOLORSCHEME_WEB_H
 #include "core.h"
 
-any useColorScheme();
+std::any useColorScheme();
 
 #endif

@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/otc-agent/src/utils/render-tracker.h"
 
-string summarizeValue(any value)
+std::string summarizeValue(std::any value)
 {
     if (value == nullptr) return std::string("null");
     if (value == undefined) return std::string("undefined");
@@ -19,13 +19,13 @@ string summarizeValue(any value)
 };
 
 
-Record<string, string> getPropsSnapshot(Record<string, any> props)
+Record<std::string, string> getPropsSnapshot(Record<std::string, any> props)
 {
     auto snapshot = object{};
     for (auto& [key, value] : Object->entries(props))
     {
         if (key == std::string("children")) {
-            snapshot[key] = (type_of(value) == std::string("object")) ? any(std::string("ReactNode")) : any(String(value));
+            snapshot[key] = (type_of(value) == std::string("object")) ? std::any(std::string("ReactNode")) : std::any(String(value));
         } else {
             snapshot[key] = summarizeValue(value);
         }
@@ -34,7 +34,7 @@ Record<string, string> getPropsSnapshot(Record<string, any> props)
 };
 
 
-array<string> findChanges(any prev, Record<string, string> curr)
+array<string> findChanges(std::any prev, Record<std::string, string> curr)
 {
     if (!prev) return array<string>{ std::string("(first render)") };
     auto changes = array<string>();
@@ -49,7 +49,7 @@ array<string> findChanges(any prev, Record<string, string> curr)
 };
 
 
-void trackRender(string componentName, Record<string, any> props, Record<string, any> state)
+void trackRender(std::string componentName, Record<std::string, any> props, Record<std::string, any> state)
 {
     if (process->env->NODE_ENV != std::string("development")) return;
     if (CONFIG["ignoredComponents"]->has(componentName)) return;
@@ -61,7 +61,7 @@ void trackRender(string componentName, Record<string, any> props, Record<string,
             object::pair{std::string("timestamps"), array<any>()}, 
             object::pair{std::string("firstRenderTime"), now}
         };
-        renderCounts->set(componentName, record);
+        renderCounts->std::set(componentName, record);
     }
     record["timestamps"] = record["timestamps"]->filter([=](auto ts) mutable
     {
@@ -70,8 +70,8 @@ void trackRender(string componentName, Record<string, any> props, Record<string,
     );
     record["timestamps"]->push(now);
     record["count"]++;
-    auto propsSnapshot = (props) ? any(getPropsSnapshot(props)) : any(undefined);
-    auto stateSnapshot = (state) ? any(getPropsSnapshot(state)) : any(undefined);
+    auto propsSnapshot = (props) ? std::any(getPropsSnapshot(props)) : std::any(undefined);
+    auto stateSnapshot = (state) ? std::any(getPropsSnapshot(state)) : std::any(undefined);
     auto recentRenders = record["timestamps"]->get_length();
     auto timeSinceFirstRender = now - record["firstRenderTime"];
     auto isInitialMount = timeSinceFirstRender < CONFIG["initialMountGracePeriodMs"];
@@ -105,27 +105,27 @@ void trackRender(string componentName, Record<string, any> props, Record<string,
         console->error(std::string("Component:"), componentName);
         console->error(std::string("Props snapshot:"), propsSnapshot);
         console->error(std::string("State snapshot:"), stateSnapshot);
-        console->error(std::string("Render timestamps:"), record["timestamps"]->map([=](auto ts) mutable
+        console->error(std::string("Render timestamps:"), record["timestamps"]->std::map([=](auto ts) mutable
         {
             return ((std::make_shared<Date>(ts)))->toISOString();
         }
         ));
         console->error(std::string("Time since first render:"), timeSinceFirstRender, std::string("ms"));
         console->error(std::string("Is initial mount period:"), isInitialMount);
-        throw any(error);
+        throw std::any(error);
     }
     record["lastProps"] = propsSnapshot;
     record["lastState"] = stateSnapshot;
 };
 
 
-void useRenderTracker(string componentName, Record<string, any> props, Record<string, any> state)
+void useRenderTracker(std::string componentName, Record<std::string, any> props, Record<std::string, any> state)
 {
     trackRender(componentName, props, state);
 };
 
 
-std::shared_ptr<Map<string, std::shared_ptr<RenderRecord>>> renderCounts = std::make_shared<Map<string, RenderRecord>>();
+std::shared_ptr<Map<std::string, std::shared_ptr<RenderRecord>>> renderCounts = std::make_shared<Map<std::string, RenderRecord>>();
 object CONFIG = object{
     object::pair{std::string("maxRenders"), 10}, 
     object::pair{std::string("maxRendersInitialMount"), 20}, 

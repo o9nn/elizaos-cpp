@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/raydium/src/raydiumVault.h"
 
-any depositToRaydiumVault(std::shared_ptr<anchor::AnchorProvider> provider, std::shared_ptr<anchor::web3::Keypair> signerWallet, std::shared_ptr<Program<std::shared_ptr<RaydiumVault>>> program, std::shared_ptr<anchor::web3::PublicKey> position_nft, std::shared_ptr<anchor::web3::PublicKey> claimer_address)
+std::any depositToRaydiumVault(std::shared_ptr<anchor::AnchorProvider> provider, std::shared_ptr<anchor::web3::Keypair> signerWallet, std::shared_ptr<Program<std::shared_ptr<RaydiumVault>>> program, std::shared_ptr<anchor::web3::PublicKey> position_nft, std::shared_ptr<anchor::web3::PublicKey> claimer_address)
 {
     try
     {
@@ -34,15 +34,15 @@ any depositToRaydiumVault(std::shared_ptr<anchor::AnchorProvider> provider, std:
         , 3, 2000); });
         return txSignature;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("Error in depositRaydiumVault:"), error);
-        throw any(error);
+        throw std::any(error);
     }
 };
 
 
-any changeClaimer(std::shared_ptr<Program<std::shared_ptr<RaydiumVault>>> program, std::shared_ptr<anchor::web3::Keypair> signerWallet, std::shared_ptr<anchor::web3::PublicKey> position_nft, std::shared_ptr<anchor::web3::PublicKey> new_claimer_address)
+std::any changeClaimer(std::shared_ptr<Program<std::shared_ptr<RaydiumVault>>> program, std::shared_ptr<anchor::web3::Keypair> signerWallet, std::shared_ptr<anchor::web3::PublicKey> position_nft, std::shared_ptr<anchor::web3::PublicKey> new_claimer_address)
 {
     auto vault_config = getVaultConfig(program->programId);
     auto user_position = getUserPosition(program->programId, position_nft);
@@ -62,7 +62,7 @@ any changeClaimer(std::shared_ptr<Program<std::shared_ptr<RaydiumVault>>> progra
 };
 
 
-any emergencyWithdraw(std::shared_ptr<Program<std::shared_ptr<RaydiumVault>>> program, std::shared_ptr<anchor::web3::Keypair> signerWallet, std::shared_ptr<anchor::web3::PublicKey> position_nft)
+std::any emergencyWithdraw(std::shared_ptr<Program<std::shared_ptr<RaydiumVault>>> program, std::shared_ptr<anchor::web3::Keypair> signerWallet, std::shared_ptr<anchor::web3::PublicKey> position_nft)
 {
     auto vault_config = getVaultConfig(program->programId);
     auto user_position = getUserPosition(program->programId, position_nft);
@@ -87,7 +87,7 @@ any emergencyWithdraw(std::shared_ptr<Program<std::shared_ptr<RaydiumVault>>> pr
 };
 
 
-any claim(std::shared_ptr<Program<std::shared_ptr<RaydiumVault>>> program, std::shared_ptr<anchor::web3::Keypair> signerWallet, std::shared_ptr<anchor::web3::PublicKey> position_nft, std::shared_ptr<anchor::web3::PublicKey> poolId, std::shared_ptr<anchor::web3::Connection> connection, std::shared_ptr<anchor::web3::PublicKey> claimer, std::shared_ptr<Token> token)
+std::any claim(std::shared_ptr<Program<std::shared_ptr<RaydiumVault>>> program, std::shared_ptr<anchor::web3::Keypair> signerWallet, std::shared_ptr<anchor::web3::PublicKey> position_nft, std::shared_ptr<anchor::web3::PublicKey> poolId, std::shared_ptr<anchor::web3::Connection> connection, std::shared_ptr<anchor::web3::PublicKey> claimer, std::shared_ptr<Token> token)
 {
     auto vault_config = getVaultConfig(program->programId);
     auto [locked_authority] = anchor->web3->PublicKey->findProgramAddressSync(array<std::shared_ptr<Buffer>>{ Buffer::from(LOCK_CP_AUTH_SEED) }, LOCKING_PROGRAM);
@@ -113,10 +113,10 @@ any claim(std::shared_ptr<Program<std::shared_ptr<RaydiumVault>>> program, std::
         {
             poolInfo = JSON->parse(poolInfo);
         }
-        catch (const any& e)
+        catch (const std::any& e)
         {
             console->error(std::string("Failed to parse poolInfo string:"), e);
-            throw any(std::make_shared<Error>(std::string("Invalid poolInfo format")));
+            throw std::any(std::make_shared<Error>(std::string("Invalid poolInfo format")));
         }
     }
     if (OR((OR((OR((OR((!poolInfo), (!poolInfo["lpMint"]))), (!poolInfo["lpMint"]["address"]))), (!poolInfo["mintA"]))), (!poolInfo["mintB"]))) {
@@ -124,17 +124,17 @@ any claim(std::shared_ptr<Program<std::shared_ptr<RaydiumVault>>> program, std::
             object::pair{std::string("ids"), poolId->toString()}
         }); })))[0];
         if (!poolInfo) {
-            throw any(std::make_shared<Error>(std::string("Pool info not found")));
+            throw std::any(std::make_shared<Error>(std::string("Pool info not found")));
         }
         auto db = getDB();
-        std::async([=]() { db->update(tokens)->set(object{
+        std::async([=]() { db->update(tokens)->std::set(object{
             object::pair{std::string("poolInfo"), JSON->stringify(poolInfo)}
         })->where(eq(tokens->mint, token->mint)); });
     }
     auto pool_state = std::make_shared<anchor->web3->PublicKey>(poolId->toString());
     if (!poolInfo["lpMint"]["address"]) {
         console->error(std::string("lpMint address not found in poolInfo:"), poolInfo);
-        throw any(std::make_shared<Error>(std::string("lpMint address not found in pool info")));
+        throw std::any(std::make_shared<Error>(std::string("lpMint address not found in pool info")));
     }
     auto lp_mint = std::make_shared<anchor->web3->PublicKey>(poolInfo["lpMint"]["address"]);
     console->log(std::string("lp_mint"), lp_mint->toString());
@@ -204,20 +204,20 @@ any claim(std::shared_ptr<Program<std::shared_ptr<RaydiumVault>>> program, std::
         , 3, 10000); });
         return txSignature;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         if (is<anchor->web3->SendTransactionError>(error)) {
             console->error(std::string("Transaction failed with logs:"), error["logs"]);
-            throw any(std::make_shared<Error>(std::string("Transaction failed: ") + error["message"] + std::string("\
+            throw std::any(std::make_shared<Error>(std::string("Transaction failed: ") + error["message"] + std::string("\
 Logs: ") + JSON->stringify(error["logs"], nullptr, 2) + string_empty));
         }
         console->error(std::string("Error in claim:"), error);
-        throw any(error);
+        throw std::any(error);
     }
 };
 
 
-any checkBalance(std::shared_ptr<anchor::web3::Connection> connection, std::shared_ptr<anchor::web3::Keypair> signerWallet, std::shared_ptr<anchor::web3::PublicKey> position_nft, std::shared_ptr<anchor::web3::PublicKey> claimer_address)
+std::any checkBalance(std::shared_ptr<anchor::web3::Connection> connection, std::shared_ptr<anchor::web3::Keypair> signerWallet, std::shared_ptr<anchor::web3::PublicKey> position_nft, std::shared_ptr<anchor::web3::PublicKey> claimer_address)
 {
     auto position_nft_account_signer = spl->getAssociatedTokenAddressSync(position_nft, signerWallet->publicKey);
     auto position_nft_account_claimer = spl->getAssociatedTokenAddressSync(position_nft, claimer_address);

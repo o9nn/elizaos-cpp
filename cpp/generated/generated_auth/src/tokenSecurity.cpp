@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/degenTrader/services/validation/tokenSecurity.h"
 
-std::shared_ptr<Promise<object>> TokenSecurityService::validateTokenForTrading(string tokenAddress)
+std::shared_ptr<Promise<object>> TokenSecurityService::validateTokenForTrading(std::string tokenAddress)
 {
     try
     {
@@ -34,7 +34,7 @@ std::shared_ptr<Promise<object>> TokenSecurityService::validateTokenForTrading(s
             object::pair{std::string("isValid"), true}
         };
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Error validating token:"), error);
         return object{
@@ -44,7 +44,7 @@ std::shared_ptr<Promise<object>> TokenSecurityService::validateTokenForTrading(s
     }
 }
 
-std::shared_ptr<Promise<object>> TokenSecurityService::fetchTokenMetadata(string tokenAddress)
+std::shared_ptr<Promise<object>> TokenSecurityService::fetchTokenMetadata(std::string tokenAddress)
 {
     return object{
         object::pair{std::string("verified"), true}, 

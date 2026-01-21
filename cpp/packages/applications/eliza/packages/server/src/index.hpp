@@ -32,10 +32,10 @@ std::string expandTildePath(const std::string& filepath);
 std::string resolvePgliteDir(std::optional<std::string> dir, std::optional<std::string> fallbackDir);
 
 /**
- * Represents a function that acts as a server middleware.
+ * Represents a std::function that acts as a server middleware.
  * @param {express.Request} req - The request object.
  * @param {express.Response} res - The response object.
- * @param {express.NextFunction} next - The next function to be called in the middleware chain.
+ * @param {express.NextFunction} next - The next std::function to be called in the middleware chain.
  * @returns {void}
  */
 using ServerMiddleware = (
@@ -69,7 +69,7 @@ class AgentServer {
 
   public startAgent!: (character: Character) => Promise<IAgentRuntime>;
   public stopAgent!: (runtime: IAgentRuntime) => void;
-  public loadCharacterTryPath!: (characterPath: string) => Promise<Character>;
+  public loadCharacterTryPath!: (characterPath: std::string) => Promise<Character>;
   public jsonToCharacter!: (character: unknown) => Promise<Character>;
 
   /**
@@ -95,7 +95,7 @@ class AgentServer {
    * Initializes the database and server.
    *
    * @param {ServerOptions} [options] - Optional server options.
-   * @returns {Promise<void>} A promise that resolves when initialization is complete.
+   * @returns {Promise<void>} A std::promise that resolves when initialization is complete.
    */
 
       // Run migrations for the SQL plugin schema
@@ -126,11 +126,11 @@ class AgentServer {
    * Initializes the server with the provided options.
    *
    * @param {ServerOptions} [options] - Optional server options.
-   * @returns {Promise<void>} - A promise that resolves once the server is initialized.
+   * @returns {Promise<void>} - A std::promise that resolves once the server is initialized.
    */
       // Initialize middleware and database
 
-      // Security headers first - before any other middleware
+      // Security headers first - before std::any other middleware
           // Content Security Policy - environment-aware configuration
                 // Production CSP - includes upgrade-insecure-requests
                   // upgrade-insecure-requests is added by helmet automatically
@@ -211,7 +211,7 @@ class AgentServer {
    *
    * @param {IAgentRuntime} runtime - The runtime object containing agent information.
    * @throws {Error} if the runtime is null/undefined, if agentId is missing, if character configuration is missing,
-   * or if there are any errors during registration.
+   * or if there are std::any errors during registration.
    */
 
       // Auto-register the MessageBusConnector plugin
@@ -226,15 +226,15 @@ class AgentServer {
    * @returns {void}
    */
 
-      // Retrieve the agent before deleting it from the map
+      // Retrieve the agent before deleting it from the std::map
 
         // Stop all services of the agent before unregistering it
 
-      // Delete the agent from the map
+      // Delete the agent from the std::map
 
   /**
    * Add middleware to the server's request handling pipeline
-   * @param {ServerMiddleware} middleware - The middleware function to be registered
+   * @param {ServerMiddleware} middleware - The middleware std::function to be registered
    */
 
   /**

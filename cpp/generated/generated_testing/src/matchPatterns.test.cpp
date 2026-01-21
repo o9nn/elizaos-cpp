@@ -168,7 +168,7 @@ void Main(void)
         );
         describe(std::string("matchAnyPattern"), [=]() mutable
         {
-            it(std::string("should return true if any pattern matches"), [=]() mutable
+            it(std::string("should return true if std::any pattern matches"), [=]() mutable
             {
                 auto contentCommit = object{
                     object::pair{std::string("content"), std::string("feat: Add amazing new typescript feature")}, 
@@ -210,7 +210,7 @@ void Main(void)
                 expect(matchAnyPattern(array<any>(), content))->toBe(false);
             }
             );
-            it(std::string("should return false if content string is empty"), [=]() mutable
+            it(std::string("should return false if content std::string is empty"), [=]() mutable
             {
                 auto content = object{
                     object::pair{std::string("content"), string_empty}, 

@@ -21,7 +21,7 @@ namespace elizaos {
 
 // Configure multer for file uploads
 
-// Helper function to save uploaded file
+// Helper std::function to save uploaded file
 
   // Ensure directory exists
 

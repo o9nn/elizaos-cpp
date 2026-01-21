@@ -7,7 +7,7 @@ std::shared_ptr<Action> cdpTxExplorerLink = object{
     object::pair{std::string("parameters"), object{
         object::pair{std::string("txhash"), object{
             object::pair{std::string("type"), std::string("string")}, 
-            object::pair{std::string("description"), std::string("Transaction hash (0x-prefixed hex string, 66 characters total)")}, 
+            object::pair{std::string("description"), std::string("Transaction hash (0x-prefixed hex std::string, 66 characters total)")}, 
             object::pair{std::string("required"), true}
         }}, 
         object::pair{std::string("network"), object{
@@ -22,7 +22,7 @@ std::shared_ptr<Action> cdpTxExplorerLink = object{
         {
             return true;
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("[GET_TX_EXPLORER_LINK] Error validating action:"), (is<Error>(error)) ? error->message : String(error));
             return false;
@@ -79,7 +79,7 @@ std::shared_ptr<Action> cdpTxExplorerLink = object{
                 return errorResult;
             }
             if (!(new RegExp(std::string("^0x[a-fA-F0-9]{64}")))->test(txhash)) {
-                auto errorMsg = std::string("Invalid transaction hash format: ") + txhash + std::string(". Expected 0x-prefixed hex string with 64 characters (66 total).");
+                auto errorMsg = std::string("Invalid transaction hash format: ") + txhash + std::string(". Expected 0x-prefixed hex std::string with 64 characters (66 total).");
                 logger->error(std::string("[GET_TX_EXPLORER_LINK] ") + errorMsg + string_empty);
                 auto errorResult = as<any>(object{
                     object::pair{std::string("text"), std::string(" ") + errorMsg + string_empty}, 
@@ -163,7 +163,7 @@ std::shared_ptr<Action> cdpTxExplorerLink = object{
                 object::pair{std::string("input"), inputParams}
             });
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             auto errorMessage = (is<Error>(error)) ? error->message : String(error);
             logger->error(std::string("[GET_TX_EXPLORER_LINK] Action failed:"), errorMessage);

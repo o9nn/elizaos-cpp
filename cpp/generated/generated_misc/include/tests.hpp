@@ -11,9 +11,9 @@ class StarterTestSuite;
 class StarterTestSuite : public TestSuite, public std::enable_shared_from_this<StarterTestSuite> {
 public:
     using std::enable_shared_from_this<StarterTestSuite>::shared_from_this;
-    string name = std::string("starter");
+    std::string name = std::string("starter");
 
-    string description = std::string("Tests for the starter project");
+    std::string description = std::string("Tests for the starter project");
 
     array<object> tests = array<object>{ object{
         object::pair{std::string("name"), std::string("Character configuration test")}, 
@@ -26,22 +26,22 @@ public:
             }
             );
             if (missingFields->get_length() > 0) {
-                throw any(std::make_shared<Error>(std::string("Missing required fields: ") + missingFields->join(std::string(", ")) + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("Missing required fields: ") + missingFields->join(std::string(", ")) + string_empty));
             }
             if (character->name != std::string("Eliza")) {
-                throw any(std::make_shared<Error>(std::string("Expected character name to be 'Eliza', got '") + character->name + std::string("'")));
+                throw std::any(std::make_shared<Error>(std::string("Expected character name to be 'Eliza', got '") + character->name + std::string("'")));
             }
             if (!Array->isArray(character->plugins)) {
-                throw any(std::make_shared<Error>(std::string("Character plugins should be an array")));
+                throw std::any(std::make_shared<Error>(std::string("Character plugins should be an array")));
             }
             if (!character->system) {
-                throw any(std::make_shared<Error>(std::string("Character system prompt is required")));
+                throw std::any(std::make_shared<Error>(std::string("Character system prompt is required")));
             }
             if (!Array->isArray(character->bio)) {
-                throw any(std::make_shared<Error>(std::string("Character bio should be an array")));
+                throw std::any(std::make_shared<Error>(std::string("Character bio should be an array")));
             }
             if (!Array->isArray(character->messageExamples)) {
-                throw any(std::make_shared<Error>(std::string("Character message examples should be an array")));
+                throw std::any(std::make_shared<Error>(std::string("Character message examples should be an array")));
             }
         }
         }
@@ -61,9 +61,9 @@ public:
                     object::pair{std::string("config"), object{}}
                 }); });
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
-                throw any(std::make_shared<Error>(std::string("Failed to register plugin: ") + error["message"] + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("Failed to register plugin: ") + error["message"] + string_empty));
             }
         }
         }
@@ -112,16 +112,16 @@ public:
                         }
                         , array<any>()); });
                     } else {
-                        throw any(std::make_shared<Error>(std::string("HELLO_WORLD action not found in runtime.actions")));
+                        throw std::any(std::make_shared<Error>(std::string("HELLO_WORLD action not found in runtime.actions")));
                     }
                 }
                 if (!responseReceived) {
-                    throw any(std::make_shared<Error>(std::string("Hello world action did not produce expected response")));
+                    throw std::any(std::make_shared<Error>(std::string("Hello world action did not produce expected response")));
                 }
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
-                throw any(std::make_shared<Error>(std::string("Hello world action test failed: ") + error["message"] + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("Hello world action test failed: ") + error["message"] + string_empty));
             }
         }
         }
@@ -145,7 +145,7 @@ public:
             try
             {
                 if (OR((!runtime->providers), (runtime->providers->length == 0))) {
-                    throw any(std::make_shared<Error>(std::string("No providers found in runtime")));
+                    throw std::any(std::make_shared<Error>(std::string("No providers found in runtime")));
                 }
                 auto helloWorldProvider = runtime->providers->find([=](auto p) mutable
                 {
@@ -153,16 +153,16 @@ public:
                 }
                 );
                 if (!helloWorldProvider) {
-                    throw any(std::make_shared<Error>(std::string("HELLO_WORLD_PROVIDER not found in runtime providers")));
+                    throw std::any(std::make_shared<Error>(std::string("HELLO_WORLD_PROVIDER not found in runtime providers")));
                 }
                 auto result = std::async([=]() { helloWorldProvider->get(runtime, message, state); });
                 if (result->text != std::string("I am a provider")) {
-                    throw any(std::make_shared<Error>(std::string("Expected provider to return "I am a provider", got "") + result->text + std::string(""")));
+                    throw std::any(std::make_shared<Error>(std::string("Expected provider to return "I am a provider", got "") + result->text + std::string(""")));
                 }
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
-                throw any(std::make_shared<Error>(std::string("Hello world provider test failed: ") + error["message"] + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("Hello world provider test failed: ") + error["message"] + string_empty));
             }
         }
         }
@@ -174,16 +174,16 @@ public:
             {
                 auto service = runtime->getService(std::string("starter"));
                 if (!service) {
-                    throw any(std::make_shared<Error>(std::string("Starter service not found")));
+                    throw std::any(std::make_shared<Error>(std::string("Starter service not found")));
                 }
                 if (service->capabilityDescription != std::string("This is a starter service which is attached to the agent through the starter plugin.")) {
-                    throw any(std::make_shared<Error>(std::string("Incorrect service capability description")));
+                    throw std::any(std::make_shared<Error>(std::string("Incorrect service capability description")));
                 }
                 std::async([=]() { service->stop(); });
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
-                throw any(std::make_shared<Error>(std::string("Starter service test failed: ") + error["message"] + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("Starter service test failed: ") + error["message"] + string_empty));
             }
         }
         }

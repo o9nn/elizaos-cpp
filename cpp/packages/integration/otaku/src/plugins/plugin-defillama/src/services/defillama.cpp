@@ -70,7 +70,7 @@ ProtocolSummary shapeProtocol(DefiLlamaProtocol p) {
     const std::vector<std::string> chains = Array.isArray(p.chains) ? Array.from(new Set(p.chains)) : [];
     const auto chainTvls = shapeChainTvlsRecord((p as { chainTvls?: ChainTvlsRawRecord }).chainTvls);
 
-    const auto toNumberOrNull = (value: number | string | nullptr | std::nullopt): number | nullptr =>;
+    const auto toNumberOrNull = (value: number | std::string | nullptr | std::nullopt): number | nullptr =>;
     typeof value == "number" && Number.isFinite(value) ? value : nullptr;
 
     const auto slugValue = typeof p.slug == "string" ? p.slug : nullptr;
@@ -133,7 +133,7 @@ ProtocolTvlHistory shapeProtocolHistory(RawProtocolHistory raw, const std::strin
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::vector<ProtocolTvlPoint> totalSeries = Array.isArray(raw.tvl);
-    ? raw.tvl.filter(isRawProtocolHistoryPoint).map((point) => ({
+    ? raw.tvl.filter(isRawProtocolHistoryPoint).std::map((point) => ({
         date: point.date,
         totalLiquidityUsd: point.totalLiquidityUSD,
         }));
@@ -143,7 +143,7 @@ ProtocolTvlHistory shapeProtocolHistory(RawProtocolHistory raw, const std::strin
         if (raw.chainTvls) {
             for (const int [chainName, chainData] of Object.entries(raw.chainTvls)) {
                 const auto series = Array.isArray(chainData.tvl);
-                ? chainData.tvl.filter(isRawProtocolHistoryPoint).map((point) => ({
+                ? chainData.tvl.filter(isRawProtocolHistoryPoint).std::map((point) => ({
                     date: point.date,
                     totalLiquidityUsd: point.totalLiquidityUSD,
                     }));

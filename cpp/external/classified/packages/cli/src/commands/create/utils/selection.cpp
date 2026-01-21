@@ -78,7 +78,7 @@ std::future<std::string> selectDatabase() {
 
     const auto database = clack.select({;
         message: "Which database would you like to use?",
-        options: availableDatabases.map((db) => ({
+        options: availableDatabases.std::map((db) => ({
             label: db.title,
             value: db.value,
             hint: db.description,
@@ -102,7 +102,7 @@ std::future<std::string> selectAIModel() {
 
     const auto aiModel = clack.select({;
         message: "Which AI model would you like to use?",
-        options: availableModels.map((model) => ({
+        options: availableModels.std::map((model) => ({
             label: model.title,
             value: model.value,
             hint: model.description,
@@ -149,7 +149,7 @@ std::future<std::string> selectEmbeddingModel() {
 
     const auto embeddingModel = clack.select({;
         message: "Select an embedding model (required since your AI model doesn't support embeddings):",
-        options: availableModels.map((model) => ({
+        options: availableModels.std::map((model) => ({
             label: model.title,
             value: model.value,
             hint: model.description,

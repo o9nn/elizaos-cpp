@@ -15,7 +15,7 @@ public:
 
     boolean __elizaManagerLogged;
 
-    any __elizaRuntime;
+    std::any __elizaRuntime;
 
     object logger;
 };
@@ -26,11 +26,11 @@ public:
     using std::enable_shared_from_this<AgentRuntimeManager>::shared_from_this;
     static std::shared_ptr<AgentRuntimeManager> instance;
 
-    any runtime = nullptr;
+    std::any runtime = nullptr;
 
     boolean hasRunMigrations = false;
 
-    any initializationPromise = nullptr;
+    std::any initializationPromise = nullptr;
 
     AgentRuntimeManager();
     static std::shared_ptr<AgentRuntimeManager> getInstance();
@@ -38,7 +38,7 @@ public:
     virtual std::shared_ptr<Promise<std::shared_ptr<AgentRuntime>>> getRuntime();
     virtual std::shared_ptr<Promise<std::shared_ptr<AgentRuntime>>> createRuntime();
     virtual std::shared_ptr<Promise<void>> ensureBuiltInTables();
-    virtual std::shared_ptr<Promise<std::shared_ptr<Memory>>> handleMessage(string roomId, string entityId, object content);
+    virtual std::shared_ptr<Promise<std::shared_ptr<Memory>>> handleMessage(std::string roomId, std::string entityId, object content);
 };
 
 extern std::shared_ptr<AgentRuntimeManager> agentRuntime;

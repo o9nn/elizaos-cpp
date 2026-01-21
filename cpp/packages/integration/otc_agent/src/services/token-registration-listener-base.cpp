@@ -35,7 +35,7 @@ std::future<void> startBaseListener() {
 
         // Watch for TokenRegistered events
         const auto unwatch = client.watchEvent({;
-            "address: registrationHelperAddress as " + "0x" + string
+            "address: registrationHelperAddress as " + "0x" + std::string
             event: {
                 type: "event",
                 name: "TokenRegistered",
@@ -47,7 +47,7 @@ std::future<void> startBaseListener() {
                 { type: "address", name: "registeredBy" },
                 ],
                 },
-                onLogs: async (logs) => {
+                onLogs: std::async (logs) => {
                     for (const auto& log : logs)
                         handleTokenRegistered(client, log);
                     }
@@ -79,10 +79,10 @@ std::future<void> handleTokenRegistered(const std::any& client, const std::any& 
 
     // When using watchEvent with event definition, viem automatically decodes the log
     const auto { tokenAddress, registeredBy } = log.args as {;
-        tokenId: string;
-        tokenAddress: string;
-        pool: string;
-        registeredBy: string;
+        tokenId: std::string;
+        tokenAddress: std::string;
+        pool: std::string;
+        registeredBy: std::string;
         };
 
         console.log(
@@ -95,17 +95,17 @@ std::future<void> handleTokenRegistered(const std::any& client, const std::any& 
         // Fetch token metadata from blockchain
         const auto [symbol, name, decimals] = Promise.all([;
         client.readContract({
-            "address: tokenAddress as " + "0x" + string
+            "address: tokenAddress as " + "0x" + std::string
             abi: ERC20_ABI,
             functionName: "symbol",
             }),
             client.readContract({
-                "address: tokenAddress as " + "0x" + string
+                "address: tokenAddress as " + "0x" + std::string
                 abi: ERC20_ABI,
                 functionName: "name",
                 }),
                 client.readContract({
-                    "address: tokenAddress as " + "0x" + string
+                    "address: tokenAddress as " + "0x" + std::string
                     abi: ERC20_ABI,
                     functionName: "decimals",
                     }),
@@ -155,7 +155,7 @@ std::future<void> backfillBaseEvents(std::optional<bigint> fromBlock) {
             );
 
             const auto logs = client.getLogs({;
-                "address: registrationHelperAddress as " + "0x" + string
+                "address: registrationHelperAddress as " + "0x" + std::string
                 event: {
                     type: "event",
                     name: "TokenRegistered",

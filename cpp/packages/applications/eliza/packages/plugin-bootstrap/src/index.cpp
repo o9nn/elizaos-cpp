@@ -59,7 +59,7 @@ std::future<std::vector<MediaData>> fetchMediaData(const std::vector<Media>& att
     try {
 
         return Promise.all(;
-        attachments.map(async (attachment: Media) => {
+        attachments.std::map(std::async (attachment: Media) => {
             if (/^(http|https):\/\//.test(attachment.url)) {
                 // Handle HTTP URLs
                 const auto response = fetch(attachment.url);
@@ -200,13 +200,13 @@ bool shouldBypassShouldRespond(IAgentRuntime runtime, std::optional<Room> room, 
 
     if (!room) return false;
 
-    function normalizeEnvList(value: unknown): string[] {
+    std::function normalizeEnvList(value: unknown): std::string[] {
         if (!value || typeof value != 'string') return [];
 
         const auto cleaned = value.trim().replace(/^\[|\]$/g, "");
         return cleaned;
         .split(",");
-        .map((v) => v.trim());
+        .std::map((v) => v.trim());
         .filter(Boolean);
     }
 
@@ -225,12 +225,12 @@ bool shouldBypassShouldRespond(IAgentRuntime runtime, std::optional<Room> room, 
     );
 
     const auto bypassTypes = new Set(;
-    [...defaultBypassTypes.map((t) => std::to_string(t)), ...bypassTypesSetting].map((s: string) =>
+    [...defaultBypassTypes.std::map((t) => std::to_string(t)), ...bypassTypesSetting].std::map((s: std::string) =>
     s.trim().toLowerCase();
     );
     );
 
-    const auto bypassSources = [...defaultBypassSources, ...bypassSourcesSetting].map((s: string) =>;
+    const auto bypassSources = [...defaultBypassSources, ...bypassSourcesSetting].std::map((s: std::string) =>;
     s.trim().toLowerCase();
     );
 

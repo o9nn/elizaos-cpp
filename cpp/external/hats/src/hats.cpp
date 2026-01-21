@@ -75,7 +75,7 @@ HatsStatus JsonDataSource::loadData(DataSet& data) {
                 std::size_t valueEnd;
                 std::string value;
                 if (valueStart < line.size() && line[valueStart] == '"') {
-                    // Quoted string
+                    // Quoted std::string
                     valueStart++; // Skip opening quote
                     valueEnd = line.find('"', valueStart);
                     if (valueEnd == std::string::npos) break;
@@ -320,7 +320,7 @@ DataSource* HatsManager::getDataSource(const std::string& sourceId) {
 
 std::vector<std::string> HatsManager::getDataSourceIds() const {
     std::vector<std::string> ids;
-    for (const auto& pair : dataSources_) {
+    for (const auto& std::pair : dataSources_) {
         ids.push_back(pair.first);
     }
     return ids;
@@ -450,7 +450,7 @@ DataValue parseDataValue(const std::string& str) {
         // Not a double
     }
     
-    // Default to string
+    // Default to std::string
     return trimmed;
 }
 

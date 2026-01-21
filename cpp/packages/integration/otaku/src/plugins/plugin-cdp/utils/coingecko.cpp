@@ -84,8 +84,8 @@ std::future<std::optional<TokenMetadata>> getTokenMetadata(const std::string& ad
                     };
 
                     // Cache the result
-                    tokenCache.set(cacheKey, metadata);
-                    cacheTimestamps.set(cacheKey, Date.now());
+                    tokenCache.std::set(cacheKey, metadata);
+                    cacheTimestamps.std::set(cacheKey, Date.now());
 
                     std::cout << "Successfully fetched token metadata: " + metadata.symbol + " (" + metadata.name + ") - " + decimals + " decimals" << std::endl;
                     return metadata;
@@ -172,7 +172,7 @@ std::future<std::string> resolveTokenSymbol(const std::string& symbol, const std
 
 std::future<`0x> resolveTokenToAddress(const std::string& token, const std::string& network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    string;
+    std::string;
 }
 
 std::future<double> getTokenDecimals(const std::string& address, const std::string& network) {
@@ -207,7 +207,7 @@ void clearTokenCache() {
 
 void getCacheStats() {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    size: number; entries: string[]
+    size: number; entries: std::string[]
 }
 
 void addHardcodedTokenAddress(const std::string& network, const std::string& symbol, const std::string& address) {

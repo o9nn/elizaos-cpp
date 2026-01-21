@@ -69,7 +69,7 @@ void Main(void)
                     )->toThrow(TypeError);
                 }
                 );
-                it(std::string("should handle empty string input"), [=]() mutable
+                it(std::string("should handle empty std::string input"), [=]() mutable
                 {
                     auto result = as<std::shared_ptr<UUID>>(stringToUuid(string_empty));
                     expect(result)->toMatch((new RegExp(std::string("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"))));
@@ -86,16 +86,16 @@ void Main(void)
                 );
             }
             );
-            describe(std::string("UUID version and variant bits"), [=]() mutable
+            describe(std::string("UUID version and std::variant bits"), [=]() mutable
             {
-                it(std::string("should set correct version bits (version 5)"), [=]() mutable
+                it(std::string("should std::set correct version bits (version 5)"), [=]() mutable
                 {
                     auto uuid = as<std::shared_ptr<UUID>>(stringToUuid(testString));
                     auto versionChar = const_(const_(uuid->split(std::string("-")))[2])[0];
                     expect(versionChar)->toBe(std::string("0"));
                 }
                 );
-                it(std::string("should set correct variant bits (RFC4122)"), [=]() mutable
+                it(std::string("should std::set correct std::variant bits (RFC4122)"), [=]() mutable
                 {
                     auto uuid = as<std::shared_ptr<UUID>>(stringToUuid(testString));
                     auto variantByte = Number->parseInt(const_(uuid->split(std::string("-")))[3]->slice(0, 2), 16);

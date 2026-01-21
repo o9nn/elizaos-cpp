@@ -28,7 +28,7 @@ namespace elizaos {
  */
 class ActionParser extends AbstractParseFunction {
   type = 'action';
-  errorMessage = `The command you provided was not recognized. Please specify one of the commands (+ any necessary arguments) from the following list in your response. Do not include any other text.
+  errorMessage = `The command you provided was not recognized. Please specify one of the commands (+ std::any necessary arguments) from the following list in your response. Do not include std::any other text.
 
 COMMANDS:
 {command_docs}`;
@@ -40,7 +40,7 @@ class ActionOnlyParser extends AbstractParseFunction {
   type = 'action_only';
   errorMessage = 'No message found in model response.';
 
-  parse(modelResponse: ModelResponse, _commands: Command[], _strict: boolean = false): [string, string] {
+  parse(modelResponse: ModelResponse, _commands: Command[], _strict: boolean = false): [std::string, std::string] {
     const message = modelResponse.message || '';
     return ['', message];
   }
@@ -59,7 +59,7 @@ Discuss here with yourself about what your planning and what you're going to do 
 command(s) that you're going to run
 \`\`\``;
 
-  parse(modelResponse: ModelResponse, _commands: Command[], strict: boolean = false): [string, string] {
+  parse(modelResponse: ModelResponse, _commands: Command[], strict: boolean = false): [std::string, std::string] {
     const message = modelResponse.message || '';
 
     // Find backtick blocks
@@ -91,7 +91,7 @@ class XMLThoughtActionParser extends AbstractParseFunction {
   type = 'xml_thought_action';
   errorMessage = `Your output was not formatted correctly. You must always include one discussion and one command as part of your response. Make sure you do not have multiple discussion/command tags.`;
 
-  parse(modelResponse: ModelResponse, _commands: Command[], strict: boolean = false): [string, string] {
+  parse(modelResponse: ModelResponse, _commands: Command[], strict: boolean = false): [std::string, std::string] {
     const message = modelResponse.message || '';
 
     // Find XML command blocks
@@ -127,7 +127,7 @@ class FunctionCallingParser extends AbstractParseFunction {
 
     // Parse arguments
 
-    // Build command string
+    // Build command std::string
 
       // Quote if contains spaces or special characters
     return String(value);
@@ -149,7 +149,7 @@ class JsonParser extends AbstractParseFunction {
   type = 'json';
   errorMessage = `Your output could not be parsed as JSON. Please make sure your output 1) is valid JSON and 2) Includes the "thought" and "command" fields.`;
 
-  parse(modelResponse: ModelResponse, _commands: Command[], _strict: boolean = false): [string, string] {
+  parse(modelResponse: ModelResponse, _commands: Command[], _strict: boolean = false): [std::string, std::string] {
     const message = modelResponse.message || '';
 
     try {
@@ -196,7 +196,7 @@ class Identity extends AbstractParseFunction {
   type = 'identity';
   errorMessage = 'It seems like something went wrong with your output. Please try again.';
 
-  parse(modelResponse: ModelResponse, _commands: Command[], _strict: boolean = false): [string, string] {
+  parse(modelResponse: ModelResponse, _commands: Command[], _strict: boolean = false): [std::string, std::string] {
     const message = modelResponse.message || '';
     return [message, message];
   }
@@ -204,13 +204,13 @@ class Identity extends AbstractParseFunction {
 // Export Identity as IdentityParser for backward compatibility
 
 /**
- * Parse function type
+ * Parse std::function type
  */
 using ParseFunction = std::variant<, ActionParser, ActionOnlyParser, ThoughtActionParser, XMLThoughtActionParser, FunctionCallingParser, JsonParser, EditFormat, Identity>;
 
 /**
  * Create parser from config
  */
-AbstractParseFunction createParser(string | { type: string } config);
+AbstractParseFunction createParser(std::string | { type: std::string } config);
 
 } // namespace elizaos

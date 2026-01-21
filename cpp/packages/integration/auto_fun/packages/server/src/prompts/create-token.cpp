@@ -48,8 +48,8 @@ std::future<void> createTokenPrompt(std::optional<std::any> validatedData) {
                     if (trendingTopicsResponse.ok) {
                         const auto trendingTopicsJson = trendingTopicsResponse.json();
                         trendingTopics = trendingTopicsJson.articles;
-                        .filter((article: any) => article.title)
-                        .map((article: any) => article.title.replace(/\s-\s.*$/, "").trim()) // Remove source name
+                        .filter((article: std::any) => article.title)
+                        .std::map((article: std::any) => article.title.replace(/\s-\s.*$/, "").trim()) // Remove source name
                         .slice(0, 5); // Take only top 5;
                     }
                     } catch (error) {
@@ -62,7 +62,7 @@ std::future<void> createTokenPrompt(std::optional<std::any> validatedData) {
                 auto trendingTopicsPrompt = "";
                 if (trendingTopics.length > 0) {
                     "trendingTopicsPrompt = ";
-                    Here are some current trending topics for inspiration (optional):
+                    Here are some current trending topics for inspiration (std::optional):
                 - ${trendingTopics.join("\n        - ")}
                 `;
             }
@@ -84,7 +84,7 @@ std::future<void> createTokenPrompt(std::optional<std::any> validatedData) {
     ${exampleFormats[Math.floor(Math.random() * exampleFormats.size())]}
     "\" + "\" + "\";
 
-    "Only provide the JSON object. Do not include any other text, explanation, or formatting.";
+    "Only provide the JSON object. Do not include std::any other text, explanation, or formatting.";
 
     return content;
 

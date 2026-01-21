@@ -12,12 +12,12 @@ double convertToBasisPoints(double feePercent);
 
 double calculateAmountOutSell(double reserveLamport, double amount, double _tokenDecimals, double platformSellFee, double reserveToken);
 
-extern std::function<std::shared_ptr<Promise<std::shared_ptr<...>>>(any, double, double, double, string, string, string, double, double, any, any, any, object)> launchAndSwapTx;
+extern std::function<std::shared_ptr<Promise<std::shared_ptr<...>>>(std::any, double, double, double, std::string, std::string, std::string, double, double, std::any, std::any, std::any, object)> launchAndSwapTx;
 double calculateAmountOutBuy(double reserveToken, double amount, double _solDecimals, double reserveLamport, double platformBuyFee);
 
 extern double FEE_BASIS_POINTS;
-extern std::function<std::shared_ptr<Promise<object>>(any, double, double, double, double)> getSwapAmount;
-extern std::function<std::shared_ptr<Promise<object>>(string, double, double, double)> getSwapAmountJupiter;
-extern std::function<std::shared_ptr<Promise<any>>(any, any, double, double, double, any, double, double, any)> swapIx;
-extern std::function<std::shared_ptr<Promise<any>>(any, any, double, double, double, any, boolean)> getJupiterSwapIx;
+extern std::function<std::shared_ptr<Promise<object>>(std::any, double, double, double, double)> getSwapAmount;
+extern std::function<std::shared_ptr<Promise<object>>(std::string, double, double, double)> getSwapAmountJupiter;
+extern std::function<std::shared_ptr<Promise<any>>(std::any, std::any, double, double, double, std::any, double, double, std::any)> swapIx;
+extern std::function<std::shared_ptr<Promise<any>>(std::any, std::any, double, double, double, std::any, boolean)> getJupiterSwapIx;
 #endif

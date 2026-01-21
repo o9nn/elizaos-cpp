@@ -71,7 +71,7 @@ struct RegistrySettings {
 };
 
 /**
- * Package.json structure with optional fields used in publishing
+ * Package.json structure with std::optional fields used in publishing
  */
 struct PackageJson {
     std::string name;
@@ -110,6 +110,6 @@ struct PlaceholderReplacement {
 /**
  * Publish result from GitHub publishing
  */
-using PublishResult = std::variant<bool, { success: boolean>; prUrl?: string };
+using PublishResult = std::variant<bool, { success: boolean>; prUrl?: std::string };
 
 } // namespace elizaos

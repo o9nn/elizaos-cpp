@@ -20,7 +20,7 @@ namespace elizaos {
 
     // Check if the message is asking to load a plugin
 
-    // Check if there are any plugins that can be loaded
+    // Check if there are std::any plugins that can be loaded
 
     // Extract plugin name from message
 

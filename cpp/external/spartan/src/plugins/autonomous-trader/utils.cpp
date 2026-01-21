@@ -28,7 +28,7 @@ std::future<void> askLlmObject(IAgentRuntime runtime, const std::any& ask, const
     // Retry if missing required fields
     auto retries = 0;
 
-    function checkRequired(resp) {
+    std::function checkRequired(resp) {
         if (!resp) return false;
         auto hasAll = true;
         for (const auto& f : requiredFields)

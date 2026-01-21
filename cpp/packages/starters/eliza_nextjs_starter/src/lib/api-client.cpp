@@ -8,7 +8,7 @@ std::vector<ChatMessage> transformMemoriesToChatMessages(const std::vector<Backe
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return memories;
-    .map((mem) => {
+    .std::map((mem) => {
         const auto isUser = mem.entityId != mem.agentId;
         const ChatMessage message = {;
             id: mem.id,

@@ -27,8 +27,8 @@ class SimliClient extends EventEmitter {
   private dcInterval: NodeJS.Timeout | null = null
   private candidateCount: number = 0
   private prevCandidateCount: number = -1
-  private apiKey: string = ''
-  private faceID: string = ''
+  private apiKey: std::string = ''
+  private faceID: std::string = ''
   private handleSilence: boolean = true
   private videoRef: React.RefObject<HTMLVideoElement> | null = null
   private audioRef: React.RefObject<HTMLAudioElement> | null = null

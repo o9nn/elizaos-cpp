@@ -30,7 +30,7 @@ struct WalletDetailProps {
       // Update token table
       void updateTokenTable(auto tokens);
       
-      // Copy address function
+      // Copy address std::function
 
       // Initialize on load
 } // namespace elizaos

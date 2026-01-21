@@ -10,9 +10,9 @@ class CodeGenerationFormTestSuite;
 class CodeGenerationFormTestSuite : public TestSuite, public std::enable_shared_from_this<CodeGenerationFormTestSuite> {
 public:
     using std::enable_shared_from_this<CodeGenerationFormTestSuite>::shared_from_this;
-    string name = std::string("code-generation-forms");
+    std::string name = std::string("code-generation-forms");
 
-    string description = std::string("Tests form interactions for code generation workflow");
+    std::string description = std::string("Tests form interactions for code generation workflow");
 
     array<object> tests = array<object>{ object{
         object::pair{std::string("name"), std::string("should create plugin project form with correct structure")}, 
@@ -21,11 +21,11 @@ public:
             console->log(std::string("🧪 Testing plugin project form creation..."));
             auto formsService = as<any>(runtime->getService(std::string("forms")));
             if (!formsService) {
-                throw any(std::make_shared<Error>(std::string("Forms service not available")));
+                throw std::any(std::make_shared<Error>(std::string("Forms service not available")));
             }
             auto codeGenService = runtime->getService(std::string("code-generation"));
             if (!codeGenService) {
-                throw any(std::make_shared<Error>(std::string("Code generation service not available")));
+                throw std::any(std::make_shared<Error>(std::string("Code generation service not available")));
             }
             auto pluginForm = std::async([=]() { formsService["createForm"](object{
                 object::pair{std::string("name"), std::string("plugin-project-form")}, 
@@ -65,22 +65,22 @@ public:
                 } }}
             }); });
             if (!pluginForm) {
-                throw any(std::make_shared<Error>(std::string("Plugin form was not created")));
+                throw std::any(std::make_shared<Error>(std::string("Plugin form was not created")));
             }
             if (!pluginForm["id"]) {
-                throw any(std::make_shared<Error>(std::string("Plugin form missing ID")));
+                throw std::any(std::make_shared<Error>(std::string("Plugin form missing ID")));
             }
             if (pluginForm["name"] != std::string("plugin-project-form")) {
-                throw any(std::make_shared<Error>(std::string("Expected form name 'plugin-project-form', got '") + pluginForm["name"] + std::string("'")));
+                throw std::any(std::make_shared<Error>(std::string("Expected form name 'plugin-project-form', got '") + pluginForm["name"] + std::string("'")));
             }
             if (pluginForm["steps"]["length"] != 2) {
-                throw any(std::make_shared<Error>(std::string("Expected 2 steps, got ") + pluginForm["steps"]["length"] + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("Expected 2 steps, got ") + pluginForm["steps"]["length"] + string_empty));
             }
             if (const_(pluginForm["steps"])[0]["fields"]["length"] != 2) {
-                throw any(std::make_shared<Error>(std::string("Expected 2 fields in step 1, got ") + const_(pluginForm["steps"])[0]["fields"]["length"] + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("Expected 2 fields in step 1, got ") + const_(pluginForm["steps"])[0]["fields"]["length"] + string_empty));
             }
             if (const_(pluginForm["steps"])[1]["fields"]["length"] != 2) {
-                throw any(std::make_shared<Error>(std::string("Expected 2 fields in step 2, got ") + const_(pluginForm["steps"])[1]["fields"]["length"] + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("Expected 2 fields in step 2, got ") + const_(pluginForm["steps"])[1]["fields"]["length"] + string_empty));
             }
             console->log(std::string("✅ Plugin project form created successfully"));
         }
@@ -92,7 +92,7 @@ public:
             console->log(std::string("🧪 Testing form field updates..."));
             auto formsService = as<any>(runtime->getService(std::string("forms")));
             if (!formsService) {
-                throw any(std::make_shared<Error>(std::string("Forms service not available")));
+                throw std::any(std::make_shared<Error>(std::string("Forms service not available")));
             }
             auto form = std::async([=]() { formsService["createForm"](object{
                 object::pair{std::string("name"), std::string("test-form")}, 
@@ -117,10 +117,10 @@ public:
                 }
                 );
                 if (!field) {
-                    throw any(std::make_shared<Error>(std::string("Field not found after update")));
+                    throw std::any(std::make_shared<Error>(std::string("Field not found after update")));
                 }
                 if (field["value"] != std::string("my-awesome-plugin")) {
-                    throw any(std::make_shared<Error>(std::string("Expected field value 'my-awesome-plugin', got '") + field["value"] + std::string("'")));
+                    throw std::any(std::make_shared<Error>(std::string("Expected field value 'my-awesome-plugin', got '") + field["value"] + std::string("'")));
                 }
                 console->log(std::string("✅ Form field updates working correctly"));
             } else {
@@ -135,7 +135,7 @@ public:
             console->log(std::string("🧪 Testing form validation..."));
             auto formsService = as<any>(runtime->getService(std::string("forms")));
             if (!formsService) {
-                throw any(std::make_shared<Error>(std::string("Forms service not available")));
+                throw std::any(std::make_shared<Error>(std::string("Forms service not available")));
             }
             auto form = std::async([=]() { formsService["createForm"](object{
                 object::pair{std::string("name"), std::string("validation-test-form")}, 
@@ -171,7 +171,7 @@ public:
             console->log(std::string("🧪 Testing multi-step form progression..."));
             auto formsService = as<any>(runtime->getService(std::string("forms")));
             if (!formsService) {
-                throw any(std::make_shared<Error>(std::string("Forms service not available")));
+                throw std::any(std::make_shared<Error>(std::string("Forms service not available")));
             }
             shared stepCompletionCount = 0;
             auto form = std::async([=]() { formsService["createForm"](object{
@@ -214,7 +214,7 @@ public:
                 std::async([=]() { formsService["completeStep"](form["id"], std::string("step2")); });
                 std::async([=]() { formsService["completeStep"](form["id"], std::string("step3")); });
                 if (stepCompletionCount != 3) {
-                    throw any(std::make_shared<Error>(std::string("Expected 3 steps completed, got ") + stepCompletionCount + string_empty));
+                    throw std::any(std::make_shared<Error>(std::string("Expected 3 steps completed, got ") + stepCompletionCount + string_empty));
                 }
                 console->log(std::string("✅ Multi-step form progression working correctly"));
             } else {
@@ -229,7 +229,7 @@ public:
             console->log(std::string("🧪 Testing project data extraction from form..."));
             auto formsService = as<any>(runtime->getService(std::string("forms")));
             if (!formsService) {
-                throw any(std::make_shared<Error>(std::string("Forms service not available")));
+                throw std::any(std::make_shared<Error>(std::string("Forms service not available")));
             }
             auto form = std::async([=]() { formsService["createForm"](object{
                 object::pair{std::string("name"), std::string("data-extraction-form")}, 
@@ -297,22 +297,22 @@ public:
                 }
             }
             if (projectData["projectName"] != std::string("test-weather-plugin")) {
-                throw any(std::make_shared<Error>(std::string("Expected projectName 'test-weather-plugin', got '") + projectData["projectName"] + std::string("'")));
+                throw std::any(std::make_shared<Error>(std::string("Expected projectName 'test-weather-plugin', got '") + projectData["projectName"] + std::string("'")));
             }
             if (projectData["description"] != std::string("A plugin that provides weather information")) {
-                throw any(std::make_shared<Error>(std::string("Expected description 'A plugin that provides weather information', got '") + projectData["description"] + std::string("'")));
+                throw std::any(std::make_shared<Error>(std::string("Expected description 'A plugin that provides weather information', got '") + projectData["description"] + std::string("'")));
             }
             if (projectData["requirements"]["length"] != 3) {
-                throw any(std::make_shared<Error>(std::string("Expected 3 requirements, got ") + projectData["requirements"]["length"] + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("Expected 3 requirements, got ") + projectData["requirements"]["length"] + string_empty));
             }
             if (const_(projectData["requirements"])[0] != std::string("Get current weather")) {
-                throw any(std::make_shared<Error>(std::string("Expected first requirement 'Get current weather', got '") + const_(projectData["requirements"])[0] + std::string("'")));
+                throw std::any(std::make_shared<Error>(std::string("Expected first requirement 'Get current weather', got '") + const_(projectData["requirements"])[0] + std::string("'")));
             }
             if (projectData["apis"]["length"] != 2) {
-                throw any(std::make_shared<Error>(std::string("Expected 2 APIs, got ") + projectData["apis"]["length"] + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("Expected 2 APIs, got ") + projectData["apis"]["length"] + string_empty));
             }
             if (const_(projectData["apis"])[0] != std::string("OpenWeatherMap API")) {
-                throw any(std::make_shared<Error>(std::string("Expected first API 'OpenWeatherMap API', got '") + const_(projectData["apis"])[0] + std::string("'")));
+                throw std::any(std::make_shared<Error>(std::string("Expected first API 'OpenWeatherMap API', got '") + const_(projectData["apis"])[0] + std::string("'")));
             }
             console->log(std::string("✅ Project data extraction working correctly"));
             console->log(std::string("  Extracted:"), JSON->stringify(projectData, nullptr, 2));
@@ -325,7 +325,7 @@ public:
             console->log(std::string("🧪 Testing agent vs plugin form differences..."));
             auto formsService = as<any>(runtime->getService(std::string("forms")));
             if (!formsService) {
-                throw any(std::make_shared<Error>(std::string("Forms service not available")));
+                throw std::any(std::make_shared<Error>(std::string("Forms service not available")));
             }
             auto agentForm = std::async([=]() { formsService["createForm"](object{
                 object::pair{std::string("name"), std::string("agent-project-form")}, 
@@ -371,10 +371,10 @@ public:
                 } }}
             }); });
             if (agentForm["name"] != std::string("agent-project-form")) {
-                throw any(std::make_shared<Error>(std::string("Expected form name 'agent-project-form', got '") + agentForm["name"] + std::string("'")));
+                throw std::any(std::make_shared<Error>(std::string("Expected form name 'agent-project-form', got '") + agentForm["name"] + std::string("'")));
             }
             if (agentForm["steps"]["length"] != 2) {
-                throw any(std::make_shared<Error>(std::string("Expected 2 steps, got ") + agentForm["steps"]["length"] + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("Expected 2 steps, got ") + agentForm["steps"]["length"] + string_empty));
             }
             auto hasPersonalityField = const_(agentForm["steps"])[0]["fields"]["some"]([=](auto f) mutable
             {
@@ -387,10 +387,10 @@ public:
             }
             );
             if (!hasPersonalityField) {
-                throw any(std::make_shared<Error>(std::string("Agent form missing personality field")));
+                throw std::any(std::make_shared<Error>(std::string("Agent form missing personality field")));
             }
             if (!hasKnowledgeField) {
-                throw any(std::make_shared<Error>(std::string("Agent form missing knowledge field")));
+                throw std::any(std::make_shared<Error>(std::string("Agent form missing knowledge field")));
             }
             console->log(std::string("✅ Agent form has correct agent-specific fields"));
         }
@@ -403,7 +403,7 @@ public:
             auto formsService = as<any>(runtime->getService(std::string("forms")));
             shared codeGenService = as<any>(runtime->getService(std::string("code-generation")));
             if (OR((!formsService), (!codeGenService))) {
-                throw any(std::make_shared<Error>(std::string("Required services not available")));
+                throw std::any(std::make_shared<Error>(std::string("Required services not available")));
             }
             shared codeGenerationTriggered = false;
             shared generatedProjectData = nullptr;
@@ -452,13 +452,13 @@ public:
                 std::async([=]() { form["onComplete"](form); });
             }
             if (!codeGenerationTriggered) {
-                throw any(std::make_shared<Error>(std::string("Code generation was not triggered")));
+                throw std::any(std::make_shared<Error>(std::string("Code generation was not triggered")));
             }
             if (!generatedProjectData) {
-                throw any(std::make_shared<Error>(std::string("Project data was not passed to generateCode")));
+                throw std::any(std::make_shared<Error>(std::string("Project data was not passed to generateCode")));
             }
             if (generatedProjectData["projectName"] != std::string("trigger-test-project")) {
-                throw any(std::make_shared<Error>(std::string("Expected projectName 'trigger-test-project', got '") + generatedProjectData["projectName"] + std::string("'")));
+                throw std::any(std::make_shared<Error>(std::string("Expected projectName 'trigger-test-project', got '") + generatedProjectData["projectName"] + std::string("'")));
             }
             console->log(std::string("✅ Form completion successfully triggers code generation"));
             codeGenService["generateCode"] = originalGenerateCode;
@@ -471,7 +471,7 @@ public:
             console->log(std::string("🧪 Testing form cancellation..."));
             auto formsService = as<any>(runtime->getService(std::string("forms")));
             if (!formsService) {
-                throw any(std::make_shared<Error>(std::string("Forms service not available")));
+                throw std::any(std::make_shared<Error>(std::string("Forms service not available")));
             }
             auto form = std::async([=]() { formsService["createForm"](object{
                 object::pair{std::string("name"), std::string("cancellation-test-form")}, 

@@ -15,7 +15,7 @@ void LoadingPanelProvider() {
         id: nullptr,
         });
 
-        const auto showLoading = useCallback((title: string, messages: string | string[], id?: string) => {;
+        const auto showLoading = useCallback((title: std::string, messages: std::string | std::string[], id?: std::string) => {;
             setState({
                 isVisible: true,
                 type: "loading",
@@ -26,9 +26,9 @@ void LoadingPanelProvider() {
                 }, []);
 
                 const auto showSuccess = useCallback((;
-                title: string,
-                messages: string | string[],
-                id?: string,
+                title: std::string,
+                messages: std::string | std::string[],
+                id?: std::string,
                 autoClose: boolean = true
                 ) => {
                     setState({
@@ -53,7 +53,7 @@ void LoadingPanelProvider() {
                                 }
                                 }, []);
 
-                                const auto showError = useCallback((title: string, messages: string | string[], id?: string) => {;
+                                const auto showError = useCallback((title: std::string, messages: std::string | std::string[], id?: std::string) => {;
                                     setState({
                                         isVisible: true,
                                         type: "error",
@@ -63,7 +63,7 @@ void LoadingPanelProvider() {
                                         });
                                         }, []);
 
-                                        const auto hide = useCallback((id?: string) => {;
+                                        const auto hide = useCallback((id?: std::string) => {;
                                             setState(prev => {
                                                 // If an ID is provided, only hide if it matches the current ID
                                                 // This prevents race conditions where one component hides another's panel

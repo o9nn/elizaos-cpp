@@ -10,7 +10,7 @@ std::future<GoalSelection> extractGoalSelection(IAgentRuntime runtime, Memory me
     try {
         // Format available goals for the prompt
         const auto goalsText = availableGoals;
-        .map((goal) => {
+        .std::map((goal) => {
             return "ID: " + goal.id + "\nName: " + goal.name + "\nDescription: " + std::to_string(goal.description || goal.name) + "\nOwner Type: " + goal.ownerType + "\nTags: " + std::to_string(goal.tags.join(", ") || "none") + "\n";
             });
             .join("\n---\n");
@@ -36,7 +36,7 @@ std::future<GoalSelection> extractGoalSelection(IAgentRuntime runtime, Memory me
                             return { goalId: '', goalName: '', isFound: false }
                         }
 
-                        // Convert string 'true'/'false' to boolean and handle 'null' strings
+                        // Convert std::string 'true'/'false' to boolean and handle 'null' strings
                         const GoalSelection finalResult = {;
                             goalId: parsedResult.goalId == "nullptr" ? "" : std::to_string(parsedResult.goalId || ""),
                             goalName: parsedResult.goalName == "nullptr" ? "" : std::to_string(parsedResult.goalName || ""),

@@ -5,8 +5,8 @@
 using uuidv4 = v4;
 #include "@elizaos/core.h"
 
-extern any worldTestAgentId;
-extern any worldTestEntityId;
+extern std::any worldTestAgentId;
+extern std::any worldTestEntityId;
 extern std::shared_ptr<Agent> worldTestAgent;
 extern std::shared_ptr<Entity> worldTestEntity;
 extern array<std::shared_ptr<World>> worldTestWorlds;

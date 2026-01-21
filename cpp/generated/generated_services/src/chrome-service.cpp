@@ -1,11 +1,11 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/discrub-ext/src/services/chrome-service.h"
 
-std::function<void(string, std::shared_ptr<ChromeCallback>)> sendChromeMessage = [=](auto msg, auto callback = undefined) mutable
+std::function<void(std::string, std::shared_ptr<ChromeCallback>)> sendChromeMessage = [=](auto msg, auto callback = undefined) mutable
 {
     AND((AND((chrome), (chrome->tabs))), (chrome->tabs->query(object{
         object::pair{std::string("active"), true}, 
         object::pair{std::string("currentWindow"), true}
-    }, [=](any tabs) mutable
+    }, [=](std::any tabs) mutable
     {
         if (callback) {
             chrome->tabs->sendMessage(const_(tabs)[0]["id"], object{
@@ -65,7 +65,7 @@ std::function<std::shared_ptr<Promise<std::shared_ptr<Record<DiscrubSetting, str
         {
             auto foundSetting = std::async([=]() { chrome->storage->local->get(setting["name"]); });
             if (!Object->keys(foundSetting)->get_length()) {
-                std::async([=]() { chrome->storage->local->set(object{
+                std::async([=]() { chrome->storage->local->std::set(object{
                     object::pair{setting["name"], setting["value"]}
                 }); });
             }
@@ -75,7 +75,7 @@ std::function<std::shared_ptr<Promise<std::shared_ptr<Record<DiscrubSetting, str
 };
 std::function<std::shared_ptr<Promise<std::shared_ptr<Record<DiscrubSetting, string>>>>()> getSettings = [=]() mutable
 {
-    auto chromeSettings = std::async([=]() { chrome->storage->local->get(defaultSettings->map([=](auto setting) mutable
+    auto chromeSettings = std::async([=]() { chrome->storage->local->get(defaultSettings->std::map([=](auto setting) mutable
     {
         return setting["name"];
     }
@@ -95,9 +95,9 @@ std::function<std::shared_ptr<Promise<std::shared_ptr<Record<DiscrubSetting, str
         object::pair{DiscrubSetting::EXPORT_IMAGE_RES_MODE, const_(chromeSettings)[DiscrubSetting::EXPORT_IMAGE_RES_MODE]}
     };
 };
-std::function<std::shared_ptr<Promise<std::shared_ptr<Record<DiscrubSetting, string>>>>(string, string)> setSetting = [=](auto name, auto value) mutable
+std::function<std::shared_ptr<Promise<std::shared_ptr<Record<DiscrubSetting, string>>>>(std::string, std::string)> setSetting = [=](auto name, auto value) mutable
 {
-    std::async([=]() { chrome->storage->local->set(object{
+    std::async([=]() { chrome->storage->local->std::set(object{
         object::pair{name, value}
     }); });
     return getSettings();

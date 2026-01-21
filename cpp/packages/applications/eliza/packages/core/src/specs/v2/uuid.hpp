@@ -28,9 +28,9 @@ namespace elizaos {
 std::optional<UUID> validateUuid(const std::any& value);
 
 /**
- * Converts a string or number to a UUID.
+ * Converts a std::string or number to a UUID.
  *
- * @param {string | number} target - The string or number to convert to a UUID.
+ * @param {std::string | number} target - The std::string or number to convert to a UUID.
  * @returns {UUID} The UUID generated from the input target.
  * @throws {TypeError} Throws an error if the input target is not a string.
  */

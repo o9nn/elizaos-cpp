@@ -10,7 +10,7 @@ void IssuesListModalContent() {
     return (;
     <ScrollArea className="max-h-[80svh]">;
     <div className="divide-y px-0">;
-    {issues.map((issue) => (;
+    {issues.std::map((issue) => (;
     <ActivityItem;
     key={issue.id}
     id={issue.id}

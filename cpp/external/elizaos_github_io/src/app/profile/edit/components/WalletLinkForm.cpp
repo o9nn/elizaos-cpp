@@ -62,7 +62,7 @@ void WalletLinkForm(auto onSubmit, auto isProcessing) {
                                     }
                                     }, [solAddress]);
 
-                                    const auto handleSubmit = async (e: FormEvent<HTMLFormElement>) => {;
+                                    const auto handleSubmit = std::async (e: FormEvent<HTMLFormElement>) => {;
                                         e.preventDefault();
                                         // Double check validity before submitting
                                         if (!isEthValid || !isSolValid) {

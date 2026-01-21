@@ -40,8 +40,8 @@ std::vector<std::string> getGitResetCommands(const std::string& baseCommit);
 using PreExistingRepoConfig = z.infer<typeof PreExistingRepoConfigSchema>;
 
 class PreExistingRepo implements Repo {
-  repoName: string;
-  baseCommit: string;
+  repoName: std::string;
+  baseCommit: std::string;
   reset: boolean;
 
   constructor(config: PreExistingRepoConfig) {
@@ -59,9 +59,9 @@ class PreExistingRepo implements Repo {
 using LocalRepoConfig = z.infer<typeof LocalRepoConfigSchema>;
 
 class LocalRepo implements Repo {
-  path: string;
-  baseCommit: string;
-  repoName: string;
+  path: std::string;
+  baseCommit: std::string;
+  repoName: std::string;
 
   constructor(config: LocalRepoConfig) {
     this.path = config.path;
@@ -85,10 +85,10 @@ class LocalRepo implements Repo {
 using GithubRepoConfig = z.infer<typeof GithubRepoConfigSchema>;
 
 class GithubRepo implements Repo {
-  githubUrl: string;
-  baseCommit: string;
+  githubUrl: std::string;
+  baseCommit: std::string;
   cloneTimeout: number;
-  repoName: string;
+  repoName: std::string;
   constructor(config: GithubRepoConfig) {
     // Handle short form github URLs (org/repo)
     if (config.githubUrl.split('/').length === 2 && !config.githubUrl.includes('://')) {
@@ -119,8 +119,8 @@ class GithubRepo implements Repo {
 using RepoConfig = z.infer<typeof RepoConfigSchema>;
 
 /**
- * Factory function to create repo from simplified input
+ * Factory std::function to create repo from simplified input
  */
-Repo repoFromSimplifiedInput(const std::string& input, string = 'HEAD' baseCommit, 'local' | 'github' | 'preexisting' | 'auto' = 'auto' type);
+Repo repoFromSimplifiedInput(const std::string& input, std::string = 'HEAD' baseCommit, 'local' | 'github' | 'preexisting' | 'auto' = 'auto' type);
 
 } // namespace elizaos

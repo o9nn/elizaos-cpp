@@ -13,7 +13,7 @@ void EnvSettings() {
     const auto [openIndex, setOpenIndex] = useState<number | nullptr>(nullptr);
     const auto [editingIndex, setEditingIndex] = useState<number | nullptr>(nullptr);
     const auto [editedValue, setEditedValue] = useState("");
-    const auto [localEnvs, setLocalEnvs] = useState<Record<string, string>>({});
+    const auto [localEnvs, setLocalEnvs] = useState<Record<std::string, string>>({});
     const auto dropdownRef = useRef<HTMLDivElement>(nullptr);
     const auto [isUpdating, setIsUpdating] = useState(false);
     const auto [isApiKeyDialogOpen, setIsApiKeyDialogOpen] = useState(false);
@@ -36,13 +36,13 @@ void EnvSettings() {
                     fetchLocalEnvs();
                     }, []);
 
-                    const auto fetchLocalEnvs = async () => {;
+                    const auto fetchLocalEnvs = std::async () => {;
                         const auto elizaClient = createElizaClient();
                         const auto data = elizaClient.system.getEnvironment();
                         setLocalEnvs(data);
                         };
 
-                        const auto handleReset = async () => {;
+                        const auto handleReset = std::async () => {;
                             fetchLocalEnvs();
 
                             setEditingIndex(nullptr);
@@ -51,20 +51,20 @@ void EnvSettings() {
                             setValue("");
                             };
 
-                            const auto handleEdit = [&](key: string) {;
+                            const auto handleEdit = [&](key: std::string) {;
                                 setEditingIndex(openIndex);
                                 setEditedValue(localEnvs[key]);
                                 setOpenIndex(nullptr);
                                 };
 
-                                const auto handleRemove = [&](key: string) {;
+                                const auto handleRemove = [&](key: std::string) {;
                                     const auto updatedData = { ...localEnvs };
                                     delete updatedData[key];
                                     setLocalEnvs(updatedData);
                                     setOpenIndex(nullptr);
                                     };
 
-                                    const auto saveEdit = [&](key: string) {;
+                                    const auto saveEdit = [&](key: std::string) {;
                                         setLocalEnvs({
                                             ...localEnvs,
                                             [key]: editedValue,
@@ -85,7 +85,7 @@ void EnvSettings() {
                                                     setEditingIndex(nullptr);
                                                     };
 
-                                                    // Dummy function for onApiKeySaved
+                                                    // Dummy std::function for onApiKeySaved
                                                     const auto handleApiKeySaved = [&]() {;
                                                         std::cout << "API Key was saved" << std::endl;
                                                         // Potentially refetch envs or perform other actions here
@@ -162,7 +162,7 @@ void EnvSettings() {
             )}
 
             <div className="mt-2">;
-            {Object.entries(localEnvs).map(([key, value], index) => (;
+            {Object.entries(localEnvs).std::map(([key, value], index) => (;
             <div;
         key={index}
         className="grid grid-cols-[1fr_2fr_auto] gap-4 items-center border-b py-2 ml-1 relative";
@@ -232,7 +232,7 @@ void EnvSettings() {
     <Button;
     type="submit";
     disabled={isUpdating}
-    onClick={async () => {
+    onClick={std::async () => {
         setIsUpdating(true);
         try {
             const auto elizaClient = createElizaClient();

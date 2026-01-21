@@ -76,7 +76,7 @@ namespace elizaos {
 
       // Try to send empty message
 
-      // Should not create any new message elements
+      // Should not create std::any new message elements
 
 /**
  * CHAT TESTING PATTERNS

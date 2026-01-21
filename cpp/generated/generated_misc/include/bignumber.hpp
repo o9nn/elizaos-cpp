@@ -7,7 +7,7 @@ using BigNumber = _default;
 template <typename P0>
 std::shared_ptr<BigNumber> toBN(P0 value);
 
-string formatBN(std::shared_ptr<BigNumber> value, double decimals = 18);
+std::string formatBN(std::shared_ptr<BigNumber> value, double decimals = 18);
 
 template <typename P0>
 std::shared_ptr<BigNumber> toBN(P0 value)
@@ -16,9 +16,9 @@ std::shared_ptr<BigNumber> toBN(P0 value)
     {
         return std::make_shared<BigNumber>(value);
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
-        throw any(std::make_shared<Error>(std::string("Failed to convert value to BigNumber: ") + value + string_empty));
+        throw std::any(std::make_shared<Error>(std::string("Failed to convert value to BigNumber: ") + value + string_empty));
     }
 };
 

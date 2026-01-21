@@ -16,13 +16,13 @@ namespace elizaos {
 
 class Role {
   id: Snowflake;
-  name: string;
+  name: std::string;
   color: number;
   hoist: boolean;
-  icon?: string | Maybe;
-  unicode_emoji?: string | Maybe;
+  icon?: std::string | Maybe;
+  unicode_emoji?: std::string | Maybe;
   position: number;
-  permissions: string;
+  permissions: std::string;
   managed: boolean;
   mentionable: boolean;
   tags?: RoleTags;
@@ -30,13 +30,13 @@ class Role {
 
   constructor(opts: {
     id: Snowflake;
-    name: string;
+    name: std::string;
     color: number;
     hoist: boolean;
-    icon?: string | Maybe;
-    unicode_emoji?: string | Maybe;
+    icon?: std::string | Maybe;
+    unicode_emoji?: std::string | Maybe;
     position: number;
-    permissions: string;
+    permissions: std::string;
     managed: boolean;
     mentionable: boolean;
     tags?: RoleTags;

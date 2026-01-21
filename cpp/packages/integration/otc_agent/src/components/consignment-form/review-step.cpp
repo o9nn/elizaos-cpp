@@ -10,10 +10,10 @@ void ReviewStep(auto onBack, auto onNext, auto requiredChain, auto isConnectedTo
 
         const auto { activeFamily, evmAddress, solanaPublicKey } = useMultiWallet();
         const auto [copied, setCopied] = useState(false);
-        const auto [error, setError] = useState<string | nullptr>(nullptr);
+        const auto [error, setError] = useState<std::string | nullptr>(nullptr);
 
         // Extract chain and address from tokenId (format: token-{chain}-{address})
-        const auto getTokenInfo = [&](tokenId: string) {;
+        const auto getTokenInfo = [&](tokenId: std::string) {;
             const auto parts = tokenId.split("-") || [];
             const auto chain = parts[1] || "";
             const auto address = parts.slice(2).join("-") || "";
@@ -24,12 +24,12 @@ void ReviewStep(auto onBack, auto onNext, auto requiredChain, auto isConnectedTo
             formData.tokenId,
             );
 
-            const auto getDisplayAddress = [&](addr: string) {;
+            const auto getDisplayAddress = [&](addr: std::string) {;
                 if (!addr || addr.length <= 12) return addr;
                 return std::to_string(addr.slice(0, 6)) + "..." + std::to_string(addr.slice(-4));
                 };
 
-                const auto handleCopyToken = async () => {;
+                const auto handleCopyToken = std::async () => {;
                     navigator.clipboard.writeText(rawTokenAddress);
                     setCopied(true);
                     setTimeout(() => setCopied(false), 2000);
@@ -59,7 +59,7 @@ void ReviewStep(auto onBack, auto onNext, auto requiredChain, auto isConnectedTo
                         onNext();
                         };
 
-                        const auto formatAmount = [&](amount: string) {;
+                        const auto formatAmount = [&](amount: std::string) {;
                             const auto num = parseFloat(amount) || 0;
                             return num.toLocaleString();
                             };

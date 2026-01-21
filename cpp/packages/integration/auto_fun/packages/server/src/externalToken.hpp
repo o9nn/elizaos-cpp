@@ -34,19 +34,19 @@ using TokenDetails = {
  */
 class ExternalToken {
   private sdk: Codex;
-  private mint: string;
+  private mint: std::string;
   private wsClient: WebSocketClient;
   private redisCache: RedisCache; // Store Redis client instance
 
   // Constructor is now private and requires RedisCache
-  private constructor(mint: string, redisClient: RedisCache) {
+  private constructor(mint: std::string, redisClient: RedisCache) {
     this.sdk = new Codex(process.env.CODEX_API_KEY || "");
     this.mint = mint;
     this.wsClient = getWebSocketClient();
     this.redisCache = redisClient;
   }
 
-  // Public static async factory method
+  // Public static std::async factory method
     // Await the global cache only if no client is provided
 
       // Fetch and store initial data

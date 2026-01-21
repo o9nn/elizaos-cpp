@@ -23,11 +23,11 @@ struct Phase {
     std::string progress;
 };
 
-// Helper function to calculate progress percentage
+// Helper std::function to calculate progress percentage
 
   // Give full weight to done tasks, half weight to in-progress tasks
 
-// Helper function to get task icon
+// Helper std::function to get task icon
 
 
 } // namespace elizaos

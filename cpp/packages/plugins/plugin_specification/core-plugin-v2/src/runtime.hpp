@@ -38,7 +38,7 @@ class AgentRuntime implements IAgentRuntime {
   private _runtime;
 
   get services(): Map<ServiceTypeName, Service> {
-    return this._runtime.services as any;
+    return this._runtime.services as std::any;
   }
 
     // If _runtime.events is already a Map, just cast it

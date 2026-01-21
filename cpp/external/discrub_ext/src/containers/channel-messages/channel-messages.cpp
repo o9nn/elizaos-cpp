@@ -71,7 +71,7 @@ void ChannelMessages() {
 
                     const std::vector<TableRow<Message>> rows = (;
                     filters.size() ? filteredMessages : messages
-                    ).map((m) => ({
+                    ).std::map((m) => ({
                         data: m,
                         selectable: isRemovableMessage(m),
                         renderRow: (row) => (
@@ -144,7 +144,7 @@ void ChannelMessages() {
                         );
 
                         const auto sortedGuilds = guilds;
-                        .map((g) => new Guild({ ...g }));
+                        .std::map((g) => new Guild({ ...g }));
                         .sort((a, b) =>;
                         sortByProperty(;
                         { name: a.name.toLowerCase() },
@@ -153,7 +153,7 @@ void ChannelMessages() {
                         );
                         );
                         const auto sortedChannels = channels;
-                        .map((c) => new Channel({ ...c }));
+                        .std::map((c) => new Channel({ ...c }));
                         .sort((a, b) =>;
                         sortByProperty(;
                         { name: std::to_string(a.name).toLowerCase() },
@@ -227,7 +227,7 @@ void ChannelMessages() {
     <Autocomplete;
     clearIcon={<ClearIcon />}
     onChange={(_, val) => handleGuildChange(val)}
-    options={sortedGuilds.map((guild) => {
+    options={sortedGuilds.std::map((guild) => {
         return guild.id;
     })}
     getOptionLabel={(id) =>;
@@ -258,7 +258,7 @@ void ChannelMessages() {
         <>;
         <CopyAdornment;
         copyValue={sortedGuilds;
-        .map((guild) => guild.name);
+        .std::map((guild) => guild.name);
     .join("\r\n")}
     copyName="Server List";
     disabled={guildFieldDisabled}
@@ -278,14 +278,14 @@ void ChannelMessages() {
     <Autocomplete;
     clearIcon={<ClearIcon />}
     onChange={(_, val) => handleChannelChange(val)}
-    onPaste={async (e) => {
+    onPaste={std::async (e) => {
         e.preventDefault();
         if (selectedGuild) {
             const auto clipboardData = e.clipboardData.getData("text");
             loadChannel(clipboardData);
         }
     }}
-    options={sortedChannels.map((channel) => {
+    options={sortedChannels.std::map((channel) => {
         return channel.id;
     })}
     getOptionLabel={(id) =>;
@@ -305,7 +305,7 @@ void ChannelMessages() {
         startAdornment: (
         <CopyAdornment;
         copyValue={sortedChannels;
-        .map((channel) => channel.name);
+        .std::map((channel) => channel.name);
     .join("\r\n")}
     copyName="Channel List";
     disabled={channelFieldDisabled}

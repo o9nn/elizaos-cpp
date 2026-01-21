@@ -19,21 +19,21 @@ std::shared_ptr<Promise<void>> WalletService::initialize()
     {
         auto rpcUrl = this->runtime->getSetting(std::string("SOLANA_RPC_URL"));
         if (!rpcUrl) {
-            throw any(std::make_shared<Error>(std::string("Solana RPC URL not configured")));
+            throw std::any(std::make_shared<Error>(std::string("Solana RPC URL not configured")));
         }
         this->connection = std::make_shared<Connection>(rpcUrl);
         auto privateKey = this->runtime->getSetting(std::string("SOLANA_PRIVATE_KEY"));
         if (!privateKey) {
-            throw any(std::make_shared<Error>(std::string("Solana private key not configured")));
+            throw std::any(std::make_shared<Error>(std::string("Solana private key not configured")));
         }
         auto decodedKey = bs58->decode(privateKey);
         this->keypair = Keypair->fromSecretKey(decodedKey);
         logger->info(std::string("Wallet service initialized successfully"));
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->log(std::string("Failed to initialize wallet service:"), error);
-        throw any(error);
+        throw std::any(error);
     }
     return std::shared_ptr<Promise<void>>();
 }
@@ -45,10 +45,10 @@ std::shared_ptr<Promise<void>> WalletService::stop()
     return std::shared_ptr<Promise<void>>();
 }
 
-any WalletService::getWallet()
+std::any WalletService::getWallet()
 {
     if (OR((!this->keypair), (!this->connection))) {
-        throw any(std::make_shared<Error>(std::string("Wallet not initialized")));
+        throw std::any(std::make_shared<Error>(std::string("Wallet not initialized")));
     }
     shared keypair = this->keypair;
     return object{
@@ -63,17 +63,17 @@ any WalletService::getWallet()
 std::shared_ptr<Promise<double>> WalletService::getBalance()
 {
     if (OR((!this->keypair), (!this->connection))) {
-        throw any(std::make_shared<Error>(std::string("Wallet not initialized")));
+        throw std::any(std::make_shared<Error>(std::string("Wallet not initialized")));
     }
     try
     {
         auto balance = std::async([=]() { this->connection["getBalance"](this->keypair["publicKey"]); });
         return balance / 1000000000;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->log(std::string("Error getting wallet balance:"), error);
-        throw any(error);
+        throw std::any(error);
     }
 }
 

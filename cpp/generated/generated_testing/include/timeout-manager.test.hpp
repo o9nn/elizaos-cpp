@@ -5,6 +5,6 @@
 #include "../../../../src/utils/testing/timeout-manager.h"
 #include "@elizaos/core.h"
 
-extern std::function<any(double)> originalmockExit;
-extern any mockExit;
+extern std::function<std::any(double)> originalmockExit;
+extern std::any mockExit;
 #endif

@@ -77,7 +77,7 @@ void AgentLoop::stop() {
 
     stopRequested_ = true;
 
-    // Signal any waiting conditions
+    // Signal std::any waiting conditions
     {
         std::lock_guard<std::mutex> lock(stepMutex_);
         stepSignaled_ = true;

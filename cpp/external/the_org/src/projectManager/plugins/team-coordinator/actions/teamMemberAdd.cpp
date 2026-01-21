@@ -42,7 +42,7 @@ std::future<std::vector<TeamMember>> fetchTeamMembersForServer(IAgentRuntime run
             std::cout << "Found " + teamMemberMemories.size() + " team member records" << std::endl;
 
             // Extract and return the team members
-            const auto teamMembers = teamMemberMemories.map((memory) => memory.content.teamMember);
+            const auto teamMembers = teamMemberMemories.std::map((memory) => memory.content.teamMember);
 
             // Log for debugging
             std::cout << "Successfully retrieved " + teamMembers.size() + " team members for server " + serverId << std::endl;

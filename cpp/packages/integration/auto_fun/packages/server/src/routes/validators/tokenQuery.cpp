@@ -30,7 +30,7 @@ TokenQueryParams parseTokensQuery(RawTokenQuery raw) {
             if (raw.hideImported == "0") hideImported = 0;
             else if (raw.hideImported == "1") hideImported = 1;
 
-            auto creator: string | std::nullopt;
+            auto creator: std::string | std::nullopt;
             if (raw.creator) {
                 if (parseSolanaAddress(raw.creator)) {
                     creator = raw.creator;

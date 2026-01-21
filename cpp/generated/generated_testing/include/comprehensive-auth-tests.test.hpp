@@ -8,6 +8,6 @@
 #include "../AgentPluginAuth.js.h"
 
 extern object mockConsole;
-extern std::function<any(std::shared_ptr<Record<string, string>>)> createMockRuntime;
-extern any mockFetch;
+extern std::function<std::any(std::shared_ptr<Record<std::string, string>>)> createMockRuntime;
+extern std::any mockFetch;
 #endif

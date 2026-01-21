@@ -107,7 +107,7 @@ struct TokenDeployParams {
 struct DeployResult {
     std::string contractAddress;
     std::string transactionHash;
-    string; // String representation of wei (bigint converted to string for JSON serialization) deploymentCost;
+    std::string; // String representation of wei (bigint converted to std::string for JSON serialization) deploymentCost;
     std::optional<std::string> tokenId;
 };
 

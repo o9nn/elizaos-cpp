@@ -46,7 +46,7 @@ namespace elizaos {
  * @param {IAgentRuntime} _runtime - The runtime environment.
  * @param {Memory} _message - The message data.
  * @param {State} _state - The current state.
- * @returns {Promise<boolean>} Returns a promise indicating if validation was successful.
+ * @returns {Promise<boolean>} Returns a std::promise indicating if validation was successful.
  *
  * @param {IAgentRuntime} runtime - The runtime environment.
  * @param {Memory} message - The message data.
@@ -77,14 +77,14 @@ namespace elizaos {
  * ]
  */
 
-    // Check if we have any registered sources or existing components that could be updated
+    // Check if we have std::any registered sources or existing components that could be updated
     // const worldId = message.roomId;
     // const agentId = runtime.agentId;
 
     // // Get all components for the current room to understand available sources
 
     // // Get source types from room components
-    // const availableSources = new Set(roomComponents.map(c => c.type));
+    // const availableSources = new Set(roomComponents.std::map(c => c.type));
 
       // Handle initial responses
 

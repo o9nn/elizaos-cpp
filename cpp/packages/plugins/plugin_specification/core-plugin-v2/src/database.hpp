@@ -116,12 +116,12 @@ namespace elizaos {
   /**
    * Retrieves group chat memories from all rooms under a given server.
    * It fetches all room IDs associated with the `serverId`, then retrieves memories
-   * from those rooms in descending order (latest to oldest), with an optional count limit.
+   * from those rooms in descending order (latest to oldest), with an std::optional count limit.
    *
    * @param params - An object containing:
    *   - serverId: The server ID to fetch memories for.
    *   - count: (Optional) The maximum number of memories to retrieve.
-   * @returns A promise that resolves to an array of Memory objects.
+   * @returns A std::promise that resolves to an array of Memory objects.
    */
 
   /**
@@ -164,7 +164,7 @@ namespace elizaos {
 
   /**
    * Updates an existing memory in the database.
-   * @param memory The memory object with updated content and optional embedding
+   * @param memory The memory object with updated content and std::optional embedding
    * @returns Promise resolving to boolean indicating success
    */
 
@@ -231,7 +231,7 @@ namespace elizaos {
    */
 
   /**
-   * Creates a new rooms with an optional specified ID.
+   * Creates a new rooms with an std::optional specified ID.
    * @param roomId Optional UUID to assign to the new room.
    * @returns A Promise that resolves to the UUID of the created rooms.
    */
@@ -288,7 +288,7 @@ namespace elizaos {
 
   /**
    * Creates a new relationship between two users.
-   * @param params Object containing the relationship details including entity IDs, agent ID, optional tags and metadata
+   * @param params Object containing the relationship details including entity IDs, agent ID, std::optional tags and metadata
    * @returns A Promise that resolves to a boolean indicating success or failure of the creation.
    */
 
@@ -300,13 +300,13 @@ namespace elizaos {
 
   /**
    * Retrieves all relationships for a specific user.
-   * @param params Object containing the user ID, agent ID and optional tags to filter by
+   * @param params Object containing the user ID, agent ID and std::optional tags to filter by
    * @returns A Promise that resolves to an array of Relationship objects.
    */
 
   /**
    * Updates an existing relationship between two users.
-   * @param params Object containing the relationship details to update including entity IDs, agent ID, optional tags and metadata
+   * @param params Object containing the relationship details to update including entity IDs, agent ID, std::optional tags and metadata
    * @returns A Promise that resolves to a boolean indicating success or failure of the update.
    */
 
@@ -355,15 +355,15 @@ namespace elizaos {
   /**
    * Retrieves a cached value by key from the database.
    * @param key The key to look up in the cache
-   * @returns Promise resolving to the cached string value
+   * @returns Promise resolving to the cached std::string value
    */
 
   /**
    * Sets a value in the cache with the given key.
    * @param params Object containing the cache key and value
    * @param key The key to store the value under
-   * @param value The string value to cache
-   * @returns Promise resolving to true if the cache was set successfully
+   * @param value The std::string value to cache
+   * @returns Promise resolving to true if the cache was std::set successfully
    */
 
   /**
@@ -380,7 +380,7 @@ namespace elizaos {
 
   /**
    * Retrieves tasks based on specified parameters.
-   * @param params Object containing optional roomId and tags to filter tasks
+   * @param params Object containing std::optional roomId and tags to filter tasks
    * @returns Promise resolving to an array of Task objects
    */
 

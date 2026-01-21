@@ -11,6 +11,6 @@ using path = _default;
 #include "../utils/naming.h"
 #include "../utils/directory.h"
 
-std::shared_ptr<Promise<void>> removePlugin(string plugin);
+std::shared_ptr<Promise<void>> removePlugin(std::string plugin);
 
 #endif

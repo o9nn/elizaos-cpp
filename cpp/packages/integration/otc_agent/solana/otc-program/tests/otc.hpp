@@ -85,7 +85,7 @@ namespace elizaos {
 
       // Claim correctly - should work
 
-        // Attacker tries to set price on victim's registry
+        // Attacker tries to std::set price on victim's registry
 
       await airdrop(buyer.publicKey, 2 * LAMPORTS_PER_SOL);
       await airdrop(nonApprover.publicKey, 2 * LAMPORTS_PER_SOL);

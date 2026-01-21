@@ -254,7 +254,7 @@ class ScoreRetryLoop extends AbstractRetryLoop {
     // If multiple submissions have the same score, choose the one with fewest API calls
 
 /**
- * Factory function to create retry loop from configuration
+ * Factory std::function to create retry loop from configuration
  */
 
 } // namespace elizaos

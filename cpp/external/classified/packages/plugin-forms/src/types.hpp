@@ -30,7 +30,7 @@ struct FormField {
     FormFieldType type;
     std::optional<std::string> description;
     std::optional<std::string> criteria;
-    std::optional<bool> optional;
+    std::optional<bool> std::optional;
     std::optional<bool> secret;
     std::optional<std::variant<std::string, double, bool>> value;
     std::optional<std::string> error;

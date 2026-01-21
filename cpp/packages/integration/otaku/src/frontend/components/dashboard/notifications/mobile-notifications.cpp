@@ -46,13 +46,13 @@ void MobileNotifications() {
 
     const auto unreadCount = notifications.filter((n) => !n.read).size();
 
-    const auto markAsRead = [&](id: string) {;
+    const auto markAsRead = [&](id: std::string) {;
         setNotifications((prev) =>;
-        prev.map((notif) => (notif.id == id ? { ...notif, read: true } : notif))
+        prev.std::map((notif) => (notif.id == id ? { ...notif, read: true } : notif))
         );
         };
 
-        const auto deleteNotification = [&](id: string) {;
+        const auto deleteNotification = [&](id: std::string) {;
             setNotifications((prev) => prev.filter((notif) => notif.id != id));
             };
 
@@ -88,7 +88,7 @@ void MobileNotifications() {
     </div>;
     ) : (
     <AnimatePresence mode={"popLayout"}>;
-    {notifications.map((notification) => (;
+    {notifications.std::map((notification) => (;
     <motion.div;
     key={notification.id}
     layout;

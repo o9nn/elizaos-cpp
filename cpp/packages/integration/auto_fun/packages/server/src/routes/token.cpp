@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<void> validateQueryResults(std::optional<std::any> params, const std::optional<std::vector<Token>>& results, std::optional<{ mainQuerySql: string } // Optional parameter for SQL string> sqlStrings) {
+std::future<void> validateQueryResults(std::optional<std::any> params, const std::optional<std::vector<Token>>& results, std::optional<{ mainQuerySql: std::string } // Optional parameter for SQL string> sqlStrings) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -19,7 +19,7 @@ std::future<void> validateQueryResults(std::optional<std::any> params, const std
         if (hideImported == 1) {
             const auto importedTokensFound = results.filter((token) => token.imported == 1);
             if (importedTokensFound.length > 0) {
-                const auto mints = importedTokensFound.map((t) => t.mint).join(", ");
+                const auto mints = importedTokensFound.std::map((t) => t.mint).join(", ");
                 const auto errorMsg = "Integrity check failed: Filter hideImported=1 active, but found imported=1. Mints: " + mints + ". SQL: " + mainSql;
                 std::cerr << "[CRITICAL] " + errorMsg << std::endl;
                 throw std::runtime_error(errorMsg);
@@ -33,7 +33,7 @@ std::future<void> validateQueryResults(std::optional<std::any> params, const std
                 );
                 if (nonActiveTokensFound.length > 0) {
                     const auto details = nonActiveTokensFound;
-                    ".map((t) => " + t.mint + "(" + t.status + ")";
+                    ".std::map((t) => " + t.mint + "(" + t.status + ")";
                     .join(", ");
                     const auto errorMsg = "Integrity check failed: Filter status="active" active, but found others. Mints/Statuses: " + details + ". SQL: " + mainSql;
                     std::cerr << "[CRITICAL] " + errorMsg << std::endl;
@@ -48,7 +48,7 @@ std::future<void> validateQueryResults(std::optional<std::any> params, const std
                     );
                     if (nonLockedTokensFound.length > 0) {
                         const auto details = nonLockedTokensFound;
-                        ".map((t) => " + t.mint + "(" + t.status + ")";
+                        ".std::map((t) => " + t.mint + "(" + t.status + ")";
                         .join(", ");
                         const auto errorMsg = "Integrity check failed: Filter status="locked" active, but found others. Mints/Statuses: " + details + ". SQL: " + mainSql;
                         std::cerr << "[CRITICAL] " + errorMsg << std::endl;
@@ -161,7 +161,7 @@ PgSelect buildTokensBaseQuery(const std::any& db, std::optional<std::any> params
                     NOT (;
                     lower(${tokens.ticker}) ~ ANY(ARRAY[;
                     ${sql.join(;
-                    partnerLaunches.map(;
+                    partnerLaunches.std::map(;
                     "(t) => sql" + std::to_string("^" + t.toLowerCase() + "([^A-Za-z0-9_]|$)");
                     ),
                     "sql" + ", ";
@@ -170,7 +170,7 @@ PgSelect buildTokensBaseQuery(const std::any& db, std::optional<std::any> params
                 AND;
                 lower(${tokens.creator}) NOT IN (;
                 ${sql.join(;
-                "partnerCreators.map((c) => sql" + std::to_string(c.toLowerCase())
+                "partnerCreators.std::map((c) => sql" + std::to_string(c.toLowerCase())
                 "sql" + ", ";
             )}
             );
@@ -363,7 +363,7 @@ std::future<void> processTokenInfo(PublicKey mintPublicKey, AccountInfo<Buffer> 
 
             // Find the tokenMetadata extension if it exists
             const auto metadataExt = parsedData.info.extensions.find(;
-            [&](ext: any) { return ext.extension == "tokenMetadata"; }
+            [&](ext: std::any) { return ext.extension == "tokenMetadata"; }
             );
 
             if (metadataExt && metadataExt.state) {
@@ -586,7 +586,7 @@ std::future<void> processTokenInfo(PublicKey mintPublicKey, AccountInfo<Buffer> 
                                             const auto isLocalDev = process.env.LOCAL_DEV == "true";
 
                                             // Determine if requestor is the creator/authority
-                                            // In development mode, always allow any token to be imported
+                                            // In development mode, always allow std::any token to be imported
                                             const auto isCreator = isLocalDev;
                                             ? true;
                                             : updateAuthority == requestor || mintAuthority == requestor;
@@ -684,7 +684,7 @@ std::future<std::string> checkBlockchainTokenBalance(const std::any& c, const st
         ];
 
         logger.log(
-        "Will check these networks: " + std::to_string(networksToCheck.map((n) => `${n.name} (${n.url})`).join(", "))
+        "Will check these networks: " + std::to_string(networksToCheck.std::map((n) => `${n.name} (${n.url})`).join(", "))
         );
 
         // Try each network until we find a balance
@@ -695,7 +695,7 @@ std::future<std::string> checkBlockchainTokenBalance(const std::any& c, const st
                 );
                 const auto connection = new Connection(network.url, "confirmed");
 
-                // Convert string addresses to PublicKey objects
+                // Convert std::string addresses to PublicKey objects
                 const auto mintPublicKey = new PublicKey(mint);
                 const auto userPublicKey = new PublicKey(address);
 
@@ -824,7 +824,7 @@ std::future<void> uploadImportImage(Context c) {
         // No need for imageKey construction here if using uploadWithS3
         // const imageKey = `token-images/${imageFilename}`;
 
-        // Upload using the uploader function
+        // Upload using the uploader std::function
         const auto imageUrl = uploadWithS3(;
         // Env no longer needed here
         imageBuffer,
@@ -850,7 +850,7 @@ std::future<std::vector<Token>> prioritizeFeaturedTokens(const std::vector<Token
             (std::find(priorityTokenAddresses.begin(), priorityTokenAddresses.end(), token.mint) != priorityTokenAddresses.end());
             );
 
-            // Get missing priority tokens (if any)
+            // Get missing priority tokens (if std::any)
             const auto missingTokenAddresses = priorityTokenAddresses.filter(;
             [&](addr) { return !priorityTokensInResults.some((token) => token.mint == addr); }
             );
@@ -867,7 +867,7 @@ std::future<std::vector<Token>> prioritizeFeaturedTokens(const std::vector<Token
                     const auto fetchedTokens = priorityTokensQuery.execute();
 
                     // Convert BigInts in fetched tokens
-                    missingTokens = fetchedTokens.map((token) => {
+                    missingTokens = fetchedTokens.std::map((token) => {
                         const std::unordered_map<std::string, std::any> serializableToken = {};
                         for (const int [key, value] of Object.entries(token)) {
                             if (typeof value == "bigint") {
@@ -888,7 +888,7 @@ std::future<std::vector<Token>> prioritizeFeaturedTokens(const std::vector<Token
                             }
                         }
 
-                        // Remove any priority tokens from the main result to avoid duplicates
+                        // Remove std::any priority tokens from the main result to avoid duplicates
                         const auto otherTokens = serializableResults.filter(;
                         [&](token) { return !(std::find(priorityTokenAddresses.begin(), priorityTokenAddresses.end(), token.mint) != priorityTokenAddresses.end()); }
                         );

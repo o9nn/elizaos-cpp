@@ -30,7 +30,7 @@ void Main(void)
             mockThenable->limit["mockReturnThis"]();
             mockThenable->returning["mockReturnThis"]();
             mockThenable->values["mockReturnThis"]();
-            mockThenable->set["mockReturnThis"]();
+            mockThenable->std::set["mockReturnThis"]();
             mockThenable->findFirst["mockReturnThis"]();
             mockThenable->all["mockReturnThis"]();
             mockThenable->$dynamic["mockReturnThis"]();
@@ -279,7 +279,7 @@ void Main(void)
                     object::pair{std::string("isCompleted"), true}, 
                     object::pair{std::string("completedAt"), std::make_shared<Date>()}
                 }); });
-                expect(mockThenable->set)->toHaveBeenCalled();
+                expect(mockThenable->std::set)->toHaveBeenCalled();
                 expect(mockThenable->where)->toHaveBeenCalled();
                 expect(success)->toBe(true);
             }

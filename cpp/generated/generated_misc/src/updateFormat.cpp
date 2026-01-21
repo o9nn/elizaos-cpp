@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/the-org/src/projectManager/plugins/team-coordinator/actions/updateFormat.h"
 
-std::shared_ptr<UUID> getStorageRoomId(std::shared_ptr<IAgentRuntime> runtime, string serverId)
+std::shared_ptr<UUID> getStorageRoomId(std::shared_ptr<IAgentRuntime> runtime, std::string serverId)
 {
     auto serverHash = serverId->replace((new RegExp(std::string("[^a-zA-Z0-9]"))), string_empty);
     return createUniqueUuid(runtime, std::string("store-team-members-") + serverHash + string_empty);
@@ -20,7 +20,7 @@ std::shared_ptr<Action> updatesFormatAction = object{
             logger->info(std::string("Valid request to get updates format for user ") + message->entityId + string_empty);
             return true;
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             auto err = as<std::shared_ptr<Error>>(error);
             logger->error(std::string("Error in updatesFormatAction validation:"), err);
@@ -36,7 +36,7 @@ std::shared_ptr<Action> updatesFormatAction = object{
             logger->info(std::string("=== UPDATES-FORMAT HANDLER START ==="));
             if (!state) return false;
             if (!callback) {
-                logger->warn(std::string("No callback function provided"));
+                logger->warn(std::string("No callback std::function provided"));
                 return false;
             }
             auto entityById = std::async([=]() { runtime->getEntityById(message->entityId); });
@@ -74,7 +74,7 @@ std::shared_ptr<Action> updatesFormatAction = object{
             }
             );
             logger->info(std::string("Total of ") + allTeamMembers->get_length() + std::string(" team members found across all servers"));
-            logger->info(std::string("Looking for username: ") + username + std::string(" among team members:"), allTeamMembers->map([=](auto member) mutable
+            logger->info(std::string("Looking for username: ") + username + std::string(" among team members:"), allTeamMembers->std::map([=](auto member) mutable
             {
                 return (object{
                     object::pair{std::string("tgName"), member->tgName}, 
@@ -114,7 +114,7 @@ Your updates should include the following fields:\
 Important: End your message with "sending my personal updates" so it can be properly tracked.");
             } else {
                 responseText += std::string("\
-You don't have any specific update format fields defined. Please use the standard format for your updates:\
+You don't have std::any specific update format fields defined. Please use the standard format for your updates:\
 \
 ") + std::string("- **Main Priority for next week**\
 ") + std::string("    - Text\
@@ -131,7 +131,7 @@ You don't have any specific update format fields defined. Please use the standar
             logger->info(std::string("=== UPDATES-FORMAT HANDLER END ==="));
             return true;
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             auto err = as<std::shared_ptr<Error>>(error);
             logger->error(std::string("=== UPDATES-FORMAT HANDLER ERROR ==="));

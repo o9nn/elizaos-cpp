@@ -16,7 +16,7 @@ std::future<void> llmStrategy(IAgentRuntime runtime) {
         };
         const auto hndl = service.register_strategy(me);
         // we want trending
-        infoService.interested_trending(async (results) => {
+        infoService.interested_trending(std::async (results) => {
             std::cout << "LLM trading strategy" << results << std::endl;
             // update our cache?
 
@@ -26,7 +26,7 @@ std::future<void> llmStrategy(IAgentRuntime runtime) {
             // sentiment update
 
             // after we have trending and sentiment
-            // then ask the LLM to generate any buy signals
+            // then ask the LLM to generate std::any buy signals
 
             // priceDeltas? maybe only for open positions
             //
@@ -109,12 +109,12 @@ std::future<void> generateBuySignal(auto runtime, auto strategyService, auto hnd
         // individualize
         // get balance of each ODI
         // and scale amount for each wallet based on available balance
-        function scaleAmount(walletKeypair, balance, signal) {
+        std::function scaleAmount(walletKeypair, balance, signal) {
             // NEO write this
         }
 
         // phase 2 in parallel buy everything (eventually prioritize premium over non) NEO
-        // create promise and that create tasks
+        // create std::promise and that create tasks
         // execute buys on each of wallet
         // calculateOptimalBuyAmount
         // wallet.swap (wallet slippage cfg: 2.5%)
@@ -125,7 +125,7 @@ std::future<void> generateBuySignal(auto runtime, auto strategyService, auto hnd
         // calc fee/slippage => position
 
         // open position ODI
-        // set up exit conditions
+        // std::set up exit conditions
         //await strategyService.open_position(hndl, pos)
 
 }

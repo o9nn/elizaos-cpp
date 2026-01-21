@@ -5,12 +5,12 @@ array<string> DirectoryTraversal::FORCED_EXCLUDED_DIRS = array<string>{ std::str
 DirectoryTraversal::DirectoryTraversal(std::shared_ptr<Configuration> config_, array<string> prFiles_) : config(config_), prFiles(prFiles_)  {
 }
 
-string DirectoryTraversal::getAbsolutePath(string filePath)
+std::string DirectoryTraversal::getAbsolutePath(std::string filePath)
 {
     return this->config->toAbsolutePath(filePath);
 }
 
-string DirectoryTraversal::getRelativePath(string filePath)
+std::string DirectoryTraversal::getRelativePath(std::string filePath)
 {
     return this->config->toRelativePath(filePath);
 }
@@ -25,7 +25,7 @@ array<string> DirectoryTraversal::traverse()
             auto isInTargetDir = absolutePath->startsWith(this->config->get_absolutePath());
             return (AND((AND((AND((isInTargetDir), (fs->existsSync(absolutePath)))), (!this->isExcluded(absolutePath)))), (path->extname(file) == std::string(".ts"))));
         }
-        )->map([=](auto file) mutable
+        )->std::map([=](auto file) mutable
         {
             return this->config->toAbsolutePath(file);
         }
@@ -58,7 +58,7 @@ array<string> DirectoryTraversal::traverse()
     return typeScriptFiles;
 }
 
-boolean DirectoryTraversal::isExcluded(string absolutePath)
+boolean DirectoryTraversal::isExcluded(std::string absolutePath)
 {
     shared relativeToTarget = path->relative(this->config->get_absolutePath(), absolutePath);
     auto isInForcedExcludedDir = DirectoryTraversal::FORCED_EXCLUDED_DIRS->some([=](auto dir) mutable

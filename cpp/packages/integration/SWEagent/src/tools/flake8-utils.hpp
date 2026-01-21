@@ -25,10 +25,10 @@ struct Flake8Error {
 
 class Flake8ErrorClass implements Flake8Error {
   constructor(
-    public file: string,
+    public file: std::string,
     public line: number,
     public column: number,
-    public message: string,
+    public message: std::string,
   ) {}
 
   /**

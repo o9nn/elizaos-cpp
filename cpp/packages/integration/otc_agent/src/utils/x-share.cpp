@@ -63,7 +63,7 @@ bool ensureXAuth(std::optional<PendingShare> pending) {
 
 std::future<> shareOnX(const std::string& text, const std::string& dataUrl, std::optional<std::optional<XCredentials>> creds) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    success: boolean; tweetId?: string; tweetUrl?: string
+    success: boolean; tweetId?: std::string; tweetUrl?: std::string
 }
 
 std::future<> resumeFreshAuth() {

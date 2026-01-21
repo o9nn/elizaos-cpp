@@ -8,6 +8,6 @@
 #include "@/lib/walletLinking/chainUtils.h"
 #include "./readmeUtils.h"
 
-std::shared_ptr<Promise<any>> getUserWalletData(string username);
+std::shared_ptr<Promise<any>> getUserWalletData(std::string username);
 
 #endif

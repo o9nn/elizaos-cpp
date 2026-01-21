@@ -16,7 +16,7 @@ namespace elizaos {
 
 struct FilterBarProps {
     std::vector<std::string> selectedTags;
-    (tag: string) => void onTagSelect;
+    (tag: std::string) => void onTagSelect;
     std::vector<Project> projects;
 };
 

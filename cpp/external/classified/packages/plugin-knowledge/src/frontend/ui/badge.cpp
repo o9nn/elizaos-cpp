@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void Badge(auto variant, auto className) {
+void Badge(auto std::variant, auto className) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto baseClasses = "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium";
@@ -17,7 +17,7 @@ void Badge(auto variant, auto className) {
         };
 
         return (;
-        "<span className={" + baseClasses + " " + std::to_string(variantClasses[variant]) + " " + className;
+        "<span className={" + baseClasses + " " + std::to_string(variantClasses[std::variant]) + " " + className;
         );
 
 }

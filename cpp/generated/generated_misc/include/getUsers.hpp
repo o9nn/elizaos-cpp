@@ -4,6 +4,6 @@
 #include "next.h"
 
 extern array<object> mockUsers;
-any handler(std::shared_ptr<NextApiRequest> req, std::shared_ptr<NextApiResponse> res);
+std::any handler(std::shared_ptr<NextApiRequest> req, std::shared_ptr<NextApiResponse> res);
 
 #endif

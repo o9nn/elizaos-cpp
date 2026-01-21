@@ -8,5 +8,5 @@
 using path = _default;
 #include "../types.h"
 
-extern std::function<std::shared_ptr<Record<string, string>>(string)> getDependenciesFromDirectory;
+extern std::function<std::shared_ptr<Record<std::string, string>>(std::string)> getDependenciesFromDirectory;
 #endif

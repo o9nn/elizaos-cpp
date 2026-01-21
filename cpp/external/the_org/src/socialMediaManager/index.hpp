@@ -22,15 +22,15 @@ namespace elizaos {
  *
  * @typedef {Object} Character
  * @property {string} name - The name of the character.
- * @property {string[]} plugins - The list of plugins used by the character.
+ * @property {std::string[]} plugins - The list of plugins used by the character.
  * @property {Object} secrets - Object containing sensitive information like application ID and API token.
  * @property {Object} settings - Object containing various settings for the character.
  * @property {string} system - Description of the character's role and approach in social media management.
- * @property {string[]} bio - List of characteristics and beliefs of the character.
+ * @property {std::string[]} bio - List of characteristics and beliefs of the character.
  * @property {Object[]} messageExamples - Examples of interactions with other individuals for messaging guidance.
- * @property {string[]} postExamples - Examples of post messages that the character would use.
+ * @property {std::string[]} postExamples - Examples of post messages that the character would use.
  * @property {Object} style - Object containing guidelines for communication style in different scenarios.
- * @property {string[]} topics - List of topics related to the character's expertise.
+ * @property {std::string[]} topics - List of topics related to the character's expertise.
  */
 
 /**

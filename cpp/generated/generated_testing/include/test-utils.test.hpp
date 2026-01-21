@@ -6,7 +6,7 @@
 #include "../src/utils/config.h"
 #include "../src/utils/common.h"
 
-extern string REPO_ROOT;
+extern std::string REPO_ROOT;
 template <typename T>
 array<array<T>> chunkArray(array<T> array, double size);
 
@@ -18,7 +18,7 @@ array<T> removeDuplicates(array<T> array);
 template <typename T>
 T deepClone(T obj);
 
-boolean isEqual(any obj1, any obj2);
+boolean isEqual(std::any obj1, std::any obj2);
 
 template <typename T, typename K>
 Pick<T, K> pick(T obj, array<K> keys);
@@ -55,7 +55,7 @@ T deepClone(T obj)
         return as<any>(std::make_shared<Date>(obj->getTime()));
     }
     if (Array->isArray(obj)) {
-        return as<any>(obj->map([=](auto item) mutable
+        return as<any>(obj->std::map([=](auto item) mutable
         {
             return deepClone(item);
         }

@@ -23,7 +23,7 @@ void createFilemap(const std::string& filePath) {
     // Parse the file
     const auto tree = parser.parse(fileContent);
 
-    // Query for function bodies
+    // Query for std::function bodies
     const auto query = new Parser.Query(;
     Python,
     "(function_definition body: (_) @body)"
@@ -32,7 +32,7 @@ void createFilemap(const std::string& filePath) {
     const auto captures = query.captures(tree.rootNode);
     const std::vector<ElidedRange> elideRanges = [];
 
-    // Find ranges to elide (function bodies with 5+ lines)
+    // Find ranges to elide (std::function bodies with 5+ lines)
     for (const int { node } of captures) {
         const auto startLine = node.startPosition.row;
         const auto endLine = node.endPosition.row;

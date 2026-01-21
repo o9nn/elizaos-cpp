@@ -19,15 +19,15 @@ namespace elizaos {
 
 class Guild {
   id: Snowflake;
-  name: string;
-  icon: string | Maybe;
-  icon_hash?: string | Maybe;
-  splash: string | Maybe;
-  discovery_splash: string | Maybe;
+  name: std::string;
+  icon: std::string | Maybe;
+  icon_hash?: std::string | Maybe;
+  splash: std::string | Maybe;
+  discovery_splash: std::string | Maybe;
   owner?: boolean;
   owner_id: Snowflake;
-  permissions?: string;
-  region?: string | Maybe;
+  permissions?: std::string;
+  region?: std::string | Maybe;
   afk_channel_id: Snowflake | Maybe;
   afk_timeout: number;
   widget_enabled?: boolean;
@@ -37,7 +37,7 @@ class Guild {
   explicit_content_filter: number;
   roles: Role[];
   emojis: Emoji[];
-  features: string[];
+  features: std::string[];
   mfa_level: number;
   application_id: Snowflake | Maybe;
   system_channel_id: Snowflake | Maybe;
@@ -45,12 +45,12 @@ class Guild {
   rules_channel_id: Snowflake | Maybe;
   max_presences?: number | Maybe;
   max_members?: number;
-  vanity_url_code: string | Maybe;
-  description: string | Maybe;
-  banner: string | Maybe;
+  vanity_url_code: std::string | Maybe;
+  description: std::string | Maybe;
+  banner: std::string | Maybe;
   premium_tier: number;
   premium_subscription_count?: number;
-  preferred_locale: string;
+  preferred_locale: std::string;
   public_updates_channel_id: Snowflake | Maybe;
   max_video_channel_users?: number;
   max_stage_video_channel_users?: number;
@@ -64,15 +64,15 @@ class Guild {
 
   constructor(opts: {
     id: Snowflake;
-    name: string;
-    icon: string | Maybe;
-    icon_hash?: string | Maybe;
-    splash: string | Maybe;
-    discovery_splash: string | Maybe;
+    name: std::string;
+    icon: std::string | Maybe;
+    icon_hash?: std::string | Maybe;
+    splash: std::string | Maybe;
+    discovery_splash: std::string | Maybe;
     owner?: boolean;
     owner_id: Snowflake;
-    permissions?: string;
-    region?: string | Maybe;
+    permissions?: std::string;
+    region?: std::string | Maybe;
     afk_channel_id: Snowflake | Maybe;
     afk_timeout: number;
     widget_enabled?: boolean;
@@ -82,7 +82,7 @@ class Guild {
     explicit_content_filter: number;
     roles: Role[];
     emojis: Emoji[];
-    features: string[];
+    features: std::string[];
     mfa_level: number;
     application_id: Snowflake | Maybe;
     system_channel_id: Snowflake | Maybe;
@@ -90,12 +90,12 @@ class Guild {
     rules_channel_id: Snowflake | Maybe;
     max_presences?: number | Maybe;
     max_members?: number;
-    vanity_url_code: string | Maybe;
-    description: string | Maybe;
-    banner: string | Maybe;
+    vanity_url_code: std::string | Maybe;
+    description: std::string | Maybe;
+    banner: std::string | Maybe;
     premium_tier: number;
     premium_subscription_count?: number;
-    preferred_locale: string;
+    preferred_locale: std::string;
     public_updates_channel_id: Snowflake | Maybe;
     max_video_channel_users?: number;
     max_stage_video_channel_users?: number;

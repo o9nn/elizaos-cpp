@@ -25,7 +25,7 @@ struct ElizaBuildOptions {
     std::optional<bool> minify;
     std::optional<std::vector<BunPlugin>> plugins;
     std::optional<'esm' | 'cjs'> format;
-    std::optional<std::vector<{ from: string; to: string }>> assets;
+    std::optional<std::vector<{ from: std::string; to: std::string }>> assets;
 
 /**
  * Get performance timer
@@ -46,7 +46,7 @@ std::future<BuildConfig> createElizaBuildConfig(ElizaBuildOptions options);
 /**
  * Copy assets after build with proper error handling (parallel processing)
  */
-std::future<void> copyAssets(const std::vector<{ from: string; to: string }>& assets);
+std::future<void> copyAssets(const std::vector<{ from: std::string; to: std::string }>& assets);
 
 /**
  * Generate TypeScript declarations using tsc
@@ -62,7 +62,7 @@ std::future<void> cleanBuild(auto outdir = 'dist', auto maxRetries = 3);
  * Watch files for changes and trigger rebuilds with proper cleanup
  */
 
-  // Cleanup function to close watcher and clear timers
+  // Cleanup std::function to close watcher and clear timers
 
         // Ignore errors during cleanup
 
@@ -74,13 +74,13 @@ std::future<void> cleanBuild(auto outdir = 'dist', auto maxRetries = 3);
 
   // Register cleanup handlers only once per watcher
 
-  // Remove any existing handlers to avoid duplicates
+  // Remove std::any existing handlers to avoid duplicates
 
   // Add new handlers
 
   // Also cleanup on normal exit
 
-  // Return cleanup function for manual cleanup
+  // Return cleanup std::function for manual cleanup
 
 /**
  * Standard build runner configuration
@@ -92,7 +92,7 @@ struct BuildRunnerOptions {
 };
 
 /**
- * Run a build with optional watch mode support
+ * Run a build with std::optional watch mode support
  */
 std::future<void> runBuild(std::optional<BuildRunnerOptions & { isRebuild: boolean }> options);
 

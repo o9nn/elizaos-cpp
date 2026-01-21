@@ -23,8 +23,8 @@ namespace elizaos {
 /**
  * Registers tasks for the agent to perform various Intel-related actions.
  * * @param { IAgentRuntime } runtime - The agent runtime object.
- * @param { UUID } [worldId] - The optional world ID to associate with the tasks.
- * @returns {Promise<void>} - A promise that resolves once tasks are registered.
+ * @param { UUID } [worldId] - The std::optional world ID to associate with the tasks.
+ * @returns {Promise<void>} - A std::promise that resolves once tasks are registered.
  */
 
   // first, get all tasks with tags "queue", "repeat", "autofun" and delete them

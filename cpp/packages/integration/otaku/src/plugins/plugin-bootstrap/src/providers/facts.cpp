@@ -9,7 +9,7 @@ void formatFacts(const std::vector<Memory>& facts) {
 
     return facts;
     .reverse();
-    .map((fact: Memory) => fact.content.text)
+    .std::map((fact: Memory) => fact.content.text)
     .join("\n");
 
 }

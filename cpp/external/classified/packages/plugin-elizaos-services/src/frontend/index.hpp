@@ -30,7 +30,7 @@ struct TimeResponse {
 /**
  * Time display component that fetches from backend
  */
-void TimeDisplay({ apiBase: string } { apiBase });
+void TimeDisplay({ apiBase: std::string } { apiBase });
 
 /**
  * Main Example route component
@@ -40,7 +40,7 @@ void ExampleRoute();
 /**
  * Example provider component
  */
-void ExampleProvider(auto { agentId, { agentId: UUID; apiBase: string } apiBase });
+void ExampleProvider(auto { agentId, { agentId: UUID; apiBase: std::string } apiBase });
 
 // Initialize the application - no router needed for iframe
 
@@ -51,7 +51,7 @@ struct AgentPanel {
     React.ComponentType<any> component;
     std::optional<std::string> icon;
     std::optional<bool> public;
-    std::optional<string; // Optional short label for mobile> shortLabel;
+    std::optional<std::string; // Optional short label for mobile> shortLabel;
 };
 
 struct PanelProps {

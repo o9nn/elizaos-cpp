@@ -8,9 +8,9 @@ class Emoji;
 class Emoji : public object, public std::enable_shared_from_this<Emoji> {
 public:
     using std::enable_shared_from_this<Emoji>::shared_from_this;
-    any id;
+    std::any id;
 
-    any name;
+    std::any name;
 
     array<std::shared_ptr<Snowflake>> roles;
 

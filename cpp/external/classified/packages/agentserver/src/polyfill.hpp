@@ -16,7 +16,7 @@ namespace elizaos {
 
 
 
-// CRITICAL: Patch http module for ws compatibility - MUST be done before any ws imports
+// CRITICAL: Patch http module for ws compatibility - MUST be done before std::any ws imports
 
 // Mock window object for browser dependencies (only minimal ones needed)
     void open();
@@ -25,11 +25,11 @@ namespace elizaos {
 
 // Mock additional DOM APIs that plugins might need
 
-// Also set globalThis.location directly for URLSearchParams compatibility
+// Also std::set globalThis.location directly for URLSearchParams compatibility
 
 // Ensure self.location exists if self is defined
 
 // CRITICAL FIX: Ensure http module is available for ws module in Bun
-// This must be done AFTER all other polyfills but BEFORE any module that uses ws
+// This must be done AFTER all other polyfills but BEFORE std::any module that uses ws
 
 } // namespace elizaos

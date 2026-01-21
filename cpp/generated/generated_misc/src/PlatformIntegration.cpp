@@ -20,7 +20,7 @@ std::shared_ptr<Promise<std::shared_ptr<KeyDistributionResponse>>> PlatformInteg
     session->lastActivity = std::make_shared<Date>();
     try
     {
-        string apiKey;
+        std::string apiKey;
         array<string> capabilities;
         if (request->keyType == std::string("test")) {
             auto result = std::async([=]() { this->distributeTestKey(request->provider, session->clientType); });
@@ -50,10 +50,10 @@ std::shared_ptr<Promise<std::shared_ptr<KeyDistributionResponse>>> PlatformInteg
             object::pair{std::string("apiKey"), std::string("apiKey")}, 
             object::pair{std::string("keyType"), request->keyType}, 
             object::pair{std::string("capabilities"), std::string("capabilities")}, 
-            object::pair{std::string("expiresAt"), (request->keyType == std::string("test")) ? any(std::make_shared<Date>(Date->now() + 24 * 60 * 60 * 1000)) : any(undefined)}
+            object::pair{std::string("expiresAt"), (request->keyType == std::string("test")) ? std::any(std::make_shared<Date>(Date->now() + 24 * 60 * 60 * 1000)) : std::any(undefined)}
         };
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Failed to distribute ") + request->keyType + std::string(" key for ") + request->provider + std::string(":"), error);
         this->keyDistributionLog->push(object{
@@ -67,12 +67,12 @@ std::shared_ptr<Promise<std::shared_ptr<KeyDistributionResponse>>> PlatformInteg
             object::pair{std::string("success"), false}, 
             object::pair{std::string("keyType"), request->keyType}, 
             object::pair{std::string("capabilities"), array<any>()}, 
-            object::pair{std::string("error"), (is<Error>(error)) ? any(error->message) : any(std::string("Unknown distribution error"))}
+            object::pair{std::string("error"), (is<Error>(error)) ? std::any(error->message) : std::any(std::string("Unknown distribution error"))}
         };
     }
 }
 
-std::shared_ptr<Promise<object>> PlatformIntegrationService::validateDistributedKey(string sessionId, string provider, string apiKey)
+std::shared_ptr<Promise<object>> PlatformIntegrationService::validateDistributedKey(std::string sessionId, std::string provider, std::string apiKey)
 {
     auto session = this->activeSessions->get(sessionId);
     if (!session) {
@@ -99,17 +99,17 @@ std::shared_ptr<Promise<object>> PlatformIntegrationService::validateDistributed
             };
         }
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Key validation error for ") + provider + std::string(" in session ") + sessionId + std::string(":"), error);
         return object{
             object::pair{std::string("isValid"), false}, 
-            object::pair{std::string("error"), (is<Error>(error)) ? any(error->message) : any(std::string("Validation error"))}
+            object::pair{std::string("error"), (is<Error>(error)) ? std::any(error->message) : std::any(std::string("Validation error"))}
         };
     }
 }
 
-std::shared_ptr<Promise<object>> PlatformIntegrationService::invalidateSession(string sessionId)
+std::shared_ptr<Promise<object>> PlatformIntegrationService::invalidateSession(std::string sessionId)
 {
     auto session = this->activeSessions->get(sessionId);
     if (!session) {
@@ -126,7 +126,7 @@ std::shared_ptr<Promise<object>> PlatformIntegrationService::invalidateSession(s
     };
 }
 
-std::shared_ptr<Promise<object>> PlatformIntegrationService::getSessionStatus(string sessionId)
+std::shared_ptr<Promise<object>> PlatformIntegrationService::getSessionStatus(std::string sessionId)
 {
     auto session = this->activeSessions->get(sessionId);
     if (!session) {
@@ -142,7 +142,7 @@ std::shared_ptr<Promise<object>> PlatformIntegrationService::getSessionStatus(st
             session->authStatus = std::async([=]() { this->authService->getAuthStatus(); });
             session->lastActivity = std::make_shared<Date>();
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->warn(std::string("Failed to refresh auth status for session ") + sessionId + std::string(":"), error);
         }
@@ -161,7 +161,7 @@ object PlatformIntegrationService::getAnalytics()
         acc[session->clientType] = (OR((const_(acc)[session->clientType]), (0))) + 1;
         return acc;
     }
-    , as<Record<string, double>>(object{}));
+    , as<Record<std::string, double>>(object{}));
     return object{
         object::pair{std::string("activeSessions"), this->activeSessions->size}, 
         object::pair{std::string("sessionsByType"), std::string("sessionsByType")}, 
@@ -193,7 +193,7 @@ double PlatformIntegrationService::cleanupExpiredSessions()
     return expiredSessions->get_length();
 }
 
-std::shared_ptr<Promise<std::shared_ptr<KeyDistributionResponse>>> PlatformIntegrationService::distributeTestKey(string provider, string clientType)
+std::shared_ptr<Promise<std::shared_ptr<KeyDistributionResponse>>> PlatformIntegrationService::distributeTestKey(std::string provider, std::string clientType)
 {
     auto testKeyMap = object{
         object::pair{std::string("openai"), TEST_KEYS["OPENAI_TEST_KEY"]}, 
@@ -219,7 +219,7 @@ std::shared_ptr<Promise<std::shared_ptr<KeyDistributionResponse>>> PlatformInteg
     };
 }
 
-std::shared_ptr<Promise<std::shared_ptr<KeyDistributionResponse>>> PlatformIntegrationService::distributeProductionKey(string provider, std::shared_ptr<ClientSession> session)
+std::shared_ptr<Promise<std::shared_ptr<KeyDistributionResponse>>> PlatformIntegrationService::distributeProductionKey(std::string provider, std::shared_ptr<ClientSession> session)
 {
     auto keyMap = object{
         object::pair{std::string("openai"), std::string("OPENAI_API_KEY")}, 
@@ -292,12 +292,12 @@ std::shared_ptr<PlatformIntegrationService> PlatformIntegrationFactory::createFo
     });
 }
 
-string PlatformAuthUtils::generateSessionId()
+std::string PlatformAuthUtils::generateSessionId()
 {
     return std::string("session_") + Date->now() + std::string("_") + Math->random()->toString(36)->substring(2, 15) + string_empty;
 }
 
-boolean PlatformAuthUtils::isValidSessionId(string sessionId)
+boolean PlatformAuthUtils::isValidSessionId(std::string sessionId)
 {
     return (new RegExp(std::string("^session_\d+_[a-z0-9]{13}")))->test(sessionId);
 }

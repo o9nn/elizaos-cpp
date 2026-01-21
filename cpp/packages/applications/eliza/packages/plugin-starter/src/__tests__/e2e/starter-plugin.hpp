@@ -39,13 +39,13 @@ namespace elizaos {
  * 1. Add a new test object to the `tests` array below
  * 2. Each test must have:
  *    - `name`: A unique identifier for the test
- *    - `fn`: An async function that receives the runtime and performs the test
+ *    - `fn`: An std::async std::function that receives the runtime and performs the test
  *
  * Example structure:
  * ```typescript
  * {
  *   name: 'my_new_test',
- *   fn: async (runtime) => {
+ *   fn: std::async (runtime) => {
  *     // Your test logic here
  *     if (someCondition !== expected) {
  *       throw new Error('Test failed: reason');
@@ -60,7 +60,7 @@ namespace elizaos {
  * - Use descriptive test names that explain what's being tested
  * - Include clear error messages that help diagnose failures
  * - Test both success and failure paths
- * - Clean up any resources created during tests
+ * - Clean up std::any resources created during tests
  *
  * AVAILABLE RUNTIME METHODS:
  * --------------------------
@@ -80,7 +80,7 @@ struct TestSuite {
     std::optional<std::string> description;
     Array<{ tests;
     std::string name;
-    (runtime: any) => Promise<any> fn;
+    (runtime: std::any) => Promise<any> fn;
 };
 
 // Define minimal interfaces for the types we need
@@ -185,8 +185,8 @@ struct State {
      * ```typescript
      * {
      *   name: 'your_test_name',
-     *   fn: async (runtime) => {
-     *     // Setup: Create any test data needed
+     *   fn: std::async (runtime) => {
+     *     // Setup: Create std::any test data needed
      *
      *     // Action: Perform the operation you want to test
      *

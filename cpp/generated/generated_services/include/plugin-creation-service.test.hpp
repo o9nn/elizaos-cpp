@@ -9,6 +9,6 @@
 #include "@anthropic-ai/sdk.h"
 using Anthropic = _default;
 
-extern std::function<any()> createMockRuntime;
+extern std::function<std::any()> createMockRuntime;
 extern std::function<object()> createMockChildProcess;
 #endif

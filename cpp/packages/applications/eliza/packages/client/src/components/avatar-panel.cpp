@@ -7,7 +7,7 @@ namespace elizaos {
 void AvatarPanel() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto [avatar, setAvatar] = useState<string | nullptr>(characterValue.settings.avatar || nullptr);
+    const auto [avatar, setAvatar] = useState<std::string | nullptr>(characterValue.settings.avatar || nullptr);
     const auto [hasChanged, setHasChanged] = useState(false);
     const auto fileInputRef = useRef<HTMLInputElement>(nullptr);
 
@@ -17,7 +17,7 @@ void AvatarPanel() {
         setHasChanged(false);
         }, [characterValue.id]);
 
-        const auto handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {;
+        const auto handleFileUpload = std::async (event: React.ChangeEvent<HTMLInputElement>) => {;
             const auto file = event.target.files.[0];
             if (file) {
                 try {
@@ -41,8 +41,8 @@ void AvatarPanel() {
                     }
                     };
 
-                    // Centralized update function to avoid code duplication
-                    const auto updateCharacterAvatar = [&](avatarUrl: string) {;
+                    // Centralized update std::function to avoid code duplication
+                    const auto updateCharacterAvatar = [&](avatarUrl: std::string) {;
                         if (setCharacterValue.updateAvatar) {
                             // Use the specialized method for avatar updates when available
                             setCharacterValue.updateAvatar(avatarUrl);

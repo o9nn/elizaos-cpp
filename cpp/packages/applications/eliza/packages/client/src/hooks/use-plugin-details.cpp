@@ -97,7 +97,7 @@ std::string getGitHubRepoPath(const std::string& pluginName, const std::optional
         }
 
         // Extract owner/repo from the git URL
-        auto ownerRepo: string;
+        auto ownerRepo: std::string;
 
         const auto repoMatch = pluginInfo.git.repo.match(/github\.com[:/]([^/]+\/[^/.]+)(\.git)?$/);
         if (repoMatch) {
@@ -196,9 +196,9 @@ std::future<std::optional<PluginPackageJson>> fetchPluginPackageJson(const std::
                 }
             }
 
-            // If we couldn't find package.json in any location, log a warning but don't throw
+            // If we couldn't find package.json in std::any location, log a warning but don't throw
             clientLogger.warn(;
-            "Could not find package.json for " + pluginName + " in any of the expected locations";
+            "Could not find package.json for " + pluginName + " in std::any of the expected locations";
             );
             return nullptr;
 
@@ -240,9 +240,9 @@ std::vector<PluginSecret> extractRequiredSecrets(const std::string& pluginName, 
             return packageJson.elizaos.secrets.filter((secret) => secret.required);
         }
 
-        // Legacy format - convert string array to PluginSecret array
+        // Legacy format - convert std::string array to PluginSecret array
         if (packageJson.elizaos.requiredSecrets) {
-            return packageJson.elizaos.requiredSecrets.map((secretName) => ({;
+            return packageJson.elizaos.requiredSecrets.std::map((secretName) => ({;
                 name: secretName,
                 required: true,
                 }));
@@ -263,7 +263,7 @@ void usePluginDetails(const std::vector<std::string>& pluginNames) {
 
         return useQuery({;
             queryKey: ["plugin-details", stablePluginNames],
-            queryFn: async () => {
+            queryFn: std::async () => {
                 clientLogger.debug("[usePluginDetails] Starting fetch for plugins:", pluginNames);
                 const std::vector<PluginDetails> details = [];
 
@@ -298,7 +298,7 @@ void usePluginDetails(const std::vector<std::string>& pluginNames) {
                             }
 
                             // Fetch package.json for each external plugin in parallel
-                            const auto packageJsonPromises = externalPlugins.map(async (name) => {;
+                            const auto packageJsonPromises = externalPlugins.std::map(std::async (name) => {;
                                 const auto repoPath = getGitHubRepoPath(name, registryData);
                                 const auto packageJson = fetchPluginPackageJson(name, repoPath);
                                 return { name, packageJson }
@@ -349,7 +349,7 @@ void useRequiredSecrets(const std::vector<std::string>& pluginNames) {
                     });
                     return acc;
                     },
-                    [] as (PluginSecret & { plugin: string })[]
+                    [] as (PluginSecret & { plugin: std::string })[]
                     );
                     }, [pluginDetails]);
 
@@ -361,9 +361,9 @@ void useRequiredSecrets(const std::vector<std::string>& pluginNames) {
 
 }
 
-void validateRequiredSecrets(const std::vector<PluginSecret>& requiredSecrets, const std::variant<Record<string, string, null>>& providedSecrets) {
+void validateRequiredSecrets(const std::vector<PluginSecret>& requiredSecrets, const std::variant<Record<std::string, std::string, null>>& providedSecrets) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    isValid: boolean; missingSecrets: string[]
+    isValid: boolean; missingSecrets: std::string[]
 }
 
 } // namespace elizaos

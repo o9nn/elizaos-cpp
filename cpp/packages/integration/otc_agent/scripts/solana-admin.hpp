@@ -25,7 +25,7 @@ namespace elizaos {
  * 
  * Commands:
  *   create-treasury <TOKEN_MINT>           Create desk token treasury (ATA)
- *   register-token <TOKEN_MINT> [PRICE]    Register token on desk with optional price
+ *   register-token <TOKEN_MINT> [PRICE]    Register token on desk with std::optional price
  *   set-price <TOKEN_MINT> <PRICE_USD>     Set manual token price
  *   status                                 Show desk status and registered tokens
  */

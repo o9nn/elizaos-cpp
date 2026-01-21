@@ -7,7 +7,7 @@ namespace elizaos {
 void createErrorHandler() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return [&](err: Error, _req: any, res: any, next: any) {;
+    return [&](err: Error, _req: std::any, res: std::any, next: std::any) {;
         // If response was already sent, delegate to default Express error handler
         if (res.headersSent) {
             return next(err);

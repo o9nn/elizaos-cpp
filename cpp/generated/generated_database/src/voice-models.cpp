@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/client/src/config/voice-models.h"
 
-Record<string, string> providerPluginMap = object{
+Record<std::string, string> providerPluginMap = object{
     object::pair{std::string("elevenlabs"), std::string("@elizaos/plugin-elevenlabs")}, 
     object::pair{std::string("local"), std::string("@elizaos/plugin-local-ai")}, 
     object::pair{std::string("openai"), std::string("@elizaos/plugin-openai")}, 
@@ -143,13 +143,13 @@ std::function<array<std::shared_ptr<VoiceModel>>()> getAllVoiceModels = [=]() mu
 {
     return array<std::shared_ptr<VoiceModel>>{ noVoiceModel, localVoiceModels, elevenLabsVoiceModels, openAIVoiceModels };
 };
-std::function<array<std::shared_ptr<VoiceModel>>(any)> getVoiceModelsByProvider = [=](P0 provider) mutable
+std::function<array<std::shared_ptr<VoiceModel>>(std::any)> getVoiceModelsByProvider = [=](P0 provider) mutable
 {
     static switch_type __switch4153_4412 = {
-        { any(std::string("local")), 1 },
-        { any(std::string("elevenlabs")), 2 },
-        { any(std::string("openai")), 3 },
-        { any(std::string("none")), 4 }
+        { std::any(std::string("local")), 1 },
+        { std::any(std::string("elevenlabs")), 2 },
+        { std::any(std::string("openai")), 3 },
+        { std::any(std::string("none")), 4 }
     };
     switch (__switch4153_4412[provider])
     {
@@ -165,7 +165,7 @@ std::function<array<std::shared_ptr<VoiceModel>>(any)> getVoiceModelsByProvider 
         return array<any>();
     }
 };
-std::function<std::shared_ptr<VoiceModel>(string)> getVoiceModelByValue = [=](auto value) mutable
+std::function<std::shared_ptr<VoiceModel>(std::string)> getVoiceModelByValue = [=](auto value) mutable
 {
     return getAllVoiceModels()->find([=](auto model) mutable
     {
@@ -173,7 +173,7 @@ std::function<std::shared_ptr<VoiceModel>(string)> getVoiceModelByValue = [=](au
     }
     );
 };
-std::function<string(string)> getRequiredPluginForProvider = [=](auto provider) mutable
+std::function<std::string(std::string)> getRequiredPluginForProvider = [=](auto provider) mutable
 {
     return const_(providerPluginMap)[provider];
 };

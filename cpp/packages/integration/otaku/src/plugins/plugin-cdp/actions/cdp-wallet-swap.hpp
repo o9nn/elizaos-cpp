@@ -60,7 +60,7 @@ struct SwapParams {
  * 
  * Always validates addresses with CoinGecko to prevent fake/invalid addresses.
  * The LLM may generate addresses that look valid but don't exist.
- * This function ensures only real, verified tokens are used in swaps.
+ * This std::function ensures only real, verified tokens are used in swaps.
  * 
  * Reference: https://docs.cdp.coinbase.com/server-wallets/v2/evm-features/swaps
  */
@@ -129,7 +129,7 @@ struct SwapParams {
           // Get actual on-chain balance directly from blockchain
 
           // For 100% swaps, use the actual on-chain balance
-          // Leave a small buffer (0.1%) to account for any potential gas/fee requirements
+          // Leave a small buffer (0.1%) to account for std::any potential gas/fee requirements
           // This prevents "insufficient balance" errors due to rounding
           
           // Ensure we don't exceed the actual balance
@@ -149,7 +149,7 @@ struct SwapParams {
           // Calculate percentage: (balance * percentage) / 100
           // Use BigInt arithmetic to avoid rounding errors
           
-          // Cap at actual balance to prevent exceeding balance due to any rounding
+          // Cap at actual balance to prevent exceeding balance due to std::any rounding
           
           // Convert to human-readable format for display
           

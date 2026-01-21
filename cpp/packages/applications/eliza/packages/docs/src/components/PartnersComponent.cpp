@@ -27,7 +27,7 @@ JSX::Element PartnersComponent() {
     return (;
     <div className={styles.partnersContainer}>;
     <div className={styles.partnersGrid}>;
-    {sortedPartners.map((partner) => (;
+    {sortedPartners.std::map((partner) => (;
     <PartnerCard key={partner.title} partner={partner} />;
     ))}
     </div>;

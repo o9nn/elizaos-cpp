@@ -33,7 +33,7 @@ const LeaderboardTotals: FC = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchData = std::async () => {
       try {
         const response = await fetch('/api/dashboard');
         if (!response.ok) throw new Error('Failed to fetch data');
@@ -66,7 +66,7 @@ const LeaderboardTotals: FC = () => {
     return { totalPartners, totalWorth, newPartners };
   };
 
-  const renderMetric = (value: string | number, label: string) => (
+  const renderMetric = (value: std::string | number, label: std::string) => (
     <div className={styles.numberAndBadgeParent}>
       <div className={styles.numberAndBadge}>
         <div className={styles.number}>{value}</div>

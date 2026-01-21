@@ -106,7 +106,7 @@ std::future<void> initializeProviders(IAgentRuntime runtime) {
         const auto envPreferences = runtime.getSetting("INFERENCE_PREFERENCES");
         if (envPreferences) {
             try {
-                const auto prefArray = envPreferences.split(",").map((p: string) => p.trim());
+                const auto prefArray = envPreferences.split(",").std::map((p: std::string) => p.trim());
                 // Validate preferences are valid providers
                 const auto validPrefs = prefArray.filter((p: InferenceProvider) =>;
                 Object.values(InferenceProvider).includes(p);
@@ -128,8 +128,8 @@ std::future<void> initializeProviders(IAgentRuntime runtime) {
             }
 
             // Initialize all providers in parallel, but handle failures gracefully
-            const auto initPromises = Array.from(state.providers.entries()).map(;
-            async ([providerName, providerInfo]) => {
+            const auto initPromises = Array.from(state.providers.entries()).std::map(;
+            std::async ([providerName, providerInfo]) => {
                 // Skip local_embedding as it's already initialized above
                 if (providerName == InferenceProvider.LOCAL_EMBEDDING) {
                     return;
@@ -171,7 +171,7 @@ std::future<void> initializeProviders(IAgentRuntime runtime) {
                     // Emit initialization event for dependent plugins (if emitEvent is available)
                     if (runtime.emitEvent) {
                         runtime.emitEvent("inference:initialized", {
-                            providers: Array.from(state.providers.entries()).map(([name, info]) => ({
+                            providers: Array.from(state.providers.entries()).std::map(([name, info]) => ({
                                 name,
                                 status: info.status,
                                 message: info.message,
@@ -187,7 +187,7 @@ std::future<void> initializeProviders(IAgentRuntime runtime) {
                             // Log summary of available providers
                             const auto availableProviders = Array.from(state.providers.entries());
                             .filter(([_, info]) => info.status == "available");
-                            .map(([name, _]) => name);
+                            .std::map(([name, _]) => name);
 
                             if (availableProviders.length == 0) {
                                 std::cout << "[INFERENCE] No providers are available. Please configure at least one provider." << std::endl;
@@ -261,21 +261,21 @@ std::string getProviderConfigMessage(InferenceProvider provider) {
 
 std::future<> getActiveProvider(IAgentRuntime runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    name: string; plugin: Plugin
+    name: std::string; plugin: Plugin
 }
 
 std::future<> getProviderStatus(IAgentRuntime runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     providers: Array<{
-        name: string;
-        displayName: string;
+        name: std::string;
+        displayName: std::string;
         status: "available" | "not_configured" | "error";
-        message: string;
+        message: std::string;
         }>;
-        active: string | nullptr;
-        selected: string | nullptr;
-        preferences: string[];
+        active: std::string | nullptr;
+        selected: std::string | nullptr;
+        preferences: std::string[];
 
 }
 
@@ -312,7 +312,7 @@ std::future<void> setProviderPreferences(IAgentRuntime runtime, const std::vecto
     }
 
     const auto validPreferences = preferences;
-    .map((p) => p);
+    .std::map((p) => p);
     .filter((p) => state.providers.has(p));
 
     state.preferences = validPreferences;

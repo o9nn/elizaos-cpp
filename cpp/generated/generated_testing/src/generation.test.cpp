@@ -141,7 +141,7 @@ void Main(void)
                 loggerSpy->mockRestore();
             }
             );
-            it(std::string("should set correct metadata in generated script"), [=]() mutable
+            it(std::string("should std::set correct metadata in generated script"), [=]() mutable
             {
                 auto script = generateScript(std::string("TEST_SECRET"), std::string("secret"), std::string("my-plugin"));
                 expect(script)->not->toBeNull();

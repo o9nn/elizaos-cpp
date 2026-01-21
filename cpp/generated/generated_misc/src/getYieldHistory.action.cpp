@@ -37,7 +37,7 @@ std::shared_ptr<Action> getYieldHistoryAction = object{
         {
             auto svc = as<any>(runtime->getService(DefiLlamaService::serviceType));
             if (!svc) {
-                throw any(std::make_shared<Error>(std::string("DefiLlamaService not available")));
+                throw std::any(std::make_shared<Error>(std::string("DefiLlamaService not available")));
             }
             auto composedState = std::async([=]() { runtime->composeState(message, array<string>{ std::string("ACTION_STATE") }, true); });
             auto params = OR((composedState->data->actionParams), (object{}));
@@ -68,7 +68,7 @@ std::shared_ptr<Action> getYieldHistoryAction = object{
                 object::pair{std::string("token"), std::string("token")}, 
                 object::pair{std::string("chain"), std::string("chain")}
             };
-            logger->info(std::string("[GET_YIELD_HISTORY] Finding pool for: protocol=") + protocol + std::string(", token=") + token + string_empty + (chain) ? any(std::string(", chain=") + chain + string_empty) : any(string_empty) + string_empty);
+            logger->info(std::string("[GET_YIELD_HISTORY] Finding pool for: protocol=") + protocol + std::string(", token=") + token + string_empty + (chain) ? std::any(std::string(", chain=") + chain + string_empty) : std::any(string_empty) + string_empty);
             auto pools = std::async([=]() { svc->searchYields(object{
                 object::pair{std::string("protocol"), std::string("protocol")}, 
                 object::pair{std::string("token"), std::string("token")}, 
@@ -76,7 +76,7 @@ std::shared_ptr<Action> getYieldHistoryAction = object{
                 object::pair{std::string("limit"), 1}
             }); });
             if (OR((!pools), (pools->get_length() == 0))) {
-                auto errorMsg = std::string("No pool found for ") + protocol + std::string(" ") + token + string_empty + (chain) ? any(std::string(" on ") + chain + string_empty) : any(string_empty) + string_empty;
+                auto errorMsg = std::string("No pool found for ") + protocol + std::string(" ") + token + string_empty + (chain) ? std::any(std::string(" on ") + chain + string_empty) : std::any(string_empty) + string_empty;
                 logger->error(std::string("[GET_YIELD_HISTORY] ") + errorMsg + string_empty);
                 auto errorResult = as<any>(object{
                     object::pair{std::string("text"), errorMsg}, 
@@ -100,7 +100,7 @@ std::shared_ptr<Action> getYieldHistoryAction = object{
             logger->info(std::string("[GET_YIELD_HISTORY] Fetching historical data for pool: ") + poolId + string_empty);
             auto chartData = std::async([=]() { svc->getPoolChart(poolId); });
             if (OR((!chartData), (chartData->get_length() == 0))) {
-                auto errorMsg = std::string("No historical data available for ") + protocol + std::string(" ") + token + string_empty + (chain) ? any(std::string(" on ") + chain + string_empty) : any(string_empty) + string_empty;
+                auto errorMsg = std::string("No historical data available for ") + protocol + std::string(" ") + token + string_empty + (chain) ? std::any(std::string(" on ") + chain + string_empty) : std::any(string_empty) + string_empty;
                 logger->warn(std::string("[GET_YIELD_HISTORY] ") + errorMsg + string_empty);
                 auto errorResult = as<any>(object{
                     object::pair{std::string("text"), errorMsg}, 
@@ -127,7 +127,7 @@ std::shared_ptr<Action> getYieldHistoryAction = object{
                 }
                 return errorResult;
             }
-            auto apyValues = as<array<double>>(chartData->map([=](auto d) mutable
+            auto apyValues = as<array<double>>(chartData->std::map([=](auto d) mutable
             {
                 return d["apy"];
             }
@@ -137,15 +137,15 @@ std::shared_ptr<Action> getYieldHistoryAction = object{
             }
             ));
             auto currentApy = OR((const_(apyValues)[apyValues->get_length() - 1]), (0));
-            auto avgApy = (apyValues->get_length() > 0) ? any(apyValues->reduce([=](auto sum, auto apy) mutable
+            auto avgApy = (apyValues->get_length() > 0) ? std::any(apyValues->reduce([=](auto sum, auto apy) mutable
             {
                 return sum + apy;
             }
-            , 0) / apyValues->get_length()) : any(0);
-            auto minApy = (apyValues->get_length() > 0) ? any(Math->min(const_(apyValues)[0])) : any(0);
-            auto maxApy = (apyValues->get_length() > 0) ? any(Math->max(const_(apyValues)[0])) : any(0);
+            , 0) / apyValues->get_length()) : std::any(0);
+            auto minApy = (apyValues->get_length() > 0) ? std::any(Math->min(const_(apyValues)[0])) : std::any(0);
+            auto maxApy = (apyValues->get_length() > 0) ? std::any(Math->max(const_(apyValues)[0])) : std::any(0);
             auto recentData = chartData->slice(-30);
-            auto messageText = std::string("Retrieved ") + chartData->get_length() + std::string(" days of yield history for ") + pool["project"] + std::string(" ") + pool["symbol"] + string_empty + (pool["chain"]) ? any(std::string(" on ") + pool["chain"] + string_empty) : any(string_empty) + string_empty;
+            auto messageText = std::string("Retrieved ") + chartData->get_length() + std::string(" days of yield history for ") + pool["project"] + std::string(" ") + pool["symbol"] + string_empty + (pool["chain"]) ? std::any(std::string(" on ") + pool["chain"] + string_empty) : std::any(string_empty) + string_empty;
             auto result = object{
                 object::pair{std::string("pool"), object{
                     object::pair{std::string("protocol"), pool["project"]}, 
@@ -180,7 +180,7 @@ std::shared_ptr<Action> getYieldHistoryAction = object{
                 object::pair{std::string("input"), inputParams}
             });
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             auto msg = (is<Error>(error)) ? error->message : String(error);
             logger->error(std::string("[GET_YIELD_HISTORY] Action failed: ") + msg + string_empty);

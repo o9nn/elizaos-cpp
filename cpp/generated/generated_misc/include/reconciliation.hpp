@@ -25,17 +25,17 @@ public:
     using std::enable_shared_from_this<OnChainOffer>::shared_from_this;
     std::shared_ptr<Address> beneficiary;
 
-    any tokenAmount;
+    std::any tokenAmount;
 
-    any discountBps;
+    std::any discountBps;
 
-    any createdAt;
+    std::any createdAt;
 
-    any unlockTime;
+    std::any unlockTime;
 
-    any priceUsdPerToken;
+    std::any priceUsdPerToken;
 
-    any ethUsdPrice;
+    std::any ethUsdPrice;
 
     double currency;
 
@@ -49,7 +49,7 @@ public:
 
     std::shared_ptr<Address> payer;
 
-    any amountPaid;
+    std::any amountPaid;
 };
 
 class ReconciliationService : public object, public std::enable_shared_from_this<ReconciliationService> {
@@ -57,20 +57,20 @@ public:
     using std::enable_shared_from_this<ReconciliationService>::shared_from_this;
     std::shared_ptr<SimplePublicClient> client;
 
-    any otcAddress;
+    std::any otcAddress;
 
     std::shared_ptr<Abi> abi;
 
     ReconciliationService();
     template <typename P0>
     std::shared_ptr<Promise<std::shared_ptr<OnChainOffer>>> readContractOffer(P0 offerId);
-    virtual std::shared_ptr<Promise<object>> reconcileQuote(string quoteId);
+    virtual std::shared_ptr<Promise<object>> reconcileQuote(std::string quoteId);
     virtual std::shared_ptr<Promise<object>> reconcileAllActive();
-    virtual std::shared_ptr<Promise<object>> verifyQuoteState(string quoteId);
+    virtual std::shared_ptr<Promise<object>> verifyQuoteState(std::string quoteId);
     virtual std::shared_ptr<Promise<object>> healthCheck();
 };
 
-extern any reconciliationServiceInstance;
+extern std::any reconciliationServiceInstance;
 std::shared_ptr<ReconciliationService> getReconciliationService();
 
 std::shared_ptr<Promise<void>> runReconciliationTask();
@@ -78,8 +78,8 @@ std::shared_ptr<Promise<void>> runReconciliationTask();
 template <typename P0>
 std::shared_ptr<Promise<std::shared_ptr<OnChainOffer>>> ReconciliationService::readContractOffer(P0 offerId)
 {
-    if (!this->otcAddress) throw any(std::make_shared<Error>(std::string("OTC address not configured")));
-    auto [beneficiary, tokenAmount, discountBps, createdAt, unlockTime, priceUsdPerToken, ethUsdPrice, currency, approved, paid, fulfilled, cancelled, payer, amountPaid] = as<std::tuple<std::shared_ptr<Address>, any, any, any, any, any, any, double, boolean, boolean, boolean, boolean, std::shared_ptr<Address>, any>>((std::async([=]() { this->client->readContract(object{
+    if (!this->otcAddress) throw std::any(std::make_shared<Error>(std::string("OTC address not configured")));
+    auto [beneficiary, tokenAmount, discountBps, createdAt, unlockTime, priceUsdPerToken, ethUsdPrice, currency, approved, paid, fulfilled, cancelled, payer, amountPaid] = as<std::tuple<std::shared_ptr<Address>, std::any, std::any, std::any, std::any, std::any, std::any, double, boolean, boolean, boolean, boolean, std::shared_ptr<Address>, any>>((std::async([=]() { this->client->readContract(object{
         object::pair{std::string("address"), this->otcAddress}, 
         object::pair{std::string("abi"), this->abi}, 
         object::pair{std::string("functionName"), std::string("offers")}, 

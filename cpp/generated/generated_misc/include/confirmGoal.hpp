@@ -10,23 +10,23 @@ class ConfirmationResponse;
 class PendingGoalData : public object, public std::enable_shared_from_this<PendingGoalData> {
 public:
     using std::enable_shared_from_this<PendingGoalData>::shared_from_this;
-    string name;
+    std::string name;
 
-    string description;
+    std::string description;
 
-    any taskType;
+    std::any taskType;
 
-    any priority;
+    std::any priority;
 
     boolean urgent;
 
-    string dueDate;
+    std::string dueDate;
 
-    any recurring;
+    std::any recurring;
 
     array<string> tags;
 
-    Record<string, any> metadata;
+    Record<std::string, any> metadata;
 };
 
 class ConfirmationResponse : public object, public std::enable_shared_from_this<ConfirmationResponse> {
@@ -36,11 +36,11 @@ public:
 
     boolean shouldProceed;
 
-    string modifications;
+    std::string modifications;
 };
 
-extern string extractConfirmationTemplate;
-std::shared_ptr<Promise<std::shared_ptr<ConfirmationResponse>>> extractConfirmationIntent(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<Memory> message, any pendingTask, std::shared_ptr<State> state);
+extern std::string extractConfirmationTemplate;
+std::shared_ptr<Promise<std::shared_ptr<ConfirmationResponse>>> extractConfirmationIntent(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<Memory> message, std::any pendingTask, std::shared_ptr<State> state);
 
 extern std::shared_ptr<Action> confirmGoalAction;
 #endif

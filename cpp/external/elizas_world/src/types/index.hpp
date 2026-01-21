@@ -42,7 +42,7 @@ struct Social {
 
 struct TokenInfo {
     std::optional<std::string> imageUrl;
-    std::optional<std::vector<{ label: string; url: string }>> websites;
+    std::optional<std::vector<{ label: std::string; url: std::string }>> websites;
 
 struct BaseToken {
     std::string address;

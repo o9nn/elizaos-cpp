@@ -5,7 +5,7 @@
 #include "../services/pluginRegistryService.js.h"
 
 extern std::shared_ptr<Action> searchPluginAction;
-any extractSearchQuery(string text);
+std::any extractSearchQuery(std::string text);
 
 extern std::shared_ptr<Action> getPluginDetailsAction;
 #endif

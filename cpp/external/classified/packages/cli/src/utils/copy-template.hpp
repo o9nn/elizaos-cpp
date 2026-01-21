@@ -30,7 +30,7 @@ namespace elizaos {
  *
  * @param {string} src - The path to the source directory.
  * @param {string} dest - The path to the destination directory.
- * @param {string[]} [exclude=[]] - An array of file and directory names to exclude from the copy operation.
+ * @param {std::string[]} [exclude=[]] - An array of file and directory names to exclude from the copy operation.
  * @returns {Promise<void>} A Promise that resolves when the copy operation is complete.
  */
 std::future<void> copyDir(const std::string& src, const std::string& dest, std::vector<std::string> exclude = {});

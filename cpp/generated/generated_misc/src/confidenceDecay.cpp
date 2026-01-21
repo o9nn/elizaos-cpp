@@ -49,10 +49,10 @@ std::shared_ptr<DecayConfig> ConfidenceDecayManager::getDomainSpecificDecay(std:
         config["minConfidence"] = 0.2;
     }
     static switch_type __switch2827_3289 = {
-        { any(std::string("security")), 1 },
-        { any(std::string("safety")), 2 },
-        { any(std::string("performance")), 3 },
-        { any(std::string("user_preference")), 4 }
+        { std::any(std::string("security")), 1 },
+        { std::any(std::string("safety")), 2 },
+        { std::any(std::string("performance")), 3 },
+        { std::any(std::string("user_preference")), 4 }
     };
     switch (__switch2827_3289[experience->domain])
     {

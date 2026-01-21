@@ -9,7 +9,7 @@ void ChatPage() {
     try {
 
         const auto { publicKey } = useWallet();
-        const auto { mint: selectedMint } = useParams<{ mint: string }>();
+        const auto { mint: selectedMint } = useParams<{ mint: std::string }>();
         const auto navigate = useNavigate();
         const auto { solPrice } = useSolPriceContext(); // Get SOL price;
 
@@ -22,7 +22,7 @@ void ChatPage() {
 
         // --- Fetch User's Platform Tokens Effect ---
         useEffect(() => {
-            const auto loadPlatformTokens = async () => {;
+            const auto loadPlatformTokens = std::async () => {;
                 if (!publicKey) {
                     setUserTokens([]);
                     setIsLoadingTokens(false);
@@ -51,7 +51,7 @@ void ChatPage() {
                             data.error || "Invalid response format for platform tokens",
                             );
                         }
-                        } catch (err: any) {
+                        } catch (err: std::any) {
                             std::cerr << "Error fetching platform tokens:" << err << std::endl;
                             setErrorLoadingTokens(;
                             true /* instanceof check */ ? err : std::runtime_error("Failed to load tokens"),
@@ -95,14 +95,14 @@ void ChatPage() {
 
                                         // --- Fetch Selected Token Details (Keep this effect) ---
                                         useEffect(() => {
-                                            const auto fetchTokenDetails = async () => {;
+                                            const auto fetchTokenDetails = std::async () => {;
                                                 if (!selectedMint) {
                                                     setSelectedTokenDetails(nullptr);
                                                     return;
                                                 }
                                                 setIsLoadingTokenDetails(true);
                                                 try {
-                                                    // Reuse existing getToken function
+                                                    // Reuse existing getToken std::function
                                                     const auto tokenData = getToken({ address: selectedMint });
                                                     setSelectedTokenDetails(tokenData);
                                                     } catch (error) {
@@ -138,12 +138,12 @@ void ChatPage() {
                                     (!sortedUserTokens || sortedUserTokens.size() == 0) && (;
                                     <div className="text-center text-neutral-500 text-xs p-2">;
                                     {publicKey;
-                                    ? "You don't seem to hold any platform tokens.";
+                                    ? "You don't seem to hold std::any platform tokens.";
                                 : "Connect wallet to see your tokens."}
                                 </div>;
                             )}
                             {!isLoadingTokens &&;
-                            sortedUserTokens.map(;
+                            sortedUserTokens.std::map(;
                             (;
                             token: ProfileToken, // Iterate over sorted tokens
                             ) => (;

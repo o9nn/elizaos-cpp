@@ -6,5 +6,5 @@
 #include "../../services/pluginManagerService.h"
 #include "../../types.h"
 
-extern any resetRegistryCache;
+extern std::any resetRegistryCache;
 #endif

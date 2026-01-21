@@ -8,7 +8,7 @@
 
 std::shared_ptr<IAgentRuntime> createMockAgentRuntime(Partial<std::shared_ptr<IAgentRuntime>> overrides = undefined);
 
-any createMockDatabaseAdapter(any overrides = undefined);
+std::any createMockDatabaseAdapter(std::any overrides = undefined);
 
 std::shared_ptr<Request> createMockRequest(Partial<std::shared_ptr<Request>> overrides = undefined);
 
@@ -16,9 +16,9 @@ std::shared_ptr<Response> createMockResponse();
 
 std::shared_ptr<NextFunction> createMockNext();
 
-any createMockSocketIO();
+std::any createMockSocketIO();
 
-any createMockHttpServer();
+std::any createMockHttpServer();
 
 std::shared_ptr<Service> createMockService(Partial<std::shared_ptr<Service>> overrides = undefined);
 

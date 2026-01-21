@@ -13,14 +13,14 @@ std::shared_ptr<Promise<std::shared_ptr<Buffer>>> ReportGenerator::generateRepor
     try
     {
         auto doc = std::make_shared<jsPDF>();
-        std::async([=]() { Promise->all(std::tuple<any, any, std::shared_ptr<Promise<void>>, any>{ this->addExecutiveSummary(doc, data->summary), this->addStatisticalAnalysis(doc, data->statistics), this->addVisualization(doc, data->visualizations), this->addRecommendations(doc, data->recommendations) }); });
+        std::async([=]() { Promise->all(std::tuple<std::any, std::any, std::shared_ptr<Promise<void>>, any>{ this->addExecutiveSummary(doc, data->summary), this->addStatisticalAnalysis(doc, data->statistics), this->addVisualization(doc, data->visualizations), this->addRecommendations(doc, data->recommendations) }); });
         this->applyReportStyling(doc, config);
         return doc->output();
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger["error"](std::string("Error generating report:"), error);
-        throw any(error);
+        throw std::any(error);
     }
 }
 

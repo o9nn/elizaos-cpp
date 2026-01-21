@@ -9,9 +9,9 @@ using Anthropic = _default;
 #include "viem/accounts.h"
 #include "x402-fetch.h"
 
-extern string DEFAULT_WALLET_KEY;
-extern string GATEWAY_SSE_URL;
-extern string GATEWAY_MESSAGE_URL;
+extern std::string DEFAULT_WALLET_KEY;
+extern std::string GATEWAY_SSE_URL;
+extern std::string GATEWAY_MESSAGE_URL;
 std::shared_ptr<Promise<void>> main();
 
 #endif

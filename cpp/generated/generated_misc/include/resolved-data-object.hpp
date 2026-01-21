@@ -2,7 +2,7 @@
 #define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_TYPES_RESOLVED-DATA-OBJECT_H
 #include "core.h"
 
-typedef any ResolvedDataObject;
+typedef std::any ResolvedDataObject;
 
 
 #endif

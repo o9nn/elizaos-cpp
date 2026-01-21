@@ -31,7 +31,7 @@ std::future<void> main() {
                         repo: repo.name,
                         branch: TARGET_BRANCH,
                         });
-                        } catch (error: any) {
+                        } catch (error: std::any) {
                             if (error.status == 404) {
                                 console.log(
                                 "Skipping " + ORG_NAME + "/" + repo.name + " (no " + TARGET_BRANCH + " branch)";
@@ -52,7 +52,7 @@ std::future<void> main() {
                                     continue;
                                 }
                                 fileData = response.data;
-                                } catch (error: any) {
+                                } catch (error: std::any) {
                                     if (error.status == 404) {
                                         console.log(
                                         "Skipping " + ORG_NAME + "/" + repo.name + " (no package.json on " + TARGET_BRANCH + ")";
@@ -64,9 +64,9 @@ std::future<void> main() {
 
                                 const auto raw = Buffer.from(fileData.content, "base64").tostd::to_string("utf8");
                                 const auto pkg = /* JSON.parse */ raw as {;
-                                    name?: string;
-                                    version?: string;
-                                    [key: string]: any;
+                                    name?: std::string;
+                                    version?: std::string;
+                                    [key: std::string]: std::any;
                                     };
                                     const auto oldName = pkg.name;
 
@@ -87,7 +87,7 @@ std::future<void> main() {
                                     }
 
                                     // Determine the new name
-                                    auto newName: string;
+                                    auto newName: std::string;
                                     if (!oldName) {
                                         // No name field - generate the correct name from repo name
                                         "newName = " + "@elizaos/" + repo.name;

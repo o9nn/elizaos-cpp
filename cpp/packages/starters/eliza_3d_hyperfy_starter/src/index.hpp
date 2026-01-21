@@ -31,7 +31,7 @@ namespace elizaos {
      // Example 4: User expresses confusion
     // Example 5: Responding to a statement nearby
      // Example 6: Handling a simple request
-          // Note: This might require a dynamic provider/tool in the future
+          // Note: This might require a dynamic provider/tool in the std::future
 
 
 } // namespace elizaos

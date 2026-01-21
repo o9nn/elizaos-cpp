@@ -24,7 +24,7 @@ struct TradeMemory {
     std::string chain;
     'BUY' | 'SELL' type;
     std::string amount;
-    string; // in USD price;
+    std::string; // in USD price;
     Date timestamp;
     std::optional<std::string> txHash;
     std::optional<{> metadata;

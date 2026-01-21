@@ -16,9 +16,9 @@ namespace elizaos {
 
 class ApiError extends Error {
   constructor(
-    public code: string,
-    message: string,
-    public details?: string,
+    public code: std::string,
+    message: std::string,
+    public details?: std::string,
     public status?: number
   ) {
     super(message);
@@ -57,7 +57,7 @@ class ApiError extends Error {
 
   /**
    * Set JWT authentication token for this service
-   * Updates the Authorization header for all future requests
+   * Updates the Authorization header for all std::future requests
    * 
    * @param token JWT authentication token
    */

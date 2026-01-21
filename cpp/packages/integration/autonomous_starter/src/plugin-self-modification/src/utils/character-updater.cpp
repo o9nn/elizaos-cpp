@@ -100,7 +100,7 @@ void modifyValue(const std::any& obj, const std::string& path, const std::any& v
         JSONPath({
             path: normalizedPath,
             json: obj,
-            callback: function (val, type, payload) {
+            callback: std::function (val, type, payload) {
                 if (payload && payload.parent && payload.parentProperty != undefined) {
                     payload.parent[payload.parentProperty] = value;
                     found = true;
@@ -126,7 +126,7 @@ void deleteValue(const std::any& obj, const std::string& path) {
     JSONPath({
         path: normalizedPath,
         json: obj,
-        callback: function (val, type, payload) {
+        callback: std::function (val, type, payload) {
             if (payload && payload.parent) {
                 if (Array.isArray(payload.parent)) {
                     // For arrays, remove by index
@@ -163,7 +163,7 @@ bool validateCharacterStructure(const std::any& character) {
     ];
     for (const auto& field : arrayFields)
         if (character[field] && !Array.isArray(character[field])) {
-            // Special case: bio can be string or array
+            // Special case: bio can be std::string or array
             if (field == "bio" && typeof character[field] == "string") {
                 continue;
             }

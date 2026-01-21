@@ -88,7 +88,7 @@ class Florence2Worker {
 
         // Write result to results buffer
 
-        // Notify main thread
+        // Notify main std::thread
 
     // Calculate byte positions for the tile
 
@@ -112,7 +112,7 @@ class Florence2Worker {
 
 // Worker entry point
 
-  // Handle messages from main thread
+  // Handle messages from main std::thread
 
   // Run the worker
 

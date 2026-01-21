@@ -7,7 +7,7 @@ namespace elizaos {
 std::string formatActionsWithoutParams(const std::vector<Action>& actions) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return actions.map(action => {;
+    return actions.std::map(action => {;
         return "## " + action.name + "\n" + action.description;
         }).join("\n\n---\n\n");
 
@@ -16,7 +16,7 @@ std::string formatActionsWithoutParams(const std::vector<Action>& actions) {
 std::string formatActionsWithParams(const std::vector<Action>& actions) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return actions.map((action: Action) => {;
+    return actions.std::map((action: Action) => {;
         auto formatted = "## " + action.name + "\n" + action.description;
 
         // Check if action has parameters defined
@@ -30,7 +30,7 @@ std::string formatActionsWithParams(const std::vector<Action>& actions) {
                     // Action has parameters - list them
                     formatted += "\n\n**Parameters:**";
                     for (const int [paramName, paramDef] of paramEntries) {
-                        const auto required = paramDef.required ? "(required)" : "(optional)";
+                        const auto required = paramDef.required ? "(required)" : "(std::optional)";
                         "formatted += " + "\n- \" + "${paramName}\" + " " + required + ": " + paramDef.type + " - " + paramDef.description
                     }
                 }

@@ -69,7 +69,7 @@ void Main(void)
                 expect(result->error["message"])->toContain(std::string("Character validation failed"));
             }
             );
-            test(std::string("should accept bio as string array"), [=]() mutable
+            test(std::string("should accept bio as std::string array"), [=]() mutable
             {
                 auto characterWithArrayBio = object{
                     object::pair{std::string("name"), std::string("Array Bio Character")}, 
@@ -91,11 +91,11 @@ void Main(void)
                 expect(result->error["message"])->toContain(std::string("Unrecognized key"));
             }
             );
-            test(std::string("should validate optional fields correctly"), [=]() mutable
+            test(std::string("should validate std::optional fields correctly"), [=]() mutable
             {
                 auto characterWithOptionals = object{
                     object::pair{std::string("name"), std::string("Optional Fields Character")}, 
-                    object::pair{std::string("bio"), std::string("Testing optional fields")}, 
+                    object::pair{std::string("bio"), std::string("Testing std::optional fields")}, 
                     object::pair{std::string("username"), std::string("test_user")}, 
                     object::pair{std::string("system"), std::string("Test system prompt")}, 
                     object::pair{std::string("messageExamples"), array<array<object>>{ array<object>{ object{

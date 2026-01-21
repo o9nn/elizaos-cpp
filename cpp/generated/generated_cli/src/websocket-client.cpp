@@ -3,10 +3,10 @@
 WebSocketClient::WebSocketClient() {
 }
 
-std::shared_ptr<Promise<void>> WebSocketClient::emit(string room, string event, any data)
+std::shared_ptr<Promise<void>> WebSocketClient::emit(std::string room, std::string event, std::any data)
 {
     auto redis = std::async([=]() { getGlobalRedisCache(); });
-    auto formattedRoom = (room == std::string("global")) ? any(std::string("global")) : any((room->startsWith(std::string("token-"))) ? room : std::string("token-") + room + string_empty);
+    auto formattedRoom = (room == std::string("global")) ? std::any(std::string("global")) : std::any((room->startsWith(std::string("token-"))) ? room : std::string("token-") + room + string_empty);
     auto message = JSON->stringify(object{
         object::pair{std::string("room"), formattedRoom}, 
         object::pair{std::string("event"), std::string("event")}, 
@@ -16,7 +16,7 @@ std::shared_ptr<Promise<void>> WebSocketClient::emit(string room, string event, 
     return std::shared_ptr<Promise<void>>();
 }
 
-std::shared_ptr<Promise<void>> WebSocketClient::emitToClient(string clientId, string event, any data)
+std::shared_ptr<Promise<void>> WebSocketClient::emitToClient(std::string clientId, std::string event, std::any data)
 {
     auto redis = std::async([=]() { getGlobalRedisCache(); });
     auto message = JSON->stringify(object{
@@ -28,7 +28,7 @@ std::shared_ptr<Promise<void>> WebSocketClient::emitToClient(string clientId, st
     return std::shared_ptr<Promise<void>>();
 }
 
-any WebSocketClient::to(string room)
+std::any WebSocketClient::to(std::string room)
 {
     return object{
         object::pair{std::string("emit"), [=](auto event, auto data) mutable
@@ -48,7 +48,7 @@ std::shared_ptr<WebSocketClient> getWebSocketClient()
 };
 
 
-any wsClient = nullptr;
+std::any wsClient = nullptr;
 
 void Main(void)
 {

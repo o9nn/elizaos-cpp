@@ -45,7 +45,7 @@ std::future<std::vector<CheckInSchedule>> fetchCheckInSchedules(IAgentRuntime ru
                                 });
                                 return isValidType && hasSchedule;
                                 });
-                                .map((memory) => {
+                                .std::map((memory) => {
                                     const auto schedule = memory.content.schedule;
                                     logger.info(`Processing schedule from memory ${memory.id}:`, {
                                         scheduleId: schedule.scheduleId,

@@ -8,24 +8,24 @@ class TeamMember;
 class TeamMember : public object, public std::enable_shared_from_this<TeamMember> {
 public:
     using std::enable_shared_from_this<TeamMember>::shared_from_this;
-    string section;
+    std::string section;
 
-    string tgName;
+    std::string tgName;
 
-    string discordName;
+    std::string discordName;
 
-    string format;
+    std::string format;
 
-    string serverId;
+    std::string serverId;
 
-    string serverName;
+    std::string serverName;
 
-    string createdAt;
+    std::string createdAt;
 
     array<string> updatesFormat;
 };
 
-std::shared_ptr<UUID> getStorageRoomId(std::shared_ptr<IAgentRuntime> runtime, string serverId);
+std::shared_ptr<UUID> getStorageRoomId(std::shared_ptr<IAgentRuntime> runtime, std::string serverId);
 
 extern std::shared_ptr<Action> updatesFormatAction;
 #endif

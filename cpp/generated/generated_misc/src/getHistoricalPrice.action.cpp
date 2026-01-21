@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-coingecko/src/actions/getHistoricalPrice.action.h"
 
-string formatMarketCap(double value)
+std::string formatMarketCap(double value)
 {
     if (value >= 1000000000) return string_empty + (value / 1000000000)->toFixed(2) + std::string("B");
     if (value >= 1000000) return string_empty + (value / 1000000)->toFixed(2) + std::string("M");
@@ -9,7 +9,7 @@ string formatMarketCap(double value)
 };
 
 
-string parseDateToApiFormat(string dateStr)
+std::string parseDateToApiFormat(std::string dateStr)
 {
     auto normalized = dateStr->trim()->toLowerCase();
     if ((new RegExp(std::string("^\d{2}-\d{2}-\d{4}")))->test(dateStr)) {
@@ -23,28 +23,28 @@ string parseDateToApiFormat(string dateStr)
         date->setDate(date->getDate() - 1);
     } else if ((new RegExp(std::string("^(\d+)\s*days?\s*ago")))->test(normalized)) {
         auto daysMatch = normalized->match((new RegExp(std::string("^(\d+)\s*days?\s*ago"))));
-        auto days = (daysMatch) ? any(parseInt((*const_(daysMatch))[1])) : any(0);
+        auto days = (daysMatch) ? std::any(parseInt((*const_(daysMatch))[1])) : std::any(0);
         date = std::make_shared<Date>();
         date->setDate(date->getDate() - days);
     } else if ((new RegExp(std::string("^(\d+)\s*weeks?\s*ago")))->test(normalized)) {
         auto weeksMatch = normalized->match((new RegExp(std::string("^(\d+)\s*weeks?\s*ago"))));
-        auto weeks = (weeksMatch) ? any(parseInt((*const_(weeksMatch))[1])) : any(0);
+        auto weeks = (weeksMatch) ? std::any(parseInt((*const_(weeksMatch))[1])) : std::any(0);
         date = std::make_shared<Date>();
         date->setDate(date->getDate() - (weeks * 7));
     } else if ((new RegExp(std::string("^(\d+)\s*months?\s*ago")))->test(normalized)) {
         auto monthsMatch = normalized->match((new RegExp(std::string("^(\d+)\s*months?\s*ago"))));
-        auto months = (monthsMatch) ? any(parseInt((*const_(monthsMatch))[1])) : any(0);
+        auto months = (monthsMatch) ? std::any(parseInt((*const_(monthsMatch))[1])) : std::any(0);
         date = std::make_shared<Date>();
         date->setMonth(date->getMonth() - months);
     } else if ((new RegExp(std::string("^(\d+)\s*years?\s*ago")))->test(normalized)) {
         auto yearsMatch = normalized->match((new RegExp(std::string("^(\d+)\s*years?\s*ago"))));
-        auto years = (yearsMatch) ? any(parseInt((*const_(yearsMatch))[1])) : any(0);
+        auto years = (yearsMatch) ? std::any(parseInt((*const_(yearsMatch))[1])) : std::any(0);
         date = std::make_shared<Date>();
         date->setFullYear(date->getFullYear() - years);
     } else {
         date = std::make_shared<Date>(dateStr);
         if (isNaN(date->getTime())) {
-            throw any(std::make_shared<Error>(std::string("Unable to parse date: ") + dateStr + string_empty));
+            throw std::any(std::make_shared<Error>(std::string("Unable to parse date: ") + dateStr + string_empty));
         }
     }
     auto day = String(date->getDate())->padStart(2, std::string("0"));
@@ -57,7 +57,7 @@ string parseDateToApiFormat(string dateStr)
 std::shared_ptr<Action> getHistoricalPriceAction = object{
     object::pair{std::string("name"), std::string("GET_HISTORICAL_PRICE")}, 
     object::pair{std::string("similes"), array<string>{ std::string("HISTORICAL_PRICE"), std::string("PRICE_ON_DATE"), std::string("PAST_PRICE"), std::string("TOKEN_PRICE_HISTORY"), std::string("PRICE_AT_DATE") }}, 
-    object::pair{std::string("description"), std::string("Use this action when the user asks for a token's price on a specific date in the past. This action retrieves historical price data for any token (native or contract address) at a particular point in time. Returns the price, market cap, and trading volume for that date.")}, 
+    object::pair{std::string("description"), std::string("Use this action when the user asks for a token's price on a specific date in the past. This action retrieves historical price data for std::any token (native or contract address) at a particular point in time. Returns the price, market cap, and trading volume for that date.")}, 
     object::pair{std::string("parameters"), object{
         object::pair{std::string("token"), object{
             object::pair{std::string("type"), std::string("string")}, 
@@ -71,7 +71,7 @@ std::shared_ptr<Action> getHistoricalPriceAction = object{
         }}, 
         object::pair{std::string("chain"), object{
             object::pair{std::string("type"), std::string("string")}, 
-            object::pair{std::string("description"), std::string("Blockchain network for the token (e.g., 'base', 'ethereum', 'polygon', 'arbitrum', 'optimism'). Required for contract addresses, optional for native tokens. Use GET_TOKEN_METADATA first to determine the correct chain.")}, 
+            object::pair{std::string("description"), std::string("Blockchain network for the token (e.g., 'base', 'ethereum', 'polygon', 'arbitrum', 'optimism'). Required for contract addresses, std::optional for native tokens. Use GET_TOKEN_METADATA first to determine the correct chain.")}, 
             object::pair{std::string("required"), false}
         }}
     }}, 
@@ -91,7 +91,7 @@ std::shared_ptr<Action> getHistoricalPriceAction = object{
         {
             auto svc = as<any>(runtime->getService(CoinGeckoService::serviceType));
             if (!svc) {
-                throw any(std::make_shared<Error>(std::string("CoinGeckoService not available")));
+                throw std::any(std::make_shared<Error>(std::string("CoinGeckoService not available")));
             }
             auto composedState = std::async([=]() { runtime->composeState(message, array<string>{ std::string("ACTION_STATE") }, true); });
             auto params = OR((composedState->data->actionParams), (object{}));
@@ -136,12 +136,12 @@ std::shared_ptr<Action> getHistoricalPriceAction = object{
                 }
                 return errorResult;
             }
-            string apiDate;
+            std::string apiDate;
             try
             {
                 apiDate = parseDateToApiFormat(dateRaw);
             }
-            catch (const any& err)
+            catch (const std::any& err)
             {
                 auto msg = (is<Error>(err)) ? err->message : String(err);
                 auto errorMsg = std::string("Invalid date format: ") + msg + std::string(". Please use formats like 'dd-mm-yyyy', '2024-01-01', 'yesterday', '7 days ago', etc.");
@@ -174,12 +174,12 @@ std::shared_ptr<Action> getHistoricalPriceAction = object{
             auto summary = std::string("Historical price data for ") + tokenDisplay + std::string(" on ") + apiDate + std::string(":\
 - Token: ") + tokenDisplay + std::string("\
 - Date: ") + apiDate + std::string("\
-- Price: ") + (historicalData["price_usd"]) ? any(std::string("$") + historicalData["price_usd"]->toLocaleString(undefined, object{
+- Price: ") + (historicalData["price_usd"]) ? std::any(std::string("$") + historicalData["price_usd"]->toLocaleString(undefined, object{
                 object::pair{std::string("minimumFractionDigits"), 2}, 
                 object::pair{std::string("maximumFractionDigits"), 6}
-            }) + string_empty) : any(std::string("N/A")) + std::string("\
-- Market Cap: ") + (historicalData["market_cap_usd"]) ? any(std::string("$") + formatMarketCap(historicalData["market_cap_usd"]) + string_empty) : any(std::string("N/A")) + std::string("\
-- 24h Volume: ") + (historicalData["total_volume_usd"]) ? any(std::string("$") + formatMarketCap(historicalData["total_volume_usd"]) + string_empty) : any(std::string("N/A")) + std::string("\
+            }) + string_empty) : std::any(std::string("N/A")) + std::string("\
+- Market Cap: ") + (historicalData["market_cap_usd"]) ? std::any(std::string("$") + formatMarketCap(historicalData["market_cap_usd"]) + string_empty) : std::any(std::string("N/A")) + std::string("\
+- 24h Volume: ") + (historicalData["total_volume_usd"]) ? std::any(std::string("$") + formatMarketCap(historicalData["total_volume_usd"]) + string_empty) : std::any(std::string("N/A")) + std::string("\
 - Chain: ") + historicalData["chain"] + std::string("\
 - CoinGecko ID: ") + historicalData["coin_id"] + std::string("\
 \
@@ -189,7 +189,7 @@ This historical price data shows the token's value on the specified date. You ca
                 std::async([=]() { callback(object{
                     object::pair{std::string("text"), std::string("text")}, 
                     object::pair{std::string("actions"), array<string>{ std::string("GET_HISTORICAL_PRICE") }}, 
-                    object::pair{std::string("content"), as<Record<string, any>>(utils::assign(object{
+                    object::pair{std::string("content"), as<Record<std::string, any>>(utils::assign(object{
                     }, historicalData))}, 
                     object::pair{std::string("source"), message->content->source}
                 }); });
@@ -202,7 +202,7 @@ This historical price data shows the token's value on the specified date. You ca
                 object::pair{std::string("input"), inputParams}
             });
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             auto msg = (is<Error>(error)) ? error->message : String(error);
             logger->error(std::string("[GET_HISTORICAL_PRICE] Action failed: ") + msg + string_empty);

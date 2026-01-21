@@ -5,7 +5,7 @@ void validatePythonExample()
     console->log(std::string("=== Python Validation Example ==="));
     auto pythonCode = std::string("\
 def process_data(data):\
-    # This function needs type annotations\
+    # This std::function needs type annotations\
     with open('data.txt') as f:\
         content = f.read()\
     return content\
@@ -23,7 +23,7 @@ void validateTypeScriptExample()
     console->log(std::string("\
 === TypeScript Validation Example ==="));
     auto tsCode = std::string("\
-function processData(data: unknown) {\
+std::function processData(data: unknown) {\
   const fs = require('fs');\
   const content = fs.readFileSync('data.txt', 'utf-8');\
   return content;\

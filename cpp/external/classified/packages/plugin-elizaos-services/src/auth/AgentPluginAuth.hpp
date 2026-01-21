@@ -92,10 +92,10 @@ class AuthHelper {
   /**
    * Check if a provider is ready for use
    */
-  static async isProviderReady(
+  static std::async isProviderReady(
     runtime: IAgentRuntime,
-    provider: string,
-    capability?: string
+    provider: std::string,
+    capability?: std::string
   ): Promise<boolean> {
     const authService = runtime.getService<AgentAuthService>('elizaos-services-auth');
     if (!authService) {

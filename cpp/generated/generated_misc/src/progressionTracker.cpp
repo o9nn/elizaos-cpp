@@ -148,7 +148,7 @@ std::shared_ptr<Promise<void>> ProgressionTracker::handleCapabilityUsed(object p
     std::async([=]() { this->progressionService->recordCapabilityUsed(params["capability"]); });
 }
 
-std::shared_ptr<Promise<void>> ProgressionTracker::trackShellCommand(string command, double exitCode)
+std::shared_ptr<Promise<void>> ProgressionTracker::trackShellCommand(std::string command, double exitCode)
 {
     std::async([=]() { this->runtime->emitEvent(EventType->SHELL_COMMAND_EXECUTED, object{
         object::pair{std::string("command"), std::string("command")}, 
@@ -157,7 +157,7 @@ std::shared_ptr<Promise<void>> ProgressionTracker::trackShellCommand(string comm
     return std::shared_ptr<Promise<void>>();
 }
 
-std::shared_ptr<Promise<void>> ProgressionTracker::trackGoalCreation(Record<string, any> goalData)
+std::shared_ptr<Promise<void>> ProgressionTracker::trackGoalCreation(Record<std::string, any> goalData)
 {
     std::async([=]() { this->runtime->emitEvent(EventType->GOAL_CREATED, object{
         object::pair{std::string("goalData"), std::string("goalData")}
@@ -165,7 +165,7 @@ std::shared_ptr<Promise<void>> ProgressionTracker::trackGoalCreation(Record<stri
     return std::shared_ptr<Promise<void>>();
 }
 
-std::shared_ptr<Promise<void>> ProgressionTracker::trackTodoCreation(Record<string, any> todoData)
+std::shared_ptr<Promise<void>> ProgressionTracker::trackTodoCreation(Record<std::string, any> todoData)
 {
     std::async([=]() { this->runtime->emitEvent(EventType->TODO_CREATED, object{
         object::pair{std::string("todoData"), std::string("todoData")}
@@ -173,7 +173,7 @@ std::shared_ptr<Promise<void>> ProgressionTracker::trackTodoCreation(Record<stri
     return std::shared_ptr<Promise<void>>();
 }
 
-std::shared_ptr<Promise<void>> ProgressionTracker::trackAgentNaming(string name)
+std::shared_ptr<Promise<void>> ProgressionTracker::trackAgentNaming(std::string name)
 {
     std::async([=]() { this->runtime->emitEvent(EventType->AGENT_NAMED, object{
         object::pair{std::string("name"), std::string("name")}
@@ -181,14 +181,14 @@ std::shared_ptr<Promise<void>> ProgressionTracker::trackAgentNaming(string name)
     return std::shared_ptr<Promise<void>>();
 }
 
-std::shared_ptr<Promise<void>> ProgressionTracker::trackAction(string actionType, Record<string, any> details)
+std::shared_ptr<Promise<void>> ProgressionTracker::trackAction(std::string actionType, Record<std::string, any> details)
 {
     logger->info(std::string("[PROGRESSION_TRACKER] Manual action tracked: ") + actionType + string_empty, details);
     static switch_type __switch6914_7798 = {
-        { any(std::string("form_submitted")), 1 },
-        { any(std::string("browser_used")), 2 },
-        { any(std::string("vision_used")), 3 },
-        { any(std::string("microphone_used")), 4 }
+        { std::any(std::string("form_submitted")), 1 },
+        { std::any(std::string("browser_used")), 2 },
+        { std::any(std::string("vision_used")), 3 },
+        { std::any(std::string("microphone_used")), 4 }
     };
     switch (__switch6914_7798[actionType])
     {
@@ -224,7 +224,7 @@ std::shared_ptr<Promise<void>> ProgressionTracker::trackAction(string actionType
     return std::shared_ptr<Promise<void>>();
 }
 
-Record<string, any> ProgressionTracker::getProgressionStatus()
+Record<std::string, any> ProgressionTracker::getProgressionStatus()
 {
     auto state = this->progressionService->getProgressionState();
     shared unlockedCapabilities = this->progressionService->getUnlockedCapabilities();
@@ -238,7 +238,7 @@ Record<string, any> ProgressionTracker::getProgressionStatus()
         object::pair{std::string("completedActions"), state->completedActions}, 
         object::pair{std::string("agentNamed"), state->agentNamed}, 
         object::pair{std::string("unlockedCapabilities"), std::string("unlockedCapabilities")}, 
-        object::pair{std::string("availableLevels"), availableLevels->map([=](auto level) mutable
+        object::pair{std::string("availableLevels"), availableLevels->std::map([=](auto level) mutable
         {
             return (object{
                 object::pair{std::string("id"), level->id}, 

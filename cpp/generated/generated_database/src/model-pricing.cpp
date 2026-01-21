@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/agent/utils/model-pricing.h"
 
-double calculateCost(string modelName, double inputTokens, double outputTokens)
+double calculateCost(std::string modelName, double inputTokens, double outputTokens)
 {
     auto pricing = const_(MODEL_PRICING)[modelName];
     if (!pricing) {
@@ -30,7 +30,7 @@ double calculateCost(string modelName, double inputTokens, double outputTokens)
 };
 
 
-object getModelLimits(string modelName)
+object getModelLimits(std::string modelName)
 {
     auto pricing = const_(MODEL_PRICING)[modelName];
     if (!pricing) {
@@ -50,7 +50,7 @@ object getModelLimits(string modelName)
 };
 
 
-boolean isWithinTokenLimit(string modelName, double inputTokens, double outputTokens)
+boolean isWithinTokenLimit(std::string modelName, double inputTokens, double outputTokens)
 {
     auto limits = getModelLimits(modelName);
     if (AND((limits["maxInputTokens"]), (inputTokens > limits["maxInputTokens"]))) {
@@ -63,7 +63,7 @@ boolean isWithinTokenLimit(string modelName, double inputTokens, double outputTo
 };
 
 
-Record<string, std::shared_ptr<ModelPricing>> MODEL_PRICING = object{
+Record<std::string, std::shared_ptr<ModelPricing>> MODEL_PRICING = object{
     object::pair{std::string("gpt-4o"), object{
         object::pair{std::string("inputCostPer1k"), 0.005}, 
         object::pair{std::string("outputCostPer1k"), 0.015}, 

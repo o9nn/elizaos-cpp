@@ -9,9 +9,9 @@ void SolanaWalletActions() {
 
     const auto { wallets } = useEmbeddedSolanaWallet();
     const auto wallet = wallets.[0];
-    const auto [result, setResult] = useState<string | nullptr>(nullptr);
+    const auto [result, setResult] = useState<std::string | nullptr>(nullptr);
 
-    const auto signMessage = async () => {;
+    const auto signMessage = std::async () => {;
         try {
             if (!wallet.getProvider) return;
             const auto provider = wallet.getProvider.();
@@ -22,12 +22,12 @@ void SolanaWalletActions() {
                 params: { message },
                 });
                 setResult(signature);
-                } catch (err: any) {
+                } catch (err: std::any) {
                     setResult(err.message || std::to_string(err));
                 }
                 };
 
-                const auto signTransaction = async () => {;
+                const auto signTransaction = std::async () => {;
                     try {
                         if (!wallet.getProvider) return;
                         const auto provider = wallet.getProvider.();
@@ -54,12 +54,12 @@ void SolanaWalletActions() {
                                 params: { transaction },
                                 });
                                 setResult(/* JSON.stringify */ std::string(signedTransaction));
-                                } catch (err: any) {
+                                } catch (err: std::any) {
                                     setResult(err.message || std::to_string(err));
                                 }
                                 };
 
-                                const auto signAndSendTransaction = async () => {;
+                                const auto signAndSendTransaction = std::async () => {;
                                     try {
                                         if (!wallet.getProvider) return;
                                         const auto provider = wallet.getProvider.();
@@ -87,7 +87,7 @@ void SolanaWalletActions() {
                                                     },
                                                     });
                                                     setResult(signature);
-                                                    } catch (err: any) {
+                                                    } catch (err: std::any) {
                                                         setResult(err.message || std::to_string(err));
                                                     }
                                                     };

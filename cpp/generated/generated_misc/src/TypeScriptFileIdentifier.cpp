@@ -1,12 +1,12 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/autodoc/src/TypeScriptFileIdentifier.h"
 
-boolean TypeScriptFileIdentifier::isTypeScriptFile(string file)
+boolean TypeScriptFileIdentifier::isTypeScriptFile(std::string file)
 {
     auto extension = path->extname(file);
     return OR((extension == std::string(".ts")), (extension == std::string(".tsx")));
 }
 
-array<string> TypeScriptFileIdentifier::getTypeScriptFiles(string directory)
+array<string> TypeScriptFileIdentifier::getTypeScriptFiles(std::string directory)
 {
     auto files = fs->readdirSync(directory);
     return files->filter([=](auto file) mutable

@@ -68,7 +68,7 @@ std::future<void> createTodoPlugin(Agent agent) {
 
     const auto description = `;
     I need a plugin that helps manage todo lists. It should have:
-    - An action to add new todos with title and optional due date;
+    - An action to add new todos with title and std::optional due date;
     - An action to mark todos;
     - An action to list all todos with filtering options;
     - A provider that shows pending todo count;
@@ -174,7 +174,7 @@ void getSocialMediaPluginSpec() {
             description: "Post a message to Twitter/X",
             parameters: {
                 message: "string",
-                mediaUrls: "string[]",
+                mediaUrls: "std::string[]",
                 },
                 },
                 {

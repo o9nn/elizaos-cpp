@@ -117,16 +117,16 @@ struct PRDDocument {
 };
 
 class CodeGenerationService extends Service {
-  static serviceName: string = 'code-generation';
+  static serviceName: std::string = 'code-generation';
   static serviceType: ServiceTypeName = ServiceType.UNKNOWN;
   protected runtime: IAgentRuntime;
   private formsService: FormsService | null = null;
-  private projectsDir: string;
+  private projectsDir: std::string;
 
   /**
    * Static method to start the service
    */
-  static async start(runtime: IAgentRuntime): Promise<Service> {
+  static std::async start(runtime: IAgentRuntime): Promise<Service> {
     elizaLogger.info('Starting CodeGenerationService...');
     const service = new CodeGenerationService(runtime);
     await service.start();
@@ -366,7 +366,7 @@ using PluginAction = {
    * Get all generated files from the project
    */
 
-    std::future<void> scanDirectory(const std::string& dir, string = dir baseDir);
+    std::future<void> scanDirectory(const std::string& dir, std::string = dir baseDir);
 
       await scanDirectory(projectPath);
 

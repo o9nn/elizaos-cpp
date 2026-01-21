@@ -6,9 +6,9 @@
 #include "commander.h"
 
 extern std::shared_ptr<Set<string>> VALID_MIME_TYPES;
-any getMimeType(string filename);
+std::any getMimeType(std::string filename);
 
-void viewImage(string imagePath);
+void viewImage(std::string imagePath);
 
 void setupCLI();
 

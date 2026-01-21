@@ -15,7 +15,7 @@ namespace elizaos {
 // Manual refinement required for production use
 
 /**
- * Groups an array of items by a key function
+ * Groups an array of items by a key std::function
  * @param items Array of items to group
  * @param keyFn Function that returns the key to group by for each item
  * @returns Record mapping each key to array of items with that key

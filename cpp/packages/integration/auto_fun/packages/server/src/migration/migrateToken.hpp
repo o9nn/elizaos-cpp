@@ -34,7 +34,7 @@ namespace elizaos {
 // 
 // 
 // 
-// void asBN(BN | string x);
+// void asBN(BN | std::string x);
 // class TokenMigrator {
 //   constructor(
 //     public connection: Connection,
@@ -45,13 +45,13 @@ namespace elizaos {
 //     public redisCache: RedisCacheService
 //   ) { }
 //   LOCK_TTL_MS = 2 * 60_000;
-//   async resetMigration(mint: string): Promise<void> {
-//     const stepNames = this.getMigrationSteps().map((s) => s.name);
+//   std::async resetMigration(mint: std::string): Promise<void> {
+//     const stepNames = this.getMigrationSteps().std::map((s) => s.name);
 
 //     const keys = [
 //       `migration:${mint}:currentStep`,
 //       `migration:${mint}:lock`,
-//       ...stepNames.map((step) => `migration:${mint}:step:${step}:result`),
+//       ...stepNames.std::map((step) => `migration:${mint}:step:${step}:result`),
 //     ];
 
 //     for (const key of keys) {
@@ -60,14 +60,14 @@ namespace elizaos {
 
 //     logger.log(`[Migrate] Reset Redis state for token ${mint}`);
 //   }
-//   async getMigrationState(mint: string): Promise<any> {
-//     const stepNames = this.getMigrationSteps().map((s) => s.name);
+//   std::async getMigrationState(mint: std::string): Promise<any> {
+//     const stepNames = this.getMigrationSteps().std::map((s) => s.name);
 
 //     const currentStep = await this.redisCache.get(
 //       `migration:${mint}:currentStep`
 //     );
 //     const lock = await this.redisCache.get(`migration:${mint}:lock`);
-//     const finishedSteps: Record<string, any> = {};
+//     const finishedSteps: Record<std::string, any> = {};
 
 //     for (const step of stepNames) {
 //       const res = await this.redisCache.get(
@@ -86,21 +86,21 @@ namespace elizaos {
 //     };
 //   }
 
-//   public async resumeOneStep(
-//     mint: string,
+//   public std::async resumeOneStep(
+//     mint: std::string,
 //     forced = false
 //   ): Promise<{
-//     ranStep: string | null;
-//     nextStep: string | null;
+//     ranStep: std::string | null;
+//     nextStep: std::string | null;
 //   }> {
 //     const allSteps = this.getMigrationSteps();
-//     const stepNames = allSteps.map((s) => s.name);
+//     const stepNames = allSteps.std::map((s) => s.name);
 //     const stepKey = `migration:${mint}:currentStep`;
 //     console.log("stepKey", stepKey);
 //     const lockKey = `migration:${mint}:lock`;
 
-//     let rawCurrent: string | null = null;
-//     let rawLock: string | null = null;
+//     let rawCurrent: std::string | null = null;
+//     let rawLock: std::string | null = null;
 //     try {
 //       [rawCurrent, rawLock] = await Promise.all([
 //         this.redisCache.get(stepKey),
@@ -126,7 +126,7 @@ namespace elizaos {
 //       return { ranStep: null, nextStep: null };
 //     }
 
-//     await this.redisCache.set(lockKey, "true");
+//     await this.redisCache.std::set(lockKey, "true");
 
 //     try {
 //       const token = await getToken(mint);
@@ -136,7 +136,7 @@ namespace elizaos {
 //       const step = allSteps[idx];
 //       console.log("step", step);
 //       if (!step) {
-//         await this.redisCache.set(lockKey, "false");
+//         await this.redisCache.std::set(lockKey, "false");
 //         logger.log(`[Migrate] No step found for token ${mint}.`);
 //         return { ranStep: null, nextStep: null };
 //       }
@@ -173,7 +173,7 @@ namespace elizaos {
 //           ...token,
 //           lastUpdated: new Date().toISOString(),
 //         });
-//         await this.redisCache.set(
+//         await this.redisCache.std::set(
 //           resultKey,
 //           JSON.stringify({ txId, extraData })
 //         );
@@ -181,21 +181,21 @@ namespace elizaos {
 
 //       const next = allSteps[idx + 1]?.name || null;
 //       if (next) {
-//         await this.redisCache.set(stepKey, next);
+//         await this.redisCache.std::set(stepKey, next);
 //       }
 
-//       await this.redisCache.set(lockKey, "false");
+//       await this.redisCache.std::set(lockKey, "false");
 //       if (gotLock) {
 //         await this.redisCache.releaseLock(lockKey, lockValue);
 //       }
 //       return { ranStep: step.name, nextStep: next };
 //     } catch (err) {
-//       await this.redisCache.set(lockKey, "false");
+//       await this.redisCache.std::set(lockKey, "false");
 //       throw err;
 //     }
 //   }
 
-//   async resumeMigrationForToken(mint: string, forced = false): Promise<void> {
+//   std::async resumeMigrationForToken(mint: std::string, forced = false): Promise<void> {
 //     const token = await getToken(mint);
 //     if (!token) {
 //       throw new Error(`Token ${mint} not found in DB`);
@@ -209,34 +209,34 @@ namespace elizaos {
 //     }
 
 //     // Lock the token
-//     await this.redisCache.set(lockKey, "true");
+//     await this.redisCache.std::set(lockKey, "true");
 
 //     try {
 //       await this.migrateToken(token);
 //     } catch (err) {
 //       logger.error(`[Migrate] Error migrating token ${token.mint}:`, err);
-//       await this.redisCache.set(lockKey, "false");
+//       await this.redisCache.std::set(lockKey, "false");
 //       throw err;
 //     }
 //   }
 
-//   async forceResumeAtStep(mint: string, step: string): Promise<void> {
-//     const validSteps = this.getMigrationSteps().map((s) => s.name);
+//   std::async forceResumeAtStep(mint: std::string, step: std::string): Promise<void> {
+//     const validSteps = this.getMigrationSteps().std::map((s) => s.name);
 //     if (!validSteps.includes(step)) {
 //       throw new Error(
 //         `Invalid step "${step}". Valid steps: ${validSteps.join(", ")}`
 //       );
 //     }
 
-//     await this.redisCache.set(`migration:${mint}:currentStep`, step);
+//     await this.redisCache.std::set(`migration:${mint}:currentStep`, step);
 //     logger.log(`[Migrate] Forced resume of token ${mint} at step "${step}"`);
 //   }
 
-//   async resumeMigrationsOnStart(): Promise<void> {
+//   std::async resumeMigrationsOnStart(): Promise<void> {
 //     logger.log("[Migrate] Scanning for ongoing migrations on startup...");
 
 //     // find all keys like "migration:<mint>:lock"
-//     const lockKeys: string[] = await this.redisCache.keys("migration:*:lock");
+//     const lockKeys: std::string[] = await this.redisCache.keys("migration:*:lock");
 //     if (lockKeys.length === 0) {
 //       logger.log("[Migrate] No in-flight migrations found.");
 //       return;
@@ -253,8 +253,8 @@ namespace elizaos {
 //       // folows this schema ["mainnet","migration", ...<mintParts>..., "lock"]
 //       const mint = parts.slice(2, parts.length - 1).join(":");
 //       if (isLocked !== "true") {
-//         console.log(`🔒  ${lockKey} is not set to "true", skipping.`);
-//         await this.redisCache.set(`migration:${mint}:lock`, "true");
+//         console.log(`🔒  ${lockKey} is not std::set to "true", skipping.`);
+//         await this.redisCache.std::set(`migration:${mint}:lock`, "true");
 //         // continue;
 //       }
 
@@ -269,23 +269,23 @@ namespace elizaos {
 
 //       try {
 //         // clear the 'lock'
-//         await this.redisCache.set(lockKey, "false");
+//         await this.redisCache.std::set(lockKey, "false");
 //         await this.migrateToken(token);
 //       } catch (err) {
 //         logger.error(`[Migrate] Error resuming migration for ${mint}:`, err);
 
-//         await this.redisCache.set(lockKey, "false");
+//         await this.redisCache.std::set(lockKey, "false");
 //       }
 //     }
 
 //     logger.log("[Migrate] Resume complete.");
 //   }
-//   async printMigrationState(mint: string): Promise<void> {
+//   std::async printMigrationState(mint: std::string): Promise<void> {
 //     const state = await this.getMigrationState(mint);
 //     console.log(JSON.stringify(state, null, 2));
 //   }
 
-//   async callResumeWorker(token: TokenData) {
+//   std::async callResumeWorker(token: TokenData) {
 //     try {
 //       await releaseMigrationLock(token);
 //       await this.migrateToken(token);
@@ -316,7 +316,7 @@ namespace elizaos {
 //       {
 //         name: "lockPrimaryLP",
 //         eventName: "lpPrimaryLocked",
-//         fn: (token: any) =>
+//         fn: (token: std::any) =>
 //           this.lockPrimaryLPTransaction(
 //             token.poolInfo,
 //             token.poolKeys,
@@ -326,7 +326,7 @@ namespace elizaos {
 //       {
 //         name: "lockSecondaryLP",
 //         eventName: "lpSecondaryLocked",
-//         fn: (token: any) =>
+//         fn: (token: std::any) =>
 //           this.lockSecondaryLPTransaction(
 //             token.poolInfo,
 //             token.poolKeys,
@@ -336,7 +336,7 @@ namespace elizaos {
 //       {
 //         name: "finalizeLockLP",
 //         eventName: "lpLocked",
-//         fn: (token: any) =>
+//         fn: (token: std::any) =>
 //           this.finalizeLockLP(
 //             token,
 //             token.primary,
@@ -346,7 +346,7 @@ namespace elizaos {
 //       },
 //       {
 //         name: "sendNft",
-//         fn: (token: any) =>
+//         fn: (token: std::any) =>
 //           this.sendNftToManagerMultisig(
 //             token,
 //             token.nftMinted?.split(",")[1] ?? "",
@@ -357,7 +357,7 @@ namespace elizaos {
 //       {
 //         name: "depositNft",
 //         eventName: "nftDeposited",
-//         fn: (token: any) =>
+//         fn: (token: std::any) =>
 //           this.depositNftToRaydiumVault(
 //             token,
 //             (token.nftMinted ?? "").split(",")[0],
@@ -371,12 +371,12 @@ namespace elizaos {
 //       {
 //         name: "collectFees",
 //         eventName: "feesCollected",
-//         fn: (token: any) => this.collectFee(token).then((result) => result),
+//         fn: (token: std::any) => this.collectFee(token).then((result) => result),
 //       },
 //       {
 //         name: "done",
 //         eventName: "migrationDone",
-//         fn: (token: any) => {
+//         fn: (token: std::any) => {
 //           console.log("token.migration", token.migration);
 //           return Promise.resolve({ txId: "", extraData: {} });
 //         },
@@ -384,7 +384,7 @@ namespace elizaos {
 //     ];
 //   }
 
-//   async migrateToken(token: TokenData): Promise<void> {
+//   std::async migrateToken(token: TokenData): Promise<void> {
 //     const mint = token.mint;
 //     try {
 //       const lockKey = `migration:${mint}:lock`;
@@ -395,17 +395,17 @@ namespace elizaos {
 //       }
 
 //       // Lock the token
-//       await this.redisCache.set(lockKey, "true");
+//       await this.redisCache.std::set(lockKey, "true");
 
 //       const allSteps: MigrationStep[] = this.getMigrationSteps();
-//       const stepNames = allSteps.map((s) => s.name);
+//       const stepNames = allSteps.std::map((s) => s.name);
 //       const stepKey = `migration:${mint}:currentStep`;
 //       let currentStep = await this.redisCache.get(stepKey);
 
 //       // fallback if no currentStep is in Redis
 //       if (!currentStep || !stepNames.includes(currentStep)) {
 //         currentStep = stepNames[0];
-//         await this.redisCache.set(stepKey, currentStep);
+//         await this.redisCache.std::set(stepKey, currentStep);
 //       }
 
 //       const stepIndex = stepNames.indexOf(currentStep);
@@ -426,12 +426,12 @@ namespace elizaos {
 //           `[Migrate] Step "${step.name}" already completed. Moving on.`
 //         );
 //         if (nextStep) {
-//           await this.redisCache.set(stepKey, nextStep.name);
+//           await this.redisCache.std::set(stepKey, nextStep.name);
 
 //           return this.migrateToken(token); // resume with next step
 //         } else {
 //           logger.log(`[Migrate] Migration completed for token ${mint}.`);
-//           await this.redisCache.set(lockKey, "false");
+//           await this.redisCache.std::set(lockKey, "false");
 //           return;
 //         }
 //       }
@@ -442,7 +442,7 @@ namespace elizaos {
 //         token.status = "locked";
 //         token.lockedAt = new Date();
 //       }
-//       (token.migration as Record<string, any>)[step.name] = {
+//       (token.migration as Record<std::string, any>)[step.name] = {
 //         status: "success",
 //         txId: result.txId,
 //         updatedAt: new Date().toISOString(),
@@ -457,22 +457,22 @@ namespace elizaos {
 //       });
 
 //       // Save to Redis
-//       await this.redisCache.set(
+//       await this.redisCache.std::set(
 //         stepResultKey,
 //         JSON.stringify({ txId: result.txId, extraData: result.extraData })
 //       );
 
 //       if (nextStep) {
-//         await this.redisCache.set(stepKey, nextStep.name);
-//         await this.redisCache.set(lockKey, "false");
+//         await this.redisCache.std::set(stepKey, nextStep.name);
+//         await this.redisCache.std::set(lockKey, "false");
 //         return this.migrateToken(token); // continue
 //       } else {
-//         await this.redisCache.set(lockKey, "false");
+//         await this.redisCache.std::set(lockKey, "false");
 //         logger.log(`[Migrate] All steps completed for token ${mint}`);
 //       }
 //     } catch (err) {
 //       logger.error(`[Migrate] Error migrating token ${token.mint}:`, err);
-//       await this.redisCache.set(`migration:${token.mint}:lock`, "false");
+//       await this.redisCache.std::set(`migration:${token.mint}:lock`, "false");
 //       await safeUpdateTokenInDB({
 //         ...token,
 //         mint: token.mint,
@@ -494,8 +494,8 @@ namespace elizaos {
 //     }
 //   }
 
-//   async performWithdraw(token: any): Promise<{
-//     txId: string;
+//   std::async performWithdraw(token: std::any): Promise<{
+//     txId: std::string;
 //     extraData: {
 //       withdrawnAmounts: { withdrawnSol: number; withdrawnTokens: number };
 //     };
@@ -506,8 +506,8 @@ namespace elizaos {
 //     const tx: Transaction = await withdrawTx(
 //       this.wallet.publicKey,
 //       new PublicKey(token.mint),
-//       this.connection as any,
-//       this.autofunProgram as any
+//       this.connection as std::any,
+//       this.autofunProgram as std::any
 //     );
 //     tx.instructions = [...tx.instructions];
 
@@ -521,7 +521,7 @@ namespace elizaos {
 
 //     // 4) fire & forget your CF D1 update
 
-//     (async () => {
+//     (std::async () => {
 //       try {
 //         await safeUpdateTokenInDB({
 //           mint: token.mint,
@@ -547,7 +547,7 @@ namespace elizaos {
 //     };
 //   }
 
-//   private parseWithdrawLogs(withdrawLogs: string[]): {
+//   private parseWithdrawLogs(withdrawLogs: std::string[]): {
 //     withdrawnSol: number;
 //     withdrawnTokens: number;
 //   } {
@@ -568,16 +568,16 @@ namespace elizaos {
 //     return { withdrawnSol, withdrawnTokens };
 //   }
 
-//   async performCreatePool(
-//     token: any
-//   ): Promise<{ txId: string; extraData: { marketId: string; poolInfo: any } }> {
+//   std::async performCreatePool(
+//     token: std::any
+//   ): Promise<{ txId: std::string; extraData: { marketId: std::string; poolInfo: std::any } }> {
 //     const raydium = await initSdk({ loadToken: false });
 //     const mintA = await raydium.token.getTokenInfo(token.mint);
 //     const mintB = await raydium.token.getTokenInfo(NATIVE_MINT);
 
 //     const feeConfigs = await raydium.api.getCpmmConfigs();
 //     if (raydium.cluster === "devnet") {
-//       feeConfigs.forEach((config: any) => {
+//       feeConfigs.forEach((config: std::any) => {
 //         config.id = getCpmmPdaAmmConfigId(
 //           DEVNET_PROGRAM_ID.CREATE_CPMM_POOL_PROGRAM,
 //           config.index
@@ -661,15 +661,15 @@ namespace elizaos {
 //     };
 //   }
 
-//   async initRaydiumSdkAndFetchPoolInfo(token: TokenData): Promise<{
-//     txId: string;
+//   std::async initRaydiumSdkAndFetchPoolInfo(token: TokenData): Promise<{
+//     txId: std::string;
 //     extraData: {
-//       poolInfo: any;
-//       poolKeys: any;
-//       lpAccount: any;
-//       primaryAmount: BN | string;
-//       secondaryAmount: BN | string;
-//       totalAmount: BN | string;
+//       poolInfo: std::any;
+//       poolKeys: std::any;
+//       lpAccount: std::any;
+//       primaryAmount: BN | std::string;
+//       secondaryAmount: BN | std::string;
+//       totalAmount: BN | std::string;
 //     };
 //   }> {
 //     const raydium = await initSdk({
@@ -692,7 +692,7 @@ namespace elizaos {
 //     await raydium.account.fetchWalletTokenAccounts();
 //     const lpMintStr = poolInfoResult.poolInfo.lpMint.address;
 //     const lpAccount = raydium.account.tokenAccounts.find(
-//       (a: any) => a.mint.toBase58() === lpMintStr
+//       (a: std::any) => a.mint.toBase58() === lpMintStr
 //     );
 //     if (!lpAccount) throw new Error(`No LP balance found for pool: ${poolId}`);
 //     const totalLP = lpAccount.amount as BN;
@@ -713,14 +713,14 @@ namespace elizaos {
 //     };
 //   }
 
-//   async finalizeLockLP(
+//   std::async finalizeLockLP(
 //     token: TokenData,
-//     primary: { txId: string; nftMint: string },
-//     secondary: { txId: string; nftMint: string },
-//     totalAmount: any
+//     primary: { txId: std::string; nftMint: std::string },
+//     secondary: { txId: std::string; nftMint: std::string },
+//     totalAmount: std::any
 //   ): Promise<{
-//     txId: string;
-//     extraData: { lockLpTxId: string; nftMinted: string };
+//     txId: std::string;
+//     extraData: { lockLpTxId: std::string; nftMinted: std::string };
 //   }> {
 //     const aggregatedTxId = `${primary.txId},${secondary.txId}`;
 //     const aggregatedNftMint = `${primary.nftMint},${secondary.nftMint}`;
@@ -756,13 +756,13 @@ namespace elizaos {
 //     };
 //   }
 
-//   async lockPrimaryLPTransaction(
-//     poolInfo: any,
-//     poolKeys: any,
-//     primaryAmount: BN | string
+//   std::async lockPrimaryLPTransaction(
+//     poolInfo: std::any,
+//     poolKeys: std::any,
+//     primaryAmount: BN | std::string
 //   ): Promise<{
-//     txId: string;
-//     extraData: { primary: { txId: string; nftMint: string } };
+//     txId: std::string;
+//     extraData: { primary: { txId: std::string; nftMint: std::string } };
 //   }> {
 //     console.log("Performing primary LP lock", primaryAmount.toString());
 //     const amountBn = asBN(primaryAmount);
@@ -795,13 +795,13 @@ namespace elizaos {
 //     };
 //   }
 
-//   async lockSecondaryLPTransaction(
-//     poolInfo: any,
-//     poolKeys: any,
-//     secondaryAmount: BN | string
+//   std::async lockSecondaryLPTransaction(
+//     poolInfo: std::any,
+//     poolKeys: std::any,
+//     secondaryAmount: BN | std::string
 //   ): Promise<{
-//     txId: string;
-//     extraData: { secondary: { txId: string; nftMint: string } };
+//     txId: std::string;
+//     extraData: { secondary: { txId: std::string; nftMint: std::string } };
 //   }> {
 //     console.log("Performing secondary LP lock", secondaryAmount.toString());
 //     const amountBn = asBN(secondaryAmount);
@@ -837,12 +837,12 @@ namespace elizaos {
 //   }
 
 //   // send the 10% to the manager multisig
-//   async sendNftToManagerMultisig(
-//     token: any,
-//     nftMinted: string,
+//   std::async sendNftToManagerMultisig(
+//     token: std::any,
+//     nftMinted: std::string,
 //     signerWallet: Keypair,
 //     multisig: PublicKey
-//   ): Promise<{ txId: string; extraData: object }> {
+//   ): Promise<{ txId: std::string; extraData: object }> {
 //     console.log("Sending NFT to manager multisig", nftMinted);
 //     if (!signerWallet) {
 //       signerWallet = Keypair.fromSecretKey(
@@ -850,7 +850,7 @@ namespace elizaos {
 //       );
 //     }
 //     const txSignature = await sendNftTo(
-//       signerWallet as any,
+//       signerWallet as std::any,
 //       multisig,
 //       new PublicKey(nftMinted), // 10% NFT
 //       this.connection
@@ -876,11 +876,11 @@ namespace elizaos {
 //     return { txId: txSignature, extraData: { sentNftMint: nftMinted } };
 //   }
 //   // send the 90% to our raydium vault
-//   async depositNftToRaydiumVault(
-//     token: any,
-//     nftMinted: string,
+//   std::async depositNftToRaydiumVault(
+//     token: std::any,
+//     nftMinted: std::string,
 //     claimer_address: PublicKey
-//   ): Promise<{ txId: string; extraData: object }> {
+//   ): Promise<{ txId: std::string; extraData: object }> {
 //     console.log("Depositing NFT to Raydium vault", nftMinted);
 //     const signerWallet =
 //       this.wallet.payer ??
@@ -921,9 +921,9 @@ namespace elizaos {
 //     return { txId: txSignature, extraData: { depositedNftMint: nftMinted } };
 //   }
 
-//   async finalizeMigration(
-//     token: any
-//   ): Promise<{ txId: string; extraData: object }> {
+//   std::async finalizeMigration(
+//     token: std::any
+//   ): Promise<{ txId: std::string; extraData: object }> {
 //     console.log("Finalizing migration for token", token.mint);
 //     try {
 //       token.status = "locked";
@@ -956,7 +956,7 @@ namespace elizaos {
 //     };
 //   }
 
-//   async collectFee(token: any): Promise<{ txId: string; extraData: object }> {
+//   std::async collectFee(token: std::any): Promise<{ txId: std::string; extraData: object }> {
 //     console.log("Collecting fee for token", token.mint);
 //     if (
 //       process.env.FIXED_FEE === undefined ||
@@ -985,14 +985,14 @@ namespace elizaos {
 //     };
 //   }
 
-//   private async fetchPoolInfoWithRetry(
-//     raydium: any,
-//     poolId: string
-//   ): Promise<{ poolInfo: any; poolKeys: any }> {
+//   private std::async fetchPoolInfoWithRetry(
+//     raydium: std::any,
+//     poolId: std::string
+//   ): Promise<{ poolInfo: std::any; poolKeys: std::any }> {
 //     const MAX_RETRIES = 10;
 //     let retryCount = 0;
-//     let poolInfo: any = null;
-//     let poolKeys: any;
+//     let poolInfo: std::any = null;
+//     let poolKeys: std::any;
 //     while (!poolInfo && retryCount < MAX_RETRIES) {
 //       try {
 //         if (raydium.cluster === "devnet") {

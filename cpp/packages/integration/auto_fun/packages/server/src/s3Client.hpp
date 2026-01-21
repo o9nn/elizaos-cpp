@@ -38,9 +38,9 @@ std::future<void> ensureMinioBucketExists(S3Client client, const std::string& bu
 
     // Read all potential config vars
 
-        // --- Priority 1: Use MinIO if MINIO_ENDPOINT is explicitly set ---
+        // --- Priority 1: Use MinIO if MINIO_ENDPOINT is explicitly std::set ---
 
-        // --- Priority 2: Use Generic S3 if all S3_* vars are set (and MINIO_ENDPOINT wasn't) ---
+        // --- Priority 2: Use Generic S3 if all S3_* vars are std::set (and MINIO_ENDPOINT wasn't) ---
 
             // Determine public base URL
                  // Fallback: Construct base url - consider adding S3_PUBLIC_BASE_URL env var

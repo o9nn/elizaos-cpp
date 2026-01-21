@@ -50,7 +50,7 @@ class AuthenticationService {
   private runtime: IAgentRuntime;
   private lastAuthStatus: AuthStatus | null = null;
   private validationCache = new Map<
-    string,
+    std::string,
     { result: ApiKeyValidationResult; timestamp: number }
 
   /**

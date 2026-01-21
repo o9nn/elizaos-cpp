@@ -10,7 +10,7 @@ class RunBatchProgressManager;
 class SpinnerTask : public object, public std::enable_shared_from_this<SpinnerTask> {
 public:
     using std::enable_shared_from_this<SpinnerTask>::shared_from_this;
-    string status;
+    std::string status;
 
     double startTime;
 };
@@ -18,23 +18,23 @@ public:
 class RunBatchProgressManager : public object, public std::enable_shared_from_this<RunBatchProgressManager> {
 public:
     using std::enable_shared_from_this<RunBatchProgressManager>::shared_from_this;
-    std::shared_ptr<Map<string, std::shared_ptr<SpinnerTask>>> spinnerTasks = std::make_shared<Map>();
+    std::shared_ptr<Map<std::string, std::shared_ptr<SpinnerTask>>> spinnerTasks = std::make_shared<Map>();
 
-    std::shared_ptr<Map<any, array<string>>> instancesByExitStatus = std::make_shared<Map>();
+    std::shared_ptr<Map<std::any, array<string>>> instancesByExitStatus = std::make_shared<Map>();
 
-    string yamlReportPath;
+    std::string yamlReportPath;
 
-    RunBatchProgressManager(double _numInstances, string yamlReportPath = undefined);
+    RunBatchProgressManager(double _numInstances, std::string yamlReportPath = undefined);
     virtual double get_nCompleted();
     virtual void updateExitStatusTable();
-    virtual string shortenStr(string s, double maxLen, boolean shortenLeft = false);
-    virtual void updateInstanceStatus(string instanceId, string message);
-    virtual void onInstanceStart(string instanceId);
-    virtual void onInstanceEnd(string instanceId, any exitStatus);
-    virtual void onUncaughtException(string instanceId, std::shared_ptr<Error> exception);
+    virtual std::string shortenStr(std::string s, double maxLen, boolean shortenLeft = false);
+    virtual void updateInstanceStatus(std::string instanceId, std::string message);
+    virtual void onInstanceStart(std::string instanceId);
+    virtual void onInstanceEnd(std::string instanceId, std::any exitStatus);
+    virtual void onUncaughtException(std::string instanceId, std::shared_ptr<Error> std::exception);
     virtual void printReport();
-    virtual Record<string, any> getOverviewData();
-    virtual void saveOverviewDataYaml(string filePath);
+    virtual Record<std::string, any> getOverviewData();
+    virtual void saveOverviewDataYaml(std::string filePath);
 };
 
 #endif

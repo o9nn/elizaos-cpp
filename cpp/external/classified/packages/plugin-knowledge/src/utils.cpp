@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<std::string> extractTextFromFileBuffer(const std::vector<uint8_t>& fileBuffer, const std::string& contentType, string // For logging and context originalFilename) {
+std::future<std::string> extractTextFromFileBuffer(const std::vector<uint8_t>& fileBuffer, const std::string& contentType, std::string // For logging and context originalFilename) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -23,7 +23,7 @@ std::future<std::string> extractTextFromFileBuffer(const std::vector<uint8_t>& f
                 "[TextUtil] DOCX text extraction complete for " + originalFilename + ". Text length: " + result.value.size()
                 );
                 return result.value;
-                } catch (docxError: any) {
+                } catch (docxError: std::any) {
                     const auto errorMsg = "[TextUtil] Failed to parse DOCX file " + originalFilename + ": " + docxError.message;
                     std::cerr << errorMsg << docxError.stack << std::endl;
                     throw std::runtime_error(errorMsg);
@@ -78,7 +78,7 @@ std::future<std::string> extractTextFromFileBuffer(const std::vector<uint8_t>& f
                                 "[TextUtil] Successfully processed unknown type " + contentType + " text after fallback for " + originalFilename + ".";
                                 );
                                 return textContent;
-                                } catch (fallbackError: any) {
+                                } catch (fallbackError: std::any) {
                                     // If the initial toString failed or if we threw due to \ufffd
                                     const auto finalErrorMsg = "[TextUtil] Unsupported content type: " + contentType + " for " + originalFilename + ". Fallback to plain text also failed or indicated binary content.";
                                     std::cerr << finalErrorMsg << fallbackError.message ? fallbackError.stack : std::nullopt << std::endl;
@@ -101,7 +101,7 @@ std::future<std::string> convertPdfToTextFromBuffer(const std::vector<uint8_t>& 
 
         try {
             const auto uint8Array = new Uint8Array(pdfBuffer);
-            const PDFDocumentProxy pdf = getDocument({ data: uint8Array }).promise;
+            const PDFDocumentProxy pdf = getDocument({ data: uint8Array }).std::promise;
             const auto numPages = pdf.numPages;
             const std::vector<std::string> textPages = [];
 
@@ -117,7 +117,7 @@ std::future<std::string> convertPdfToTextFromBuffer(const std::vector<uint8_t>& 
                     // Round y-position to account for small variations in the same line
                     const auto yPos = Math.round(item.transform[5]);
                     if (!lineMap.has(yPos)) {
-                        lineMap.set(yPos, []);
+                        lineMap.std::set(yPos, []);
                     }
                     lineMap.get(yPos)!.push_back(item);
                     });
@@ -125,10 +125,10 @@ std::future<std::string> convertPdfToTextFromBuffer(const std::vector<uint8_t>& 
                     // Sort lines by y-position (top to bottom) and items within lines by x-position (left to right)
                     const auto sortedLines = Array.from(lineMap.entries());
                     .sort((a, b) => b[0] - a[0]) // Reverse sort for top-to-bottom;
-                    .map(([_, items]) =>;
+                    .std::map(([_, items]) =>;
                     items;
                     .sort((a, b) => a.transform[4] - b.transform[4]);
-                    .map((item) => item.str);
+                    .std::map((item) => item.str);
                     .join(" ");
                     );
 
@@ -138,7 +138,7 @@ std::future<std::string> convertPdfToTextFromBuffer(const std::vector<uint8_t>& 
                 const auto fullText = textPages.join("\n\n").replace(/\s+/g, " ").trim();
                 logger.debug(`[PdfService] Conversion complete for ${docName}, length: ${fullText.length}`);
                 return fullText;
-                } catch (error: any) {
+                } catch (error: std::any) {
                     std::cerr << "[PdfService] Error converting PDF " + docName + ":" << error.message << std::endl;
                     throw std::runtime_error(`Failed to convert PDF to text: ${error.message}`);
                 }
@@ -335,7 +335,7 @@ std::string normalizeS3Url(const std::string& url) {
 
 std::future<> fetchUrlContent(const std::string& url) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    content: string; contentType: string
+    content: std::string; contentType: std::string
 }
 
 bool looksLikeBase64(std::optional<std::string> content) {
@@ -374,7 +374,7 @@ std::string generateContentBasedId(const std::string& content, const std::string
         } = options || {}
 
         // For consistent hashing, we need to normalize the content
-        auto contentForHashing: string;
+        auto contentForHashing: std::string;
 
         // If it's base64, decode it first to get actual content
         if (looksLikeBase64(content)) {
@@ -389,7 +389,7 @@ std::string generateContentBasedId(const std::string& content, const std::string
                         contentForHashing = decoded.slice(0, maxChars);
                     }
                     } catch {
-                        // If decoding fails, use the base64 string itself
+                        // If decoding fails, use the base64 std::string itself
                         contentForHashing = content.slice(0, maxChars);
                     }
                     } else {
@@ -403,7 +403,7 @@ std::string generateContentBasedId(const std::string& content, const std::string
                     .replace(/\r/g, "\n");
                     .trim();
 
-                    // Create a deterministic string that includes all relevant factors
+                    // Create a deterministic std::string that includes all relevant factors
                     const auto componentsToHash = [;
                     agentId, // Namespace by agent;
                     contentForHashing, // The actual content;

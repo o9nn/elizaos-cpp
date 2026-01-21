@@ -27,7 +27,7 @@ struct WalletOperationResult {
 class WalletService {
   private connection: Connection | null = null;
   private keypair: Keypair | null = null;
-  public CONFIRMATION_CONFIG: any;
+  public CONFIRMATION_CONFIG: std::any;
 
   constructor(private runtime: IAgentRuntime) {
     // Add configuration constants

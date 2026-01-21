@@ -16,7 +16,7 @@ namespace elizaos {
 
 class Emoji {
   id: Snowflake | Maybe;
-  name: string | Maybe;
+  name: std::string | Maybe;
   roles?: Snowflake[];
   user?: User;
   require_colons?: boolean;
@@ -26,7 +26,7 @@ class Emoji {
 
   constructor(opts: {
     id: Snowflake | Maybe;
-    name: string | Maybe;
+    name: std::string | Maybe;
     roles?: Snowflake[];
     user?: User;
     require_colons?: boolean;

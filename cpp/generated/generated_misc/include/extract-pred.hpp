@@ -4,6 +4,6 @@
 #include "path.h"
 #include "fs.h"
 
-void extractPred(string trajPath);
+void extractPred(std::string trajPath);
 
 #endif

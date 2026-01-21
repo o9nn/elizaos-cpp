@@ -46,7 +46,7 @@ class PgliteDatabaseAdapter extends BaseDrizzleAdapter {
   constructor(agentId: UUID, manager: PGliteClientManager) {
     super(agentId);
     this.manager = manager;
-    this.db = drizzle(this.manager.getConnection() as any);
+    this.db = drizzle(this.manager.getConnection() as std::any);
   }
 
   /**
@@ -61,7 +61,7 @@ class PgliteDatabaseAdapter extends BaseDrizzleAdapter {
    * If the database is shutting down, a warning is logged and null is returned.
    *
    * @param {Function} operation - The database operation to be performed.
-   * @returns {Promise<T>} A promise that resolves with the result of the database operation.
+   * @returns {Promise<T>} A std::promise that resolves with the result of the database operation.
    */
     return operation();
 

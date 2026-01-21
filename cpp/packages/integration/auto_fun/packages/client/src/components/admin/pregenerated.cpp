@@ -55,7 +55,7 @@ void AdminPregenerated() {
                             filterUsed,
                             debouncedSearchQuery,
                             ],
-                            queryFn: async () => {
+                            queryFn: std::async () => {
                                 const auto params = new URLSearchParams({;
                                     page: std::to_string(currentPage),
                                     limit: "50",
@@ -84,7 +84,7 @@ void AdminPregenerated() {
 
                                     // Delete mutation
                                     const auto deleteMutation = useMutation({;
-                                        mutationFn: (id: string) =>
+                                        mutationFn: (id: std::string) =>
                                         "fetcher(" + "/api/admin/pregenerated/" + id
                                         onSuccess: () => {
                                             toast.success("Token deleted successfully");
@@ -123,7 +123,7 @@ void AdminPregenerated() {
 
                                                                 // Edit token mutation
                                                                 const auto editMutation = useMutation({;
-                                                                    mutationFn: (data: { id: string; updates: Partial<PreGeneratedToken> }) =>
+                                                                    mutationFn: (data: { id: std::string; updates: Partial<PreGeneratedToken> }) =>
                                                                     "fetcher(" + "/api/admin/pregenerated/" + data.id
                                                                     onSuccess: () => {
                                                                         toast.success("Token updated successfully");
@@ -179,13 +179,13 @@ void AdminPregenerated() {
                                                                                             editMutation.mutate({ id: editingToken.id, updates });
                                                                                             };
 
-                                                                                            const auto handleDelete = [&](id: string) {;
+                                                                                            const auto handleDelete = [&](id: std::string) {;
                                                                                                 if (window.confirm("Are you sure you want to delete this token?")) {
                                                                                                     deleteMutation.mutate(id);
                                                                                                 }
                                                                                                 };
 
-                                                                                                const auto handleSort = [&](column: keyof PreGeneratedToken | string) {;
+                                                                                                const auto handleSort = [&](column: keyof PreGeneratedToken | std::string) {;
                                                                                                     if (sortBy == column) {
                                                                                                         // Toggle sort order if clicking the same column
                                                                                                         setSortOrder(sortOrder == "asc" ? "desc" : "asc");
@@ -198,7 +198,7 @@ void AdminPregenerated() {
                                                                                                         setCurrentPage(1);
                                                                                                         };
 
-                                                                                                        const auto getSortIndicator = [&](column: keyof PreGeneratedToken | string) {;
+                                                                                                        const auto getSortIndicator = [&](column: keyof PreGeneratedToken | std::string) {;
                                                                                                             if (sortBy != column) return null;
                                                                                                             return sortOrder == "asc" ? " ▲" : " ▼";
                                                                                                             };
@@ -326,7 +326,7 @@ void AdminPregenerated() {
             </td>;
             </tr>;
             ) : (
-            tokens.map((token: PreGeneratedToken) => (
+            tokens.std::map((token: PreGeneratedToken) => (
             <tr;
         key={token.id}
         className="border-b border-autofun-background-primary hover:bg-autofun-background-secondary/10"

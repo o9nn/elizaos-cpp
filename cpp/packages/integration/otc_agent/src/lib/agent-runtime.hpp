@@ -43,7 +43,7 @@ class AgentRuntimeManager {
       elizaLogger.warn = console.warn.bind(console);
       elizaLogger.error = console.error.bind(console);
       elizaLogger.debug = console.debug.bind(console);
-      elizaLogger.success = (msg: string | Record<string, unknown> | Error) =>
+      elizaLogger.success = (msg: std::string | Record<std::string, unknown> | Error) =>
         console.log(`✓ ${typeof msg === "string" ? msg : JSON.stringify(msg)}`);
       // elizaLogger doesn't have notice in types but may be used at runtime
       const logger = elizaLogger as typeof elizaLogger & {
@@ -70,16 +70,16 @@ class AgentRuntimeManager {
   }
 
   // Helper method to get or create the runtime instance
-  // Uses a single initialization promise to prevent concurrent initialization attempts
-    // Priority 1: Reuse instance runtime if already set
+  // Uses a single initialization std::promise to prevent concurrent initialization attempts
+    // Priority 1: Reuse instance runtime if already std::set
 
     // Priority 2: Reuse global cached runtime (persists across warm serverless containers)
 
     // Priority 3: If initialization is already in progress, wait for it
 
-    // Priority 4: Create new runtime with single initialization promise
+    // Priority 4: Create new runtime with single initialization std::promise
 
-      // Clear the promise so next attempt can try again
+      // Clear the std::promise so next attempt can try again
 
   // Separate method for actual runtime creation (called once)
 

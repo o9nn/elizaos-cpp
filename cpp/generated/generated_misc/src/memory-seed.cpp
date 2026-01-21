@@ -1,9 +1,9 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/plugin-sql/src/__tests__/integration/seed/memory-seed.h"
 
-any memoryTestAgentId = as<std::shared_ptr<UUID>>(uuidv4());
-any memoryTestEntityId = as<std::shared_ptr<UUID>>(uuidv4());
-any memoryTestRoomId = as<std::shared_ptr<UUID>>(uuidv4());
-any memoryTestWorldId = as<std::shared_ptr<UUID>>(uuidv4());
+std::any memoryTestAgentId = as<std::shared_ptr<UUID>>(uuidv4());
+std::any memoryTestEntityId = as<std::shared_ptr<UUID>>(uuidv4());
+std::any memoryTestRoomId = as<std::shared_ptr<UUID>>(uuidv4());
+std::any memoryTestWorldId = as<std::shared_ptr<UUID>>(uuidv4());
 std::shared_ptr<Agent> memoryTestAgent = object{
     object::pair{std::string("id"), memoryTestAgentId}, 
     object::pair{std::string("name"), std::string("Memory Test Agent")}, 
@@ -44,7 +44,7 @@ std::shared_ptr<Room> memoryTestRoom = object{
 };
 std::function<array<double>(double)> generateEmbedding = [=](auto dimension = 384) mutable
 {
-    auto vector = Array(dimension)->fill(0)->map([=]() mutable
+    auto std::vector = Array(dimension)->fill(0)->std::map([=]() mutable
     {
         return Math->random() * 2 - 1;
     }
@@ -54,7 +54,7 @@ std::function<array<double>(double)> generateEmbedding = [=](auto dimension = 38
         return sum + val * val;
     }
     , 0));
-    return vector->map([=](auto val) mutable
+    return vector->std::map([=](auto val) mutable
     {
         return Number((val / magnitude)->toFixed(6));
     }
@@ -131,7 +131,7 @@ array<std::shared_ptr<Memory>> memoryTestMemoriesWithEmbedding = array<std::shar
         object::pair{std::string("type"), std::string("text")}
     }}
 }, const_(memoryTestMemories)[2]) };
-any documentMemoryId = as<std::shared_ptr<UUID>>(uuidv4());
+std::any documentMemoryId = as<std::shared_ptr<UUID>>(uuidv4());
 std::shared_ptr<Memory> memoryTestDocument = object{
     object::pair{std::string("id"), documentMemoryId}, 
     object::pair{std::string("entityId"), memoryTestEntityId}, 
@@ -151,7 +151,7 @@ std::shared_ptr<Memory> memoryTestDocument = object{
         object::pair{std::string("source"), std::string("integration-test")}
     }}
 };
-array<std::shared_ptr<Memory>> memoryTestFragments = Array(3)->fill(0)->map([=](auto _, auto index) mutable
+array<std::shared_ptr<Memory>> memoryTestFragments = Array(3)->fill(0)->std::map([=](auto _, auto index) mutable
 {
     return (object{
         object::pair{std::string("id"), as<std::shared_ptr<UUID>>(uuidv4())}, 
@@ -174,14 +174,14 @@ array<std::shared_ptr<Memory>> memoryTestFragments = Array(3)->fill(0)->map([=](
     });
 }
 );
-std::function<any(any, double)> createSimilarMemoryVector = [=](auto baseMemory, auto similarity) mutable
+std::function<std::any(std::any, double)> createSimilarMemoryVector = [=](auto baseMemory, auto similarity) mutable
 {
     if (OR((!baseMemory->embedding), (!Array->isArray(baseMemory->embedding)))) {
-        throw any(std::make_shared<Error>(std::string("Base memory must have an embedding")));
+        throw std::any(std::make_shared<Error>(std::string("Base memory must have an embedding")));
     }
     auto dimension = baseMemory->embedding->length;
     shared noise = generateEmbedding(dimension);
-    auto blendedVector = baseMemory->embedding->map([=](auto value, auto idx) mutable
+    auto blendedVector = baseMemory->embedding->std::map([=](auto value, auto idx) mutable
     {
         return value * similarity + const_(noise)[idx] * (1 - similarity);
     }
@@ -191,7 +191,7 @@ std::function<any(any, double)> createSimilarMemoryVector = [=](auto baseMemory,
         return sum + val * val;
     }
     , 0));
-    auto normalizedVector = blendedVector->map([=](auto val) mutable
+    auto normalizedVector = blendedVector->std::map([=](auto val) mutable
     {
         return Number((val / magnitude)->toFixed(6));
     }

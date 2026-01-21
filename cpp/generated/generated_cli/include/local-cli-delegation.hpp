@@ -10,11 +10,11 @@ using path = _default;
 
 boolean isRunningFromLocalCli();
 
-any getLocalCliPath();
+std::any getLocalCliPath();
 
-Record<string, string> setupLocalEnvironment();
+Record<std::string, string> setupLocalEnvironment();
 
-std::shared_ptr<Promise<void>> delegateToLocalCli(string localCliPath);
+std::shared_ptr<Promise<void>> delegateToLocalCli(std::string localCliPath);
 
 boolean isTestOrCiEnvironment();
 

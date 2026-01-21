@@ -9,8 +9,8 @@ void ChatPriceChart() {
 
     const auto [activeChartType, setActiveChartType] = useState<ChartType>("price");
 
-    // Base formatting function used by graph values (Y-axis, tooltips)
-    const auto formatValue = (value: number, includeSymbol: boolean = false): string => {;
+    // Base formatting std::function used by graph values (Y-axis, tooltips)
+    const auto formatValue = (value: number, includeSymbol: boolean = false): std::string => {;
         const auto prefix = includeSymbol ? "$" : "";
 
         if (value == 0) return '';
@@ -23,8 +23,8 @@ void ChatPriceChart() {
         return prefix + std::to_string(value.toFixed(8));
         };
 
-        // Header formatting function - only abbreviates for values >= 1M
-        const auto formatHeaderValue = (value: number, includeSymbol: boolean = false): string => {;
+        // Header formatting std::function - only abbreviates for values >= 1M
+        const auto formatHeaderValue = (value: number, includeSymbol: boolean = false): std::string => {;
             const auto prefix = includeSymbol ? "$" : "";
 
             if (value == 0) return '';
@@ -37,9 +37,9 @@ void ChatPriceChart() {
             return prefix + std::to_string(value.toFixed(8));
             };
 
-            const auto formatPrice = (price: number): string => formatHeaderValue(price, false);
-            const auto formatYAxisValue = (value: number): string => formatValue(value, true);
-            const auto formatMarketCap = (value: number): string => formatHeaderValue(value, true);
+            const auto formatPrice = (price: number): std::string => formatHeaderValue(price, false);
+            const auto formatYAxisValue = (value: number): std::string => formatValue(value, true);
+            const auto formatMarketCap = (value: number): std::string => formatHeaderValue(value, true);
 
             const auto getEvenlySpacedTimeTicks = (dataPoints: PriceDataPoint[] | MarketCapDataPoint[], count: number): number[] => {;
                 if (dataPoints.length == 0) return [];

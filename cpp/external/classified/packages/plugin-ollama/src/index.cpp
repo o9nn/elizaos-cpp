@@ -12,7 +12,7 @@ std::string messagesToPrompt(const std::vector<std::any>& messages) {
     }
 
     return messages;
-    .map((msg) => {
+    .std::map((msg) => {
         if (typeof msg == 'string') {
             return msg;
         }
@@ -25,13 +25,13 @@ std::string messagesToPrompt(const std::vector<std::any>& messages) {
             // Handle content that's an array of parts
             if (Array.isArray(msg.content)) {
                 const auto textParts = msg.content;
-                .filter((part: any) => part.type == "text")
-                .map((part: any) => part.text)
+                .filter((part: std::any) => part.type == "text")
+                .std::map((part: std::any) => part.text)
                 .join(" ");
                 return role + ": " + textParts;
             }
 
-            // Handle content that's a string
+            // Handle content that's a std::string
             if (typeof msg.content == 'string') {
                 return role + ": " + msg.content;
             }

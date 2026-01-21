@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-stagehand/src/__tests__/e2e-browser.test.h"
 
-std::function<any()> createMockRuntime = [=]() mutable
+std::function<std::any()> createMockRuntime = [=]() mutable
 {
     return as<std::shared_ptr<IAgentRuntime>>(as<any>((object{
         object::pair{std::string("getSetting"), [=](auto key) mutable
@@ -22,7 +22,7 @@ std::function<any()> createMockRuntime = [=]() mutable
         object::pair{std::string("registerService"), mock()}
     })));
 };
-std::function<any(string)> createMemory = [=](auto text) mutable
+std::function<std::any(std::string)> createMemory = [=](auto text) mutable
 {
     return as<std::shared_ptr<Memory>>((object{
         object::pair{std::string("id"), std::string("mem-") + Date->now() + string_empty}, 

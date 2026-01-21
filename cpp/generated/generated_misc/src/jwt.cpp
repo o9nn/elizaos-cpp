@@ -1,11 +1,11 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/packages/server/src/middleware/jwt.h"
 
-string generateAuthToken(string userId, string email, string username, boolean isAdmin)
+std::string generateAuthToken(std::string userId, std::string email, std::string username, boolean isAdmin)
 {
     if (!JWT_SECRET) {
-        throw any(std::make_shared<Error>(std::string("JWT_SECRET not configured")));
+        throw std::any(std::make_shared<Error>(std::string("JWT_SECRET not configured")));
     }
-    auto adminEmails = OR((process->env->ADMIN_EMAILS->split(std::string(","))->map([=](auto e) mutable
+    auto adminEmails = OR((process->env->ADMIN_EMAILS->split(std::string(","))->std::map([=](auto e) mutable
     {
         return e->trim()->toLowerCase();
     }
@@ -24,7 +24,7 @@ string generateAuthToken(string userId, string email, string username, boolean i
 };
 
 
-any requireAuth(std::shared_ptr<AuthenticatedRequest> req, std::shared_ptr<Response> res, std::shared_ptr<NextFunction> next)
+std::any requireAuth(std::shared_ptr<AuthenticatedRequest> req, std::shared_ptr<Response> res, std::shared_ptr<NextFunction> next)
 {
     if (!JWT_SECRET) {
         logger->error(std::string("[Auth] JWT_SECRET not configured - cannot verify tokens"));
@@ -57,7 +57,7 @@ any requireAuth(std::shared_ptr<AuthenticatedRequest> req, std::shared_ptr<Respo
         logger->debug(std::string("[Auth] Authenticated request from user: ") + decoded->username + std::string(" (") + decoded->userId->substring(0, 8) + std::string("...)") + (req->isAdmin) ? std::string(" [ADMIN]") : string_empty + string_empty);
         next();
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->warn(std::string("[Auth] Token verification failed: ") + error["message"] + string_empty);
         if (error["name"] == std::string("TokenExpiredError")) {
@@ -80,7 +80,7 @@ any requireAuth(std::shared_ptr<AuthenticatedRequest> req, std::shared_ptr<Respo
 };
 
 
-any optionalAuth(std::shared_ptr<AuthenticatedRequest> req, std::shared_ptr<NextFunction> next)
+std::any optionalAuth(std::shared_ptr<AuthenticatedRequest> req, std::shared_ptr<NextFunction> next)
 {
     if (!JWT_SECRET) {
         return next();
@@ -98,7 +98,7 @@ any optionalAuth(std::shared_ptr<AuthenticatedRequest> req, std::shared_ptr<Next
         req->username = decoded->username;
         req->isAdmin = OR((decoded->isAdmin), (false));
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->debug(std::string("[Auth] Optional auth - invalid token ignored"));
     }
@@ -106,7 +106,7 @@ any optionalAuth(std::shared_ptr<AuthenticatedRequest> req, std::shared_ptr<Next
 };
 
 
-any requireAuthOrApiKey(std::shared_ptr<AuthenticatedRequest> req, std::shared_ptr<Response> res, std::shared_ptr<NextFunction> next)
+std::any requireAuthOrApiKey(std::shared_ptr<AuthenticatedRequest> req, std::shared_ptr<Response> res, std::shared_ptr<NextFunction> next)
 {
     auto authHeader = req->headers->authorization;
     auto serverAuthToken = process->env->ELIZA_SERVER_AUTH_TOKEN;
@@ -132,7 +132,7 @@ any requireAuthOrApiKey(std::shared_ptr<AuthenticatedRequest> req, std::shared_p
             logger->debug(std::string("[Auth] Authenticated via JWT: ") + decoded->username + std::string(" (") + decoded->userId->substring(0, 8) + std::string("...)") + (req->isAdmin) ? std::string(" [ADMIN]") : string_empty + string_empty);
             return next();
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->warn(std::string("[Auth] JWT verification failed in requireAuthOrApiKey: ") + error["message"] + string_empty);
         }
@@ -153,7 +153,7 @@ any requireAuthOrApiKey(std::shared_ptr<AuthenticatedRequest> req, std::shared_p
 };
 
 
-any requireAdmin(std::shared_ptr<AuthenticatedRequest> req, std::shared_ptr<Response> res, std::shared_ptr<NextFunction> next)
+std::any requireAdmin(std::shared_ptr<AuthenticatedRequest> req, std::shared_ptr<Response> res, std::shared_ptr<NextFunction> next)
 {
     if (!req->isAdmin) {
         logger->warn(std::string("[Auth] Non-admin user ") + req->username + std::string(" (") + req->userId->substring(0, 8) + std::string("...) attempted admin operation"));
@@ -169,12 +169,12 @@ any requireAdmin(std::shared_ptr<AuthenticatedRequest> req, std::shared_ptr<Resp
 };
 
 
-string JWT_SECRET = process->env->JWT_SECRET;
+std::string JWT_SECRET = process->env->JWT_SECRET;
 
 void Main(void)
 {
     if (!JWT_SECRET) {
-        logger->warn(std::string("[Auth] JWT_SECRET not set - authentication will not work. Set JWT_SECRET environment variable."));
+        logger->warn(std::string("[Auth] JWT_SECRET not std::set - authentication will not work. Set JWT_SECRET environment variable."));
     }
 }
 

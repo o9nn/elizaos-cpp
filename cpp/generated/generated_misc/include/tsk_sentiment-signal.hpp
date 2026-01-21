@@ -5,6 +5,6 @@
 #include "../schemas.h"
 #include "../types.h"
 
-void setupSentimentGenerator(any runtime);
+void setupSentimentGenerator(std::any runtime);
 
 #endif

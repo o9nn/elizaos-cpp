@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/otc-agent/src/utils/xml-parser.h"
 
-any extractXMLFromMessage(string messageText)
+std::any extractXMLFromMessage(std::string messageText)
 {
     auto commentMatch = messageText->match((new RegExp(std::string("<!-- XML_START -->([\s\S]*?)<!-- XML_END --"))));
     if (AND((commentMatch), ((*const_(commentMatch))[1]))) {
@@ -18,7 +18,7 @@ any extractXMLFromMessage(string messageText)
 };
 
 
-any parseOTCQuoteXML(string xmlString)
+std::any parseOTCQuoteXML(std::string xmlString)
 {
     auto parser = std::make_shared<DOMParser>();
     shared xmlDoc = parser->parseFromString(xmlString, std::string("text/xml"));
@@ -30,12 +30,12 @@ any parseOTCQuoteXML(string xmlString)
     shared getElementText = [=](auto tagName) mutable
     {
         auto elem = const_(xmlDoc->getElementsByTagName(tagName))[0];
-        return (elem) ? any(OR((elem->textContent), (string_empty))) : any(string_empty);
+        return (elem) ? std::any(OR((elem->textContent), (string_empty))) : std::any(string_empty);
     };
     auto getElementNumber = [=](auto tagName) mutable
     {
         auto text = getElementText(tagName);
-        return (text) ? any(parseFloat(text)) : any(0);
+        return (text) ? std::any(parseFloat(text)) : std::any(0);
     };
     auto rootTag = OR((xmlDoc->querySelector(std::string("Quote"))), (xmlDoc->querySelector(std::string("quote"))));
     if (!rootTag) {
@@ -48,7 +48,7 @@ any parseOTCQuoteXML(string xmlString)
         object::pair{std::string("tokenAmount"), getElementText(std::string("tokenAmount"))}, 
         object::pair{std::string("tokenAmountFormatted"), getElementText(std::string("tokenAmountFormatted"))}, 
         object::pair{std::string("tokenSymbol"), getElementText(std::string("tokenSymbol"))}, 
-        object::pair{std::string("tokenChain"), (tokenChain) ? any((as<any>(tokenChain))) : any(undefined)}, 
+        object::pair{std::string("tokenChain"), (tokenChain) ? std::any((as<any>(tokenChain))) : std::any(undefined)}, 
         object::pair{std::string("apr"), getElementNumber(std::string("apr"))}, 
         object::pair{std::string("lockupMonths"), getElementNumber(std::string("lockupMonths"))}, 
         object::pair{std::string("lockupDays"), getElementNumber(std::string("lockupDays"))}, 
@@ -69,7 +69,7 @@ any parseOTCQuoteXML(string xmlString)
 };
 
 
-any parseQuoteAcceptedXML(string xmlString)
+std::any parseQuoteAcceptedXML(std::string xmlString)
 {
     auto parser = std::make_shared<DOMParser>();
     shared xmlDoc = parser->parseFromString(xmlString, std::string("text/xml"));
@@ -81,12 +81,12 @@ any parseQuoteAcceptedXML(string xmlString)
     shared getElementText = [=](auto tagName) mutable
     {
         auto elem = const_(xmlDoc->getElementsByTagName(tagName))[0];
-        return (elem) ? any(OR((elem->textContent), (string_empty))) : any(string_empty);
+        return (elem) ? std::any(OR((elem->textContent), (string_empty))) : std::any(string_empty);
     };
     auto getElementNumber = [=](auto tagName) mutable
     {
         auto text = getElementText(tagName);
-        return (text) ? any(parseFloat(text)) : any(0);
+        return (text) ? std::any(parseFloat(text)) : std::any(0);
     };
     return object{
         object::pair{std::string("quoteId"), getElementText(std::string("quoteId"))}, 
@@ -109,13 +109,13 @@ any parseQuoteAcceptedXML(string xmlString)
 };
 
 
-boolean messageContainsQuote(string messageText)
+boolean messageContainsQuote(std::string messageText)
 {
     return !!(OR((OR((OR((messageText->includes(std::string("<quote>"))), (messageText->includes(std::string("<quote>"))))), (messageText->includes(std::string("<quoteAccepted>"))))), (messageText->includes(std::string("<!-- XML_START -->")))));
 };
 
 
-object parseMessageXML(string messageText)
+object parseMessageXML(std::string messageText)
 {
     auto xmlString = extractXMLFromMessage(messageText);
     if (!xmlString) {

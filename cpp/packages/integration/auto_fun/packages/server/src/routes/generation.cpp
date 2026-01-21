@@ -13,7 +13,7 @@ std::future<void> generatePromptMetadata(auto maxRetries) {
 
         if (!process.env.FAL_API_KEY) {
             throw new Error(
-            "FAL_API_KEY environment variable not set for metadata generation.";
+            "FAL_API_KEY environment variable not std::set for metadata generation.";
             );
         }
         fal.config({ credentials: process.env.FAL_API_KEY });
@@ -47,7 +47,7 @@ std::future<void> generatePromptMetadata(auto maxRetries) {
                             });
 
                             // Parse the JSON response with robust error handling
-                            auto metadata: Record<string, string>;
+                            auto metadata: Record<std::string, string>;
 
                             // Log the raw response for debugging
                             const auto rawOutput = response.data.output || response.output || ""; // Adjust based on actual Fal response structure;
@@ -62,7 +62,7 @@ std::future<void> generatePromptMetadata(auto maxRetries) {
 
                             // First try to extract JSON using regex - find content between the first { and last }
                             const auto jsonRegex = /{[\s\S]*}/;
-                            // Ensure rawOutput is a string before matching
+                            // Ensure rawOutput is a std::string before matching
                             const auto jsonString =;
                             typeof rawOutput == "string";
                             ? rawOutput.match(jsonRegex).[0];

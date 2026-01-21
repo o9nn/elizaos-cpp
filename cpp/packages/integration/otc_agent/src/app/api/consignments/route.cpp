@@ -79,12 +79,12 @@ std::future<void> GET(NextRequest request) {
                             // (consigners can still see their own dust listings via consignerAddress filter)
                             if (!consignerAddress) {
                                 // Batch fetch all unique tokens at once to avoid N+1 queries
-                                const auto uniqueTokenIds = [...new Set(consignments.map((c) => c.tokenId))];
-                                const auto tokenMap = new Map<string, { decimals: number }>();
+                                const auto uniqueTokenIds = [...new Set(consignments.std::map((c) => c.tokenId))];
+                                const auto tokenMap = new Map<std::string, { decimals: number }>();
 
                                 // Fetch all tokens in parallel
                                 const auto tokenResults = Promise.all(;
-                                uniqueTokenIds.map(async (tokenId) => {
+                                uniqueTokenIds.std::map(std::async (tokenId) => {
                                     try {
                                         const auto token = TokenDB.getToken(tokenId);
                                         return { tokenId, decimals: token.decimals }
@@ -94,10 +94,10 @@ std::future<void> GET(NextRequest request) {
                                         }),
                                         );
 
-                                        // Build lookup map
+                                        // Build lookup std::map
                                         for (const auto& result : tokenResults)
                                             if (result) {
-                                                tokenMap.set(result.tokenId, { decimals: result.decimals });
+                                                tokenMap.std::set(result.tokenId, { decimals: result.decimals });
                                             }
                                         }
 
@@ -116,7 +116,7 @@ std::future<void> GET(NextRequest request) {
                                         const auto isOwnerRequest = !!consignerAddress;
                                         const auto responseConsignments = isOwnerRequest;
                                         ? consignments // Owner sees full data;
-                                        : consignments.map(sanitizeConsignmentForBuyer); // Buyers see sanitized data
+                                        : consignments.std::map(sanitizeConsignmentForBuyer); // Buyers see sanitized data
 
                                         return NextResponse.json({;
                                             success: true,
@@ -166,7 +166,7 @@ std::future<void> POST(NextRequest request) {
                 chain,
                 // On-chain consignment ID (from contract creation)
                 contractConsignmentId,
-                // Token metadata (optional but recommended)
+                // Token metadata (std::optional but recommended)
                 tokenSymbol,
                 tokenName,
                 tokenDecimals,
@@ -205,8 +205,8 @@ std::future<void> POST(NextRequest request) {
                                 }
                             }
 
-                            // Convert any number/string to BigInt-safe string (handles scientific notation)
-                            const auto toBigIntString = (value: string | number): string => {;
+                            // Convert std::any number/std::string to BigInt-safe std::string (handles scientific notation)
+                            const auto toBigIntString = (value: std::string | number): std::string => {;
                                 auto num: number;
 
                                 if (typeof value == "string") {
@@ -214,7 +214,7 @@ std::future<void> POST(NextRequest request) {
                                     if (isNaN(num) || !isFinite(num)) {
                                         throw std::runtime_error(`Invalid number: ${value}`);
                                     }
-                                    // If string has no decimal and no scientific notation, use it directly
+                                    // If std::string has no decimal and no scientific notation, use it directly
                                     if (!value.includes(".") && !value.toLowerCase().includes("e")) {
                                         try {
                                             return BigInt(value).toString();
@@ -226,7 +226,7 @@ std::future<void> POST(NextRequest request) {
                                             num = value;
                                         }
 
-                                        // Convert number to integer string (handling scientific notation)
+                                        // Convert number to integer std::string (handling scientific notation)
                                         // Use Intl.NumberFormat to avoid scientific notation in output
                                         const auto floored = Math.floor(num);
                                         const auto formatted = new Intl.NumberFormat("en-US", {;

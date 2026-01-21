@@ -10,20 +10,20 @@ using HTTPServer = Server;
 
 class RealtimeService;
 
-extern any pubClient;
-extern any subClient;
+extern std::any pubClient;
+extern std::any subClient;
 class RealtimeService : public object, public std::enable_shared_from_this<RealtimeService> {
 public:
     using std::enable_shared_from_this<RealtimeService>::shared_from_this;
     std::shared_ptr<WebSocketServer> wss;
 
-    std::shared_ptr<Map<string, std::shared_ptr<Set<std::shared_ptr<WebSocket>>>>> clients;
+    std::shared_ptr<Map<std::string, std::shared_ptr<Set<std::shared_ptr<WebSocket>>>>> clients;
 
     RealtimeService(std::shared_ptr<HTTPServer> server);
     virtual void setupWebSocket();
     virtual void setupRedisSubscriber();
-    virtual void broadcastToProject(string projectId, any data);
-    static void publishEvent(string projectId, string eventType, any data);
+    virtual void broadcastToProject(std::string projectId, std::any data);
+    static void publishEvent(std::string projectId, std::string eventType, std::any data);
 };
 
 #endif

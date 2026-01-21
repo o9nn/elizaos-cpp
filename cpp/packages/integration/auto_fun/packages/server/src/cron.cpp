@@ -10,7 +10,7 @@ std::optional<Token> sanitizeTokenForWebSocket(const std::optional<Token>& token
     const auto clone = { ...token };
 
     // Helper to get byte size
-    const auto getSize = [&](obj: any) { return Buffer.byteLength(/* JSON.stringify */ std::string(obj), "utf8"); };
+    const auto getSize = [&](obj: std::any) { return Buffer.byteLength(/* JSON.stringify */ std::string(obj), "utf8"); };
 
     if (getSize(clone) <= maxBytes) return clone;
 
@@ -118,7 +118,7 @@ std::future<Token> updateTokenInDB(const std::optional<TokenData>& tokenData) {
             std::cout << "found existing token in DB" << std::endl;
             updatedTokens = db;
             .update(tokens);
-            .set(updateData);
+            .std::set(updateData);
             .where(eq(tokens.mint, updateData.mint!));
             .returning();
             std::cout << "Updated token " + updateData.mint + " in database" << std::endl;
@@ -398,7 +398,7 @@ std::future<std::optional<HandlerResult>> handleSwap(const std::vector<std::stri
 
                         const auto updatedTokens = db;
                         .update(tokens);
-                        .set({
+                        .std::set({
                             reserveAmount: Number(reserveToken),
                             reserveLamport: Number(reserveLamport),
                             currentPrice,

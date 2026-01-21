@@ -4,13 +4,13 @@ array<any> flattenArray(array<any> array)
 {
     return array->reduce<array<any>>([=](auto flat, auto item) mutable
     {
-        return flat->concat((Array->isArray(item)) ? any(flattenArray(as<array<any>>(item))) : any(item));
+        return flat->concat((Array->isArray(item)) ? std::any(flattenArray(as<array<any>>(item))) : std::any(item));
     }
     , array<any>());
 };
 
 
-boolean isEqual(any obj1, any obj2)
+boolean isEqual(std::any obj1, std::any obj2)
 {
     if (obj1 == obj2) {
         return true;
@@ -37,7 +37,7 @@ boolean isEqual(any obj1, any obj2)
 };
 
 
-string REPO_ROOT = path->resolve(__dirname, std::string(".."));
+std::string REPO_ROOT = path->resolve(__dirname, std::string(".."));
 
 void Main(void)
 {
@@ -252,7 +252,7 @@ agent:\
                     {
                         attempts++;
                         if (attempts < 3) {
-                            throw any(std::make_shared<Error>(std::string("Failed")));
+                            throw std::any(std::make_shared<Error>(std::string("Failed")));
                         }
                         return std::string("success");
                     };
@@ -268,7 +268,7 @@ agent:\
                 {
                     auto operation = [=]() mutable
                     {
-                        throw any(std::make_shared<Error>(std::string("Always fails")));
+                        throw std::any(std::make_shared<Error>(std::string("Always fails")));
                     };
                     std::async([=]() { expect(retry(operation, object{
                         object::pair{std::string("retries"), 2}, 
@@ -293,7 +293,7 @@ agent:\
             );
             describe(std::string("debounce"), [=]() mutable
             {
-                it(std::string("should debounce function calls"), [=]() mutable
+                it(std::string("should debounce std::function calls"), [=]() mutable
                 {
                     jest->useFakeTimers();
                     shared callCount = 0;
@@ -315,7 +315,7 @@ agent:\
             );
             describe(std::string("throttle"), [=]() mutable
             {
-                it(std::string("should throttle function calls"), [=]() mutable
+                it(std::string("should throttle std::function calls"), [=]() mutable
                 {
                     jest->useFakeTimers();
                     shared callCount = 0;

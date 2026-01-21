@@ -49,7 +49,7 @@ void Main(void)
             expect(const_(testData["todos"])[1])->to->have->property(std::string("completed"), true);
         }
         );
-        it(std::string("should test async operations"), [=]() mutable
+        it(std::string("should test std::async operations"), [=]() mutable
         {
             cy->wrap(Promise->resolve(std::string("async-result")))->should(std::string("equal"), std::string("async-result"));
             cy->wait(100);

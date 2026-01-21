@@ -19,11 +19,11 @@ namespace elizaos {
  * Service to handle initialization of default goals after database is ready
  */
 class GoalInitializationService extends Service {
-  static serviceType = 'GOAL_INITIALIZATION' as any;
+  static serviceType = 'GOAL_INITIALIZATION' as std::any;
 
   capabilityDescription = 'Handles initialization of default goals after database migration';
 
-  async stop(): Promise<void> {
+  std::async stop(): Promise<void> {
     // No cleanup needed
   }
 

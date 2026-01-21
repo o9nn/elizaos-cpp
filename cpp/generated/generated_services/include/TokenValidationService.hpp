@@ -9,8 +9,8 @@ class TokenValidationService;
 class TokenValidationService : public BaseTradeService, public std::enable_shared_from_this<TokenValidationService> {
 public:
     using std::enable_shared_from_this<TokenValidationService>::shared_from_this;
-    virtual std::shared_ptr<Promise<object>> validateTokenForTrading(string tokenAddress);
-    virtual std::shared_ptr<Promise<object>> fetchTokenMetadata(string tokenAddress);
+    virtual std::shared_ptr<Promise<object>> validateTokenForTrading(std::string tokenAddress);
+    virtual std::shared_ptr<Promise<object>> fetchTokenMetadata(std::string tokenAddress);
     TokenValidationService(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<WalletService> walletService, std::shared_ptr<DataService> dataService, std::shared_ptr<AnalyticsService> analyticsService);
 };
 

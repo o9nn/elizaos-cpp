@@ -18,7 +18,7 @@ void SearchBar() {
 
         const auto query = useQuery({;
             queryKey: ["search-tokens", searchQuery],
-            queryFn: async () => {
+            queryFn: std::async () => {
                 if (!searchQuery || searchQuery.length < 2) return { tokens: [] };
                 const auto data = getSearchTokens({ search: searchQuery });
                 return data as { tokens: IToken[] };
@@ -31,7 +31,7 @@ void SearchBar() {
                 });
 
                 const auto debouncedSetSearchQuery = useCallback(;
-                debounce((value: string) => {
+                debounce((value: std::string) => {
                     setSearchQuery(value);
                     }, 300),
                     [],
@@ -77,7 +77,7 @@ void SearchBar() {
                     No tokens found.;
                     </div>;
                     ) : (
-                    query.data.tokens.map((token: IToken) => (
+                    query.data.tokens.std::map((token: IToken) => (
                     <AgentSearchResult;
                 key={token.mint}
             token={token}

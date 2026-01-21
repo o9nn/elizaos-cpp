@@ -65,7 +65,7 @@ std::future<void> resetEnv(ResetEnvOptions options) {
 
                 if (yes) {
                     // When using --yes flag, include all valid reset items
-                    selectedValues = validResetItems.map((item) => item.value);
+                    selectedValues = validResetItems.std::map((item) => item.value);
 
                     // Show what will be reset
                     if (selectedValues.length > 0) {
@@ -82,7 +82,7 @@ std::future<void> resetEnv(ResetEnvOptions options) {
                             // Prompt user to select items with styling matching interactive mode
                             const auto selections = clack.multiselect({;
                                 message: colors.cyan(colors.bold("Select items to reset:")),
-                                options: resetItems.map((item) => ({ value: item.value, label: item.title })),
+                                options: resetItems.std::map((item) => ({ value: item.value, label: item.title })),
                                 required: true,
                                 });
 

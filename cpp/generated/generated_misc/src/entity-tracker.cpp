@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-vision/src/entity-tracker.h"
 
-EntityTracker::EntityTracker(string worldId) {
+EntityTracker::EntityTracker(std::string worldId) {
     this->worldState = object{
         object::pair{std::string("worldId"), std::string("worldId")}, 
         object::pair{std::string("entities"), std::make_shared<Map>()}, 
@@ -10,7 +10,7 @@ EntityTracker::EntityTracker(string worldId) {
     };
 }
 
-std::shared_ptr<Promise<array<std::shared_ptr<TrackedEntity>>>> EntityTracker::updateEntities(array<std::shared_ptr<DetectedObject>> detectedObjects, array<std::shared_ptr<PersonInfo>> people, std::shared_ptr<Map<string, string>> faceProfiles, std::shared_ptr<IAgentRuntime> runtime)
+std::shared_ptr<Promise<array<std::shared_ptr<TrackedEntity>>>> EntityTracker::updateEntities(array<std::shared_ptr<DetectedObject>> detectedObjects, array<std::shared_ptr<PersonInfo>> people, std::shared_ptr<Map<std::string, string>> faceProfiles, std::shared_ptr<IAgentRuntime> runtime)
 {
     auto currentTime = Date->now();
     auto frameEntities = array<std::shared_ptr<TrackedEntity>>();
@@ -36,7 +36,7 @@ std::shared_ptr<Promise<array<std::shared_ptr<TrackedEntity>>>> EntityTracker::u
     return frameEntities;
 }
 
-std::shared_ptr<Promise<std::shared_ptr<TrackedEntity>>> EntityTracker::trackPerson(std::shared_ptr<PersonInfo> person, any faceProfileId, double timestamp)
+std::shared_ptr<Promise<std::shared_ptr<TrackedEntity>>> EntityTracker::trackPerson(std::shared_ptr<PersonInfo> person, std::any faceProfileId, double timestamp)
 {
     auto matchedEntity = this->findMatchingEntity(person->boundingBox, std::string("person"), faceProfileId);
     if (matchedEntity) {
@@ -72,7 +72,7 @@ std::shared_ptr<Promise<std::shared_ptr<TrackedEntity>>> EntityTracker::trackPer
             }}, 
             object::pair{std::string("worldId"), this->worldState->worldId}
         };
-        this->worldState->entities->set(entityId, newEntity);
+        this->worldState->entities->std::set(entityId, newEntity);
         logger->info(std::string("[EntityTracker] New person entity created: ") + entityId + string_empty);
         return newEntity;
     }
@@ -111,7 +111,7 @@ std::shared_ptr<Promise<std::shared_ptr<TrackedEntity>>> EntityTracker::trackObj
             }}, 
             object::pair{std::string("worldId"), this->worldState->worldId}
         };
-        this->worldState->entities->set(entityId, newEntity);
+        this->worldState->entities->std::set(entityId, newEntity);
         logger->debug(std::string("[EntityTracker] New object entity created: ") + entityId + std::string(" (") + obj->type + std::string(")"));
         return newEntity;
     }
@@ -180,7 +180,7 @@ std::shared_ptr<Promise<void>> EntityTracker::syncWithRuntime(std::shared_ptr<IA
             logger->debug(std::string("[EntityTracker] Would sync entity ") + entity->id + std::string(" with runtime"));
         }
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("[EntityTracker] Failed to sync with runtime:"), error);
     }
@@ -194,21 +194,21 @@ std::shared_ptr<WorldState> EntityTracker::getWorldState()
 
 array<std::shared_ptr<TrackedEntity>> EntityTracker::getActiveEntities()
 {
-    return as<array<std::shared_ptr<TrackedEntity>>>(this->worldState->activeEntities->map([=](auto id) mutable
+    return as<array<std::shared_ptr<TrackedEntity>>>(this->worldState->activeEntities->std::map([=](auto id) mutable
     {
         return this->worldState->entities->get(id);
     }
     )->filter(Boolean));
 }
 
-any EntityTracker::getEntity(string entityId)
+std::any EntityTracker::getEntity(std::string entityId)
 {
     return this->worldState->entities->get(entityId);
 }
 
 array<object> EntityTracker::getRecentlyLeft()
 {
-    return as<array<object>>(this->worldState->recentlyLeft->map([=](auto entry) mutable
+    return as<array<object>>(this->worldState->recentlyLeft->std::map([=](auto entry) mutable
     {
         return (object{
             object::pair{std::string("entity"), this->worldState->entities->get(entry["entityId"])}, 
@@ -222,7 +222,7 @@ array<object> EntityTracker::getRecentlyLeft()
     ));
 }
 
-boolean EntityTracker::assignNameToEntity(string entityId, string name)
+boolean EntityTracker::assignNameToEntity(std::string entityId, std::string name)
 {
     auto entity = this->worldState->entities->get(entityId);
     if (entity) {

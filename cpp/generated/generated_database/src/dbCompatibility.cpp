@@ -18,7 +18,7 @@ void DatabaseCompatibilityService::detectDatabaseType()
     logger->info(std::string("Database compatibility mode: ") + this->databaseType + string_empty);
 }
 
-boolean DatabaseCompatibilityService::parseBoolean(any value)
+boolean DatabaseCompatibilityService::parseBoolean(std::any value)
 {
     if (this->databaseType == std::string("sqlite")) {
         return OR((OR((value == 1), (value == std::string("1")))), (value == true));
@@ -26,7 +26,7 @@ boolean DatabaseCompatibilityService::parseBoolean(any value)
     return value == true;
 }
 
-any DatabaseCompatibilityService::parseDate(any value)
+std::any DatabaseCompatibilityService::parseDate(std::any value)
 {
     if (!value) return nullptr;
     try
@@ -36,14 +36,14 @@ any DatabaseCompatibilityService::parseDate(any value)
         }
         return std::make_shared<Date>(value);
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Failed to parse date:"), error);
         return nullptr;
     }
 }
 
-any DatabaseCompatibilityService::parseJson(any value)
+std::any DatabaseCompatibilityService::parseJson(std::any value)
 {
     if (!value) return nullptr;
     if (AND((this->databaseType == std::string("sqlite")), (type_of(value) == std::string("string")))) {
@@ -51,7 +51,7 @@ any DatabaseCompatibilityService::parseJson(any value)
         {
             return JSON->parse(value);
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("Failed to parse JSON:"), error);
             return nullptr;
@@ -60,7 +60,7 @@ any DatabaseCompatibilityService::parseJson(any value)
     return value;
 }
 
-array<string> DatabaseCompatibilityService::parseArray(any value)
+array<string> DatabaseCompatibilityService::parseArray(std::any value)
 {
     if (!value) return array<any>();
     if (AND((this->databaseType == std::string("sqlite")), (type_of(value) == std::string("string")))) {
@@ -68,7 +68,7 @@ array<string> DatabaseCompatibilityService::parseArray(any value)
         {
             return JSON->parse(value);
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("Failed to parse array:"), error);
             return array<any>();
@@ -77,7 +77,7 @@ array<string> DatabaseCompatibilityService::parseArray(any value)
     return (Array->isArray(value)) ? value : array<any>();
 }
 
-string DatabaseCompatibilityService::buildCaseInsensitiveSearch(string column, string value)
+std::string DatabaseCompatibilityService::buildCaseInsensitiveSearch(std::string column, std::string value)
 {
     if (this->databaseType == std::string("postgres")) {
         return string_empty + column + std::string(" ILIKE '%") + value + std::string("%'");

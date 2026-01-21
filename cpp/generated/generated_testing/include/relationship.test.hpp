@@ -7,7 +7,7 @@
 
 class RelationshipV2;
 
-extern std::function<any(double)> createTestUUID;
+extern std::function<std::any(double)> createTestUUID;
 class RelationshipV2 : public object, public std::enable_shared_from_this<RelationshipV2> {
 public:
     using std::enable_shared_from_this<RelationshipV2>::shared_from_this;
@@ -23,7 +23,7 @@ public:
 
     object metadata;
 
-    string createdAt;
+    std::string createdAt;
 };
 
 #endif

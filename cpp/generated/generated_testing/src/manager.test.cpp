@@ -63,7 +63,7 @@ void Main(void)
         );
         describe(std::string("close"), [=]() mutable
         {
-            it(std::string("should set shuttingDown to true immediately"), [=]() mutable
+            it(std::string("should std::set shuttingDown to true immediately"), [=]() mutable
             {
                 auto manager = std::make_shared<PGliteClientManager>(object{
                     object::pair{std::string("dataDir"), std::string("memory://")}

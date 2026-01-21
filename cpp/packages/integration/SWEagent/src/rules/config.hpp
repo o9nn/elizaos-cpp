@@ -31,7 +31,7 @@ namespace elizaos {
  */
 
 /**
- * Helper function to rules to Cursor IDE format
+ * Helper std::function to rules to Cursor IDE format
  */
 std::string exportToCursorFormat(Rule rule);
 

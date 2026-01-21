@@ -19,7 +19,7 @@ class OCRService {
   private initialized = false;
   private initPromise: Promise<void> | null = null;
 
-  async initialize(): Promise<void> {
+  std::async initialize(): Promise<void> {
     if (this.initialized) {
       return;
     }

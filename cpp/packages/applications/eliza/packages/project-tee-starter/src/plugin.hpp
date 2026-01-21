@@ -19,7 +19,7 @@ namespace elizaos {
 /**
  * Define the configuration schema for the plugin with the following properties:
  *
- * @param {string} WALLET_SECRET_SALT - The secret salt for the wallet (min length of 1, optional)
+ * @param {string} WALLET_SECRET_SALT - The secret salt for the wallet (min length of 1, std::optional)
  * @returns {object} - The configured schema object
  */
 
@@ -27,7 +27,7 @@ class StarterService extends Service {
   static serviceType = 'starter';
   capabilityDescription = 'This is a starter service, can be customized for Mr. TEE.';
   private teeClient: TappdClient;
-  private secretSalt: string;
+  private secretSalt: std::string;
   constructor(protected runtime: IAgentRuntime) {
     super(runtime);
     this.teeClient = new TappdClient();

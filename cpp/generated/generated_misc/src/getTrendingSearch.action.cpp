@@ -21,7 +21,7 @@ std::shared_ptr<Action> getTrendingSearchAction = object{
         {
             auto svc = as<any>(runtime->getService(CoinGeckoService::serviceType));
             if (!svc) {
-                throw any(std::make_shared<Error>(std::string("CoinGeckoService not available")));
+                throw std::any(std::make_shared<Error>(std::string("CoinGeckoService not available")));
             }
             logger->info(std::string("[GET_TRENDING_SEARCH] Fetching trending searches"));
             auto trendingData = std::async([=]() { svc->getTrendingSearch(); });
@@ -42,7 +42,7 @@ std::shared_ptr<Action> getTrendingSearchAction = object{
                 object::pair{std::string("input"), object{}}
             });
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             auto msg = (is<Error>(error)) ? error->message : String(error);
             logger->error(std::string("[GET_TRENDING_SEARCH] Action failed: ") + msg + string_empty);

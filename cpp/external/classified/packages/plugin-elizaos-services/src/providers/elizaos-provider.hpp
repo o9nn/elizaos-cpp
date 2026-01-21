@@ -35,11 +35,11 @@ struct ElizaOSAPIResponse {
     double index;
     { message;
     'system' | 'user' | 'assistant' | 'tool' role;
-    string | null content;
+    std::string | null content;
     std::optional<Array<{> tool_calls;
     std::string id;
     'function' type;
-    { function;
+    { std::function;
     std::string name;
     std::string arguments;
     'stop' | 'length' | 'tool_calls' | 'content_filter' | null finish_reason;
@@ -66,7 +66,7 @@ struct ElizaOSChatCompletionRequest {
     std::optional<Array<{> tool_calls;
     std::string id;
     'function' type;
-    { function;
+    { std::function;
     std::string name;
     std::string arguments;
     std::optional<std::string> tool_call_id;
@@ -75,16 +75,16 @@ struct ElizaOSChatCompletionRequest {
     std::optional<double> top_p;
     std::optional<double> frequency_penalty;
     std::optional<double> presence_penalty;
-    std::optional<std::vector<string | string>> stop;
+    std::optional<std::vector<std::string | string>> stop;
     std::optional<bool> stream;
     std::optional<Array<{> tools;
     'function' type;
-    { function;
+    { std::function;
     std::string name;
     std::string description;
     std::unordered_map<std::string, std::any> parameters;
     'function' type;
-    { name: string } function;
+    { name: std::string } std::function;
     std::optional<std::string> user;
 };
 
@@ -96,7 +96,7 @@ std::string getAPIUrl(IAgentRuntime runtime);
 /**
  * Get ElizaOS API key from runtime settings
  */
-string | undefined getAPIKey(IAgentRuntime runtime);
+std::string | undefined getAPIKey(IAgentRuntime runtime);
 
 /**
  * Makes a chat completion request to the ElizaOS API service

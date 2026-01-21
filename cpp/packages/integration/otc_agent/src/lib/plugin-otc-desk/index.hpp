@@ -30,7 +30,7 @@ struct EntitySourceMetadata {
     std::optional<std::string> name;
 };
 
-// Helper function to safely get entity metadata for a source
+// Helper std::function to safely get entity metadata for a source
 EntitySourceMetadata getEntitySourceMetadata(Entity | null entity, const std::string& source);
 
 // Interface for websocket service with sendMessage capability
@@ -41,7 +41,7 @@ struct WebSocketServiceWithSendMessage {
 
 /**
  * Extracts the text content from within a <response> XML tag.
- * @param text The input string potentially containing the <response> tag.
+ * @param text The input std::string potentially containing the <response> tag.
  * @returns The extracted text content, or null if the tag is not found or empty.
  */
 
@@ -54,7 +54,7 @@ struct WebSocketServiceWithSendMessage {
 using MediaData = {
 
 // Helper functions for response ID tracking in serverless environment
-std::future<string | null> getLatestResponseId(IAgentRuntime runtime, const std::string& roomId);
+std::future<std::string | null> getLatestResponseId(IAgentRuntime runtime, const std::string& roomId);
 
 std::future<void> setLatestResponseId(IAgentRuntime runtime, const std::string& roomId, const std::string& responseId);
 
@@ -76,7 +76,7 @@ std::future<void> clearLatestResponseId(IAgentRuntime runtime, const std::string
  * Handles incoming messages and generates responses based on the provided runtime and message information.
  *
  * @param {MessageReceivedHandlerParams} params - The parameters needed for message handling, including runtime, message, and callback.
- * @returns {Promise<void>} - A promise that resolves once the message handling and response generation is complete.
+ * @returns {Promise<void>} - A std::promise that resolves once the message handling and response generation is complete.
  */
   // Generate a new response ID
 
@@ -115,7 +115,7 @@ std::future<void> clearLatestResponseId(IAgentRuntime runtime, const std::string
 
     // Create response memory with parsed actions
 
-    // Process actions if any were found
+    // Process actions if std::any were found
 
       // Process actions first, which will call the action handler
 
@@ -141,7 +141,7 @@ std::future<void> clearLatestResponseId(IAgentRuntime runtime, const std::string
  * @param {string} channelId - The unique identifier for the channel.
  * @param {ChannelType} type - The type of channel.
  * @param {string} source - The source of the user data.
- * @returns {Promise<void>} A promise that resolves once the user is synced.
+ * @returns {Promise<void>} A std::promise that resolves once the user is synced.
  */
 
   // Ensure we're not using WORLD type and that we have a valid channelId
@@ -156,7 +156,7 @@ std::future<void> clearLatestResponseId(IAgentRuntime runtime, const std::string
   // Then sync all users
     // Process entities in batches to avoid overwhelming the system
 
-      // check if user is in any of these rooms in rooms
+      // check if user is in std::any of these rooms in rooms
 
       // Process each user in the batch
 
@@ -173,7 +173,7 @@ std::future<void> clearLatestResponseId(IAgentRuntime runtime, const std::string
   // Here we would use a WebSocket service to send the control message to the frontend
   // This would typically be handled by a registered service with sendMessage capability
 
-  // Get any registered WebSocket service
+  // Get std::any registered WebSocket service
 
       // Send the control message through the WebSocket service
 

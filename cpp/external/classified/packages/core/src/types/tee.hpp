@@ -20,7 +20,7 @@ namespace elizaos {
  * generating a new keypair and attestation each time.
  */
 struct TeeAgent {
-    string; // Primary key id;
+    std::string; // Primary key id;
     std::string agentId;
     std::string agentName;
     double createdAt;
@@ -90,7 +90,7 @@ enum TeeType {
 
 /**
  * Configuration for a TEE (Trusted Execution Environment) plugin.
- * This allows specifying the TEE vendor and any vendor-specific configurations.
+ * This allows specifying the TEE vendor and std::any vendor-specific configurations.
  * It's used to initialize and configure TEE-related functionalities within the agent system.
  */
 struct TeePluginConfig {

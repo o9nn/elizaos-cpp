@@ -23,7 +23,7 @@ std::shared_ptr<Promise<void>> NpmDownloadStatsGenerator::main()
         console->log(chalk->green(std::string("✅ npm download statistics generation completed successfully!")));
         this->printSummary(packages, packageDownloads);
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(chalk->red(std::string("❌ Error generating npm download statistics:")), error);
         process->exit(1);
@@ -71,10 +71,10 @@ std::shared_ptr<Promise<array<std::shared_ptr<PackageInfo>>>> NpmDownloadStatsGe
             std::async([=]() { this->delay(200); });
         }
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("Error fetching organization packages:"), error);
-        throw any(error);
+        throw std::any(error);
     }
     auto uniquePackages = packages->filter([=](auto pkg, auto index, auto self) mutable
     {
@@ -110,7 +110,7 @@ std::shared_ptr<Promise<array<std::shared_ptr<PackageDownloads>>>> NpmDownloadSt
             });
             std::async([=]() { this->delay(100); });
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             console->warn(chalk->yellow(std::string("⚠️ Could not fetch download stats for ") + pkg->name + std::string(":"), OR((error["message"]), (std::string("Unknown error")))));
             downloads->push(object{
@@ -153,7 +153,7 @@ std::shared_ptr<Promise<array<std::shared_ptr<VersionDownloads>>>> NpmDownloadSt
                 }
                 std::async([=]() { this->delay(100); });
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->warn(chalk->yellow(std::string("⚠️ Could not fetch version download stats for ") + pkg->name + string_empty));
             }
@@ -162,7 +162,7 @@ std::shared_ptr<Promise<array<std::shared_ptr<VersionDownloads>>>> NpmDownloadSt
     return versionDownloads;
 }
 
-std::shared_ptr<Promise<object>> NpmDownloadStatsGenerator::getDownloadStats(string packageName, string period)
+std::shared_ptr<Promise<object>> NpmDownloadStatsGenerator::getDownloadStats(std::string packageName, std::string period)
 {
     try
     {
@@ -171,21 +171,21 @@ std::shared_ptr<Promise<object>> NpmDownloadStatsGenerator::getDownloadStats(str
             object::pair{std::string("downloads"), OR((response->data->downloads), (0))}
         };
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         if (error["response"]["status"] == 404) {
             return object{
                 object::pair{std::string("downloads"), 0}
             };
         }
-        throw any(error);
+        throw std::any(error);
     }
 }
 
 std::shared_ptr<Promise<void>> NpmDownloadStatsGenerator::generateExcelReport(array<std::shared_ptr<PackageInfo>> packages, array<std::shared_ptr<PackageDownloads>> packageDownloads, array<std::shared_ptr<VersionDownloads>> versionDownloads)
 {
     auto workbook = XLSX->utils->book_new();
-    auto packageOverviewData = packages->map([=](auto pkg) mutable
+    auto packageOverviewData = packages->std::map([=](auto pkg) mutable
     {
         auto downloads = packageDownloads->find([=](auto d) mutable
         {
@@ -211,7 +211,7 @@ std::shared_ptr<Promise<void>> NpmDownloadStatsGenerator::generateExcelReport(ar
     );
     auto packageSheet = XLSX->utils->json_to_sheet(packageOverviewData);
     XLSX->utils->book_append_sheet(workbook, packageSheet, std::string("Package Overview"));
-    auto packageDownloadsData = packageDownloads->map([=](auto d) mutable
+    auto packageDownloadsData = packageDownloads->std::map([=](auto d) mutable
     {
         return (object{
             object::pair{std::string("Package Name"), d->packageName}, 
@@ -224,7 +224,7 @@ std::shared_ptr<Promise<void>> NpmDownloadStatsGenerator::generateExcelReport(ar
     );
     auto downloadsSheet = XLSX->utils->json_to_sheet(packageDownloadsData);
     XLSX->utils->book_append_sheet(workbook, downloadsSheet, std::string("Package Downloads"));
-    auto versionDownloadsData = versionDownloads->map([=](auto v) mutable
+    auto versionDownloadsData = versionDownloads->std::map([=](auto v) mutable
     {
         return (object{
             object::pair{std::string("Package Name"), v->packageName}, 
@@ -252,11 +252,11 @@ std::shared_ptr<Promise<void>> NpmDownloadStatsGenerator::generateExcelReport(ar
         return sum + d->monthlyDownloads;
     }
     , 0);
-    auto topPackage = (packageDownloads->get_length() > 0) ? any(packageDownloads->reduce([=](auto max, auto d) mutable
+    auto topPackage = (packageDownloads->get_length() > 0) ? std::any(packageDownloads->reduce([=](auto max, auto d) mutable
     {
         return (d->yearlyDownloads > max->yearlyDownloads) ? d : max;
     }
-    )) : any(nullptr);
+    )) : std::any(nullptr);
     auto summaryData = array<object>{ object{
         object::pair{std::string("Metric"), std::string("Total Packages")}, 
         object::pair{std::string("Value"), totalPackages}

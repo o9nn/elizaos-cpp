@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/server/src/api/shared/middleware.h"
 
-std::function<std::function<void(any, any, any)>(std::shared_ptr<Map<any, any>>)> agentExistsMiddleware = [=](auto agents) mutable
+std::function<std::function<void(std::any, std::any, std::any)>(std::shared_ptr<Map<std::any, any>>)> agentExistsMiddleware = [=](auto agents) mutable
 {
     return [=](auto req, auto res, auto next) mutable
     {
@@ -17,12 +17,12 @@ std::function<std::function<void(any, any, any)>(std::shared_ptr<Map<any, any>>)
         next();
     };
 };
-std::function<std::function<void(any, any, any)>(string)> validateUuidMiddleware = [=](auto paramName) mutable
+std::function<std::function<void(std::any, std::any, std::any)>(std::string)> validateUuidMiddleware = [=](auto paramName) mutable
 {
     return [=](auto req, auto res, auto next) mutable
     {
         auto paramValue = const_(req->params)[paramName];
-        any validatedUuid;
+        std::any validatedUuid;
         if (paramName == std::string("channelId")) {
             auto clientIp = OR((req->ip), (std::string("unknown")));
             validatedUuid = validateChannelId(paramValue, clientIp);
@@ -38,7 +38,7 @@ std::function<std::function<void(any, any, any)>(string)> validateUuidMiddleware
         next();
     };
 };
-std::function<std::function<void(any, any, any)>()> validateChannelIdMiddleware = [=]() mutable
+std::function<std::function<void(std::any, std::any, std::any)>()> validateChannelIdMiddleware = [=]() mutable
 {
     return [=](auto req, auto res, auto next) mutable
     {
@@ -56,7 +56,7 @@ std::function<std::function<void(any, any, any)>()> validateChannelIdMiddleware 
         next();
     };
 };
-std::function<std::function<void(any, any, any)>()> securityMiddleware = [=]() mutable
+std::function<std::function<void(std::any, std::any, std::any)>()> securityMiddleware = [=]() mutable
 {
     return [=](auto req, auto res, auto next) mutable
     {
@@ -115,7 +115,7 @@ std::function<std::function<void(any, any, any)>()> securityMiddleware = [=]() m
         next();
     };
 };
-std::function<std::function<any(any, any, any)>()> validateContentTypeMiddleware = [=]() mutable
+std::function<std::function<std::any(std::any, std::any, std::any)>()> validateContentTypeMiddleware = [=]() mutable
 {
     return [=](auto req, auto res, auto next) mutable
     {
@@ -137,7 +137,7 @@ std::function<std::function<any(any, any, any)>()> validateContentTypeMiddleware
         next();
     };
 };
-std::function<any()> createApiRateLimit = [=]() mutable
+std::function<std::any()> createApiRateLimit = [=]() mutable
 {
     return rateLimit(object{
         object::pair{std::string("windowMs"), 15 * 60 * 1000}, 
@@ -166,7 +166,7 @@ std::function<any()> createApiRateLimit = [=]() mutable
         }
     });
 };
-std::function<any()> createFileSystemRateLimit = [=]() mutable
+std::function<std::any()> createFileSystemRateLimit = [=]() mutable
 {
     return rateLimit(object{
         object::pair{std::string("windowMs"), 5 * 60 * 1000}, 
@@ -195,7 +195,7 @@ std::function<any()> createFileSystemRateLimit = [=]() mutable
         }
     });
 };
-std::function<any()> createUploadRateLimit = [=]() mutable
+std::function<std::any()> createUploadRateLimit = [=]() mutable
 {
     return rateLimit(object{
         object::pair{std::string("windowMs"), 15 * 60 * 1000}, 
@@ -224,7 +224,7 @@ std::function<any()> createUploadRateLimit = [=]() mutable
         }
     });
 };
-std::function<any()> createChannelValidationRateLimit = [=]() mutable
+std::function<std::any()> createChannelValidationRateLimit = [=]() mutable
 {
     return rateLimit(object{
         object::pair{std::string("windowMs"), 10 * 60 * 1000}, 

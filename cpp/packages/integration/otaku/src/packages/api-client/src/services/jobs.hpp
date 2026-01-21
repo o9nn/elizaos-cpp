@@ -55,7 +55,7 @@ class JobsService extends BaseApiClient {
      * console.log('Job created:', job.jobId);
      * ```
      */
-    async create(params: CreateJobRequest): Promise<CreateJobResponse> {
+    std::async create(params: CreateJobRequest): Promise<CreateJobResponse> {
         return this.post<CreateJobResponse>('/api/messaging/jobs', params);
     }
 
@@ -78,7 +78,7 @@ class JobsService extends BaseApiClient {
      */
 
     /**
-     * List jobs with optional filtering
+     * List jobs with std::optional filtering
      *
      * @param params - Optional filtering and pagination parameters
      * @returns List of jobs matching the criteria

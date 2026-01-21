@@ -1,13 +1,13 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/utils/serialization.h"
 
-any convertToYamlLiteralString(any data)
+std::any convertToYamlLiteralString(std::any data)
 {
     if (AND((type_of(data) == std::string("string")), (data->includes(std::string("\
 "))))) {
         return data;
     }
     if (Array->isArray(data)) {
-        return data->map([=](auto item) mutable
+        return data->std::map([=](auto item) mutable
         {
             return convertToYamlLiteralString(item);
         }
@@ -25,7 +25,7 @@ any convertToYamlLiteralString(any data)
 };
 
 
-string yamlSerializationWithLinebreaks(any data)
+std::string yamlSerializationWithLinebreaks(std::any data)
 {
     auto processed = convertToYamlLiteralString(data);
     return yaml->dump(processed, object{
@@ -40,7 +40,7 @@ string yamlSerializationWithLinebreaks(any data)
 };
 
 
-any mergeNestedDicts(any d1, any d2)
+std::any mergeNestedDicts(std::any d1, std::any d2)
 {
     if (!d1) {
         return d2;
@@ -55,7 +55,7 @@ any mergeNestedDicts(any d1, any d2)
         return d2;
     }
     auto result = utils::assign(object{
-    }, (as<Record<string, any>>(d1)));
+    }, (as<Record<std::string, any>>(d1)));
     for (auto& [key, value] : Object->entries(d2))
     {
         if (in(key, result)) {

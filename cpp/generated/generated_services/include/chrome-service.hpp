@@ -6,12 +6,12 @@
 #include "../enum/sort-direction.h"
 #include "../features/app/app-types.h"
 
-typedef std::function<any(string)> ChromeCallback;
+typedef std::function<std::any(std::string)> ChromeCallback;
 
 
-extern std::function<void(string, std::shared_ptr<ChromeCallback>)> sendChromeMessage;
+extern std::function<void(std::string, std::shared_ptr<ChromeCallback>)> sendChromeMessage;
 extern array<object> defaultSettings;
 extern std::function<std::shared_ptr<Promise<std::shared_ptr<Record<DiscrubSetting, string>>>>()> initializeSettings;
 extern std::function<std::shared_ptr<Promise<std::shared_ptr<Record<DiscrubSetting, string>>>>()> getSettings;
-extern std::function<std::shared_ptr<Promise<std::shared_ptr<Record<DiscrubSetting, string>>>>(string, string)> setSetting;
+extern std::function<std::shared_ptr<Promise<std::shared_ptr<Record<DiscrubSetting, string>>>>(std::string, std::string)> setSetting;
 #endif

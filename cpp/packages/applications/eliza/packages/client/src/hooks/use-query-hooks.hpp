@@ -53,7 +53,7 @@ struct NetworkInformation {
  * Utilizes the Network Information API if available.
  * @returns {{
  *  isOffline: boolean,
- *  effectiveType: string,
+ *  effectiveType: std::string,
  *  saveData: boolean
  * }} The network status information including whether the user is offline, the effective connection type, and if data-saving mode is enabled.
  */
@@ -93,7 +93,7 @@ void useStartAgent();
 /**
  * Custom hook to stop an agent by calling the API and updating the UI optimistically.
  *
- * @returns {UseMutationResult} - Object containing the mutation function and its handlers.
+ * @returns {UseMutationResult} - Object containing the mutation std::function and its handlers.
  */
 void useStopAgent();
 
@@ -110,10 +110,10 @@ using UiMessage = Content & {
   // Using a more manual approach for pagination with getChannelMessages
 
           // If direct parse fails, try moment (if available and robust)
-          // For now, log a warning if it's an unparsable string not handled by Date.parse
+          // For now, log a warning if it's an unparsable std::string not handled by Date.parse
           // As a fallback, could try new Date(sm.createdAt).getTime(), but Date.parse is usually sufficient
           // Defaulting to Date.now() if unparsable to avoid NaN
-        // If it's not a number or string, but exists (e.g. could be a Date object from some contexts)
+        // If it's not a number or std::string, but exists (e.g. could be a Date object from some contexts)
         // Attempt to convert. This is less likely if types are strict from server.
 
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -148,14 +148,14 @@ void useGroupChannelMessages(UUID | null channelId, std::optional<UUID> initialS
  * Custom hook to fetch agent actions for a specific agent and room.
  * @param {UUID} agentId - The ID of the agent.
  * @param {UUID} roomId - The ID of the room.
- * @param {string[]} excludeTypes - Optional array of types to exclude from results.
+ * @param {std::string[]} excludeTypes - Optional array of types to exclude from results.
  * @returns {QueryResult} The result of the query containing agent actions.
  */
 void useAgentActions(UUID agentId, std::optional<UUID> roomId, std::optional<std::vector<std::string>> excludeTypes);
 
 /**
  * Hook to delete an agent log/action.
- * @returns {UseMutationResult} - Object containing the mutation function and its handlers.
+ * @returns {UseMutationResult} - Object containing the mutation std::function and its handlers.
  */
 void useDeleteLog();
 
@@ -221,7 +221,7 @@ struct AgentsWithDetailsResult {
  *
  * Combines the agent list from {@link useAgents} with individual agent detail queries using `useQueries`, aggregating loading and error states. Polling intervals adapt to network conditions.
  *
- * @returns An object containing detailed agent data, loading and error states, and any encountered error.
+ * @returns An object containing detailed agent data, loading and error states, and std::any encountered error.
  */
 AgentsWithDetailsResult useAgentsWithDetails();
 
@@ -230,7 +230,7 @@ void useAgentInternalActions(UUID | null agentId, std::optional<UUID | null> age
 
 void useDeleteAgentInternalLog();
 
-void useAgentInternalMemories(UUID | null agentId, UUID | null agentPerspectiveRoomId, string = 'messages' tableName, auto includeEmbedding = false);
+void useAgentInternalMemories(UUID | null agentId, UUID | null agentPerspectiveRoomId, std::string = 'messages' tableName, auto includeEmbedding = false);
 
 void useDeleteAgentInternalMemory();
 

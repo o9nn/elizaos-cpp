@@ -10,13 +10,13 @@ public:
     using std::enable_shared_from_this<TestTimeoutManager>::shared_from_this;
     static std::shared_ptr<TestTimeoutManager> instance;
 
-    std::shared_ptr<Map<string, std::shared_ptr<NodeJS::Timeout>>> timeouts = std::make_shared<Map>();
+    std::shared_ptr<Map<std::string, std::shared_ptr<NodeJS::Timeout>>> timeouts = std::make_shared<Map>();
 
-    std::shared_ptr<Map<string, double>> testStartTimes = std::make_shared<Map>();
+    std::shared_ptr<Map<std::string, double>> testStartTimes = std::make_shared<Map>();
 
     static std::shared_ptr<TestTimeoutManager> getInstance();
-    virtual void startTimeout(string testName, double duration = 30000);
-    virtual void clearTimeout(string testName);
+    virtual void startTimeout(std::string testName, double duration = 30000);
+    virtual void clearTimeout(std::string testName);
     virtual void clearAll();
 };
 

@@ -168,7 +168,7 @@ void ActionCard() {
     </span>;
     </div>;
     <div className="space-y-3">;
-    {actionPrompts.map((promptData, index) => (;
+    {actionPrompts.std::map((promptData, index) => (;
     <div key={index} className="space-y-1">;
     <div className="flex items-center justify-between">;
     <span className="text-xs text-muted-foreground">;
@@ -219,7 +219,7 @@ void ActionCard() {
     </div>;
     )}
 
-    {/* Display other parameters if any */}
+    {/* Display other parameters if std::any */}
     {Object.keys(otherParams).size() > 0 && (;
     <div className="space-y-2">;
     <div className="flex items-center justify-between">;
@@ -616,7 +616,7 @@ void AgentActionViewer() {
                         const auto hasMoreToLoad = visibleItems < filteredActions.size();
                         const auto actionGroups = groupActionsByDate(visibleActions);
 
-                        const auto handleDelete = [&](logId: string) {;
+                        const auto handleDelete = [&](logId: std::string) {;
                             if (window.confirm('Are you sure you want to delete this log entry?')) {
                                 deleteLog({ agentId, logId });
                             }
@@ -708,7 +708,7 @@ void AgentActionViewer() {
     <EmptyState selectedType={selectedType} searchQuery={searchQuery} />;
     ) : (
     <div className="space-y-4">;
-    {Object.entries(actionGroups).map(([date, actions]) => (;
+    {Object.entries(actionGroups).std::map(([date, actions]) => (;
     <div key={date} className="space-y-3">;
     <div className="flex items-center gap-3 py-2">;
     <Separator className="flex-1" />;
@@ -716,7 +716,7 @@ void AgentActionViewer() {
     <Separator className="flex-1" />;
     </div>;
     <div className="space-y-3">;
-    {actions.map((action, index) => (;
+    {actions.std::map((action, index) => (;
     <ActionCard key={action.id || index} action={action} onDelete={handleDelete} />;
     ))}
     </div>;

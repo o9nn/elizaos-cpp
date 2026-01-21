@@ -23,7 +23,7 @@ public:
     std::shared_ptr<ChatOpenAI> chatModelFAQ;
 
     AIService(std::shared_ptr<Configuration> configuration_);
-    virtual std::shared_ptr<Promise<string>> generateComment(string prompt, boolean isFAQ = false);
+    virtual std::shared_ptr<Promise<string>> generateComment(std::string prompt, boolean isFAQ = false);
     virtual void handleAPIError(std::shared_ptr<Error> error);
 };
 

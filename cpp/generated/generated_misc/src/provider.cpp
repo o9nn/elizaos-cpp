@@ -27,7 +27,7 @@ std::shared_ptr<Provider> shellProvider = object{
         shared cwd = shellService->getCurrentWorkingDirectory();
         auto historyText = std::string("No commands in history.");
         if (history->length > 0) {
-            historyText = history->map([=](auto entry) mutable
+            historyText = history->std::map([=](auto entry) mutable
             {
                 auto entryStr = std::string("[") + ((std::make_shared<Date>(entry["timestamp"])))->toISOString() + std::string("] ") + entry["cwd"] + std::string("> ") + entry["command"] + string_empty;
                 if (entry["output"]) {

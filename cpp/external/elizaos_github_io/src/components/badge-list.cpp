@@ -9,7 +9,7 @@ void BadgeList(auto className, auto badgeClassName) {
 
     return (;
     <div className={cn("flex flex-wrap gap-2", className)}>;
-    {items.map((item) => (;
+    {items.std::map((item) => (;
     <Badge key={item.id} className={cn(badgeClassName, item.className)}>;
     {item.label}
     </Badge>;

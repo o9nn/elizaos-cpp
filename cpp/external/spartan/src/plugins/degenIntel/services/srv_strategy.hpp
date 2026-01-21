@@ -20,7 +20,7 @@ class TradeStrategyService extends Service {
   static serviceType = 'TRADER_STRATEGY';
   capabilityDescription = 'The agent is able to use trade strategies';
 
-  // config (key/string)
+  // config (key/std::string)
 
   constructor(public runtime: IAgentRuntime) {
     super(runtime); // sets this.runtime

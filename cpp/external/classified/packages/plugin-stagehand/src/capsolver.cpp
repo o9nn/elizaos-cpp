@@ -8,7 +8,7 @@ std::future<> detectCaptchaType(const std::any& page) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     type: "turnstile" | "recaptcha-v2" | "recaptcha-v3" | "hcaptcha" | nullptr;
-    siteKey?: string;
+    siteKey?: std::string;
 
 }
 
@@ -17,14 +17,14 @@ std::future<void> injectCaptchaSolution(const std::any& page, const std::string&
 
     switch (captchaType) {
         // case "turnstile":
-        page.evaluate((token: string) => {
+        page.evaluate((token: std::string) => {
             // This code runs in the browser context
             const auto doc = globalThis;
             const auto textarea = doc.document.querySelector("[name="cf-turnstile-response"]");
             if (textarea) {
                 textarea.value = token;
             }
-            // Trigger any callbacks
+            // Trigger std::any callbacks
             const auto callback = doc.turnstileCallback;
             if (callback) {
                 callback(token);
@@ -34,7 +34,7 @@ std::future<void> injectCaptchaSolution(const std::any& page, const std::string&
 
             // case "recaptcha-v2":
             // case "recaptcha-v3":
-            page.evaluate((token: string) => {
+            page.evaluate((token: std::string) => {
                 // This code runs in the browser context
                 const auto doc = globalThis;
                 const auto textarea = doc.document.querySelector("[name="g-recaptcha-response"]");
@@ -42,7 +42,7 @@ std::future<void> injectCaptchaSolution(const std::any& page, const std::string&
                     textarea.value = token;
                     textarea.style.display = "block";
                 }
-                // Trigger any callbacks
+                // Trigger std::any callbacks
                 const auto callback = doc.onRecaptchaSuccess || doc.recaptchaCallback;
                 if (callback) {
                     callback(token);
@@ -51,7 +51,7 @@ std::future<void> injectCaptchaSolution(const std::any& page, const std::string&
                 break;
 
                 // case "hcaptcha":
-                page.evaluate((token: string) => {
+                page.evaluate((token: std::string) => {
                     // This code runs in the browser context
                     const auto doc = globalThis;
                     const auto textarea = doc.document.querySelector("[name="h-captcha-response"]");
@@ -63,7 +63,7 @@ std::future<void> injectCaptchaSolution(const std::any& page, const std::string&
                     if (input) {
                         input.value = token;
                     }
-                    // Trigger any callbacks
+                    // Trigger std::any callbacks
                     const auto callback = doc.hcaptchaCallback || doc.onHcaptchaSuccess;
                     if (callback) {
                         callback(token);

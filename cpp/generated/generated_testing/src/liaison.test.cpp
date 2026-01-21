@@ -33,7 +33,7 @@ void Main(void)
                 );
                 expect(test)->toBeDefined();
                 if (!test) {
-                    throw any(std::make_shared<Error>(std::string("Test "Test Platform Information Request" not found")));
+                    throw std::any(std::make_shared<Error>(std::string("Test "Test Platform Information Request" not found")));
                 }
                 std::async([=]() { test["fn"](mockRuntime); });
                 expect(mockScenarioService["sendMessage"])->toHaveBeenCalledWith(expect->anything(), std::string("world-id"), std::string("room-id"), expect->stringContaining(std::string("Telegram group")));

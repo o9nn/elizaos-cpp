@@ -280,7 +280,7 @@ std::string SpartanAgent::generateResponse(const std::string& query) {
         TokenInfo bonk = getTokenInfo("BONK");
         return formatTokenPrice(bonk);
     } else if (lowerQuery.find("pool") != std::string::npos && lowerQuery.find("create") != std::string::npos) {
-        return "I'll help set up a shared wallet. How many co-owners and what's the initial allocation?";
+        return "I'll help std::set up a shared wallet. How many co-owners and what's the initial allocation?";
     } else if (lowerQuery.find("liquidity") != std::string::npos || lowerQuery.find("orca") != std::string::npos) {
         return "Current SOL-USDC pool APR: 12.4%. How much liquidity would you like to add?";
     } else if (lowerQuery.find("copy") != std::string::npos && lowerQuery.find("trade") != std::string::npos) {
@@ -335,7 +335,7 @@ bool SpartanAgent::validateConfig() const {
 }
 
 std::string SpartanAgent::generatePoolId() {
-    // Generate a simple UUID-like string
+    // Generate a simple UUID-like std::string
     static std::random_device rd;
     static std::mt19937 gen(rd());
     static std::uniform_int_distribution<> dis(0, 15);

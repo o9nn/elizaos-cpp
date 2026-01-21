@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-forms/src/__tests__/forms-service.test.h"
 
-std::function<any(string)> createMockMemory = [=](auto text) mutable
+std::function<std::any(std::string)> createMockMemory = [=](auto text) mutable
 {
     return (object{
         object::pair{std::string("id"), asUUID(uuidv4())}, 
@@ -14,7 +14,7 @@ std::function<any(string)> createMockMemory = [=](auto text) mutable
         object::pair{std::string("createdAt"), Date->now()}
     });
 };
-std::function<any()> createTypedMockRuntime = [=]() mutable
+std::function<std::any()> createTypedMockRuntime = [=]() mutable
 {
     auto testAgentId = asUUID(uuidv4());
     auto runtime = object{

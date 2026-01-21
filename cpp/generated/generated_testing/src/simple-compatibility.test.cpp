@@ -90,13 +90,13 @@ void Main(void)
                 shared validateRuntime = [=](auto runtime) mutable
                 {
                     if (!runtime) {
-                        throw any(std::make_shared<Error>(std::string("Attempted to register null/undefined runtime")));
+                        throw std::any(std::make_shared<Error>(std::string("Attempted to register null/undefined runtime")));
                     }
                     if (!runtime["agentId"]) {
-                        throw any(std::make_shared<Error>(std::string("Runtime missing agentId")));
+                        throw std::any(std::make_shared<Error>(std::string("Runtime missing agentId")));
                     }
                     if (!runtime["character"]) {
-                        throw any(std::make_shared<Error>(std::string("Runtime missing character configuration")));
+                        throw std::any(std::make_shared<Error>(std::string("Runtime missing character configuration")));
                     }
                 };
                 expect([=]() mutable
@@ -148,7 +148,7 @@ void Main(void)
                 shared validatePort = [=](auto port) mutable
                 {
                     if (OR((!port), (type_of(port) != std::string("number")))) {
-                        throw any(std::make_shared<Error>(std::string("Invalid port number: ") + port + string_empty));
+                        throw std::any(std::make_shared<Error>(std::string("Invalid port number: ") + port + string_empty));
                     }
                 };
                 expect([=]() mutable
@@ -190,7 +190,7 @@ void Main(void)
         {
             it(std::string("should support CLI middleware registration patterns"), [=]() mutable
             {
-                typedef std::function<void(any, any, std::function<void()>)> MiddlewareFunction;
+                typedef std::function<void(std::any, std::any, std::function<void()>)> MiddlewareFunction;
 
                 shared middlewares = array<MiddlewareFunction>();
                 auto registerMiddleware = [=](auto middleware) mutable

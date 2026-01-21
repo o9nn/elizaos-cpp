@@ -53,7 +53,7 @@ bool isCacheValid(const std::string& key);
 
 std::future<TokenMetadata | null> getTokenMetadata(const std::string& address, const std::string& network);
 
-std::future<string | null> resolveTokenSymbol(const std::string& symbol, const std::string& network);
+std::future<std::string | null> resolveTokenSymbol(const std::string& symbol, const std::string& network);
 
 std::future<`0x> resolveTokenToAddress(const std::string& token, const std::string& network);` | null> {
   

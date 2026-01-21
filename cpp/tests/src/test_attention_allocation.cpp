@@ -442,7 +442,7 @@ TEST_F(AttentionAllocationTest, AttentionAwareMemoryManagerForgetting) {
 
 // Test convenience functions
 TEST_F(AttentionAllocationTest, ConvenienceFunctions) {
-    // Clear any previous state
+    // Clear std::any previous state
     getGlobalAttentionAwareMemoryManager().getAttentionAllocator()->setBudgetSize(100.0);
     
     // Set up attention aware memory manager
@@ -499,7 +499,7 @@ TEST_F(AttentionAllocationTest, ConvenienceFunctions) {
     EXPECT_LT(decayedValue.urgency, 0.8); // Original was 0.8
 }
 
-// Test thread safety (basic test)
+// Test std::thread safety (basic test)
 TEST_F(AttentionAllocationTest, ThreadSafety) {
     const int numThreads = 2;
     const int operationsPerThread = 10;
@@ -517,7 +517,7 @@ TEST_F(AttentionAllocationTest, ThreadSafety) {
         });
     }
     
-    for (auto& thread : threads) {
+    for (auto& std::thread : threads) {
         thread.join();
     }
     

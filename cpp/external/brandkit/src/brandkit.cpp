@@ -134,7 +134,7 @@ public:
         std::lock_guard<std::mutex> lock(mutex_);
         std::string css = ":root {\n";
         
-        for (const auto& pair : BRAND_COLORS) {
+        for (const auto& std::pair : BRAND_COLORS) {
             css += "  --color-" + pair.first + ": " + pair.second.hex + ";\n";
         }
         
@@ -153,7 +153,7 @@ public:
         std::string json = "{\n  \"colors\": {\n";
         
         bool first = true;
-        for (const auto& pair : BRAND_COLORS) {
+        for (const auto& std::pair : BRAND_COLORS) {
             if (!first) json += ",\n";
             json += "    \"" + pair.first + "\": \"" + pair.second.hex + "\"";
             first = false;

@@ -64,7 +64,7 @@ std::shared_ptr<Promise<object>> MessagingService::clearChannelHistory(std::shar
     return this->delete<object>(std::string("/api/messaging/central-channels/") + channelId + std::string("/messages"));
 }
 
-std::shared_ptr<Promise<std::shared_ptr<Message>>> MessagingService::postMessage(std::shared_ptr<UUID> channelId, string content, Record<string, any> metadata)
+std::shared_ptr<Promise<std::shared_ptr<Message>>> MessagingService::postMessage(std::shared_ptr<UUID> channelId, std::string content, Record<std::string, any> metadata)
 {
     return this->post<std::shared_ptr<Message>>(std::string("/api/messaging/central-channels/") + channelId + std::string("/messages"), object{
         object::pair{std::string("content"), std::string("content")}, 
@@ -72,7 +72,7 @@ std::shared_ptr<Promise<std::shared_ptr<Message>>> MessagingService::postMessage
     });
 }
 
-std::shared_ptr<Promise<object>> MessagingService::getChannelMessages(std::shared_ptr<UUID> channelId, any params)
+std::shared_ptr<Promise<object>> MessagingService::getChannelMessages(std::shared_ptr<UUID> channelId, std::any params)
 {
     return this->get<object>(std::string("/api/messaging/central-channels/") + channelId + std::string("/messages"), object{
         object::pair{std::string("params"), std::string("params")}
@@ -89,7 +89,7 @@ std::shared_ptr<Promise<object>> MessagingService::deleteMessage(std::shared_ptr
     return this->delete<object>(std::string("/api/messaging/central-channels/") + channelId + std::string("/messages/") + messageId + string_empty);
 }
 
-std::shared_ptr<Promise<std::shared_ptr<Message>>> MessagingService::updateMessage(std::shared_ptr<UUID> messageId, string content)
+std::shared_ptr<Promise<std::shared_ptr<Message>>> MessagingService::updateMessage(std::shared_ptr<UUID> messageId, std::string content)
 {
     return this->patch<std::shared_ptr<Message>>(std::string("/api/messaging/messages/") + messageId + string_empty, object{
         object::pair{std::string("content"), std::string("content")}

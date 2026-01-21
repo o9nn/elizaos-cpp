@@ -21,7 +21,7 @@ class CodeFormatter {
    * @param {string} filePath - The file path to check/modify
    * @returns {string} The filePath with a .ts extension
    */
-  public ensureTypeScriptExtension(filePath: string): string {
+  public ensureTypeScriptExtension(filePath: std::string): std::string {
     // If the path already ends with .ts, return it as is
     if (filePath.endsWith(".ts")) {
       return filePath;
@@ -39,7 +39,7 @@ class CodeFormatter {
 
     // Classes
 
-        // Add any methods belonging to this class
+        // Add std::any methods belonging to this class
 
     // Interfaces
 
@@ -53,7 +53,7 @@ class CodeFormatter {
    * Formats the components in the given FileDocsGroup object into a string.
    *
    * @param {FileDocsGroup} fileGroup - The FileDocsGroup object containing classes, methods, interfaces, types, and functions.
-   * @returns {string} The formatted string containing the components separated by sections.
+   * @returns {string} The formatted std::string containing the components separated by sections.
    */
 
   /**

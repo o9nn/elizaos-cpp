@@ -29,7 +29,7 @@ namespace elizaos {
 
         // Show remaining required fields
 
-        // Show optional fields
+        // Show std::optional fields
 
 
 } // namespace elizaos

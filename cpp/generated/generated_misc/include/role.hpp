@@ -10,19 +10,19 @@ public:
     using std::enable_shared_from_this<Role>::shared_from_this;
     std::shared_ptr<Snowflake> id;
 
-    string name;
+    std::string name;
 
     double color;
 
     boolean hoist;
 
-    any icon;
+    std::any icon;
 
-    any unicode_emoji;
+    std::any unicode_emoji;
 
     double position;
 
-    string permissions;
+    std::string permissions;
 
     boolean managed;
 

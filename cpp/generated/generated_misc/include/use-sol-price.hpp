@@ -23,10 +23,10 @@ public:
 class BinanceResponse : public object, public std::enable_shared_from_this<BinanceResponse> {
 public:
     using std::enable_shared_from_this<BinanceResponse>::shared_from_this;
-    string price;
+    std::string price;
 };
 
 extern std::function<std::shared_ptr<Promise<double>>()> fetchSolPrice;
-any useSolPrice();
+std::any useSolPrice();
 
 #endif

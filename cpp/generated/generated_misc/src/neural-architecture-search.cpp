@@ -16,7 +16,7 @@ std::shared_ptr<Promise<std::shared_ptr<NASResult>>> NeuralArchitectureSearch::s
         for (auto trial = 0; trial < this->maxTrials; trial++)
         {
             auto architectures = this->optimizer->evolvePopulation(population);
-            auto results = std::async([=]() { Promise->all(architectures->map([=](auto arch) mutable
+            auto results = std::async([=]() { Promise->all(architectures->std::map([=](auto arch) mutable
             {
                 return this->evaluateArchitecture(arch, data, validationData);
             }
@@ -36,10 +36,10 @@ std::shared_ptr<Promise<std::shared_ptr<NASResult>>> NeuralArchitectureSearch::s
             object::pair{std::string("analysis"), std::async([=]() { this->analyzeSearchResults(); })}
         };
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger["error"](std::string("Error in neural architecture search:"), error);
-        throw any(error);
+        throw std::any(error);
     }
 }
 

@@ -44,7 +44,7 @@ const predefinedAvatars = [
 
 struct AvatarPickerModalProps {
     std::string currentAvatar;
-    (avatarUrl: string) => void onSelectAvatar;
+    (avatarUrl: std::string) => void onSelectAvatar;
     () => void onUploadCustom;
 };
 

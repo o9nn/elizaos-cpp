@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/agentserver/test-setup.h"
 
-std::function<object(string)> createMockPlugin = [=](auto name) mutable
+std::function<object(std::string)> createMockPlugin = [=](auto name) mutable
 {
     return (object{
         object::pair{std::string("name"), std::string("name")}, 

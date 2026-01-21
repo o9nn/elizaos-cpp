@@ -19,8 +19,8 @@ public:
     boolean includeDetailedContributorSummaries;
 };
 
-string sanitizeBodyText(any text, double maxLength = 500);
+std::string sanitizeBodyText(std::any text, double maxLength = 500);
 
-string formatDataForLLM(std::shared_ptr<IntervalMetrics> metrics, any summaryContent, std::shared_ptr<FormatOptions> options);
+std::string formatDataForLLM(std::shared_ptr<IntervalMetrics> metrics, std::any summaryContent, std::shared_ptr<FormatOptions> options);
 
 #endif

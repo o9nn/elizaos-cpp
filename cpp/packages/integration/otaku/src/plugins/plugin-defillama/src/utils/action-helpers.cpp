@@ -20,7 +20,7 @@ double parsePositiveInteger(const std::optional<double>& value) {
 
 }
 
-std::future<ActionResult> respondWithError(HandlerCallback callback, const std::string& messageText, const std::string& errorCode, std::optional<std::variant<Record<string, string, double, null>>> details) {
+std::future<ActionResult> respondWithError(HandlerCallback callback, const std::string& messageText, const std::string& errorCode, std::optional<std::variant<Record<std::string, std::string, double, null>>> details) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (callback) {

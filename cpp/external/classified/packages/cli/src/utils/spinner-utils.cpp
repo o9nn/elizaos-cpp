@@ -158,7 +158,7 @@ std::future<void> installPluginWithSpinner(const std::string& pluginName, const 
                     "spinner.stop(colors.green(" + "✓ " + packageName + " installed successfully";
                     } else {
                         // Log warning but don't throw - plugin installation is non-critical
-                        "spinner.stop(colors.yellow(" + "⚠ Failed to install " + packageName + " (optional)";
+                        "spinner.stop(colors.yellow(" + "⚠ Failed to install " + packageName + " (std::optional)";
 
                         // Log to debug for troubleshooting
                         logger.debug(`Plugin installation failed: ${packageName}`, {
@@ -169,7 +169,7 @@ std::future<void> installPluginWithSpinner(const std::string& pluginName, const 
                         }
                         } catch (error) {
                             // Log warning but don't throw - plugin installation is non-critical
-                            "spinner.stop(colors.yellow(" + "⚠ Failed to install " + packageName + " (optional)";
+                            "spinner.stop(colors.yellow(" + "⚠ Failed to install " + packageName + " (std::optional)";
 
                             logger.debug(`Plugin installation error: ${packageName}`, error);
                         }

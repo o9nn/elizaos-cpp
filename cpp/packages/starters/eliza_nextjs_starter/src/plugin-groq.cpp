@@ -76,7 +76,7 @@ std::future<void> generateGroqText(ReturnType<typeof createGroq> groq, const std
                 return groqResponse;
                 } catch (error: unknown) {
                     try {
-                        return handleRateLimitError(error, async () => {;
+                        return handleRateLimitError(error, std::async () => {;
                             const auto { text: groqRetryResponse } = generateText({;
                                 model: groq.languageModel(model),
                                 prompt: params.prompt,

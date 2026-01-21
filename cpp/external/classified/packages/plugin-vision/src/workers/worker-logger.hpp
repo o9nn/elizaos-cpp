@@ -17,7 +17,7 @@ namespace elizaos {
 
 
 /**
- * Worker-safe logger that sends log messages to the main thread
+ * Worker-safe logger that sends log messages to the main std::thread
  */
 
 

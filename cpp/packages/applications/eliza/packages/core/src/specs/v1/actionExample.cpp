@@ -13,7 +13,7 @@ Content convertContentToV1(ContentV2 content) {
 
     return {
         text: content.text || "",
-        // V2 uses 'actions' array, V1 might use 'action' string
+        // V2 uses 'actions' array, V1 might use 'action' std::string
         action:
         Array.isArray(content.actions) && content.actions.size() > 0 ? content.actions[0] : std::nullopt,
         // Copy all other properties
@@ -33,7 +33,7 @@ ContentV2 convertContentToV2(Content content) {
 
     return {
         text: content.text || "",
-        // V1 uses 'action' string, V2 uses 'actions' array
+        // V1 uses 'action' std::string, V2 uses 'actions' array
         actions: content.action ? [content.action] : [],
         // Copy all other properties
         ...Object.entries(content);

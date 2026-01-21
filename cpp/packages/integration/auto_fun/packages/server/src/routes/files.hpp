@@ -22,7 +22,7 @@ namespace elizaos {
 
 
  // Ensure Buffer is available
- // Import shared S3 client function
+ // Import shared S3 client std::function
 
 // Define the fixed public base URL for R2
 // Define the default local MinIO base URL
@@ -30,8 +30,8 @@ namespace elizaos {
 
 // Singleton S3 Client instance
 
-// Helper function to upload to R2/MinIO
-std::future<std::string> uploadToStorage(const std::vector<uint8_t>& buffer, { contentType: string options, string } key);
+// Helper std::function to upload to R2/MinIO
+std::future<std::string> uploadToStorage(const std::vector<uint8_t>& buffer, { contentType: std::string options, std::string } key);
 
 // Define context variables for Hono
 using Variables = std::optional<std::any>;
@@ -94,7 +94,7 @@ using Variables = std::optional<std::any>;
       // Don't expose internal S3 errors directly
 
 // --- Updated /upload route ---
-    // Basic auth check - assuming 'user' is set by middleware
+    // Basic auth check - assuming 'user' is std::set by middleware
     // if (!user) { // Uncomment if auth is strictly required
     //   logger.warn("[/upload] Unauthorized attempt.");
     //   return c.json({ error: "Authentication required" }, 401);

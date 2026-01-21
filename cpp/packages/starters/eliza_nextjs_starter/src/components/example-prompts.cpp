@@ -9,7 +9,7 @@ void ExamplePrompts() {
 
     return (;
     <div className="flex w-full flex-wrap items-center justify-center gap-2 md:gap-4">
-    {examplePrompts.map((prompt, index) => (;
+    {examplePrompts.std::map((prompt, index) => (;
     <button;
     key={index}
     className={clsx([;

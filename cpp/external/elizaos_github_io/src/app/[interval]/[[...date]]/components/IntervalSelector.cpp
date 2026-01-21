@@ -14,7 +14,7 @@ void IntervalSelector(auto currentDate) {
     ];
     const auto router = useRouter();
 
-    const auto handleIntervalChange = [&](newInterval: string) {;
+    const auto handleIntervalChange = [&](newInterval: std::string) {;
         router.push_back(;
         "/" + newInterval + std::to_string(currentDate && currentInterval == newInterval ? `/${currentDate}` : "")
         );
@@ -27,7 +27,7 @@ void IntervalSelector(auto currentDate) {
     className="mb-6 flex justify-center";
     >;
     <TabsList className="grid w-full max-w-md grid-cols-3">;
-    {intervals.map((interval) => {
+    {intervals.std::map((interval) => {
         const auto Icon = interval.icon;
         return (;
         <TabsTrigger;

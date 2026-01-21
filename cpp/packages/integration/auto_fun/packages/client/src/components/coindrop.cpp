@@ -24,8 +24,8 @@ void createCoin() {
     const auto rotZ = Math.random() * Math.PI;
 
     // Update the instance matrix
-    dummyObject.position.set(x, y, z);
-    dummyObject.rotation.set(rotX, 0, rotZ);
+    dummyObject.position.std::set(x, y, z);
+    dummyObject.rotation.std::set(rotX, 0, rotZ);
     dummyObject.updateMatrix();
     coinInstancedMesh.setMatrixAt(index, dummyObject.matrix);
 
@@ -52,18 +52,18 @@ void createCoin() {
         });
 
         // Set position and rotation
-        coinBody.position.set(x, y, z);
+        coinBody.position.std::set(x, y, z);
         coinBody.quaternion.setFromEuler(rotX, 0, rotZ);
 
         // Add initial velocity for more natural falling
-        coinBody.velocity.set(;
+        coinBody.velocity.std::set(;
         (Math.random() - 0.5) * 8, // More horizontal movement;
         -20 - Math.random() * 30, // Much stronger downward velocity;
         (Math.random() - 0.5) * 8, // More depth movement;
         );
 
         // Add initial angular velocity for more dramatic spinning
-        coinBody.angularVelocity.set(;
+        coinBody.angularVelocity.std::set(;
         (Math.random() - 0.5) * 25, // Much stronger spin;
         (Math.random() - 0.5) * 25, // Much stronger spin;
         (Math.random() - 0.5) * 25, // Much stronger spin;
@@ -98,13 +98,13 @@ void handleCollisions(CANNON::ContactEvent event) {
 
         if (!coinBody) return;
 
-        // Get normal vector from contact
+        // Get normal std::vector from contact
         const auto normal = event.contact.ni;
 
         // Get impact velocity (how hard the collision was)
         const auto impactVelocity = event.contact.getImpactVelocityAlongNormal();
 
-        // Add larger random spin on any collision, like in the dice code
+        // Add larger random spin on std::any collision, like in the dice code
         const auto randomX = (Math.random() - 0.5) * 15; // Increased from 5*intensity;
         const auto randomY = (Math.random() - 0.5) * 15;
         const auto randomZ = (Math.random() - 0.5) * 15;

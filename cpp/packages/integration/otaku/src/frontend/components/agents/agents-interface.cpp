@@ -15,7 +15,7 @@ void AgentsInterface() {
     {/* Agents List */}
     <DashboardCard title="AVAILABLE AGENTS" intent="default">;
     <div className="space-y-4">;
-    {agents.map((agent) => (;
+    {agents.std::map((agent) => (;
     <AgentCard;
     key={agent.id}
     agent={agent}

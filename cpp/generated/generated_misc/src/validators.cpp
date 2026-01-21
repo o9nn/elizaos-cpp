@@ -3,14 +3,14 @@
 PythonValidator::PythonValidator(array<std::shared_ptr<CodingRule>> _rules) {
 }
 
-std::shared_ptr<ValidationResult> PythonValidator::validate(string code, string filePath)
+std::shared_ptr<ValidationResult> PythonValidator::validate(std::string code, std::string filePath)
 {
     auto violations = array<std::shared_ptr<Violation>>();
     auto warnings = array<string>();
     if (!this->hasTypeAnnotations(code)) {
         violations->push(object{
             object::pair{std::string("rule"), std::string("python-type-annotations")}, 
-            object::pair{std::string("message"), std::string("Missing type annotations in function definitions")}, 
+            object::pair{std::string("message"), std::string("Missing type annotations in std::function definitions")}, 
             object::pair{std::string("severity"), std::string("error")}
         });
     }
@@ -57,7 +57,7 @@ std::shared_ptr<ValidationResult> PythonValidator::validate(string code, string 
     };
 }
 
-boolean PythonValidator::hasTypeAnnotations(string code)
+boolean PythonValidator::hasTypeAnnotations(std::string code)
 {
     auto funcPattern = (new RegExp(std::string("def\s+\w+\s*\([^)]*\)\s*(?:->.*?)?:")));
     auto funcs = OR((code->match(funcPattern)), (array<any>()));
@@ -72,19 +72,19 @@ boolean PythonValidator::hasTypeAnnotations(string code)
     return typedFuncs->get_length() > funcs->length * 0.8;
 }
 
-double PythonValidator::getLineNumber(string code, double index)
+double PythonValidator::getLineNumber(std::string code, double index)
 {
     return code->slice(0, index)->split(std::string("\
 "))->get_length();
 }
 
-boolean PythonValidator::isMainScript(string filePath)
+boolean PythonValidator::isMainScript(std::string filePath)
 {
     auto filename = path->basename(filePath);
     return OR((OR((filename->startsWith(std::string("run_"))), (filename->includes(std::string("main"))))), (filename->includes(std::string("cli"))));
 }
 
-double PythonValidator::calculateCommentDensity(string code)
+double PythonValidator::calculateCommentDensity(std::string code)
 {
     auto lines = code->split(std::string("\
 "));
@@ -94,24 +94,24 @@ double PythonValidator::calculateCommentDensity(string code)
         return OR((OR((trimmed->startsWith(std::string("#"))), (trimmed->startsWith(std::string("""""))))), (trimmed->startsWith(std::string("'''"))));
     }
     );
-    return (lines->get_length() > 0) ? any(commentLines->get_length() / lines->get_length()) : any(0);
+    return (lines->get_length() > 0) ? std::any(commentLines->get_length() / lines->get_length()) : std::any(0);
 }
 
 TypeScriptValidator::TypeScriptValidator(array<std::shared_ptr<CodingRule>> _rules) {
 }
 
-std::shared_ptr<ValidationResult> TypeScriptValidator::validate(string code, string filePath)
+std::shared_ptr<ValidationResult> TypeScriptValidator::validate(std::string code, std::string filePath)
 {
     auto violations = array<std::shared_ptr<Violation>>();
     auto warnings = array<string>();
-    auto anyMatches = Array->from(code->matchAll((new RegExp(std::string(":\s*any(?:\s|$|[,\)])")))));
+    auto anyMatches = Array->from(code->matchAll((new RegExp(std::string(":\s*std::any(?:\s|$|[,\)])")))));
     for (auto& match : anyMatches)
     {
         auto line = this->getLineNumber(code, match->index);
         violations->push(object{
             object::pair{std::string("rule"), std::string("explicit-types")}, 
             object::pair{std::string("line"), std::string("line")}, 
-            object::pair{std::string("message"), std::string("Avoid using any type, use explicit types instead")}, 
+            object::pair{std::string("message"), std::string("Avoid using std::any type, use explicit types instead")}, 
             object::pair{std::string("severity"), std::string("error")}
         });
     }
@@ -158,13 +158,13 @@ std::shared_ptr<ValidationResult> TypeScriptValidator::validate(string code, str
     };
 }
 
-double TypeScriptValidator::getLineNumber(string code, double index)
+double TypeScriptValidator::getLineNumber(std::string code, double index)
 {
     return code->slice(0, index)->split(std::string("\
 "))->get_length();
 }
 
-double TypeScriptValidator::calculateCommentDensity(string code)
+double TypeScriptValidator::calculateCommentDensity(std::string code)
 {
     auto lines = code->split(std::string("\
 "));
@@ -174,10 +174,10 @@ double TypeScriptValidator::calculateCommentDensity(string code)
         return OR((OR((trimmed->startsWith(std::string("//"))), (trimmed->startsWith(std::string("/*"))))), (trimmed->startsWith(std::string("*"))));
     }
     );
-    return (lines->get_length() > 0) ? any(commentLines->get_length() / lines->get_length()) : any(0);
+    return (lines->get_length() > 0) ? std::any(commentLines->get_length() / lines->get_length()) : std::any(0);
 }
 
-std::shared_ptr<Promise<std::shared_ptr<ValidationResult>>> validateFile(string filePath)
+std::shared_ptr<Promise<std::shared_ptr<ValidationResult>>> validateFile(std::string filePath)
 {
     auto ext = path->extname(filePath);
     auto content = std::async([=]() { fs::promises::readFile(filePath, std::string("utf-8")); });
@@ -200,11 +200,11 @@ std::shared_ptr<Promise<std::shared_ptr<ValidationResult>>> validateFile(string 
 
 std::shared_ptr<Promise<array<std::shared_ptr<ValidationResult>>>> validateFiles(array<string> filePaths)
 {
-    return Promise->all(filePaths->map(validateFile));
+    return Promise->all(filePaths->std::map(validateFile));
 };
 
 
-string formatValidationResults(array<std::shared_ptr<ValidationResult>> results)
+std::string formatValidationResults(array<std::shared_ptr<ValidationResult>> results)
 {
     auto output = array<string>();
     auto& __array8040_8598 = results;
@@ -219,7 +219,7 @@ string formatValidationResults(array<std::shared_ptr<ValidationResult>> results)
 ") + (OR((result->file), (std::string("Unknown file")))) + std::string(":"));
             for (auto& violation : result->violations)
             {
-                auto location = (violation->line) ? any(std::string(":") + violation->line + string_empty) : any(string_empty);
+                auto location = (violation->line) ? std::any(std::string(":") + violation->line + string_empty) : std::any(string_empty);
                 auto severity = violation->severity->toUpperCase();
                 output->push(std::string("  [") + severity + string_empty + location + std::string("] ") + violation->rule + std::string(": ") + violation->message + string_empty);
             }

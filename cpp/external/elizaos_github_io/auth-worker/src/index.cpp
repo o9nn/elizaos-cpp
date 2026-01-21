@@ -47,11 +47,11 @@ std::future<std::string> handleCallback(const std::string& request, Env env) {
                                 }
 
                                 const auto tokenData = (tokenResponse.json()) as {;
-                                    access_token: string;
-                                    token_type: string;
-                                    scope: string;
-                                    error?: string;
-                                    error_description?: string;
+                                    access_token: std::string;
+                                    token_type: std::string;
+                                    scope: std::string;
+                                    error?: std::string;
+                                    error_description?: std::string;
                                     };
                                     std::cout << "Token data:" << tokenData << std::endl;
                                     // Check if we got an error response from GitHub

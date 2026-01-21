@@ -3,8 +3,8 @@
 #include "core.h"
 #include "@uidotdev/usehooks.h"
 
-typedef any TTransactionSpeed;
+typedef std::any TTransactionSpeed;
 
 
-extern std::function<any()> useTransactionSpeed;
+extern std::function<std::any()> useTransactionSpeed;
 #endif

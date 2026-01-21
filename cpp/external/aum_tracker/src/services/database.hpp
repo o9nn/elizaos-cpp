@@ -17,7 +17,7 @@ struct WalletBalance {
     std::string wallet_address;
     std::string wallet_id;
     double sol_balance;
-    string; // JSON string tokens;
+    std::string; // JSON std::string tokens;
     std::string last_updated;
     "success" | "error" | "pending" fetch_status;
     std::optional<std::string> error_message;
@@ -58,7 +58,7 @@ struct PortfolioSnapshot {
     std::string wallet_address;
     std::string snapshot_timestamp;
     double sol_balance;
-    string; // JSON string tokens;
+    std::string; // JSON std::string tokens;
     double total_usd_value;
     "hourly" | "daily" | "manual" snapshot_type;
 };

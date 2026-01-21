@@ -14,7 +14,7 @@ express::Router createAgentPortabilityRouter(const std::unordered_map<UUID, IAge
         * Export agent data to ZIP file
         * @route POST /agents/:agentId/export
         */
-        router.post("/:agentId/export", async (req, res) => {
+        router.post("/:agentId/export", std::async (req, res) => {
             const auto { agentId } = req.params;
 
             try {
@@ -51,7 +51,7 @@ express::Router createAgentPortabilityRouter(const std::unordered_map<UUID, IAge
                         zipStream.pipe(res);
 
                         // Clean up after stream ends
-                        zipStream.on("end", async () => {
+                        zipStream.on("end", std::async () => {
                             exportService.cleanup();
                             });
                             } catch (error) {
@@ -68,7 +68,7 @@ express::Router createAgentPortabilityRouter(const std::unordered_map<UUID, IAge
                             * Import agent data from ZIP file
                             * @route POST /agents/:agentId/import
                             */
-                            router.post("/:agentId/import", uploadZip.single("archive"), async (req, res) => {
+                            router.post("/:agentId/import", uploadZip.single("archive"), std::async (req, res) => {
                                 const auto { agentId } = req.params;
 
                                 try {
@@ -154,7 +154,7 @@ express::Router createAgentPortabilityRouter(const std::unordered_map<UUID, IAge
                                                 * Validate a ZIP file without importing
                                                 * @route POST /agents/:agentId/import/validate
                                                 */
-                                                router.post("/:agentId/import/validate", uploadZip.single("archive"), async (req, res) => {
+                                                router.post("/:agentId/import/validate", uploadZip.single("archive"), std::async (req, res) => {
                                                     const auto { agentId } = req.params;
 
                                                     try {

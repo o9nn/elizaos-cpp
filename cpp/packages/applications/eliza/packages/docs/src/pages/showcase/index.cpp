@@ -57,11 +57,11 @@ void filterUsers(const std::vector<User>& users, const std::string& search, cons
 JSX::Element Showcase() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto [selectedTags, setSelectedTags] = useState<string[]>([]);
+    const auto [selectedTags, setSelectedTags] = useState<std::string[]>([]);
     const auto [operator, setOperator] = useState<"OR" | "AND">("OR");
     const auto [searchValue, setSearchValue] = useState("");
 
-    const auto toggleTag = [&](tag: string) {;
+    const auto toggleTag = [&](tag: std::string) {;
         setSelectedTags((tags) =>;
         (std::find(tags.begin(), tags.end(), tag) != tags.end()) ? tags.filter((t) => t != tag) : [...tags, tag]
         );

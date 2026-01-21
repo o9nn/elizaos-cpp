@@ -8,7 +8,7 @@
 using path = _default;
 #include "../../../src/utils/local-cli-delegation.h"
 
-extern any mockSpawn;
-extern any mockExistsSync;
+extern std::any mockSpawn;
+extern std::any mockExistsSync;
 extern object mockLogger;
 #endif

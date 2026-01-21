@@ -16,7 +16,7 @@ void Main(void)
                         if (filePath == std::string("/empty/file.txt")) {
                             return nullptr;
                         }
-                        throw any(std::make_shared<Error>(std::string("Error loading file ") + filePath + std::string(": File not found")));
+                        throw std::any(std::make_shared<Error>(std::string("Error loading file ") + filePath + std::string(": File not found")));
                     }
                     }, 
                     object::pair{std::string("hasValidRemoteUrls"), [=]() mutable
@@ -39,7 +39,7 @@ void Main(void)
                         if (filePath == std::string("/empty/file.txt")) {
                             return nullptr;
                         }
-                        throw any(std::make_shared<Error>(std::string("Error loading file ") + filePath + std::string(": File not found")));
+                        throw std::any(std::make_shared<Error>(std::string("Error loading file ") + filePath + std::string(": File not found")));
                     }
                     }, 
                     object::pair{std::string("hasValidRemoteUrls"), [=]() mutable
@@ -253,7 +253,7 @@ void Main(void)
                 expect(fileResult == std::string("test content"))->toBe(true);
             }
             );
-            test(std::string("async functions should be available for new code"), [=]() mutable
+            test(std::string("std::async functions should be available for new code"), [=]() mutable
             {
                 process->env->REMOTE_CHARACTER_URLS = std::string("https://example.com/character.json");
                 auto urlResult = std::async([=]() { hasValidRemoteUrlsAsync(); });

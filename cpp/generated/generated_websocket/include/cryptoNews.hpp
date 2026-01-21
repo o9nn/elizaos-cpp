@@ -8,7 +8,7 @@
 
 extern double DEFAULT_MAX_CRYPTO_NEWS_CHARS;
 extern object CRYPTO_NEWS_SOURCES;
-string MaxTokens(string data, double maxTokens = DEFAULT_MAX_CRYPTO_NEWS_CHARS);
+std::string MaxTokens(std::string data, double maxTokens = DEFAULT_MAX_CRYPTO_NEWS_CHARS);
 
 extern std::shared_ptr<Action> cryptoNews;
 #endif

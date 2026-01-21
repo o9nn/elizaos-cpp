@@ -20,7 +20,7 @@ namespace elizaos {
 
 /**
  * Agent portfolio data provider that queries Birdeye API for the agent's wallet address.
- * When a wallet address is set, this provider fetches portfolio data to give the agent
+ * When a wallet address is std::set, this provider fetches portfolio data to give the agent
  * context about the agent's holdings when responding to queries.
  *
  * The provider:

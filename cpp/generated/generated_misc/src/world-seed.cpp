@@ -1,7 +1,7 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/plugin-sql/src/__tests__/integration/seed/world-seed.h"
 
-any worldTestAgentId = as<std::shared_ptr<UUID>>(uuidv4());
-any worldTestEntityId = as<std::shared_ptr<UUID>>(uuidv4());
+std::any worldTestAgentId = as<std::shared_ptr<UUID>>(uuidv4());
+std::any worldTestEntityId = as<std::shared_ptr<UUID>>(uuidv4());
 std::shared_ptr<Agent> worldTestAgent = object{
     object::pair{std::string("id"), worldTestAgentId}, 
     object::pair{std::string("name"), std::string("World Test Agent")}, 

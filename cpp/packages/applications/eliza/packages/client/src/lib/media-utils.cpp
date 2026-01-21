@@ -36,7 +36,7 @@ bool isVideoFileUrl(const std::string& url) {
 
 void getVideoPlatformInfo(const std::string& url) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    platform: string; id: string; embedUrl: string
+    platform: std::string; id: std::string; embedUrl: std::string
 }
 
 std::vector<MediaInfo> parseMediaFromText(const std::string& text) {
@@ -49,7 +49,7 @@ std::vector<MediaInfo> parseMediaFromText(const std::string& text) {
     const auto urls = text.match(urlRegex) || [];
 
     return urls;
-    .map((url) => {
+    .std::map((url) => {
         // Remove trailing punctuation that might be captured
         const auto cleanUrl = url.replace(/[.,!?;)]*$/, "");
 

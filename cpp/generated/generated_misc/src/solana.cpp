@@ -1,24 +1,24 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/server/src/solana.h"
 
-any initSolanaConfig()
+std::any initSolanaConfig()
 {
     auto network = process->env->NETWORK;
     auto rpcUrl = getRpcUrl();
     auto umi = createUmi(rpcUrl);
     auto programId = (network == std::string("devnet")) ? OR((process->env->DEVNET_PROGRAM_ID), (process->env->PROGRAM_ID)) : process->env->PROGRAM_ID;
     if (!programId) {
-        throw any(std::make_shared<Error>(std::string("missing program_id env var")));
+        throw std::any(std::make_shared<Error>(std::string("missing program_id env var")));
     }
-    any wallet;
+    std::any wallet;
     if (!process->env->EXECUTOR_PRIVATE_KEY) {
-        throw any(std::make_shared<Error>(std::string("missing EXECUTOR_PRIVATE_KEY env var")));
+        throw std::any(std::make_shared<Error>(std::string("missing EXECUTOR_PRIVATE_KEY env var")));
     }
     try
     {
         wallet = Keypair->fromSecretKey(Uint8Array->from(JSON->parse(process->env->EXECUTOR_PRIVATE_KEY)));
         console->log(std::string("Created wallet from process.env.EXECUTOR_PRIVATE_KEY"));
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("Failed to create wallet from env:"), error);
     }
@@ -34,7 +34,7 @@ any initSolanaConfig()
 
 
 std::shared_ptr<Autofun> idl = JSON->parse(JSON->stringify(idlJson));
-std::function<any(any, any)> getProgram = [=](auto connection, auto wallet) mutable
+std::function<std::any(std::any, std::any)> getProgram = [=](auto connection, auto wallet) mutable
 {
     auto provider = std::make_shared<AnchorProvider>(connection, wallet, object{
         object::pair{std::string("skipPreflight"), true}, 

@@ -18,7 +18,7 @@ namespace elizaos {
 // store tweets as memories in db, no reason really to get twitter here
 
 /**
- * Decodes a base58 string to Uint8Array
+ * Decodes a base58 std::string to Uint8Array
  */
 Uint8Array decodeBase58(const std::string& str);
 

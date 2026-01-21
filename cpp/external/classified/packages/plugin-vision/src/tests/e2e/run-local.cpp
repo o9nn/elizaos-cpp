@@ -15,22 +15,22 @@ std::future<void> runE2ETests() {
     // Create a minimal runtime with vision service
     const auto runtime = {;
         agentId,
-        getSetting: (key: string) => {
+        getSetting: (key: std::string) => {
             const std::unordered_map<std::string, std::string> settings = {;
                 CAMERA_NAME: "test",
                 PIXEL_CHANGE_THRESHOLD: "50",
                 };
                 return settings[key] || nullptr;
                 },
-                getService: (name: string) => {
+                getService: (name: std::string) => {
                     if (name == 'VISION') {
                         return visionService;
                     }
                     return nullptr;
                     },
-                    createMemory: async () => {},
-                    getMemories: async () => [],
-                    composeState: async () => ({
+                    createMemory: std::async () => {},
+                    getMemories: std::async () => [],
+                    composeState: std::async () => ({
                         values: {
                             visionAvailable: visionService.isActive() || false,
                             cameraStatus: visionService.isActive() ? "connected" : "not connected",
@@ -39,7 +39,7 @@ std::future<void> runE2ETests() {
                             data: {},
                             text: "Visual Perception: Available",
                             }),
-                            useModel: async (type: string, _params: any) => {
+                            useModel: std::async (type: std::string, _params: std::any) => {
                                 if (type == 'IMAGE_DESCRIPTION') {
                                     return { description: 'A test scene with various objects' }
                                 }
@@ -68,7 +68,7 @@ std::future<void> runE2ETests() {
                                             test.fn(runtime);
                                             passedTests++;
                                             std::cout << "✅ PASSED" << std::endl;
-                                            } catch (error: any) {
+                                            } catch (error: std::any) {
                                                 failedTests++;
                                                 std::cout << "❌ FAILED" << std::endl;
                                                 std::cerr << "      Error: " + error.message << std::endl;

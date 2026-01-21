@@ -15,7 +15,7 @@ namespace elizaos {
 
 struct FilterBarProps {
     std::vector<std::string> tags;
-    (search: string, tags: string[]) => void onFilterChange;
+    (search: std::string, tags: std::string[]) => void onFilterChange;
 };
 
 void FilterBar(auto { tags, FilterBarProps onFilterChange }); 

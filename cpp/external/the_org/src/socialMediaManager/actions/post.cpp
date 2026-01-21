@@ -6,7 +6,7 @@ namespace elizaos {
 
 std::future<> validateTwitterConfig(IAgentRuntime runtime, const std::string& serverId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    isValid: boolean; error?: string
+    isValid: boolean; error?: std::string
 }
 
 std::future<void> ensureTwitterClient(IAgentRuntime runtime, const std::string& serverId, const std::any& worldSettings) {

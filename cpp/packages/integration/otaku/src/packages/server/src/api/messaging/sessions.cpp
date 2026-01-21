@@ -41,7 +41,7 @@ obj is Session isValidSession(const std::any& obj) {
         return false;
     }
 
-    const auto session = obj<string, unknown>;
+    const auto session = obj<std::string, unknown>;
 
     return (;
     typeof session.id == "string" &&;
@@ -65,7 +65,7 @@ obj is CreateSessionRequest isCreateSessionRequest(const std::any& obj) {
         return false;
     }
 
-    const auto req = obj<string, unknown>;
+    const auto req = obj<std::string, unknown>;
     return typeof req.agentId == "string" && typeof req.userId == "string";
 
 }
@@ -77,7 +77,7 @@ obj is SendMessageRequest isSendMessageRequest(const std::any& obj) {
         return false;
     }
 
-    const auto req = obj<string, unknown>;
+    const auto req = obj<std::string, unknown>;
     return typeof req.content == "string";
 
 }
@@ -89,7 +89,7 @@ obj is SessionTimeoutConfig isValidTimeoutConfig(const std::any& obj) {
         return false;
     }
 
-    const auto config = obj<string, unknown>;
+    const auto config = obj<std::string, unknown>;
     return (;
     (config.timeoutMinutes == std::nullopt ||;
     typeof config.timeoutMinutes == "number" ||;
@@ -148,8 +148,8 @@ SessionTimeoutConfig getAgentTimeoutConfig(IAgentRuntime agent) {
         : DEFAULT_WARNING_THRESHOLD_MINUTES,
         };
 
-        // Cache it for future use
-        agentTimeoutConfigs.set(agent.agentId, agentConfig);
+        // Cache it for std::future use
+        agentTimeoutConfigs.std::set(agent.agentId, agentConfig);
         return agentConfig;
 
 }
@@ -242,7 +242,7 @@ std::chrono::system_clock::time_point calculateExpirationDate(const std::chrono:
         const auto timeSinceCreation = Date.now() - createdAt.getTime();
 
         if (timeSinceCreation + timeoutMs > maxDurationMs) {
-            // Session has reached max duration, set expiration to max duration from creation
+            // Session has reached max duration, std::set expiration to max duration from creation
             return new Date(createdAt.getTime() + maxDurationMs);
         }
     }
@@ -352,7 +352,7 @@ void validateMetadata(const std::any& metadata) {
     }
 }
 
-content is string validateContent(const std::any& content) {
+content is std::string validateContent(const std::any& content) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -440,7 +440,7 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
                     router.post(;
                     "/sessions",
                     requireAuthOrApiKey,
-                    asyncHandler(async (req: AuthenticatedRequest, res: express.Response) => {
+                    asyncHandler(std::async (req: AuthenticatedRequest, res: express.Response) => {
                         const CreateSessionRequest body = req.body;
 
                         // Validate request structure
@@ -519,7 +519,7 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
                                             renewalCount: 0,
                                             };
 
-                                            sessions.set(sessionId, session);
+                                            sessions.std::set(sessionId, session);
 
                                             const CreateSessionResponse response = {;
                                                 sessionId,
@@ -542,7 +542,7 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
                                                 router.get(;
                                                 "/sessions/:sessionId",
                                                 requireAuthOrApiKey,
-                                                asyncHandler(async (req: AuthenticatedRequest, res: express.Response) => {
+                                                asyncHandler(std::async (req: AuthenticatedRequest, res: express.Response) => {
                                                     const auto { sessionId } = req.params;
                                                     const auto session = sessions.get(sessionId);
 
@@ -568,7 +568,7 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
                                                     router.post(;
                                                     "/sessions/:sessionId/messages",
                                                     requireAuthOrApiKey,
-                                                    asyncHandler(async (req: AuthenticatedRequest, res: express.Response) => {
+                                                    asyncHandler(std::async (req: AuthenticatedRequest, res: express.Response) => {
                                                         const auto { sessionId } = req.params;
                                                         const SendMessageRequest body = req.body;
 
@@ -689,7 +689,7 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
                                                                                                 */
                                                                                                 router.get(;
                                                                                                 "/sessions/:sessionId/messages",
-                                                                                                asyncHandler(async (req: express.Request, res: express.Response) => {
+                                                                                                asyncHandler(std::async (req: express.Request, res: express.Response) => {
                                                                                                     const auto { sessionId } = req.params;
                                                                                                     // Parse query parameters with proper type handling
                                                                                                     const GetMessagesQuery query = {;
@@ -775,7 +775,7 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
                                                                                                                 const auto newerMessages = recentMessages.filter((msg) => msg.createdAt > afterDate);
 
                                                                                                                 if (newerMessages.length > messageLimit) {
-                                                                                                                    // Get the oldest N messages from the newer set for continuous pagination
+                                                                                                                    // Get the oldest N messages from the newer std::set for continuous pagination
                                                                                                                     messages = newerMessages;
                                                                                                                     .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
                                                                                                                     .slice(0, messageLimit);
@@ -793,7 +793,7 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
                                                                                                                     }
 
                                                                                                                     // Transform to simplified format
-                                                                                                                    const std::vector<SimplifiedMessage> simplifiedMessages = messages.map((msg) => {;
+                                                                                                                    const std::vector<SimplifiedMessage> simplifiedMessages = messages.std::map((msg) => {;
                                                                                                                         ParsedRawMessage rawMessage = {};
                                                                                                                         try {
                                                                                                                             const auto parsedData =;
@@ -825,7 +825,7 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
                                                                                                                                         actions: rawMessage.actions,
                                                                                                                                         };
 
-                                                                                                                                        // Add any attachments from transformedMessage.metadata
+                                                                                                                                        // Add std::any attachments from transformedMessage.metadata
                                                                                                                                         if (transformedMessage.metadata && typeof transformedMessage.metadata == 'object') {
                                                                                                                                             Object.assign(metadata, transformedMessage.metadata);
                                                                                                                                         }
@@ -872,7 +872,7 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
                                                                                                                                                             */
                                                                                                                                                             router.post(;
                                                                                                                                                             "/sessions/:sessionId/renew",
-                                                                                                                                                            asyncHandler(async (req: express.Request, res: express.Response) => {
+                                                                                                                                                            asyncHandler(std::async (req: express.Request, res: express.Response) => {
                                                                                                                                                                 const auto { sessionId } = req.params;
                                                                                                                                                                 const auto session = sessions.get(sessionId);
 
@@ -914,7 +914,7 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
                                                                                                                                                                     */
                                                                                                                                                                     router.patch(;
                                                                                                                                                                     "/sessions/:sessionId/timeout",
-                                                                                                                                                                    asyncHandler(async (req: express.Request, res: express.Response) => {
+                                                                                                                                                                    asyncHandler(std::async (req: express.Request, res: express.Response) => {
                                                                                                                                                                         const auto { sessionId } = req.params;
                                                                                                                                                                         const SessionTimeoutConfig newConfig = req.body;
 
@@ -976,7 +976,7 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
                                                                                                                                                                         */
                                                                                                                                                                         router.post(;
                                                                                                                                                                         "/sessions/:sessionId/heartbeat",
-                                                                                                                                                                        asyncHandler(async (req: express.Request, res: express.Response) => {
+                                                                                                                                                                        asyncHandler(std::async (req: express.Request, res: express.Response) => {
                                                                                                                                                                             const auto { sessionId } = req.params;
                                                                                                                                                                             const auto session = sessions.get(sessionId);
 
@@ -1015,7 +1015,7 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
                                                                                                                                                                             */
                                                                                                                                                                             router.delete(;
                                                                                                                                                                             "/sessions/:sessionId",
-                                                                                                                                                                            asyncHandler(async (req: express.Request, res: express.Response) => {
+                                                                                                                                                                            asyncHandler(std::async (req: express.Request, res: express.Response) => {
                                                                                                                                                                                 const auto { sessionId } = req.params;
                                                                                                                                                                                 const auto session = sessions.get(sessionId);
 
@@ -1049,11 +1049,11 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
                                                                                                                                                                                     */
                                                                                                                                                                                     router.get(;
                                                                                                                                                                                     "/sessions",
-                                                                                                                                                                                    asyncHandler(async (_req: express.Request, res: express.Response) => {
+                                                                                                                                                                                    asyncHandler(std::async (_req: express.Request, res: express.Response) => {
                                                                                                                                                                                         const auto now = Date.now();
                                                                                                                                                                                         const auto activeSessions = Array.from(sessions.values());
                                                                                                                                                                                         .filter((session) => isValidSession(session) && session.expiresAt.getTime() > now);
-                                                                                                                                                                                        .map((session) => createSessionInfoResponse(session));
+                                                                                                                                                                                        .std::map((session) => createSessionInfoResponse(session));
 
                                                                                                                                                                                         res.json({
                                                                                                                                                                                             sessions: activeSessions,
@@ -1111,7 +1111,7 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
                                                                                                                                                                                                         // Track this cleanup interval
                                                                                                                                                                                                         activeCleanupIntervals.add(cleanupInterval);
 
-                                                                                                                                                                                                        // Create cleanup function that properly removes resources
+                                                                                                                                                                                                        // Create cleanup std::function that properly removes resources
                                                                                                                                                                                                         const auto cleanup = [&]() {;
                                                                                                                                                                                                             // Clear this specific interval
                                                                                                                                                                                                             if (activeCleanupIntervals.has(cleanupInterval)) {

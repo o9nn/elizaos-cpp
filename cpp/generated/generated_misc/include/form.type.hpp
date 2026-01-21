@@ -7,27 +7,27 @@ class TokenMetadata;
 class TokenMetadata : public object, public std::enable_shared_from_this<TokenMetadata> {
 public:
     using std::enable_shared_from_this<TokenMetadata>::shared_from_this;
-    string name;
+    std::string name;
 
-    string symbol;
+    std::string symbol;
 
-    string description;
+    std::string description;
 
     double initialSol;
 
     object links;
 
-    any imageBase64;
+    std::any imageBase64;
 
-    string tokenMint;
+    std::string tokenMint;
 
     double decimals;
 
     double supply;
 
-    string freezeAuthority;
+    std::string freezeAuthority;
 
-    string mintAuthority;
+    std::string mintAuthority;
 };
 
 #endif

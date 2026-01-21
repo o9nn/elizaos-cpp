@@ -82,7 +82,7 @@ std::future<std::optional<TokenData>> getToken(const std::string& mint) {
             withdrawnAmounts: withdrawnAmounts || std::nullopt,
             poolInfo: safeParse<any>(tokenDb.poolInfo, std::nullopt),
             migration: typeof tokenDb.migration == "string"
-            ? safeParse<Record<string, any>>(tokenDb.migration, {});
+            ? safeParse<Record<std::string, any>>(tokenDb.migration, {});
             : (tokenDb.migration || {}),
             tokenSupply: tokenDb.tokenSupply || std::nullopt,
             tokenSupplyUiAmount: tokenDb.tokenSupplyUiAmount || std::nullopt,
@@ -104,7 +104,7 @@ std::future<MigrationStepResult> executeMigrationStep(TokenData token, Migration
 
     // Update token migration
     token.migration = token.migration || {}
-    (token.migration<string, any>)[step.name] = {
+    (token.migration<std::string, any>)[step.name] = {
         status: "success",
         txId: result.txId,
         updatedAt: new Date().toISOString(),
@@ -185,7 +185,7 @@ std::future<void> saveMigrationState(TokenData token, const std::string& step) {
 
         db;
         .update(tokens);
-        .set({
+        .std::set({
             migration: /* JSON.stringify */ std::string(updatedMigration),
             lastUpdated: new Date(),
             });

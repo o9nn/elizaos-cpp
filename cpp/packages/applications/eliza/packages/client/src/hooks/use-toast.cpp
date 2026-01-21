@@ -72,7 +72,7 @@ void useToast() {
             return {
                 ...state,
                 toast,
-                dismiss: (toastId?: string) => dispatch({ type: "DISMISS_TOAST", toastId }),
+                dismiss: (toastId?: std::string) => dispatch({ type: "DISMISS_TOAST", toastId }),
                 };
 
 }

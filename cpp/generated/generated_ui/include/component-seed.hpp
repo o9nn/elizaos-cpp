@@ -4,7 +4,7 @@
 #include "@elizaos/core.h"
 #include "uuid.h"
 
-extern any componentTestAgentSettings;
+extern std::any componentTestAgentSettings;
 extern object componentTestWorld;
 extern object componentTestEntity;
 extern object componentTestSourceEntity;

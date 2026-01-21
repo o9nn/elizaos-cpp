@@ -20,7 +20,7 @@ std::future<void> upgradePlugin(const std::string& pluginPath, UpgradePluginOpti
             // Check for API key
             if (!process.env.ANTHROPIC_API_KEY) {
                 std::cerr << "ANTHROPIC_API_KEY is required for plugin upgrade." << std::endl;
-                std::cout << "\nPlease set ANTHROPIC_API_KEY environment variable or use --api-key option." << std::endl;
+                std::cout << "\nPlease std::set ANTHROPIC_API_KEY environment variable or use --api-key option." << std::endl;
                 process.exit(1);
             }
 

@@ -20,23 +20,23 @@ using coreDecryptObjectValues = decryptObjectValues;
 
 std::shared_ptr<Setting> createSettingFromConfig(Omit<std::shared_ptr<Setting>, string> configSetting);
 
-string getSalt();
+std::string getSalt();
 
-string encryptStringValue(string value, string salt);
+std::string encryptStringValue(std::string value, std::string salt);
 
-string decryptStringValue(string value, string salt);
+std::string decryptStringValue(std::string value, std::string salt);
 
-std::shared_ptr<Setting> saltSettingValue(std::shared_ptr<Setting> setting, string salt);
+std::shared_ptr<Setting> saltSettingValue(std::shared_ptr<Setting> setting, std::string salt);
 
-std::shared_ptr<Setting> unsaltSettingValue(std::shared_ptr<Setting> setting, string salt);
+std::shared_ptr<Setting> unsaltSettingValue(std::shared_ptr<Setting> setting, std::string salt);
 
-std::shared_ptr<WorldSettings> saltWorldSettings(std::shared_ptr<WorldSettings> worldSettings, string salt);
+std::shared_ptr<WorldSettings> saltWorldSettings(std::shared_ptr<WorldSettings> worldSettings, std::string salt);
 
-std::shared_ptr<WorldSettings> unsaltWorldSettings(std::shared_ptr<WorldSettings> worldSettings, string salt);
+std::shared_ptr<WorldSettings> unsaltWorldSettings(std::shared_ptr<WorldSettings> worldSettings, std::string salt);
 
-std::shared_ptr<Promise<boolean>> updateWorldSettings(std::shared_ptr<IAgentRuntime> runtime, string serverId, std::shared_ptr<WorldSettings> worldSettings);
+std::shared_ptr<Promise<boolean>> updateWorldSettings(std::shared_ptr<IAgentRuntime> runtime, std::string serverId, std::shared_ptr<WorldSettings> worldSettings);
 
-std::shared_ptr<Promise<any>> getWorldSettings(std::shared_ptr<IAgentRuntime> runtime, string serverId);
+std::shared_ptr<Promise<any>> getWorldSettings(std::shared_ptr<IAgentRuntime> runtime, std::string serverId);
 
 std::shared_ptr<Promise<any>> initializeOnboarding(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<World> world, std::shared_ptr<OnboardingConfig> config);
 
@@ -44,8 +44,8 @@ std::shared_ptr<Character> encryptedCharacter(std::shared_ptr<Character> charact
 
 std::shared_ptr<Character> decryptedCharacter(std::shared_ptr<Character> character, std::shared_ptr<IAgentRuntime> runtime);
 
-Record<string, any> encryptObjectValues(Record<string, any> obj, string salt);
+Record<std::string, any> encryptObjectValues(Record<std::string, any> obj, std::string salt);
 
-Record<string, any> decryptObjectValues(Record<string, any> obj, string salt);
+Record<std::string, any> decryptObjectValues(Record<std::string, any> obj, std::string salt);
 
 #endif

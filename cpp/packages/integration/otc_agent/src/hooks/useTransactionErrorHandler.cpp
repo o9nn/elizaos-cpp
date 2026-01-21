@@ -53,7 +53,7 @@ void useTransactionErrorHandler() {
                     );
                     }, []);
 
-                    const auto resetWalletConnection = useCallback(async () => {;
+                    const auto resetWalletConnection = useCallback(std::async () => {;
                         if (!mounted) return;
 
                         // Disconnect EVM wallet
@@ -81,7 +81,7 @@ void useTransactionErrorHandler() {
                             }, [mounted, address, disconnect, logout]);
 
                             const auto handleTransactionError = useCallback(;
-                            (error: TransactionError): string => {
+                            (error: TransactionError): std::string => {
                                 if (!mounted) return "Transaction failed";
 
                                 std::cerr << "[TxError]" << error << std::endl;

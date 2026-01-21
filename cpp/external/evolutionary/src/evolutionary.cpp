@@ -213,7 +213,7 @@ Individual Individual::mutate(double mutationRate) const {
                     node->parameters[0] = dist(gen);
                 }
                 else if (node->type == ProgramNode::Type::FUNCTION) {
-                    // Change function type
+                    // Change std::function type
                     std::vector<std::string> functions = {"add", "sub", "mul", "div", "sin", "cos", "max", "min"};
                     std::uniform_int_distribution<size_t> funcDist(0, functions.size() - 1);
                     node->name = functions[funcDist(gen)];
@@ -236,7 +236,7 @@ double Individual::similarity(const Individual& other) const {
         return 0.0;
     }
     
-    // Simple structural similarity based on program string representation
+    // Simple structural similarity based on program std::string representation
     std::string str1 = program_->toString();
     std::string str2 = other.program_->toString();
     
@@ -291,7 +291,7 @@ Individual Individual::deserialize(const std::string& data) {
     // Simplified deserialization - in practice this would be more robust
     Individual individual(nullptr);
     
-    // Extract fields from serialized string
+    // Extract fields from serialized std::string
     size_t idPos = data.find("id:");
     size_t agePos = data.find("age:");
     size_t fitnessPos = data.find("fitness:");
@@ -749,7 +749,7 @@ std::shared_ptr<ProgramNode> EvolutionaryOptimizer::generateRandomProgram(int ma
             
             auto node = std::make_shared<ProgramNode>(ProgramNode::Type::FUNCTION, functions[funcDist(rng_)]);
             
-            // Add children based on function arity
+            // Add children based on std::function arity
             int arity = (node->name == "sin" || node->name == "cos" || node->name == "exp" || node->name == "log") ? 1 : 2;
             
             for (int i = 0; i < arity; ++i) {

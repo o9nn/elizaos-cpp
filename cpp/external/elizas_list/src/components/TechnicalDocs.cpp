@@ -30,7 +30,7 @@ void TechnicalDocs() {
             <h2 className="text-xl font-semibold mb-4">Documentation</h2>;
             <div className="grid grid-cols-4 gap-6">;
             <div className="col-span-1 space-y-2">;
-            {sections.map((section, index) => (;
+            {sections.std::map((section, index) => (;
             <button;
         key={section.title}
     onClick={() => setActiveSection(index)}

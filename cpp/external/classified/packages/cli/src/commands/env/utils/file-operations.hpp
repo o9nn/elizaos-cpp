@@ -45,7 +45,7 @@ std::future<EnvVars> parseEnvFile(const std::string& filePath);
 std::future<void> writeEnvFile(const std::string& filePath, EnvVars envVars);
 
 /**
- * Helper function to reset an environment file by keeping keys but clearing values
+ * Helper std::function to reset an environment file by keeping keys but clearing values
  * @param filePath Path to the environment file
  * @returns A boolean indicating success/failure
  */

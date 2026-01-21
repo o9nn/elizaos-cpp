@@ -23,7 +23,7 @@ std::shared_ptr<ScreenCaptureCapabilities> checkScreenCaptureCapabilities()
         }
         capabilities->available = capabilities->displayMedia;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         capabilities->error = std::string("Error checking capabilities: ") + error + string_empty;
     }
@@ -57,7 +57,7 @@ std::shared_ptr<Promise<boolean>> testScreenCapture()
         console->log(std::string("✅ Screen capture test successful"));
         return true;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         if (error["name"] == std::string("NotAllowedError")) {
             console->log(std::string("ℹ️ Screen capture test cancelled by user"));
@@ -69,7 +69,7 @@ std::shared_ptr<Promise<boolean>> testScreenCapture()
 };
 
 
-string getScreenCaptureErrorMessage(any error)
+std::string getScreenCaptureErrorMessage(std::any error)
 {
     if (error["name"] == std::string("NotAllowedError")) {
         return std::string("Screen sharing permission denied. Please allow access and try again.");

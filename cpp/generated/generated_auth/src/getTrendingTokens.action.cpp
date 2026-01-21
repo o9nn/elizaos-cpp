@@ -32,13 +32,13 @@ std::shared_ptr<Action> getTrendingTokensAction = object{
         {
             auto svc = as<any>(runtime->getService(CoinGeckoService::serviceType));
             if (!svc) {
-                throw any(std::make_shared<Error>(std::string("CoinGeckoService not available")));
+                throw std::any(std::make_shared<Error>(std::string("CoinGeckoService not available")));
             }
             auto composedState = std::async([=]() { runtime->composeState(message, array<string>{ std::string("ACTION_STATE") }, true); });
             auto params = OR((composedState->data->actionParams), (object{}));
             auto network = (OR((params["network"]["trim"]()), (std::string("base"))))["toLowerCase"]();
             auto limitRaw = params["limit"];
-            auto limit = (type_of(limitRaw) == std::string("number")) ? Math->max(1, Math->min(30, Math->floor(limitRaw))) : (type_of(limitRaw) == std::string("string")) ? any(Math->max(1, Math->min(30, Math->floor(OR((Number(limitRaw)), (10)))))) : any(10);
+            auto limit = (type_of(limitRaw) == std::string("number")) ? Math->max(1, Math->min(30, Math->floor(limitRaw))) : (type_of(limitRaw) == std::string("string")) ? std::any(Math->max(1, Math->min(30, Math->floor(OR((Number(limitRaw)), (10)))))) : std::any(10);
             logger->info(std::string("[GET_TRENDING_TOKENS] Fetching trending tokens for network: ") + network + std::string(", limit: ") + limit + string_empty);
             auto inputParams = object{
                 object::pair{std::string("network"), std::string("network")}, 
@@ -62,7 +62,7 @@ std::shared_ptr<Action> getTrendingTokensAction = object{
                 object::pair{std::string("input"), inputParams}
             });
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             auto msg = (is<Error>(error)) ? error->message : String(error);
             logger->error(std::string("[GET_TRENDING_TOKENS] Action failed: ") + msg + string_empty);

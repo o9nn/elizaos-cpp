@@ -11,14 +11,14 @@ class TransferContent;
 class TransferContent : public Content, public std::enable_shared_from_this<TransferContent> {
 public:
     using std::enable_shared_from_this<TransferContent>::shared_from_this;
-    any tokenAddress;
+    std::any tokenAddress;
 
-    string recipient;
+    std::string recipient;
 
-    any amount;
+    std::any amount;
 };
 
 boolean isTransferContent(std::shared_ptr<TransferContent> content);
 
-extern string transferTemplate;
+extern std::string transferTemplate;
 #endif

@@ -11,16 +11,16 @@ double convertToBasisPoints(double feePercent)
 
 double calculateAmountOutSell(double reserveLamport, double amount, double _tokenDecimals, double platformSellFee, double reserveToken)
 {
-    if (reserveLamport < 0) throw any(std::make_shared<Error>(std::string("reserveLamport must be non-negative")));
-    if (amount < 0) throw any(std::make_shared<Error>(std::string("amount must be non-negative")));
-    if (platformSellFee < 0) throw any(std::make_shared<Error>(std::string("platformSellFee must be non-negative")));
-    if (reserveToken < 0) throw any(std::make_shared<Error>(std::string("reserveToken must be non-negative")));
+    if (reserveLamport < 0) throw std::any(std::make_shared<Error>(std::string("reserveLamport must be non-negative")));
+    if (amount < 0) throw std::any(std::make_shared<Error>(std::string("amount must be non-negative")));
+    if (platformSellFee < 0) throw std::any(std::make_shared<Error>(std::string("platformSellFee must be non-negative")));
+    if (reserveToken < 0) throw std::any(std::make_shared<Error>(std::string("reserveToken must be non-negative")));
     auto feeBasisPoints = convertToBasisPoints(platformSellFee);
     auto amountBN = std::make_shared<BN>(amount);
     auto adjustedAmount = amountBN->mul(std::make_shared<BN>(10000 - feeBasisPoints))->div(std::make_shared<BN>(10000));
     auto numerator = ((std::make_shared<BN>(reserveLamport->toString())))->mul(adjustedAmount);
     auto denominator = ((std::make_shared<BN>(reserveToken->toString())))->add(adjustedAmount);
-    if (denominator->isZero()) throw any(std::make_shared<Error>(std::string("Division by zero")));
+    if (denominator->isZero()) throw std::any(std::make_shared<Error>(std::string("Division by zero")));
     return numerator->div(denominator)->toNumber();
 };
 
@@ -38,7 +38,7 @@ double calculateAmountOutBuy(double reserveToken, double amount, double _solDeci
 };
 
 
-std::function<std::shared_ptr<Promise<std::shared_ptr<...>>>(any, double, double, double, string, string, string, double, double, any, any, any, object)> launchAndSwapTx = [=](auto creator, auto decimals, auto tokenSupply, auto virtualLamportReserves, auto name, auto symbol, auto uri, auto swapAmount, auto slippageBps = 100, auto connection = undefined, auto program = undefined, auto mintKeypair = undefined, auto configAccount = undefined) mutable
+std::function<std::shared_ptr<Promise<std::shared_ptr<...>>>(std::any, double, double, double, std::string, std::string, std::string, double, double, std::any, std::any, std::any, object)> launchAndSwapTx = [=](auto creator, auto decimals, auto tokenSupply, auto virtualLamportReserves, auto name, auto symbol, auto uri, auto swapAmount, auto slippageBps = 100, auto connection = undefined, auto program = undefined, auto mintKeypair = undefined, auto configAccount = undefined) mutable
 {
     auto deadline = Math->floor(Date->now() / 1000) + 120;
     auto initBondingCurvePercentage = configAccount["initBondingCurve"];
@@ -57,12 +57,12 @@ std::function<std::shared_ptr<Promise<std::shared_ptr<...>>>(any, double, double
     return tx;
 };
 double FEE_BASIS_POINTS = 10000;
-std::function<std::shared_ptr<Promise<object>>(any, double, double, double, double)> getSwapAmount = [=](auto program, auto amount, auto style, auto reserveToken, auto reserveLamport) mutable
+std::function<std::shared_ptr<Promise<object>>(std::any, double, double, double, double)> getSwapAmount = [=](auto program, auto amount, auto style, auto reserveToken, auto reserveLamport) mutable
 {
     auto configAccount = std::async([=]() { getConfigAccount(program); });
     auto feePercent = (style == 1) ? Number(configAccount->platformSellFee) : Number(configAccount->platformBuyFee);
     auto adjustedAmount = Math->floor((amount * (FEE_BASIS_POINTS - feePercent)) / FEE_BASIS_POINTS);
-    any estimatedOutput;
+    std::any estimatedOutput;
     if (style == 0) {
         estimatedOutput = calculateAmountOutBuy(reserveToken, adjustedAmount, 9, reserveLamport, feePercent);
     } else {
@@ -73,7 +73,7 @@ std::function<std::shared_ptr<Promise<object>>(any, double, double, double, doub
         object::pair{std::string("priceImpact"), std::string("0")}
     };
 };
-std::function<std::shared_ptr<Promise<object>>(string, double, double, double)> getSwapAmountJupiter = [=](auto tokenMintAddress, auto amount, auto style, auto slippageBps = 100) mutable
+std::function<std::shared_ptr<Promise<object>>(std::string, double, double, double)> getSwapAmountJupiter = [=](auto tokenMintAddress, auto amount, auto style, auto slippageBps = 100) mutable
 {
     try
     {
@@ -82,15 +82,15 @@ std::function<std::shared_ptr<Promise<object>>(string, double, double, double)> 
             object::pair{std::string("priceImpact"), std::string("0")}
         };
         auto SOL_MINT_ADDRESS = std::string("So11111111111111111111111111111111111111112");
-        auto inputMint = (style == 0) ? any(SOL_MINT_ADDRESS) : any(tokenMintAddress);
-        auto outputMint = (style == 0) ? any(tokenMintAddress) : any(SOL_MINT_ADDRESS);
+        auto inputMint = (style == 0) ? std::any(SOL_MINT_ADDRESS) : std::any(tokenMintAddress);
+        auto outputMint = (style == 0) ? std::any(tokenMintAddress) : std::any(SOL_MINT_ADDRESS);
         auto feePercent = 1;
         auto feeBps = feePercent * 100;
         auto quoteUrl = std::string("https://lite-api.jup.ag/swap/v1/quote?inputMint=") + inputMint + std::string("&outputMint=") + outputMint + std::string("&amount=") + amount + std::string("&slippageBps=") + slippageBps + std::string("&restrictIntermediateTokens=true&platformFeeBps=") + feeBps + string_empty;
         auto quoteRes = std::async([=]() { fetch(quoteUrl); });
         if (!quoteRes->ok) {
             auto errorMsg = std::async([=]() { quoteRes->text(); });
-            throw any(std::make_shared<Error>(std::string("Failed to fetch quote from Jupiter: ") + errorMsg + string_empty));
+            throw std::any(std::make_shared<Error>(std::string("Failed to fetch quote from Jupiter: ") + errorMsg + string_empty));
         }
         auto quoteResponse = as<object>((std::async([=]() { quoteRes->json(); })));
         auto estimatedOutput = quoteResponse["outAmount"];
@@ -99,7 +99,7 @@ std::function<std::shared_ptr<Promise<object>>(string, double, double, double)> 
             object::pair{std::string("priceImpact"), OR((quoteResponse["priceImpact"]), (std::string("0")))}
         };
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("Error fetching swap amount from Jupiter:"), error);
         return object{
@@ -108,7 +108,7 @@ std::function<std::shared_ptr<Promise<object>>(string, double, double, double)> 
         };
     }
 };
-std::function<std::shared_ptr<Promise<any>>(any, any, double, double, double, any, double, double, any)> swapIx = [=](auto user, auto token, auto amount, auto style, auto slippageBps = 100, auto program = undefined, auto reserveToken = undefined, auto reserveLamport = undefined, auto configAccount = undefined) mutable
+std::function<std::shared_ptr<Promise<any>>(std::any, std::any, double, double, double, std::any, double, double, std::any)> swapIx = [=](auto user, auto token, auto amount, auto style, auto slippageBps = 100, auto program = undefined, auto reserveToken = undefined, auto reserveLamport = undefined, auto configAccount = undefined) mutable
 {
     auto estimatedOutputResult = std::async([=]() { getSwapAmount(program, amount, style, reserveToken, reserveLamport); });
     auto estimatedOutput = estimatedOutputResult["estimatedOutput"];
@@ -121,12 +121,12 @@ std::function<std::shared_ptr<Promise<any>>(any, any, double, double, double, an
     })->instruction(); });
     return tx;
 };
-std::function<std::shared_ptr<Promise<any>>(any, any, double, double, double, any, boolean)> getJupiterSwapIx = [=](auto user, auto _token, auto amount, auto style, auto slippageBps = 100, auto _connection = undefined, auto isToken2022 = false) mutable
+std::function<std::shared_ptr<Promise<any>>(std::any, std::any, double, double, double, std::any, boolean)> getJupiterSwapIx = [=](auto user, auto _token, auto amount, auto style, auto slippageBps = 100, auto _connection = undefined, auto isToken2022 = false) mutable
 {
     auto SOL_MINT_ADDRESS = std::string("So11111111111111111111111111111111111111112");
     auto tokenMintAddress = _token->toBase58();
-    auto inputMint = (style == 0) ? any(SOL_MINT_ADDRESS) : any(tokenMintAddress);
-    auto outputMint = (style == 0) ? any(tokenMintAddress) : any(SOL_MINT_ADDRESS);
+    auto inputMint = (style == 0) ? std::any(SOL_MINT_ADDRESS) : std::any(tokenMintAddress);
+    auto outputMint = (style == 0) ? std::any(tokenMintAddress) : std::any(SOL_MINT_ADDRESS);
     auto feeAccount = undefined;
     auto feePercent = 10;
     auto feeBps = Math->round(feePercent * 10);
@@ -140,9 +140,9 @@ std::function<std::shared_ptr<Promise<any>>(any, any, double, double, double, an
             console->warn(std::string("Platform fee wallet address not found in env—skipping Jupiter platform fee."));
         }
     }
-    auto quoteUrl = std::string("https://lite-api.jup.ag/swap/v1/quote?inputMint=") + inputMint + std::string("&outputMint=") + outputMint + string_empty + std::string("&amount=") + amount + std::string("&slippageBps=") + slippageBps + std::string("&restrictIntermediateTokens=true") + string_empty + (!isToken2022) ? any(std::string("&platformFeeBps=") + feeBps + string_empty) : any(string_empty) + string_empty;
+    auto quoteUrl = std::string("https://lite-api.jup.ag/swap/v1/quote?inputMint=") + inputMint + std::string("&outputMint=") + outputMint + string_empty + std::string("&amount=") + amount + std::string("&slippageBps=") + slippageBps + std::string("&restrictIntermediateTokens=true") + string_empty + (!isToken2022) ? std::any(std::string("&platformFeeBps=") + feeBps + string_empty) : std::any(string_empty) + string_empty;
     auto quoteRes = std::async([=]() { fetch(quoteUrl); });
-    if (!quoteRes->ok) throw any(std::make_shared<Error>(std::async([=]() { quoteRes->text(); })));
+    if (!quoteRes->ok) throw std::any(std::make_shared<Error>(std::async([=]() { quoteRes->text(); })));
     auto quoteResponse = std::async([=]() { quoteRes->json(); });
     auto body = object{
         object::pair{std::string("quoteResponse"), std::string("quoteResponse")}, 
@@ -161,10 +161,10 @@ std::function<std::shared_ptr<Promise<any>>(any, any, double, double, double, an
         }}, 
         object::pair{std::string("body"), JSON->stringify(body)}
     }); });
-    if (!swapRes->ok) throw any(std::make_shared<Error>(std::async([=]() { swapRes->text(); })));
+    if (!swapRes->ok) throw std::any(std::make_shared<Error>(std::async([=]() { swapRes->text(); })));
     auto swapJson = std::async([=]() { swapRes->json(); });
     if (!swapJson["swapTransaction"]) {
-        throw any(std::make_shared<Error>(std::string("Jupiter swap transaction is missing in the response.")));
+        throw std::any(std::make_shared<Error>(std::string("Jupiter swap transaction is missing in the response.")));
     }
     auto txBuffer = Buffer::from(swapJson["swapTransaction"], std::string("base64"));
     return Transaction->from(txBuffer)->instructions;

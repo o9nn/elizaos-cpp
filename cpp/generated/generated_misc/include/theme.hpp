@@ -3,13 +3,13 @@
 #include "core.h"
 #include "@mui/material/styles.h"
 
-extern string primaryMain;
-extern string primaryDark;
-extern string secondaryMain;
-extern string backgroundDefault;
-extern string backgroundPaper;
-extern string textPrimary;
-extern string textSecondary;
+extern std::string primaryMain;
+extern std::string primaryDark;
+extern std::string secondaryMain;
+extern std::string backgroundDefault;
+extern std::string backgroundPaper;
+extern std::string textPrimary;
+extern std::string textSecondary;
 extern object toolTipStyle;
 extern std::shared_ptr<ThemeOptions> theme;
 extern object scrollbarOverrides;

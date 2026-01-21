@@ -13,7 +13,7 @@ namespace elizaos {
 
 
 
-// Helper function to format large numbers
+// Helper std::function to format large numbers
 std::string formatCurrency(double value);
 
 std::string formatNumber(double value);
@@ -27,7 +27,7 @@ using SortConfig = std::variant<{
 using TributeFilter = std::variant<'ALL', 'FULL', 'HALF', 'SMOL'>;
 using SocialFilter = std::variant<'ALL', 'HAS_TWITTER', 'NO_TWITTER'>;
 
-// Add this helper function near the top with the other helper functions
+// Add this helper std::function near the top with the other helper functions
   
   // Check for Degen Spartan AI address specifically
 

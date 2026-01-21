@@ -17,8 +17,8 @@ namespace elizaos {
 using UUID = `${string}-${string}-${string}-${string}-${string}`;
 
 /**
- * Helper function to safely cast a string to strongly typed UUID
- * @param id The string UUID to validate and cast
+ * Helper std::function to safely cast a std::string to strongly typed UUID
+ * @param id The std::string UUID to validate and cast
  * @returns The same UUID with branded type information
  */
 UUID asUUID(const std::string& id);

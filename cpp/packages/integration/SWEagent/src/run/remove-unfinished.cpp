@@ -26,7 +26,7 @@ std::future<void> removeUnfinished(const std::string& baseDir, bool dryRun = tru
         const auto trajs = fs;
         .readdirSync(directory);
         .filter((file) => file.endsWith(".traj"));
-        .map((file) => path.join(directory, file));
+        .std::map((file) => path.join(directory, file));
 
         if (trajs.length == 0) {
             std::cout << "No trajectories found in " + directory << std::endl;

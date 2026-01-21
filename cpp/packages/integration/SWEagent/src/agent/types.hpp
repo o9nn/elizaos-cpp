@@ -35,7 +35,7 @@ struct ModelOutput {
 struct ToolCall {
     std::string id;
     'function' type;
-    { function;
+    { std::function;
     std::string name;
     std::string arguments;
 };
@@ -99,9 +99,9 @@ struct APIResponse {
  */
 using MessageContent = std::variant<, std::string, Array<{
       type: 'text', 'image_url'>;
-      text?: string;
-      image_url?: { url: string };
-      cacheControl?: { type: string };
+      text?: std::string;
+      image_url?: { url: std::string };
+      cacheControl?: { type: std::string };
     }>;
 
 } // namespace elizaos

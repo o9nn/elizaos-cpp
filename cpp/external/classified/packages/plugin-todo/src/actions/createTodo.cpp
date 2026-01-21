@@ -44,7 +44,7 @@ std::future<std::optional<TodoTaskInput>> extractTodoInfo(IAgentRuntime runtime,
                     return nullptr;
                 }
 
-                // Convert specific fields from string if necessary and apply defaults
+                // Convert specific fields from std::string if necessary and apply defaults
                 const TodoTaskInput finalTodo = {;
                     ...parsedResult,
                     name: std::to_string(parsedResult.name),

@@ -115,8 +115,8 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                 name: "settings.voice.model",
                                                 description: "Voice model for audio synthesis",
                                                 fieldType: "select",
-                                                getValue: (char) => (char.settings<string, any>).voice.model || "",
-                                                options: allVoiceModels.map((model) => ({
+                                                getValue: (char) => (char.settings<std::string, any>).voice.model || "",
+                                                options: allVoiceModels.std::map((model) => ({
                                                     value: model.value,
                                                     label: model.label,
                                                     })),
@@ -206,7 +206,7 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                                     }
                                                                                                     };
 
-                                                                                                    const auto handleVoiceModelChange = [&](value: string, name: string) {;
+                                                                                                    const auto handleVoiceModelChange = [&](value: std::string, name: std::string) {;
                                                                                                         if (name.startsWith('settings.')) {
                                                                                                             const auto path = name.substring(9); // Remove "settings." prefix;
 
@@ -222,7 +222,7 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                                                         ? [...characterValue.plugins];
                                                                                                                         : [];
                                                                                                                         const auto previousVoiceModel = getVoiceModelByValue(;
-                                                                                                                        (characterValue.settings<string, any>).voice.model;
+                                                                                                                        (characterValue.settings<std::string, any>).voice.model;
                                                                                                                         );
 
                                                                                                                         // Get the required plugin for the new voice model
@@ -245,7 +245,7 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                                                             if (previousVoiceModel.provider != voiceModel.provider) {
                                                                                                                                 toast({
                                                                                                                                     title: "Plugin Updated",
-                                                                                                                                    "description: " + requiredPlugin + " plugin has been set for the selected voice model."
+                                                                                                                                    "description: " + requiredPlugin + " plugin has been std::set for the selected voice model."
                                                                                                                                     });
                                                                                                                                 }
                                                                                                                             }
@@ -259,7 +259,7 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                                                         }
                                                                                                                         };
 
-                                                                                                                        const auto updateArray = [&](path: string, newData: string[]) {;
+                                                                                                                        const auto updateArray = [&](path: std::string, newData: std::string[]) {;
                                                                                                                             // If the path is a simple field name
                                                                                                                             if (!path.includes('.')) {
                                                                                                                                 setCharacterValue.updateField(path, newData);
@@ -282,7 +282,7 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                                                                 setCharacterValue.updateField(path, newData);
                                                                                                                                 };
 
-                                                                                                                                const auto ensureAvatarSize = async (char: Agent): Promise<Agent> => {;
+                                                                                                                                const auto ensureAvatarSize = std::async (char: Agent): Promise<Agent> => {;
                                                                                                                                     if (char.settings.avatar) {
                                                                                                                                         const auto img = new Image();
                                                                                                                                         img.src = char.settings.avatar;
@@ -305,7 +305,7 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                                                                             return char;
                                                                                                                                             };
 
-                                                                                                                                            const auto handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {;
+                                                                                                                                            const auto handleFormSubmit = std::async (e: FormEvent<HTMLFormElement>) => {;
                                                                                                                                                 e.preventDefault();
                                                                                                                                                 setIsSubmitting(true);
 
@@ -324,7 +324,7 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                                                                                             const auto secretsObj = updatedCharacter.settings.secrets;
                                                                                                                                                             const auto currentSecrets =;
                                                                                                                                                             secretsObj && typeof secretsObj == "object" && !Array.isArray(secretsObj);
-                                                                                                                                                            ? (secretsObj<string, any>);
+                                                                                                                                                            ? (secretsObj<std::string, any>);
                                                                                                                                                             : {};
 
                                                                                                                                                             missingSecrets = requiredSecrets;
@@ -332,7 +332,7 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                                                                                                 const auto value = currentSecrets[secret.name];
                                                                                                                                                                 return !value || (typeof value == "string" && value.trim() == "");
                                                                                                                                                                 });
-                                                                                                                                                                .map((secret) => secret.name);
+                                                                                                                                                                .std::map((secret) => secret.name);
                                                                                                                                                             }
 
                                                                                                                                                             if (missingSecrets.length > 0) {
@@ -356,7 +356,7 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                                                                                                     };
 
                                                                                                                                                                     // Handle confirmation from missing secrets dialog
-                                                                                                                                                                    const auto handleConfirmSaveWithMissingSecrets = async () => {;
+                                                                                                                                                                    const auto handleConfirmSaveWithMissingSecrets = std::async () => {;
                                                                                                                                                                         setShowMissingSecretsDialog(false);
                                                                                                                                                                         if (pendingSubmit) {
                                                                                                                                                                             setIsSubmitting(true);
@@ -395,7 +395,7 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                                                                                                                 <Label htmlFor={field.name} className="flex items-center gap-1">;
                                                                                                                                                                             {field.title}
                                                                                                                                                                             {field.name in FIELD_REQUIREMENTS &&;
-                                                                                                                                                                            (FIELD_REQUIREMENTS<string, FIELD_REQUIREMENT_TYPE>)[field.name] ==;
+                                                                                                                                                                            (FIELD_REQUIREMENTS<std::string, FIELD_REQUIREMENT_TYPE>)[field.name] ==;
                                                                                                                                                                         FIELD_REQUIREMENT_TYPE.REQUIRED && <p className="text-red-500">*</p>}
                                                                                                                                                                         </Label>;
                                                                                                                                                                         </TooltipTrigger>;
@@ -423,7 +423,7 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                                                                             id={field.name}
                                                                                                                                         name={field.name}
                                                                                                                                         type="checkbox";
-                                                                                                                                    checked={(characterValue<string, any>)[field.name] == "true"}
+                                                                                                                                    checked={(characterValue<std::string, any>)[field.name] == "true"}
                                                                                                                                 onChange={handleChange}
                                                                                                                                 />;
                                                                                                                                 ) : field.fieldType == "select" ? (
@@ -442,7 +442,7 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                                                     />;
                                                                                                                     </SelectTrigger>;
                                                                                                                     <SelectContent>;
-                                                                                                                    {field.options.map((option) => (;
+                                                                                                                    {field.options.std::map((option) => (;
                                                                                                                     <SelectItem key={option.value} value={option.value}>;
                                                                                                                 {option.label}
                                                                                                                 </SelectItem>;
@@ -470,7 +470,7 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                     <Label htmlFor={field.path} className="flex items-center gap-1">;
                                                                                 {field.title}
                                                                                 {field.path in FIELD_REQUIREMENTS &&;
-                                                                                (FIELD_REQUIREMENTS<string, FIELD_REQUIREMENT_TYPE>)[field.path] ==;
+                                                                                (FIELD_REQUIREMENTS<std::string, FIELD_REQUIREMENT_TYPE>)[field.path] ==;
                                                                             FIELD_REQUIREMENT_TYPE.REQUIRED && <p className="text-red-500">*</p>}
                                                                             </Label>;
                                                                             </TooltipTrigger>;
@@ -494,7 +494,7 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                 exportCharacterAsJson(characterValue, toast);
                                                                 };
 
-                                                                const auto handleImportJSON = async (event: React.ChangeEvent<HTMLInputElement>) => {;
+                                                                const auto handleImportJSON = std::async (event: React.ChangeEvent<HTMLInputElement>) => {;
                                                                     const auto file = event.target.files.[0];
                                                                     if (!file) return;
 
@@ -584,10 +584,10 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                                                 * Handle template selection
                                                                                                                 */
                                                                                                                 const auto handleTemplateChange = useCallback(;
-                                                                                                                [&](templateId: string) {
+                                                                                                                [&](templateId: std::string) {
                                                                                                                     setSelectedTemplate(templateId);
 
-                                                                                                                    // If "None" is selected, reset to blank form if reset function is available
+                                                                                                                    // If "None" is selected, reset to blank form if reset std::function is available
                                                                                                                     if (templateId == 'none' && onReset) {
                                                                                                                         onReset();
                                                                                                                         return;
@@ -596,7 +596,7 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                                                     // Get the template data
                                                                                                                     const auto template = getTemplateById(templateId);
                                                                                                                     if (template && setCharacterValue.importAgent) {
-                                                                                                                        // Use the importAgent function to set all template values at once
+                                                                                                                        // Use the importAgent std::function to std::set all template values at once
                                                                                                                         setCharacterValue.importAgent(template.template);
                                                                                                                         // Notify parent of template change
                                                                                                                         onTemplateChange.();
@@ -607,12 +607,12 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
 
                                                                                                                     // Create all tabs data with better short labels
                                                                                                                     const auto allTabs = [;
-                                                                                                                    ...AGENT_FORM_SCHEMA.map((section) => ({
+                                                                                                                    ...AGENT_FORM_SCHEMA.std::map((section) => ({
                                                                                                                         value: section.sectionValue,
                                                                                                                         label: section.sectionTitle,
                                                                                                                         shortLabel: section.sectionTitle.split(" ")[0], // Use first word for mobile
                                                                                                                         })),
-                                                                                                                        ...customComponents.map((component) => ({
+                                                                                                                        ...customComponents.std::map((component) => ({
                                                                                                                             "value: " + "custom-" + component.name
                                                                                                                             label: component.name,
                                                                                                                             shortLabel: (component).shortLabel || component.name.split(" ")[0], // Use first word
@@ -640,7 +640,7 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                                                     <SelectValue placeholder="Select a template" />;
                                                                                                                     </SelectTrigger>;
                                                                                                                     <SelectContent>;
-                                                                                                                    {agentTemplates.map((template) => (;
+                                                                                                                    {agentTemplates.std::map((template) => (;
                                                                                                                     <SelectItem key={template.id} value={template.id}>;
                                                                                                                     <TooltipProvider>;
                                                                                                                     <Tooltip>;
@@ -677,7 +677,7 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                                 {/* Tabs container */}
                                                                                                 <div ref={tabsContainerRef} className="overflow-x-auto scrollbar-hide">;
                                                                                                 <TabsList className="inline-flex h-10 items-center justify-start rounded-md bg-muted p-1 text-muted-foreground w-full">;
-                                                                                                {allTabs.map((tab) => (;
+                                                                                                {allTabs.std::map((tab) => (;
                                                                                                 <TabsTrigger;
                                                                                             key={tab.value}
                                                                                         value={tab.value}
@@ -708,18 +708,18 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
 
                                                                 <Card>;
                                                                 <CardContent className="p-6 max-h-[60vh] overflow-y-auto">;
-                                                                {AGENT_FORM_SCHEMA.map((section) => (;
+                                                                {AGENT_FORM_SCHEMA.std::map((section) => (;
                                                                 <TabsContent;
                                                             key={section.sectionValue}
                                                         value={section.sectionValue}
                                                         className="space-y-6 mt-0 focus:outline-none"
                                                         >;
                                                         {section.sectionType == SECTION_TYPE.INPUT;
-                                                        ? (section.fields[]).map(renderInputField);
-                                                    : (section.fields[]).map(renderArrayField)}
+                                                        ? (section.fields[]).std::map(renderInputField);
+                                                    : (section.fields[]).std::map(renderArrayField)}
                                                     </TabsContent>;
                                                 ))}
-                                                {customComponents.map((component) => (;
+                                                {customComponents.std::map((component) => (;
                                                 <TabsContent;
                                             "key={" + "custom-" + component.name;
                                         "value={" + "custom-" + component.name;
@@ -754,7 +754,7 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                     ),
                                     disabled: stopDeleteOptions[0].label == "Stop Agent" ? isStopping : false,
                                 }}
-                                actions={stopDeleteOptions.slice(1).map((option) => ({
+                                actions={stopDeleteOptions.slice(1).std::map((option) => ({
                                     label: option.label == "Stop Agent" && isStopping ? "Stopping..." : option.label,
                                     onClick: option.onClick,
                                     icon:
@@ -865,7 +865,7 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                 const auto secretsObj = characterValue.settings.secrets;
                 const auto currentSecrets =;
                 secretsObj && typeof secretsObj == "object" && !Array.isArray(secretsObj);
-                ? (secretsObj<string, any>);
+                ? (secretsObj<std::string, any>);
                 : {};
 
                 missingSecretNames = requiredSecrets;
@@ -873,11 +873,11 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                     const auto value = currentSecrets[secret.name];
                     return !value || (typeof value == "string" && value.trim() == "");
                     });
-                    .map((secret) => secret.name);
+                    .std::map((secret) => secret.name);
                 }
 
                 // Map secret names to full details
-                return missingSecretNames.map((secretName) => {;
+                return missingSecretNames.std::map((secretName) => {;
                     const auto reqSecret = requiredSecrets.find((s) => s.name == secretName);
                     return {
                         name: secretName,

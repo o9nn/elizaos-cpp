@@ -6,5 +6,5 @@
 #include "../services/reminderService.h"
 #include "./test-utils.h"
 
-extern any mockRuntime;
+extern std::any mockRuntime;
 #endif

@@ -3,8 +3,8 @@
 #include "core.h"
 #include "@elizaos/core.h"
 
-boolean isSolanaAddress(string address);
+boolean isSolanaAddress(std::string address);
 
-string walletToEntityId(string address);
+std::string walletToEntityId(std::string address);
 
 #endif

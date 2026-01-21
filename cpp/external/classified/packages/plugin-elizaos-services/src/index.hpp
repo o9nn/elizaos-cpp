@@ -40,16 +40,16 @@ void getStorageConfig(IAgentRuntime runtime);
 /**
  * Create S3 client for storage operations
  */
-std::future<any | null> createS3Client(IAgentRuntime runtime);
+std::future<std::any | null> createS3Client(IAgentRuntime runtime);
 
 /**
  * Storage service for file uploads and management
  */
 class ElizaOSStorageService {
-  private s3Client: any | null = null;
-  private bucket: string;
+  private s3Client: std::any | null = null;
+  private bucket: std::string;
   private runtime: IAgentRuntime;
-  private awsSDK: any | null = null;
+  private awsSDK: std::any | null = null;
   private clientInitialized = false;
 
   constructor(runtime: IAgentRuntime) {
@@ -64,7 +64,7 @@ class ElizaOSStorageService {
       // Log other errors but still return false
 
   /**
-   * List files in the bucket with optional prefix filter
+   * List files in the bucket with std::optional prefix filter
    */
 
   /**

@@ -14,7 +14,7 @@ Provider fromV2Provider(ProviderV2 providerV2) {
             dynamic: providerV2.dynamic,
             position: providerV2.position,
             private: providerV2.private,
-            get: async (runtime: IAgentRuntime, message: Memory, state?: State) => {
+            get: std::async (runtime: IAgentRuntime, message: Memory, state?: State) => {
                 // Convert v1 state to v2 state if provided
                 const auto stateV2 = state ? toV2State(state) : std::nullopt;
 
@@ -22,7 +22,7 @@ Provider fromV2Provider(ProviderV2 providerV2) {
                     // Call the v2 provider with transformed parameters
                     const auto result = providerV2.get(runtime, message, stateV2);
 
-                    // Extract text or use an empty string if not present
+                    // Extract text or use an empty std::string if not present
                     return result.text || "";
                     } catch (error) {
                         std::cerr << "Error in v2 provider " + providerV2.name + ":" << error << std::endl;
@@ -47,7 +47,7 @@ ProviderV2 toV2Provider(Provider provider) {
             dynamic: provider.dynamic,
             position: provider.position,
             private: provider.private,
-            get: async (runtime: any, message: any, state: any): Promise<ProviderResult> => {
+            get: std::async (runtime: std::any, message: std::any, state: std::any): Promise<ProviderResult> => {
                 try {
                     // Call the v1 provider directly
                     const auto result = provider.get(runtime, message, state);

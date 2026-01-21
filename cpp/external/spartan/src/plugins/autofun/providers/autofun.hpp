@@ -28,7 +28,7 @@ namespace elizaos {
  * @property {string} name - The name of the provider
  * @property {string} description - Description of the provider
  * @property {number} position - The position of the provider
- * @property {Function} get - Asynchronous function to get actions that validate for a given message
+ * @property {Function} get - Asynchronous std::function to get actions that validate for a given message
  *
  * @param {IAgentRuntime} runtime - The agent runtime
  * @param {Memory} message - The message memory

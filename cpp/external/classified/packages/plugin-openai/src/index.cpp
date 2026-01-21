@@ -84,7 +84,7 @@ bool getExperimentalTelemetry(IAgentRuntime runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto setting = getSetting(runtime, "OPENAI_EXPERIMENTAL_TELEMETRY", "false");
-    // Convert to string and check for truthy values
+    // Convert to std::string and check for truthy values
     const auto normalizedSetting = std::to_string(setting).toLowerCase();
     const auto result = normalizedSetting == "true";
     logger.debug(
@@ -132,7 +132,7 @@ std::future<void> detokenizeText(ModelTypeName model, const std::vector<double>&
 (params: getJsonRepairFunction() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    text: string;
+    text: std::string;
     error: unknown;
 
 }

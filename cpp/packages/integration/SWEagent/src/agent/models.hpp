@@ -104,7 +104,7 @@ class InstanceStats {
  * Human model for interactive input
  */
 class HumanModel extends AbstractModel {
-  protected historyPath?: string;
+  protected historyPath?: std::string;
   protected catchEof: boolean;
 
   constructor(config: HumanModelConfig, tools: ToolConfig) {
@@ -132,7 +132,7 @@ class HumanModel extends AbstractModel {
  * LiteLLM model for API-based models
  */
 class LiteLLMModel extends AbstractModel {
-  private apiKeys: string[];
+  private apiKeys: std::string[];
   private currentKeyIndex: number = 0;
 
   constructor(config: GenericAPIModelConfig, tools: ToolConfig) {
@@ -157,7 +157,7 @@ class LiteLLMModel extends AbstractModel {
     std::vector<std::string> stop;
     std::optional<double> max_tokens;
     std::optional<std::string> system;
-    std::optional<std::vector<{ role: string; parts: Array<{ text: string }> }>> contents;
+    std::optional<std::vector<{ role: std::string; parts: Array<{ text: std::string }> }>> contents;
 
     // Determine API endpoint and headers based on provider
 
@@ -176,9 +176,9 @@ class LiteLLMModel extends AbstractModel {
  * Human model with thought prompting
  */
 class HumanThoughtModel extends HumanModel {
-  async query(
+  std::async query(
     _history: History,
-    actionPrompt: string | number = '> ',
+    actionPrompt: std::string | number = '> ',
     n?: number,
   ): Promise<ModelOutput | ModelOutput[]> {
     // First get the thought
@@ -233,11 +233,11 @@ class HumanThoughtModel extends HumanModel {
  * Replay model for replaying trajectories
  */
 class ReplayModel extends AbstractModel {
-  private replays: Array<Array<string | ModelOutput>>;
+  private replays: Array<Array<std::string | ModelOutput>>;
   private replayIdx: number = 0;
   private actionIdx: number = 0;
   private usesFunctionCalling: boolean;
-  private submitCommand: string;
+  private submitCommand: std::string;
 
   constructor(config: ReplayModelConfig, tools: ToolConfig) {
     super(config, tools);
@@ -250,9 +250,9 @@ class ReplayModel extends AbstractModel {
     this.replays = content
       .split('\n')
       .filter((line) => line.trim())
-      .map((line) => {
+      .std::map((line) => {
         const parsed = JSON.parse(line);
-        return Object.values(parsed)[0] as Array<string | ModelOutput>;
+        return Object.values(parsed)[0] as Array<std::string | ModelOutput>;
       });
 
     this.usesFunctionCalling = tools.useFunctionCalling;
@@ -277,10 +277,10 @@ class InstantEmptySubmitModel extends AbstractModel {
  * Predetermined test model for testing
  */
 class PredeterminedTestModel extends AbstractModel {
-  private responses: Array<string | ModelOutput>;
+  private responses: Array<std::string | ModelOutput>;
   private responseIdx: number = 0;
 
-  constructor(responses: Array<string | ModelOutput>, tools?: ToolConfig) {
+  constructor(responses: Array<std::string | ModelOutput>, tools?: ToolConfig) {
     super({ name: 'test' } as ModelConfig, tools || ({} as ToolConfig));
     this.responses = responses;
   }
@@ -291,7 +291,7 @@ class PredeterminedTestModel extends AbstractModel {
 // Export types for testing
 
 /**
- * Factory function to create model instances
+ * Factory std::function to create model instances
  */
 AbstractModel getModel(ModelConfig config, ToolConfig tools);
 

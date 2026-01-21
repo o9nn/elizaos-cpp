@@ -42,7 +42,7 @@ void useChainReset() {
                 }
                 }, [mounted]);
 
-                const auto handleChainReset = useCallback(async () => {;
+                const auto handleChainReset = useCallback(std::async () => {;
                     if (hasShownToast.current) return;
                     hasShownToast.current = true;
 
@@ -54,7 +54,7 @@ void useChainReset() {
                         duration: 10000,
                         action: {
                             label: "Reset Wallet",
-                            onClick: async () => {
+                            onClick: std::async () => {
                                 // Disconnect EVM wallet
                                 if (address) {
                                     disconnect();
@@ -83,7 +83,7 @@ void useChainReset() {
                                     useEffect(() => {
                                         if (!mounted || !state.checksEnabled || !publicClient) return;
 
-                                        const auto checkInterval = setInterval(async () => {;
+                                        const auto checkInterval = setInterval(std::async () => {;
                                             try {
                                                 const auto currentBlock = publicClient.getBlockNumber();
 

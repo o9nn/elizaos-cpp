@@ -25,7 +25,7 @@ bool isValidDateString(const std::string& dateStr) {
     const auto datePattern = /^\d{4}-\d{2}-\d{2}$/;
     if (!datePattern.test(dateStr)) return false;
 
-    const auto [year, month, day] = dateStr.split("-").map(Number);
+    const auto [year, month, day] = dateStr.split("-").std::map(Number);
     const auto date = new UTCDate(year, month - 1, day);
 
     return (;
@@ -102,8 +102,8 @@ std::string generateIntervalName(TimeInterval interval) {
 void getTimePeriodText(IntervalType intervalType) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    timeFrame: string;
-    timeFrameShort: string;
+    timeFrame: std::string;
+    timeFrameShort: std::string;
     sentenceCount: number;
 
 }
@@ -224,8 +224,8 @@ std::vector<std::string> formatIntervalForPath(TimeInterval interval) {
 void findAdjacentIntervals(TimeInterval currentInterval, const std::string& latestDate) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    prevDate: string | nullptr;
-    nextDate: string | nullptr;
+    prevDate: std::string | nullptr;
+    nextDate: std::string | nullptr;
 
 }
 

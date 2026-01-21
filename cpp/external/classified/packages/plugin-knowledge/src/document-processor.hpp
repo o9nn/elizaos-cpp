@@ -19,7 +19,7 @@ namespace elizaos {
 
 
 /**
- * Estimates token count for a text string (rough approximation)
+ * Estimates token count for a text std::string (rough approximation)
  * Uses the common 4 characters per token rule
  */
 double estimateTokens(const std::string& text);
@@ -106,7 +106,7 @@ std::future<std::string> extractTextFromDocument(Buffer fileBuffer, const std::s
  * Generate embeddings for contextualized chunks
  * @param runtime IAgentRuntime
  * @param contextualizedChunks Array of contextualized chunks
- * @param rateLimiter Rate limiter function
+ * @param rateLimiter Rate limiter std::function
  * @returns Array of embedding results
  */
   // Filter out failed chunks
@@ -123,7 +123,7 @@ std::future<std::string> extractTextFromDocument(Buffer fileBuffer, const std::s
 /**
  * Generate contextual chunks if contextual Knowledge is enabled
  */
-std::future<std::vector> getContextualizedChunks(IAgentRuntime runtime, string | undefined fullDocumentText, const std::vector<std::string>& chunks, string | undefined contentType, const std::vector<double>& batchOriginalIndices, std::optional<std::string> documentTitle);>> {
+std::future<std::vector> getContextualizedChunks(IAgentRuntime runtime, std::string | undefined fullDocumentText, const std::vector<std::string>& chunks, std::string | undefined contentType, const std::vector<double>& batchOriginalIndices, std::optional<std::string> documentTitle);>> {
 
   // Log configuration state once per document (not per batch)
 

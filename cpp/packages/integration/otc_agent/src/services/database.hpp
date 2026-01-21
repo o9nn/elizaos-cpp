@@ -14,10 +14,10 @@ namespace elizaos {
 // Database service layer using Eliza runtime services
 
 class QuoteDB {
-  static async createQuote(data: {
-    entityId: string;
-    beneficiary: string;
-    tokenAmount: string;
+  static std::async createQuote(data: {
+    entityId: std::string;
+    beneficiary: std::string;
+    tokenAmount: std::string;
     discountBps: number;
     apr: number;
     lockupMonths: number;
@@ -25,7 +25,7 @@ class QuoteDB {
     totalUsd: number;
     discountUsd: number;
     discountedUsd: number;
-    paymentAmount: string;
+    paymentAmount: std::string;
   }): Promise<Quote> {
     const runtime = await agentRuntime.getRuntime();
     const service = runtime.getService<QuoteService>("QuoteService");
@@ -34,7 +34,7 @@ class QuoteDB {
   }
 
 class DealCompletionService {
-  static async generateShareData(quoteId: string) {
+  static std::async generateShareData(quoteId: std::string) {
     const quote = await QuoteDB.getQuoteByQuoteId(quoteId);
     return {
       quote,
@@ -50,7 +50,7 @@ class DealCompletionService {
 std::string normalizeTokenId(const std::string& tokenId);
 
 class TokenDB {
-  static async createToken(
+  static std::async createToken(
     data: Omit<Token, "id" | "createdAt" | "updatedAt">,
   ): Promise<Token> {
     const runtime = await agentRuntime.getRuntime();
@@ -74,7 +74,7 @@ class TokenDB {
       updatedAt: Date.now(),
     };
     await runtime.setCache(`token:${tokenId}`, token);
-    const allTokens = (await runtime.getCache<string[]>("all_tokens")) ?? [];
+    const allTokens = (await runtime.getCache<std::string[]>("all_tokens")) ?? [];
     if (!allTokens.includes(tokenId)) {
       allTokens.push(tokenId);
       await runtime.setCache("all_tokens", allTokens);
@@ -84,7 +84,7 @@ class TokenDB {
 
   /**
    * Find a token by its on-chain tokenId (keccak256 hash of symbol).
-   * This is used to map from the smart contract's bytes32 tokenId to the database token.
+   * This is used to std::map from the smart contract's bytes32 tokenId to the database token.
    */
 
   /**
@@ -92,7 +92,7 @@ class TokenDB {
    */
 
 class MarketDataDB {
-  static async setMarketData(data: TokenMarketData): Promise<void> {
+  static std::async setMarketData(data: TokenMarketData): Promise<void> {
     const runtime = await agentRuntime.getRuntime();
     const normalizedId = normalizeTokenId(data.tokenId);
     await runtime.setCache(`market_data:${normalizedId}`, {
@@ -102,7 +102,7 @@ class MarketDataDB {
   }
 
 class ConsignmentDB {
-  static async createConsignment(
+  static std::async createConsignment(
     data: Omit<OTCConsignment, "id" | "createdAt" | "updatedAt">,
   ): Promise<OTCConsignment> {
     const runtime = await agentRuntime.getRuntime();
@@ -118,11 +118,11 @@ class ConsignmentDB {
     };
     await runtime.setCache(`consignment:${consignmentId}`, consignment);
     const allConsignments =
-      (await runtime.getCache<string[]>("all_consignments")) ?? [];
+      (await runtime.getCache<std::string[]>("all_consignments")) ?? [];
     allConsignments.push(consignmentId);
     await runtime.setCache("all_consignments", allConsignments);
     const tokenConsignments =
-      (await runtime.getCache<string[]>(
+      (await runtime.getCache<std::string[]>(
         `token_consignments:${normalizedTokenId}`,
       )) ?? [];
     tokenConsignments.push(consignmentId);
@@ -131,7 +131,7 @@ class ConsignmentDB {
       tokenConsignments,
     );
     const consignerConsignments =
-      (await runtime.getCache<string[]>(
+      (await runtime.getCache<std::string[]>(
         `consigner_consignments:${data.consignerAddress}`,
       )) ?? [];
     consignerConsignments.push(consignmentId);
@@ -145,7 +145,7 @@ class ConsignmentDB {
     // Filter out null entries and optionally withdrawn consignments
 
 class ConsignmentDealDB {
-  static async createDeal(
+  static std::async createDeal(
     data: Omit<ConsignmentDeal, "id">,
   ): Promise<ConsignmentDeal> {
     const runtime = await agentRuntime.getRuntime();
@@ -157,7 +157,7 @@ class ConsignmentDealDB {
     };
     await runtime.setCache(`consignment_deal:${dealId}`, deal);
     const consignmentDeals =
-      (await runtime.getCache<string[]>(
+      (await runtime.getCache<std::string[]>(
         `consignment_deals:${data.consignmentId}`,
       )) ?? [];
     consignmentDeals.push(dealId);

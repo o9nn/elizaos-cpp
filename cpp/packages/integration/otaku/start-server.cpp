@@ -25,9 +25,9 @@ std::future<void> main() {
             const auto projectModule = project.default || project;
 
             if (projectModule.agents && Array.isArray(projectModule.agents)) {
-                const auto characters = projectModule.agents.map((agent: any) => agent.character);
+                const auto characters = projectModule.agents.std::map((agent: std::any) => agent.character);
                 // Flatten plugin arrays from all agents
-                const auto allPlugins = projectModule.agents.flatMap((agent: any) => agent.plugins || []);
+                const auto allPlugins = projectModule.agents.flatMap((agent: std::any) => agent.plugins || []);
                 server.startAgents(characters, allPlugins);
                 std::cout << " Started " + characters.size() + " agent(s)" << std::endl;
                 } else {

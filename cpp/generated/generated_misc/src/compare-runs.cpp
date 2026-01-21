@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/run/compare-runs.h"
 
-std::shared_ptr<Set<string>> getResolved(string filePath)
+std::shared_ptr<Set<string>> getResolved(std::string filePath)
 {
     auto data = JSON->parse(fs::readFileSync(filePath, std::string("utf-8")));
     if (in(std::string("resolved"), data)) {
@@ -10,14 +10,14 @@ std::shared_ptr<Set<string>> getResolved(string filePath)
 };
 
 
-std::shared_ptr<Set<string>> getSubmitted(string filePath)
+std::shared_ptr<Set<string>> getSubmitted(std::string filePath)
 {
     auto data = JSON->parse(fs::readFileSync(filePath, std::string("utf-8")));
     return std::make_shared<Set>(OR((data["submitted_ids"]), (array<any>())));
 };
 
 
-void statsSingle(string filePath)
+void statsSingle(std::string filePath)
 {
     auto evaluatedIds = Array->from(getSubmitted(filePath))->sort();
     auto resolvedIds = Array->from(getResolved(filePath))->sort();
@@ -32,10 +32,10 @@ void compareMany(array<string> paths)
     shared resolvedIds = std::make_shared<Map>();
     for (auto& filePath : paths)
     {
-        evaluatedIds->set(filePath, Array->from(getSubmitted(filePath))->sort());
-        resolvedIds->set(filePath, Array->from(getResolved(filePath))->sort());
+        evaluatedIds->std::set(filePath, Array->from(getSubmitted(filePath))->sort());
+        resolvedIds->std::set(filePath, Array->from(getResolved(filePath))->sort());
     }
-    shared header = array<string>{ std::string("ID"), paths->map([=](auto _, auto i) mutable
+    shared header = array<string>{ std::string("ID"), paths->std::map([=](auto _, auto i) mutable
     {
         return String(i);
     }
@@ -75,7 +75,7 @@ void compareMany(array<string> paths)
                 return (OR((evaluatedIds->get(p)), (array<any>())))->includes(id);
             }
             )->get_length();
-            row->push((nEvaluated > 0) ? any((nSuccess / nEvaluated)->toFixed(2)) : any(std::string("0.00")));
+            row->push((nEvaluated > 0) ? std::any((nSuccess / nEvaluated)->toFixed(2)) : std::any(std::string("0.00")));
             table->push(row);
         }
     }
@@ -97,12 +97,12 @@ void compareMany(array<string> paths)
             }
             )->get_length();
             successes->push(nSuccess);
-            successRates->push((nEvaluated > 0) ? any((nSuccess / nEvaluated)->toFixed(2)) : any(std::string("0.00")));
+            successRates->push((nEvaluated > 0) ? std::any((nSuccess / nEvaluated)->toFixed(2)) : std::any(std::string("0.00")));
         }
     }
     table->push(successes);
     table->push(successRates);
-    console->table(table->map([=](auto row) mutable
+    console->table(table->std::map([=](auto row) mutable
     {
         shared obj = object{};
         header->forEach([=](auto h, auto i) mutable
@@ -115,7 +115,7 @@ void compareMany(array<string> paths)
     ));
     console->log(std::string("\
 Summary:"));
-    auto summaryTable = paths->map([=](auto p, auto i) mutable
+    auto summaryTable = paths->std::map([=](auto p, auto i) mutable
     {
         return (object{
             object::pair{std::string("#"), i}, 
@@ -129,7 +129,7 @@ Summary:"));
 };
 
 
-void comparePair(string newPath, string oldPath, boolean showSame)
+void comparePair(std::string newPath, std::string oldPath, boolean showSame)
 {
     auto evaluatedIds = Array->from(getSubmitted(newPath))->sort();
     auto resolvedIds = Array->from(getResolved(newPath))->sort();
@@ -150,7 +150,7 @@ void comparePair(string newPath, string oldPath, boolean showSame)
         auto resolvedNow = resolvedIds->includes(id);
         auto resolvedBefore = oldResolvedIds->includes(id);
         auto inOldEvaluated = oldEvaluatedIds->includes(id);
-        string emoji;
+        std::string emoji;
         if (AND((!inOldEvaluated), (resolvedNow))) {
             emoji = std::string("😀❓");
         } else if (AND((!inOldEvaluated), (!resolvedNow))) {
@@ -177,7 +177,7 @@ void comparePair(string newPath, string oldPath, boolean showSame)
 
 std::shared_ptr<Promise<void>> compareRuns(array<string> paths, boolean showSame)
 {
-    auto resultPaths = paths->map([=](auto p) mutable
+    auto resultPaths = paths->std::map([=](auto p) mutable
     {
         if (AND((fs::existsSync(p)), (fs::statSync(p)->isDirectory()))) {
             return path->join(p, std::string("results.json"));
@@ -188,7 +188,7 @@ std::shared_ptr<Promise<void>> compareRuns(array<string> paths, boolean showSame
     for (auto& p : resultPaths)
     {
         if (!fs::existsSync(p)) {
-            throw any(std::make_shared<Error>(std::string("File not found: ") + p + string_empty));
+            throw std::any(std::make_shared<Error>(std::string("File not found: ") + p + string_empty));
         }
     }
     if (resultPaths->get_length() == 1) {

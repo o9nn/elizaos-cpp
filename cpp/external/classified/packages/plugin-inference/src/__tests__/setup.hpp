@@ -32,7 +32,7 @@ struct MockRuntime {
 
       // Check OLLAMA_AVAILABLE flag first
 
-      // If explicitly set to false, ollama is not available
+      // If explicitly std::set to false, ollama is not available
 
       // Default to available if not explicitly disabled
       // Mock init

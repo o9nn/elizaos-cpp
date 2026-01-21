@@ -177,7 +177,7 @@ void MemoryEditOverlay(auto onClose, auto memory, auto agentId) {
                                                                                                                             }
                                                                                                                             }, [originalContent]);
 
-                                                                                                                            const auto handleCopyToClipboard = useCallback(async () => {;
+                                                                                                                            const auto handleCopyToClipboard = useCallback(std::async () => {;
                                                                                                                                 try {
                                                                                                                                     navigator.clipboard.writeText(editedContent);
                                                                                                                                     toast({

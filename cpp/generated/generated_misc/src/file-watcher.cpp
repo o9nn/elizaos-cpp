@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/commands/dev/utils/file-watcher.h"
 
-array<string> findTsFiles(string dir, string watchDir)
+array<string> findTsFiles(std::string dir, std::string watchDir)
 {
     auto results = array<string>();
     try
@@ -18,14 +18,14 @@ array<string> findTsFiles(string dir, string watchDir)
             }
         }
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
     }
     return results;
 };
 
 
-std::shared_ptr<Promise<void>> watchDirectory(string dir, std::function<void()> onChange, Partial<std::shared_ptr<WatcherConfig>> config)
+std::shared_ptr<Promise<void>> watchDirectory(std::string dir, std::function<void()> onChange, Partial<std::shared_ptr<WatcherConfig>> config)
 {
     try
     {
@@ -84,7 +84,7 @@ std::shared_ptr<Promise<void>> watchDirectory(string dir, std::function<void()> 
         }
         );
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("Error setting up file watcher: ") + error["message"] + string_empty);
     }

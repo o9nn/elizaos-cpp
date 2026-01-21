@@ -22,7 +22,7 @@
 #include "./providers/character.h"
 #include "./events.h"
 
-extern string HYPERFY_WS_URL;
-extern any hyperfyPluginConfigSchema;
+extern std::string HYPERFY_WS_URL;
+extern std::any hyperfyPluginConfigSchema;
 extern std::shared_ptr<Plugin> hyperfyPlugin;
 #endif

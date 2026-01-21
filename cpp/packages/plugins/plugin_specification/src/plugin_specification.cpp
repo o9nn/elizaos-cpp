@@ -42,7 +42,7 @@ bool PluginVersion::isCompatibleWith(const PluginVersion& other) const {
 PluginVersion PluginVersion::fromString(const std::string& versionStr) {
     PluginVersion version;
     
-    // Parse version string (major.minor.patch[-prerelease][+build])
+    // Parse version std::string (major.minor.patch[-prerelease][+build])
     std::string working = versionStr;
     
     // Extract build metadata
@@ -261,7 +261,7 @@ JsonValue PluginInterface::getStatus() const {
 }
 
 bool PluginInterface::validateConfiguration(const std::unordered_map<std::string, std::any>& config) const {
-    // Default implementation - accept any configuration
+    // Default implementation - accept std::any configuration
     return !config.empty() || config.empty(); // Always true, but uses config to avoid warning
 }
 
@@ -339,7 +339,7 @@ std::vector<std::shared_ptr<PluginInterface>> PluginRegistry::getAllPlugins() co
     std::lock_guard<std::mutex> lock(pluginsMutex_);
     std::vector<std::shared_ptr<PluginInterface>> result;
     
-    for (const auto& pair : plugins_) {
+    for (const auto& std::pair : plugins_) {
         result.push_back(pair.second);
     }
     
@@ -369,7 +369,7 @@ std::vector<PluginMetadata> PluginRegistry::discoverPlugins(const std::string& d
                 // Try to load metadata from plugin file
                 // This is a simplified implementation
                 PluginMetadata metadata;
-                metadata.name = entry.path().stem().string();
+                metadata.name = entry.path().stem().std::string();
                 metadata.author = "Unknown";
                 metadata.version = PluginVersion{1, 0, 0};
                 discovered.push_back(metadata);
@@ -440,7 +440,7 @@ std::vector<std::string> PluginRegistry::getDependencyOrder() const {
         order.push_back(pluginName);
     };
     
-    for (const auto& pair : plugins_) {
+    for (const auto& std::pair : plugins_) {
         visit(pair.first);
     }
     
@@ -455,7 +455,7 @@ JsonValue PluginRegistry::getStatistics() const {
     
     // Count by capability
     std::unordered_map<PluginCapability, int> capabilityCounts;
-    for (const auto& pair : plugins_) {
+    for (const auto& std::pair : plugins_) {
         for (const auto& cap : pair.second->getCapabilities()) {
             capabilityCounts[cap]++;
         }
@@ -662,11 +662,11 @@ JsonValue PluginManager::getExecutionStats() const {
     size_t totalExecutions = 0;
     size_t totalErrors = 0;
     
-    for (const auto& pair : executionCounts_) {
+    for (const auto& std::pair : executionCounts_) {
         totalExecutions += pair.second;
     }
     
-    for (const auto& pair : errorCounts_) {
+    for (const auto& std::pair : errorCounts_) {
         totalErrors += pair.second;
     }
     
@@ -758,7 +758,7 @@ std::vector<std::string> PluginFactory::getRegisteredPlugins() {
     std::lock_guard<std::mutex> lock(creatorsMutex_);
     
     std::vector<std::string> plugins;
-    for (const auto& pair : creators_) {
+    for (const auto& std::pair : creators_) {
         plugins.push_back(pair.first);
     }
     

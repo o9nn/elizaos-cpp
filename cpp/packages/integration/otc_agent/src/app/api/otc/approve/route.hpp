@@ -31,7 +31,7 @@ std::future<void> POST(NextRequest request);;
       // Pay with USDC
 
   // Resolve approver account: prefer PK; else use testWalletPrivateKey from deployment; else impersonate
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-std::any
 
       // Impersonate approver on Anvil
 
@@ -40,7 +40,7 @@ std::future<void> POST(NextRequest request);;
   // Poll for offer to exist (tx might still be pending)
   // This handles the case where frontend calls us immediately after tx submission
 
-    // Check if offer exists (beneficiary is set when offer is created)
+    // Check if offer exists (beneficiary is std::set when offer is created)
 
   // Validate that the offer price hasn't diverged too much from market price
   // This prevents abuse from stale quotes or manipulated pool prices

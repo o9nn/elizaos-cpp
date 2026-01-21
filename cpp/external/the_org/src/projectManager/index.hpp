@@ -254,7 +254,7 @@ namespace elizaos {
  * @property {boolean} settings.CHECK_IN_FREQUENCY.public - Whether the setting is public
  * @property {boolean} settings.CHECK_IN_FREQUENCY.secret - Whether the setting is secret
  * @property {string} settings.CHECK_IN_FREQUENCY.usageDescription - Description of how to use the setting
- * @property {function} settings.CHECK_IN_FREQUENCY.validation - Validation function for the setting
+ * @property {function} settings.CHECK_IN_FREQUENCY.validation - Validation std::function for the setting
  * @property {Object} settings.REPORT_SCHEDULE - Configuration for report schedule
  * @property {string} settings.REPORT_SCHEDULE.name - The name of the setting
  * @property {string} settings.REPORT_SCHEDULE.description - Description of the setting
@@ -262,7 +262,7 @@ namespace elizaos {
  * @property {boolean} settings.REPORT_SCHEDULE.public - Whether the setting is public
  * @property {boolean} settings.REPORT_SCHEDULE.secret - Whether the setting is secret
  * @property {string} settings.REPORT_SCHEDULE.usageDescription - Description of how to use the setting
- * @property {function} settings.REPORT_SCHEDULE.validation - Validation function for the setting
+ * @property {function} settings.REPORT_SCHEDULE.validation - Validation std::function for the setting
  * @property {Object} settings.CLIENT_LIST - Configuration for client list
  * @property {string} settings.CLIENT_LIST.name - The name of the setting
  * @property {string} settings.CLIENT_LIST.description - Description of the setting
@@ -270,7 +270,7 @@ namespace elizaos {
  * @property {boolean} settings.CLIENT_LIST.public - Whether the setting is public
  * @property {boolean} settings.CLIENT_LIST.secret - Whether the setting is secret
  * @property {string} settings.CLIENT_LIST.usageDescription - Description of how to use the setting
- * @property {function} settings.CLIENT_LIST.validation - Validation function for the setting
+ * @property {function} settings.CLIENT_LIST.validation - Validation std::function for the setting
  */
     // List of projects
 
@@ -287,7 +287,7 @@ namespace elizaos {
     // Then register all plugins with the character
     // This ensures plugins are registered after character initialization
 
-    // Custom function to force register an action by first removing any existing one with the same name
+    // Custom std::function to force register an action by first removing std::any existing one with the same name
       // Since there's no official unregisterAction method, we need to modify the runtime actions array directly
         // First check if the action already exists
           // Remove the existing action with the same name

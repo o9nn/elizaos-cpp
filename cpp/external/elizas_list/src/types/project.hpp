@@ -37,7 +37,7 @@ struct Collection {
     std::string id;
     std::string name;
     std::string description;
-    string[]; // Project IDs projects;
+    std::string[]; // Project IDs projects;
     { curator;
     std::string name;
     std::string github;

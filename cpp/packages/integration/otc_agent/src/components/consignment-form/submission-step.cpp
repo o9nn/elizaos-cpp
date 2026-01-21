@@ -10,8 +10,8 @@ void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamil
 
         const auto router = useRouter();
 
-        // Use refs to avoid stale closure issues in async callbacks
-        const auto contractConsignmentIdRef = useRef<string | nullptr>(nullptr);
+        // Use refs to avoid stale closure issues in std::async callbacks
+        const auto contractConsignmentIdRef = useRef<std::string | nullptr>(nullptr);
         const auto isProcessingRef = useRef(false);
         const auto hasStartedRef = useRef(false);
 
@@ -47,7 +47,7 @@ void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamil
                     ]);
 
                     const auto updateStepStatus = useCallback(;
-                    [&](stepId: string, updates: Partial<StepState>) {
+                    [&](stepId: std::string, updates: Partial<StepState>) {
                         const auto step = stepsRef.current.find((s) => s.id == stepId);
                         if (step) {
                             Object.assign(step, updates);
@@ -59,7 +59,7 @@ void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamil
 
                         // Retry transient errors with exponential backoff
                         const auto executeWithRetry = useCallback(;
-                        async <T,>(action: () => Promise<T>, stepId: string): Promise<T> => {
+                        std::async <T,>(action: () => Promise<T>, stepId: std::string): Promise<T> => {
                             const auto MAX_RETRIES = 3;
                             const auto NON_RETRYABLE = ["rejected", "denied", "cancelled", "user"];
                             const auto RETRYABLE = ["network", "timeout", "fetch", "connection", "rate"];
@@ -96,9 +96,9 @@ void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamil
                                     [updateStepStatus],
                                     );
 
-                                    const auto saveToDatabase = useCallback(async () => {;
+                                    const auto saveToDatabase = useCallback(std::async () => {;
                                         // Convert human-readable amounts to raw amounts with decimals
-                                        const auto toRawAmount = (humanAmount: string): string => {;
+                                        const auto toRawAmount = (humanAmount: std::string): std::string => {;
                                             const auto parsed = parseFloat(humanAmount) || 0;
                                             const auto raw = BigInt(;
                                             Math.floor(parsed * Math.pow(10, selectedTokenDecimals)),
@@ -154,7 +154,7 @@ void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamil
                                                     ]);
 
                                                     const auto processStep = useCallback(;
-                                                    async (stepIndex: number): Promise<void> => {
+                                                    std::async (stepIndex: number): Promise<void> => {
                                                         const auto steps = stepsRef.current;
                                                         const auto currentStep = steps[stepIndex];
 
@@ -275,7 +275,7 @@ void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamil
                                                                                                         }, [processStep]);
 
                                                                                                         const auto retryStep = useCallback(;
-                                                                                                        [&](stepId: string) {
+                                                                                                        [&](stepId: std::string) {
                                                                                                             if (isProcessingRef.current) {
                                                                                                                 std::cout << "[SubmissionStep] Already processing << ignoring retry" << std::endl;
                                                                                                                 return;
@@ -300,7 +300,7 @@ void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamil
                                                                                                                     router.push_back("/my-deals");
                                                                                                                     };
 
-                                                                                                                    const auto formatAmount = [&](amount: string) {;
+                                                                                                                    const auto formatAmount = [&](amount: std::string) {;
                                                                                                                         const auto num = parseFloat(amount) || 0;
                                                                                                                         return num.toLocaleString();
                                                                                                                         };
@@ -325,7 +325,7 @@ void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamil
 
                                                                                                         {/* Steps */}
                                                                                                         <div className="space-y-4">;
-                                                                                                        {steps.map((step, index) => (;
+                                                                                                        {steps.std::map((step, index) => (;
                                                                                                         <div;
                                                                                                     key={step.id}
                                                                                                     className="border border-zinc-200 dark:border-zinc-800 rounded-lg p-4"

@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-list/src/lib/email.h"
 
-void sendProjectNotification(string to, object project)
+void sendProjectNotification(std::string to, object project)
 {
     auto html = render(ProjectNotification(object{
         object::pair{std::string("project"), std::string("project")}
@@ -14,7 +14,7 @@ void sendProjectNotification(string to, object project)
 };
 
 
-any transporter = createTransport(object{
+std::any transporter = createTransport(object{
     object::pair{std::string("host"), process->env->SMTP_HOST}, 
     object::pair{std::string("port"), parseInt(OR((process->env->SMTP_PORT), (std::string("587"))))}, 
     object::pair{std::string("auth"), object{

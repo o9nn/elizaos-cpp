@@ -23,7 +23,7 @@ namespace elizaos {
  * She interacts with users in a concise, direct, and helpful manner, using humor and empathy effectively.
  * Eliza's responses are geared towards providing assistance on various topics while maintaining a friendly demeanor.
  */
-    // any plugins go here
+    // std::any plugins go here
   // system: - agent system prompt goes here
     // strings of bio go here
     // topics the agent is interested in go here

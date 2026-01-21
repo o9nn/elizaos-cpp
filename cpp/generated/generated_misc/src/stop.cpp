@@ -43,7 +43,7 @@ std::shared_ptr<Action> hyperfyStopMovingAction = object{
                 }}
             }); });
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("Error during HYPERFY_STOP_MOVING:"), error);
             std::async([=]() { callback(object{

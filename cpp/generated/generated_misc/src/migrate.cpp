@@ -1,10 +1,10 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizaos.github.io/drizzle/migrate.h"
 
-std::function<void(any, any, any)> customMigrate = [=](auto db, auto config, auto maxMigrationNumber) mutable
+std::function<void(std::any, std::any, std::any)> customMigrate = [=](auto db, auto config, auto maxMigrationNumber) mutable
 {
     auto journalPath = path->join(config["migrationsFolder"], std::string("meta/_journal.json"));
     if (!fs->existsSync(journalPath)) {
-        throw any(std::make_shared<Error>(std::string("Can't find meta/_journal.json file at ") + journalPath + string_empty));
+        throw std::any(std::make_shared<Error>(std::string("Can't find meta/_journal.json file at ") + journalPath + string_empty));
     }
     auto journalAsString = fs->readFileSync(journalPath)->toString();
     auto journal = JSON->parse(journalAsString);
@@ -29,7 +29,7 @@ std::function<void(any, any, any)> customMigrate = [=](auto db, auto config, aut
         try
         {
             auto query = fs->readFileSync(migrationPath)->toString();
-            auto result = query->split(std::string("--> statement-breakpoint"))->map([=](auto it) mutable
+            auto result = query->split(std::string("--> statement-breakpoint"))->std::map([=](auto it) mutable
             {
                 return it->trim();
             }
@@ -45,21 +45,21 @@ std::function<void(any, any, any)> customMigrate = [=](auto db, auto config, aut
                 object::pair{std::string("hash"), crypto->createHash(std::string("sha256"))->update(query)->digest(std::string("hex"))}
             });
         }
-        catch (const any& e)
+        catch (const std::any& e)
         {
-            throw any(std::make_shared<Error>(std::string("Error reading migration file ") + migrationPath + std::string(": ") + e["message"] + string_empty));
+            throw std::any(std::make_shared<Error>(std::string("Error reading migration file ") + migrationPath + std::string(": ") + e["message"] + string_empty));
         }
     }
     db["dialect"]["migrate"](migrationQueries, db["session"], config);
 };
-string dbPath = OR((process->env->DB_PATH), (std::string("./data/db.sqlite")));
-any dbDir = path->dirname(dbPath);
-any sqlite = std::make_shared<Database>(dbPath, object{
+std::string dbPath = OR((process->env->DB_PATH), (std::string("./data/db.sqlite")));
+std::any dbDir = path->dirname(dbPath);
+std::any sqlite = std::make_shared<Database>(dbPath, object{
     object::pair{std::string("create"), true}
 });
-any db = drizzle(sqlite);
-string maxMigrationArg = const_(process->argv)[2];
-any maxMigration;
+std::any db = drizzle(sqlite);
+std::string maxMigrationArg = const_(process->argv)[2];
+std::any maxMigration;
 
 void Main(void)
 {
@@ -84,7 +84,7 @@ void Main(void)
         }, maxMigration);
         console->log(std::string("Migration complete"));
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("Migration failed:"), error);
         process->exit(1);

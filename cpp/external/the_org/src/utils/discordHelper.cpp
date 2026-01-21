@@ -18,7 +18,7 @@ std::future<void> getDiscordJs() {
                     // If that fails (e.g., due to node: protocol issues), use a workaround
                     // This assumes the discord.js package is installed in node_modules
                     try {
-                        // Use the 'module' package to create a require function
+                        // Use the 'module' package to create a require std::function
                         const auto { createRequire } = import("module");
                         const auto require = createRequire(import.meta.url);
                         discordJsImport = require("discord.js");

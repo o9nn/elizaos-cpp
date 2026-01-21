@@ -15,6 +15,6 @@ public:
     object info;
 };
 
-std::shared_ptr<Promise<void>> removeUnfinished(string baseDir, boolean dryRun = true);
+std::shared_ptr<Promise<void>> removeUnfinished(std::string baseDir, boolean dryRun = true);
 
 #endif

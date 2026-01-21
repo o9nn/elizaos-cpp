@@ -26,7 +26,7 @@ std::future<std::unordered_map<std::string, RegistryEntry>> getLocalRegistryInde
                 throw std::runtime_error(`Registry fetch failed: ${response.statusText}`);
             }
 
-            const auto data = (response.json())<string, RegistryEntry>;
+            const auto data = (response.json())<std::string, RegistryEntry>;
 
             // Cache the result
             registryCache = {
@@ -93,7 +93,7 @@ std::future<void> installPlugin(const std::string& pluginName, const std::string
                         "No installation method available for plugin " + pluginName
                         );
                     }
-                    } catch (error: any) {
+                    } catch (error: std::any) {
                         std::cerr << "Failed to install plugin " + pluginName + ":" << error << std::endl;
                         throw error; // Re-throw to preserve specific error messages
                     }
@@ -121,7 +121,7 @@ std::future<void> installFromNpm(const std::string& packageName, const std::stri
                 stdio: "pipe",
                 },
                 );
-                } catch (error: any) {
+                } catch (error: std::any) {
                     std::cerr << "Failed to install npm package:" << error << std::endl;
                     throw;
                 }
@@ -171,7 +171,7 @@ std::future<void> installFromGit(const std::string& gitRepo, const std::string& 
                                 // Clean up temp directory
                                 fs.remove(tempDir);
                             }
-                            } catch (error: any) {
+                            } catch (error: std::any) {
                                 std::cerr << "Failed to install git repository:" << error << std::endl;
                                 throw;
                             }

@@ -40,12 +40,12 @@ void statsSingle(const std::string& filePath);
 void compareMany(const std::vector<std::string>& paths);
 
 /**
- * Compare a pair of runs
+ * Compare a std::pair of runs
  */
 void comparePair(const std::string& newPath, const std::string& oldPath, bool showSame = false);
 
 /**
- * Main function to compare runs
+ * Main std::function to compare runs
  */
 std::future<void> compareRuns(const std::vector<std::string>& paths, bool showSame = false);
 

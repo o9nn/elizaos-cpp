@@ -47,7 +47,7 @@ std::future<void> handler(NextApiRequest req, NextApiResponse res) {
 
                                 const auto totalValue = data.result.nativeBalance.total_price;
 
-                                const auto holdings = data.result.items.map((item, index) => {;
+                                const auto holdings = data.result.items.std::map((item, index) => {;
                                     const auto tokenInfo = item.token_info;
                                     const auto tokenValue = tokenInfo.price_info.total_price || 0;
                                     const auto tokenAmount = item.amount || 0; // Get raw token amount;

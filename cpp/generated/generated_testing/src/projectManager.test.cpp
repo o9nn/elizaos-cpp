@@ -33,7 +33,7 @@ void Main(void)
                 );
                 expect(test)->toBeDefined();
                 if (!test) {
-                    throw any(std::make_shared<Error>(std::string("Test "Test Project Creation" not found")));
+                    throw std::any(std::make_shared<Error>(std::string("Test "Test Project Creation" not found")));
                 }
                 std::async([=]() { test["fn"](mockRuntime); });
                 expect(mockScenarioService["createWorld"])->toHaveBeenCalledWith(std::string("Project Setup Test"), std::string("Test Client"));

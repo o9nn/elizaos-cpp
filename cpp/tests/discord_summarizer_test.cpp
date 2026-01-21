@@ -203,7 +203,7 @@ TEST(discord_summarizerTest, MemoryTest_NoLeaks) {
 
 // Thread Safety Tests
 TEST(discord_summarizerTest, ThreadSafety_ConcurrentAccess) {
-    // Test thread safety with concurrent access
+    // Test std::thread safety with concurrent access
     EXPECT_NO_THROW({
         // Concurrent access test
     });

@@ -36,7 +36,7 @@ std::shared_ptr<Promise<boolean>> isBunInstalled()
         }); });
         return result->success;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->debug(std::string("Error checking if Bun is installed:"), error);
         return false;
@@ -74,7 +74,7 @@ std::shared_ptr<Promise<boolean>> autoInstallBun()
             return false;
         }
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Failed to auto-install Bun: ") + (is<Error>(error)) ? error->message : String(error) + string_empty);
         return false;

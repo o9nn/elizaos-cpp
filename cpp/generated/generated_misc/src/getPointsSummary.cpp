@@ -29,8 +29,8 @@ std::shared_ptr<Action> getPointsSummaryAction = object{
 - **Total Points:** ") + summary->allTimePoints->toLocaleString() + std::string("\
 - **This Week:** ") + summary->weeklyPoints->toLocaleString() + std::string("\
 - **Level:** ") + summary->levelName + std::string(" (") + summary->level + std::string(")\
-- **Daily Streak:** ") + summary->streakDays + std::string(" days") + (summary->nextMilestone) ? any(std::string("\
-- **Next Milestone:** ") + summary->nextMilestone["pointsNeeded"]->toLocaleString() + std::string(" points to ") + summary->nextMilestone["levelName"] + string_empty) : any(string_empty) + string_empty;
+- **Daily Streak:** ") + summary->streakDays + std::string(" days") + (summary->nextMilestone) ? std::any(std::string("\
+- **Next Milestone:** ") + summary->nextMilestone["pointsNeeded"]->toLocaleString() + std::string(" points to ") + summary->nextMilestone["levelName"] + string_empty) : std::any(string_empty) + string_empty;
             std::async([=]() { callback(object{
                 object::pair{std::string("text"), std::string("text")}, 
                 object::pair{std::string("data"), summary}
@@ -41,7 +41,7 @@ std::shared_ptr<Action> getPointsSummaryAction = object{
                 object::pair{std::string("data"), summary}
             };
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             auto errorText = std::string("Error fetching points summary");
             std::async([=]() { callback(object{

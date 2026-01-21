@@ -32,7 +32,7 @@ struct ImportResult {
 };
 
 class AgentImportService {
-  private db: any; // Type as any to avoid drizzle version conflicts
+  private db: std::any; // Type as std::any to avoid drizzle version conflicts
   private pool: Pool;
   private readonly MAX_ZIP_SIZE = 500 * 1024 * 1024; // 500MB default
 
@@ -42,7 +42,7 @@ class AgentImportService {
   ) {
     // Get database connection from server instance
     // The server has a 'db' property that contains the raw database connection
-    this.db = (this.serverInstance as any).db;
+    this.db = (this.serverInstance as std::any).db;
 
     // Create a new pool for cleanup purposes
     // Extract connection details from environment or use defaults

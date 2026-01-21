@@ -20,7 +20,7 @@ namespace elizaos {
 struct AnimatedMarkdownProps {
     std::string children;
     std::optional<std::string> className;
-    std::optional<std::string> variant;
+    std::optional<std::string> std::variant;
     std::optional<bool> shouldAnimate;
     std::optional<std::string> messageId;
 };

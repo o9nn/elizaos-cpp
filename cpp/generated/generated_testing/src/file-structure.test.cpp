@@ -1,12 +1,12 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/project-starter/src/__tests__/file-structure.test.h"
 
-boolean fileExists(string filePath)
+boolean fileExists(std::string filePath)
 {
     return fs->existsSync(filePath);
 };
 
 
-boolean directoryExists(string dirPath)
+boolean directoryExists(std::string dirPath)
 {
     return AND((fs->existsSync(dirPath)), (fs->statSync(dirPath)->isDirectory()));
 };

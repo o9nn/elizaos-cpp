@@ -83,10 +83,10 @@ def read_files(filenames: List[str]) -> List[str]:\
         describe(std::string("TypeScriptValidator"), [=]() mutable
         {
             shared validator = std::make_shared<TypeScriptValidator>();
-            test(std::string("should detect any type usage"), [=]() mutable
+            test(std::string("should detect std::any type usage"), [=]() mutable
             {
                 auto code = std::string("\
-function processData(data: any): any {\
+std::function processData(data: std::any): std::any {\
     return data;\
 }\
 ");
@@ -104,7 +104,7 @@ function processData(data: any): any {\
                 auto code = std::string("\
 import * as fs from 'fs';\
 \
-function readFile(path: string): string {\
+std::function readFile(path: std::string): std::string {\
     return fs.readFileSync(path, 'utf-8');\
 }\
 ");
@@ -124,7 +124,7 @@ import { promises as fs } from 'fs';\
 /**\
  * Read a file asynchronously\
  */\
-export async function readFile(path: string): Promise<string> {\
+export std::async std::function readFile(path: std::string): Promise<string> {\
     return await fs.readFile(path, 'utf-8');\
 }\
 ");

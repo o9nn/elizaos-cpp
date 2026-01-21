@@ -14,7 +14,7 @@ std::shared_ptr<Promise<void>> AnalyticsService::stop()
     return std::shared_ptr<Promise<void>>();
 }
 
-std::shared_ptr<Promise<double>> AnalyticsService::scoreTechnicalSignals(any signals)
+std::shared_ptr<Promise<double>> AnalyticsService::scoreTechnicalSignals(std::any signals)
 {
     if (!signals) return 0;
     auto score = 0;
@@ -31,7 +31,7 @@ std::shared_ptr<Promise<double>> AnalyticsService::scoreTechnicalSignals(any sig
     return score;
 }
 
-std::shared_ptr<Promise<double>> AnalyticsService::scoreSocialMetrics(any metrics)
+std::shared_ptr<Promise<double>> AnalyticsService::scoreSocialMetrics(std::any metrics)
 {
     if (!metrics) return 0;
     auto score = 0;
@@ -54,7 +54,7 @@ std::shared_ptr<Promise<double>> AnalyticsService::scoreMarketMetrics(object met
     return score;
 }
 
-std::shared_ptr<Promise<void>> AnalyticsService::trackSlippageImpact(string tokenAddress, string expectedAmount, string actualAmount, double slippageBps, boolean isSell)
+std::shared_ptr<Promise<void>> AnalyticsService::trackSlippageImpact(std::string tokenAddress, std::string expectedAmount, std::string actualAmount, double slippageBps, boolean isSell)
 {
     try
     {
@@ -86,7 +86,7 @@ std::shared_ptr<Promise<void>> AnalyticsService::trackSlippageImpact(string toke
             object::pair{std::string("efficiency"), actualSlippageBps / slippageBps}
         });
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->log(std::string("Error tracking slippage impact"), error);
     }
@@ -181,7 +181,7 @@ std::shared_ptr<Promise<void>> AnalyticsService::trackTradeExecution(object data
             object::pair{std::string("amount"), data["amount"]}
         });
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->log(std::string("Error tracking trade execution:"), error);
     }
@@ -193,7 +193,7 @@ std::shared_ptr<Promise<any>> AnalyticsService::addTradePerformance(std::shared_
     try
     {
         auto id = as<std::shared_ptr<>>(uuidv4());
-        string_empty + string + std::string("-") + string + std::string("-") + string + std::string("-") + string + std::string("-") + string + string_empty;
+        string_empty + std::string + std::string("-") + std::string + std::string("-") + std::string + std::string("-") + std::string + std::string("-") + std::string + string_empty;
         auto tradeData = utils::assign(object{
             object::pair{std::string("id"), std::string("id")}, 
             object::pair{std::string("isSimulation"), std::string("isSimulation")}, 
@@ -211,14 +211,14 @@ std::shared_ptr<Promise<any>> AnalyticsService::addTradePerformance(std::shared_
         }); });
         return tradeData;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->log(std::string("Error adding trade performance:"), error);
-        throw any(error);
+        throw std::any(error);
     }
 }
 
-std::shared_ptr<Promise<void>> AnalyticsService::updateTokenStatistics(string tokenAddress, object data)
+std::shared_ptr<Promise<void>> AnalyticsService::updateTokenStatistics(std::string tokenAddress, object data)
 {
     try
     {
@@ -234,7 +234,7 @@ std::shared_ptr<Promise<void>> AnalyticsService::updateTokenStatistics(string to
         if (data["rapidDump"]) stats["rapid_dumps"] += 1;
         std::async([=]() { this->runtime->setCache(std::string("token_stats:") + tokenAddress + string_empty, stats); });
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->log(std::string("Error updating token statistics:"), error);
     }

@@ -12,7 +12,7 @@ std::shared_ptr<Promise<array<std::shared_ptr<UserSegment>>>> UserSegmentation::
     } };
 }
 
-any prisma = std::make_shared<PrismaClient>();
+std::any prisma = std::make_shared<PrismaClient>();
 
 void Main(void)
 {

@@ -25,17 +25,17 @@ namespace elizaos {
  *
  * @param {string} tableName - The name of the table.
  * @param {object} columns - An object containing the column definitions.
- * @param {function} indexes - A function that defines the indexes for the table.
+ * @param {function} indexes - A std::function that defines the indexes for the table.
  * @returns {object} - The memory table object.
  */
     // .references(() => worldTable.id, {
-    //   onDelete: 'set null',
+    //   onDelete: 'std::set null',
     // }),
     // foreignKey({
     //   name: 'fk_world',
     //   columns: [table.worldId],
     //   foreignColumns: [worldTable.id],
-    // }).onDelete('set null'),
+    // }).onDelete('std::set null'),
 
 
 } // namespace elizaos

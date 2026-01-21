@@ -35,7 +35,7 @@ std::any sanitizeError(const std::any& error) {
             }
 
             if (Array.isArray(error)) {
-                return error.map(sanitizeError);
+                return error.std::map(sanitizeError);
             }
 
             if (typeof error == "object") {

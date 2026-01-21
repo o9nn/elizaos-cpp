@@ -27,7 +27,7 @@ void Main(void)
                     object::pair{std::string("dataDir"), testDbPath}
                 }); });
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("Failed to initialize agent server:"), error);
                 if (fs->existsSync(testDbPath)) {
@@ -36,7 +36,7 @@ void Main(void)
                         object::pair{std::string("force"), true}
                     });
                 }
-                throw any(error);
+                throw std::any(error);
             }
             auto testCharacter = as<std::shared_ptr<Character>>(object{
                 object::pair{std::string("id"), as<std::shared_ptr<UUID>>(std::string("test-char"))}, 

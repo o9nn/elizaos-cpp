@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-web-search/src/actions/cryptoNews.h"
 
-string MaxTokens(string data, double maxTokens)
+std::string MaxTokens(std::string data, double maxTokens)
 {
     return (data->get_length() > maxTokens) ? data->slice(0, maxTokens) : data;
 };
@@ -25,7 +25,7 @@ std::shared_ptr<Action> cryptoNews = as<std::shared_ptr<Action>>(object{
 ") + std::string("**CoinDesk API** (when configured with COINDESK_API_KEY):\
 ") + std::string("- Direct access to CoinDesk's news database (100+ articles available per query)\
 ") + std::string("- Rich filtering: categories (markets/tech/policy/defi/nft/layer-2/regulation), keywords, authors, tags\
-") + std::string("- Full metadata: title, summary, optional body, publish dates, authors, thumbnails\
+") + std::string("- Full metadata: title, summary, std::optional body, publish dates, authors, thumbnails\
 ") + std::string("- Date range filtering with automatic time_range conversion\
 ") + std::string("- Sorted by relevance or publish date\
 \
@@ -78,7 +78,7 @@ std::shared_ptr<Action> cryptoNews = as<std::shared_ptr<Action>>(object{
             auto tavilyService = runtime->getService<std::shared_ptr<TavilyService>>(std::string("TAVILY"));
             return !!(OR((coindeskService), (tavilyService)));
         }
-        catch (const any& err)
+        catch (const std::any& err)
         {
             logger->warn(std::string("No news service available:"), (as<std::shared_ptr<Error>>(err))->message);
             return false;
@@ -113,7 +113,7 @@ std::shared_ptr<Action> cryptoNews = as<std::shared_ptr<Action>>(object{
             }
             auto sourceKey = params["source"]["toLowerCase"]()["trim"]();
             auto timeRange = OR((params["time_range"]), (std::string("week")));
-            auto maxResults = (params["max_results"]) ? any(Math->min(Math->max(1, params["max_results"]), 100)) : any(10);
+            auto maxResults = (params["max_results"]) ? std::any(Math->min(Math->max(1, params["max_results"]), 100)) : std::any(10);
             auto searchDepth = (params["search_depth"] == std::string("advanced")) ? std::string("advanced") : std::string("basic");
             shared categories = params["categories"];
             shared includeBody = params["include_body"] == true;
@@ -126,20 +126,20 @@ std::shared_ptr<Action> cryptoNews = as<std::shared_ptr<Action>>(object{
                 object::pair{std::string("search_depth"), searchDepth}, 
                 object::pair{std::string("include_body"), includeBody}
             };
-            any startDate;
-            any endDate;
+            std::any startDate;
+            std::any endDate;
             if (timeRange) {
                 auto now = std::make_shared<Date>();
                 endDate = const_(now->toISOString()->split(std::string("T")))[0];
                 static switch_type __switch6521_7428 = {
-                    { any(std::string("day")), 1 },
-                    { any(std::string("d")), 2 },
-                    { any(std::string("week")), 3 },
-                    { any(std::string("w")), 4 },
-                    { any(std::string("month")), 5 },
-                    { any(std::string("m")), 6 },
-                    { any(std::string("year")), 7 },
-                    { any(std::string("y")), 8 }
+                    { std::any(std::string("day")), 1 },
+                    { std::any(std::string("d")), 2 },
+                    { std::any(std::string("week")), 3 },
+                    { std::any(std::string("w")), 4 },
+                    { std::any(std::string("month")), 5 },
+                    { std::any(std::string("m")), 6 },
+                    { std::any(std::string("year")), 7 },
+                    { std::any(std::string("y")), 8 }
                 };
                 switch (__switch6521_7428[timeRange])
                 {
@@ -181,7 +181,7 @@ std::shared_ptr<Action> cryptoNews = as<std::shared_ptr<Action>>(object{
                     auto responseText = std::string("**CoinDesk News Results** (") + articles->length + std::string(" articles)\
 \
 ");
-                    responseText += articles->map([=](auto article, auto index) mutable
+                    responseText += articles->std::map([=](auto article, auto index) mutable
                     {
                         auto parts = array<string>{ std::string("**") + (index + 1) + std::string(". ") + article["title"] + std::string("**") };
                         if (article["summary"]) parts->push(string_empty + article["summary"] + string_empty);
@@ -227,9 +227,9 @@ std::shared_ptr<Action> cryptoNews = as<std::shared_ptr<Action>>(object{
             }
             auto tavilyService = runtime->getService<std::shared_ptr<TavilyService>>(std::string("TAVILY"));
             if (!tavilyService) {
-                throw any(std::make_shared<Error>(std::string("No news service available (CoinDesk or Tavily)")));
+                throw std::any(std::make_shared<Error>(std::string("No news service available (CoinDesk or Tavily)")));
             }
-            auto sourceDomain = (AND((sourceKey), (in(sourceKey, CRYPTO_NEWS_SOURCES)))) ? any(const_(CRYPTO_NEWS_SOURCES)[as<any>(sourceKey)]) : any(nullptr);
+            auto sourceDomain = (AND((sourceKey), (in(sourceKey, CRYPTO_NEWS_SOURCES)))) ? std::any(const_(CRYPTO_NEWS_SOURCES)[as<any>(sourceKey)]) : std::any(nullptr);
             auto enhancedQuery = query;
             if (sourceDomain) {
                 enhancedQuery = string_empty + query + std::string(" site:") + sourceDomain + string_empty;
@@ -246,15 +246,15 @@ std::shared_ptr<Action> cryptoNews = as<std::shared_ptr<Action>>(object{
                 object::pair{std::string("include_images"), false}
             }); });
             if (AND((searchResponse), (searchResponse->results->length))) {
-                auto responseList = (searchResponse->answer) ? any(string_empty + searchResponse->answer + string_empty + (AND((Array->isArray(searchResponse->results)), (searchResponse->results->length > 0))) ? any(std::string("\
+                auto responseList = (searchResponse->answer) ? std::any(string_empty + searchResponse->answer + string_empty + (AND((Array->isArray(searchResponse->results)), (searchResponse->results->length > 0))) ? std::any(std::string("\
 \
 Sources:\
-") + searchResponse->results->map([=](auto result, auto index) mutable
+") + searchResponse->results->std::map([=](auto result, auto index) mutable
                 {
                     return string_empty + (index + 1) + std::string(". [") + result["title"] + std::string("](") + result["url"] + std::string(")");
                 }
                 )->join(std::string("\
-")) + string_empty) : any(string_empty) + string_empty) : any(string_empty);
+")) + string_empty) : std::any(string_empty) + string_empty) : std::any(string_empty);
                 auto result = as<any>(object{
                     object::pair{std::string("text"), MaxTokens(responseList, DEFAULT_MAX_CRYPTO_NEWS_CHARS)}, 
                     object::pair{std::string("success"), true}, 
@@ -282,7 +282,7 @@ Sources:\
             }
             return noResult;
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             auto errMsg = (is<Error>(error)) ? error->message : String(error);
             logger->error(std::string("[CRYPTO_NEWS] Action failed: ") + errMsg + string_empty);

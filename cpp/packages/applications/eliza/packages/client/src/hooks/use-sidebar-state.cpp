@@ -35,7 +35,7 @@ void useSidebarState() {
                     }
                     }, []);
 
-                    // Toggle function for convenience
+                    // Toggle std::function for convenience
                     const auto toggleSidebar = useCallback(() => {;
                         setSidebarVisible(!isVisible);
                         }, [isVisible, setSidebarVisible]);

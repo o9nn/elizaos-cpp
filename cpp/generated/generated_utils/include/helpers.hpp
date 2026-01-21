@@ -2,5 +2,5 @@
 #define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_TRUST_SCOREBOARD_SRC_UTILS_HELPERS_H
 #include "core.h"
 
-extern std::function<string(string, double)> truncateAddress;
+extern std::function<std::string(std::string, double)> truncateAddress;
 #endif

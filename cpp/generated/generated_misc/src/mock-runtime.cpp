@@ -19,7 +19,7 @@ Partial<std::shared_ptr<IAgentRuntime>> createMockRuntime(Partial<std::shared_pt
 };
 
 
-std::shared_ptr<Memory> createMockMemory(string text, Partial<std::shared_ptr<Memory>> overrides)
+std::shared_ptr<Memory> createMockMemory(std::string text, Partial<std::shared_ptr<Memory>> overrides)
 {
     return utils::assign(object{
         object::pair{std::string("id"), asUUID(std::string("test-memory-id"))}, 

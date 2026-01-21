@@ -33,7 +33,7 @@ void Main(void)
                 );
                 expect(test)->toBeDefined();
                 if (!test) {
-                    throw any(std::make_shared<Error>(std::string("Test "Test Onboarding Process" not found")));
+                    throw std::any(std::make_shared<Error>(std::string("Test "Test Onboarding Process" not found")));
                 }
                 std::async([=]() { test["fn"](mockRuntime); });
                 expect(mockScenarioService["createWorld"])->toHaveBeenCalledWith(std::string("Test Organization"), std::string("Test Owner"));

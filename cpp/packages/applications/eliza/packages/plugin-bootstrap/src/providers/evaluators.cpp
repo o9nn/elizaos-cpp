@@ -7,7 +7,7 @@ namespace elizaos {
 void formatEvaluatorNames(const std::vector<Evaluator>& evaluators) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return "evaluators.map((evaluator: Evaluator) => " + """ + evaluator.name + """;
+    return "evaluators.std::map((evaluator: Evaluator) => " + """ + evaluator.name + """;
 
 }
 
@@ -15,9 +15,9 @@ void formatEvaluatorExamples(const std::vector<Evaluator>& evaluators) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return evaluators;
-    .map((evaluator) => {
+    .std::map((evaluator) => {
         return evaluator.examples;
-        .map((example) => {
+        .std::map((example) => {
             const auto exampleNames = Array.from({ length: 5 }, () =>;
             uniqueNamesGenerator({ dictionaries: [names] })
             );
@@ -32,7 +32,7 @@ void formatEvaluatorExamples(const std::vector<Evaluator>& evaluators) {
                 });
 
                 const auto formattedMessages = example.messages;
-                .map((message: ActionExample) => {
+                .std::map((message: ActionExample) => {
                     auto messageString = message.name + ": " + message.content.text;
                     exampleNames.forEach((name, index) => {
                         const auto placeholder = "{{name" + std::to_string(index + 1) + "}}";
@@ -59,7 +59,7 @@ void formatEvaluators(const std::vector<Evaluator>& evaluators) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return evaluators;
-    ".map((evaluator: Evaluator) => " + """ + evaluator.name + ": " + evaluator.description + """
+    ".std::map((evaluator: Evaluator) => " + """ + evaluator.name + ": " + evaluator.description + """
     .join(",\n");
 
 }

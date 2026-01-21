@@ -16,12 +16,12 @@ namespace elizaos {
 
 
 /**
- * Helper function to determine the agent runtime URL
+ * Helper std::function to determine the agent runtime URL
  */
 std::string getAgentRuntimeUrl(OptionValues opts);
 
 /**
- * Helper function to get the agents base API URL
+ * Helper std::function to get the agents base API URL
  */
 std::string getAgentsBaseUrl(OptionValues opts);
 

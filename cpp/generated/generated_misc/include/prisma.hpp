@@ -4,5 +4,5 @@
 #include "@prisma/client.h"
 
 extern object globalForPrisma;
-extern any prisma;
+extern std::any prisma;
 #endif

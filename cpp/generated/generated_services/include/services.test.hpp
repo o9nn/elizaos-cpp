@@ -13,9 +13,9 @@ class PluginService;
 class PluginService : public Service, public std::enable_shared_from_this<PluginService> {
 public:
     using std::enable_shared_from_this<PluginService>::shared_from_this;
-    string type;
+    std::string type;
 
-    string name;
+    std::string name;
 
     std::function<std::shared_ptr<Promise<any>>(std::shared_ptr<IAgentRuntime>)> init;
 };

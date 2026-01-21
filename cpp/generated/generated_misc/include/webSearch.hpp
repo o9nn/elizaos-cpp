@@ -6,7 +6,7 @@
 #include "../types.h"
 
 extern double DEFAULT_MAX_WEB_SEARCH_CHARS;
-string MaxTokens(string data, double maxTokens = DEFAULT_MAX_WEB_SEARCH_CHARS);
+std::string MaxTokens(std::string data, double maxTokens = DEFAULT_MAX_WEB_SEARCH_CHARS);
 
 extern std::shared_ptr<Action> webSearch;
 #endif

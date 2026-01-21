@@ -32,10 +32,10 @@ struct Token {
     std::string balanceFormatted;
     number | null usdValue;
     number | null usdPrice;
-    string | null contractAddress;
+    std::string | null contractAddress;
     std::string chain;
     double decimals;
-    std::optional<string; // Token icon URL from CoinGecko> icon;
+    std::optional<std::string; // Token icon URL from CoinGecko> icon;
 };
 
 struct NFT {
@@ -47,10 +47,10 @@ struct NFT {
     std::string image;
     std::string contractName;
     std::string tokenType;
-    std::optional<string; // For ERC1155> balance;
+    std::optional<std::string; // For ERC1155> balance;
     std::optional<Array<{> attributes;
     std::string trait_type;
-    string | number value;
+    std::string | number value;
 };
 
 struct Transaction {
@@ -65,8 +65,8 @@ struct Transaction {
     std::string blockNum;
     std::string explorerUrl;
     'sent' | 'received' direction;
-    std::optional<string | null> icon;
-    std::optional<string | null> contractAddress;
+    std::optional<std::string | null> icon;
+    std::optional<std::string | null> contractAddress;
 };
 
 struct CDPWalletCardProps {

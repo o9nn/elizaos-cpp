@@ -52,7 +52,7 @@ std::future<void> copyDir(const std::string& src, const std::string& dest, std::
 
         for (int i = 0; i < files.length; i += MAX_CONCURRENT_FILES) {
             const auto batch = files.slice(i, i + MAX_CONCURRENT_FILES);
-            const auto batchPromises = batch.map(async (entry) => {;
+            const auto batchPromises = batch.std::map(std::async (entry) => {;
                 const auto srcPath = path.join(resolvedSrc, entry.name);
                 const auto destPath = path.join(resolvedDest, entry.name);
                 fs.copyFile(srcPath, destPath);
@@ -228,7 +228,7 @@ std::future<void> replacePluginNameInFiles(const std::string& targetDir, const s
     ];
 
     // Process files in parallel
-    const auto promises = filesToProcess.map(async (filePath) => {;
+    const auto promises = filesToProcess.std::map(std::async (filePath) => {;
         const auto fullPath = path.join(targetDir, filePath);
 
         try {

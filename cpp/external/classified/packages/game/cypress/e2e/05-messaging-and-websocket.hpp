@@ -73,7 +73,7 @@ namespace elizaos {
 
         // Send message that triggers typing
 
-          // Typing indicators might be optional
+          // Typing indicators might be std::optional
 
         // Listen for status updates
 

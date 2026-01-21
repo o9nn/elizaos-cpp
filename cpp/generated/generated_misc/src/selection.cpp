@@ -55,7 +55,7 @@ std::shared_ptr<Promise<string>> selectDatabase()
     auto availableDatabases = getAvailableDatabases();
     auto database = std::async([=]() { clack->select(object{
         object::pair{std::string("message"), std::string("Which database would you like to use?")}, 
-        object::pair{std::string("options"), availableDatabases->map([=](auto db) mutable
+        object::pair{std::string("options"), availableDatabases->std::map([=](auto db) mutable
         {
             return (object{
                 object::pair{std::string("label"), db->title}, 
@@ -79,7 +79,7 @@ std::shared_ptr<Promise<string>> selectAIModel()
     auto availableModels = getAvailableAIModels();
     auto aiModel = std::async([=]() { clack->select(object{
         object::pair{std::string("message"), std::string("Which AI model would you like to use?")}, 
-        object::pair{std::string("options"), availableModels->map([=](auto model) mutable
+        object::pair{std::string("options"), availableModels->std::map([=](auto model) mutable
         {
             return (object{
                 object::pair{std::string("label"), model->title}, 
@@ -125,7 +125,7 @@ std::shared_ptr<Promise<string>> selectEmbeddingModel()
     auto availableModels = getAvailableEmbeddingModels();
     auto embeddingModel = std::async([=]() { clack->select(object{
         object::pair{std::string("message"), std::string("Select an embedding model (required since your AI model doesn't support embeddings):")}, 
-        object::pair{std::string("options"), availableModels->map([=](auto model) mutable
+        object::pair{std::string("options"), availableModels->std::map([=](auto model) mutable
         {
             return (object{
                 object::pair{std::string("label"), model->title}, 

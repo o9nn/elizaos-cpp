@@ -31,11 +31,11 @@ struct PatchFile {
 };
 
 class PatchFormatter {
-  private readMethod: (path: string) => string;
+  private readMethod: (path: std::string) => std::string;
   private parsedPatch: PatchFile[];
-  private fileContents: Map<string, string> = new Map();
+  private fileContents: Map<std::string, string> = new Map();
 
-  constructor(patch: string, readMethod: (path: string) => string) {
+  constructor(patch: std::string, readMethod: (path: std::string) => std::string) {
     this.readMethod = readMethod;
     this.parsedPatch = this.parsePatch(patch);
   }
@@ -67,7 +67,7 @@ class PatchFormatter {
    */
 
   /**
-   * Get formatted files as string
+   * Get formatted files as std::string
    */
 
 

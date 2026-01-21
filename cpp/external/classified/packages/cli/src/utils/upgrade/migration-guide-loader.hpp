@@ -30,9 +30,9 @@ struct GuideSearchResult {
 
 class MigrationGuideLoader {
   private guides: MigrationGuide[] = [];
-  private guidesDir: string;
+  private guidesDir: std::string;
 
-  constructor(projectRoot?: string) {
+  constructor(projectRoot?: std::string) {
     // Find guides directory with multiple fallback strategies
     this.guidesDir = this.findGuidesDirectory(projectRoot);
     this.loadGuides();
@@ -87,12 +87,12 @@ class MigrationGuideLoader {
    */
 
 /**
- * Helper function to create a guide loader instance
+ * Helper std::function to create a guide loader instance
  */
 MigrationGuideLoader createMigrationGuideLoader(std::optional<std::string> projectRoot);
 
 /**
- * Helper function to get migration context for common issues
+ * Helper std::function to get migration context for common issues
  */
 std::string getMigrationHelpForIssue(const std::string& issue, std::optional<std::string> projectRoot);
 

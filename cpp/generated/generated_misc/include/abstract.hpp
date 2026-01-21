@@ -10,9 +10,9 @@ class CombinedEnvHooks;
 class EnvironmentInstance : public object, public std::enable_shared_from_this<EnvironmentInstance> {
 public:
     using std::enable_shared_from_this<EnvironmentInstance>::shared_from_this;
-    any deployment;
+    std::any deployment;
 
-    any repo;
+    std::any repo;
 };
 
 class EnvHook : public object, public std::enable_shared_from_this<EnvHook> {
@@ -56,7 +56,7 @@ void CombinedEnvHooks::onCopyRepoStarted(P0 repo)
         {
             hook->onCopyRepoStarted(repo);
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             console->error(std::string("Hook error in onCopyRepoStarted:"), error);
         }

@@ -51,7 +51,7 @@ std::future<bool> forkExists(const std::string& token, const std::string& repo, 
 /**
  * Fork a repository
  */
-std::future<string | null> forkRepository(const std::string& token, const std::string& owner, const std::string& repo);
+std::future<std::string | null> forkRepository(const std::string& token, const std::string& owner, const std::string& repo);
 
 /**
  * Check if a branch exists in a repository
@@ -66,7 +66,7 @@ std::future<bool> createBranch(const std::string& token, const std::string& owne
 /**
  * Get content of a file from a repository
  */
-std::future<string | null> getFileContent(const std::string& token, const std::string& owner, const std::string& repo, const std::string& path, auto branch = 'main');
+std::future<std::string | null> getFileContent(const std::string& token, const std::string& owner, const std::string& repo, const std::string& path, auto branch = 'main');
 
 /**
  * Create or update a file in a repository
@@ -76,7 +76,7 @@ std::future<bool> updateFile(const std::string& token, const std::string& owner,
 /**
  * Create a pull request
  */
-std::future<string | null> createPullRequest(const std::string& token, const std::string& owner, const std::string& repo, const std::string& title, const std::string& body, const std::string& head, auto base = 'main');
+std::future<std::string | null> createPullRequest(const std::string& token, const std::string& owner, const std::string& repo, const std::string& title, const std::string& body, const std::string& head, auto base = 'main');
 
 /**
  * Get authenticated user information

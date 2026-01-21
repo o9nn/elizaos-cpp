@@ -134,7 +134,7 @@ void Main(void)
                     auto zipBuffer = Buffer::concat(chunks);
                     auto zip = std::make_shared<AdmZip>(zipBuffer);
                     auto entries = zip->getEntries();
-                    auto entryNames = entries->map([=](auto e) mutable
+                    auto entryNames = entries->std::map([=](auto e) mutable
                     {
                         return e["entryName"];
                     }
@@ -149,10 +149,10 @@ void Main(void)
                     expect(manifest["tables"]["length"])->toBe(9);
                     std::async([=]() { exportService->cleanup(); });
                 }
-                catch (const any& error)
+                catch (const std::any& error)
                 {
                     std::async([=]() { exportService->cleanup(); });
-                    throw any(error);
+                    throw std::any(error);
                 }
             }
             );

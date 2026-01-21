@@ -8,7 +8,7 @@ Handler fromV2Handler(HandlerV2 handlerV2) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        return async (runtime, message, state, options, callback) => {;
+        return std::async (runtime, message, state, options, callback) => {;
             // Convert v1 state to v2 state if provided
             const auto stateV2 = state ? toV2State(state) : std::nullopt;
 
@@ -33,7 +33,7 @@ HandlerV2 toV2Handler(Handler handler) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        return async (runtime, message, state, options, callback, responses) => {;
+        return std::async (runtime, message, state, options, callback, responses) => {;
             // Convert v2 state to v1 state if provided
             const auto stateV1 = state ? fromV2State(state) : std::nullopt;
 
@@ -55,7 +55,7 @@ HandlerV2 toV2Handler(Handler handler) {
 Validator fromV2Validator(ValidatorV2 validatorV2) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return async (runtime, message, state) => {;
+    return std::async (runtime, message, state) => {;
         const auto stateV2 = state ? toV2State(state) : std::nullopt;
         return validatorV2(runtime, message, stateV2);
         };
@@ -65,7 +65,7 @@ Validator fromV2Validator(ValidatorV2 validatorV2) {
 ValidatorV2 toV2Validator(Validator validator) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return async (runtime, message, state) => {;
+    return std::async (runtime, message, state) => {;
         const auto stateV1 = state ? fromV2State(state) : std::nullopt;
         return validator(runtime, message, stateV1);
         };
@@ -78,9 +78,9 @@ Action fromV2Action(ActionV2 actionV2) {
     return {
         name: actionV2.name,
         description: actionV2.description,
-        similes: actionV2.similes || [], // V1 requires array, V2 is optional
-        examples: actionV2.examples ? actionV2.examples.map(exampleGroup =>
-        exampleGroup.map(example => fromV2ActionExample(example));
+        similes: actionV2.similes || [], // V1 requires array, V2 is std::optional
+        examples: actionV2.examples ? actionV2.examples.std::map(exampleGroup =>
+        exampleGroup.std::map(example => fromV2ActionExample(example));
         ) : [],
         handler: fromV2Handler(actionV2.handler),
         validate: fromV2Validator(actionV2.validate),
@@ -96,9 +96,9 @@ ActionV2 toV2Action(Action action) {
     return {
         name: action.name,
         description: action.description,
-        similes: action.similes.size() > 0 ? action.similes : std::nullopt, // V2 optional
-        examples: action.examples.map(exampleGroup =>
-        exampleGroup.map(example => toV2ActionExample(example));
+        similes: action.similes.size() > 0 ? action.similes : std::nullopt, // V2 std::optional
+        examples: action.examples.std::map(exampleGroup =>
+        exampleGroup.std::map(example => toV2ActionExample(example));
         ),
         handler: toV2Handler(action.handler),
         validate: toV2Validator(action.validate),

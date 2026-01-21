@@ -176,7 +176,7 @@ void Main(void)
         it(std::string("should maintain consistent state across API calls"), [=]() mutable
         {
             auto responses = std::async([=]() { Promise->all(std::tuple<std::shared_ptr<Promise<std::shared_ptr<Response>>>, std::shared_ptr<Promise<std::shared_ptr<Response>>>, std::shared_ptr<Promise<std::shared_ptr<Response>>>>{ fetch(string_empty + serverUrl + std::string("/api/agents/default/progression")), fetch(string_empty + serverUrl + std::string("/api/agents/default/progression")), fetch(string_empty + serverUrl + std::string("/api/agents/default/progression")) }); });
-            auto dataArray = std::async([=]() { Promise->all(responses->map([=](auto r) mutable
+            auto dataArray = std::async([=]() { Promise->all(responses->std::map([=](auto r) mutable
             {
                 return r->json();
             }

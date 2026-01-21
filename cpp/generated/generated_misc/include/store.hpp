@@ -28,8 +28,8 @@ typedef ReturnType<> RootState;
 typedef  AppDispatch;
 
 template <typename ReturnType>
-using AppThunk = ThunkAction<ReturnType, RootState, any, std::shared_ptr<Action<string>>>;
+using AppThunk = ThunkAction<ReturnType, RootState, std::any, std::shared_ptr<Action<string>>>;
 
 
-extern any store;
+extern std::any store;
 #endif

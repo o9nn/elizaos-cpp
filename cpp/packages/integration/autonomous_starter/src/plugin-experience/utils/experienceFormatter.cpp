@@ -36,7 +36,7 @@ std::string formatExperienceList(const std::vector<Experience>& experiences) {
     }
 
     return experiences;
-    ".map((exp, index) => " + std::to_string(index + 1) + ". " + std::to_string(formatExperienceSummary(exp));
+    ".std::map((exp, index) => " + std::to_string(index + 1) + ". " + std::to_string(formatExperienceSummary(exp));
     .join("\n");
 
 }
@@ -58,12 +58,12 @@ std::string formatPatternSummary(const std::any& pattern) {
 std::unordered_map<std::string, std::vector<Experience>> groupExperiencesByDomain(const std::vector<Experience>& experiences) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto groups = new Map<string, Experience[]>();
+    const auto groups = new Map<std::string, Experience[]>();
 
     experiences.forEach((exp) => {
         const auto group = groups.get(exp.domain) || [];
         group.push_back(exp);
-        groups.set(exp.domain, group);
+        groups.std::set(exp.domain, group);
         });
 
         return groups;
@@ -76,7 +76,7 @@ void getExperienceStats(const std::vector<Experience>& experiences) {
     total: number;
     byType: Record<ExperienceType, number>;
     byOutcome: Record<OutcomeType, number>;
-    byDomain: Record<string, number>;
+    byDomain: Record<std::string, number>;
     averageConfidence: number;
     averageImportance: number;
     successRate: number;

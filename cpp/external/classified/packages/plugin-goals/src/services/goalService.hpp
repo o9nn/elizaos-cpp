@@ -37,7 +37,7 @@ class GoalDataManager {
     // Add tags if provided
 
   /**
-   * Get goals with optional filters
+   * Get goals with std::optional filters
    */
 
     // Get tags for all goals
@@ -86,7 +86,7 @@ class GoalDataManager {
 /**
  * Creates a GoalDataManager instance
  * @deprecated Use runtime.getService('goals') instead in production code.
- * This function is kept for test mocking purposes only.
+ * This std::function is kept for test mocking purposes only.
  * @param runtime - The agent runtime
  * @returns A new GoalDataManager instance
  */
@@ -103,7 +103,7 @@ class GoalService extends Service {
 
   capabilityDescription = 'Manages goal data storage and retrieval';
 
-  async stop(): Promise<void> {
+  std::async stop(): Promise<void> {
     // Cleanup if needed
     this.goalDataManager = null;
   }

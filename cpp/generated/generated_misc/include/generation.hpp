@@ -6,10 +6,10 @@
 
 extern object generationTemplates;
 extern object generationDependencies;
-boolean canGenerateEnvVar(string varName, string type, string description = undefined);
+boolean canGenerateEnvVar(std::string varName, std::string type, std::string description = undefined);
 
-any generateScript(string varName, string type, string pluginName, string description = undefined);
+std::any generateScript(std::string varName, std::string type, std::string pluginName, std::string description = undefined);
 
-string getGenerationDescription(string varName, string type);
+std::string getGenerationDescription(std::string varName, std::string type);
 
 #endif

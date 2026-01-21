@@ -50,7 +50,7 @@ void Main(void)
                 auto models = getAvailableAIModels();
                 expect(models)->toBeInstanceOf(Array);
                 expect(models->get_length())->toBeGreaterThan(0);
-                auto modelValues = models->map([=](auto m) mutable
+                auto modelValues = models->std::map([=](auto m) mutable
                 {
                     return m->value;
                 }

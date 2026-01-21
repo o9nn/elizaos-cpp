@@ -78,7 +78,7 @@ namespace elizaos {
  */
 
 /**
- * Generates the full prompt string for requesting contextual enrichment from an LLM.
+ * Generates the full prompt std::string for requesting contextual enrichment from an LLM.
  *
  * @param docContent - The full content of the document.
  * @param chunkContent - The content of the specific chunk to be contextualized.
@@ -89,7 +89,7 @@ namespace elizaos {
 std::string getContextualizationPrompt(const std::string& docContent, const std::string& chunkContent, auto minTokens, auto maxTokens, auto promptTemplate);
 
 /**
- * Generates a caching-compatible prompt string for contextual enrichment.
+ * Generates a caching-compatible prompt std::string for contextual enrichment.
  * This separates the document from the chunk instructions to support OpenRouter caching.
  *
  * @param chunkContent - The content of the specific chunk to be contextualized.
@@ -112,7 +112,7 @@ std::string getContextualizationPrompt(const std::string& docContent, const std:
  * @param mimeType - The MIME type of the document (e.g., 'application/pdf', 'text/markdown').
  * @param docContent - The full content of the document.
  * @param chunkContent - The content of the specific chunk.
- * @returns The formatted prompt string with mime-type specific settings.
+ * @returns The formatted prompt std::string with mime-type specific settings.
  */
 std::string getPromptForMimeType(const std::string& mimeType, const std::string& docContent, const std::string& chunkContent);
 

@@ -41,7 +41,7 @@ std::string getKnowledgePath();
 
       // Check if file is binary using the same logic as the service
 
-      // For text files, read as UTF-8 string directly
+      // For text files, read as UTF-8 std::string directly
       // For binary files, convert to base64
 
       // Create knowledge options

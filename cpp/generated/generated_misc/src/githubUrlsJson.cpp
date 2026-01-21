@@ -25,7 +25,7 @@ std::shared_ptr<Promise<void>> main()
             if (AND((TEST_MODE), (repo->name != TEST_REPO))) {
                 continue;
             }
-            any fileData;
+            std::any fileData;
             try
             {
                 std::async([=]() { octokit->repos->getBranch(object{
@@ -34,13 +34,13 @@ std::shared_ptr<Promise<void>> main()
                     object::pair{std::string("branch"), TARGET_BRANCH}
                 }); });
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 if (error["status"] == 404) {
                     console->log(std::string("Skipping ") + ORG_NAME + std::string("/") + repo->name + std::string(" (no ") + TARGET_BRANCH + std::string(" branch)"));
                     continue;
                 }
-                throw any(error);
+                throw std::any(error);
             }
             try
             {
@@ -55,13 +55,13 @@ std::shared_ptr<Promise<void>> main()
                 }
                 fileData = response->data;
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 if (error["status"] == 404) {
                     console->log(std::string("Skipping ") + ORG_NAME + std::string("/") + repo->name + std::string(" (no package.json on ") + TARGET_BRANCH + std::string(")"));
                     continue;
                 }
-                throw any(error);
+                throw std::any(error);
             }
             auto raw = Buffer::from(fileData["content"], std::string("base64"))->toString(std::string("utf8"));
             auto pkg = as<object>(JSON->parse(raw));
@@ -123,10 +123,10 @@ std::shared_ptr<Promise<void>> main()
 };
 
 
-string ORG_NAME = std::string("elizaos-plugins");
-string TARGET_BRANCH = std::string("1.x");
+std::string ORG_NAME = std::string("elizaos-plugins");
+std::string TARGET_BRANCH = std::string("1.x");
 boolean TEST_MODE = false;
-string TEST_REPO = std::string("plugin-knowledge");
+std::string TEST_REPO = std::string("plugin-knowledge");
 
 void Main(void)
 {

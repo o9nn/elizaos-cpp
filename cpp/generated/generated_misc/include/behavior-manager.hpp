@@ -22,7 +22,7 @@ public:
     virtual void start();
     virtual void stop();
     virtual std::shared_ptr<Promise<void>> runLoop();
-    virtual any getService();
+    virtual std::any getService();
     virtual std::shared_ptr<Promise<void>> executeBehavior();
 };
 

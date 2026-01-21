@@ -39,7 +39,7 @@ struct ThresholdConfig {
 std::string ensureLogsDirectory();
 
 /**
- * Create a timestamp string for file naming
+ * Create a timestamp std::string for file naming
  */
 std::string generateTimestamp();
 

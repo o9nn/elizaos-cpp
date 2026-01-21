@@ -17,10 +17,10 @@ namespace elizaos {
 
 /**
  * Template type definition for v1 compatibility
- * A template can be either a string or a function that takes state and returns a string
+ * A template can be either a std::string or a std::function that takes state and returns a std::string
  * This aligns with V2's TemplateType
  */
-using TemplateType = std::variant<std::string, ((options: { state: State }) => string)>;
+using TemplateType = std::variant<std::string, ((options: { state: State }) => std::string)>;
 
 /**
  * Generic template values interface for typed access to state.values
@@ -30,16 +30,16 @@ struct TemplateValues {
 };
 
 /**
- * Create a template function from a v1 template
- * @param template The v1 template (string or function)
- * @returns A function that processes the template with the given state
+ * Create a template std::function from a v1 template
+ * @param template The v1 template (std::string or std::function)
+ * @returns A std::function that processes the template with the given state
  */
 
 /**
  * Process a template with the given state
- * @param template The template to process (string or function)
+ * @param template The template to process (std::string or std::function)
  * @param state The state to use for processing
- * @returns The processed template string
+ * @returns The processed template std::string
  */
 std::string processTemplate(TemplateType template, State state);
 

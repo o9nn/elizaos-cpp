@@ -18,7 +18,7 @@ void DonationListButton() {
         }
         };
 
-        const auto getBackgroundColor = (): string => {;
+        const auto getBackgroundColor = (): std::string => {;
             const auto { dollars } = donation;
             if (dollars >= 75) {
                 return "rgba(142, 160, 225, 0.25)";

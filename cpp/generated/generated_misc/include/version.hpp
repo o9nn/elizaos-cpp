@@ -11,17 +11,17 @@ class VersionInfo;
 class VersionInfo : public object, public std::enable_shared_from_this<VersionInfo> {
 public:
     using std::enable_shared_from_this<VersionInfo>::shared_from_this;
-    string version;
+    std::string version;
 
-    string source;
+    std::string source;
 
-    string timestamp;
+    std::string timestamp;
 
-    string environment;
+    std::string environment;
 
     double uptime;
 
-    string error;
+    std::string error;
 };
 
 std::shared_ptr<VersionInfo> getVersionInfo();

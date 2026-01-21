@@ -25,7 +25,7 @@ namespace elizaos {
 
     // Clear from environment
 
-    // Clear from any config files if they exist
+    // Clear from std::any config files if they exist
 
     // Ensure test database exists
 
@@ -59,7 +59,7 @@ namespace elizaos {
 
   // Log helper
 
-// Helper function to get Tesseract (for future OCR implementation)
+// Helper std::function to get Tesseract (for std::future OCR implementation)
 
 // Export the tasks
 

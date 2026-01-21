@@ -16,7 +16,7 @@ express::Router createDatabaseRouter(const std::unordered_map<UUID, IAgentRuntim
         };
 
         // GET /api/database/tables - List all database tables with metadata
-        router.get("/tables", async (req, res) => {
+        router.get("/tables", std::async (req, res) => {
             try {
                 const auto runtime = getRuntime();
                 const auto db = runtime.db;
@@ -31,7 +31,7 @@ express::Router createDatabaseRouter(const std::unordered_map<UUID, IAgentRuntim
 
                 // Get row counts for each table
                 const auto tablesWithCounts = Promise.all(;
-                tables.map(async (table: any) => {
+                tables.std::map(std::async (table: std::any) => {
                     const auto countResult = "db.get(" + "SELECT COUNT(*) FROM \"" + table.name + "\"";
                     return {
                         name: table.name,
@@ -49,7 +49,7 @@ express::Router createDatabaseRouter(const std::unordered_map<UUID, IAgentRuntim
                                 databaseType: "postgres",
                                 },
                                 });
-                                } catch (error: any) {
+                                } catch (error: std::any) {
                                     std::cerr << "Error fetching database tables:" << error << std::endl;
                                     res.status(500).json({
                                         success: false,
@@ -59,7 +59,7 @@ express::Router createDatabaseRouter(const std::unordered_map<UUID, IAgentRuntim
                                     });
 
                                     // GET /api/database/tables/:tableName - Get table data with pagination and search
-                                    router.get("/tables/:tableName", async (req, res) => {
+                                    router.get("/tables/:tableName", std::async (req, res) => {
                                         try {
                                             const auto runtime = getRuntime();
                                             const auto db = runtime.db;
@@ -107,7 +107,7 @@ express::Router createDatabaseRouter(const std::unordered_map<UUID, IAgentRuntim
                                                     [tableName];
                                                     );
 
-                                                    columns = columnsResult.map((col: any) => ({
+                                                    columns = columnsResult.std::map((col: std::any) => ({
                                                         name: col.name,
                                                         type: col.type,
                                                         nullable: col.nullable,
@@ -117,7 +117,7 @@ express::Router createDatabaseRouter(const std::unordered_map<UUID, IAgentRuntim
                                                         } else {
                                                             // SQLite/PGLite
                                                             const auto columnsResult = "db.all(" + "PRAGMA table_info(\"" + tableName + "\")";
-                                                            columns = columnsResult.map((col: any) => ({
+                                                            columns = columnsResult.std::map((col: std::any) => ({
                                                                 name: col.name,
                                                                 type: col.type,
                                                                 nullable: col.notnull == 0,
@@ -139,7 +139,7 @@ express::Router createDatabaseRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                 col.type.toLowerCase().includes("varchar") ||;
                                                                 col.type.toLowerCase().includes("char");
                                                                 );
-                                                                ".map((col) => " + "\"" + col.name + "\" LIKE ?";
+                                                                ".std::map((col) => " + "\"" + col.name + "\" LIKE ?";
                                                                 .join(" OR ");
 
                                                                 if (searchConditions) {
@@ -170,7 +170,7 @@ express::Router createDatabaseRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                 col.type.toLowerCase().includes("varchar") ||;
                                                                 col.type.toLowerCase().includes("char");
                                                                 );
-                                                                ".map((col) => " + "\"" + col.name + "\" LIKE ?";
+                                                                ".std::map((col) => " + "\"" + col.name + "\" LIKE ?";
                                                                 .join(" OR ");
 
                                                                 if (searchConditions) {
@@ -209,7 +209,7 @@ express::Router createDatabaseRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                             },
                                                                             },
                                                                             });
-                                                                            } catch (error: any) {
+                                                                            } catch (error: std::any) {
                                                                                 std::cerr << "Error fetching table data for " + req.params.tableName + ":" << error << std::endl;
                                                                                 res.status(500).json({
                                                                                     success: false,
@@ -219,7 +219,7 @@ express::Router createDatabaseRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                 });
 
                                                                                 // POST /api/database/tables/:tableName - Create new record
-                                                                                router.post("/tables/:tableName", async (req, res) => {
+                                                                                router.post("/tables/:tableName", std::async (req, res) => {
                                                                                     try {
                                                                                         const auto runtime = getRuntime();
                                                                                         const auto db = runtime.db;
@@ -235,11 +235,11 @@ express::Router createDatabaseRouter(const std::unordered_map<UUID, IAgentRuntim
 
                                                                                             // Get table schema to validate fields
                                                                                             const auto columns = "db.all(" + "PRAGMA table_info(\"" + tableName + "\")";
-                                                                                            const auto columnNames = columns.map((col: any) => col.name);
+                                                                                            const auto columnNames = columns.std::map((col: std::any) => col.name);
 
                                                                                             // Filter valid fields
                                                                                             const auto validFields = Object.keys(recordData).filter((key) => (std::find(columnNames.begin(), columnNames.end(), key) != columnNames.end()));
-                                                                                            const auto values = validFields.map((key) => recordData[key]);
+                                                                                            const auto values = validFields.std::map((key) => recordData[key]);
 
                                                                                             if (validFields.length == 0) {
                                                                                                 return res.status(400).json({;
@@ -249,8 +249,8 @@ express::Router createDatabaseRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                 }
 
                                                                                                 // Build insert query
-                                                                                                const auto placeholders = validFields.map(() => "?").join(", ");
-                                                                                                const auto insertQuery = "INSERT INTO \"" + tableName + "\" (" + std::to_string(validFields.map((f) => `"${f}"`).join(", ")) + ") VALUES (" + placeholders + ")";
+                                                                                                const auto placeholders = validFields.std::map(() => "?").join(", ");
+                                                                                                const auto insertQuery = "INSERT INTO \"" + tableName + "\" (" + std::to_string(validFields.std::map((f) => `"${f}"`).join(", ")) + ") VALUES (" + placeholders + ")";
 
                                                                                                 const auto result = db.run(insertQuery, values);
 
@@ -262,7 +262,7 @@ express::Router createDatabaseRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                         affectedRows: result.changes,
                                                                                                         },
                                                                                                         });
-                                                                                                        } catch (error: any) {
+                                                                                                        } catch (error: std::any) {
                                                                                                             std::cerr << "Error creating record in " + req.params.tableName + ":" << error << std::endl;
                                                                                                             res.status(500).json({
                                                                                                                 success: false,
@@ -272,7 +272,7 @@ express::Router createDatabaseRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                             });
 
                                                                                                             // PUT /api/database/tables/:tableName/:recordId - Update existing record
-                                                                                                            router.put("/tables/:tableName/:recordId", async (req, res) => {
+                                                                                                            router.put("/tables/:tableName/:recordId", std::async (req, res) => {
                                                                                                                 try {
                                                                                                                     const auto runtime = getRuntime();
                                                                                                                     const auto db = runtime.db;
@@ -288,7 +288,7 @@ express::Router createDatabaseRouter(const std::unordered_map<UUID, IAgentRuntim
 
                                                                                                                         // Get table schema to find primary key and validate fields
                                                                                                                         const auto columns = "db.all(" + "PRAGMA table_info(\"" + tableName + "\")";
-                                                                                                                        const auto primaryKeyColumn = columns.find((col: any) => col.pk == 1);
+                                                                                                                        const auto primaryKeyColumn = columns.find((col: std::any) => col.pk == 1);
 
                                                                                                                         if (!primaryKeyColumn) {
                                                                                                                             return res.status(400).json({;
@@ -297,7 +297,7 @@ express::Router createDatabaseRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                 });
                                                                                                                             }
 
-                                                                                                                            const auto columnNames = columns.map((col: any) => col.name);
+                                                                                                                            const auto columnNames = columns.std::map((col: std::any) => col.name);
                                                                                                                             const auto validFields = Object.keys(updateData).filter(;
                                                                                                                             [&](key) { return (std::find(columnNames.begin(), columnNames.end(), key) != columnNames.end()) && key != primaryKeyColumn.name; }
                                                                                                                             );
@@ -310,8 +310,8 @@ express::Router createDatabaseRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                 }
 
                                                                                                                                 // Build update query
-                                                                                                                                const auto setClause = "validFields.map((field) => " + "\"" + field + "\" = ?";
-                                                                                                                                const auto values = validFields.map((key) => updateData[key]);
+                                                                                                                                const auto setClause = "validFields.std::map((field) => " + "\"" + field + "\" = ?";
+                                                                                                                                const auto values = validFields.std::map((key) => updateData[key]);
                                                                                                                                 values.push_back(recordId); // Add WHERE condition value;
 
                                                                                                                                 const auto updateQuery = "UPDATE \"" + tableName + "\" SET " + setClause + " WHERE \"" + primaryKeyColumn.name + "\" = ?";
@@ -332,7 +332,7 @@ express::Router createDatabaseRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                             affectedRows: result.changes,
                                                                                                                                             },
                                                                                                                                             });
-                                                                                                                                            } catch (error: any) {
+                                                                                                                                            } catch (error: std::any) {
                                                                                                                                                 std::cerr << "Error updating record in " + req.params.tableName + ":" << error << std::endl;
                                                                                                                                                 res.status(500).json({
                                                                                                                                                     success: false,
@@ -342,7 +342,7 @@ express::Router createDatabaseRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                 });
 
                                                                                                                                                 // DELETE /api/database/tables/:tableName/:recordId - Delete record
-                                                                                                                                                router.delete("/tables/:tableName/:recordId", async (req, res) => {
+                                                                                                                                                router.delete("/tables/:tableName/:recordId", std::async (req, res) => {
                                                                                                                                                     try {
                                                                                                                                                         const auto runtime = getRuntime();
                                                                                                                                                         const auto db = runtime.db;
@@ -350,7 +350,7 @@ express::Router createDatabaseRouter(const std::unordered_map<UUID, IAgentRuntim
 
                                                                                                                                                         // Get table schema to find primary key
                                                                                                                                                         const auto columns = "db.all(" + "PRAGMA table_info(\"" + tableName + "\")";
-                                                                                                                                                        const auto primaryKeyColumn = columns.find((col: any) => col.pk == 1);
+                                                                                                                                                        const auto primaryKeyColumn = columns.find((col: std::any) => col.pk == 1);
 
                                                                                                                                                         if (!primaryKeyColumn) {
                                                                                                                                                             return res.status(400).json({;
@@ -376,7 +376,7 @@ express::Router createDatabaseRouter(const std::unordered_map<UUID, IAgentRuntim
                                                                                                                                                                         affectedRows: result.changes,
                                                                                                                                                                         },
                                                                                                                                                                         });
-                                                                                                                                                                        } catch (error: any) {
+                                                                                                                                                                        } catch (error: std::any) {
                                                                                                                                                                             std::cerr << "Error deleting record from " + req.params.tableName + ":" << error << std::endl;
                                                                                                                                                                             res.status(500).json({
                                                                                                                                                                                 success: false,

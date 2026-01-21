@@ -29,14 +29,14 @@ std::future<void> startSolanaListener() {
         // Subscribe to program logs
         const auto subscriptionId = connection.onLogs(;
         new PublicKey(programId),
-        async (logs: Logs) => {
+        std::async (logs: Logs) => {
             handleProgramLogs(logs);
             },
             "confirmed",
             );
 
             // Handle graceful shutdown
-            process.on("SIGINT", async () => {
+            process.on("SIGINT", std::async () => {
                 std::cout << "[Solana Listener] Stopping..." << std::endl;
                 if (connection) {
                     connection.removeOnLogsListener(subscriptionId);
@@ -44,7 +44,7 @@ std::future<void> startSolanaListener() {
                 isListening = false;
                 });
 
-                process.on("SIGTERM", async () => {
+                process.on("SIGTERM", std::async () => {
                     std::cout << "[Solana Listener] Stopping..." << std::endl;
                     if (connection) {
                         connection.removeOnLogsListener(subscriptionId);
@@ -68,7 +68,7 @@ std::future<void> handleProgramLogs(Logs logs) {
 
     // Look for register_token instruction signature
     const auto hasRegisterToken = logMessages.some(;
-    (log: string) =>
+    (log: std::string) =>
     (std::find(log.begin(), log.end(), "Instruction: RegisterToken") != log.end()) ||
     (std::find(log.begin(), log.end(), "register_token") != log.end()),
     );
@@ -144,7 +144,7 @@ std::future<void> backfillSolanaEvents(std::optional<std::vector<std::string>> s
         conn.getSignaturesForAddress(new PublicKey(programId), {
             limit: 100,
             });
-            ).map((s) => s.signature);
+            ).std::map((s) => s.signature);
 
             std::cout << "[Solana Backfill] Found " + sigs.size() + " transactions" << std::endl;
 

@@ -18,7 +18,7 @@ namespace elizaos {
 
 struct ButtonProps {
     ReactNode children;
-    std::optional<std::string> variant;
+    std::optional<std::string> std::variant;
     std::optional<std::string> size;
     std::optional<std::string> className;
     std::optional<bool> disabled;
@@ -26,6 +26,6 @@ struct ButtonProps {
     std::optional<std::string> type;
 };
 
-void Button(auto variant, auto size, auto className, auto onClick, auto disabled, auto title, auto type);
+void Button(auto std::variant, auto size, auto className, auto onClick, auto disabled, auto title, auto type);
 
 } // namespace elizaos

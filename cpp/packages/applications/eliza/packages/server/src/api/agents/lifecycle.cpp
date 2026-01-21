@@ -12,7 +12,7 @@ express::Router createAgentLifecycleRouter(const std::unordered_map<UUID, IAgent
         const auto db = serverInstance.database;
 
         // Start an existing agent
-        router.post("/:agentId/start", async (req, res) => {
+        router.post("/:agentId/start", std::async (req, res) => {
             const auto agentId = validateUuid(req.params.agentId);
             if (!agentId) {
                 return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
@@ -66,7 +66,7 @@ express::Router createAgentLifecycleRouter(const std::unordered_map<UUID, IAgent
                         });
 
                         // Stop an existing agent
-                        router.post("/:agentId/stop", async (req, res) => {
+                        router.post("/:agentId/stop", std::async (req, res) => {
                             const auto agentId = validateUuid(req.params.agentId);
                             if (!agentId) {
                                 logger.debug('[AGENT STOP] Invalid agent ID format');

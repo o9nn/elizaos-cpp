@@ -20,7 +20,7 @@ using json = nlohmann::json;
 
 namespace elizaos {
 
-// Utility function to get environment variable
+// Utility std::function to get environment variable
 std::string get_env_var(const std::string& var_name, const std::string& default_value = "") {
     const char* env = std::getenv(var_name.c_str());
     return env ? std::string(env) : default_value;
@@ -109,7 +109,7 @@ std::string EasyCompletionClient::make_http_request(const std::string& url, cons
         return "{\"error\": \"Failed to create HTTP request\"}";
     }
     
-    // Build headers string
+    // Build headers std::string
     std::string all_headers;
     for (const auto& header : headers) {
         all_headers += header + "\r\n";
@@ -244,7 +244,7 @@ CompletionResponse EasyCompletionClient::text_completion(const std::string& text
             }
         }
         
-    } catch (const json::exception& e) {
+    } catch (const json::std::exception& e) {
         result.error = "JSON parsing error: " + std::string(e.what());
         return result;
     }
@@ -315,7 +315,7 @@ CompletionResponse EasyCompletionClient::chat_completion(const std::vector<ChatM
             }
         }
         
-    } catch (const json::exception& e) {
+    } catch (const json::std::exception& e) {
         result.error = "JSON parsing error: " + std::string(e.what());
         return result;
     }
@@ -342,7 +342,7 @@ CompletionResponse EasyCompletionClient::function_completion(
         return result;
     }
     
-    // Create JSON payload for function completion
+    // Create JSON payload for std::function completion
     std::ostringstream payload;
     payload << R"({
         "model": ")" << config_.model << R"(",
@@ -369,11 +369,11 @@ CompletionResponse EasyCompletionClient::function_completion(
     payload << R"(],
         "functions": [)";
     
-    // Add function definitions
+    // Add std::function definitions
     for (size_t i = 0; i < functions.size(); ++i) {
         if (i > 0) payload << ",";
         payload << R"({"name": ")" << functions[i].name << R"(", "description": ")" << functions[i].description << R"("})";
-        // Note: Simplified function schema - would need proper JSON schema in production
+        // Note: Simplified std::function schema - would need proper JSON schema in production
     }
     
     payload << R"(],
@@ -399,7 +399,7 @@ CompletionResponse EasyCompletionClient::function_completion(
         return result;
     }
     
-    // Extract function call information (simplified parsing)
+    // Extract std::function call information (simplified parsing)
     size_t func_call_start = response_json.find("\"function_call\"");
     if (func_call_start != std::string::npos) {
         size_t name_start = response_json.find("\"name\":", func_call_start);
@@ -431,7 +431,7 @@ const CompletionConfig& EasyCompletionClient::get_config() const {
 std::string compose_prompt(const std::string& template_str, const std::unordered_map<std::string, std::string>& variables) {
     std::string result = template_str;
     
-    for (const auto& pair : variables) {
+    for (const auto& std::pair : variables) {
         std::string placeholder = "{{" + pair.first + "}}";
         size_t pos = 0;
         while ((pos = result.find(placeholder, pos)) != std::string::npos) {

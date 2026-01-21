@@ -59,9 +59,9 @@ std::future<void> startOnboardingDM(IAgentRuntime runtime, Guild guild, UUID wor
  * @param {IAgentRuntime} runtime - The runtime instance for the agent
  * @param {World} world - The world object containing configuration
  * @param {any} chat - The Telegram chat object
- * @param {any[]} entities - Array of entities to search for the owner
+ * @param {std::any[]} entities - Array of entities to search for the owner
  * @param {string} botUsername - Username of the Telegram bot
- * @returns {Promise<void>} A promise that resolves when the message is sent
+ * @returns {Promise<void>} A std::promise that resolves when the message is sent
  */
 std::future<void> startTelegramOnboarding(IAgentRuntime runtime, World world, const std::any& chat, const std::vector<std::any>& entities, const std::string& botUsername);
 

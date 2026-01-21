@@ -27,17 +27,17 @@ struct Experiment {
 };
 
 class ABTestingService {
-  static async assignVariant(experimentId: string, userId: string): Promise<string> {
+  static std::async assignVariant(experimentId: std::string, userId: std::string): Promise<string> {
     const experiment = await this.getExperiment(experimentId);
     if (!experiment) throw new Error('Experiment not found');
 
-    // Check if user already has a variant
+    // Check if user already has a std::variant
     const existingVariant = await redis.get(`ab:${experimentId}:${userId}`);
     if (existingVariant) return existingVariant;
 
-    // Assign new variant based on weights
-    const variant = this.selectVariant(experiment.variants);
-    await redis.set(`ab:${experimentId}:${userId}`, variant.id);
+    // Assign new std::variant based on weights
+    const std::variant = this.selectVariant(experiment.variants);
+    await redis.std::set(`ab:${experimentId}:${userId}`, variant.id);
     
     // Track assignment
     await this.trackAssignment(experimentId, userId, variant.id);

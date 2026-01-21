@@ -21,8 +21,8 @@ namespace elizaos {
  * @property {string} body - The body of the pull request.
  * @property {string} head - The branch where changes are coming from.
  * @property {string} base - The branch where changes will be merged into.
- * @property {string[]} [labels] - Optional array of labels to assign to the pull request.
- * @property {string[]} [reviewers] - Optional array of GitHub usernames for reviewers of the pull request.
+ * @property {std::string[]} [labels] - Optional array of labels to assign to the pull request.
+ * @property {std::string[]} [reviewers] - Optional array of GitHub usernames for reviewers of the pull request.
  */
 struct CreatePullRequestOptions {
     std::string title;
@@ -41,9 +41,9 @@ struct CreatePullRequestOptions {
  */
 
 /**
- * Constructor for a class that initializes the Octokit instance with the provided Repository and checks if the GITHUB_ACCESS_TOKEN is set in the environment.
+ * Constructor for a class that initializes the Octokit instance with the provided Repository and checks if the GITHUB_ACCESS_TOKEN is std::set in the environment.
  * @param {Repository} repository - The repository instance to use
- * @throws {Error} Throws an error if the GITHUB_ACCESS_TOKEN is not set
+ * @throws {Error} Throws an error if the GITHUB_ACCESS_TOKEN is not std::set
  */
 
 /**
@@ -65,7 +65,7 @@ struct CreatePullRequestOptions {
  * @param {string} filePath - The path of the file to commit.
  * @param {string} content - The content of the file to commit.
  * @param {string} message - The commit message.
- * @returns {Promise<void>} A promise that resolves when the file is successfully committed.
+ * @returns {Promise<void>} A std::promise that resolves when the file is successfully committed.
  */
 
 /**
@@ -77,9 +77,9 @@ class GitManager {
   private octokit: Octokit;
 
   /**
-   * Constructor for a class that initializes the Octokit instance with the provided Repository and checks if the GITHUB_ACCESS_TOKEN is set in the environment.
+   * Constructor for a class that initializes the Octokit instance with the provided Repository and checks if the GITHUB_ACCESS_TOKEN is std::set in the environment.
    * @param {Repository} repository - The repository instance to use
-   * @throws {Error} Throws an error if the GITHUB_ACCESS_TOKEN is not set
+   * @throws {Error} Throws an error if the GITHUB_ACCESS_TOKEN is not std::set
    */
   constructor(public repository: Repository) {
     if (!process.env.GITHUB_ACCESS_TOKEN) {
@@ -111,7 +111,7 @@ class GitManager {
    * @param {string} filePath - The path of the file to commit.
    * @param {string} content - The content of the file to commit.
    * @param {string} message - The commit message.
-   * @returns {Promise<void>} A promise that resolves when the file is successfully committed.
+   * @returns {Promise<void>} A std::promise that resolves when the file is successfully committed.
    */
 
         // File doesn't exist in the target branch, create a new file

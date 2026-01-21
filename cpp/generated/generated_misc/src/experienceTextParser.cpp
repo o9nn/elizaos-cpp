@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-experience/utils/experienceTextParser.h"
 
-string detectDomain(string text, string defaultDomain)
+std::string detectDomain(std::string text, std::string defaultDomain)
 {
     auto domains = object{
         object::pair{std::string("shell"), array<string>{ std::string("command"), std::string("terminal"), std::string("bash"), std::string("shell"), std::string("execute"), std::string("script"), std::string("cli") }}, 

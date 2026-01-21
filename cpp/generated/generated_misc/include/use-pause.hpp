@@ -3,6 +3,6 @@
 #include "core.h"
 #include "react.h"
 
-any usePause();
+std::any usePause();
 
 #endif

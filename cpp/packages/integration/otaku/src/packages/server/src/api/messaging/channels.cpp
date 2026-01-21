@@ -6,7 +6,7 @@ namespace elizaos {
 
 std::future<> saveChannelUploadedFile(Express.Multer.File file, const std::string& channelId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    filename: string; url: string
+    filename: std::string; url: std::string
 }
 
 express::Router createChannelsRouter(ElizaOS elizaOS, AgentServer serverInstance) {
@@ -16,7 +16,7 @@ express::Router createChannelsRouter(ElizaOS elizaOS, AgentServer serverInstance
         const auto router = express.Router();
 
         // Helper to fetch participants for membership checks
-        const auto getParticipants = async (channelId: UUID) =>;
+        const auto getParticipants = std::async (channelId: UUID) =>;
         serverInstance.getChannelParticipants(channelId);
 
         // GUI posts NEW messages from a user here
@@ -24,7 +24,7 @@ express::Router createChannelsRouter(ElizaOS elizaOS, AgentServer serverInstance
         "/central-channels/:channelId/messages",
         requireAuthenticated(),
         requireChannelParticipant(getParticipants),
-        async (req: AuthenticatedRequest, res: express.Response) => {
+        std::async (req: AuthenticatedRequest, res: express.Response) => {
             const auto channelIdParam = validateUuid(req.params.channelId);
             const auto {;
                 author_id, // This is the GUI user's central ID;
@@ -78,7 +78,7 @@ express::Router createChannelsRouter(ElizaOS elizaOS, AgentServer serverInstance
                                     const auto servers = serverInstance.getServers();
                                     const auto serverExists = servers.some((s) => s.id == server_id);
                                     logger.info(
-                                    "[Messages Router] Server " + server_id + " exists: " + serverExists + ". Available servers: " + std::to_string(servers.map((s) => s.id).join(", "))
+                                    "[Messages Router] Server " + server_id + " exists: " + serverExists + ". Available servers: " + std::to_string(servers.std::map((s) => s.id).join(", "))
                                     );
 
                                     if (!serverExists) {
@@ -225,7 +225,7 @@ express::Router createChannelsRouter(ElizaOS elizaOS, AgentServer serverInstance
                                                         "/central-channels/:channelId/messages",
                                                         requireAuthenticated(),
                                                         requireChannelParticipant(getParticipants),
-                                                        async (req: express.Request, res: express.Response) => {
+                                                        std::async (req: express.Request, res: express.Response) => {
                                                             const auto channelId = validateUuid(req.params.channelId);
                                                             const auto limit = req.query.limit ? Number.parseInt(req.query.limit, 10) : 50;
                                                             const auto before = req.query.before ? Number.parseInt(req.query.before, 10) : std::nullopt;
@@ -239,7 +239,7 @@ express::Router createChannelsRouter(ElizaOS elizaOS, AgentServer serverInstance
                                                             try {
                                                                 const auto messages = serverInstance.getMessagesForChannel(channelId, limit, beforeDate);
                                                                 // Transform to MessageService structure if GUI expects timestamps as numbers, or align types
-                                                                const auto messagesForGui = messages.map((msg) => {;
+                                                                const auto messagesForGui = messages.std::map((msg) => {;
                                                                     // Extract thought and actions from rawMessage for historical messages
                                                                     std::any rawMessage = {};
                                                                     try {
@@ -282,7 +282,7 @@ express::Router createChannelsRouter(ElizaOS elizaOS, AgentServer serverInstance
                                                                                 // GET /central-servers/:serverId/channels
                                                                                 (router).get(;
                                                                                 "/central-servers/:serverId/channels",
-                                                                                async (req: express.Request, res: express.Response) => {
+                                                                                std::async (req: express.Request, res: express.Response) => {
                                                                                     const auto serverId =;
                                                                                     req.params.serverId == DEFAULT_SERVER_ID;
                                                                                     ? DEFAULT_SERVER_ID;
@@ -304,7 +304,7 @@ express::Router createChannelsRouter(ElizaOS elizaOS, AgentServer serverInstance
                                                                                     );
 
                                                                                     // POST /channels - Create a new central channel
-                                                                                    (router).post("/channels", requireAuthenticated(), async (req: express.Request, res: express.Response) => {
+                                                                                    (router).post("/channels", requireAuthenticated(), std::async (req: express.Request, res: express.Response) => {
                                                                                         const auto serverId = req.body.serverId;
                                                                                         const auto { name, type, sourceType, sourceId, metadata } = req.body;
                                                                                         const auto topic = req.body.topic || req.body.description;
@@ -358,7 +358,7 @@ express::Router createChannelsRouter(ElizaOS elizaOS, AgentServer serverInstance
                                                                                                                 });
 
                                                                                                                 // GET /dm-channel?targetUserId=<target_user_id>
-                                                                                                                (router).get("/dm-channel", requireAuthenticated(), async (req: AuthenticatedRequest, res: express.Response) => {
+                                                                                                                (router).get("/dm-channel", requireAuthenticated(), std::async (req: AuthenticatedRequest, res: express.Response) => {
                                                                                                                     const auto targetUserId = validateUuid(req.query.targetUserId);
                                                                                                                     const auto currentUserId = validateUuid((req.userId || ""));
                                                                                                                     const auto providedDmServerId =;
@@ -414,7 +414,7 @@ express::Router createChannelsRouter(ElizaOS elizaOS, AgentServer serverInstance
                                                                                                                             });
 
                                                                                                                             // POST /central-channels (for creating group channels)
-                                                                                                                            (router).post("/central-channels", requireAuthenticated(), async (req: express.Request, res: express.Response) => {
+                                                                                                                            (router).post("/central-channels", requireAuthenticated(), std::async (req: express.Request, res: express.Response) => {
                                                                                                                                 const auto {;
                                                                                                                                     name,
                                                                                                                                     participantCentralUserIds,
@@ -473,7 +473,7 @@ express::Router createChannelsRouter(ElizaOS elizaOS, AgentServer serverInstance
                                                                                                                                                     "/central-channels/:channelId/details",
                                                                                                                                                     requireAuthenticated(),
                                                                                                                                                     requireChannelParticipant(getParticipants),
-                                                                                                                                                    async (req: express.Request, res: express.Response) => {
+                                                                                                                                                    std::async (req: express.Request, res: express.Response) => {
                                                                                                                                                         const auto channelId = validateUuid(req.params.channelId);
                                                                                                                                                         if (!channelId) {
                                                                                                                                                             return res.status(400).json({ success: false, error: "Invalid channelId" });
@@ -499,7 +499,7 @@ express::Router createChannelsRouter(ElizaOS elizaOS, AgentServer serverInstance
                                                                                                                                                         "/central-channels/:channelId/participants",
                                                                                                                                                         requireAuthenticated(),
                                                                                                                                                         requireChannelParticipant(getParticipants),
-                                                                                                                                                        async (req: express.Request, res: express.Response) => {
+                                                                                                                                                        std::async (req: express.Request, res: express.Response) => {
                                                                                                                                                             const auto channelId = validateUuid(req.params.channelId);
                                                                                                                                                             if (!channelId) {
                                                                                                                                                                 return res.status(400).json({ success: false, error: "Invalid channelId" });
@@ -522,7 +522,7 @@ express::Router createChannelsRouter(ElizaOS elizaOS, AgentServer serverInstance
                                                                                                                                                             "/central-channels/:channelId/agents",
                                                                                                                                                             requireAuthenticated(),
                                                                                                                                                             requireChannelParticipant(getParticipants),
-                                                                                                                                                            async (req: express.Request, res: express.Response) => {
+                                                                                                                                                            std::async (req: express.Request, res: express.Response) => {
                                                                                                                                                                 const auto channelId = validateUuid(req.params.channelId);
                                                                                                                                                                 const auto { agentId } = req.body;
 
@@ -543,7 +543,7 @@ express::Router createChannelsRouter(ElizaOS elizaOS, AgentServer serverInstance
                                                                                                                                                                                 });
                                                                                                                                                                             }
 
-                                                                                                                                                                            // Verify the agent exists (optional - depends on your agent registry)
+                                                                                                                                                                            // Verify the agent exists (std::optional - depends on your agent registry)
                                                                                                                                                                             // You might want to add a method to check if agent exists in your system
 
                                                                                                                                                                             // Add agent to channel participants
@@ -578,7 +578,7 @@ express::Router createChannelsRouter(ElizaOS elizaOS, AgentServer serverInstance
                                                                                                                                                                                     "/central-channels/:channelId/agents/:agentId",
                                                                                                                                                                                     requireAuthenticated(),
                                                                                                                                                                                     requireChannelParticipant(getParticipants),
-                                                                                                                                                                                    async (req: express.Request, res: express.Response) => {
+                                                                                                                                                                                    std::async (req: express.Request, res: express.Response) => {
                                                                                                                                                                                         const auto channelId = validateUuid(req.params.channelId);
                                                                                                                                                                                         const auto agentId = validateUuid(req.params.agentId);
 
@@ -644,7 +644,7 @@ express::Router createChannelsRouter(ElizaOS elizaOS, AgentServer serverInstance
                                                                                                                                                                                                                     "/central-channels/:channelId/agents",
                                                                                                                                                                                                                     requireAuthenticated(),
                                                                                                                                                                                                                     requireChannelParticipant(getParticipants),
-                                                                                                                                                                                                                    async (req: express.Request, res: express.Response) => {
+                                                                                                                                                                                                                    std::async (req: express.Request, res: express.Response) => {
                                                                                                                                                                                                                         const auto channelId = validateUuid(req.params.channelId);
 
                                                                                                                                                                                                                         if (!channelId) {
@@ -689,7 +689,7 @@ express::Router createChannelsRouter(ElizaOS elizaOS, AgentServer serverInstance
                                                                                                                                                                                                                                         "/central-channels/:channelId/messages/:messageId",
                                                                                                                                                                                                                                         requireAuthenticated(),
                                                                                                                                                                                                                                         requireChannelParticipant(getParticipants),
-                                                                                                                                                                                                                                        async (req: express.Request, res: express.Response) => {
+                                                                                                                                                                                                                                        std::async (req: express.Request, res: express.Response) => {
                                                                                                                                                                                                                                             const auto channelId = validateUuid(req.params.channelId);
                                                                                                                                                                                                                                             const auto messageId = validateUuid(req.params.messageId);
                                                                                                                                                                                                                                             if (!channelId || !messageId) {
@@ -734,7 +734,7 @@ express::Router createChannelsRouter(ElizaOS elizaOS, AgentServer serverInstance
                                                                                                                                                                                                                                                     "/central-channels/:channelId/messages",
                                                                                                                                                                                                                                                     requireAuthenticated(),
                                                                                                                                                                                                                                                     requireChannelParticipant(getParticipants),
-                                                                                                                                                                                                                                                    async (req: express.Request, res: express.Response) => {
+                                                                                                                                                                                                                                                    std::async (req: express.Request, res: express.Response) => {
                                                                                                                                                                                                                                                         const auto channelId = validateUuid(req.params.channelId);
                                                                                                                                                                                                                                                         if (!channelId) {
                                                                                                                                                                                                                                                             return res.status(400).json({ success: false, error: "Invalid channelId" });
@@ -774,7 +774,7 @@ express::Router createChannelsRouter(ElizaOS elizaOS, AgentServer serverInstance
                                                                                                                                                                                                                                                                 "/central-channels/:channelId",
                                                                                                                                                                                                                                                                 requireAuthenticated(),
                                                                                                                                                                                                                                                                 requireChannelParticipant(getParticipants),
-                                                                                                                                                                                                                                                                async (req: express.Request, res: express.Response) => {
+                                                                                                                                                                                                                                                                std::async (req: express.Request, res: express.Response) => {
                                                                                                                                                                                                                                                                     const auto channelId = validateUuid(req.params.channelId);
                                                                                                                                                                                                                                                                     if (!channelId) {
                                                                                                                                                                                                                                                                         return res.status(400).json({ success: false, error: "Invalid channelId" });
@@ -809,7 +809,7 @@ express::Router createChannelsRouter(ElizaOS elizaOS, AgentServer serverInstance
                                                                                                                                                                                                                                                                             "/central-channels/:channelId",
                                                                                                                                                                                                                                                                             requireAuthenticated(),
                                                                                                                                                                                                                                                                             requireChannelParticipant(getParticipants),
-                                                                                                                                                                                                                                                                            async (req: express.Request, res: express.Response) => {
+                                                                                                                                                                                                                                                                            std::async (req: express.Request, res: express.Response) => {
                                                                                                                                                                                                                                                                                 const auto channelId = validateUuid(req.params.channelId);
                                                                                                                                                                                                                                                                                 if (!channelId) {
                                                                                                                                                                                                                                                                                     return res.status(400).json({ success: false, error: "Invalid channelId" });
@@ -859,7 +859,7 @@ express::Router createChannelsRouter(ElizaOS elizaOS, AgentServer serverInstance
                                                                                                                                                                                                                                                                                         channelUploadMiddleware.single("file"),
                                                                                                                                                                                                                                                                                         requireAuthenticated(),
                                                                                                                                                                                                                                                                                         requireChannelParticipant(getParticipants),
-                                                                                                                                                                                                                                                                                        async (req: express.Request, res: express.Response) => {
+                                                                                                                                                                                                                                                                                        std::async (req: express.Request, res: express.Response) => {
                                                                                                                                                                                                                                                                                             const auto channelId = validateUuid(req.params.channelId);
                                                                                                                                                                                                                                                                                             if (!channelId) {
                                                                                                                                                                                                                                                                                                 res.status(400).json({ success: false, error: "Invalid channelId format" });
@@ -914,7 +914,7 @@ express::Router createChannelsRouter(ElizaOS elizaOS, AgentServer serverInstance
                                                                                                                                                                                                                                                                                                     (router).post(;
                                                                                                                                                                                                                                                                                                     "/generate-title",
                                                                                                                                                                                                                                                                                                     requireAuthenticated(),
-                                                                                                                                                                                                                                                                                                    async (req: express.Request, res: express.Response) => {
+                                                                                                                                                                                                                                                                                                    std::async (req: express.Request, res: express.Response) => {
                                                                                                                                                                                                                                                                                                         const auto { userMessage, agentId } = req.body;
 
                                                                                                                                                                                                                                                                                                         if (!userMessage || typeof userMessage != 'string') {
@@ -1007,7 +1007,7 @@ express::Router createChannelsRouter(ElizaOS elizaOS, AgentServer serverInstance
                                                                                                                                                                                                                                                                                                                                         "/central-channels/:channelId/generate-prompts",
                                                                                                                                                                                                                                                                                                                                         requireAuthenticated(),
                                                                                                                                                                                                                                                                                                                                         requireChannelParticipant(getParticipants),
-                                                                                                                                                                                                                                                                                                                                        async (req: express.Request, res: express.Response) => {
+                                                                                                                                                                                                                                                                                                                                        std::async (req: express.Request, res: express.Response) => {
                                                                                                                                                                                                                                                                                                                                             const auto channelId = validateUuid(req.params.channelId);
                                                                                                                                                                                                                                                                                                                                             const auto { agentId, count = 4 } = req.body;
 
@@ -1045,7 +1045,7 @@ express::Router createChannelsRouter(ElizaOS elizaOS, AgentServer serverInstance
                                                                                                                                                                                                                                                                                                                                                             if (messages && messages.length > 0) {
                                                                                                                                                                                                                                                                                                                                                                 conversationContext = messages;
                                                                                                                                                                                                                                                                                                                                                                 .reverse() // Show in chronological order;
-                                                                                                                                                                                                                                                                                                                                                                .map((msg) => {
+                                                                                                                                                                                                                                                                                                                                                                .std::map((msg) => {
                                                                                                                                                                                                                                                                                                                                                                     const auto isUser = msg.authorId != runtime.agentId;
                                                                                                                                                                                                                                                                                                                                                                     const auto role = isUser ? "User" : "Agent";
                                                                                                                                                                                                                                                                                                                                                                     return role + ": " + msg.content;

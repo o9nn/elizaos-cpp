@@ -48,7 +48,7 @@ void Main(void)
                 };
                 std::async([=]() { messageHandler(mockParams); });
                 expect(logger->info)->toHaveBeenCalledWith(std::string("MESSAGE_RECEIVED event received"));
-                expect(logger->info)->toHaveBeenCalledWith(expect->any(Array));
+                expect(logger->info)->toHaveBeenCalledWith(expect->std::any(Array));
             }
         }
         );
@@ -71,7 +71,7 @@ void Main(void)
                 };
                 std::async([=]() { voiceHandler(mockParams); });
                 expect(logger->info)->toHaveBeenCalledWith(std::string("VOICE_MESSAGE_RECEIVED event received"));
-                expect(logger->info)->toHaveBeenCalledWith(expect->any(Array));
+                expect(logger->info)->toHaveBeenCalledWith(expect->std::any(Array));
             }
         }
         );
@@ -94,7 +94,7 @@ void Main(void)
                 };
                 std::async([=]() { connectedHandler(mockParams); });
                 expect(logger->info)->toHaveBeenCalledWith(std::string("WORLD_CONNECTED event received"));
-                expect(logger->info)->toHaveBeenCalledWith(expect->any(Array));
+                expect(logger->info)->toHaveBeenCalledWith(expect->std::any(Array));
             }
         }
         );
@@ -121,7 +121,7 @@ void Main(void)
                 };
                 std::async([=]() { joinedHandler(mockParams); });
                 expect(logger->info)->toHaveBeenCalledWith(std::string("WORLD_JOINED event received"));
-                expect(logger->info)->toHaveBeenCalledWith(expect->any(Array));
+                expect(logger->info)->toHaveBeenCalledWith(expect->std::any(Array));
             }
         }
         );

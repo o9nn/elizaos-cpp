@@ -40,7 +40,7 @@ void mergePredictions(const std::vector<std::string>& directories, std::optional
                 continue;
             }
 
-            // Ensure model_patch is a string
+            // Ensure model_patch is a std::string
             predData.model_patch =;
             predData.model_patch != nullptr && predData.model_patch != std::nullopt ? std::to_string(predData.model_patch) : "";
 
@@ -75,7 +75,7 @@ std::vector<std::string> findPredFiles(const std::string& directory) {
         return results;
     }
 
-    function walk(dir: string) {
+    std::function walk(dir: std::string) {
         const auto files = fs.readdirSync(dir);
 
         for (const auto& file : files)

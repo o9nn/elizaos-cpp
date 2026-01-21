@@ -13,9 +13,9 @@ class ShellAdvancedE2ETestSuite;
 class ShellAdvancedE2ETestSuite : public TestSuite, public std::enable_shared_from_this<ShellAdvancedE2ETestSuite> {
 public:
     using std::enable_shared_from_this<ShellAdvancedE2ETestSuite>::shared_from_this;
-    string name = std::string("plugin-shell-advanced-e2e");
+    std::string name = std::string("plugin-shell-advanced-e2e");
 
-    string description = std::string("Advanced tests for complex multi-action shell scenarios");
+    std::string description = std::string("Advanced tests for complex multi-action shell scenarios");
 
     array<object> tests = array<object>{ object{
         object::pair{std::string("name"), std::string("Should handle piped commands correctly")}, 
@@ -50,7 +50,7 @@ line3" | grep line2")}
             auto attachment = const_(response["attachments"])[0];
             auto outputData = JSON->parse(attachment["text"]);
             if (OR((!outputData["stdout"]["includes"](std::string("line2"))), (outputData["stdout"]["includes"](std::string("line1"))))) {
-                throw any(std::make_shared<Error>(std::string("Pipe command failed. Output: ") + outputData["stdout"] + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("Pipe command failed. Output: ") + outputData["stdout"] + string_empty));
             }
             console->log(std::string("✓ Piped commands work correctly"));
             console->log(std::string("  Output: ") + outputData["stdout"]["trim"]() + string_empty);
@@ -87,7 +87,7 @@ line3" | grep line2")}
             auto attachment = const_(response["attachments"])[0];
             auto outputData = JSON->parse(attachment["text"]);
             if (OR((!outputData["stdout"]["includes"](std::string("first"))), (!outputData["stdout"]["includes"](std::string("second"))))) {
-                throw any(std::make_shared<Error>(std::string("&& operator failed on success case")));
+                throw std::any(std::make_shared<Error>(std::string("&& operator failed on success case")));
             }
             auto failMessage = object{
                 object::pair{std::string("id"), createUniqueUuid(runtime, std::string("test-or-fail"))}, 
@@ -108,7 +108,7 @@ line3" | grep line2")}
             attachment = const_(response["attachments"])[0];
             outputData = JSON->parse(attachment["text"]);
             if (!outputData["stdout"]["includes"](std::string("fallback"))) {
-                throw any(std::make_shared<Error>(std::string("|| operator failed on failure case")));
+                throw std::any(std::make_shared<Error>(std::string("|| operator failed on failure case")));
             }
             console->log(std::string("✓ Compound commands work correctly"));
         }
@@ -120,7 +120,7 @@ line3" | grep line2")}
             console->log(std::string("Testing complex multi-step workflow..."));
             auto shellService = runtime->getService<std::shared_ptr<ShellService>>(std::string("SHELL"));
             if (!shellService) {
-                throw any(std::make_shared<Error>(std::string("Shell service not available")));
+                throw std::any(std::make_shared<Error>(std::string("Shell service not available")));
             }
             auto workDir = path->join(shellService->getCurrentWorkingDirectory(), std::string("workflow-") + Date->now() + string_empty);
             auto roomId = createUniqueUuid(runtime, std::string("test-room"));
@@ -153,7 +153,7 @@ line3" | grep line2")}
                     }
                     ); });
                     if (!shellService->getCurrentWorkingDirectory()->includes(path->basename(workDir))) {
-                        throw any(std::make_shared<Error>(std::string("Failed to change to workflow directory")));
+                        throw std::any(std::make_shared<Error>(std::string("Failed to change to workflow directory")));
                     }
                     auto createFilesMsg = object{
                         object::pair{std::string("id"), createUniqueUuid(runtime, std::string("workflow-2"))}, 
@@ -219,7 +219,7 @@ line3" | grep line2")}
                             return f["includes"](expectedFile->replace(std::string("./"), string_empty));
                         }
                         )) {
-                            throw any(std::make_shared<Error>(std::string("Expected file not found: ") + expectedFile + string_empty));
+                            throw std::any(std::make_shared<Error>(std::string("Expected file not found: ") + expectedFile + string_empty));
                         }
                     }
                     console->log(std::string("✓ Complex workflow completed successfully"));
@@ -263,7 +263,7 @@ line3" | grep line2")}
             auto attachment = const_(response["attachments"])[0];
             auto outputData = JSON->parse(attachment["text"]);
             if (!outputData["stdout"]["includes"](std::string("Process started in background"))) {
-                throw any(std::make_shared<Error>(std::string("Background process test failed")));
+                throw std::any(std::make_shared<Error>(std::string("Background process test failed")));
             }
             console->log(std::string("✓ Background process handling works"));
             console->log(std::string("  Note: Full job control requires interactive shell"));
@@ -276,7 +276,7 @@ line3" | grep line2")}
             console->log(std::string("Testing wildcard and glob pattern handling..."));
             auto shellService = runtime->getService<std::shared_ptr<ShellService>>(std::string("SHELL"));
             if (!shellService) {
-                throw any(std::make_shared<Error>(std::string("Shell service not available")));
+                throw std::any(std::make_shared<Error>(std::string("Shell service not available")));
             }
             auto testDir = path->join(shellService->getCurrentWorkingDirectory(), std::string("glob-test-") + Date->now() + string_empty);
             auto roomId = createUniqueUuid(runtime, std::string("test-room"));
@@ -316,7 +316,7 @@ line3" | grep line2")}
                     auto attachment = const_(response["attachments"])[0];
                     auto outputData = JSON->parse(attachment["text"]);
                     if (OR((OR((!outputData["stdout"]["includes"](std::string("file1.txt"))), (!outputData["stdout"]["includes"](std::string("file2.txt"))))), (outputData["stdout"]["includes"](std::string("file3.log"))))) {
-                        throw any(std::make_shared<Error>(std::string("Wildcard pattern matching failed")));
+                        throw std::any(std::make_shared<Error>(std::string("Wildcard pattern matching failed")));
                     }
                     auto findMsg = object{
                         object::pair{std::string("id"), createUniqueUuid(runtime, std::string("test-find"))}, 
@@ -337,7 +337,7 @@ line3" | grep line2")}
                     auto findAttachment = const_(response["attachments"])[0];
                     auto findData = JSON->parse(findAttachment["text"]);
                     if (!findData["command"]["includes"](std::string("'*.txt'"))) {
-                        throw any(std::make_shared<Error>(std::string("Find command wildcards not properly quoted")));
+                        throw std::any(std::make_shared<Error>(std::string("Find command wildcards not properly quoted")));
                     }
                     console->log(std::string("✓ Wildcard and glob patterns handled correctly"));
                 }
@@ -355,7 +355,7 @@ line3" | grep line2")}
             console->log(std::string("Testing script execution from natural language..."));
             auto shellService = runtime->getService<std::shared_ptr<ShellService>>(std::string("SHELL"));
             if (!shellService) {
-                throw any(std::make_shared<Error>(std::string("Shell service not available")));
+                throw std::any(std::make_shared<Error>(std::string("Shell service not available")));
             }
             auto scriptDir = path->join(shellService->getCurrentWorkingDirectory(), std::string("script-test-") + Date->now() + string_empty);
             auto roomId = createUniqueUuid(runtime, std::string("test-room"));
@@ -402,7 +402,7 @@ echo "Script completed"");
                     if (OR((!outputData["stdout"]["includes"](std::string("Script started"))), (!outputData["stdout"]["includes"](std::string("Script completed"))))) {
                         console->log(std::string("Command extracted:"), outputData["command"]);
                         console->log(std::string("Output:"), outputData["stdout"]);
-                        throw any(std::make_shared<Error>(std::string("Script execution from natural language failed")));
+                        throw std::any(std::make_shared<Error>(std::string("Script execution from natural language failed")));
                     }
                     console->log(std::string("✓ Natural language script execution works"));
                     console->log(std::string("  Extracted command: ") + outputData["command"] + string_empty);

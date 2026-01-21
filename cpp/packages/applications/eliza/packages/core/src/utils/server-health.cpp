@@ -50,7 +50,7 @@ std::future<void> waitForServerReady(ServerHealthOptions options) {
                             } catch (error) {
                                 // Server not ready yet, continue polling
                                 } finally {
-                                    // Ensure cleanup happens even if there's an exception
+                                    // Ensure cleanup happens even if there's an std::exception
                                     if (timeoutId) {
                                         clearTimeout(timeoutId);
                                     }
@@ -103,7 +103,7 @@ std::future<bool> pingServer(ServerHealthOptions options) {
                     } catch (error) {
                         return false;
                         } finally {
-                            // Ensure cleanup happens even if there's an exception
+                            // Ensure cleanup happens even if there's an std::exception
                             if (timeoutId) {
                                 clearTimeout(timeoutId);
                             }

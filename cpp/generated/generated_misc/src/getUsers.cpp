@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/trust_scoreboard/src/pages/api/user/getUsers.h"
 
-any handler(std::shared_ptr<NextApiRequest> req, std::shared_ptr<NextApiResponse> res)
+std::any handler(std::shared_ptr<NextApiRequest> req, std::shared_ptr<NextApiResponse> res)
 {
     try
     {
@@ -17,7 +17,7 @@ any handler(std::shared_ptr<NextApiRequest> req, std::shared_ptr<NextApiResponse
             object::pair{std::string("hasMore"), endIndex < mockUsers->get_length()}
         });
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("Error:"), error);
         return res->status(500)->json(object{

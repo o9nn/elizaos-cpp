@@ -4,7 +4,7 @@ AuthenticationService::AuthenticationService(std::shared_ptr<IAgentRuntime> runt
     this->runtime = runtime;
 }
 
-std::shared_ptr<Promise<std::shared_ptr<ApiKeyValidationResult>>> AuthenticationService::validateApiKey(string provider, string apiKey)
+std::shared_ptr<Promise<std::shared_ptr<ApiKeyValidationResult>>> AuthenticationService::validateApiKey(std::string provider, std::string apiKey)
 {
     auto cacheKey = string_empty + provider + std::string(":") + apiKey + string_empty;
     auto cached = this->validationCache->get(cacheKey);
@@ -18,7 +18,7 @@ std::shared_ptr<Promise<std::shared_ptr<ApiKeyValidationResult>>> Authentication
             object::pair{std::string("keyType"), std::string("test")}, 
             object::pair{std::string("capabilities"), this->getTestKeyCapabilities(provider)}
         };
-        this->validationCache->set(cacheKey, object{
+        this->validationCache->std::set(cacheKey, object{
             object::pair{std::string("result"), std::string("result")}, 
             object::pair{std::string("timestamp"), Date->now()}
         });
@@ -27,13 +27,13 @@ std::shared_ptr<Promise<std::shared_ptr<ApiKeyValidationResult>>> Authentication
     try
     {
         auto result = std::async([=]() { this->performRealKeyValidation(provider, apiKey); });
-        this->validationCache->set(cacheKey, object{
+        this->validationCache->std::set(cacheKey, object{
             object::pair{std::string("result"), std::string("result")}, 
             object::pair{std::string("timestamp"), Date->now()}
         });
         return result;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Failed to validate ") + provider + std::string(" key:"), error);
         auto errorResult = object{
@@ -41,7 +41,7 @@ std::shared_ptr<Promise<std::shared_ptr<ApiKeyValidationResult>>> Authentication
             object::pair{std::string("provider"), std::string("provider")}, 
             object::pair{std::string("keyType"), std::string("invalid")}, 
             object::pair{std::string("capabilities"), array<any>()}, 
-            object::pair{std::string("errorMessage"), (is<Error>(error)) ? any(error->message) : any(std::string("Validation failed"))}
+            object::pair{std::string("errorMessage"), (is<Error>(error)) ? std::any(error->message) : std::any(std::string("Validation failed"))}
         };
         return errorResult;
     }
@@ -86,7 +86,7 @@ std::shared_ptr<Promise<std::shared_ptr<AuthStatus>>> AuthenticationService::get
         return p->isValid;
     }
     );
-    any overall;
+    std::any overall;
     if (validProviders->get_length() == 0) {
         overall = std::string("failed");
     } else if (validProviders->get_length() < Object->keys(providers)->get_length()) {
@@ -104,7 +104,7 @@ std::shared_ptr<Promise<std::shared_ptr<AuthStatus>>> AuthenticationService::get
     return status;
 }
 
-std::shared_ptr<Promise<object>> AuthenticationService::testApiFunctionality(string provider)
+std::shared_ptr<Promise<object>> AuthenticationService::testApiFunctionality(std::string provider)
 {
     logger->debug(std::string("Testing ") + provider + std::string(" API functionality..."));
     auto apiKey = this->getApiKey(provider);
@@ -134,11 +134,11 @@ std::shared_ptr<Promise<object>> AuthenticationService::testApiFunctionality(str
             object::pair{std::string("latency"), Date->now() - startTime}
         };
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         return object{
             object::pair{std::string("success"), false}, 
-            object::pair{std::string("error"), (is<Error>(error)) ? any(error->message) : any(std::string("Unknown test error"))}, 
+            object::pair{std::string("error"), (is<Error>(error)) ? std::any(error->message) : std::any(std::string("Unknown test error"))}, 
             object::pair{std::string("latency"), Date->now() - startTime}
         };
     }
@@ -161,7 +161,7 @@ std::shared_ptr<Promise<object>> AuthenticationService::validateAllProviders()
     };
 }
 
-any AuthenticationService::getApiKey(string provider)
+std::any AuthenticationService::getApiKey(std::string provider)
 {
     auto keyMap = object{
         object::pair{std::string("openai"), std::string("OPENAI_API_KEY")}, 
@@ -180,12 +180,12 @@ any AuthenticationService::getApiKey(string provider)
     return OR((OR((OR((this->runtime->getSetting(envKey)), (const_(process->env)[envKey]))), (const_(testKeyMap)[provider]))), (nullptr));
 }
 
-boolean AuthenticationService::isTestKey(string apiKey)
+boolean AuthenticationService::isTestKey(std::string apiKey)
 {
     return (OR((OR((Object->values(TEST_KEYS)->includes(as<any>(apiKey))), (apiKey->includes(std::string("test"))))), (apiKey->includes(std::string("elizaos")))));
 }
 
-array<string> AuthenticationService::getTestKeyCapabilities(string provider)
+array<string> AuthenticationService::getTestKeyCapabilities(std::string provider)
 {
     auto capabilities = object{
         object::pair{std::string("openai"), array<string>{ std::string("text_generation"), std::string("embeddings"), std::string("image_description") }}, 
@@ -195,12 +195,12 @@ array<string> AuthenticationService::getTestKeyCapabilities(string provider)
     return OR((const_(capabilities)[provider]), (array<any>()));
 }
 
-std::shared_ptr<Promise<std::shared_ptr<ApiKeyValidationResult>>> AuthenticationService::performRealKeyValidation(string provider, string apiKey)
+std::shared_ptr<Promise<std::shared_ptr<ApiKeyValidationResult>>> AuthenticationService::performRealKeyValidation(std::string provider, std::string apiKey)
 {
     static switch_type __switch8222_8577 = {
-        { any(std::string("openai")), 1 },
-        { any(std::string("groq")), 2 },
-        { any(std::string("anthropic")), 3 }
+        { std::any(std::string("openai")), 1 },
+        { std::any(std::string("groq")), 2 },
+        { std::any(std::string("anthropic")), 3 }
     };
     switch (__switch8222_8577[provider])
     {
@@ -211,11 +211,11 @@ std::shared_ptr<Promise<std::shared_ptr<ApiKeyValidationResult>>> Authentication
     case 3:
         return this->validateAnthropicKey(apiKey);
     default:
-        throw any(std::make_shared<Error>(std::string("Unsupported provider: ") + provider + string_empty));
+        throw std::any(std::make_shared<Error>(std::string("Unsupported provider: ") + provider + string_empty));
     }
 }
 
-std::shared_ptr<Promise<std::shared_ptr<ApiKeyValidationResult>>> AuthenticationService::validateOpenAIKey(string apiKey)
+std::shared_ptr<Promise<std::shared_ptr<ApiKeyValidationResult>>> AuthenticationService::validateOpenAIKey(std::string apiKey)
 {
     try
     {
@@ -247,19 +247,19 @@ std::shared_ptr<Promise<std::shared_ptr<ApiKeyValidationResult>>> Authentication
             };
         }
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         return object{
             object::pair{std::string("isValid"), false}, 
             object::pair{std::string("provider"), std::string("openai")}, 
             object::pair{std::string("keyType"), std::string("invalid")}, 
             object::pair{std::string("capabilities"), array<any>()}, 
-            object::pair{std::string("errorMessage"), std::string("OpenAI API validation error: ") + (is<Error>(error)) ? any(error->message) : any(std::string("Unknown error")) + string_empty}
+            object::pair{std::string("errorMessage"), std::string("OpenAI API validation error: ") + (is<Error>(error)) ? std::any(error->message) : std::any(std::string("Unknown error")) + string_empty}
         };
     }
 }
 
-std::shared_ptr<Promise<std::shared_ptr<ApiKeyValidationResult>>> AuthenticationService::validateGroqKey(string apiKey)
+std::shared_ptr<Promise<std::shared_ptr<ApiKeyValidationResult>>> AuthenticationService::validateGroqKey(std::string apiKey)
 {
     try
     {
@@ -286,19 +286,19 @@ std::shared_ptr<Promise<std::shared_ptr<ApiKeyValidationResult>>> Authentication
             };
         }
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         return object{
             object::pair{std::string("isValid"), false}, 
             object::pair{std::string("provider"), std::string("groq")}, 
             object::pair{std::string("keyType"), std::string("invalid")}, 
             object::pair{std::string("capabilities"), array<any>()}, 
-            object::pair{std::string("errorMessage"), std::string("Groq API validation error: ") + (is<Error>(error)) ? any(error->message) : any(std::string("Unknown error")) + string_empty}
+            object::pair{std::string("errorMessage"), std::string("Groq API validation error: ") + (is<Error>(error)) ? std::any(error->message) : std::any(std::string("Unknown error")) + string_empty}
         };
     }
 }
 
-std::shared_ptr<Promise<std::shared_ptr<ApiKeyValidationResult>>> AuthenticationService::validateAnthropicKey(string apiKey)
+std::shared_ptr<Promise<std::shared_ptr<ApiKeyValidationResult>>> AuthenticationService::validateAnthropicKey(std::string apiKey)
 {
     try
     {
@@ -336,24 +336,24 @@ std::shared_ptr<Promise<std::shared_ptr<ApiKeyValidationResult>>> Authentication
             };
         }
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         return object{
             object::pair{std::string("isValid"), false}, 
             object::pair{std::string("provider"), std::string("anthropic")}, 
             object::pair{std::string("keyType"), std::string("invalid")}, 
             object::pair{std::string("capabilities"), array<any>()}, 
-            object::pair{std::string("errorMessage"), std::string("Anthropic API validation error: ") + (is<Error>(error)) ? any(error->message) : any(std::string("Unknown error")) + string_empty}
+            object::pair{std::string("errorMessage"), std::string("Anthropic API validation error: ") + (is<Error>(error)) ? std::any(error->message) : std::any(std::string("Unknown error")) + string_empty}
         };
     }
 }
 
-std::shared_ptr<Promise<object>> AuthenticationService::performApiTest(string provider, string apiKey)
+std::shared_ptr<Promise<object>> AuthenticationService::performApiTest(std::string provider, std::string apiKey)
 {
     static switch_type __switch12573_12877 = {
-        { any(std::string("openai")), 1 },
-        { any(std::string("groq")), 2 },
-        { any(std::string("anthropic")), 3 }
+        { std::any(std::string("openai")), 1 },
+        { std::any(std::string("groq")), 2 },
+        { std::any(std::string("anthropic")), 3 }
     };
     switch (__switch12573_12877[provider])
     {
@@ -364,11 +364,11 @@ std::shared_ptr<Promise<object>> AuthenticationService::performApiTest(string pr
     case 3:
         return this->testAnthropic(apiKey);
     default:
-        throw any(std::make_shared<Error>(std::string("Unsupported provider for testing: ") + provider + string_empty));
+        throw std::any(std::make_shared<Error>(std::string("Unsupported provider for testing: ") + provider + string_empty));
     }
 }
 
-std::shared_ptr<Promise<object>> AuthenticationService::testOpenAI(string apiKey)
+std::shared_ptr<Promise<object>> AuthenticationService::testOpenAI(std::string apiKey)
 {
     auto response = std::async([=]() { fetch(std::string("https://api.openai.com/v1/chat/completions"), object{
         object::pair{std::string("method"), std::string("POST")}, 
@@ -386,7 +386,7 @@ std::shared_ptr<Promise<object>> AuthenticationService::testOpenAI(string apiKey
         })}
     }); });
     if (!response->ok) {
-        throw any(std::make_shared<Error>(std::string("OpenAI test failed: ") + response->status + string_empty));
+        throw std::any(std::make_shared<Error>(std::string("OpenAI test failed: ") + response->status + string_empty));
     }
     auto data = std::async([=]() { response->json(); });
     return object{
@@ -395,7 +395,7 @@ std::shared_ptr<Promise<object>> AuthenticationService::testOpenAI(string apiKey
     };
 }
 
-std::shared_ptr<Promise<object>> AuthenticationService::testGroq(string apiKey)
+std::shared_ptr<Promise<object>> AuthenticationService::testGroq(std::string apiKey)
 {
     auto response = std::async([=]() { fetch(std::string("https://api.groq.com/openai/v1/chat/completions"), object{
         object::pair{std::string("method"), std::string("POST")}, 
@@ -413,7 +413,7 @@ std::shared_ptr<Promise<object>> AuthenticationService::testGroq(string apiKey)
         })}
     }); });
     if (!response->ok) {
-        throw any(std::make_shared<Error>(std::string("Groq test failed: ") + response->status + string_empty));
+        throw std::any(std::make_shared<Error>(std::string("Groq test failed: ") + response->status + string_empty));
     }
     auto data = std::async([=]() { response->json(); });
     return object{
@@ -422,7 +422,7 @@ std::shared_ptr<Promise<object>> AuthenticationService::testGroq(string apiKey)
     };
 }
 
-std::shared_ptr<Promise<object>> AuthenticationService::testAnthropic(string apiKey)
+std::shared_ptr<Promise<object>> AuthenticationService::testAnthropic(std::string apiKey)
 {
     auto response = std::async([=]() { fetch(std::string("https://api.anthropic.com/v1/messages"), object{
         object::pair{std::string("method"), std::string("POST")}, 
@@ -441,7 +441,7 @@ std::shared_ptr<Promise<object>> AuthenticationService::testAnthropic(string api
         })}
     }); });
     if (!response->ok) {
-        throw any(std::make_shared<Error>(std::string("Anthropic test failed: ") + response->status + string_empty));
+        throw std::any(std::make_shared<Error>(std::string("Anthropic test failed: ") + response->status + string_empty));
     }
     auto data = std::async([=]() { response->json(); });
     return object{
@@ -456,7 +456,7 @@ void AuthenticationService::clearCache()
     this->lastAuthStatus = nullptr;
 }
 
-any AuthenticationService::getCachedAuthStatus()
+std::any AuthenticationService::getCachedAuthStatus()
 {
     return this->lastAuthStatus;
 }

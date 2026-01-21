@@ -18,12 +18,12 @@ namespace elizaos {
 
 
 class TradeCalculationService extends BaseTradeService {
-  async calculateOptimalBuyAmount({
+  std::async calculateOptimalBuyAmount({
     tokenAddress,
     walletBalance,
     signal,
   }: {
-    tokenAddress: string;
+    tokenAddress: std::string;
     walletBalance: number;
     signal: BuySignalMessage;
   }): Promise<number> {

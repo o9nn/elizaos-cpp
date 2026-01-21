@@ -10,10 +10,10 @@ std::shared_ptr<TestTimeoutManager> TestTimeoutManager::getInstance()
     return TestTimeoutManager::instance;
 }
 
-void TestTimeoutManager::startTimeout(string testName, double duration)
+void TestTimeoutManager::startTimeout(std::string testName, double duration)
 {
     this->clearTimeout(testName);
-    this->testStartTimes->set(testName, Date->now());
+    this->testStartTimes->std::set(testName, Date->now());
     auto timeout = setTimeout([=]() mutable
     {
         auto elapsed = Date->now() - (OR((this->testStartTimes->get(testName)), (0)));
@@ -21,10 +21,10 @@ void TestTimeoutManager::startTimeout(string testName, double duration)
         process->exit(1);
     }
     , duration);
-    this->timeouts->set(testName, timeout);
+    this->timeouts->std::set(testName, timeout);
 }
 
-void TestTimeoutManager::clearTimeout(string testName)
+void TestTimeoutManager::clearTimeout(std::string testName)
 {
     auto timeout = this->timeouts->get(testName);
     if (timeout) {

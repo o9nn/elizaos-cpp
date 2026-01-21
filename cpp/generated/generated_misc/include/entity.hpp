@@ -3,7 +3,7 @@
 #include "core.h"
 #include "@elizaos/core.h"
 
-typedef any EntityWalletResponse;
+typedef std::any EntityWalletResponse;
 
 class EntityWalletResult;
 class EntityWalletError;
@@ -13,9 +13,9 @@ public:
     using std::enable_shared_from_this<EntityWalletResult>::shared_from_this;
     boolean success;
 
-    string walletAddress;
+    std::string walletAddress;
 
-    Record<string, any> metadata;
+    Record<std::string, any> metadata;
 };
 
 class EntityWalletError : public object, public std::enable_shared_from_this<EntityWalletError> {
@@ -27,10 +27,10 @@ public:
 };
 
 template <typename RET>
-RET getEntityWallet(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<Memory> message, string actionName, std::shared_ptr<HandlerCallback> callback = undefined);
+RET getEntityWallet(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<Memory> message, std::string actionName, std::shared_ptr<HandlerCallback> callback = undefined);
 
 template <typename RET>
-RET getEntityWallet(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<Memory> message, string actionName, std::shared_ptr<HandlerCallback> callback)
+RET getEntityWallet(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<Memory> message, std::string actionName, std::shared_ptr<HandlerCallback> callback)
 {
     try
     {
@@ -164,7 +164,7 @@ RET getEntityWallet(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<Memo
             }}
         };
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Error getting entity wallet address:"), (is<Error>(error)) ? error->message : String(error));
         auto errorText = std::string("Failed to retrieve wallet information.");

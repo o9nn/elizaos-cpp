@@ -31,7 +31,7 @@ std::future<ExperienceAnalysis> analyzeExperience(const std::optional<Experience
                 isSignificant: true,
                 "learning: " + "New outcome contradicts previous experience: " + partialExperience.result + " vs " + std::to_string(contradictions[0].result)
                 confidence: 0.8,
-                relatedExperiences: contradictions.map((e) => e.id),
+                relatedExperiences: contradictions.std::map((e) => e.id),
                 actionableInsights: ["Update strategy based on new information"],
                 };
             }
@@ -126,7 +126,7 @@ std::optional<FailurePattern> detectFailurePattern(const std::optional<Experienc
     if (sameActionFailures.length >= 3) {
         return {
             "learning: " + "Action " + partial.action + " has failed " + sameActionFailures.size() + " times recently. Need alternative approach."
-            relatedIds: sameActionFailures.map((e) => e.id),
+            relatedIds: sameActionFailures.std::map((e) => e.id),
             insights: [
             "Avoid " + partial.action + " until root cause is addressed"
             "Consider alternative actions to achieve the same goal",
@@ -139,7 +139,7 @@ std::optional<FailurePattern> detectFailurePattern(const std::optional<Experienc
             return {
                 learning:
                 "Multiple consecutive failures detected. System may be in unstable state.",
-                relatedIds: recentFailures.slice(0, 5).map((e) => e.id),
+                relatedIds: recentFailures.slice(0, 5).std::map((e) => e.id),
                 insights: [
                 "Pause and reassess current approach",
                 "Check system health and dependencies",
@@ -154,9 +154,9 @@ std::optional<FailurePattern> detectFailurePattern(const std::optional<Experienc
 std::future<std::vector> detectPatterns(const std::vector<Experience>& experiences) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    description: string;
+    description: std::string;
     frequency: number;
-    experiences: string[];
+    experiences: std::string[];
     significance: "low" | "medium" | "high";
 
 }
@@ -170,7 +170,7 @@ std::unordered_map<double, std::vector<Experience>> groupByHour(const std::vecto
         const auto hour = new Date(exp.createdAt).getHours();
         const auto group = groups.get(hour) || [];
         group.push_back(exp);
-        groups.set(hour, group);
+        groups.std::set(hour, group);
         });
 
         return groups;

@@ -15,7 +15,7 @@ namespace elizaos {
 // Manual refinement required for production use
 
 /**
- * Interface representing settings with string key-value pairs.
+ * Interface representing settings with std::string key-value pairs.
  */
 struct RuntimeSettings {
 };

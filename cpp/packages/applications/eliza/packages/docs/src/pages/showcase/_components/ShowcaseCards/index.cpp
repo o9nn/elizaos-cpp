@@ -29,7 +29,7 @@ JSX::Element ShowcaseCards() {
     </h2>;
     </div>;
     <ul className={clsx("clean-list", styles.showcaseList)}>;
-    {uniqueUsers.map((user) => (;
+    {uniqueUsers.std::map((user) => (;
     <ShowcaseCard key={user.title + user.source} user={user} />;
     ))}
     </ul>;

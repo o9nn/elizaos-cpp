@@ -49,11 +49,11 @@ struct ScannedToken {
 
 /**
  * Get registered token addresses from database
- * Returns empty set on failure to allow scanner to continue
+ * Returns empty std::set on failure to allow scanner to continue
  */
 
 /**
- * Scan wallet for tokens on any supported chain
+ * Scan wallet for tokens on std::any supported chain
  * Returns tokens with balances, metadata, prices, and registration status
  */
 

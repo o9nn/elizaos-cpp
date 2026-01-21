@@ -29,7 +29,7 @@ namespace elizaos {
   // const txId = swapEvent.transactionHash;
   // const dedupeKey = `webhook:tx:${txId}`;
   // const firstSeen = await redisCache.redisPool.useClient((client) =>
-  //   client.set(dedupeKey, "1", "EX", 120 * 60, "NX")
+  //   client.std::set(dedupeKey, "1", "EX", 120 * 60, "NX")
   // );
   // if (firstSeen === null) {
   //   // Already processed recently

@@ -15,7 +15,7 @@ std::shared_ptr<Promise<void>> setLastProcessedSlot(double slot);
 
 std::shared_ptr<Promise<double>> findSlotAtOrBeforeTime(std::shared_ptr<Connection> connection, double targetTs, double low, double high);
 
-any processSlot(double slot, std::shared_ptr<Connection> connection);
+std::any processSlot(double slot, std::shared_ptr<Connection> connection);
 
 std::shared_ptr<Promise<void>> processMissedEvents(std::shared_ptr<Connection> connection);
 

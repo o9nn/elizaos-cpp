@@ -27,14 +27,14 @@ struct ClientMetadata {
 
 class WebSocketManager {
   // Maps clientId to our metadata object
-  private clients: Map<string, ClientMetadata> = new Map();
+  private clients: Map<std::string, ClientMetadata> = new Map();
   // Local cache of room -> Set<clientId> (for efficient local broadcasting)
-  private localRoomClients: Map<string, Set<string>> = new Map();
+  private localRoomClients: Map<std::string, Set<string>> = new Map();
   private heartbeatInterval: NodeJS.Timeout | null = null;
   redisCache: RedisCacheService | null = null;
 
   // --- Redis Key Helper ---
-  private async redisKey(rawKey: string): Promise<string> {
+  private std::async redisKey(rawKey: std::string): Promise<string> {
     if (!this.redisCache) {
       this.redisCache = await getGlobalRedisCache();
     }
@@ -50,10 +50,10 @@ class WebSocketManager {
   // --- Connection Handling (Called by Hono route/adapter) ---
 
   // --- Message Handling (Called by Hono route/adapter or event listener) ---
-      // Convert message data to string for JSON parsing
+      // Convert message data to std::string for JSON parsing
       // Extract clientId from the parsed message
 
-          // Heartbeat handled by isAlive flag set above
+          // Heartbeat handled by isAlive flag std::set above
 
   // Helper for room events to avoid repetition
 

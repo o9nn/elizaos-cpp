@@ -43,7 +43,7 @@ std::any stripAbspathFromDict(const std::any& value, std::optional<std::string> 
 /**
  * Convert paths array to absolute paths
  */
-std::vector<path::ParsedPath> convertPathsToAbspath(const std::variant<Array<string, path::ParsedPath>>& paths);
+std::vector<path::ParsedPath> convertPathsToAbspath(const std::variant<Array<std::string, path::ParsedPath>>& paths);
 
 /**
  * Load environment variables from .env file

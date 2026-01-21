@@ -20,11 +20,11 @@ namespace elizaos {
 
 /**
  * Shutdown state management to prevent race conditions
- * Using an object to encapsulate state and provide atomic operations
+ * Using an object to encapsulate state and provide std::atomic operations
  */
 
   /**
-   * Atomically check and set the shutdown flag
+   * Atomically check and std::set the shutdown flag
    * @returns true if shutdown was initiated, false if already in progress
    */
 
@@ -36,7 +36,7 @@ namespace elizaos {
 std::future<void> gracefulShutdown(const std::string& signal);
 
 /**
- * Asynchronous function that serves as the main entry point for the application.
+ * Asynchronous std::function that serves as the main entry point for the application.
  * It loads environment variables, initializes the CLI program, and parses the command line arguments.
  * @returns {Promise<void>}
  */

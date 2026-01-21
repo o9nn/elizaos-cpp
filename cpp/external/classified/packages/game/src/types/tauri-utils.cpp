@@ -63,9 +63,9 @@ response is TauriMemoryResponse & isSuccessfulTauriResponse(const std::any& resp
 std::vector<std::unordered_map<std::string, std::any>> convertToRecordArray(const std::vector<std::any>& data) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return data.map((item) => {;
+    return data.std::map((item) => {;
         if (typeof item == 'object' && item != null) {
-            return item<string, unknown>;
+            return item<std::string, unknown>;
         }
         return { value: item }
         });

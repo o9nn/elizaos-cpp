@@ -7,83 +7,83 @@ class Env;
 class Env : public object, public std::enable_shared_from_this<Env> {
 public:
     using std::enable_shared_from_this<Env>::shared_from_this;
-    string NETWORK;
+    std::string NETWORK;
 
-    string DECIMALS;
+    std::string DECIMALS;
 
-    string TOKEN_SUPPLY;
+    std::string TOKEN_SUPPLY;
 
-    string VIRTUAL_RESERVES;
+    std::string VIRTUAL_RESERVES;
 
-    string CURVE_LIMIT;
+    std::string CURVE_LIMIT;
 
-    string EXECUTOR_PRIVATE_KEY;
+    std::string EXECUTOR_PRIVATE_KEY;
 
-    string CODEX_API_KEY;
+    std::string CODEX_API_KEY;
 
-    string API_URL;
+    std::string API_URL;
 
-    string FAL_API_KEY;
+    std::string FAL_API_KEY;
 
-    string LOCAL_DEV;
+    std::string LOCAL_DEV;
 
-    string NODE_ENV;
+    std::string NODE_ENV;
 
-    string JWT_SECRET;
+    std::string JWT_SECRET;
 
-    string RPC_URL;
+    std::string RPC_URL;
 
-    string MAINNET_SOLANA_RPC_URL;
+    std::string MAINNET_SOLANA_RPC_URL;
 
-    string DEVNET_SOLANA_RPC_URL;
+    std::string DEVNET_SOLANA_RPC_URL;
 
-    string DEVNET_PROGRAM_ID;
+    std::string DEVNET_PROGRAM_ID;
 
-    string PROGRAM_ID;
+    std::string PROGRAM_ID;
 
-    string tokenPubkey;
+    std::string tokenPubkey;
 
-    string AUTH_TOKEN_SALT;
+    std::string AUTH_TOKEN_SALT;
 
-    string DEVNET_FRONTEND_URL;
+    std::string DEVNET_FRONTEND_URL;
 
-    string MAINNET_FRONTEND_URL;
+    std::string MAINNET_FRONTEND_URL;
 
-    string TWITTER_BEARER_TOKEN;
+    std::string TWITTER_BEARER_TOKEN;
 
-    string TWITTER_CLIENT_ID;
+    std::string TWITTER_CLIENT_ID;
 
-    string TWITTER_API_KEY;
+    std::string TWITTER_API_KEY;
 
-    string TWITTER_API_SECRET;
+    std::string TWITTER_API_SECRET;
 
-    string TWITTER_ACCESS_TOKEN_SECRET;
+    std::string TWITTER_ACCESS_TOKEN_SECRET;
 
-    string TWITTER_ACCESS_TOKEN;
+    std::string TWITTER_ACCESS_TOKEN;
 
-    string NEWS_API_KEY;
+    std::string NEWS_API_KEY;
 
-    string PREGENERATED_TOKENS_COUNT;
+    std::string PREGENERATED_TOKENS_COUNT;
 
-    string HELIUS_WEBHOOK_AUTH_TOKEN;
+    std::string HELIUS_WEBHOOK_AUTH_TOKEN;
 
-    string ADMIN_ADDRESSES;
+    std::string ADMIN_ADDRESSES;
 
-    string MANAGER_MULTISIG_ADDRESS;
+    std::string MANAGER_MULTISIG_ADDRESS;
 
-    string FIXED_FEE;
+    std::string FIXED_FEE;
 
-    string FEE_WALLET;
+    std::string FEE_WALLET;
 
-    string DATABASE_URL;
+    std::string DATABASE_URL;
 
-    string REDIS_HOST;
+    std::string REDIS_HOST;
 
-    string REDIS_PORT;
+    std::string REDIS_PORT;
 
-    string REDIS_PASSWORD;
+    std::string REDIS_PASSWORD;
 
-    string ALLOWED_ORIGINS;
+    std::string ALLOWED_ORIGINS;
 };
 
 #endif

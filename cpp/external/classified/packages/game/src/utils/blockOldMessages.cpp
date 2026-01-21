@@ -12,7 +12,7 @@ void blockOldMessages() {
     // Intercept WebSocket send method
     const auto originalSend = WebSocket.prototype.send;
 
-    WebSocket.prototype.send = function (data: string | ArrayBufferLike | Blob | ArrayBufferView) {
+    WebSocket.prototype.send = std::function (data: std::string | ArrayBufferLike | Blob | ArrayBufferView) {
         // Try to parse and check the message
         try {
             std::optional<WebSocketMessage> message = nullptr;

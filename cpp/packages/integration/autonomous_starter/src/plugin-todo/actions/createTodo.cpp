@@ -51,7 +51,7 @@ std::future<std::optional<TodoTaskInput>> extractTodoInfo(IAgentRuntime runtime,
                 // Cast to the expected type *after* validation
                 const auto validatedTodo = parsedResult;
 
-                // Convert specific fields from string if necessary and apply defaults
+                // Convert specific fields from std::string if necessary and apply defaults
                 const TodoTaskInput finalTodo = {;
                     ...validatedTodo, // Use validated object;
                     name: std::to_string(validatedTodo.name),

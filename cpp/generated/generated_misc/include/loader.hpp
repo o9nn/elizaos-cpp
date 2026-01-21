@@ -13,17 +13,17 @@ using serverLoadCharacters = loadCharacters;
 #include "../../../characters/eliza.h"
 using defaultCharacter = character;
 
-any tryLoadFile(string filePath);
+std::any tryLoadFile(std::string filePath);
 
-std::shared_ptr<Promise<array<std::shared_ptr<Character>>>> loadCharactersFromUrl(string url);
+std::shared_ptr<Promise<array<std::shared_ptr<Character>>>> loadCharactersFromUrl(std::string url);
 
-std::shared_ptr<Promise<std::shared_ptr<Character>>> jsonToCharacter(any character);
+std::shared_ptr<Promise<std::shared_ptr<Character>>> jsonToCharacter(std::any character);
 
-std::shared_ptr<Promise<std::shared_ptr<Character>>> loadCharacter(string filePath);
+std::shared_ptr<Promise<std::shared_ptr<Character>>> loadCharacter(std::string filePath);
 
-std::shared_ptr<Promise<std::shared_ptr<Character>>> loadCharacterTryPath(string characterPath);
+std::shared_ptr<Promise<std::shared_ptr<Character>>> loadCharacterTryPath(std::string characterPath);
 
-extern std::function<any()> hasValidRemoteUrls;
-std::shared_ptr<Promise<array<std::shared_ptr<Character>>>> loadCharacters(string charactersArg);
+extern std::function<std::any()> hasValidRemoteUrls;
+std::shared_ptr<Promise<array<std::shared_ptr<Character>>>> loadCharacters(std::string charactersArg);
 
 #endif

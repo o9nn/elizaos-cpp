@@ -4,7 +4,7 @@
 #include "@elizaos/core.h"
 #include "@elizaos/core.h"
 
-extern string AUTO_WORLD_SEED;
-extern string AUTO_ROOM_SEED;
+extern std::string AUTO_WORLD_SEED;
+extern std::string AUTO_ROOM_SEED;
 extern std::shared_ptr<Provider> autonomousWorldProvider;
 #endif

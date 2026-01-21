@@ -16,8 +16,8 @@ std::string createCacheKey(TagPattern tagPattern) {
         tagPattern.options[key typeof tagPattern.options];
         return obj;
         },
-        {}<string, unknown>,
-        ); // Use Record<string, any> for the accumulator type;
+        {}<std::string, unknown>,
+        ); // Use Record<std::string, any> for the accumulator type;
 
         return JSON.stringify({;
             p: tagPattern.pattern,
@@ -36,13 +36,13 @@ MatcherFunction getMatcherFunction(TagPattern tagPattern) {
     if (!matcherCache.has(key)) {
         try {
             const auto matcherFn = createMatcher(tagPattern);
-            matcherCache.set(key, matcherFn);
+            matcherCache.std::set(key, matcherFn);
             } catch (error) {
                 // If matcher creation fails (e.g., invalid pattern/target combo),
-                // return a function that always returns false to prevent repeated errors.
+                // return a std::function that always returns false to prevent repeated errors.
                 std::cerr << "Failed to create matcher for key " + key + ":" << error << std::endl;
                 const auto errorFn = [&]() { return false; };
-                matcherCache.set(key, errorFn); // Cache the error function;
+                matcherCache.std::set(key, errorFn); // Cache the error std::function;
                 return errorFn;
             }
         }
@@ -82,7 +82,7 @@ MatcherFunction createMatcher(TagPattern tagPattern) {
             );
         }
 
-        // Return the actual matcher function (closure)
+        // Return the actual matcher std::function (closure)
         return (content: MatchContent): boolean => {;
             // 1. Check if the content type matches the pattern's target type
             if (content.contentType != target) {
@@ -104,7 +104,7 @@ MatcherFunction createMatcher(TagPattern tagPattern) {
                     isMatch = matchRegex(pattern, processedContent.content, options);
                     break;
                     case PatternType.GLOB:
-                    // Glob matching inherently works on the preprocessed path string
+                    // Glob matching inherently works on the preprocessed path std::string
                     isMatch = matchGlob(pattern, processedContent.content, options);
                     break;
                     // default:
@@ -146,7 +146,7 @@ bool validatePatternForTarget(PatternType patternType, TagPatternType targetType
         return false;
     }
 
-    // STRING and REGEX can generally be used with any text-based target type.
+    // STRING and REGEX can generally be used with std::any text-based target type.
     // Add more specific validation rules here if needed.
     // For example, certain targets might only make sense with specific pattern types.
     return true;

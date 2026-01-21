@@ -155,7 +155,7 @@ void Main(void)
                 }, 
                 object::pair{std::string("useModel"), [=]() mutable
                 {
-                    throw any(std::make_shared<Error>(std::string("Model not available")));
+                    throw std::any(std::make_shared<Error>(std::string("Model not available")));
                 }
                 }
             };
@@ -173,7 +173,7 @@ void Main(void)
                 std::async([=]() { proxy->processRequest(claudeRequest); });
                 expect(true)->toBe(false);
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 expect(error)->toBeDefined();
                 expect(error["message"])->toContain(std::string("Model not available"));

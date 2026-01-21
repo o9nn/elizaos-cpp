@@ -23,7 +23,7 @@ namespace elizaos {
  * Represents the result returned by a provider.
  * @typedef {Object} ProviderResult
  * @property {any} [data] - The data associated with the result.
- * @property {Record<string, string>} [values] - The values stored in key-value pairs.
+ * @property {Record<std::string, string>} [values] - The values stored in key-value pairs.
  * @property {string} [text] - The text content of the result.
  */
 struct ProviderResult {

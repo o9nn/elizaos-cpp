@@ -26,7 +26,7 @@ object ElizaOSServicesRuntimeTestSuite = object{
             console->log(std::string("🧪 Running real runtime integration test..."));
             auto service = runtime->getService(std::string("elizaos-services"));
             if (!service) {
-                throw any(std::make_shared<Error>(std::string("ElizaOS Services plugin not loaded in runtime")));
+                throw std::any(std::make_shared<Error>(std::string("ElizaOS Services plugin not loaded in runtime")));
             }
             try
             {
@@ -34,17 +34,17 @@ object ElizaOSServicesRuntimeTestSuite = object{
                     object::pair{std::string("text"), std::string("Test embedding")}
                 }); });
                 if (OR((!Array->isArray(embedding)), (embedding->get_length() == 0))) {
-                    throw any(std::make_shared<Error>(std::string("Invalid embedding response")));
+                    throw std::any(std::make_shared<Error>(std::string("Invalid embedding response")));
                 }
                 console->log(std::string("✅ Real runtime integration test passed"));
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 if (OR(((as<std::shared_ptr<Error>>(error))->message->includes(std::string("fetch"))), ((as<std::shared_ptr<Error>>(error))->message->includes(std::string("ECONNREFUSED"))))) {
                     console->log(std::string("⚠️  API service not running - test considered passing for development"));
                     return std::shared_ptr<Promise<void>>();
                 }
-                throw any(error);
+                throw std::any(error);
             }
         }
         }
@@ -63,10 +63,10 @@ void Main(void)
             {
                 console->log(std::string("ℹ️  Skipping full runtime initialization - requires SQL plugin and database"));
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("❌ Failed to initialize runtime:"), error);
-                throw any(error);
+                throw std::any(error);
             }
         }
         );
@@ -109,14 +109,14 @@ void Main(void)
                 expect(type_of(const_(embedding)[0]))->toBe(std::string("number"));
                 console->log(std::string("✅ Embedding generated successfully: ") + embedding["length"] + std::string(" dimensions"));
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("❌ Embedding test failed:"), error);
                 if (OR(((as<std::shared_ptr<Error>>(error))->message->includes(std::string("fetch"))), ((as<std::shared_ptr<Error>>(error))->message->includes(std::string("ECONNREFUSED"))))) {
                     console->log(std::string("⚠️  API service not running - test skipped"));
                     return std::shared_ptr<Promise<void>>();
                 }
-                throw any(error);
+                throw std::any(error);
             }
         }
         );
@@ -138,14 +138,14 @@ void Main(void)
                 expect(response["length"])->toBeGreaterThan(0);
                 console->log(std::string("✅ Small model response: "") + response + std::string("""));
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("❌ Small text generation test failed:"), error);
                 if (OR(((as<std::shared_ptr<Error>>(error))->message->includes(std::string("fetch"))), ((as<std::shared_ptr<Error>>(error))->message->includes(std::string("ECONNREFUSED"))))) {
                     console->log(std::string("⚠️  API service not running - test skipped"));
                     return std::shared_ptr<Promise<void>>();
                 }
-                throw any(error);
+                throw std::any(error);
             }
         }
         );
@@ -168,20 +168,20 @@ void Main(void)
                 expect(response["length"])->toBeGreaterThan(10);
                 console->log(std::string("✅ Large model response: "") + response["substring"](0, 100) + std::string("...""));
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("❌ Large text generation test failed:"), error);
                 if (OR(((as<std::shared_ptr<Error>>(error))->message->includes(std::string("fetch"))), ((as<std::shared_ptr<Error>>(error))->message->includes(std::string("ECONNREFUSED"))))) {
                     console->log(std::string("⚠️  API service not running - test skipped"));
                     return std::shared_ptr<Promise<void>>();
                 }
-                throw any(error);
+                throw std::any(error);
             }
         }
         );
         test->skip(std::string("Object generation model works in runtime"), [=]() mutable
         {
-            auto testPrompt = std::string("Generate a JSON object with fields: name (string), age (number), active (boolean). Use realistic values.");
+            auto testPrompt = std::string("Generate a JSON object with fields: name (std::string), age (number), active (boolean). Use realistic values.");
             console->log(std::string("🧪 Testing object generation with real runtime..."));
             try
             {
@@ -202,14 +202,14 @@ void Main(void)
                 }
                 console->log(std::string("✅ Object generation successful:"), response);
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("❌ Object generation test failed:"), error);
                 if (OR(((as<std::shared_ptr<Error>>(error))->message->includes(std::string("fetch"))), ((as<std::shared_ptr<Error>>(error))->message->includes(std::string("ECONNREFUSED"))))) {
                     console->log(std::string("⚠️  API service not running - test skipped"));
                     return std::shared_ptr<Promise<void>>();
                 }
-                throw any(error);
+                throw std::any(error);
             }
         }
         );
@@ -230,19 +230,19 @@ void Main(void)
                     console->log(std::string("✅ Image description (object):"), response);
                 } else if (type_of(response) == std::string("string")) {
                     expect((as<string>(response))->get_length())->toBeGreaterThan(10);
-                    console->log(std::string("✅ Image description (string): "") + (as<string>(response))->substring(0, 100) + std::string("...""));
+                    console->log(std::string("✅ Image description (std::string): "") + (as<string>(response))->substring(0, 100) + std::string("...""));
                 } else {
-                    throw any(std::make_shared<Error>(std::string("Unexpected response format")));
+                    throw std::any(std::make_shared<Error>(std::string("Unexpected response format")));
                 }
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("❌ Image description test failed:"), error);
                 if (OR(((as<std::shared_ptr<Error>>(error))->message->includes(std::string("fetch"))), ((as<std::shared_ptr<Error>>(error))->message->includes(std::string("ECONNREFUSED"))))) {
                     console->log(std::string("⚠️  API service not running - test skipped"));
                     return std::shared_ptr<Promise<void>>();
                 }
-                throw any(error);
+                throw std::any(error);
             }
         }
         );
@@ -280,7 +280,7 @@ void Main(void)
                         std::async([=]() { storage["deleteFile"](testKey); });
                         console->log(std::string("✅ Test file cleaned up: ") + testKey + string_empty);
                     }
-                    catch (const any& storageError)
+                    catch (const std::any& storageError)
                     {
                         console->warn(std::string("⚠️  Storage operations failed (expected if not configured):"), (as<std::shared_ptr<Error>>(storageError))->message);
                     }
@@ -288,10 +288,10 @@ void Main(void)
                     console->log(std::string("⚠️  Storage not configured - skipping storage operation tests"));
                 }
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("❌ Storage service test failed:"), error);
-                throw any(error);
+                throw std::any(error);
             }
         }
         );
@@ -308,7 +308,7 @@ void Main(void)
                     object::pair{std::string("prompt"), std::string("test")}
                 }); });
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 expect(error)->toBeInstanceOf(Error);
                 expect((as<std::shared_ptr<Error>>(error))->message)->toBeDefined();
@@ -322,7 +322,7 @@ void Main(void)
                 expect(Array->isArray(embedding))->toBe(true);
                 console->log(std::string("✅ Empty input handled gracefully"));
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->log(std::string("✅ Empty input error handled:"), (as<std::shared_ptr<Error>>(error))->message);
             }

@@ -63,7 +63,7 @@ std::future<void> main() {
 
                 std::cout << "✅ Desk initialized. Tx:" << tx << std::endl;
                 } catch (e: unknown) {
-                    const auto error = e & { logs?: string[] };
+                    const auto error = e & { logs?: std::string[] };
                     std::cout << "⚠️  Desk init error (might be already initialized):" << error.message << std::endl;
                     if (error.logs) console.log("Logs:", error.logs);
                 }

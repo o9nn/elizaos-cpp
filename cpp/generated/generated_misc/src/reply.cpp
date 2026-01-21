@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-bootstrap/src/templates/reply.h"
 
-string replyTemplate = std::string("# Task: Generate dialog for the character {{agentName}}.\
+std::string replyTemplate = std::string("# Task: Generate dialog for the character {{agentName}}.\
 \
 {{providers}}\
 \
@@ -11,11 +11,11 @@ string replyTemplate = std::string("# Task: Generate dialog for the character {{
 IMPORTANT CODE BLOCK FORMATTING RULES:\
 - If {{agentName}} includes code examples, snippets, or multi-line code in the response, ALWAYS wrap the code with ``` fenced code blocks (specify the language if known, e.g., ```python).\
 - ONLY use fenced code blocks for actual code. Do NOT wrap non-code text, instructions, or single words in fenced code blocks.\
-- If including inline code (short single words or function names), use single backticks (`) as appropriate.\
+- If including inline code (short single words or std::function names), use single backticks (`) as appropriate.\
 - This ensures the user sees clearly formatted and copyable code when relevant.\
 \
-Do NOT include any thinking, reasoning, or <think> sections in your response. \
-Go directly to the XML response format without any preamble or explanation.\
+Do NOT include std::any thinking, reasoning, or <think> sections in your response. \
+Go directly to the XML response format without std::any preamble or explanation.\
 \
 Respond using XML format like this:\
 <response>\
@@ -23,7 +23,7 @@ Respond using XML format like this:\
     <message>Your message here</message>\
 </response>\
 \
-IMPORTANT: Your response must ONLY contain the <response></response> XML block above. Do not include any text, thinking, or reasoning before or after this XML block. Start your response immediately with <response> and end with </response>.");
+IMPORTANT: Your response must ONLY contain the <response></response> XML block above. Do not include std::any text, thinking, or reasoning before or after this XML block. Start your response immediately with <response> and end with </response>.");
 
 void Main(void)
 {

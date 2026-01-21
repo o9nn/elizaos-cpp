@@ -11,7 +11,7 @@ void PluginsPanel(auto setCharacterValue, auto initialPlugins) {
     const auto { toast } = useToast();
     const auto [searchQuery, setSearchQuery] = useState("");
     const auto [isDialogOpen, setIsDialogOpen] = useState(false);
-    const auto [pendingRemoval, setPendingRemoval] = useState<string | nullptr>(nullptr);
+    const auto [pendingRemoval, setPendingRemoval] = useState<std::string | nullptr>(nullptr);
     const auto [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
 
     // Ensure we always have arrays and normalize plugin names
@@ -75,7 +75,7 @@ void PluginsPanel(auto setCharacterValue, auto initialPlugins) {
                             .filter((plugin) => plugin.toLowerCase().includes(searchQuery.toLowerCase()));
                             }, [pluginNames, safeCharacterPlugins, searchQuery]);
 
-                            const auto handlePluginAdd = [&](plugin: string) {;
+                            const auto handlePluginAdd = [&](plugin: std::string) {;
                                 if (safeCharacterPlugins.includes(plugin)) return;
 
                                 if (setCharacterValue.addPlugin) {
@@ -88,7 +88,7 @@ void PluginsPanel(auto setCharacterValue, auto initialPlugins) {
                                     }
                                     };
 
-                                    const auto handlePluginRemove = [&](plugin: string) {;
+                                    const auto handlePluginRemove = [&](plugin: std::string) {;
                                         // Check if it's an essential plugin that needs confirmation
                                         if (Object.keys(ESSENTIAL_PLUGINS).includes(plugin)) {
                                             setPendingRemoval(plugin);
@@ -101,7 +101,7 @@ void PluginsPanel(auto setCharacterValue, auto initialPlugins) {
                                         };
 
                                         // Actual plugin removal after confirmation (if required)
-                                        const auto removePlugin = [&](plugin: string) {;
+                                        const auto removePlugin = [&](plugin: std::string) {;
                                             const auto index = safeCharacterPlugins.indexOf(plugin);
                                             if (index != -1) {
                                                 if (setCharacterValue.removePlugin) {
@@ -203,7 +203,7 @@ void PluginsPanel(auto setCharacterValue, auto initialPlugins) {
                                         if (aIsEssential == bIsEssential) return 0;
                                         return aIsEssential ? -1 : 1;
                                         });
-                                        .map((plugin) => {
+                                        .std::map((plugin) => {
                                             // Check if this plugin is required by the current voice model
                                             const auto isRequiredByVoice = voiceModelPluginInfo.requiredPlugin == plugin;
                                             // Check if this is an essential plugin (SQL or OpenAI)
@@ -289,7 +289,7 @@ void PluginsPanel(auto setCharacterValue, auto initialPlugins) {
                     {filteredPlugins.size() == 0 ? (;
                     <p className="text-sm text-muted-foreground">No plugins found.</p>;
                     ) : (
-                    filteredPlugins.map((plugin) => (;
+                    filteredPlugins.std::map((plugin) => (;
                     <Button;
                 key={plugin}
                 variant="ghost";

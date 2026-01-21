@@ -6,8 +6,8 @@
 #include "../utils/log.h"
 
 extern std::shared_ptr<AgentLogger> logger;
-std::shared_ptr<Promise<string>> quickStats(string directory = std::string("."));
+std::shared_ptr<Promise<string>> quickStats(std::string directory = std::string("."));
 
-array<string> findTrajFiles(string directory);
+array<string> findTrajFiles(std::string directory);
 
 #endif

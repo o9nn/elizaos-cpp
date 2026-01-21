@@ -66,7 +66,7 @@ std::future<void> main() {
             configLogger.info("Listening on stdio");
 
             // Handle graceful shutdown
-            const auto shutdown = async (signal: string) => {;
+            const auto shutdown = std::async (signal: std::string) => {;
                 "configLogger.info(" + "Received " + signal + ", shutting down gracefully...";
                 try {
                     gateway.stop();

@@ -25,12 +25,12 @@ public:
     virtual std::shared_ptr<Promise<void>> handleVisionActionPerformed(object params);
     virtual std::shared_ptr<Promise<void>> handleMicrophoneUsed(object _params);
     virtual std::shared_ptr<Promise<void>> handleCapabilityUsed(object params);
-    virtual std::shared_ptr<Promise<void>> trackShellCommand(string command, double exitCode);
-    virtual std::shared_ptr<Promise<void>> trackGoalCreation(Record<string, any> goalData);
-    virtual std::shared_ptr<Promise<void>> trackTodoCreation(Record<string, any> todoData);
-    virtual std::shared_ptr<Promise<void>> trackAgentNaming(string name);
-    virtual std::shared_ptr<Promise<void>> trackAction(string actionType, Record<string, any> details = undefined);
-    virtual Record<string, any> getProgressionStatus();
+    virtual std::shared_ptr<Promise<void>> trackShellCommand(std::string command, double exitCode);
+    virtual std::shared_ptr<Promise<void>> trackGoalCreation(Record<std::string, any> goalData);
+    virtual std::shared_ptr<Promise<void>> trackTodoCreation(Record<std::string, any> todoData);
+    virtual std::shared_ptr<Promise<void>> trackAgentNaming(std::string name);
+    virtual std::shared_ptr<Promise<void>> trackAction(std::string actionType, Record<std::string, any> details = undefined);
+    virtual Record<std::string, any> getProgressionStatus();
     virtual void cleanup();
 };
 

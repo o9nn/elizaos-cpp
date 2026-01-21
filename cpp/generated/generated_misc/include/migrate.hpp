@@ -22,14 +22,14 @@ public:
 
     double folderMillis;
 
-    string hash;
+    std::string hash;
 };
 
-extern std::function<void(any, any, any)> customMigrate;
-extern string dbPath;
-extern any dbDir;
-extern any sqlite;
-extern any db;
-extern string maxMigrationArg;
-extern any maxMigration;
+extern std::function<void(std::any, std::any, std::any)> customMigrate;
+extern std::string dbPath;
+extern std::any dbDir;
+extern std::any sqlite;
+extern std::any db;
+extern std::string maxMigrationArg;
+extern std::any maxMigration;
 #endif

@@ -34,7 +34,7 @@ namespace elizaos {
 // Default wallet for testing (DO NOT use in production with real funds)
 
 /**
- * Main agent function
+ * Main agent std::function
  */
 std::future<void> main();
 

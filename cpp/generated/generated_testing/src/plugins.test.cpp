@@ -40,7 +40,7 @@ void Main(void)
                         object::pair{std::string("recursive"), true}
                     }); });
                 }
-                catch (const any& e)
+                catch (const std::any& e)
                 {
                 }
             }
@@ -102,12 +102,12 @@ void Main(void)
                 auto packageJson = std::async([=]() { readFile(join(projectDir, std::string("package.json")), std::string("utf8")); });
                 expect(packageJson)->toContain(std::string("@elizaos/plugin-xmtp"));
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("[ERROR] Plugin installation failed:"), error["message"]);
                 console->error(std::string("[ERROR] stdout:"), OR((error["stdout"]["toString"]()), (std::string("none"))));
                 console->error(std::string("[ERROR] stderr:"), OR((error["stderr"]["toString"]()), (std::string("none"))));
-                throw any(error);
+                throw std::any(error);
             }
         }
         , TEST_TIMEOUTS["INDIVIDUAL_TEST"]);
@@ -123,12 +123,12 @@ void Main(void)
                 auto packageJson = std::async([=]() { readFile(join(projectDir, std::string("package.json")), std::string("utf8")); });
                 expect(packageJson)->toContain(std::string("@elizaos/plugin-mcp"));
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("[ERROR] Plugin installation failed:"), error["message"]);
                 console->error(std::string("[ERROR] stdout:"), OR((error["stdout"]["toString"]()), (std::string("none"))));
                 console->error(std::string("[ERROR] stderr:"), OR((error["stderr"]["toString"]()), (std::string("none"))));
-                throw any(error);
+                throw std::any(error);
             }
         }
         , TEST_TIMEOUTS["INDIVIDUAL_TEST"]);
@@ -144,12 +144,12 @@ void Main(void)
                 auto packageJson = std::async([=]() { readFile(join(projectDir, std::string("package.json")), std::string("utf8")); });
                 expect(packageJson)->toContain(std::string("@fleek-platform/eliza-plugin-mcp"));
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("[ERROR] Plugin installation failed:"), error["message"]);
                 console->error(std::string("[ERROR] stdout:"), OR((error["stdout"]["toString"]()), (std::string("none"))));
                 console->error(std::string("[ERROR] stderr:"), OR((error["stderr"]["toString"]()), (std::string("none"))));
-                throw any(error);
+                throw std::any(error);
             }
         }
         , TEST_TIMEOUTS["INDIVIDUAL_TEST"]);
@@ -172,12 +172,12 @@ void Main(void)
                 auto packageJson2 = std::async([=]() { readFile(join(projectDir, std::string("package.json")), std::string("utf8")); });
                 expect(packageJson2)->toContain(std::string("plugin-openrouter"));
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("[ERROR] GitHub plugin installation failed:"), error["message"]);
                 console->error(std::string("[ERROR] stdout:"), OR((error["stdout"]["toString"]()), (std::string("none"))));
                 console->error(std::string("[ERROR] stderr:"), OR((error["stderr"]["toString"]()), (std::string("none"))));
-                throw any(error);
+                throw std::any(error);
             }
         }
         , TEST_TIMEOUTS["INDIVIDUAL_TEST"]);
@@ -208,12 +208,12 @@ void Main(void)
                 packageJson = std::async([=]() { readFile(join(projectDir, std::string("package.json")), std::string("utf8")); });
                 expect(packageJson)->not->toContain(std::string("@elizaos/plugin-elevenlabs"));
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("[ERROR] Plugin remove failed:"), error["message"]);
                 console->error(std::string("[ERROR] stdout:"), OR((error["stdout"]["toString"]()), (std::string("none"))));
                 console->error(std::string("[ERROR] stderr:"), OR((error["stderr"]["toString"]()), (std::string("none"))));
-                throw any(error);
+                throw std::any(error);
             }
         }
         , TEST_TIMEOUTS["INDIVIDUAL_TEST"]);
@@ -240,12 +240,12 @@ void Main(void)
                     });
                 }
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("[ERROR] Plugin remove aliases failed:"), error["message"]);
                 console->error(std::string("[ERROR] stdout:"), OR((error["stdout"]["toString"]()), (std::string("none"))));
                 console->error(std::string("[ERROR] stderr:"), OR((error["stderr"]["toString"]()), (std::string("none"))));
-                throw any(error);
+                throw std::any(error);
             }
         }
         , TEST_TIMEOUTS["INDIVIDUAL_TEST"]);
@@ -260,7 +260,7 @@ void Main(void)
                 });
                 expect(false)->toBe(true);
             }
-            catch (const any& e)
+            catch (const std::any& e)
             {
                 expect(e["status"])->not->toBe(0);
                 auto output = OR((OR((e["stdout"]["toString"]()), (e["stderr"]["toString"]()))), (string_empty));
@@ -280,12 +280,12 @@ void Main(void)
                 auto packageJson = std::async([=]() { readFile(join(projectDir, std::string("package.json")), std::string("utf8")); });
                 expect(packageJson)->toContain(std::string("github:elizaos-plugins/plugin-farcaster#1.x"));
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("[ERROR] GitHub shorthand plugin installation failed:"), error["message"]);
                 console->error(std::string("[ERROR] stdout:"), OR((error["stdout"]["toString"]()), (std::string("none"))));
                 console->error(std::string("[ERROR] stderr:"), OR((error["stderr"]["toString"]()), (std::string("none"))));
-                throw any(error);
+                throw std::any(error);
             }
         }
         , TEST_TIMEOUTS["INDIVIDUAL_TEST"]);

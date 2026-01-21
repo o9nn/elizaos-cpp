@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/discrub-ext/src/app/store.h"
 
-any store = configureStore(object{
+std::any store = configureStore(object{
     object::pair{std::string("reducer"), object{
         object::pair{std::string("app"), appReducer}, 
         object::pair{std::string("channel"), channelReducer}, 

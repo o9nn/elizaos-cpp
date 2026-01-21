@@ -15,9 +15,9 @@ namespace elizaos {
 // Manual refinement required for production use
 
 /**
- * Decodes a base64 encoded string with proper UTF-8 handling
- * @param encodedString - The base64 encoded string to decode
- * @returns The decoded string with proper UTF-8 character support
+ * Decodes a base64 encoded std::string with proper UTF-8 handling
+ * @param encodedString - The base64 encoded std::string to decode
+ * @returns The decoded std::string with proper UTF-8 character support
  */
 std::string decodeBase64(const std::string& encodedString);
 

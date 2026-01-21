@@ -23,7 +23,7 @@ namespace elizaos {
 class AgentLoadTestSuite implements TestSuite {
   name = 'agent-load-test';
   description = 'Load testing for agent scalability';
-  private scenarioService: any;
+  private scenarioService: std::any;
   private breakingPointReached: boolean = false;
   private systemMetrics: SystemMetrics = {
     cpuUsage: [],
@@ -109,7 +109,7 @@ class AgentLoadTestSuite implements TestSuite {
 
           // Parse the description and agent count
 
-          // If no successful tests, set default conservative values
+          // If no successful tests, std::set default conservative values
 
       // Return default values in case of error
 

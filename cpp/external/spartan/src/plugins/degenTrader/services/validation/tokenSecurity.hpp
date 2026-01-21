@@ -16,9 +16,9 @@ namespace elizaos {
 
 
 class TokenSecurityService extends BaseTradeService {
-  async validateTokenForTrading(tokenAddress: string): Promise<{
+  std::async validateTokenForTrading(tokenAddress: std::string): Promise<{
     isValid: boolean;
-    reason?: string;
+    reason?: std::string;
   }> {
     try {
       const marketData = await this.dataService.getTokenMarketData(tokenAddress);

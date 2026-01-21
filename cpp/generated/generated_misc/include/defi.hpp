@@ -36,7 +36,7 @@ public:
 class DefiPriceParams : public object, public std::enable_shared_from_this<DefiPriceParams> {
 public:
     using std::enable_shared_from_this<DefiPriceParams>::shared_from_this;
-    string address;
+    std::string address;
 
     double check_liquidity;
 
@@ -54,7 +54,7 @@ public:
 class DefiMultiPriceParams : public object, public std::enable_shared_from_this<DefiMultiPriceParams> {
 public:
     using std::enable_shared_from_this<DefiMultiPriceParams>::shared_from_this;
-    string list_address;
+    std::string list_address;
 
     double check_liquidity;
 
@@ -76,15 +76,15 @@ public:
 
     boolean include_liquidity;
 
-    string list_address;
+    std::string list_address;
 };
 
 class DefiHistoryPriceParams : public object, public std::enable_shared_from_this<DefiHistoryPriceParams> {
 public:
     using std::enable_shared_from_this<DefiHistoryPriceParams>::shared_from_this;
-    string address;
+    std::string address;
 
-    any address_type;
+    std::any address_type;
 
     TimeInterval type;
 
@@ -104,7 +104,7 @@ public:
 class HistoricalPriceUnixParams : public object, public std::enable_shared_from_this<HistoricalPriceUnixParams> {
 public:
     using std::enable_shared_from_this<HistoricalPriceUnixParams>::shared_from_this;
-    string address;
+    std::string address;
 
     double unixtime;
 };
@@ -120,7 +120,7 @@ public:
 class OHLCVParams : public object, public std::enable_shared_from_this<OHLCVParams> {
 public:
     using std::enable_shared_from_this<OHLCVParams>::shared_from_this;
-    string address;
+    std::string address;
 
     TimeInterval type;
 
@@ -140,7 +140,7 @@ public:
 class PriceVolumeParams : public object, public std::enable_shared_from_this<PriceVolumeParams> {
 public:
     using std::enable_shared_from_this<PriceVolumeParams>::shared_from_this;
-    string address;
+    std::string address;
 
     TimeInterval type;
 };
@@ -156,7 +156,7 @@ public:
 class MultiPriceVolumeParams : public object, public std::enable_shared_from_this<MultiPriceVolumeParams> {
 public:
     using std::enable_shared_from_this<MultiPriceVolumeParams>::shared_from_this;
-    string list_address;
+    std::string list_address;
 
     TimeInterval type;
 };
@@ -172,9 +172,9 @@ public:
 class BaseQuoteParams : public object, public std::enable_shared_from_this<BaseQuoteParams> {
 public:
     using std::enable_shared_from_this<BaseQuoteParams>::shared_from_this;
-    string base_address;
+    std::string base_address;
 
-    string quote_address;
+    std::string quote_address;
 
     TimeInterval type;
 
@@ -194,15 +194,15 @@ public:
 class DefiTradesTokenParams : public object, public std::enable_shared_from_this<DefiTradesTokenParams> {
 public:
     using std::enable_shared_from_this<DefiTradesTokenParams>::shared_from_this;
-    string address;
+    std::string address;
 
     double limit;
 
     double offset;
 
-    any tx_type;
+    std::any tx_type;
 
-    any sort_type;
+    std::any sort_type;
 
     double before_time;
 
@@ -212,25 +212,25 @@ public:
 class DefiTradesTokenInfo : public object, public std::enable_shared_from_this<DefiTradesTokenInfo> {
 public:
     using std::enable_shared_from_this<DefiTradesTokenInfo>::shared_from_this;
-    string symbol;
+    std::string symbol;
 
     double decimals;
 
-    string address;
+    std::string address;
 
     double amount;
 
     double uiAmount;
 
-    any price;
+    std::any price;
 
-    any nearestPrice;
+    std::any nearestPrice;
 
     double changeAmount;
 
     double uiChangeAmount;
 
-    any feeInfo;
+    std::any feeInfo;
 };
 
 class DefiTradesTokenResponse : public object, public std::enable_shared_from_this<DefiTradesTokenResponse> {

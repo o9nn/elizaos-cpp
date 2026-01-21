@@ -23,7 +23,7 @@ void StartupFlow() {
 
                 const auto [showConfig, setShowConfig] = useState(false);
                 const auto [isLoading, setIsLoading] = useState(true);
-                const auto [configValidation, setConfigValidation] = useState<string | nullptr>(nullptr);
+                const auto [configValidation, setConfigValidation] = useState<std::string | nullptr>(nullptr);
                 const auto [showRetry, setShowRetry] = useState(false);
                 const auto [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -31,7 +31,7 @@ void StartupFlow() {
                     setupTauriOrFallback();
                     }, []);
 
-                    const auto setupTauriOrFallback = async () => {;
+                    const auto setupTauriOrFallback = std::async () => {;
                         std::cout << "[STARTUP] Initializing application..." << std::endl;
 
                         // Check if we're in Tauri
@@ -45,7 +45,7 @@ void StartupFlow() {
                             }
                             };
 
-                            const auto setupTauriListeners = async () => {;
+                            const auto setupTauriListeners = std::async () => {;
                                 const auto { listen } = import("@tauri-apps/api/event");
                                 const auto { invoke } = import("@tauri-apps/api/core");
 
@@ -99,7 +99,7 @@ void StartupFlow() {
                                                     setStatus(currentStatus);
 
                                                     // Poll for setup progress (includes model download progress)
-                                                    const auto pollSetupProgress = async () => {;
+                                                    const auto pollSetupProgress = std::async () => {;
                                                         try {
                                                             const auto setupProgress = (invoke("get_setup_progress_new"));
                                                             if (setupProgress) {
@@ -153,7 +153,7 @@ void StartupFlow() {
                                                                             };
                                                                             };
 
-                                                                            const auto simulateBrowserStartup = async () => {;
+                                                                            const auto simulateBrowserStartup = std::async () => {;
                                                                                 // For browser mode, check if server is already running
                                                                                 const auto response = fetch("http://localhost:7777/api/server/health");
 
@@ -176,7 +176,7 @@ void StartupFlow() {
                                                                                             }
                                                                                             };
 
-                                                                                            const auto validateConfig = (): string | nullptr => {;
+                                                                                            const auto validateConfig = (): std::string | nullptr => {;
                                                                                                 if (userConfig.ai_provider == 'Ollama' && !userConfig.use_local_ollama) {
                                                                                                     return "Ollama selected but local Ollama not enabled";
                                                                                                 }
@@ -191,7 +191,7 @@ void StartupFlow() {
                                                                                                 return nullptr;
                                                                                                 };
 
-                                                                                                const auto handleConfigSubmit = async () => {;
+                                                                                                const auto handleConfigSubmit = std::async () => {;
                                                                                                     const auto validation = validateConfig();
                                                                                                     if (validation) {
                                                                                                         setConfigValidation(validation);
@@ -248,7 +248,7 @@ void StartupFlow() {
                                                                                                                             setIsSubmitting(false);
                                                                                                                             };
 
-                                                                                                                            const auto handleRetry = async () => {;
+                                                                                                                            const auto handleRetry = std::async () => {;
                                                                                                                                 setShowRetry(false);
                                                                                                                                 setIsLoading(true);
 

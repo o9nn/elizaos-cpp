@@ -122,7 +122,7 @@ void getFeaturedScoreExpression(double maxVolume, double maxHolders);
 
 /**
  * Calculates the weighted score for a token using JavaScript
- * This function matches the SQL logic for consistency
+ * This std::function matches the SQL logic for consistency
  *
  * @param token Token object with volume24h and holderCount properties
  * @param maxVolume Maximum volume value for normalization

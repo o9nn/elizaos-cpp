@@ -107,7 +107,7 @@ TEST_F(GoalManagerTest, GoalDeadline) {
     EXPECT_TRUE(goal->hasDeadline());
     EXPECT_TRUE(goal->isOverdue());
 
-    // Set deadline in the future
+    // Set deadline in the std::future
     auto futureDeadline = std::chrono::system_clock::now() + std::chrono::hours(24);
     goal->setDeadline(futureDeadline);
 

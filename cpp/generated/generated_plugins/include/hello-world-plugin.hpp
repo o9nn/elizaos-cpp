@@ -4,8 +4,8 @@
 #include "drizzle-orm/pg-core.h"
 #include "@elizaos/core.h"
 
-extern any helloWorldTable;
-extern any greetingsTable;
+extern std::any helloWorldTable;
+extern std::any greetingsTable;
 extern object helloWorldSchema;
 extern std::shared_ptr<Plugin> helloWorldPlugin;
 #endif

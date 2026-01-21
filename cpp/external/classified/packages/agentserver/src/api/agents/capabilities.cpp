@@ -11,7 +11,7 @@ express::Router createAgentCapabilitiesRouter(const std::unordered_map<UUID, IAg
         const auto router = express.Router();
 
         // Get all capabilities for an agent
-        router.get("/:agentId/capabilities", async (req, res) => {
+        router.get("/:agentId/capabilities", std::async (req, res) => {
             std::optional<UUID> agentId = nullptr;
             auto runtime: IAgentRuntime | std::nullopt;
 
@@ -67,7 +67,7 @@ express::Router createAgentCapabilitiesRouter(const std::unordered_map<UUID, IAg
                         });
 
                         // Get specific capability status
-                        router.get("/:agentId/capabilities/:capability", async (req, res) => {
+                        router.get("/:agentId/capabilities/:capability", std::async (req, res) => {
                             std::optional<UUID> agentId = nullptr;
                             auto runtime: IAgentRuntime | std::nullopt;
 
@@ -150,7 +150,7 @@ express::Router createAgentCapabilitiesRouter(const std::unordered_map<UUID, IAg
                                         });
 
                                         // Toggle a specific capability
-                                        router.post("/:agentId/capabilities/:capability/toggle", async (req, res) => {
+                                        router.post("/:agentId/capabilities/:capability/toggle", std::async (req, res) => {
                                             std::optional<UUID> agentId = nullptr;
                                             auto runtime: IAgentRuntime | std::nullopt;
 
@@ -239,7 +239,7 @@ express::Router createAgentCapabilitiesRouter(const std::unordered_map<UUID, IAg
                                                             });
 
                                                             // Get autonomy status (for monologue functionality)
-                                                            router.get("/:agentId/autonomy/status", async (req, res) => {
+                                                            router.get("/:agentId/autonomy/status", std::async (req, res) => {
                                                                 try {
                                                                     const auto agentId = validateUuid(req.params.agentId);
                                                                     const auto runtime = agents.get(agentId);

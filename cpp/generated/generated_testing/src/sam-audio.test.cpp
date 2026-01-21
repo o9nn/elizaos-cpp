@@ -189,7 +189,7 @@ void Main(void)
             auto runtime = createMockRuntime();
             shared service = std::make_shared<SamTTSService>(runtime);
             auto texts = array<string>{ std::string("First audio generation"), std::string("Second concurrent generation"), std::string("Third simultaneous generation") };
-            auto promises = texts->map([=](auto text) mutable
+            auto promises = texts->std::map([=](auto text) mutable
             {
                 return service->generateAudio(text);
             }

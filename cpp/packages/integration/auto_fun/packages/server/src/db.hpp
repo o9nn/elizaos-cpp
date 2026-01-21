@@ -36,7 +36,7 @@ namespace elizaos {
 
 // TokenAgents schema
 
-// Default local database connection string
+// Default local database connection std::string
 
 void getDB();
 

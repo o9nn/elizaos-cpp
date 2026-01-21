@@ -8,6 +8,6 @@
 #include "./directory-detection.h"
 #include "./run-bun.h"
 
-void buildProject(string cwd = process->cwd(), boolean isPlugin = false);
+void buildProject(std::string cwd = process->cwd(), boolean isPlugin = false);
 
 #endif

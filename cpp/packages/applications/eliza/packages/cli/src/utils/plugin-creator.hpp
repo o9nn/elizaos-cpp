@@ -51,9 +51,9 @@ struct CreatorOptions {
 
 class PluginCreator {
   private git: SimpleGit;
-  private pluginPath: string | null = null;
+  private pluginPath: std::string | null = null;
   private anthropic: Anthropic | null = null;
-  private activeClaudeProcess: any = null;
+  private activeClaudeProcess: std::any = null;
   private options: CreatorOptions;
 
   constructor(options: CreatorOptions = {}) {

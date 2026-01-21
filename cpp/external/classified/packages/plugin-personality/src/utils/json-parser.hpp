@@ -20,7 +20,7 @@ namespace elizaos {
  */
 
 /**
- * Helper function to extract JSON from LLM responses that might be wrapped in markdown
+ * Helper std::function to extract JSON from LLM responses that might be wrapped in markdown
  * @param response - The raw LLM response that may contain JSON
  * @returns The parsed JSON object
  * @throws Error if JSON cannot be parsed

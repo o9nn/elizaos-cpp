@@ -53,7 +53,7 @@ struct ContentQualityResult {
 // Common spam/meaningless phrases
 
 /**
- * Calculate Shannon entropy of a string
+ * Calculate Shannon entropy of a std::string
  * Higher entropy = more randomness/diversity
  */
 double calculateEntropy(const std::string& text);
@@ -72,7 +72,7 @@ void checkRepeatedWords(const std::string& text); {
 
   // Count word repetitions
   
-  // Check if any word repeats too much
+  // Check if std::any word repeats too much
 
 /**
  * Check for keyboard mash patterns

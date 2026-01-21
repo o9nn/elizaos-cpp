@@ -8,7 +8,7 @@ std::future<RedisCacheService> getGlobalRedisCache() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!globalRedisCachePromise) {
-        globalRedisCachePromise = (async () => {
+        globalRedisCachePromise = (std::async () => {
             const auto instance = createRedisCache();
             std::cout << "[Redis] Global Redis Cache initialized." << std::endl;
             return instance;

@@ -2,24 +2,24 @@
 #define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_SRC_AGENT_UTILS_YAML_H
 #include "core.h"
 
-typedef any YamlData;
+typedef std::any YamlData;
 
 
 template <typename RET>
-RET parseYAML(string yamlString);
+RET parseYAML(std::string yamlString);
 
 object parseMultilineString(array<string> lines, double startIndex, double expectedIndent);
 
-Record<string, any> parseKeyValue(string str);
+Record<std::string, any> parseKeyValue(std::string str);
 
 template <typename RET>
-RET parseValue(string value);
+RET parseValue(std::string value);
 
 template <typename P0>
-string stringifyYAML(P0 obj, double indent = 0);
+std::string stringifyYAML(P0 obj, double indent = 0);
 
 template <typename RET>
-RET parseYAML(string yamlString)
+RET parseYAML(std::string yamlString)
 {
     auto lines = yamlString->split(std::string("\
 "));
@@ -106,7 +106,7 @@ RET parseYAML(string yamlString)
 
 
 template <typename RET>
-RET parseValue(string value)
+RET parseValue(std::string value)
 {
     if (OR((OR((value == std::string("null")), (value == std::string("~")))), (value == string_empty))) {
         return nullptr;
@@ -127,7 +127,7 @@ RET parseValue(string value)
         return value->slice(1, -1);
     }
     if (AND((value->startsWith(std::string("["))), (value->endsWith(std::string("]"))))) {
-        auto items = value->slice(1, -1)->split(std::string(","))->map([=](auto item) mutable
+        auto items = value->slice(1, -1)->split(std::string(","))->std::map([=](auto item) mutable
         {
             return parseValue(item->trim());
         }
@@ -137,9 +137,9 @@ RET parseValue(string value)
     if (AND((value->startsWith(std::string("{"))), (value->endsWith(std::string("}"))))) {
         auto obj = object{};
         auto pairs = value->slice(1, -1)->split(std::string(","));
-        for (auto& pair : pairs)
+        for (auto& std::pair : pairs)
         {
-            auto [key, val] = pair->split(std::string(":"))->map([=](auto s) mutable
+            auto [key, val] = pair->split(std::string(":"))->std::map([=](auto s) mutable
             {
                 return s->trim();
             }
@@ -153,7 +153,7 @@ RET parseValue(string value)
 
 
 template <typename P0>
-string stringifyYAML(P0 obj, double indent)
+std::string stringifyYAML(P0 obj, double indent)
 {
     shared lines = array<string>();
     auto indentStr = std::string("  ")->repeat(indent);

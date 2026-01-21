@@ -7,7 +7,7 @@
 #include "commander.h"
 #include "glob.h"
 
-void findFile(string fileName, string dir = std::string("./"));
+void findFile(std::string fileName, std::string dir = std::string("./"));
 
 void setupCLI();
 

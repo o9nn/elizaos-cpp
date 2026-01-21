@@ -40,8 +40,8 @@ private:
 };
 
 /**
- * Parse a GitHub reference string
- * @param gitRef - Git reference string (e.g., "github:owner/repo")
+ * Parse a GitHub reference std::string
+ * @param gitRef - Git reference std::string (e.g., "github:owner/repo")
  * @return Parsed reference or nullopt if invalid
  */
 std::optional<ParsedGitRef> parseGitRef(const std::string& gitRef);
@@ -120,7 +120,7 @@ std::string guessNpmName(const std::string& jsName);
  * @param npmId - NPM package ID
  * @param gitRef - Git reference
  * @param octokit - GitHub API client
- * @return Future with tuple of npm ID and version info
+ * @return Future with std::tuple of npm ID and version info
  */
 std::future<std::tuple<std::string, VersionInfo>> processRepo(
     const std::string& npmId, 

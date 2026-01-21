@@ -21,7 +21,7 @@ class VisionRuntimeTestSuite implements TestSuite {
   tests = [
     {
       name: 'Vision service initialization',
-      fn: async (runtime: any) => {
+      fn: std::async (runtime: std::any) => {
         logger.info('[Test] Testing vision service initialization...');
 
         const visionService = runtime.getService('VISION');
@@ -85,7 +85,7 @@ class VisionRuntimeTestSuite implements TestSuite {
 
         // Get current entities
 
-        // Check entity structure if any exist
+        // Check entity structure if std::any exist
 
 // Export default instance for test runner
 

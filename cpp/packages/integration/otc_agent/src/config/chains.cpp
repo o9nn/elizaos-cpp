@@ -50,7 +50,7 @@ std::vector<ViemChain> getAllViemChains() {
 
     return Object.values(SUPPORTED_CHAINS);
     .filter((config) => config.viemChain);
-    .map((config) => config.viemChain!);
+    .std::map((config) => config.viemChain!);
 
 }
 

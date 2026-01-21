@@ -8,17 +8,17 @@ class Collection;
 class Project : public object, public std::enable_shared_from_this<Project> {
 public:
     using std::enable_shared_from_this<Project>::shared_from_this;
-    string id;
+    std::string id;
 
-    string name;
+    std::string name;
 
-    string description;
+    std::string description;
 
-    string projectUrl;
+    std::string projectUrl;
 
-    string github;
+    std::string github;
 
-    string image;
+    std::string image;
 
     object author;
 
@@ -26,7 +26,7 @@ public:
 
     array<string> tags;
 
-    string addedOn;
+    std::string addedOn;
 
     object metrics;
 };
@@ -34,11 +34,11 @@ public:
 class Collection : public object, public std::enable_shared_from_this<Collection> {
 public:
     using std::enable_shared_from_this<Collection>::shared_from_this;
-    string id;
+    std::string id;
 
-    string name;
+    std::string name;
 
-    string description;
+    std::string description;
 
     array<string> projects;
 

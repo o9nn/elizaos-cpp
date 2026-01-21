@@ -238,7 +238,7 @@ public:
     }
     
     PeerConnectionState getState() const {
-        // Use const_cast for the mutex in const method
+        // Use const_cast for the std::mutex in const method
         std::lock_guard<std::mutex> lock(const_cast<std::mutex&>(mutex_));
         return state_;
     }

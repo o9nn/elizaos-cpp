@@ -18,7 +18,7 @@ std::shared_ptr<Promise<void>> BuyService::stop()
     return std::shared_ptr<Promise<void>>();
 }
 
-std::shared_ptr<Promise<void>> BuyService::handleBuySignal(any params)
+std::shared_ptr<Promise<void>> BuyService::handleBuySignal(std::any params)
 {
     auto TRADER_BUY_KUMA = this->runtime->getSetting(std::string("TRADER_BUY_KUMA"));
     if (TRADER_BUY_KUMA) {
@@ -55,7 +55,7 @@ std::shared_ptr<Promise<void>> BuyService::updateExpectedOutAmount(std::shared_p
             signal->expectedOutAmount = quoteData["outAmount"];
         }
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->warn(std::string("Failed to get expected out amount for buy"), object{
             object::pair{std::string("error"), (is<Error>(error)) ? error->message : String(error)}
@@ -68,7 +68,7 @@ std::shared_ptr<Promise<object>> BuyService::executeBuy(std::shared_ptr<BuySigna
     try
     {
         if (!signal) {
-            throw any(std::make_shared<Error>(std::string("No signal data in buy task")));
+            throw std::any(std::make_shared<Error>(std::string("No signal data in buy task")));
         }
         auto validation = std::async([=]() { this->validationService->validateTokenForTrading(signal->tokenAddress); });
         if (!validation["isValid"]) {
@@ -118,7 +118,7 @@ std::shared_ptr<Promise<object>> BuyService::executeBuy(std::shared_ptr<BuySigna
         }
         return result;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Error executing buy task:"), error);
         return object{

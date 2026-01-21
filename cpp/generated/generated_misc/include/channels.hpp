@@ -14,9 +14,9 @@ using fs = _default;
 #include "path.h"
 using path = _default;
 
-extern any storage;
-extern any upload;
-std::shared_ptr<Promise<object>> saveUploadedFile(std::shared_ptr<Express::Multer::File> file, string channelId);
+extern std::any storage;
+extern std::any upload;
+std::shared_ptr<Promise<object>> saveUploadedFile(std::shared_ptr<Express::Multer::File> file, std::string channelId);
 
 std::shared_ptr<express::Router> createChannelMediaRouter();
 

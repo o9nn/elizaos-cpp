@@ -19,15 +19,15 @@ namespace elizaos {
 std::unordered_map<std::string, double> loadCachedScores();
 
 // Helper to save scores to cache
-void saveScoresToCache(Record<string scores, auto number>);
+void saveScoresToCache(Record<std::string scores, auto number>);
 
 std::future<DexScreenerResponse> fetchDexScreenerData(const std::vector<std::string>& tokenAddresses);
 
 std::future<void> fetchTokenAnalysis(const std::string& address);
 
-// Modify calculateHoldings to make the first received date optional
+// Modify calculateHoldings to make the first received date std::optional
 
-// This function now serves as a wrapper around getTokenBalances for compatibility
+// This std::function now serves as a wrapper around getTokenBalances for compatibility
 std::future<void> getTokenData(Connection connection);
 
 struct SolSnifferResponse {
@@ -36,10 +36,10 @@ struct SolSnifferResponse {
     std::optional<{> tokenData;
     double score;
     { indicatorData;
-    { count: number; details: string } high;
-    { count: number; details: string } moderate;
-    { count: number; details: string } low;
-    { count: number; details: string } specific;
+    { count: number; details: std::string } high;
+    { count: number; details: std::string } moderate;
+    { count: number; details: std::string } low;
+    { count: number; details: std::string } specific;
     std::string deployTime;
     { auditRisk;
     bool mintDisabled;

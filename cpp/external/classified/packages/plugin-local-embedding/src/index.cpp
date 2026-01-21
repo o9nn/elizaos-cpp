@@ -42,7 +42,7 @@ std::future<void> initializePipeline(ModelName modelName) {
         try {
             state.pipeline = pipeline("feature-extraction", modelName, {
                 quantized: true, // Use quantized models for smaller size and faster loading
-                progress_callback: (progress: any) => {
+                progress_callback: (progress: std::any) => {
                     if (progress.status == 'downloading') {
                         const auto percent = Math.round((progress.loaded / progress.total) * 100);
                         logger.debug(`[LOCAL-EMBEDDING] Downloading model: ${percent}%`);
@@ -71,9 +71,9 @@ std::string extractTextFromParams(const std::optional<TextEmbeddingParams>& para
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        // Handle null case - return a test string for initialization
+        // Handle null case - return a test std::string for initialization
         if (params == null) {
-            logger.debug('[LOCAL-EMBEDDING] Received null params - using test string for initialization');
+            logger.debug('[LOCAL-EMBEDDING] Received null params - using test std::string for initialization');
             return "test";
         }
 
@@ -95,7 +95,7 @@ std::string extractTextFromParams(const std::optional<TextEmbeddingParams>& para
         }
 
         throw new Error(
-        "Invalid embedding parameters: expected string or object with input/text/content property"
+        "Invalid embedding parameters: expected std::string or object with input/text/content property"
         );
 
     } catch (const std::exception& e) {

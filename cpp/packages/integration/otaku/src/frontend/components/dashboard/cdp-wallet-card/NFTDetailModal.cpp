@@ -18,7 +18,7 @@ void NFTDetailModalContent(auto userId) {
         const auto [error, setError] = useState("");
 
         // Get chain name for display
-        const auto getChainName = [&](chain: string) {;
+        const auto getChainName = [&](chain: std::string) {;
             const std::unordered_map<std::string, std::string> names = {;
                 base: "Base",
                 ethereum: "Ethereum",
@@ -28,7 +28,7 @@ void NFTDetailModalContent(auto userId) {
                 };
 
                 // Get explorer URL for NFT
-                const auto getExplorerUrl = [&](chain: string, address: string, tokenId: string) {;
+                const auto getExplorerUrl = [&](chain: std::string, address: std::string, tokenId: std::string) {;
                     const std::unordered_map<std::string, std::string> explorers = {;
                         base: "https://basescan.org",
                         ethereum: "https://etherscan.io",
@@ -38,7 +38,7 @@ void NFTDetailModalContent(auto userId) {
                         };
 
                         // Get transaction explorer URL
-                        const auto getTxExplorerUrl = [&](hash: string, chain: string) {;
+                        const auto getTxExplorerUrl = [&](hash: std::string, chain: std::string) {;
                             const std::unordered_map<std::string, std::string> explorers = {;
                                 base: "https://basescan.org",
                                 ethereum: "https://etherscan.io",
@@ -48,7 +48,7 @@ void NFTDetailModalContent(auto userId) {
                                 };
 
                                 // Handle copy contract address
-                                const auto handleCopyAddress = async () => {;
+                                const auto handleCopyAddress = std::async () => {;
                                     try {
                                         navigator.clipboard.writeText(nft.contractAddress);
                                         setIsCopied(true);
@@ -59,7 +59,7 @@ void NFTDetailModalContent(auto userId) {
                                         };
 
                                         // Handle send NFT
-                                        const auto handleSend = async () => {;
+                                        const auto handleSend = std::async () => {;
                                             if (!recipientAddress) {
                                                 setError("Please enter a valid recipient address");
                                                 return;
@@ -116,7 +116,7 @@ void NFTDetailModalContent(auto userId) {
                                                                 onSuccess();
                                                                 }, 2000);
                                                             }
-                                                            } catch (err: any) {
+                                                            } catch (err: std::any) {
                                                                 std::cerr << " NFT send failed:" << err << std::endl;
                                                                 const auto errorMessage = true /* instanceof check */ ? err.message : "Failed to send NFT";
                                                                 showError("Transaction Failed", errorMessage, modalId);
@@ -293,7 +293,7 @@ void NFTDetailModalContent(auto userId) {
         <div className="space-y-3">;
         <h3 className="text-sm font-semibold uppercase text-muted-foreground">Attributes</h3>;
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-        {nft.attributes.map((attr, index) => (;
+        {nft.attributes.std::map((attr, index) => (;
         <div key={index} className="bg-muted rounded-lg p-2 text-center">;
         <div className="text-xs text-muted-foreground uppercase mb-1">{attr.trait_type}</div>;
         <div className="text-sm font-medium truncate">{attr.value}</div>;

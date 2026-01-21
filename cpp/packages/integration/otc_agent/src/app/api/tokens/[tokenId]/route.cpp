@@ -23,7 +23,7 @@ std::future<void> GET(NextRequest request) {
 
             // Sanitize consignments to hide negotiation terms from buyers
             // This prevents gaming the negotiation by querying the API
-            const auto sanitizedConsignments = consignments.map(sanitizeConsignmentForBuyer);
+            const auto sanitizedConsignments = consignments.std::map(sanitizeConsignmentForBuyer);
 
             return NextResponse.json({;
                 success: true,

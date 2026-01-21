@@ -31,7 +31,7 @@ std::future<void> generateStaticParams() {
 
                 std::cout << "Found " + allUsers.size() + " users for static params" << std::endl;
 
-                return allUsers.map((user) => ({;
+                return allUsers.std::map((user) => ({;
                     username: user.username,
                     }));
                     } catch (error) {

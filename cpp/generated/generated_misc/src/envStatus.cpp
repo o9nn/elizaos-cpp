@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-env/providers/envStatus.h"
 
-string formatEnvVarStatus(std::shared_ptr<EnvVarConfig> config, boolean showValues)
+std::string formatEnvVarStatus(std::shared_ptr<EnvVarConfig> config, boolean showValues)
 {
     auto statusIcon = const_(object{
         object::pair{std::string("missing"), std::string("❌")}, 
@@ -14,7 +14,7 @@ string formatEnvVarStatus(std::shared_ptr<EnvVarConfig> config, boolean showValu
     auto valueDisplay = std::string("Not set");
     if (config->value) {
         if (OR((OR((config->type == std::string("api_key")), (config->type == std::string("secret")))), (config->type == std::string("private_key")))) {
-            valueDisplay = (showValues) ? any(config->value) : any(std::string("****************"));
+            valueDisplay = (showValues) ? std::any(config->value) : std::any(std::string("****************"));
         } else {
             valueDisplay = config->value;
         }
@@ -39,7 +39,7 @@ string formatEnvVarStatus(std::shared_ptr<EnvVarConfig> config, boolean showValu
 };
 
 
-string generateEnvStatusMessage(std::shared_ptr<EnvVarMetadata> envVars, boolean showValues)
+std::string generateEnvStatusMessage(std::shared_ptr<EnvVarMetadata> envVars, boolean showValues)
 {
     auto plugins = Object->keys(envVars);
     if (plugins->get_length() == 0) {
@@ -218,7 +218,7 @@ std::shared_ptr<Provider> envStatusProvider = object{
                 object::pair{std::string("text"), statusText}
             };
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("[EnvStatus] Error in environment status provider:"), error);
             return object{

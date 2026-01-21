@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-personality/src/actions/modify-character.h"
 
-std::shared_ptr<Promise<object>> detectModificationIntent(std::shared_ptr<IAgentRuntime> runtime, string messageText)
+std::shared_ptr<Promise<object>> detectModificationIntent(std::shared_ptr<IAgentRuntime> runtime, std::string messageText)
 {
     auto intentPrompt = std::string("Analyze this message for character modification intent:\
 \
@@ -11,7 +11,7 @@ Determine:\
 2. Type: "explicit" (direct command), "suggestion" (gentle request), or "none"\
 3. Confidence level (0-1)\
 \
-Return JSON: {"isModificationRequest": boolean, "requestType": string, "confidence": number}");
+Return JSON: {"isModificationRequest": boolean, "requestType": std::string, "confidence": number}");
     try
     {
         auto response = std::async([=]() { runtime->useModel(ModelType->TEXT_SMALL, object{
@@ -26,7 +26,7 @@ Return JSON: {"isModificationRequest": boolean, "requestType": string, "confiden
             object::pair{std::string("confidence"), OR((analysis["confidence"]), (0))}
         };
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->warn(std::string("Intent detection failed, using fallback"), error);
         auto hasModificationPattern = (array<string>{ std::string("change your"), std::string("modify your"), std::string("you should be"), std::string("add to your"), std::string("remember that you"), std::string("from now on") })->some([=](auto pattern) mutable
@@ -43,13 +43,13 @@ Return JSON: {"isModificationRequest": boolean, "requestType": string, "confiden
 };
 
 
-std::shared_ptr<Promise<any>> parseUserModificationRequest(std::shared_ptr<IAgentRuntime> runtime, string messageText)
+std::shared_ptr<Promise<any>> parseUserModificationRequest(std::shared_ptr<IAgentRuntime> runtime, std::string messageText)
 {
     auto parsePrompt = std::string("Parse this user request for character modification into a structured format:\
 \
 "") + messageText + std::string(""\
 \
-Extract any of the following types of modifications:\
+Extract std::any of the following types of modifications:\
 - Name changes (what the agent should be called)\
 - System prompt changes (fundamental behavioral instructions)\
 - Bio elements (personality traits, background info)\
@@ -78,7 +78,7 @@ Example format:\
         }); });
         return extractJsonFromResponse(as<string>(response));
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->warn(std::string("Failed to parse user modification request"), error);
         return nullptr;
@@ -86,7 +86,7 @@ Example format:\
 };
 
 
-std::shared_ptr<Promise<object>> evaluateModificationSafety(std::shared_ptr<IAgentRuntime> runtime, any modification, string requestText)
+std::shared_ptr<Promise<object>> evaluateModificationSafety(std::shared_ptr<IAgentRuntime> runtime, std::any modification, std::string requestText)
 {
     auto safetyPrompt = std::string("You are evaluating a character modification request for safety and appropriateness.\
 \
@@ -153,7 +153,7 @@ Return JSON:\
         });
         return safetyEvaluation;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Failed to evaluate modification safety"), error);
         return object{
@@ -192,7 +192,7 @@ std::shared_ptr<Promise<boolean>> checkAdminPermissions(std::shared_ptr<IAgentRu
 };
 
 
-string summarizeModification(any modification)
+std::string summarizeModification(std::any modification)
 {
     auto parts = array<string>();
     if (modification["name"]) {
@@ -214,7 +214,7 @@ string summarizeModification(any modification)
     if (AND((modification["messageExamples"]), (modification["messageExamples"]["length"] > 0))) {
         parts->push(std::string("Added ") + modification["messageExamples"]["length"] + std::string(" new response example(s)"));
     }
-    return (parts->get_length() > 0) ? any(parts->join(std::string("; "))) : any(std::string("Applied character updates"));
+    return (parts->get_length() > 0) ? std::any(parts->join(std::string("; "))) : std::any(std::string("Applied character updates"));
 };
 
 
@@ -261,7 +261,7 @@ Return JSON: {"isModificationRequest": boolean, "requestType": "explicit"|"sugge
                 object::pair{std::string("confidence"), analysis["confidence"]}
             });
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->warn(std::string("Intent analysis failed, using fallback pattern matching"), error);
             auto modificationPatterns = array<string>{ std::string("change your personality"), std::string("modify your behavior"), std::string("update your character"), std::string("you should be"), std::string("add to your bio"), std::string("remember that you"), std::string("from now on you"), std::string("call yourself"), std::string("your name should be"), std::string("rename yourself") };
@@ -317,7 +317,7 @@ Return JSON: {"isModificationRequest": boolean, "requestType": "explicit"|"sugge
         {
             auto fileManager = runtime->getService<std::shared_ptr<CharacterFileManager>>(std::string("character-file-manager"));
             if (!fileManager) {
-                throw any(std::make_shared<Error>(std::string("Character file manager service not available")));
+                throw std::any(std::make_shared<Error>(std::string("Character file manager service not available")));
             }
             auto messageText = OR((message->content->text), (string_empty));
             auto modification = nullptr;
@@ -345,11 +345,11 @@ Return JSON: {"isModificationRequest": boolean, "requestType": "explicit"|"sugge
             }
             if (!modification) {
                 std::async([=]() { callback(object{
-                    object::pair{std::string("text"), std::string("I don't see any clear modification instructions. Could you be more specific about how you'd like me to change?")}, 
+                    object::pair{std::string("text"), std::string("I don't see std::any clear modification instructions. Could you be more specific about how you'd like me to change?")}, 
                     object::pair{std::string("thought"), std::string("No valid modification found")}
                 }); });
                 return object{
-                    object::pair{std::string("text"), std::string("I don't see any clear modification instructions. Could you be more specific about how you'd like me to change?")}, 
+                    object::pair{std::string("text"), std::string("I don't see std::any clear modification instructions. Could you be more specific about how you'd like me to change?")}, 
                     object::pair{std::string("values"), object{
                         object::pair{std::string("success"), false}, 
                         object::pair{std::string("error"), std::string("no_modification_found")}
@@ -495,7 +495,7 @@ Return JSON: {"isModificationRequest": boolean, "requestType": "explicit"|"sugge
                 };
             }
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("Error in modify character action"), error);
             std::async([=]() { callback(object{

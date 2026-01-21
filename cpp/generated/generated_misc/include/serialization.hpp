@@ -4,10 +4,10 @@
 #include "js-yaml.h"
 using yaml = _default;
 
-any convertToYamlLiteralString(any data);
+std::any convertToYamlLiteralString(std::any data);
 
-string yamlSerializationWithLinebreaks(any data);
+std::string yamlSerializationWithLinebreaks(std::any data);
 
-any mergeNestedDicts(any d1, any d2);
+std::any mergeNestedDicts(std::any d1, std::any d2);
 
 #endif

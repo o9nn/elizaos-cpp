@@ -44,7 +44,7 @@ SocketIOServer setupSocketIO(http::Server server, const std::unordered_map<UUID,
 // Setup log streaming integration with the logger
 void setupLogStreaming(SocketIOServer io, SocketIORouter router);
 
-// Extracted function to handle plugin routes
+// Extracted std::function to handle plugin routes
 
 /**
  * Creates an API router with various endpoints and middleware.

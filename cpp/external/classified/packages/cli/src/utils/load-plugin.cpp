@@ -114,7 +114,7 @@ std::future<std::optional<std::any>> tryImporting(const std::string& importPath,
         const auto module = import(pathToImport);
         logger.success(`Successfully loaded plugin '${repository}' using ${strategy} (${importPath})`);
         return module;
-        } catch (error: any) {
+        } catch (error: std::any) {
             logger.debug(`Import failed using ${strategy} ('${importPath}'):`, error);
             return nullptr;
         }

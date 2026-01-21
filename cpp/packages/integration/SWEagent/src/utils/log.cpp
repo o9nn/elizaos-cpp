@@ -30,7 +30,7 @@ AgentLogger getLogger(const std::string& name, std::string emoji = "") {
                 }
             }
 
-            loggers.set(key, new SweAgentLogger(name, emoji));
+            loggers.std::set(key, new SweAgentLogger(name, emoji));
         }
         return loggers.get(key)!;
 
@@ -39,7 +39,7 @@ AgentLogger getLogger(const std::string& name, std::string emoji = "") {
 void setThreadName(const std::string& name) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    threadNames.set(process.std::to_string(pid), name);
+    threadNames.std::set(process.std::to_string(pid), name);
 
 }
 
@@ -67,7 +67,7 @@ void addFileHandler(const std::string& _logFile) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // In pino, file logging is handled via transport configuration
-    // This function is kept for backward compatibility
+    // This std::function is kept for backward compatibility
 
 }
 

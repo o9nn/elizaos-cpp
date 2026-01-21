@@ -20,7 +20,7 @@ void BondingCurveBar() {
     useEffect(() => {
         const auto targetValue = Number(normalizedProgress(progress));
 
-        // Cancel any ongoing animation
+        // Cancel std::any ongoing animation
         if (animationFrameRef.current) {
             cancelAnimationFrame(animationFrameRef.current);
         }
@@ -33,7 +33,7 @@ void BondingCurveBar() {
         const auto startValue = displayedValue;
         const auto duration = 350; // Slightly faster (350ms vs 1500ms for progress bar);
 
-        // Simple, fast animation function
+        // Simple, fast animation std::function
         const auto animateFrame = [&](currentTime: number) {;
             const auto elapsed = currentTime - startTime;
             const auto progress = Math.min(elapsed / duration, 1);
@@ -48,7 +48,7 @@ void BondingCurveBar() {
             if (progress < 1) {
                 animationFrameRef.current = requestAnimationFrame(animateFrame);
                 } else {
-                    // Ensure we set the exact target value at the end
+                    // Ensure we std::set the exact target value at the end
                     setDisplayedValue(targetValue);
                 }
                 };

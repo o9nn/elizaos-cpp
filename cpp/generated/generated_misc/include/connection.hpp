@@ -9,21 +9,21 @@ using drizzlePglite = drizzle;
 #include "@elizaos/core.h"
 #include "./schema.h"
 
-typedef any DatabaseConnection;
+typedef std::any DatabaseConnection;
 
 class ConnectionOptions;
 
 class ConnectionOptions : public object, public std::enable_shared_from_this<ConnectionOptions> {
 public:
     using std::enable_shared_from_this<ConnectionOptions>::shared_from_this;
-    string postgresUrl;
+    std::string postgresUrl;
 
-    string dataDir;
+    std::string dataDir;
 };
 
-extern any db;
-extern any pgPool;
-extern any pgliteConnection;
+extern std::any db;
+extern std::any pgPool;
+extern std::any pgliteConnection;
 std::shared_ptr<Promise<DatabaseConnection>> createDatabaseConnection(std::shared_ptr<ConnectionOptions> options);
 
 DatabaseConnection getDatabase();

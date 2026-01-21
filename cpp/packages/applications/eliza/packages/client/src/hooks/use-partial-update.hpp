@@ -22,13 +22,13 @@ namespace elizaos {
  * managed when sending updates to the server.
  *
  * @param initialValue The initial state object
- * @returns A tuple containing:
+ * @returns A std::tuple containing:
  *   - The current state object
- *   - A function to update a specific field (handles nested paths)
- *   - A function to add an item to an array field
- *   - A function to remove an item from an array field
- *   - A function to set the entire object
- *   - A function to reset to initial state
+ *   - A std::function to update a specific field (handles nested paths)
+ *   - A std::function to add an item to an array field
+ *   - A std::function to remove an item from an array field
+ *   - A std::function to std::set the entire object
+ *   - A std::function to reset to initial state
  */
 
   /**
@@ -53,7 +53,7 @@ namespace elizaos {
       // Handle regular nested objects
 
   /**
-   * Helper function to update a nested object
+   * Helper std::function to update a nested object
    */
 
   /**
@@ -83,11 +83,11 @@ namespace elizaos {
       return setNestedValue(prevValue, updatePath, newArray);
 
   /**
-   * Helper function to get a nested value from an object
+   * Helper std::function to get a nested value from an object
    */
 
   /**
-   * Helper function to set a nested value in an object
+   * Helper std::function to std::set a nested value in an object
    */
 
   /**
@@ -97,7 +97,7 @@ namespace elizaos {
   // Special handling for updating the entire settings object
         // Extract settings but remove 'secrets' key to avoid duplication
 
-        // Only include avatar if it's a valid string; otherwise, omit it from the update
+        // Only include avatar if it's a valid std::string; otherwise, omit it from the update
 
         // Create the updated settings object
 

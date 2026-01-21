@@ -69,7 +69,7 @@ std::future<void> createPlugin(const std::string& pluginName, const std::string&
                 }
             }
 
-            withCleanupOnInterrupt(pluginTargetDir, pluginDirName, async () => {
+            withCleanupOnInterrupt(pluginTargetDir, pluginDirName, std::async () => {
                 // Map plugin type to template name
                 const auto templateName = pluginType == "quick" ? "plugin-quick" : "plugin";
 
@@ -109,7 +109,7 @@ std::future<void> createAgent(const std::string& agentName, const std::string& t
         try {
             fs.access(agentFilePath);
             throw std::runtime_error(`Agent file ${agentFilePath} already exists`);
-            } catch (error: any) {
+            } catch (error: std::any) {
                 if (error.code != 'ENOENT') {
                     throw;
                 }
@@ -160,7 +160,7 @@ std::future<void> createTEEProject(const std::string& projectName, const std::st
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        // Clear any inherited PGLITE_DATA_DIR to prevent child projects from inheriting parent's database
+        // Clear std::any inherited PGLITE_DATA_DIR to prevent child projects from inheriting parent's database
         delete process.env.PGLITE_DATA_DIR;
 
         const auto teeTargetDir = join(targetDir, projectName);
@@ -183,7 +183,7 @@ std::future<void> createTEEProject(const std::string& projectName, const std::st
                 }
             }
 
-            withCleanupOnInterrupt(teeTargetDir, projectName, async () => {
+            withCleanupOnInterrupt(teeTargetDir, projectName, std::async () => {
                 // Create project directory first
                 fs.mkdir(teeTargetDir, { recursive: true });
 
@@ -221,7 +221,7 @@ std::future<void> createProject(const std::string& projectName, const std::strin
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        // Clear any inherited PGLITE_DATA_DIR to prevent child projects from inheriting parent's database
+        // Clear std::any inherited PGLITE_DATA_DIR to prevent child projects from inheriting parent's database
         delete process.env.PGLITE_DATA_DIR;
 
         // Handle current directory case
@@ -247,7 +247,7 @@ std::future<void> createProject(const std::string& projectName, const std::strin
             }
 
             // only use cleanup wrapper for new directories, not current directory
-            const auto createFn = async () => {;
+            const auto createFn = std::async () => {;
                 // Create project directory first if it's not current directory
                 if (projectName != '.') {
                     fs.mkdir(projectTargetDir, { recursive: true });

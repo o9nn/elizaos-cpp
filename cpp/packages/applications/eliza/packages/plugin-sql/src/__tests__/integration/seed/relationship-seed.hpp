@@ -23,6 +23,6 @@ namespace elizaos {
 
 // Test relationships
 
-// Helper function to create a relationship with custom tags and metadata
+// Helper std::function to create a relationship with custom tags and metadata
 
 } // namespace elizaos

@@ -15,7 +15,7 @@ std::shared_ptr<Promise<void>> DataService::initialize()
     logger->info(std::string("Initializing data service"));
     auto apiKey = process->env->BIRDEYE_API_KEY;
     if (!apiKey) {
-        throw any(std::make_shared<Error>(std::string("Birdeye API key not found")));
+        throw std::any(std::make_shared<Error>(std::string("Birdeye API key not found")));
     }
     this->birdeyeService = std::make_shared<BirdeyeService>(apiKey);
     return std::shared_ptr<Promise<void>>();
@@ -32,7 +32,7 @@ std::shared_ptr<Promise<array<std::shared_ptr<TokenSignal>>>> DataService::getBi
     try
     {
         auto trendingTokens = OR(((std::async([=]() { this->cacheManager->get<array<any>>(std::string("birdeye_trending_tokens")); }))), (array<any>()));
-        return Promise->all(trendingTokens->map([=](auto token) mutable
+        return Promise->all(trendingTokens->std::map([=](auto token) mutable
         {
             auto marketData = std::async([=]() { this->getTokenMarketData(token["address"]); });
             auto technicalSignals = std::async([=]() { this->technicalAnalysisService->calculateTechnicalSignals(marketData); });
@@ -57,7 +57,7 @@ std::shared_ptr<Promise<array<std::shared_ptr<TokenSignal>>>> DataService::getBi
         }
         ));
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Error getting Birdeye signals:"), error);
         return array<any>();
@@ -69,7 +69,7 @@ std::shared_ptr<Promise<array<std::shared_ptr<TokenSignal>>>> DataService::getTw
     try
     {
         auto twitterSignals = OR(((std::async([=]() { this->cacheManager->get<array<any>>(std::string("twitter_parsed_signals")); }))), (array<any>()));
-        return twitterSignals->map([=](auto signal) mutable
+        return twitterSignals->std::map([=](auto signal) mutable
         {
             return (object{
                 object::pair{std::string("address"), signal["tokenAddress"]}, 
@@ -89,7 +89,7 @@ std::shared_ptr<Promise<array<std::shared_ptr<TokenSignal>>>> DataService::getTw
         }
         );
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Error getting Twitter signals:"), error);
         return array<any>();
@@ -101,7 +101,7 @@ std::shared_ptr<Promise<array<std::shared_ptr<TokenSignal>>>> DataService::getCM
     try
     {
         auto cmcTokens = OR(((std::async([=]() { this->cacheManager->get<array<any>>(std::string("cmc_trending_tokens")); }))), (array<any>()));
-        return cmcTokens->map([=](auto token) mutable
+        return cmcTokens->std::map([=](auto token) mutable
         {
             return (object{
                 object::pair{std::string("address"), token["address"]}, 
@@ -121,20 +121,20 @@ std::shared_ptr<Promise<array<std::shared_ptr<TokenSignal>>>> DataService::getCM
         }
         );
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Error getting CMC signals:"), error);
         return array<any>();
     }
 }
 
-std::shared_ptr<Promise<object>> DataService::getTokenMarketData(string tokenAddress)
+std::shared_ptr<Promise<object>> DataService::getTokenMarketData(std::string tokenAddress)
 {
     auto cacheKey = std::string("market_data_") + tokenAddress + string_empty;
     auto cached = std::async([=]() { this->cacheManager->get<any>(cacheKey); });
     if (cached) return cached;
     auto result = std::async([=]() { this->birdeyeService->getTokenMarketData(tokenAddress); });
-    std::async([=]() { this->cacheManager->set(cacheKey, result, 10 * 60 * 1000); });
+    std::async([=]() { this->cacheManager->std::set(cacheKey, result, 10 * 60 * 1000); });
     return utils::assign(object{
         , 
         object::pair{std::string("volumeHistory"), array<any>()}
@@ -159,7 +159,7 @@ std::shared_ptr<Promise<any>> DataService::getTokensMarketData(array<string> tok
         for (auto& [address, data] : Object->entries(newData))
         {
             auto cacheKey = std::string("market_data_") + address + string_empty;
-            std::async([=]() { this->cacheManager->set(cacheKey, data, 10 * 60 * 1000); });
+            std::async([=]() { this->cacheManager->std::set(cacheKey, data, 10 * 60 * 1000); });
             tokenDb[address] = data;
         }
     }
@@ -184,7 +184,7 @@ std::shared_ptr<Promise<array<string>>> DataService::getMonitoredTokens()
         );
         return Array->from(tokenAddresses);
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Error getting monitored tokens:"), error);
         return array<any>();
@@ -199,7 +199,7 @@ std::shared_ptr<Promise<array<any>>> DataService::getPositions()
         if (!monitoredTokens->get_length()) {
             return array<any>();
         }
-        auto positions = std::async([=]() { Promise->all(monitoredTokens->map([=](auto tokenAddress) mutable
+        auto positions = std::async([=]() { Promise->all(monitoredTokens->std::map([=](auto tokenAddress) mutable
         {
             try
             {
@@ -213,7 +213,7 @@ std::shared_ptr<Promise<array<any>>> DataService::getPositions()
                     object::pair{std::string("lastUpdated"), ((std::make_shared<Date>()))->toISOString()}
                 };
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 logger->error(std::string("Error getting position for token ") + tokenAddress + std::string(":"), error);
                 return nullptr;
@@ -226,14 +226,14 @@ std::shared_ptr<Promise<array<any>>> DataService::getPositions()
         }
         );
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Error getting positions:"), error);
         return array<any>();
     }
 }
 
-any DataService::getDefaultRecommendation()
+std::any DataService::getDefaultRecommendation()
 {
     return object{
         object::pair{std::string("recommended_buy"), std::string("SOL")}, 

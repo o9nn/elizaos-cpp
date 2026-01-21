@@ -15,7 +15,7 @@ namespace elizaos {
 
 
 
-// Define optional rolodex types for enhanced messaging
+// Define std::optional rolodex types for enhanced messaging
 struct RolodexService {
     std::optional<(message: {> sendNotification;
     UUID entityId;
@@ -53,14 +53,14 @@ class TodoReminderService extends Service {
 
     // Load configuration from runtime settings with defaults
 
-        // Parse comma-separated string like "9,18"
+        // Parse comma-separated std::string like "9,18"
         // Use array directly if provided
 
     // Load configuration from runtime settings
 
     // Initialize internal managers
 
-    // Try to get rolodex service for enhanced entity management (optional)
+    // Try to get rolodex service for enhanced entity management (std::optional)
 
     // Start reminder checking loop
 
@@ -79,7 +79,7 @@ class TodoReminderService extends Service {
     // Check if overdue
     // Check if upcoming (within configured threshold)
     // Check daily tasks (remind at configured hours)
-      // Check if current hour matches any configured reminder hours
+      // Check if current hour matches std::any configured reminder hours
         // Check if completed today
 
       // Always send in-app notification

@@ -99,7 +99,7 @@ struct CandleData {
  */
 
 /**
- * Helper function to fetch a single chunk of bars data
+ * Helper std::function to fetch a single chunk of bars data
  * @private
  */
 

@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/client/src/hooks/use-sol-price.h"
 
-any useSolPrice()
+std::any useSolPrice()
 {
     return useQuery(object{
         object::pair{std::string("queryKey"), array<string>{ std::string("solPrice") }}, 
@@ -25,7 +25,7 @@ std::function<std::shared_ptr<Promise<double>>()> fetchSolPrice = [=]() mutable
                 }
             }
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             console->error(std::string("Error fetching SOL price from API:"), error);
         }
@@ -37,7 +37,7 @@ std::function<std::shared_ptr<Promise<double>>()> fetchSolPrice = [=]() mutable
                 return Number(data->solana["usd"]);
             }
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             console->error(std::string("Error fetching SOL price from CoinGecko:"), error);
         }
@@ -49,13 +49,13 @@ std::function<std::shared_ptr<Promise<double>>()> fetchSolPrice = [=]() mutable
                 return Number(data->price);
             }
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             console->error(std::string("Error fetching SOL price from Binance:"), error);
         }
         return 135;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("Error fetching SOL price:"), error);
         return 135;

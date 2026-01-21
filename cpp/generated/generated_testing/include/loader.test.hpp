@@ -7,6 +7,6 @@ using fs = _default;
 #include "../../../src/commands/start/utils/loader.h"
 #include "@elizaos/core.h"
 
-extern string TEST_MULTI_CHARACTER_URL;
-extern any mockFs;
+extern std::string TEST_MULTI_CHARACTER_URL;
+extern std::any mockFs;
 #endif

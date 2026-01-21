@@ -57,12 +57,12 @@ struct KeyDistributionResponse {
 class PlatformIntegrationService {
   private runtime: IAgentRuntime;
   private authService: AuthenticationService;
-  private activeSessions = new Map<string, ClientSession>();
+  private activeSessions = new Map<std::string, ClientSession>();
   private keyDistributionLog: Array<{
     timestamp: Date;
-    sessionId: string;
-    provider: string;
-    keyType: string;
+    sessionId: std::string;
+    provider: std::string;
+    keyType: std::string;
     success: boolean;
   }> = [];
 
@@ -97,7 +97,7 @@ class PlatformIntegrationService {
 
     // Remove from active sessions
 
-    // Clear any cached auth data
+    // Clear std::any cached auth data
 
   /**
    * Get session status and auth information
@@ -147,7 +147,7 @@ class PlatformAuthUtils {
   /**
    * Generate secure session ID
    */
-  static generateSessionId(): string {
+  static generateSessionId(): std::string {
     return `session_${Date.now()}_${Math.random().toString(36).substring(2, 15)}`;
   }
 

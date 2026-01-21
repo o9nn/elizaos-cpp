@@ -30,7 +30,7 @@ DirectoryInfo getProjectType(std::optional<std::string> testPath);
  * Process filter name to remove extensions consistently
  *
  * Note: Test filtering works in two ways:
- * 1. Matching test suite names (the string in describe() blocks)
+ * 1. Matching test suite names (the std::string in describe() blocks)
  * 2. Matching file names (without extension)
  *
  * For best results, use the specific test suite name you want to run.

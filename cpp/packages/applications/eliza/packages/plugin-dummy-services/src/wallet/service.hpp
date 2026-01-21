@@ -31,14 +31,14 @@ class DummyWalletService extends Service implements IWalletService {
   public readonly capabilityDescription =
     'Provides standardized access to wallet balances and portfolios.';
 
-  private balances: Map<string, number>; // assetSymbolOrAddress -> quantity
-  private positions: Map<string, DummyAssetDetail>; // assetSymbolOrAddress -> details for owned non-quote assets
-  private quoteAssetSymbol: string;
+  private balances: Map<std::string, number>; // assetSymbolOrAddress -> quantity
+  private positions: Map<std::string, DummyAssetDetail>; // assetSymbolOrAddress -> details for owned non-quote assets
+  private quoteAssetSymbol: std::string;
 
   constructor(runtime: AgentRuntime) {
     super(runtime);
-    this.balances = new Map<string, number>();
-    this.positions = new Map<string, DummyAssetDetail>();
+    this.balances = new Map<std::string, number>();
+    this.positions = new Map<std::string, DummyAssetDetail>();
     this.quoteAssetSymbol = DEFAULT_QUOTE_ASSET;
     this.resetWallet(10000, DEFAULT_QUOTE_ASSET); // Initialize with some default cash
   }
@@ -50,7 +50,7 @@ class DummyWalletService extends Service implements IWalletService {
 
     // Return a dummy transaction signature
 
-    // No further async init in instance.start() currently needed for this simple map-based wallet
+    // No further std::async init in instance.start() currently needed for this simple map-based wallet
 
       // WalletAsset structure
 

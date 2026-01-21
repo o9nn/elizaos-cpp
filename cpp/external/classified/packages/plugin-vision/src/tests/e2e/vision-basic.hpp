@@ -23,10 +23,10 @@ class VisionBasicE2ETestSuite implements TestSuite {
   tests = [
     {
       name: 'Should initialize vision service',
-      fn: async (runtime: IAgentRuntime) => {
+      fn: std::async (runtime: IAgentRuntime) => {
         console.log('Testing vision service initialization...');
 
-        const visionService = runtime.getService<VisionService>('VISION' as any);
+        const visionService = runtime.getService<VisionService>('VISION' as std::any);
         if (!visionService) {
           throw new Error('Vision service not available - service must be registered');
         }

@@ -7,7 +7,7 @@
 using pMap = _default;
 
 template <typename TInput, typename TOutput, typename TContext>
-using PipelineStep = std::function<any(TInput, TContext)>;
+using PipelineStep = std::function<std::any(TInput, TContext)>;
 
 template <typename T>
 class PipelineResult;
@@ -32,30 +32,30 @@ public:
 class RepoPipelineContext : public BasePipelineContext, public std::enable_shared_from_this<RepoPipelineContext> {
 public:
     using std::enable_shared_from_this<RepoPipelineContext>::shared_from_this;
-    string repoId;
+    std::string repoId;
 
     object dateRange;
 };
 
 template <typename TContexttypename ...Args>
-PipelineStep<any, any, TContext> pipe(Args... operations_);
+PipelineStep<std::any, std::any, TContext> pipe(Args... operations_);
 
 template <typename TContexttypename ...Args>
-PipelineStep<any, array<any>, TContext> parallel(Args... operations_);
+PipelineStep<std::any, array<any>, TContext> parallel(Args... operations_);
 
 template <typename TContexttypename ...Args>
-PipelineStep<any, array<any>, TContext> sequence(Args... operations_);
+PipelineStep<std::any, array<any>, TContext> sequence(Args... operations_);
 
 template <typename TInput, typename TOutput, typename TContext>
 PipelineStep<array<TInput>, array<TOutput>, TContext> mapStep(PipelineStep<TInput, TOutput, TContext> operation);
 
 template <typename TInput, typename TOutput, typename TContext>
-PipelineStep<TInput, TOutput, TContext> createStep(string name, std::function<any(TInput, TContext)> transform);
+PipelineStep<TInput, TOutput, TContext> createStep(std::string name, std::function<std::any(TInput, TContext)> transform);
 
 template <typename TContexttypename ...Args>
-PipelineStep<any, any, TContext> pipe(Args... operations_)
+PipelineStep<std::any, std::any, TContext> pipe(Args... operations_)
 {
-    array<PipelineStep<any, any, TContext>> operations = array<PipelineStep<any, any, TContext>>{operations_...};
+    array<PipelineStep<std::any, std::any, TContext>> operations = array<PipelineStep<std::any, std::any, TContext>>{operations_...};
     return [=](auto input, auto context) mutable
     {
         auto lastResult = input;
@@ -69,12 +69,12 @@ PipelineStep<any, any, TContext> pipe(Args... operations_)
 
 
 template <typename TContexttypename ...Args>
-PipelineStep<any, array<any>, TContext> parallel(Args... operations_)
+PipelineStep<std::any, array<any>, TContext> parallel(Args... operations_)
 {
-    array<PipelineStep<any, any, TContext>> operations = array<PipelineStep<any, any, TContext>>{operations_...};
+    array<PipelineStep<std::any, std::any, TContext>> operations = array<PipelineStep<std::any, std::any, TContext>>{operations_...};
     return [=](auto input, auto context) mutable
     {
-        return std::async([=]() { Promise->all(operations->map([=](auto operation) mutable
+        return std::async([=]() { Promise->all(operations->std::map([=](auto operation) mutable
         {
             return operation(input, context);
         }
@@ -84,9 +84,9 @@ PipelineStep<any, array<any>, TContext> parallel(Args... operations_)
 
 
 template <typename TContexttypename ...Args>
-PipelineStep<any, array<any>, TContext> sequence(Args... operations_)
+PipelineStep<std::any, array<any>, TContext> sequence(Args... operations_)
 {
-    array<PipelineStep<any, any, TContext>> operations = array<PipelineStep<any, any, TContext>>{operations_...};
+    array<PipelineStep<std::any, std::any, TContext>> operations = array<PipelineStep<std::any, std::any, TContext>>{operations_...};
     return [=](auto input, auto context) mutable
     {
         auto results = array<any>();
@@ -105,7 +105,7 @@ PipelineStep<array<TInput>, array<TOutput>, TContext> mapStep(PipelineStep<TInpu
     return [=](auto inputs, auto context) mutable
     {
         if (!Array->isArray(inputs)) {
-            throw any(std::make_shared<Error>(std::string("mapStep requires an array input")));
+            throw std::any(std::make_shared<Error>(std::string("mapStep requires an array input")));
         }
         auto results = std::async([=]() { pMap(inputs, [=](auto item) mutable
         {
@@ -120,7 +120,7 @@ PipelineStep<array<TInput>, array<TOutput>, TContext> mapStep(PipelineStep<TInpu
 
 
 template <typename TInput, typename TOutput, typename TContext>
-PipelineStep<TInput, TOutput, TContext> createStep(string name, std::function<any(TInput, TContext)> transform)
+PipelineStep<TInput, TOutput, TContext> createStep(std::string name, std::function<std::any(TInput, TContext)> transform)
 {
     return [=](auto input, auto context) mutable
     {

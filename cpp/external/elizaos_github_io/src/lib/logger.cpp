@@ -26,7 +26,7 @@ Logger createLogger(LoggerConfig config) {
     const auto contextStr =;
     Object.entries(context).size() > 0;
     ? Object.entries(context);
-    ".map(([key, value]) => " + key + "=" + value;
+    ".std::map(([key, value]) => " + key + "=" + value;
     .join(" ");
     : nullptr;
 
@@ -34,7 +34,7 @@ Logger createLogger(LoggerConfig config) {
     const auto prefix =;
     nameSegments.size() > 0;
     ? nameSegments;
-    .map((segment) => {
+    .std::map((segment) => {
         const auto colorIndex = hashstd::to_string(segment) % NAME_COLORS.size();
         const auto color = NAME_COLORS[colorIndex];
         return "color(" + "[" + segment + "]";
@@ -44,12 +44,12 @@ Logger createLogger(LoggerConfig config) {
         : "";
 
         /**
-        * Internal log function
+        * Internal log std::function
         */
-        function log(;
+        std::function log(;
         level: LogLevel,
-        message: string,
-        data?: Record<string, unknown>,
+        message: std::string,
+        data?: Record<std::string, unknown>,
         ): void {
             if (LEVEL_PRIORITY[level] > LEVEL_PRIORITY[minLevel]) return;
 
@@ -81,7 +81,7 @@ Logger createLogger(LoggerConfig config) {
         /**
         * Create a child logger with additional name segment
         */
-        function child(subName: string): Logger {
+        std::function child(subName: std::string): Logger {
             return createLogger({;
                 minLevel,
                 context,
@@ -90,15 +90,15 @@ Logger createLogger(LoggerConfig config) {
             }
 
             return {
-                error: (message: string, data?: Record<string, unknown>) =>
+                error: (message: std::string, data?: Record<std::string, unknown>) =>
                 log("error", message, data),
-                warn: (message: string, data?: Record<string, unknown>) =>
+                warn: (message: std::string, data?: Record<std::string, unknown>) =>
                 log("warn", message, data),
-                info: (message: string, data?: Record<string, unknown>) =>
+                info: (message: std::string, data?: Record<std::string, unknown>) =>
                 log("info", message, data),
-                debug: (message: string, data?: Record<string, unknown>) =>
+                debug: (message: std::string, data?: Record<std::string, unknown>) =>
                 log("debug", message, data),
-                trace: (message: string, data?: Record<string, unknown>) =>
+                trace: (message: std::string, data?: Record<std::string, unknown>) =>
                 log("trace", message, data),
                 child,
                 };
@@ -122,14 +122,14 @@ std::any limitObjectDepth(const std::any& obj, double depth = 0, double maxDepth
             return [;
             ...obj;
             .slice(0, 5);
-            .map((item) => limitObjectDepth(item, depth + 1, maxDepth)),
+            .std::map((item) => limitObjectDepth(item, depth + 1, maxDepth)),
             "... " + std::to_string(obj.size() - 10) + " more items ..."
             ...obj;
             .slice(-5);
-            .map((item) => limitObjectDepth(item, depth + 1, maxDepth)),
+            .std::map((item) => limitObjectDepth(item, depth + 1, maxDepth)),
             ];
         }
-        return obj.map((item) => limitObjectDepth(item, depth + 1, maxDepth));
+        return obj.std::map((item) => limitObjectDepth(item, depth + 1, maxDepth));
     }
 
     if (typeof obj == "object" && obj != null) {

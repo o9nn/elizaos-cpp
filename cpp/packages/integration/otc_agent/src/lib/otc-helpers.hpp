@@ -41,7 +41,7 @@ struct ParsedOffer {
 
 /**
  * Raw offer data as returned from viem contract read - can be array or object.
- * Array format is the standard Solidity struct tuple return.
+ * Array format is the standard Solidity struct std::tuple return.
  */
 using RawOfferData = std::variant<, readonly [
 

@@ -13,10 +13,10 @@ namespace elizaos {
 
 
 class CacheManager {
-  private cache: Map<string, CacheEntry<any>> = new Map();
+  private cache: Map<std::string, CacheEntry<any>> = new Map();
   private defaultTTL = 60000; // 60 seconds default TTL
 
-  async get<T>(key: string): Promise<T | null> {
+  std::async get<T>(key: std::string): Promise<T | null> {
     const entry = this.cache.get(key);
     if (!entry) return null;
 

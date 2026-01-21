@@ -6,18 +6,18 @@
 #include "../types.h"
 
 extern std::shared_ptr<Evaluator> experienceEvaluator;
-string extractContext(array<std::shared_ptr<Memory>> messages);
+std::string extractContext(array<std::shared_ptr<Memory>> messages);
 
-string extractAction(string text);
+std::string extractAction(std::string text);
 
-string extractError(string text);
+std::string extractError(std::string text);
 
-string extractDiscovery(string text);
+std::string extractDiscovery(std::string text);
 
-string extractLearning(string text, string type);
+std::string extractLearning(std::string text, std::string type);
 
-string extractHypothesis(string text);
+std::string extractHypothesis(std::string text);
 
-string detectDomain(string text);
+std::string detectDomain(std::string text);
 
 #endif

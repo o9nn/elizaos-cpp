@@ -38,6 +38,6 @@ struct SocialLinks {
     std::string farcaster;
 };
 
-void AdminTokenDetails({ address: string } { address });
+void AdminTokenDetails({ address: std::string } { address });
 
 } // namespace elizaos

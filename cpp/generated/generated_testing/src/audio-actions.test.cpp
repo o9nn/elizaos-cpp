@@ -8,7 +8,7 @@ void Main(void)
         shared<any> mockVisionService;
         shared<any> mockAudioCapture;
         shared<any> mockStreamingAudioCapture;
-        shared<Record<string, string>> mockSettings;
+        shared<Record<std::string, string>> mockSettings;
         shared transcribeResult = nullptr;
         shared recordAndTranscribeCalled = false;
         beforeEach([=]() mutable
@@ -99,7 +99,7 @@ void Main(void)
                 expect(result->success)->toBe(true);
                 expect(result->data)->toEqual(object{
                     object::pair{std::string("transcription"), testTranscription}, 
-                    object::pair{std::string("timestamp"), expect->any(String)}
+                    object::pair{std::string("timestamp"), expect->std::any(String)}
                 });
                 expect(recordAndTranscribeCalled)->toBe(true);
             }

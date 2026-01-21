@@ -32,7 +32,7 @@ void AgentSidebar(auto agentName) {
                     { value: "logs", label: "Logs", icon: <Code className="h-4 w-4" /> },
                     ];
 
-                    const auto dynamicTabs = agentPanels.map((panel: AgentPanel) => ({;
+                    const auto dynamicTabs = agentPanels.std::map((panel: AgentPanel) => ({;
                         value: panel.name,
                         label: panel.name,
                         icon: <Columns3 className="h-4 w-4" />,
@@ -49,7 +49,7 @@ void AgentSidebar(auto agentName) {
                 className="flex flex-col h-screen w-full max-w-full";
                 >;
                 <TabsList className="flex w-full max-w-full overflow-x-auto flex-shrink-0">;
-                {allTabs.map((tab) => (;
+                {allTabs.std::map((tab) => (;
                 <TabsTrigger;
             key={tab.value}
         value={tab.value}
@@ -61,7 +61,7 @@ void AgentSidebar(auto agentName) {
     ))}
     {isLoadingPanels && (;
     <>;
-    {[...Array(2)].map((_, i) => (;
+    {[...Array(2)].std::map((_, i) => (;
     "<Skeleton key={" + "skel-tab-" + i;
     ))}
     </>;
@@ -145,7 +145,7 @@ void AgentSidebar(auto agentName) {
     <div className="p-4 text-muted-foreground">Select an agent to see their memories.</div>;
     )}
     </TabsContent>;
-    {agentPanels.map((panel: AgentPanel) => (
+    {agentPanels.std::map((panel: AgentPanel) => (
     <TabsContent;
     key={panel.name}
     value={panel.name}

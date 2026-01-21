@@ -8,9 +8,9 @@ class ProjectTestSuite;
 class ProjectTestSuite : public TestSuite, public std::enable_shared_from_this<ProjectTestSuite> {
 public:
     using std::enable_shared_from_this<ProjectTestSuite>::shared_from_this;
-    string name = std::string("project");
+    std::string name = std::string("project");
 
-    string description = std::string("E2E tests for project-specific features");
+    std::string description = std::string("E2E tests for project-specific features");
 
     array<object> tests = array<object>{ object{
         object::pair{std::string("name"), std::string("Project runtime environment test")}, 
@@ -19,31 +19,31 @@ public:
             try
             {
                 if (!runtime["character"]) {
-                    throw any(std::make_shared<Error>(std::string("Character not loaded in runtime")));
+                    throw std::any(std::make_shared<Error>(std::string("Character not loaded in runtime")));
                 }
                 auto character = runtime["character"];
                 if (!character["name"]) {
-                    throw any(std::make_shared<Error>(std::string("Character name is missing")));
+                    throw std::any(std::make_shared<Error>(std::string("Character name is missing")));
                 }
                 if (character["name"] != std::string("Eliza")) {
-                    throw any(std::make_shared<Error>(std::string("Expected character name 'Eliza', got '") + character["name"] + std::string("'")));
+                    throw std::any(std::make_shared<Error>(std::string("Expected character name 'Eliza', got '") + character["name"] + std::string("'")));
                 }
                 if (!character["system"]) {
-                    throw any(std::make_shared<Error>(std::string("Character system prompt is missing")));
+                    throw std::any(std::make_shared<Error>(std::string("Character system prompt is missing")));
                 }
                 if (!Array->isArray(character["bio"])) {
-                    throw any(std::make_shared<Error>(std::string("Character bio should be an array")));
+                    throw std::any(std::make_shared<Error>(std::string("Character bio should be an array")));
                 }
                 if (!Array->isArray(character["messageExamples"])) {
-                    throw any(std::make_shared<Error>(std::string("Character message examples should be an array")));
+                    throw std::any(std::make_shared<Error>(std::string("Character message examples should be an array")));
                 }
                 if (AND((character["plugins"]), (!Array->isArray(character["plugins"])))) {
-                    throw any(std::make_shared<Error>(std::string("Character plugins should be an array")));
+                    throw std::any(std::make_shared<Error>(std::string("Character plugins should be an array")));
                 }
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
-                throw any(std::make_shared<Error>(std::string("Project runtime environment test failed: ") + (as<std::shared_ptr<Error>>(error))->message + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("Project runtime environment test failed: ") + (as<std::shared_ptr<Error>>(error))->message + string_empty));
             }
         }
         }

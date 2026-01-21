@@ -21,7 +21,7 @@ namespace elizaos {
  * Tests API key setup wizard, configuration persistence, and database storage
  */
 
-    // Clear any existing configuration
+    // Clear std::any existing configuration
 
     // Skip boot sequence for faster testing
 
@@ -33,7 +33,7 @@ namespace elizaos {
 
       // Log what we see on the page
 
-      // Try to find any of the expected elements
+      // Try to find std::any of the expected elements
 
         // Check for different possible states
 
@@ -73,7 +73,7 @@ namespace elizaos {
           // Enter OpenAI key and submit
 
       // Verify configuration via API
-        // Note: API key might already be set, so just check that configuration exists
+        // Note: API key might already be std::set, so just check that configuration exists
 
           // Navigate to config tab
 
@@ -86,7 +86,7 @@ namespace elizaos {
 
       // Verify configuration via API
 
-      // Configuration should already be set from previous tests or existing state
+      // Configuration should already be std::set from previous tests or existing state
 
       // Verify configuration exists
 

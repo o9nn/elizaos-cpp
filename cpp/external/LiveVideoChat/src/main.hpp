@@ -17,7 +17,7 @@ namespace elizaos {
 
 
 
-  // TODO: populate these from localStorage if roomid and useruuid are set, otherwise generate a random uuid
+  // TODO: populate these from localStorage if roomid and useruuid are std::set, otherwise generate a random uuid
 
 
 } // namespace elizaos

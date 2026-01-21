@@ -9,7 +9,7 @@ void ClaimFees() {
     try {
 
         const auto { mutate: claimFees, isPending } = useMutation({;
-            mutationFn: async () => {
+            mutationFn: std::async () => {
                 if (!tokenMint) {
                     throw std::runtime_error("No token found");
                 }

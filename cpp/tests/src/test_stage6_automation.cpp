@@ -80,7 +80,7 @@ TEST_F(DiscordSummarizerTest, ChannelSummaryGeneration) {
     auto yesterday = now - std::chrono::hours(24);
     
     // Generate channel summary
-    auto future = summarizer->generateChannelSummary("test_channel_123", yesterday, now);
+    auto std::future = summarizer->generateChannelSummary("test_channel_123", yesterday, now);
     auto summary = future.get();
     
     EXPECT_EQ(summary.channelId, "test_channel_123");

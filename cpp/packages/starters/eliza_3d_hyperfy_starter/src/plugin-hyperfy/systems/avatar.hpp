@@ -16,26 +16,26 @@ namespace elizaos {
 
 using AvatarFactory = std::variant<{
 
-  // getBoneTransform?: (boneName: string) => THREE.Matrix4
+  // getBoneTransform?: (boneName: std::string) => THREE.Matrix4
 
 class AgentAvatar extends Node {
-  private _src: string, null = defaults.src
-  private _emote: string, null = defaults.emote
+  private _src: std::string, null = defaults.src
+  private _emote: std::string, null = defaults.emote
   private _onLoad: (() => void), null = defaults.onLoad
 
   public factory: AvatarFactory, null = null
-  public hooks: any = null
+  public hooks: std::any = null
   public instance: AvatarInstance, null = null
   private n = 0
   private needsRebuild: boolean = false
 
   constructor(data: Partial<{
-    id: string
-    src: string
-    emote: string
+    id: std::string
+    src: std::string
+    emote: std::string
     onLoad: () => void
     factory: AvatarFactory
-    hooks: any
+    hooks: std::any
   }> = {}) {
     super(data)
     this.name = 'avatar'

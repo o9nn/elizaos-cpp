@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-env/validation.test.h"
 
-any mockFetch = vi->fn();
+std::any mockFetch = vi->fn();
 
 void Main(void)
 {

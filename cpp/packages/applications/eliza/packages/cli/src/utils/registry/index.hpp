@@ -44,11 +44,11 @@ std::future<RegistrySettings> getRegistrySettings();
 
 std::future<void> saveRegistrySettings(RegistrySettings settings);
 
-std::future<string | undefined> getEnvVar(const std::string& key);
+std::future<std::string | undefined> getEnvVar(const std::string& key);
 
 std::future<void> setEnvVar(const std::string& key, const std::string& value);
 
-std::future<string | undefined> getGitHubToken();
+std::future<std::string | undefined> getGitHubToken();
 
 std::future<void> setGitHubToken(const std::string& token);
 
@@ -77,13 +77,13 @@ struct PluginMetadata {
 /**
  * Saves the registry index to the cache file
  */
-std::future<void> saveRegistryCache(Record<string registry, auto string>);
+std::future<void> saveRegistryCache(Record<std::string registry, auto string>);
 
 /**
  * Gets a local copy of the registry index without requiring GitHub authentication.
  * This is useful for offline mode or when GitHub is unavailable.
  *
- * @returns {Promise<Record<string, string>>} The local registry index
+ * @returns {Promise<Record<std::string, string>>} The local registry index
  */
 
 /**
@@ -97,7 +97,7 @@ std::future<void> saveRegistryCache(Record<string registry, auto string>);
  * Normalizes a plugin name to the expected format in the registry
  *
  * @param {string} pluginName - The name of the plugin to normalize
- * @returns {string[]} An array of possible normalized plugin names to try
+ * @returns {std::string[]} An array of possible normalized plugin names to try
  */
 std::vector<std::string> normalizePluginName(const std::string& pluginName);
 
@@ -105,10 +105,10 @@ std::vector<std::string> normalizePluginName(const std::string& pluginName);
  * Retrieves the repository URL for a given plugin from the registry.
  *
  * @param {string} pluginName - The name of the plugin to fetch the repository URL for.
- * @returns {Promise<string | null>} The repository URL for the plugin, or null if not found.
+ * @returns {Promise<std::string | null>} The repository URL for the plugin, or null if not found.
  * @throws {Error} If an error occurs while retrieving the repository URL.
  */
-std::future<string | null> getPluginRepository(const std::string& pluginName);
+std::future<std::string | null> getPluginRepository(const std::string& pluginName);
 
 /**
  * Check if a GitHub repository has a specific branch
@@ -126,7 +126,7 @@ std::future<std::string> getBestBranch(const std::string& repoUrl);
 
 std::future<PluginMetadata | null> getPluginMetadata(const std::string& pluginName);
 
-std::future<string | null> getPluginVersion(const std::string& pluginName, std::optional<std::string> version);
+std::future<std::string | null> getPluginVersion(const std::string& pluginName, std::optional<std::string> version);
 
 /**
  * Attempts to get package details from the registry
@@ -143,7 +143,7 @@ std::future<string | null> getPluginVersion(const std::string& pluginName, std::
 /**
  * Gets the best matching version of a plugin based on runtime version
  */
-std::future<string | null> getBestPluginVersion(const std::string& packageName, const std::string& runtimeVersion);
+std::future<std::string | null> getBestPluginVersion(const std::string& packageName, const std::string& runtimeVersion);
 
 std::future<DataDirStatus> checkDataDir();
 

@@ -4,7 +4,7 @@
 #include "@elizaos/core.h"
 #include "uuid.h"
 
-extern any cacheTestAgentSettings;
+extern std::any cacheTestAgentSettings;
 extern object testCacheEntries;
 extern object testCacheWithExpiration;
 #endif

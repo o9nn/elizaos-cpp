@@ -43,9 +43,9 @@ struct PriceData {
 class SolanaService {
   private connection: Connection;
   private fallbackConnection: Connection;
-  private rpcUrl: string;
-  private jupiterApiUrl: string;
-  private jupiterTokensApiUrl: string;
+  private rpcUrl: std::string;
+  private jupiterApiUrl: std::string;
+  private jupiterTokensApiUrl: std::string;
   private requestQueue: Array<() => Promise<any>> = [];
   private isProcessingQueue: boolean = false;
   private rateLimitDelay: number = 100; // 100ms between requests for premium Helius

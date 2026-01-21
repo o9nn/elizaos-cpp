@@ -11,9 +11,9 @@ class SelfModificationTestSuite;
 class SelfModificationTestSuite : public TestSuite, public std::enable_shared_from_this<SelfModificationTestSuite> {
 public:
     using std::enable_shared_from_this<SelfModificationTestSuite>::shared_from_this;
-    string name = std::string("self-modification-e2e");
+    std::string name = std::string("self-modification-e2e");
 
-    string description = std::string("End-to-end tests for agent self-modification and character evolution");
+    std::string description = std::string("End-to-end tests for agent self-modification and character evolution");
 
     array<object> tests = array<object>{ object{
         object::pair{std::string("name"), std::string("Plugin initialization and service availability")}, 
@@ -22,7 +22,7 @@ public:
             console->log(std::string("Testing plugin initialization..."));
             auto fileManager = runtime["getService"](std::string("character-file-manager"));
             if (!fileManager) {
-                throw any(std::make_shared<Error>(std::string("CharacterFileManager service not available")));
+                throw std::any(std::make_shared<Error>(std::string("CharacterFileManager service not available")));
             }
             auto modifyAction = runtime["actions"]["find"]([=](auto a) mutable
             {
@@ -30,7 +30,7 @@ public:
             }
             );
             if (!modifyAction) {
-                throw any(std::make_shared<Error>(std::string("MODIFY_CHARACTER action not registered")));
+                throw std::any(std::make_shared<Error>(std::string("MODIFY_CHARACTER action not registered")));
             }
             auto evolutionEvaluator = runtime["evaluators"]["find"]([=](auto e) mutable
             {
@@ -38,7 +38,7 @@ public:
             }
             );
             if (!evolutionEvaluator) {
-                throw any(std::make_shared<Error>(std::string("CHARACTER_EVOLUTION evaluator not registered")));
+                throw std::any(std::make_shared<Error>(std::string("CHARACTER_EVOLUTION evaluator not registered")));
             }
             auto evolutionProvider = runtime["providers"]["find"]([=](auto p) mutable
             {
@@ -46,7 +46,7 @@ public:
             }
             );
             if (!evolutionProvider) {
-                throw any(std::make_shared<Error>(std::string("CHARACTER_EVOLUTION provider not registered")));
+                throw std::any(std::make_shared<Error>(std::string("CHARACTER_EVOLUTION provider not registered")));
             }
             console->log(std::string("✅ Plugin initialization test PASSED"));
         }
@@ -104,7 +104,7 @@ public:
             );
             auto shouldRun = std::async([=]() { evaluator["validate"](runtime, const_(messages)[2], state); });
             if (!shouldRun) {
-                throw any(std::make_shared<Error>(std::string("Evolution evaluator should have triggered on encouraging feedback")));
+                throw std::any(std::make_shared<Error>(std::string("Evolution evaluator should have triggered on encouraging feedback")));
             }
             console->log(std::string("✅ Character evolution evaluator test PASSED"));
         }
@@ -138,7 +138,7 @@ public:
             );
             auto isValid = std::async([=]() { action["validate"](runtime, message, state); });
             if (!isValid) {
-                throw any(std::make_shared<Error>(std::string("MODIFY_CHARACTER action should validate for topic addition request")));
+                throw std::any(std::make_shared<Error>(std::string("MODIFY_CHARACTER action should validate for topic addition request")));
             }
             shared responseReceived = false;
             auto callback = [=](auto content) mutable
@@ -151,14 +151,14 @@ public:
             };
             auto result = std::async([=]() { action["handler"](runtime, message, state, object{}, callback); });
             if (!responseReceived) {
-                throw any(std::make_shared<Error>(std::string("MODIFY_CHARACTER action did not execute properly")));
+                throw std::any(std::make_shared<Error>(std::string("MODIFY_CHARACTER action did not execute properly")));
             }
             if (!result["success"]) {
-                throw any(std::make_shared<Error>(std::string("MODIFY_CHARACTER action failed: ") + (OR((result["error"]), (result["reason"]))) + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("MODIFY_CHARACTER action failed: ") + (OR((result["error"]), (result["reason"]))) + string_empty));
             }
             auto topics = OR((runtime["character"]["topics"]), (array<any>()));
             if (!topics["includes"](std::string("machine learning"))) {
-                throw any(std::make_shared<Error>(std::string("Character topics were not updated with machine learning")));
+                throw std::any(std::make_shared<Error>(std::string("Character topics were not updated with machine learning")));
             }
             console->log(std::string("✅ MODIFY_CHARACTER action test PASSED"));
         }
@@ -191,13 +191,13 @@ public:
             );
             auto result = std::async([=]() { provider["get"](runtime, message, state); });
             if (!result) {
-                throw any(std::make_shared<Error>(std::string("CHARACTER_EVOLUTION provider returned no result")));
+                throw std::any(std::make_shared<Error>(std::string("CHARACTER_EVOLUTION provider returned no result")));
             }
             if (OR((!result["text"]), (!result["text"]["includes"](std::string("CHARACTER EVOLUTION CONTEXT"))))) {
-                throw any(std::make_shared<Error>(std::string("Provider did not return expected evolution context")));
+                throw std::any(std::make_shared<Error>(std::string("Provider did not return expected evolution context")));
             }
             if (!result["values"]["hasEvolutionCapability"]) {
-                throw any(std::make_shared<Error>(std::string("Provider should indicate evolution capability is available")));
+                throw std::any(std::make_shared<Error>(std::string("Provider should indicate evolution capability is available")));
             }
             console->log(std::string("✅ CHARACTER_EVOLUTION provider test PASSED"));
         }
@@ -214,7 +214,7 @@ public:
             };
             auto validResult = fileManager["validateModification"](validModification);
             if (!validResult["valid"]) {
-                throw any(std::make_shared<Error>(std::string("Valid modification was rejected: ") + validResult["errors"]["join"](std::string(", ")) + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("Valid modification was rejected: ") + validResult["errors"]["join"](std::string(", ")) + string_empty));
             }
             auto invalidModification = object{
                 object::pair{std::string("bio"), array<string>{ std::string("<script>alert("xss")</script>") }}, 
@@ -222,14 +222,14 @@ public:
             };
             auto invalidResult = fileManager["validateModification"](invalidModification);
             if (invalidResult["valid"]) {
-                throw any(std::make_shared<Error>(std::string("Invalid modification with XSS was accepted")));
+                throw std::any(std::make_shared<Error>(std::string("Invalid modification with XSS was accepted")));
             }
             auto excessiveModification = object{
                 object::pair{std::string("bio"), ((array(25)))->fill(std::string("Too many bio elements"))}
             };
             auto excessiveResult = fileManager["validateModification"](excessiveModification);
             if (excessiveResult["valid"]) {
-                throw any(std::make_shared<Error>(std::string("Excessive modification was accepted")));
+                throw std::any(std::make_shared<Error>(std::string("Excessive modification was accepted")));
             }
             console->log(std::string("✅ Character file manager validation test PASSED"));
         }
@@ -313,10 +313,10 @@ public:
             };
             auto result = std::async([=]() { action["handler"](runtime, modificationMessage, state, object{}, callback); });
             if (!result["success"]) {
-                throw any(std::make_shared<Error>(std::string("Character modification failed: ") + (OR((result["error"]), (result["reason"]))) + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("Character modification failed: ") + (OR((result["error"]), (result["reason"]))) + string_empty));
             }
             auto newTopics = OR((runtime["character"]["topics"]), (array<any>()));
-            auto newBio = (Array->isArray(runtime["character"]["bio"])) ? any(runtime["character"]["bio"]) : any(array<any>{ runtime["character"]["bio"] });
+            auto newBio = (Array->isArray(runtime["character"]["bio"])) ? std::any(runtime["character"]["bio"]) : std::any(array<any>{ runtime["character"]["bio"] });
             auto hasNewTopic = newTopics["some"]([=](auto topic) mutable
             {
                 return OR((topic->includes(std::string("educational"))), (topic->includes(std::string("communication"))));
@@ -328,10 +328,10 @@ public:
             }
             );
             if (AND((!hasNewTopic), (!hasNewBio))) {
-                throw any(std::make_shared<Error>(std::string("Character was not modified as expected")));
+                throw std::any(std::make_shared<Error>(std::string("Character was not modified as expected")));
             }
             if (!modificationApplied) {
-                throw any(std::make_shared<Error>(std::string("Modification was not properly executed")));
+                throw std::any(std::make_shared<Error>(std::string("Modification was not properly executed")));
             }
             console->log(std::string("Character successfully evolved:"));
             console->log(std::string("- Baseline topics:"), baselineTopics->get_length());

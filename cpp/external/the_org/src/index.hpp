@@ -25,7 +25,7 @@ namespace elizaos {
 /**
  * Checks if all required environment variables for an agent are available
  * @param agent The agent to check
- * @returns boolean indicating if all required environment variables are set
+ * @returns boolean indicating if all required environment variables are std::set
  */
   // Get which platform plugins the agent uses
 

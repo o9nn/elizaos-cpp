@@ -3,7 +3,7 @@
 JSDocValidator::JSDocValidator(std::shared_ptr<AIService> aiService_) : aiService(aiService_)  {
 }
 
-std::shared_ptr<Promise<string>> JSDocValidator::validateAndFixJSDoc(string fileName, string code, string originalComment)
+std::shared_ptr<Promise<string>> JSDocValidator::validateAndFixJSDoc(std::string fileName, std::string code, std::string originalComment)
 {
     if (this->isValidTypeScript(code)) {
         return originalComment;
@@ -24,7 +24,7 @@ std::shared_ptr<Promise<string>> JSDocValidator::validateAndFixJSDoc(string file
             return regeneratedComment;
         }
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("Error during AI regeneration for ") + fileName + std::string(":"), error);
     }
@@ -33,20 +33,20 @@ std::shared_ptr<Promise<string>> JSDocValidator::validateAndFixJSDoc(string file
     return originalComment;
 }
 
-boolean JSDocValidator::isValidTypeScript(string code)
+boolean JSDocValidator::isValidTypeScript(std::string code)
 {
     try
     {
         parse(code, this->parserOptions);
         return true;
     }
-    catch (const any& _error)
+    catch (const std::any& _error)
     {
         return false;
     }
 }
 
-string JSDocValidator::fixCommonJSDocIssues(string comment)
+std::string JSDocValidator::fixCommonJSDocIssues(std::string comment)
 {
     comment = comment->replace((new RegExp(std::string("^```[\s\S]*?\"))), string_empty);
     comment = comment->replace((new RegExp(std::string("\n```"))), string_empty);
@@ -62,7 +62,7 @@ string JSDocValidator::fixCommonJSDocIssues(string comment)
     return fixed;
 }
 
-std::shared_ptr<Promise<string>> JSDocValidator::regenerateJSDoc(string code)
+std::shared_ptr<Promise<string>> JSDocValidator::regenerateJSDoc(std::string code)
 {
     auto prompt = std::string("Fix the following JSDoc comment to be syntactically valid.\
         Ensure proper formatting:\

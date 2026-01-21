@@ -44,7 +44,7 @@ std::vector<LogEntry> extractLogsFromResponse(const std::any& response);
 
 /**
  * Type-safe converter from unknown response to expected shape
- * Replaces the need for 'as unknown as Record<string, unknown>[]'
+ * Replaces the need for 'as unknown as Record<std::string, unknown>[]'
  */
 
 } // namespace elizaos

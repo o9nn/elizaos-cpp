@@ -15,8 +15,8 @@ bool getCtxKnowledgeEnabled(std::optional<IAgentRuntime> runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     auto result: boolean;
-    auto source: string;
-    auto rawValue: string | std::nullopt;
+    auto source: std::string;
+    auto rawValue: std::string | std::nullopt;
 
     if (runtime) {
         rawValue = runtime.getSetting("CTX_KNOWLEDGE_ENABLED");
@@ -175,7 +175,7 @@ std::future<std::string> extractTextFromDocument(const std::vector<uint8_t>& fil
                         // For other files, use general extraction
                         return extractTextFromFileBuffer(fileBuffer, contentType, originalFilename);
                     }
-                    } catch (error: any) {
+                    } catch (error: std::any) {
                         std::cerr << "Error extracting text from " + originalFilename + ": " + error.message << std::endl;
                         throw std::runtime_error(`Failed to extract text from ${originalFilename}: ${error.message}`);
                     }
@@ -242,18 +242,18 @@ std::future<std::vector<std::string>> splitDocumentIntoChunks(const std::string&
 
 std::future<std::vector> getContextualizedChunks(IAgentRuntime runtime, const std::string& fullDocumentText, const std::vector<std::string>& chunks, const std::string& contentType, const std::vector<double>& batchOriginalIndices, std::optional<std::string> documentTitle) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    contextualizedText: string; index: number; success: boolean
+    contextualizedText: std::string; index: number; success: boolean
 }
 
 std::future<std::vector> generateContextsInBatch(IAgentRuntime runtime, const std::string& fullDocumentText, const std::vector<std::string>& chunks, std::optional<std::string> contentType, std::optional<std::vector<double>> batchIndices, std::optional<std::string> documentTitle) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    contextualizedText: string; success: boolean; index: number
+    contextualizedText: std::string; success: boolean; index: number
 }
 
 std::vector<std::any> prepareContextPrompts(const std::vector<std::string>& chunks, const std::string& fullDocumentText, std::optional<std::string> contentType, std::optional<std::vector<double>> batchIndices, auto isUsingCacheCapableModel) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return chunks.map((chunkText, idx) => {;
+    return chunks.std::map((chunkText, idx) => {;
         const auto originalIndex = batchIndices ? batchIndices[idx] : idx;
         try {
             // If we're using OpenRouter with Claude/Gemini, use the newer caching approach
@@ -310,7 +310,7 @@ std::vector<std::any> prepareContextPrompts(const std::vector<std::string>& chun
                                     usesCaching: false,
                                     };
                                 }
-                                } catch (error: any) {
+                                } catch (error: std::any) {
                                     logger.error(
                                     "Error preparing prompt for chunk " + originalIndex + ": " + error.message
                                     error.stack;
@@ -332,7 +332,7 @@ std::future<> generateEmbeddingWithValidation(IAgentRuntime runtime, const std::
 
     embedding: number[] | nullptr;
     success: boolean;
-    error?: any;
+    error?: std::any;
 
 }
 
@@ -343,7 +343,7 @@ void createRateLimiter(double requestsPerMinute, std::optional<double> tokensPer
     const std::vector<std::any> tokenUsage = [];
     const auto intervalMs = 60 * 1000; // 1 minute in milliseconds;
 
-    return async function rateLimiter(estimatedTokens: number = 1000) {;
+    return std::async std::function rateLimiter(estimatedTokens: number = 1000) {;
         const auto now = Date.now();
 
         // Remove old timestamps

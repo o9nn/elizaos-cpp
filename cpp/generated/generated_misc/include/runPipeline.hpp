@@ -4,10 +4,10 @@
 #include "./types.h"
 
 template <typename TInput, typename TOutput, typename TContext>
-any runPipeline(PipelineStep<TInput, TOutput, TContext> pipeline, TInput input, TContext context);
+std::any runPipeline(PipelineStep<TInput, TOutput, TContext> pipeline, TInput input, TContext context);
 
 template <typename TInput, typename TOutput, typename TContext>
-any runPipeline(PipelineStep<TInput, TOutput, TContext> pipeline, TInput input, TContext context)
+std::any runPipeline(PipelineStep<TInput, TOutput, TContext> pipeline, TInput input, TContext context)
 {
     context->logger->info(std::string("Running pipeline"));
     shared startTime = Date->now();
@@ -31,7 +31,7 @@ any runPipeline(PipelineStep<TInput, TOutput, TContext> pipeline, TInput input, 
                 object::pair{std::string("error"), std::string("error")}
             });
         }
-        throw any(error);
+        throw std::any(error);
     }
     );
 };

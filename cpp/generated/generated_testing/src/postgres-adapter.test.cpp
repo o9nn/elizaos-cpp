@@ -85,11 +85,11 @@ void Main(void)
                 {
                     std::async([=]() { (as<any>(adapter))["withDatabase"]([=]() mutable
                     {
-                        throw any(std::make_shared<Error>(std::string("Test error")));
+                        throw std::any(std::make_shared<Error>(std::string("Test error")));
                     }
                     ); });
                 }
-                catch (const any& error)
+                catch (const std::any& error)
                 {
                     errorCaught = true;
                     expect((as<std::shared_ptr<Error>>(error))->message)->toBe(std::string("Test error"));
@@ -118,11 +118,11 @@ void Main(void)
                 {
                     std::async([=]() { (as<any>(adapter))["withDatabase"]([=]() mutable
                     {
-                        throw any(std::make_shared<Error>(std::string("Database operation failed")));
+                        throw std::any(std::make_shared<Error>(std::string("Database operation failed")));
                     }
                     ); });
                 }
-                catch (const any& error)
+                catch (const std::any& error)
                 {
                     errorCaught = true;
                     expect((as<std::shared_ptr<Error>>(error))->message)->toBe(std::string("Database operation failed"));

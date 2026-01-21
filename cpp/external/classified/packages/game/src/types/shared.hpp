@@ -21,14 +21,14 @@ namespace elizaos {
 struct BaseMessage {
     std::string id;
     std::string content;
-    Date | string timestamp;
+    Date | std::string timestamp;
     std::unordered_map<std::string, unknown> metadata;
 };
 
 struct TauriWindow {
     std::optional<{> __TAURI_INTERNALS__;
-    (command: string, args?: Record<string, unknown>) => Promise<unknown> invoke;
-    (event: string, callback: (event: TauriEvent) => void) => Promise<() => void> listen;
+    (command: std::string, args?: Record<std::string, unknown>) => Promise<unknown> invoke;
+    (event: std::string, callback: (event: TauriEvent) => void) => Promise<() => void> listen;
 };
 
 // WebSocket message types
@@ -42,21 +42,21 @@ struct WebSocketMessage {
     std::optional<std::string> userId;
     std::optional<std::string> author;
     std::optional<std::string> name;
-    std::optional<string | Date> timestamp;
+    std::optional<std::string | Date> timestamp;
     std::optional<std::unordered_map<std::string, unknown>> metadata;
 };
 
 // Configuration types
 struct ConfigurationValue {
     std::string key;
-    string | number | boolean value;
+    std::string | number | boolean value;
     'string' | 'number' | 'boolean' | 'url' | 'api_key' type;
 };
 
 struct ValidationResult {
     bool valid;
     std::optional<std::string> error;
-    std::optional<string | number | boolean> sanitizedValue;
+    std::optional<std::string | number | boolean> sanitizedValue;
 };
 
 // Agent and Runtime types
@@ -74,7 +74,7 @@ struct RuntimeSettings {
 
 // Log entry types
 struct LogEntry {
-    string | Date timestamp;
+    std::string | Date timestamp;
     'debug' | 'info' | 'warn' | 'error' level;
     std::string message;
     std::optional<std::string> source;
@@ -85,7 +85,7 @@ struct LogEntry {
 struct HttpRequestOptions {
     std::optional<'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'> method;
     std::optional<std::unordered_map<std::string, std::string>> headers;
-    std::optional<string | FormData | Record<string, unknown>> body;
+    std::optional<std::string | FormData | Record<std::string, unknown>> body;
     std::optional<double> timeout;
 };
 
@@ -109,8 +109,8 @@ struct ModelInfo {
 struct MemoryEntry {
     std::string id;
     'knowledge' | 'conversation' | 'goal' | 'user' | 'relationship' type;
-    string | Record<string, unknown> content;
-    Date | string createdAt;
+    std::string | Record<std::string, unknown> content;
+    Date | std::string createdAt;
     std::optional<Date | string> updatedAt;
     std::optional<double> importance;
     std::optional<std::string> entityId;
@@ -127,7 +127,7 @@ struct Goal {
     std::string name;
     std::string description;
     bool isCompleted;
-    string | Date createdAt;
+    std::string | Date createdAt;
     std::optional<std::unordered_map<std::string, unknown>> metadata;
 };
 
@@ -139,8 +139,8 @@ struct Todo {
     'daily' | 'one-off' | 'aspirational' type;
     bool isCompleted;
     std::optional<double> priority;
-    string | Date createdAt;
-    std::optional<string | Date> dueDate;
+    std::string | Date createdAt;
+    std::optional<std::string | Date> dueDate;
     std::optional<std::unordered_map<std::string, unknown>> metadata;
 };
 
@@ -149,7 +149,7 @@ struct CapabilityStatus {
     bool enabled;
     'active' | 'inactive' | 'error' status;
     std::optional<std::string> error;
-    std::optional<string | Date> lastUsed;
+    std::optional<std::string | Date> lastUsed;
     std::unordered_map<std::string, unknown> metadata;
 };
 
@@ -168,7 +168,7 @@ struct FileUpload {
     std::string name;
     std::string type;
     double size;
-    string | ArrayBuffer content;
+    std::string | ArrayBuffer content;
     std::optional<double> lastModified;
 };
 
@@ -178,7 +178,7 @@ using KnowledgeFile = KnowledgeItem;
 // Backup types
 struct BackupInfo {
     std::string id;
-    string | Date timestamp;
+    std::string | Date timestamp;
     'manual' | 'automatic' | 'shutdown' backup_type;
     double size_bytes;
     std::vector<BackupComponent> components;
@@ -281,7 +281,7 @@ struct TabContentResponse {
 struct OllamaModelStatus {
     bool models_ready;
     std::vector<std::string> missing_models;
-    string | null downloading;
+    std::string | null downloading;
     number | null progress;
 };
 
@@ -296,7 +296,7 @@ struct TauriMemoryResponse {
     std::optional<std::vector<std::unordered_map<std::string, unknown>>> plugins;
     std::optional<std::vector<LogEntry>> logs;
     std::optional<std::vector<std::string>> tables;
-    std::optional<std::vector<{ name: string; path: string; display_name?: string }>> routes;
+    std::optional<std::vector<{ name: std::string; path: std::string; display_name?: std::string }>> routes;
     std::optional<std::string> content;
     std::optional<std::vector<MemoryEntry>> memories;
 };

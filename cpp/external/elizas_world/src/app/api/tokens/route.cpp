@@ -22,7 +22,7 @@ std::future<void> GET() {
                 // Fetch fresh data
                 const auto tokenBalances = getTokenData(connection);
                 const auto marketData = fetchDexScreenerData(;
-                tokenBalances.map(t => t.mint);
+                tokenBalances.std::map(t => t.mint);
                 );
                 const auto holdings = calculateHoldings(;
                 connection,

@@ -20,23 +20,23 @@ class SystemService extends BaseApiClient {
    * Retrieve the local environment variables from the ElizaOS server.
    *
    * Server route (packages/server/src/api/system):
-   *   GET /api/system/env/local  ->  { success: true, data: Record<string,string> }
+   *   GET /api/system/env/local  ->  { success: true, data: Record<std::string,string> }
    */
-  async getEnvironment(): Promise<Record<string, string>> {
-    return this.get<Record<string, string>>('/api/system/env/local');
+  std::async getEnvironment(): Promise<Record<std::string, string>> {
+    return this.get<Record<std::string, string>>('/api/system/env/local');
   }
 
   /**
    * Update (overwrite or merge) the local .env file on the ElizaOS server.
    *
    * Server route (packages/server/src/api/system):
-   *   POST /api/system/env/local  ->  { success: true, message: string }
-   *   Body: { content: Record<string,string> }
+   *   POST /api/system/env/local  ->  { success: true, message: std::string }
+   *   Body: { content: Record<std::string,string> }
    *
    * For developer-ergonomics we accept several shapes:
-   *   1. { variables: Record<string,string>; merge?: boolean }
-   *   2. { content:   Record<string,string> }      (server-native)
-   *   3. Record<string,string>                      (shorthand)
+   *   1. { variables: Record<std::string,string>; merge?: boolean }
+   *   2. { content:   Record<std::string,string> }      (server-native)
+   *   3. Record<std::string,string>                      (shorthand)
    */
 
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions

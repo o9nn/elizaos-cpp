@@ -7,11 +7,11 @@ namespace elizaos {
 void EVMWalletActions() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto [result, setResult] = useState<string | nullptr>(nullptr);
+    const auto [result, setResult] = useState<std::string | nullptr>(nullptr);
     const auto { wallets } = useEmbeddedEthereumWallet();
     const auto wallet = wallets.[0];
 
-    const auto signMessage = async () => {;
+    const auto signMessage = std::async () => {;
         const auto provider = wallet.getProvider.();
         if (!provider) return;
 
@@ -22,7 +22,7 @@ void EVMWalletActions() {
             });
             setResult(signature);
             };
-            const auto signTransaction = async () => {;
+            const auto signTransaction = std::async () => {;
                 const auto provider = wallet.getProvider.();
                 if (!provider) return;
 
@@ -43,7 +43,7 @@ void EVMWalletActions() {
                                 setResult(/* JSON.stringify */ std::string(error));
                             }
                             };
-                            const auto signAndSendTransaction = async () => {;
+                            const auto signAndSendTransaction = std::async () => {;
                                 const auto provider = wallet.getProvider.();
                                 if (!provider) return;
                                 const auto response = provider.request({;

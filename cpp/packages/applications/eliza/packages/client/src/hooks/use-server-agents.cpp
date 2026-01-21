@@ -11,7 +11,7 @@ void useAddAgentToServer() {
     const auto { toast } = useToast();
 
     return useMutation({;
-        mutationFn: async ({ serverId, agentId }: { serverId: UUID; agentId: UUID }) => {
+        mutationFn: std::async ({ serverId, agentId }: { serverId: UUID; agentId: UUID }) => {
             const auto elizaClient = createElizaClient();
             return elizaClient.agents.addAgentToServer(serverId, agentId);
             },
@@ -43,7 +43,7 @@ void useRemoveAgentFromServer() {
     const auto { toast } = useToast();
 
     return useMutation({;
-        mutationFn: async ({ serverId, agentId }: { serverId: UUID; agentId: UUID }) => {
+        mutationFn: std::async ({ serverId, agentId }: { serverId: UUID; agentId: UUID }) => {
             const auto elizaClient = createElizaClient();
             return elizaClient.agents.removeAgentFromServer(serverId, agentId);
             },

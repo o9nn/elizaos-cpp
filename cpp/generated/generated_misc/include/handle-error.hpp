@@ -7,7 +7,7 @@
 #include "yoctocolors.h"
 using colors = _default;
 
-void handleError(any error);
+void handleError(std::any error);
 
 void checkServer(std::shared_ptr<OptionValues> opts);
 

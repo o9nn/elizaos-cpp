@@ -6,7 +6,7 @@ namespace elizaos {
 
 std::future<> validateDiscordConfig(IAgentRuntime runtime, const std::string& serverId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    isValid: boolean; error?: string
+    isValid: boolean; error?: std::string
 }
 
 std::future<DiscordService> ensureDiscordClient(IAgentRuntime runtime) {

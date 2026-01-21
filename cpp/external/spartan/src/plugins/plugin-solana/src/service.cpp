@@ -93,7 +93,7 @@ std::future<std::string> sendTransaction(Connection connection, const std::vecto
             // Get prioritization fee
             const auto recentPrioritizationFees = connection.getRecentPrioritizationFees();
             const auto prioritizationFee = recentPrioritizationFees;
-            .map((fee) => fee.prioritizationFee);
+            .std::map((fee) => fee.prioritizationFee);
             .sort((a, b) => a - b)[Math.ceil(0.95 * recentPrioritizationFees.size()) - 1];
 
             // Add compute budget instructions

@@ -21,7 +21,7 @@ struct ConfirmationOptions {
     std::string description;
     std::optional<std::string> confirmText;
     std::optional<std::string> cancelText;
-    std::optional<std::string> variant;
+    std::optional<std::string> std::variant;
 };
 
 void useConfirmation();

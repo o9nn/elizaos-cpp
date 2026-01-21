@@ -10,7 +10,7 @@ void ImagePrompt() {
     const auto [prompt, setPrompt] = useState<string>("");
 
     const auto mutation = useMutation({;
-        mutationFn: async () => {
+        mutationFn: std::async () => {
             const auto response = "fetch(" + import.meta.env.VITE_API_URL + "/image-prompt";
                 method: "POST",
                 headers: {

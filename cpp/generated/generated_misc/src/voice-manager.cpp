@@ -25,7 +25,7 @@ void VoiceManager::start()
 
         auto playerId = data["participant"];
         if (!this->userStates->has(playerId)) {
-            this->userStates->set(playerId, object{
+            this->userStates->std::set(playerId, object{
                 object::pair{std::string("buffers"), array<any>()}, 
                 object::pair{std::string("totalLength"), 0}, 
                 object::pair{std::string("lastActive"), Date->now()}, 
@@ -40,7 +40,7 @@ void VoiceManager::start()
     );
 }
 
-void VoiceManager::handleUserBuffer(any playerId, any buffer)
+void VoiceManager::handleUserBuffer(std::any playerId, std::any buffer)
 {
     auto state = this->userStates->get(playerId);
     try
@@ -50,7 +50,7 @@ void VoiceManager::handleUserBuffer(any playerId, any buffer)
         state["lastActive"] = Date->now();
         this->debouncedProcessTranscription(playerId);
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("Error processing buffer for user ") + playerId + std::string(":"), error);
     }
@@ -129,13 +129,13 @@ void VoiceManager::processTranscription(std::shared_ptr<UUID> playerId)
             std::async([=]() { this->handleMessage(finalText, playerId); });
         }
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("Error transcribing audio for user ") + playerId + std::string(":"), error);
     }
 }
 
-any VoiceManager::handleMessage(string message, std::shared_ptr<UUID> playerId)
+std::any VoiceManager::handleMessage(std::string message, std::shared_ptr<UUID> playerId)
 {
     try
     {
@@ -214,7 +214,7 @@ any VoiceManager::handleMessage(string message, std::shared_ptr<UUID> playerId)
                 }
                 return array<any>{ responseMemory };
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("Error in voice message callback:"), error);
                 return array<any>();
@@ -232,13 +232,13 @@ any VoiceManager::handleMessage(string message, std::shared_ptr<UUID> playerId)
             }
         });
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("Error processing voice message:"), error);
     }
 }
 
-void VoiceManager::playAudio(any audioBuffer)
+void VoiceManager::playAudio(std::any audioBuffer)
 {
     if (this->processingVoice) {
         logger->info(std::string("[VOICE MANAER] Current voice is processing....."));
@@ -256,14 +256,14 @@ void VoiceManager::playAudio(any audioBuffer)
         {
             std::async([=]() { world->livekit->publishAudioStream(audioBuffer); });
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(error);
         }
     }
 }
 
-any VoiceManager::getService()
+std::any VoiceManager::getService()
 {
     return this->runtime->getService<std::shared_ptr<HyperfyService>>(HyperfyService::serviceType);
 }

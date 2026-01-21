@@ -50,7 +50,7 @@ namespace elizaos {
 
     // Multi-action: Describe scene then capture image
 
-    // Check if any vision capabilities are enabled in runtime settings
+    // Check if std::any vision capabilities are enabled in runtime settings
 
       // await saveExecutionRecord(runtime, message, thought, text, ['SET_VISION_MODE']); // This line was removed
 

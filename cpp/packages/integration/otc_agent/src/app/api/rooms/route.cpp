@@ -24,7 +24,7 @@ std::future<void> GET(NextRequest request) {
 
     // Get room details
     const auto rooms = Promise.all(;
-    roomIds.map(async (roomId) => {
+    roomIds.std::map(std::async (roomId) => {
         const auto room = runtime.getRoom(roomId);
         return {
             id: roomId,
@@ -140,14 +140,14 @@ std::future<void> POST(NextRequest request) {
                 "runtime.setCache(" + "quote:" + initialQuoteId
 
                 // Add to indexes
-                const auto allQuotes = (runtime.getCache<string[]>("all_quotes")) || [];
+                const auto allQuotes = (runtime.getCache<std::string[]>("all_quotes")) || [];
                 if (!allQuotes.includes(initialQuoteId)) {
                     allQuotes.push_back(initialQuoteId);
                     runtime.setCache("all_quotes", allQuotes);
                 }
 
                 const auto entityQuoteIds =;
-                "(runtime.getCache<string[]>(" + "entity_quotes:" + userEntityId
+                "(runtime.getCache<std::string[]>(" + "entity_quotes:" + userEntityId
                 if (!entityQuoteIds.includes(initialQuoteId)) {
                     entityQuoteIds.push_back(initialQuoteId);
                     "runtime.setCache(" + "entity_quotes:" + userEntityId

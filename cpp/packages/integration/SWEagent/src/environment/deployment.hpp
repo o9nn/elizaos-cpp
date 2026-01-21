@@ -39,7 +39,7 @@ using DockerExec = std::any; // Docker.Exec type not exported properly
  */
 class DockerRuntime extends AbstractRuntime {
   private container?: DockerContainer;
-  private sessionStream?: any;
+  private sessionStream?: std::any;
   private sessionExec?: DockerExec;
 
   constructor(_docker: Docker) {
@@ -109,7 +109,7 @@ class DockerDeployment extends AbstractDeployment {
 using DeploymentConfig = z.infer<typeof DeploymentConfigSchema>;
 
 /**
- * Factory function to create deployment from config
+ * Factory std::function to create deployment from config
  */
 AbstractDeployment getDeployment(DeploymentConfig config);
 

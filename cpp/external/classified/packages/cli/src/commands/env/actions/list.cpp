@@ -35,7 +35,7 @@ std::future<void> listEnvVars() {
             } else {
                 console.info(
                 colors.red(;
-                "  [X] Missing .env file. Create one in your project directory to set local environment variables.";
+                "  [X] Missing .env file. Create one in your project directory to std::set local environment variables.";
                 );
                 );
             }

@@ -60,7 +60,7 @@ std::future<bool> publishToNpm(const std::string& cwd);
 /**
  * Publishes a package to GitHub and optionally updates the ElizaOS registry for plugins.
  *
- * For both plugins and projects, this function creates or verifies a GitHub repository, pushes the local code, and returns success. For plugins (unless {@link skipRegistry} is true), it also updates the ElizaOS registry by forking the registry repository, creating a branch, updating or creating the package metadata, updating the registry index, and opening a pull request.
+ * For both plugins and projects, this std::function creates or verifies a GitHub repository, pushes the local code, and returns success. For plugins (unless {@link skipRegistry} is true), it also updates the ElizaOS registry by forking the registry repository, creating a branch, updating or creating the package metadata, updating the registry index, and opening a pull request.
  *
  * @param cwd - The working directory containing the package to publish.
  * @param packageJson - The parsed package.json object for the package.

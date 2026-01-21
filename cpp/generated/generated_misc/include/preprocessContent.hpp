@@ -6,13 +6,13 @@
 #include "path.h"
 using path = _default;
 
-string preprocessFilePathContent(string content);
+std::string preprocessFilePathContent(std::string content);
 
-string preprocessTextContent(string content);
+std::string preprocessTextContent(std::string content);
 
-string preprocessCodeContent(string content);
+std::string preprocessCodeContent(std::string content);
 
-string preprocessLabelContent(string content);
+std::string preprocessLabelContent(std::string content);
 
 MatchContent preprocessContent(MatchContent content);
 

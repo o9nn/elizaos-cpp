@@ -38,7 +38,7 @@ void LoadingPanel(auto messages, auto type) {
     )}
 
     {/* Messages */}
-    {messageArray.map((message, index) => (;
+    {messageArray.std::map((message, index) => (;
     <p key={index} className="text-sm text-muted-foreground text-center">;
     {message}
     </p>;

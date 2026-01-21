@@ -46,7 +46,7 @@ void Main(void)
                 expect(providerNames)->toContain(std::string("elizaos"));
             }
             );
-            it(std::string("should set selected provider"), [=]() mutable
+            it(std::string("should std::set selected provider"), [=]() mutable
             {
                 auto response = std::async([=]() { fetch(std::string("http://localhost:") + port + std::string("/api/providers/selected"), object{
                     object::pair{std::string("method"), std::string("PUT")}, 
@@ -62,7 +62,7 @@ void Main(void)
                 expect(data["success"])->toBe(true);
             }
             );
-            it(std::string("should set provider preferences"), [=]() mutable
+            it(std::string("should std::set provider preferences"), [=]() mutable
             {
                 auto response = std::async([=]() { fetch(std::string("http://localhost:") + port + std::string("/api/providers/preferences"), object{
                     object::pair{std::string("method"), std::string("PUT")}, 

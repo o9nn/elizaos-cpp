@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/commands/publish/actions/npm-publish.h"
 
-std::shared_ptr<Promise<void>> publishToNpm(string cwd, std::shared_ptr<PackageJson> packageJson, string npmUsername)
+std::shared_ptr<Promise<void>> publishToNpm(std::string cwd, std::shared_ptr<PackageJson> packageJson, std::string npmUsername)
 {
     console->info(std::string("Publishing as npm user: ") + npmUsername + string_empty);
     if (OR((!packageJson->npmPackage), (packageJson->npmPackage == std::string("${NPM_PACKAGE}")))) {

@@ -9,7 +9,7 @@ void TokenStatus() {
 
     const auto status = token.status;
 
-    const std::variant<Record<IToken["status"], "imported", string, undefined>> labels = {;
+    const std::variant<Record<IToken["status"], "imported", std::string, undefined>> labels = {;
         active: "Active",
         harvested: "Harvested",
         locked: "Bonded",

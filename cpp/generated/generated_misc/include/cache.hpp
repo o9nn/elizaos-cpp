@@ -7,9 +7,9 @@ using fs = _default;
 #include "path.h"
 using path = _default;
 
-extern any CACHE_FILE;
+extern std::any CACHE_FILE;
 extern double CACHE_DURATION;
-any getCachedData();
+std::any getCachedData();
 
 void setCachedData(array<std::shared_ptr<TokenHolding>> holdings);
 

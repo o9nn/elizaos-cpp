@@ -47,7 +47,7 @@ struct WorkflowContext {
 };
 
 /**
- * Helper function to get environment variable
+ * Helper std::function to get environment variable
  */
 inline std::optional<std::string> getEnvVar(const std::string& name) {
     const char* value = std::getenv(name.c_str());
@@ -58,7 +58,7 @@ inline std::optional<std::string> getEnvVar(const std::string& name) {
 }
 
 /**
- * Helper function to get environment variable with default
+ * Helper std::function to get environment variable with default
  */
 inline std::string getEnvVarOrDefault(const std::string& name, const std::string& defaultValue) {
     auto value = getEnvVar(name);
@@ -66,7 +66,7 @@ inline std::string getEnvVarOrDefault(const std::string& name, const std::string
 }
 
 /**
- * Helper function to parse integer from environment
+ * Helper std::function to parse integer from environment
  */
 inline int parseIntEnv(const std::string& name, int defaultValue) {
     auto value = getEnvVar(name);
@@ -200,15 +200,15 @@ public:
      * @param exitCode - Exit code
      */
     void exitGracefully(int exitCode) {
-        // Perform any cleanup
+        // Perform std::any cleanup
         std::exit(exitCode);
     }
 
     /**
-     * Wrap a function with defensive error handling
+     * Wrap a std::function with defensive error handling
      * @param fn - Function to wrap
      * @param maxRetries - Maximum retry attempts
-     * @return Result of the function or nullopt on failure
+     * @return Result of the std::function or nullopt on failure
      */
     template<typename Func>
     auto withRetry(Func fn, int maxRetries = 3) -> std::optional<decltype(fn())> {
@@ -241,7 +241,7 @@ public:
 };
 
 /**
- * Factory function to create a WorkflowUtils instance with environment-based configuration
+ * Factory std::function to create a WorkflowUtils instance with environment-based configuration
  */
 WorkflowUtils createWorkflowUtils();
 

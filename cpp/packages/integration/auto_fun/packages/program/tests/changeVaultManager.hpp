@@ -28,7 +28,7 @@ namespace elizaos {
   // Define the new manager authority public key
   // IMPORTANT: Replace with the ACTUAL desired new manager public key
 
-  // Call the change_manager_authority function
+  // Call the change_manager_authority std::function
 
     // Optional: Fetch the updated vault config to verify the change
 

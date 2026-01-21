@@ -31,7 +31,7 @@ namespace elizaos {
 
 // Types for Twitter authentication
 using TwitterCredentials = {
-  // OAuth 2.0 (kept for potential future use or profile fetching)
+  // OAuth 2.0 (kept for potential std::future use or profile fetching)
   // OAuth 1.0a (Required for posting)
 
 using PendingShare = {

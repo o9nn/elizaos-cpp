@@ -28,7 +28,7 @@ void Main(void)
                 expect(firstLoad)->toBe(secondLoad);
             }
             );
-            it(std::string("should maintain separate caches for sync and async loads"), [=]() mutable
+            it(std::string("should maintain separate caches for sync and std::async loads"), [=]() mutable
             {
                 auto syncLoad = loader->loadSync(std::string("path"));
                 auto asyncLoad = std::async([=]() { loader->load(std::string("path")); });
@@ -55,7 +55,7 @@ void Main(void)
                 expect(pathModule["join"])->toBeDefined();
             }
             );
-            it(std::string("should maintain separate caches for sync and async loads"), [=]() mutable
+            it(std::string("should maintain separate caches for sync and std::async loads"), [=]() mutable
             {
                 auto syncLoad = loadModuleSync(std::string("path"));
                 auto asyncLoad = std::async([=]() { loadModule(std::string("path")); });

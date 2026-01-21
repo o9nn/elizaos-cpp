@@ -9,16 +9,16 @@ typedef z::infer<LinkedWalletSchema> LinkedWallet;
 typedef z::infer<WalletLinkingDataSchema> WalletLinkingData;
 
 
-extern any LinkedWalletSchema;
-extern any WalletLinkingDataSchema;
-extern string WALLET_SECTION_BEGIN_MARKER;
-extern string WALLET_SECTION_END_MARKER;
-any parseWalletLinkingDataFromReadme(string readmeContent);
+extern std::any LinkedWalletSchema;
+extern std::any WalletLinkingDataSchema;
+extern std::string WALLET_SECTION_BEGIN_MARKER;
+extern std::string WALLET_SECTION_END_MARKER;
+std::any parseWalletLinkingDataFromReadme(std::string readmeContent);
 
-object generateUpdatedReadmeWithWalletInfo(string currentReadme, array<LinkedWallet> wallets);
+object generateUpdatedReadmeWithWalletInfo(std::string currentReadme, array<LinkedWallet> wallets);
 
-string generateReadmeWalletSection(array<LinkedWallet> wallets);
+std::string generateReadmeWalletSection(array<LinkedWallet> wallets);
 
-string getWalletAddressForChain(any data, string chain);
+std::string getWalletAddressForChain(std::any data, std::string chain);
 
 #endif

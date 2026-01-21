@@ -38,7 +38,7 @@ std::future<TaskCancellation> extractTaskCancellation(IAgentRuntime runtime, Mem
  * The CANCEL_GOAL action allows users to cancel/delete a task.
  */
 
-    // Check if *any* active GOALs exist
+    // Check if *std::any* active GOALs exist
 
       // Get active goals for the entity
 

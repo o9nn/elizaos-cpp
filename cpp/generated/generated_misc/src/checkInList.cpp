@@ -34,7 +34,7 @@ std::shared_ptr<Promise<array<std::shared_ptr<CheckInSchedule>>>> fetchCheckInSc
             });
             return AND((isValidType), (hasSchedule));
         }
-        )->map([=](auto memory) mutable
+        )->std::map([=](auto memory) mutable
         {
             auto schedule = as<std::shared_ptr<CheckInSchedule>>(memory["content"]["schedule"]);
             logger->info(std::string("Processing schedule from memory ") + memory["id"] + std::string(":"), object{
@@ -59,7 +59,7 @@ std::shared_ptr<Promise<array<std::shared_ptr<CheckInSchedule>>>> fetchCheckInSc
         logger->info(std::string("=== END DETAILED SCHEDULES LOG ==="));
         return schedules;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         auto err = as<std::shared_ptr<Error>>(error);
         logger->error(std::string("=== FETCH CHECK-IN SCHEDULES ERROR ==="));
@@ -68,12 +68,12 @@ std::shared_ptr<Promise<array<std::shared_ptr<CheckInSchedule>>>> fetchCheckInSc
             object::pair{std::string("message"), OR((err->message), (std::string("No error message")))}, 
             object::pair{std::string("stack"), OR((err->stack), (std::string("No stack trace")))}
         });
-        throw any(error);
+        throw std::any(error);
     }
 };
 
 
-string formatSchedule(std::shared_ptr<CheckInSchedule> schedule)
+std::string formatSchedule(std::shared_ptr<CheckInSchedule> schedule)
 {
     logger->info(std::string("Formatting schedule:"), object{
         object::pair{std::string("scheduleId"), schedule->scheduleId}, 
@@ -122,7 +122,7 @@ std::shared_ptr<Action> listCheckInSchedules = object{
                 object::pair{std::string("optionsKeys"), Object->keys(options)}
             });
             if (!callback) {
-                logger->warn(std::string("No callback function provided"));
+                logger->warn(std::string("No callback std::function provided"));
                 return false;
             }
             logger->info(std::string("Fetching check-in schedules..."));
@@ -137,7 +137,7 @@ std::shared_ptr<Action> listCheckInSchedules = object{
                 return true;
             }
             logger->info(std::string("Formatting schedules for display..."));
-            auto formattedSchedules = schedules->map(formatSchedule)->join(std::string("\
+            auto formattedSchedules = schedules->std::map(formatSchedule)->join(std::string("\
 -------------------\
 "));
             auto content = object{
@@ -151,7 +151,7 @@ std::shared_ptr<Action> listCheckInSchedules = object{
             logger->info(std::string("=== LIST CHECK-IN SCHEDULES HANDLER END ==="));
             return true;
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             auto err = as<std::shared_ptr<Error>>(error);
             logger->error(std::string("=== LIST CHECK-IN SCHEDULES HANDLER ERROR ==="));

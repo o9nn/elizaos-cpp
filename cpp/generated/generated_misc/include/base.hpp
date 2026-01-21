@@ -7,10 +7,10 @@ class form;
 class form : public object, public std::enable_shared_from_this<form> {
 public:
     using std::enable_shared_from_this<form>::shared_from_this;
-    any fields;
+    std::any fields;
 
     form();
-    virtual void addField(any type, any name, any value, any label, any validation, any options);
+    virtual void addField(std::any type, std::any name, std::any value, std::any label, std::any validation, std::any options);
 };
 
 #endif

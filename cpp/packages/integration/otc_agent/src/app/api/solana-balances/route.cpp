@@ -6,12 +6,12 @@ namespace elizaos {
 
 std::future<Record<string> getSolanaMetadataCache() {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    symbol: string; name: string; logoURI: string | nullptr
+    symbol: std::string; name: std::string; logoURI: std::string | nullptr
 }
 
 std::future<void> setSolanaMetadataCache(const std::variant<Record<
-    string,
-    { symbol: string; name: string; logoURI: string, null }
+    std::string,
+    { symbol: std::string; name: std::string; logoURI: std::string, null }
   >>& metadata) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
@@ -284,7 +284,7 @@ std::future<std::optional<CachedWalletResponse["tokens"]>> fetchFromCodex(const 
                             // Transform to our format
                             const auto tokens = items;
                             .filter((item) => item.token) // Skip items without token metadata;
-                            .map((item) => {
+                            .std::map((item) => {
                                 const auto token = item.token;
                                 // For native SOL, use Wrapped SOL mint
                                 const auto mint =;
@@ -402,14 +402,14 @@ std::future<void> GET(NextRequest request) {
                     }
 
                     interface TokenAccount {
-                        pubkey: string;
+                        pubkey: std::string;
                         account: {
                             data: {
                                 parsed: {
                                     info: {
-                                        mint: string;
+                                        mint: std::string;
                                         tokenAmount: {
-                                            amount: string;
+                                            amount: std::string;
                                             decimals: number;
                                             uiAmount: number;
                                             };
@@ -428,7 +428,7 @@ std::future<void> GET(NextRequest request) {
 
                                         // Filter to tokens with balance > 0
                                         const auto tokensWithBalance = accounts;
-                                        .map((acc) => {
+                                        .std::map((acc) => {
                                             const auto info = acc.account.data.parsed.info;
                                             const auto decimals = info.tokenAmount.decimals;
                                             const auto rawAmount = parseInt(info.tokenAmount.amount || "0");
@@ -454,19 +454,19 @@ std::future<void> GET(NextRequest request) {
 
                                                 // Step 2: Get metadata from cache first, then fetch missing from Helius
                                                 interface HeliusAsset {
-                                                    id: string;
+                                                    id: std::string;
                                                     content?: {
-                                                        metadata?: { name?: string; symbol?: string };
-                                                        links?: { image?: string };
+                                                        metadata?: { name?: std::string; symbol?: std::string };
+                                                        links?: { image?: std::string };
                                                         };
-                                                        token_info?: { symbol?: string; decimals?: number };
+                                                        token_info?: { symbol?: std::string; decimals?: number };
                                                     }
 
-                                                    const auto allMints = tokensWithBalance.map((t) => t.mint);
+                                                    const auto allMints = tokensWithBalance.std::map((t) => t.mint);
                                                     const auto cachedMetadata = getSolanaMetadataCache();
                                                     const auto metadata: Record<;
-                                                    string,
-                                                { symbol = string; name = string; logoURI = string | nullptr }
+                                                    std::string,
+                                                { symbol = std::string; name = std::string; logoURI = std::string | nullptr }
                                                 > = { ...cachedMetadata }
 
                                                 // Find mints that need metadata
@@ -535,7 +535,7 @@ std::future<void> GET(NextRequest request) {
                                                                     );
 
                                                                     // Step 3: Get prices from cache first, then fetch missing from Jupiter
-                                                                    const auto mints = tokensWithBalance.map((t) => t.mint);
+                                                                    const auto mints = tokensWithBalance.std::map((t) => t.mint);
                                                                     const auto cachedPrices = getSolanaPriceCache();
                                                                     const std::unordered_map<std::string, double> prices = { ...cachedPrices };
 
@@ -561,7 +561,7 @@ std::future<void> GET(NextRequest request) {
                                                                                     const auto priceData = priceResponse.json();
                                                                                     if (priceData.data) {
                                                                                         for (const int [mint, data] of Object.entries(priceData.data)) {
-                                                                                            const auto price = (data as { price?: string }).price;
+                                                                                            const auto price = (data as { price?: std::string }).price;
                                                                                             if (price) prices[mint] = parseFloat(price);
                                                                                         }
                                                                                     }
@@ -594,7 +594,7 @@ std::future<void> GET(NextRequest request) {
 
                                                                                 // Step 4: Check blob cache for unreliable image URLs (parallel)
                                                                                 const auto unreliableUrls = Object.values(metadata);
-                                                                                .map((m) => m.logoURI);
+                                                                                .std::map((m) => m.logoURI);
                                                                                 .filter(;
                                                                                 (url) =>;
                                                                                 url &&;
@@ -606,7 +606,7 @@ std::future<void> GET(NextRequest request) {
                                                                                 const std::unordered_map<std::string, std::string> cachedBlobUrls = {};
                                                                                 if (unreliableUrls.length > 0) {
                                                                                     const auto blobChecks = Promise.all(;
-                                                                                    unreliableUrls.map(async (url) => {
+                                                                                    unreliableUrls.std::map(std::async (url) => {
                                                                                         const auto urlHash = crypto.createHash("md5").update(url).digest("hex");
                                                                                         const auto blobPath = "token-images/" + urlHash + ".png";
                                                                                         const auto existing = head(blobPath).catch(() => nullptr);
@@ -622,7 +622,7 @@ std::future<void> GET(NextRequest request) {
                                                                                     );
 
                                                                                     // Step 5: Combine everything
-                                                                                    const auto tokensWithData = tokensWithBalance.map((token) => {;
+                                                                                    const auto tokensWithData = tokensWithBalance.std::map((token) => {;
                                                                                         const auto meta = metadata[token.mint];
                                                                                         const auto priceUsd = prices[token.mint] || 0;
                                                                                         const auto rawLogoUrl = meta.logoURI || nullptr;
@@ -682,7 +682,7 @@ std::future<void> GET(NextRequest request) {
 
                                                                                                             // Fire-and-forget: cache unreliable images in background for next request
                                                                                                             for (const auto& token : filteredTokens.slice(0, 30)
-                                                                                                                const auto originalUrl = (token as { _originalLogoUrl?: string });
+                                                                                                                const auto originalUrl = (token as { _originalLogoUrl?: std::string });
                                                                                                                 ._originalLogoUrl;
                                                                                                                 if (originalUrl && !originalUrl.includes("blob.vercel-storage.com")) {
                                                                                                                     cacheImageToBlob(originalUrl).catch(() => {});
@@ -690,7 +690,7 @@ std::future<void> GET(NextRequest request) {
                                                                                                             }
 
                                                                                                             // Format response
-                                                                                                            const auto enrichedTokens = filteredTokens.map((t) => ({;
+                                                                                                            const auto enrichedTokens = filteredTokens.std::map((t) => ({;
                                                                                                                 mint: t.mint,
                                                                                                                 amount: t.amount,
                                                                                                                 decimals: t.decimals,

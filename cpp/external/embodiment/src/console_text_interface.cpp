@@ -46,7 +46,7 @@ bool ConsoleTextInput::initialize() {
     
     active_ = true;
     
-    // Start input thread for sensory input
+    // Start input std::thread for sensory input
     inputThread_ = std::make_unique<std::thread>(&ConsoleTextInput::inputThread, this);
     
     elogSuccess("Console Text Input Interface initialized");
@@ -129,7 +129,7 @@ void ConsoleTextInput::enableRealTimeProcessing(bool enable) {
 }
 
 void ConsoleTextInput::inputThread() {
-    elogSystem("Console input thread started");
+    elogSystem("Console input std::thread started");
     
     std::cout << std::endl;
     std::cout << "=== ElizaOS Console Interface ===" << std::endl;
@@ -178,7 +178,7 @@ void ConsoleTextInput::inputThread() {
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
     
-    elogSystem("Console input thread ended");
+    elogSystem("Console input std::thread ended");
 }
 
 /**

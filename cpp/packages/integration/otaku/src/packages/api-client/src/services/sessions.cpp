@@ -19,7 +19,7 @@ std::string toTimestampString(const std::variant<std::chrono::system_clock::time
 
             // Check for invalid date
             if (isNaN(timestamp)) {
-                std::cout << "Invalid date string for " + paramName + ": " + value << std::endl;
+                std::cout << "Invalid date std::string for " + paramName + ": " + value << std::endl;
                 return std::nullopt;
             }
             } else if (typeof value == "number") {
@@ -33,7 +33,7 @@ std::string toTimestampString(const std::variant<std::chrono::system_clock::time
 
 }
 
-asserts value is string validateRequiredParam(const std::string& value, const std::string& paramName) {
+asserts value is std::string validateRequiredParam(const std::string& value, const std::string& paramName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

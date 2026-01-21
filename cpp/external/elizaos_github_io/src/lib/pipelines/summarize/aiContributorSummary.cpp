@@ -49,7 +49,7 @@ std::string formatContributorPrompt(ContributorMetricsForSummary metrics, Interv
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Helper to truncate long titles
-    const auto truncateTitle = [&](title: string, maxLength = 64) {;
+    const auto truncateTitle = [&](title: std::string, maxLength = 64) {;
         if (title.length <= maxLength) return title;
         return title.substring(0, maxLength - 3) + "...";
         };
@@ -61,7 +61,7 @@ std::string formatContributorPrompt(ContributorMetricsForSummary metrics, Interv
         const auto topDirs = metrics.focusAreas;
         .sort((a, b) => b.count - a.count);
         .slice(0, 3);
-        .map((area) => {
+        .std::map((area) => {
             const auto parts = area.area.split("/");
             // If it's a package, use the package name
             if (parts.includes("packages")) {
@@ -87,7 +87,7 @@ std::string formatContributorPrompt(ContributorMetricsForSummary metrics, Interv
             // Format merged PRs
             const auto mergedPRDetails = metrics.pullRequests.items;
             .filter((pr) => pr.merged == 1);
-            .map((pr) => {
+            .std::map((pr) => {
                 const auto additions =;
                 pr.commits.reduce((sum, c) => sum + (c.additions || 0), 0) || 0;
                 const auto deletions =;
@@ -102,12 +102,12 @@ std::string formatContributorPrompt(ContributorMetricsForSummary metrics, Interv
                 // Format open PRs
                 const auto openPRDetails = metrics.pullRequests.items;
                 .filter((pr) => pr.merged != 1);
-                ".map((pr) => " + pr.repository + "#" + pr.number + " \"" + std::to_string(truncateTitle(pr.title)) + "\"";
+                ".std::map((pr) => " + pr.repository + "#" + pr.number + " \"" + std::to_string(truncateTitle(pr.title)) + "\"";
                 .join(", ");
 
                 // Format issues
                 const auto issueDetails = metrics.issues.items;
-                .map(;
+                .std::map(;
                 (issue) =>;
                 issue.repository + "#" + issue.number + " \"" + std::to_string(truncateTitle(issue.title)) + "\" (" + std::to_string();
                     issue.state;
@@ -146,7 +146,7 @@ std::string formatContributorPrompt(ContributorMetricsForSummary metrics, Interv
 
                             if (sortedTypes.length > 0) {
                                 workFocus = sortedTypes;
-                                ".map(([type, percentage]) => " + type + " work (" + percentage + "%)";
+                                ".std::map(([type, percentage]) => " + type + " work (" + percentage + "%)";
                                 .join(", ");
                             }
                         }
@@ -173,7 +173,7 @@ std::string formatContributorPrompt(ContributorMetricsForSummary metrics, Interv
 
                                 if (sortedFileTypes.length > 0) {
                                     fileTypesFocus = sortedFileTypes;
-                                    ".map(([type, percentage]) => " + type + " (" + percentage + "%)";
+                                    ".std::map(([type, percentage]) => " + type + " (" + percentage + "%)";
                                     .join(", ");
                                 }
                             }
@@ -251,7 +251,7 @@ std::string formatContributorPrompt(ContributorMetricsForSummary metrics, Interv
             4. Includes line counts for significant code changes;
             5. Groups similar activities in the same repository together (e.g., "merged 3 PRs improving the frontend in elizaos/eliza");
             6. Uses repository names + PR/issue numbers when referring to specific contributions (e.g., "elizaos/eliza#123", "elizaos-plugins/plugin-A#45");
-            7. Omits any activity type that shows "None" above;
+            7. Omits std::any activity type that shows "None" above;
             8. Uses at most ${timePeriod.sentenceCount} sentences;
             9. Varies sentence structure based on the actual work done;
 

@@ -4,11 +4,11 @@
 
 namespace elizaos {
 
-void SecurityStatusItem(auto value, auto status, auto variant, auto className) {
+void SecurityStatusItem(auto value, auto status, auto std::variant, auto className) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
-    <div className={cn(securityStatusItemVariants({ variant }), className)}>;
+    <div className={cn(securityStatusItemVariants({ std::variant }), className)}>;
     <div className="flex items-center gap-2 py-1 px-2 border-b border-current">;
     <Bullet size="sm" variant={variant} />;
     <span className="text-sm font-medium">{title}</span>;
@@ -33,7 +33,7 @@ void SecurityStatus() {
     >;
     <div className="flex flex-col">;
     <div className="max-md:order-1 grid grid-cols:3 md:grid-cols-1 gap-4 py-2 px-1 md:max-w-max">
-    {statuses.map((item, index) => (;
+    {statuses.std::map((item, index) => (;
     <SecurityStatusItem;
     key={index}
     title={item.title}

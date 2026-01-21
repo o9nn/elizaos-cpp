@@ -49,7 +49,7 @@ using SolanaConfig = z::infer<typeof solanaEnvSchema>;
  * checking if they are present, and returning a validated SolanaConfig object.
  *
  * @param {IAgentRuntime} runtime - The agent runtime object used to retrieve settings.
- * @returns {Promise<SolanaConfig>} - A promise that resolves with the validated SolanaConfig object.
+ * @returns {Promise<SolanaConfig>} - A std::promise that resolves with the validated SolanaConfig object.
  * @throws {Error} - If the Solana configuration validation fails.
  */
 std::future<SolanaConfig> validateSolanaConfig(IAgentRuntime runtime);

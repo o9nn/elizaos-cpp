@@ -4,7 +4,7 @@ std::shared_ptr<Promise<std::shared_ptr<TaskCancellation>>> extractTaskCancellat
 {
     try
     {
-        auto tasksText = availableGoals->map([=](auto task) mutable
+        auto tasksText = availableGoals->std::map([=](auto task) mutable
         {
             return std::string("ID: ") + task->id + std::string("\
 Name: ") + task->name + std::string("\
@@ -42,13 +42,13 @@ Tags: ") + (OR((task->tags->join(std::string(", "))), (std::string("none")))) + 
             };
         }
         auto finalResult = object{
-            object::pair{std::string("taskId"), (parsedResult->taskId == std::string("null")) ? any(string_empty) : any(String(OR((parsedResult->taskId), (string_empty))))}, 
-            object::pair{std::string("taskName"), (parsedResult->taskName == std::string("null")) ? any(string_empty) : any(String(OR((parsedResult->taskName), (string_empty))))}, 
+            object::pair{std::string("taskId"), (parsedResult->taskId == std::string("null")) ? std::any(string_empty) : std::any(String(OR((parsedResult->taskId), (string_empty))))}, 
+            object::pair{std::string("taskName"), (parsedResult->taskName == std::string("null")) ? std::any(string_empty) : std::any(String(OR((parsedResult->taskName), (string_empty))))}, 
             object::pair{std::string("isFound"), String(parsedResult->isFound) == std::string("true")}
         };
         return finalResult;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Error extracting task cancellation information:"), error);
         return object{
@@ -60,7 +60,7 @@ Tags: ") + (OR((task->tags->join(std::string(", "))), (std::string("none")))) + 
 };
 
 
-string extractCancellationTemplate = std::string("\
+std::string extractCancellationTemplate = std::string("\
 # Task: Extract Task Cancellation Information\
 \
 ## User Message\
@@ -117,7 +117,7 @@ std::shared_ptr<Action> cancelGoalAction = object{
             }); });
             return goals->get_length() > 0;
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("Error validating CANCEL_GOAL action:"), error);
             return false;
@@ -177,7 +177,7 @@ std::shared_ptr<Action> cancelGoalAction = object{
             if (activeGoals->get_length() == 0) {
                 if (callback) {
                     std::async([=]() { callback(object{
-                        object::pair{std::string("text"), std::string("You don't have any active goals to cancel.")}, 
+                        object::pair{std::string("text"), std::string("You don't have std::any active goals to cancel.")}, 
                         object::pair{std::string("actions"), array<string>{ std::string("CANCEL_GOAL_NONE") }}, 
                         object::pair{std::string("source"), message->content->source}
                     }); });
@@ -198,7 +198,7 @@ std::shared_ptr<Action> cancelGoalAction = object{
             }
             shared cancelInfo = std::async([=]() { extractTaskCancellation(runtime, message, activeGoals, state); });
             if (OR((!cancelInfo->isFound), (!cancelInfo->taskId))) {
-                auto goalsList = activeGoals->map([=](auto goal, auto index) mutable
+                auto goalsList = activeGoals->std::map([=](auto goal, auto index) mutable
                 {
                     return string_empty + (index + 1) + std::string(". ") + goal->name + string_empty;
                 }
@@ -281,10 +281,10 @@ Please specify which one you'd like to cancel.")},
                     object::pair{std::string("success"), true}
                 };
             } else {
-                throw any(std::make_shared<Error>(std::string("Failed to delete goal")));
+                throw std::any(std::make_shared<Error>(std::string("Failed to delete goal")));
             }
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("Error in cancelGoal handler:"), error);
             if (callback) {

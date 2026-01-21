@@ -11,7 +11,7 @@ std::future<BatchWalletDataResponse> batchFetchWalletDataFromGithub(const std::v
         return {}
     }
 
-    const auto requests = usernames.map((username) => ({;
+    const auto requests = usernames.std::map((username) => ({;
         owner: username,
         repo: username,
         path: "README.md",

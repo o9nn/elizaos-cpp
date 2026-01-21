@@ -1,30 +1,30 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/server/src/api/audio/processing.h"
 
-string validateSecureFilePath(string filePath)
+std::string validateSecureFilePath(std::string filePath)
 {
     if (!filePath) {
-        throw any(std::make_shared<Error>(std::string("File path is required")));
+        throw std::any(std::make_shared<Error>(std::string("File path is required")));
     }
     auto normalizedPath = path->normalize(filePath);
     auto resolvedPath = path->resolve(normalizedPath);
     if (normalizedPath->includes(std::string(".."))) {
-        throw any(std::make_shared<Error>(std::string("Path traversal attempt detected")));
+        throw std::any(std::make_shared<Error>(std::string("Path traversal attempt detected")));
     }
     auto systemTemp = path->resolve(os->tmpdir());
     auto projectUpload = path->resolve(process->cwd(), std::string(".eliza"), std::string("data"), std::string("uploads"));
     if (AND((!resolvedPath->startsWith(systemTemp)), (!resolvedPath->startsWith(projectUpload)))) {
-        throw any(std::make_shared<Error>(std::string("File path outside allowed directories")));
+        throw std::any(std::make_shared<Error>(std::string("File path outside allowed directories")));
     }
     try
     {
         auto stats = fs->statSync(resolvedPath);
         if (!stats->isFile()) {
-            throw any(std::make_shared<Error>(std::string("Path does not point to a file")));
+            throw std::any(std::make_shared<Error>(std::string("Path does not point to a file")));
         }
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
-        throw any(std::make_shared<Error>(std::string("File access error: ") + (is<Error>(error)) ? error->message : String(error) + string_empty));
+        throw std::any(std::make_shared<Error>(std::string("File access error: ") + (is<Error>(error)) ? error->message : String(error) + string_empty));
     }
     return normalizedPath;
 };
@@ -70,7 +70,7 @@ std::shared_ptr<express::Router> createAudioProcessingRouter(std::shared_ptr<Map
                 object::pair{std::string("message"), std::string("Audio transcribed, further processing TBD.")}
             });
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("[AUDIO MESSAGE] Error processing audio:"), error);
             cleanupUploadedFile(audioFile);
@@ -117,7 +117,7 @@ std::shared_ptr<express::Router> createAudioProcessingRouter(std::shared_ptr<Map
                 object::pair{std::string("text"), transcription}
             });
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("[TRANSCRIPTION] Error transcribing audio:"), error);
             cleanupUploadedFile(audioFile);

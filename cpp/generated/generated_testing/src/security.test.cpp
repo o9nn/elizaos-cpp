@@ -259,7 +259,7 @@ void Main(void)
             {
                 validateSecureAction(std::string("invalid url"), validator);
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 expect(error)->toBeInstanceOf(BrowserSecurityError);
                 expect((as<std::shared_ptr<BrowserSecurityError>>(error))->details["url"])->toBe(std::string("invalid url"));

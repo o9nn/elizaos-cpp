@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza-3d-hyperfy-starter/src/plugin-hyperfy/managers/emote-manager.h"
 
-EmoteManager::EmoteManager(any runtime) {
+EmoteManager::EmoteManager(std::any runtime) {
     this->runtime = runtime;
     this->emoteHashMap = std::make_shared<Map>();
     this->currentEmoteTimeout = nullptr;
@@ -39,10 +39,10 @@ void EmoteManager::uploadEmotes()
                 }
                 );
                 std::async([=]() { Promise->race(array<any>{ emoteUploadPromise, emoteTimeout }); });
-                this->emoteHashMap->set(emote["name"], emoteFullName);
+                this->emoteHashMap->std::set(emote["name"], emoteFullName);
                 console->info(std::string("[Appearance] Emote '") + emote["name"] + std::string("' uploaded: ") + emoteUrl + string_empty);
             }
-            catch (const any& err)
+            catch (const std::any& err)
             {
                 console->error(std::string("[Appearance] Failed to upload emote '") + emote["name"] + std::string("': ") + err["message"] + string_empty, err["stack"]);
             }
@@ -50,9 +50,9 @@ void EmoteManager::uploadEmotes()
     }
 }
 
-void EmoteManager::playEmote(string name)
+void EmoteManager::playEmote(std::string name)
 {
-    auto fallback = const_((as<Record<string, string>>(Emotes)))[name];
+    auto fallback = const_((as<Record<std::string, string>>(Emotes)))[name];
     auto hashName = OR((this->emoteHashMap->get(name)), (fallback));
     auto service = this->getService();
     auto world = service->getWorld();
@@ -94,7 +94,7 @@ void EmoteManager::playEmote(string name)
     , duration * 1000);
 }
 
-void EmoteManager::clearEmote(any player)
+void EmoteManager::clearEmote(std::any player)
 {
     if (player["data"]["effect"]) {
         player["data"]["effect"]["emote"] = nullptr;
@@ -114,7 +114,7 @@ void EmoteManager::clearTimers()
     }
 }
 
-any EmoteManager::getService()
+std::any EmoteManager::getService()
 {
     return this->runtime->getService<std::shared_ptr<HyperfyService>>(HyperfyService::serviceType);
 }

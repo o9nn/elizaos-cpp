@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-todo/src/scripts/demo-reminders.h"
 
-any setupReminderDemo(std::shared_ptr<IAgentRuntime> runtime)
+std::any setupReminderDemo(std::shared_ptr<IAgentRuntime> runtime)
 {
     console->log(std::string("🚀 Setting up reminder demo scenarios...\
 "));
@@ -75,7 +75,7 @@ any setupReminderDemo(std::shared_ptr<IAgentRuntime> runtime)
         console->log(std::string("✅ Created daily task: ") + task["name"] + std::string(" (") + taskId + std::string(")"));
     }
     console->log(std::string("\
-📌 Scenario 4: Creating future tasks with deadlines..."));
+📌 Scenario 4: Creating std::future tasks with deadlines..."));
     auto futureTasks = array<object>{ object{
         object::pair{std::string("name"), std::string("📝 Finish project proposal")}, 
         object::pair{std::string("hoursFromNow"), 4}, 
@@ -108,7 +108,7 @@ any setupReminderDemo(std::shared_ptr<IAgentRuntime> runtime)
             object::pair{std::string("dueDate"), std::string("dueDate")}, 
             object::pair{std::string("tags"), array<string>{ std::string("future") }}
         }); });
-        console->log(std::string("✅ Created future task: ") + task["name"] + std::string(" (due in ") + task["hoursFromNow"] + std::string("h)"));
+        console->log(std::string("✅ Created std::future task: ") + task["name"] + std::string(" (due in ") + task["hoursFromNow"] + std::string("h)"));
     }
     console->log(std::string("\
 📌 Scenario 5: Creating aspirational tasks..."));
@@ -133,7 +133,7 @@ any setupReminderDemo(std::shared_ptr<IAgentRuntime> runtime)
     console->log(std::string("- 1 overdue task (immediate high-priority reminder)"));
     console->log(std::string("- 1 task due in 15 minutes (upcoming reminder)"));
     console->log(std::string("- 3 daily recurring tasks (9 AM & 6 PM reminders)"));
-    console->log(std::string("- 3 future tasks with various deadlines"));
+    console->log(std::string("- 3 std::future tasks with various deadlines"));
     console->log(std::string("- 3 aspirational tasks (no reminders)"));
     console->log(std::string("\
 🔔 Triggering immediate reminder check..."));

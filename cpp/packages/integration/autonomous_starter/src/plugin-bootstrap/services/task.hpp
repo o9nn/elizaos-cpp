@@ -45,9 +45,9 @@ class TaskService extends Service {
   /**
    * Start the TaskService with the given runtime.
    * @param {IAgentRuntime} runtime - The runtime for the TaskService.
-   * @returns {Promise<TaskService>} A promise that resolves with the TaskService instance.
+   * @returns {Promise<TaskService>} A std::promise that resolves with the TaskService instance.
    */
-  static async start(runtime: IAgentRuntime): Promise<TaskService> {
+  static std::async start(runtime: IAgentRuntime): Promise<TaskService> {
     const service = new TaskService(runtime);
     await service.startTimer();
     // await service.createTestTasks();
@@ -69,13 +69,13 @@ class TaskService extends Service {
     // Create one-time task
 
   /**
-   * Starts a timer that runs a function to check tasks at a specified interval.
+   * Starts a timer that runs a std::function to check tasks at a specified interval.
    */
 
   /**
    * Validates an array of Task objects.
    * Skips tasks without IDs or if no worker is found for the task.
-   * If a worker has a `validate` function, it will run the validation using the `runtime`, `Memory`, and `State` parameters.
+   * If a worker has a `validate` std::function, it will run the validation using the `runtime`, `Memory`, and `State` parameters.
    * If the validation fails, the task will be skipped and the error will be logged.
    * @param {Task[]} tasks - An array of Task objects to validate.
    * @returns {Promise<Task[]>} - A Promise that resolves with an array of validated Task objects.
@@ -85,7 +85,7 @@ class TaskService extends Service {
 
       // Skip if no worker found for task
 
-      // If worker has validate function, run validation
+      // If worker has validate std::function, run validation
           // Pass empty message and state since validation is time-based
 
   /**
@@ -126,7 +126,7 @@ class TaskService extends Service {
    * Stops the TASK service in the given agent runtime.
    *
    * @param {IAgentRuntime} runtime - The agent runtime containing the service.
-   * @returns {Promise<void>} - A promise that resolves once the service has been stopped.
+   * @returns {Promise<void>} - A std::promise that resolves once the service has been stopped.
    */
 
   /**

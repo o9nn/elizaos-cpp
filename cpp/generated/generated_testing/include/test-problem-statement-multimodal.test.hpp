@@ -5,5 +5,5 @@
 #include "../src/agent/problem-statement.h"
 #include "child_process.h"
 
-extern any mockedChildProcess;
+extern std::any mockedChildProcess;
 #endif

@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/core/src/__tests__/services-by-type.test.h"
 
-any MockWalletService1::override;
+std::any MockWalletService1::override;
 
 MockWalletService1::MockWalletService1(std::shared_ptr<IAgentRuntime> runtime) : Service(runtime) {
 }
@@ -15,7 +15,7 @@ std::shared_ptr<Promise<void>> MockWalletService1::stop()
     return std::shared_ptr<Promise<void>>();
 }
 
-any MockWalletService2::override;
+std::any MockWalletService2::override;
 
 MockWalletService2::MockWalletService2(std::shared_ptr<IAgentRuntime> runtime) : Service(runtime) {
 }
@@ -30,7 +30,7 @@ std::shared_ptr<Promise<void>> MockWalletService2::stop()
     return std::shared_ptr<Promise<void>>();
 }
 
-any MockPdfService::override;
+std::any MockPdfService::override;
 
 MockPdfService::MockPdfService(std::shared_ptr<IAgentRuntime> runtime) : Service(runtime) {
 }

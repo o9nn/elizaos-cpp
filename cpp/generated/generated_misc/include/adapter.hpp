@@ -23,7 +23,7 @@ public:
     virtual std::shared_ptr<Promise<void>> init();
     virtual std::shared_ptr<Promise<boolean>> isReady();
     virtual void close();
-    virtual any getConnection();
+    virtual std::any getConnection();
     PgliteDatabaseAdapter(std::shared_ptr<UUID> agentId);
 };
 

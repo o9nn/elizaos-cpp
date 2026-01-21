@@ -20,8 +20,8 @@ std::shared_ptr<Provider> autonomyStatusProvider = object{
         auto autonomyEnabled = runtime->getSetting(std::string("AUTONOMY_ENABLED"));
         auto serviceRunning = OR(((as<any>(autonomyService))["isLoopRunning"]()), (false));
         auto interval = OR(((as<any>(autonomyService))["getLoopInterval"]()), (30000));
-        string status;
-        string statusIcon;
+        std::string status;
+        std::string statusIcon;
         if (serviceRunning) {
             status = std::string("running autonomously");
             statusIcon = std::string("🤖");
@@ -33,7 +33,7 @@ std::shared_ptr<Provider> autonomyStatusProvider = object{
             statusIcon = std::string("🔕");
         }
         auto intervalText = Math->round(interval / 1000);
-        auto intervalUnit = (intervalText < 60) ? any(std::string("seconds")) : any(string_empty + Math->round(intervalText / 60) + std::string(" minutes"));
+        auto intervalUnit = (intervalText < 60) ? std::any(std::string("seconds")) : std::any(string_empty + Math->round(intervalText / 60) + std::string(" minutes"));
         return object{
             object::pair{std::string("text"), std::string("[AUTONOMY_STATUS]\
 Current status: ") + statusIcon + std::string(" ") + status + std::string("\
@@ -44,7 +44,7 @@ Thinking interval: ") + (intervalText < 60) ? string_empty + intervalText + std:
                 object::pair{std::string("serviceRunning"), std::string("serviceRunning")}, 
                 object::pair{std::string("interval"), std::string("interval")}, 
                 object::pair{std::string("intervalSeconds"), intervalText}, 
-                object::pair{std::string("status"), (serviceRunning) ? any(std::string("running")) : any((autonomyEnabled) ? std::string("enabled") : std::string("disabled"))}
+                object::pair{std::string("status"), (serviceRunning) ? std::any(std::string("running")) : std::any((autonomyEnabled) ? std::string("enabled") : std::string("disabled"))}
             }}
         };
     }

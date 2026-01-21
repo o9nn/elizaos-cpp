@@ -7,16 +7,16 @@ using uuidv4 = v4;
 #include "../types/index.h"
 #include "@elizaos/plugin-forms.h"
 
-any extractProjectName(string text);
+std::any extractProjectName(std::string text);
 
 template <typename RET>
-RET extractProjectType(string text);
+RET extractProjectType(std::string text);
 
-any getFormTemplate(string projectType);
+std::any getFormTemplate(std::string projectType);
 
 extern std::shared_ptr<Action> createProjectAction;
 template <typename RET>
-RET extractProjectType(string text)
+RET extractProjectType(std::string text)
 {
     auto lower = text->toLowerCase();
     if (lower->includes(std::string("plugin"))) {

@@ -31,10 +31,10 @@ std::string expandTildePath(const std::string& filepath);
 std::string resolvePgliteDir(std::optional<std::string> dir, std::optional<std::string> fallbackDir);
 
 /**
- * Represents a function that acts as a server middleware.
+ * Represents a std::function that acts as a server middleware.
  * @param {express.Request} req - The request object.
  * @param {express.Response} res - The response object.
- * @param {express.NextFunction} next - The next function to be called in the middleware chain.
+ * @param {express.NextFunction} next - The next std::function to be called in the middleware chain.
  * @returns {void}
  */
 using ServerMiddleware = (
@@ -71,12 +71,12 @@ class AgentServer {
   public socketIO!: SocketIOServer;
   public isInitialized: boolean = false; // Flag to prevent double initialization
   private isWebUIEnabled: boolean = true; // Default to enabled until initialized
-  private clientPath?: string; // Optional path to client dist files
+  private clientPath?: std::string; // Optional path to client dist files
   public elizaOS?: ElizaOS; // Core ElizaOS instance (public for direct access)
 
   public database!: DatabaseAdapter;
 
-  public loadCharacterTryPath!: (characterPath: string) => Promise<Character>;
+  public loadCharacterTryPath!: (characterPath: std::string) => Promise<Character>;
   public jsonToCharacter!: (character: unknown) => Promise<Character>;
 
   /**
@@ -86,9 +86,9 @@ class AgentServer {
    * @param options - Optional configuration (e.g., isTestMode for test dependencies)
    * @returns Array of started agent runtimes
    */
-  public async startAgents(
+  public std::async startAgents(
     characters: Character[],
-    plugins: (Plugin | string)[] = [],
+    plugins: (Plugin | std::string)[] = [],
     options?: { isTestMode?: boolean }
 
     // Prepare agent configurations with server-specific setup
@@ -133,7 +133,7 @@ class AgentServer {
    * Initializes the database and server.
    *
    * @param {ServerOptions} [options] - Optional server options.
-   * @returns {Promise<void>} A promise that resolves when initialization is complete.
+   * @returns {Promise<void>} A std::promise that resolves when initialization is complete.
    */
 
       // Ensure the database directory exists
@@ -177,7 +177,7 @@ class AgentServer {
    * Initializes the server with the provided options.
    *
    * @param {ServerOptions} [options] - Optional server options.
-   * @returns {Promise<void>} - A promise that resolves once the server is initialized.
+   * @returns {Promise<void>} - A std::promise that resolves once the server is initialized.
    */
       // Store the client path if provided
 
@@ -187,9 +187,9 @@ class AgentServer {
       // Set to 1 to trust only the first proxy (Railway)
       // express-rate-limit requires a specific number or custom keyGenerator when trust proxy is enabled
 
-      // Initialize Sentry (if configured) before any other middleware
+      // Initialize Sentry (if configured) before std::any other middleware
 
-      // Security headers first - before any other middleware
+      // Security headers first - before std::any other middleware
           // Content Security Policy - environment-aware configuration
                 // Production CSP - includes upgrade-insecure-requests
                   // this should probably be unlocked too
@@ -317,7 +317,7 @@ class AgentServer {
    *
    * @param {IAgentRuntime} runtime - The runtime object containing agent information.
    * @throws {Error} if the runtime is null/undefined, if agentId is missing, if character configuration is missing,
-   * or if there are any errors during registration.
+   * or if there are std::any errors during registration.
    */
 
       // Agent is now registered in ElizaOS
@@ -341,14 +341,14 @@ class AgentServer {
 
   /**
    * Add middleware to the server's request handling pipeline
-   * @param {ServerMiddleware} middleware - The middleware function to be registered
+   * @param {ServerMiddleware} middleware - The middleware std::function to be registered
    */
 
   /**
    * Starts the server on the specified port.
    *
    * @param {number} port - The port number on which the server should listen.
-   * @returns {Promise<void>} A promise that resolves when the server is listening.
+   * @returns {Promise<void>} A std::promise that resolves when the server is listening.
    * @throws {Error} If the port is invalid or if there is an error while starting the server.
    */
 
@@ -361,11 +361,11 @@ class AgentServer {
 
             // Add log for test readiness
 
-            // Resolve the promise now that the server is actually listening
+            // Resolve the std::promise now that the server is actually listening
 
             // Provide helpful error messages for common issues
 
-            // Reject the promise on error
+            // Reject the std::promise on error
 
         // Server is now listening successfully
 

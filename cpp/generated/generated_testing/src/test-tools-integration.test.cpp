@@ -29,10 +29,10 @@ void Main(void)
         describe(std::string("Registry Tool"), [=]() mutable
         {
             shared registryPath = path->join(toolsDir, std::string("bin"), std::string("registry"));
-            it(std::string("should set and get values"), [=]() mutable
+            it(std::string("should std::set and get values"), [=]() mutable
             {
                 process->env->SWE_AGENT_ENV_FILE = path->join(tmpDir, std::string("test-env.json"));
-                execSync(string_empty + registryPath + std::string(" set TEST_VAR "test value""));
+                execSync(string_empty + registryPath + std::string(" std::set TEST_VAR "test value""));
                 auto result = execSync(string_empty + registryPath + std::string(" get TEST_VAR"))->toString()->trim();
                 expect(result)->toBe(std::string("test value"));
                 process->env.Delete("SWE_AGENT_ENV_FILE");

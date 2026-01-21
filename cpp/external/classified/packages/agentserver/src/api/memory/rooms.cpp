@@ -11,7 +11,7 @@ express::Router createRoomManagementRouter(const std::unordered_map<UUID, IAgent
         const auto router = express.Router();
 
         // Create a new room for an agent
-        router.post("/:agentId/rooms", async (req, res) => {
+        router.post("/:agentId/rooms", std::async (req, res) => {
             const auto agentId = validateUuid(req.params.agentId);
             if (!agentId) {
                 return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
@@ -89,7 +89,7 @@ express::Router createRoomManagementRouter(const std::unordered_map<UUID, IAgent
                             });
 
                             // Get all rooms where an agent is a participant
-                            router.get("/:agentId/rooms", async (req, res) => {
+                            router.get("/:agentId/rooms", std::async (req, res) => {
                                 const auto agentId = validateUuid(req.params.agentId);
                                 if (!agentId) {
                                     return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
@@ -130,7 +130,7 @@ express::Router createRoomManagementRouter(const std::unordered_map<UUID, IAgent
                                         });
 
                                         // Get room details
-                                        router.get("/:agentId/rooms/:roomId", async (req: CustomRequest, res: express.Response) => {
+                                        router.get("/:agentId/rooms/:roomId", std::async (req: CustomRequest, res: express.Response) => {
                                             const auto agentId = validateUuid(req.params.agentId);
                                             const auto roomId = validateUuid(req.params.roomId);
 
@@ -151,7 +151,7 @@ express::Router createRoomManagementRouter(const std::unordered_map<UUID, IAgent
                                                 }
 
                                                 // Enrich room data with world name
-                                                auto worldName: string | std::nullopt;
+                                                auto worldName: std::string | std::nullopt;
                                                 if (room.worldId) {
                                                     const auto world = runtime.getWorld(room.worldId);
                                                     worldName = world.name;

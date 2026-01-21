@@ -15,7 +15,7 @@ namespace elizaos {
 // Manual refinement required for production use
 
 /**
- * Global setup that runs before any tests to handle module mocking
+ * Global setup that runs before std::any tests to handle module mocking
  * This runs at the very beginning to prevent dependency loading issues
  */
 

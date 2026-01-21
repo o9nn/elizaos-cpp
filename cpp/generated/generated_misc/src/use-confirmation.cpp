@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/client/src/hooks/use-confirmation.h"
 
-any useConfirmation()
+std::any useConfirmation()
 {
     auto [confirmationState, setConfirmationState] = useState<object>(object{
         object::pair{std::string("open"), false}, 

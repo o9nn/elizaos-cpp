@@ -8,11 +8,11 @@ std::shared_ptr<TestSuite> StarterPluginTestSuite = object{
         object::pair{std::string("fn"), [=](auto runtime) mutable
         {
             if (runtime["character"]["name"] != std::string("Eliza")) {
-                throw any(std::make_shared<Error>(std::string("Expected character name to be "Eliza" but got "") + runtime["character"]["name"] + std::string(""")));
+                throw std::any(std::make_shared<Error>(std::string("Expected character name to be "Eliza" but got "") + runtime["character"]["name"] + std::string(""")));
             }
             auto service = runtime["getService"](std::string("starter"));
             if (!service) {
-                throw any(std::make_shared<Error>(std::string("Starter service not found")));
+                throw std::any(std::make_shared<Error>(std::string("Starter service not found")));
             }
         }
         }
@@ -26,7 +26,7 @@ std::shared_ptr<TestSuite> StarterPluginTestSuite = object{
             }
             );
             if (!actionExists) {
-                throw any(std::make_shared<Error>(std::string("Hello world action not found in runtime actions")));
+                throw std::any(std::make_shared<Error>(std::string("Hello world action not found in runtime actions")));
             }
         }
         }
@@ -56,23 +56,23 @@ std::shared_ptr<TestSuite> StarterPluginTestSuite = object{
             }
             );
             if (!helloWorldAction) {
-                throw any(std::make_shared<Error>(std::string("Hello world action not found in runtime actions")));
+                throw std::any(std::make_shared<Error>(std::string("Hello world action not found in runtime actions")));
             }
             auto callback = [=](auto response) mutable
             {
                 responseReceived = true;
                 responseText = OR((response->text), (string_empty));
                 if (!response->actions->includes(std::string("HELLO_WORLD"))) {
-                    throw any(std::make_shared<Error>(std::string("Response did not include HELLO_WORLD action")));
+                    throw std::any(std::make_shared<Error>(std::string("Response did not include HELLO_WORLD action")));
                 }
                 return Promise->resolve(array<any>());
             };
             std::async([=]() { helloWorldAction["handler"](runtime, testMessage, testState, object{}, callback); });
             if (!responseReceived) {
-                throw any(std::make_shared<Error>(std::string("Hello world action did not produce a response")));
+                throw std::any(std::make_shared<Error>(std::string("Hello world action did not produce a response")));
             }
             if (!responseText->toLowerCase()->includes(std::string("hello world"))) {
-                throw any(std::make_shared<Error>(std::string("Expected response to contain "hello world" but got: "") + responseText + std::string(""")));
+                throw std::any(std::make_shared<Error>(std::string("Expected response to contain "hello world" but got: "") + responseText + std::string(""")));
             }
         }
         }
@@ -99,11 +99,11 @@ std::shared_ptr<TestSuite> StarterPluginTestSuite = object{
             }
             );
             if (!helloWorldProvider) {
-                throw any(std::make_shared<Error>(std::string("Hello world provider not found in runtime providers")));
+                throw std::any(std::make_shared<Error>(std::string("Hello world provider not found in runtime providers")));
             }
             auto result = std::async([=]() { helloWorldProvider["get"](runtime, testMessage, testState); });
             if (result["text"] != std::string("I am a provider")) {
-                throw any(std::make_shared<Error>(std::string("Expected provider to return "I am a provider", got "") + result["text"] + std::string(""")));
+                throw std::any(std::make_shared<Error>(std::string("Expected provider to return "I am a provider", got "") + result["text"] + std::string(""")));
             }
         }
         }
@@ -113,10 +113,10 @@ std::shared_ptr<TestSuite> StarterPluginTestSuite = object{
         {
             auto service = runtime["getService"](std::string("starter"));
             if (!service) {
-                throw any(std::make_shared<Error>(std::string("Starter service not found")));
+                throw std::any(std::make_shared<Error>(std::string("Starter service not found")));
             }
             if (service["capabilityDescription"] != std::string("This is a starter service which is attached to the agent through the starter plugin.")) {
-                throw any(std::make_shared<Error>(std::string("Incorrect service capability description")));
+                throw std::any(std::make_shared<Error>(std::string("Incorrect service capability description")));
             }
             std::async([=]() { service["stop"](); });
         }
@@ -126,7 +126,7 @@ std::shared_ptr<TestSuite> StarterPluginTestSuite = object{
 
 void Main(void)
 {
-    string_empty + string + std::string("-") + string + std::string("-") + string + std::string("-") + string + std::string("-") + string + string_empty;
+    string_empty + std::string + std::string("-") + std::string + std::string("-") + std::string + std::string("-") + std::string + std::string("-") + std::string + string_empty;
 }
 
 MAIN

@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-bootstrap/src/templates/reflection.h"
 
-string reflectionTemplate = std::string("# Task: Generate Agent Reflection, Extract Facts and Relationships\
+std::string reflectionTemplate = std::string("# Task: Generate Agent Reflection, Extract Facts and Relationships\
 \
 {{providers}}\
 \
@@ -31,8 +31,8 @@ Message Sender: {{senderName}} (ID: {{senderId}})\
   - The targetEntityId is the UUID of the entity being interacted with.\
   - Relationships are one-direction, so a friendship would be two entity relationships where each entity is both the source and the target of the other.\
 \
-Do NOT include any thinking, reasoning, or <think> sections in your response. \
-Go directly to the XML response format without any preamble or explanation.\
+Do NOT include std::any thinking, reasoning, or <think> sections in your response. \
+Go directly to the XML response format without std::any preamble or explanation.\
 \
 Generate a response in the following format:\
 <response>\
@@ -56,7 +56,7 @@ Generate a response in the following format:\
   </relationships>\
 </response>\
 \
-IMPORTANT: Your response must ONLY contain the <response></response> XML block above. Do not include any text, thinking, or reasoning before or after this XML block. Start your response immediately with <response> and end with </response>.");
+IMPORTANT: Your response must ONLY contain the <response></response> XML block above. Do not include std::any text, thinking, or reasoning before or after this XML block. Start your response immediately with <response> and end with </response>.");
 
 void Main(void)
 {

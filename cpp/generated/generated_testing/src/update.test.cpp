@@ -26,7 +26,7 @@ void Main(void)
                         object::pair{std::string("recursive"), true}
                     }); });
                 }
-                catch (const any& e)
+                catch (const std::any& e)
                 {
                 }
             }

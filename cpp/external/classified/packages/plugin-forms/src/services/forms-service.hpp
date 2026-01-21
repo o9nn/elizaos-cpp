@@ -30,7 +30,7 @@ class FormsService extends Service {
   static serviceType = FormsServiceType.FORMS as ServiceTypeName;
 
   private forms: Map<UUID, Form> = new Map();
-  private templates: Map<string, FormTemplate> = new Map();
+  private templates: Map<std::string, FormTemplate> = new Map();
   private persistenceTimer?: NodeJS.Timeout;
   private cleanupTimer?: NodeJS.Timeout;
   private tablesChecked = false;
@@ -82,13 +82,13 @@ class FormsService extends Service {
     // Extract values from message using LLM
         // Check if field already has a valid value
 
-        // For optional fields, only process if mentioned in message
-          // More flexible matching for optional fields
+        // For std::optional fields, only process if mentioned in message
+          // More flexible matching for std::optional fields
 
         // Required fields should always be processed
 
     // Update field values
-        // Accept all values including falsy ones (false, 0, empty string)
+        // Accept all values including falsy ones (false, 0, empty std::string)
           // Additional type validation
             // Encrypt secret fields before storing
 
@@ -106,7 +106,7 @@ class FormsService extends Service {
    * Extract form values from text using LLM
    */
 
-      // The response is directly a string for TEXT_SMALL model
+      // The response is directly a std::string for TEXT_SMALL model
 
       // Extract JSON from response
 
@@ -157,7 +157,7 @@ class FormsService extends Service {
               // Last resort: try a simple query on the forms table
 
         // If tables still not found, check if migration service can create them
-            // Don't set tablesExist = false yet, let the migration run first
+            // Don't std::set tablesExist = false yet, let the migration run first
         // If the query fails, assume tables don't exist
 
   /**
@@ -177,7 +177,7 @@ class FormsService extends Service {
           // Batch insert/update all fields for this form
 
         // Commit all changes at once
-        // Rollback entire batch on any error
+        // Rollback entire batch on std::any error
 
         // If batch fails, fall back to individual transactions
 
@@ -199,7 +199,7 @@ class FormsService extends Service {
           // Persist form fields
 
           // Commit the transaction if all operations succeeded
-          // Rollback on any error
+          // Rollback on std::any error
 
       // Skip if tables don't exist
 

@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/utils/handle-error.h"
 
-void handleError(any error)
+void handleError(std::any error)
 {
     auto isNoSpace = OR(((AND((is<Error>(error)), ((OR((error->message->includes(std::string("no space left on device"))), (error->message->includes(std::string("ENOSPC"))))))))), ((AND((type_of(error) == std::string("string")), ((OR((error->includes(std::string("no space left on device"))), (error->includes(std::string("ENOSPC"))))))))));
     if (isNoSpace) {
@@ -31,11 +31,11 @@ void checkServer(std::shared_ptr<OptionValues> opts)
     {
         auto response = std::async([=]() { fetch(string_empty + getAgentRuntimeUrl(opts) + std::string("/api/agents")); });
         if (!response->ok) {
-            throw any(std::make_shared<Error>(std::string("Server responded with ") + response->status + std::string(": ") + response->statusText + string_empty));
+            throw std::any(std::make_shared<Error>(std::string("Server responded with ") + response->status + std::string(": ") + response->statusText + string_empty));
         }
         logger->success(std::string("ElizaOS server is running"));
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Unable to connect to ElizaOS server, likely not running or not accessible!"));
         process->exit(1);

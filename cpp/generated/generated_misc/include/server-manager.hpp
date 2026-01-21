@@ -10,14 +10,14 @@ class DevServerManager;
 class DevServerManager : public ServerProcess, public std::enable_shared_from_this<DevServerManager> {
 public:
     using std::enable_shared_from_this<DevServerManager>::shared_from_this;
-    any process = nullptr;
+    std::any process = nullptr;
 
     virtual std::shared_ptr<Promise<void>> stop();
     virtual std::shared_ptr<Promise<void>> start(array<string> args = array<string>());
     virtual std::shared_ptr<Promise<void>> restart(array<string> args = array<string>());
 };
 
-extern any serverInstance;
+extern std::any serverInstance;
 std::shared_ptr<DevServerManager> getServerManager();
 
 std::shared_ptr<Promise<void>> stopServer();

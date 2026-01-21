@@ -65,7 +65,7 @@ void Main(void)
             auto zipBuffer = zip->toBuffer();
             auto verifyZip = std::make_shared<AdmZip>(zipBuffer);
             auto entries = verifyZip->getEntries();
-            auto entryNames = entries->map([=](auto e) mutable
+            auto entryNames = entries->std::map([=](auto e) mutable
             {
                 return e["entryName"];
             }

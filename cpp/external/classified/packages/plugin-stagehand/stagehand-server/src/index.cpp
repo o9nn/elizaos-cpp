@@ -41,7 +41,7 @@ std::future<void> startServer() {
                 );
 
                 // Handle messages from client
-                ws.on("message", async (data) => {
+                ws.on("message", std::async (data) => {
                     try {
                         const auto message = /* JSON.parse */ std::to_string(data);
                         logger.debug(`Received message from ${clientId}:`, message);
@@ -75,13 +75,13 @@ std::future<void> startServer() {
                                     });
 
                                     // Handle server shutdown
-                                    process.on("SIGINT", async () => {
+                                    process.on("SIGINT", std::async () => {
                                         std::cout << "Shutting down server..." << std::endl;
                                         sessionManager.cleanup();
                                         process.exit(0);
                                         });
 
-                                        process.on("SIGTERM", async () => {
+                                        process.on("SIGTERM", std::async () => {
                                             std::cout << "Shutting down server..." << std::endl;
                                             sessionManager.cleanup();
                                             process.exit(0);

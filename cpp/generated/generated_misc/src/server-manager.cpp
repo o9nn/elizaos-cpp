@@ -96,7 +96,7 @@ std::shared_ptr<Promise<void>> restartServer(array<string> args)
 };
 
 
-any serverInstance = nullptr;
+std::any serverInstance = nullptr;
 
 void Main(void)
 {

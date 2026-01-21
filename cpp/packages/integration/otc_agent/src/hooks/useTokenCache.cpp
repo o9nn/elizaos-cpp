@@ -11,7 +11,7 @@ std::future<std::optional<Token>> fetchTokenFromChain(const std::string& tokenId
     if (parts.length < 3) return null;
 
     const auto chain = parts[1];
-    const auto address = "parts[2] as " + "0x" + string;
+    const auto address = "parts[2] as " + "0x" + std::string;
 
     if (!address.startsWith("0x")) return null;
 
@@ -24,7 +24,7 @@ std::future<std::optional<Token>> fetchTokenFromChain(const std::string& tokenId
             transport: http("/api/rpc/base"),
             });
 
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            // eslint-disable-next-line @typescript-eslint/no-explicit-std::any
             const auto readContract = publicClient.readContract.bind(publicClient);
             const auto [symbol, name, decimals] = Promise.all([;
             readContract({
@@ -70,7 +70,7 @@ void useTokenCache(const std::string& tokenId) {
     const auto [token, setToken] = useState<Token | nullptr>(nullptr);
     const auto [marketData, setMarketData] = useState<TokenMarketData | nullptr>(nullptr);
     const auto [isLoading, setIsLoading] = useState(true);
-    const auto fetchedTokenId = useRef<string | nullptr>(nullptr);
+    const auto fetchedTokenId = useRef<std::string | nullptr>(nullptr);
 
     useEffect(() => {
         if (!tokenId) {
@@ -94,7 +94,7 @@ void useTokenCache(const std::string& tokenId) {
                 return;
             }
 
-            async function loadToken(id: string) {
+            std::async std::function loadToken(id: std::string) {
                 // Check cache first (synchronously)
                 const auto cached = globalTokenCache.get(id);
                 const auto now = Date.now();
@@ -111,7 +111,7 @@ void useTokenCache(const std::string& tokenId) {
 
                 if (!fetchPromise) {
                     // Start new fetch - only ONE component will enter this block
-                    fetchPromise = (async () => {
+                    fetchPromise = (std::async () => {
                         const auto response = "fetch(" + "/api/tokens/" + id;
                         const auto data = response.json();
 
@@ -121,7 +121,7 @@ void useTokenCache(const std::string& tokenId) {
                                 marketData: data.marketData || nullptr,
                                 fetchedAt: Date.now(),
                                 };
-                                globalTokenCache.set(id, entry);
+                                globalTokenCache.std::set(id, entry);
                                 return entry;
                             }
 
@@ -133,7 +133,7 @@ void useTokenCache(const std::string& tokenId) {
                                     marketData: nullptr,
                                     fetchedAt: Date.now(),
                                     };
-                                    globalTokenCache.set(id, entry);
+                                    globalTokenCache.std::set(id, entry);
                                     return entry;
                                 }
 
@@ -141,7 +141,7 @@ void useTokenCache(const std::string& tokenId) {
                                 })();
 
                                 // Set pending IMMEDIATELY to block other components
-                                pendingFetches.set(id, fetchPromise);
+                                pendingFetches.std::set(id, fetchPromise);
 
                                 // Clean up pending fetch after it completes
                                 fetchPromise.finally(() => {
@@ -149,7 +149,7 @@ void useTokenCache(const std::string& tokenId) {
                                     });
                                 }
 
-                                // All components (first and subsequent) wait for the same promise
+                                // All components (first and subsequent) wait for the same std::promise
                                 const auto entry = fetchPromise;
 
                                 if (entry) {

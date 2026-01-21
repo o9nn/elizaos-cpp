@@ -16,7 +16,7 @@ public:
     virtual std::shared_ptr<Promise<any>> createTask(object params);
     virtual std::shared_ptr<Promise<boolean>> updateTask(std::shared_ptr<UUID> taskId, object updates);
     virtual std::shared_ptr<Task> normalizeTask(std::shared_ptr<Task> task);
-    virtual std::shared_ptr<Promise<array<std::shared_ptr<Task>>>> searchTasksByName(string name, object params = undefined);
+    virtual std::shared_ptr<Promise<array<std::shared_ptr<Task>>>> searchTasksByName(std::string name, object params = undefined);
 };
 
 std::shared_ptr<TaskService> createTaskService(std::shared_ptr<IAgentRuntime> runtime);

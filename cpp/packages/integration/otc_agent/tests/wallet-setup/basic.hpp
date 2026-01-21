@@ -31,7 +31,7 @@ namespace elizaos {
  * .cache/synpress-cache and reused across test runs to prevent re-setup loops.
  */
 
-// Wallet setup function - this runs ONCE and is cached
+// Wallet setup std::function - this runs ONCE and is cached
   // Wait for page to be fully loaded in CI
 
   // Import wallet with test seed

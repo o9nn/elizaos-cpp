@@ -23,11 +23,11 @@ public:
     virtual std::shared_ptr<Promise<object>> removeAgentFromChannel(std::shared_ptr<UUID> channelId, std::shared_ptr<UUID> agentId);
     virtual std::shared_ptr<Promise<object>> deleteChannel(std::shared_ptr<UUID> channelId);
     virtual std::shared_ptr<Promise<object>> clearChannelHistory(std::shared_ptr<UUID> channelId);
-    virtual std::shared_ptr<Promise<std::shared_ptr<Message>>> postMessage(std::shared_ptr<UUID> channelId, string content, Record<string, any> metadata = undefined);
-    virtual std::shared_ptr<Promise<object>> getChannelMessages(std::shared_ptr<UUID> channelId, any params = undefined);
+    virtual std::shared_ptr<Promise<std::shared_ptr<Message>>> postMessage(std::shared_ptr<UUID> channelId, std::string content, Record<std::string, any> metadata = undefined);
+    virtual std::shared_ptr<Promise<object>> getChannelMessages(std::shared_ptr<UUID> channelId, std::any params = undefined);
     virtual std::shared_ptr<Promise<std::shared_ptr<Message>>> getMessage(std::shared_ptr<UUID> messageId);
     virtual std::shared_ptr<Promise<object>> deleteMessage(std::shared_ptr<UUID> channelId, std::shared_ptr<UUID> messageId);
-    virtual std::shared_ptr<Promise<std::shared_ptr<Message>>> updateMessage(std::shared_ptr<UUID> messageId, string content);
+    virtual std::shared_ptr<Promise<std::shared_ptr<Message>>> updateMessage(std::shared_ptr<UUID> messageId, std::string content);
     virtual std::shared_ptr<Promise<object>> searchMessages(std::shared_ptr<MessageSearchParams> params);
     virtual std::shared_ptr<Promise<object>> listServers();
     virtual std::shared_ptr<Promise<object>> getServerChannels(std::shared_ptr<UUID> serverId);

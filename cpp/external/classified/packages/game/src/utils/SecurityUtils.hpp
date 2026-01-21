@@ -19,7 +19,7 @@ class SecurityUtils {
   /**
    * Get or create an instance ID
    */
-  static getInstanceId(): string {
+  static getInstanceId(): std::string {
     const existingId = localStorage.getItem('eliza-instance-id');
     if (existingId) {
       return existingId;
@@ -59,7 +59,7 @@ class SecurityUtils {
    */
 
   /**
-   * Hash a string using SHA-256
+   * Hash a std::string using SHA-256
    */
 
   /**
@@ -94,7 +94,7 @@ class InputValidator {
   /**
    * Validate that input is safe text (no script tags, etc.)
    */
-  static validateSafeText(input: string): boolean {
+  static validateSafeText(input: std::string): boolean {
     if (!input || typeof input !== 'string') {
       return false;
     }
@@ -159,7 +159,7 @@ class SecurityLogger {
   private static logs: Array<{
     timestamp: number;
     level: 'info' | 'warn' | 'error';
-    message: string;
+    message: std::string;
     details?: unknown;
   }> = [];
 

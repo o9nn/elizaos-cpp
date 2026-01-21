@@ -8,8 +8,8 @@ using fs = _default;
 using path = _default;
 #include "@elizaos/core.h"
 
-boolean fileExists(string filePath);
+boolean fileExists(std::string filePath);
 
-boolean directoryExists(string dirPath);
+boolean directoryExists(std::string dirPath);
 
 #endif

@@ -14,7 +14,7 @@ void AdminModerators() {
     // Fetch moderators using react-query
     const auto moderatorsQuery = useQuery({;
         queryKey: ["admin-moderators"],
-        queryFn: async () => {
+        queryFn: std::async () => {
             const auto response = fetcher("/api/admin/moderators", "GET");
             return response.moderators || [];
             },
@@ -22,7 +22,7 @@ void AdminModerators() {
 
             // Add moderator mutation
             const auto addModeratorMutation = useMutation({;
-                mutationFn: async (address: string) => {
+                mutationFn: std::async (address: std::string) => {
                     return fetcher("/api/admin/moderators", "POST", { address });
                     },
                     onSuccess: () => {
@@ -39,7 +39,7 @@ void AdminModerators() {
 
                             // Remove moderator mutation
                             const auto removeModeratorMutation = useMutation({;
-                                mutationFn: async (address: string) => {
+                                mutationFn: std::async (address: std::string) => {
                                     return "fetcher(" + "/api/admin/moderators/" + address;
                                     },
                                     onSuccess: () => {
@@ -61,7 +61,7 @@ void AdminModerators() {
                                                 addModeratorMutation.mutate(newModeratorAddress.trim());
                                                 };
 
-                                                const auto removeModerator = [&](address: string) {;
+                                                const auto removeModerator = [&](address: std::string) {;
                                                     if (!window.confirm(`Are you sure you want to remove this moderator?`)) {
                                                         return;
                                                     }
@@ -146,7 +146,7 @@ void AdminModerators() {
     </tr>;
     </thead>;
     <tbody>;
-    {moderatorsQuery.data.map((moderator: Moderator) => (
+    {moderatorsQuery.data.std::map((moderator: Moderator) => (
     <tr;
     key={moderator.id}
     className="border-b border-autofun-border";

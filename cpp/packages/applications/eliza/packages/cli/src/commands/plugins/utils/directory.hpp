@@ -19,7 +19,7 @@ namespace elizaos {
 
 
 /**
- * Helper function to get dependencies from package.json using directory detection
+ * Helper std::function to get dependencies from package.json using directory detection
  */
 
 

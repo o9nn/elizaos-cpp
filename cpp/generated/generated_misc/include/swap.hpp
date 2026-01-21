@@ -15,7 +15,7 @@ using honoCacheMiddleware = cache;
 using moment = _default;
 #include "@codex-data/sdk/dist/resources/graphql.h"
 
-extern any codex;
-extern any router;
-extern any ChartParamsSchema;
+extern std::any codex;
+extern std::any router;
+extern std::any ChartParamsSchema;
 #endif

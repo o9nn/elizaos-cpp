@@ -25,7 +25,7 @@ public:
     virtual std::shared_ptr<Promise<object>> getAgentInternalMemories(std::shared_ptr<UUID> agentId, std::shared_ptr<UUID> agentPerspectiveRoomId, boolean includeEmbedding = undefined);
     virtual std::shared_ptr<Promise<object>> deleteAgentInternalMemory(std::shared_ptr<UUID> agentId, std::shared_ptr<UUID> memoryId);
     virtual std::shared_ptr<Promise<object>> deleteAllAgentInternalMemories(std::shared_ptr<UUID> agentId, std::shared_ptr<UUID> agentPerspectiveRoomId);
-    virtual std::shared_ptr<Promise<any>> updateAgentInternalMemory(std::shared_ptr<UUID> agentId, std::shared_ptr<UUID> memoryId, any memoryData);
+    virtual std::shared_ptr<Promise<any>> updateAgentInternalMemory(std::shared_ptr<UUID> agentId, std::shared_ptr<UUID> memoryId, std::any memoryData);
     virtual std::shared_ptr<Promise<object>> deleteGroupMemory(std::shared_ptr<UUID> serverId, std::shared_ptr<UUID> memoryId);
     virtual std::shared_ptr<Promise<object>> clearGroupChat(std::shared_ptr<UUID> serverId);
     MemoryService(std::shared_ptr<ApiClientConfig> config);

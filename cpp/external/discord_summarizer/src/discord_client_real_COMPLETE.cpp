@@ -83,7 +83,7 @@ bool DiscordClientReal::connect(const std::string& token) {
         // Setup event handlers
         setupEventHandlers();
         
-        // Start the bot in a separate thread
+        // Start the bot in a separate std::thread
         shouldStop_.store(false);
         botThread_ = std::make_unique<std::thread>(&DiscordClientReal::runBot, this);
         
@@ -117,7 +117,7 @@ bool DiscordClientReal::disconnect() {
         return true;
     }
     
-    // Signal the bot thread to stop
+    // Signal the bot std::thread to stop
     shouldStop_.store(true);
     
     // Shutdown the bot
@@ -125,7 +125,7 @@ bool DiscordClientReal::disconnect() {
         bot_->shutdown();
     }
     
-    // Wait for the bot thread to finish
+    // Wait for the bot std::thread to finish
     if (botThread_ && botThread_->joinable()) {
         botThread_->join();
     }
@@ -153,8 +153,8 @@ std::vector<DiscordMessage> DiscordClientReal::getMessages(const std::string& ch
     }
     
     std::vector<DiscordMessage> messages;
-    std::promise<void> promise;
-    std::future<void> future = promise.get_future();
+    std::promise<void> std::promise;
+    std::future<void> std::future = promise.get_future();
     
     try {
         dpp::snowflake channel_id_sf = std::stoull(channelId);
@@ -172,7 +172,7 @@ std::vector<DiscordMessage> DiscordClientReal::getMessages(const std::string& ch
             promise.set_value();
         });
         
-        // Wait for the async operation to complete (with timeout)
+        // Wait for the std::async operation to complete (with timeout)
         if (future.wait_for(std::chrono::seconds(10)) == std::future_status::timeout) {
             logError("Timeout while getting messages from channel " + channelId);
         }
@@ -217,8 +217,8 @@ bool DiscordClientReal::sendMessage(const std::string& channelId, const std::str
         return false;
     }
     
-    std::promise<bool> promise;
-    std::future<bool> future = promise.get_future();
+    std::promise<bool> std::promise;
+    std::future<bool> std::future = promise.get_future();
     
     try {
         dpp::snowflake channel_id_sf = std::stoull(channelId);
@@ -233,7 +233,7 @@ bool DiscordClientReal::sendMessage(const std::string& channelId, const std::str
             }
         });
         
-        // Wait for the async operation to complete (with timeout)
+        // Wait for the std::async operation to complete (with timeout)
         if (future.wait_for(std::chrono::seconds(10)) == std::future_status::timeout) {
             logError("Timeout while sending message to channel " + channelId);
             return false;
@@ -253,8 +253,8 @@ bool DiscordClientReal::deleteMessage(const std::string& channelId, const std::s
         return false;
     }
     
-    std::promise<bool> promise;
-    std::future<bool> future = promise.get_future();
+    std::promise<bool> std::promise;
+    std::future<bool> std::future = promise.get_future();
     
     try {
         dpp::snowflake channel_id_sf = std::stoull(channelId);
@@ -270,7 +270,7 @@ bool DiscordClientReal::deleteMessage(const std::string& channelId, const std::s
             }
         });
         
-        // Wait for the async operation to complete (with timeout)
+        // Wait for the std::async operation to complete (with timeout)
         if (future.wait_for(std::chrono::seconds(10)) == std::future_status::timeout) {
             logError("Timeout while deleting message from channel " + channelId);
             return false;
@@ -291,8 +291,8 @@ std::vector<DiscordChannel> DiscordClientReal::getChannels(const std::string& gu
     }
     
     std::vector<DiscordChannel> channels;
-    std::promise<void> promise;
-    std::future<void> future = promise.get_future();
+    std::promise<void> std::promise;
+    std::future<void> std::future = promise.get_future();
     
     try {
         dpp::snowflake guild_id_sf = std::stoull(guildId);
@@ -310,7 +310,7 @@ std::vector<DiscordChannel> DiscordClientReal::getChannels(const std::string& gu
             promise.set_value();
         });
         
-        // Wait for the async operation to complete (with timeout)
+        // Wait for the std::async operation to complete (with timeout)
         if (future.wait_for(std::chrono::seconds(10)) == std::future_status::timeout) {
             logError("Timeout while getting channels from guild " + guildId);
         }
@@ -329,8 +329,8 @@ DiscordChannel DiscordClientReal::getChannel(const std::string& channelId) {
     }
     
     DiscordChannel channel;
-    std::promise<void> promise;
-    std::future<void> future = promise.get_future();
+    std::promise<void> std::promise;
+    std::future<void> std::future = promise.get_future();
     
     try {
         dpp::snowflake channel_id_sf = std::stoull(channelId);
@@ -346,7 +346,7 @@ DiscordChannel DiscordClientReal::getChannel(const std::string& channelId) {
             promise.set_value();
         });
         
-        // Wait for the async operation to complete (with timeout)
+        // Wait for the std::async operation to complete (with timeout)
         if (future.wait_for(std::chrono::seconds(10)) == std::future_status::timeout) {
             logError("Timeout while getting channel " + channelId);
         }
@@ -385,8 +385,8 @@ DiscordGuild DiscordClientReal::getGuild(const std::string& guildId) {
     }
     
     DiscordGuild guild;
-    std::promise<void> promise;
-    std::future<void> future = promise.get_future();
+    std::promise<void> std::promise;
+    std::future<void> std::future = promise.get_future();
     
     try {
         dpp::snowflake guild_id_sf = std::stoull(guildId);
@@ -402,7 +402,7 @@ DiscordGuild DiscordClientReal::getGuild(const std::string& guildId) {
             promise.set_value();
         });
         
-        // Wait for the async operation to complete (with timeout)
+        // Wait for the std::async operation to complete (with timeout)
         if (future.wait_for(std::chrono::seconds(10)) == std::future_status::timeout) {
             logError("Timeout while getting guild " + guildId);
         }
@@ -541,7 +541,7 @@ void DiscordClientReal::runBot() {
             bot_->start(dpp::st_wait);
         }
     } catch (const std::exception& e) {
-        logError("Bot thread exception: " + std::string(e.what()));
+        logError("Bot std::thread exception: " + std::string(e.what()));
         shouldStop_.store(true);
     }
 }

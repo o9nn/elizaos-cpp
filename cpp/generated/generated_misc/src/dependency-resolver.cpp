@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/commands/start/utils/dependency-resolver.h"
 
-array<std::shared_ptr<Plugin>> resolvePluginDependencies(std::shared_ptr<Map<string, std::shared_ptr<Plugin>>> availablePlugins, boolean isTestMode)
+array<std::shared_ptr<Plugin>> resolvePluginDependencies(std::shared_ptr<Map<std::string, std::shared_ptr<Plugin>>> availablePlugins, boolean isTestMode)
 {
     shared resolutionOrder = array<string>();
     shared visited = std::make_shared<Set<string>>();
@@ -39,7 +39,7 @@ array<std::shared_ptr<Plugin>> resolvePluginDependencies(std::shared_ptr<Map<str
             visit(name);
         }
     }
-    auto finalPlugins = as<array<std::shared_ptr<Plugin>>>(resolutionOrder->map([=](auto name) mutable
+    auto finalPlugins = as<array<std::shared_ptr<Plugin>>>(resolutionOrder->std::map([=](auto name) mutable
     {
         return availablePlugins->get(name);
     }
@@ -48,7 +48,7 @@ array<std::shared_ptr<Plugin>> resolvePluginDependencies(std::shared_ptr<Map<str
         return p;
     }
     ));
-    logger->info(std::string("Final plugins being loaded: ") + finalPlugins->map([=](auto p) mutable
+    logger->info(std::string("Final plugins being loaded: ") + finalPlugins->std::map([=](auto p) mutable
     {
         return p->name;
     }

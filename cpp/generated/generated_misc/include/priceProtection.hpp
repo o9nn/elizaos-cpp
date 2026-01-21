@@ -23,7 +23,7 @@ public:
 
     double maxAllowedDeviationBps;
 
-    string reason;
+    std::string reason;
 };
 
 class PriceProtectionService : public object, public std::enable_shared_from_this<PriceProtectionService> {
@@ -32,7 +32,7 @@ public:
     std::shared_ptr<MarketDataService> marketDataService;
 
     PriceProtectionService();
-    virtual std::shared_ptr<Promise<std::shared_ptr<ValidationResult>>> validateQuotePrice(string tokenId, string tokenAddress, std::shared_ptr<Chain> chain, double priceAtQuote, double maxDeviationBps);
+    virtual std::shared_ptr<Promise<std::shared_ptr<ValidationResult>>> validateQuotePrice(std::string tokenId, std::string tokenAddress, std::shared_ptr<Chain> chain, double priceAtQuote, double maxDeviationBps);
 };
 
 #endif

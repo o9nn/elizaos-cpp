@@ -28,7 +28,7 @@ struct EnvironmentConfig {
     std::optional<std::string> hdr;
     std::optional<THREE.Vector3> sunDirection;
     std::optional<double> sunIntensity;
-    std::optional<string | number> sunColor;
+    std::optional<std::string | number> sunColor;
     std::optional<double> fogNear;
     std::optional<double> fogFar;
     std::optional<std::string> fogColor;
@@ -36,17 +36,17 @@ struct EnvironmentConfig {
 };
 
 class AgentEnvironment extends System {
-  model: any = null
+  model: std::any = null
   skys: SkyHandle[] = []
   sky: THREE.Mesh | null = null
   skyN = 0
   base!: EnvironmentConfig
-  skyInfo: any = null
-  bgUrl: string | null = null
-  hdrUrl: string | null = null
+  skyInfo: std::any = null
+  bgUrl: std::string | null = null
+  hdrUrl: std::string | null = null
   csm!: CSM
 
-  constructor(world: any) {
+  constructor(world: std::any) {
     super(world)
   }
 

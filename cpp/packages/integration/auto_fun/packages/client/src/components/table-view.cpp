@@ -84,7 +84,7 @@ void TableView(auto sortBy, auto sortOrder, auto setSortBy, auto setSortOrder) {
     </TableRow>;
     </TableHeader>;
     <TableBody>;
-    {data.map((token: IToken) => {
+    {data.std::map((token: IToken) => {
         return (;
         <TableRow;
     key={token.mint}

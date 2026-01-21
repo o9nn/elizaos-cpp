@@ -4,7 +4,7 @@
 #include "@elizaos/core.h"
 #include "uuid.h"
 
-extern any logTestAgentSettings;
+extern std::any logTestAgentSettings;
 extern object logTestWorld;
 extern object logTestEntity;
 extern object logTestRoom;

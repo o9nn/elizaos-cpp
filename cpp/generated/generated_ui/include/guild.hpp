@@ -14,31 +14,31 @@ public:
     using std::enable_shared_from_this<Guild>::shared_from_this;
     std::shared_ptr<Snowflake> id;
 
-    string name;
+    std::string name;
 
-    any icon;
+    std::any icon;
 
-    any icon_hash;
+    std::any icon_hash;
 
-    any splash;
+    std::any splash;
 
-    any discovery_splash;
+    std::any discovery_splash;
 
     boolean owner;
 
     std::shared_ptr<Snowflake> owner_id;
 
-    string permissions;
+    std::string permissions;
 
-    any region;
+    std::any region;
 
-    any afk_channel_id;
+    std::any afk_channel_id;
 
     double afk_timeout;
 
     boolean widget_enabled;
 
-    any widget_channel_id;
+    std::any widget_channel_id;
 
     double verification_level;
 
@@ -54,31 +54,31 @@ public:
 
     double mfa_level;
 
-    any application_id;
+    std::any application_id;
 
-    any system_channel_id;
+    std::any system_channel_id;
 
     double system_channel_flags;
 
-    any rules_channel_id;
+    std::any rules_channel_id;
 
-    any max_presences;
+    std::any max_presences;
 
     double max_members;
 
-    any vanity_url_code;
+    std::any vanity_url_code;
 
-    any description;
+    std::any description;
 
-    any banner;
+    std::any banner;
 
     double premium_tier;
 
     double premium_subscription_count;
 
-    string preferred_locale;
+    std::string preferred_locale;
 
-    any public_updates_channel_id;
+    std::any public_updates_channel_id;
 
     double max_video_channel_users;
 
@@ -96,7 +96,7 @@ public:
 
     boolean premium_progress_bar_enabled;
 
-    any safety_alerts_channel_id;
+    std::any safety_alerts_channel_id;
 
     Guild(object opts);
 };

@@ -4,7 +4,7 @@
 #include "@elizaos/core.h"
 #include "./index.h"
 
-typedef any ClaudeContent;
+typedef std::any ClaudeContent;
 
 class ClaudeTool;
 class ClaudeMessage;
@@ -16,17 +16,17 @@ class ClaudeProxy;
 class ClaudeTool : public object, public std::enable_shared_from_this<ClaudeTool> {
 public:
     using std::enable_shared_from_this<ClaudeTool>::shared_from_this;
-    string name;
+    std::string name;
 
-    string description;
+    std::string description;
 
-    any input_schema;
+    std::any input_schema;
 };
 
 class ClaudeMessage : public object, public std::enable_shared_from_this<ClaudeMessage> {
 public:
     using std::enable_shared_from_this<ClaudeMessage>::shared_from_this;
-    any role;
+    std::any role;
 
     ClaudeContent content;
 };
@@ -34,11 +34,11 @@ public:
 class ClaudeMessagesRequest : public object, public std::enable_shared_from_this<ClaudeMessagesRequest> {
 public:
     using std::enable_shared_from_this<ClaudeMessagesRequest>::shared_from_this;
-    string model;
+    std::string model;
 
     array<std::shared_ptr<ClaudeMessage>> messages;
 
-    string system;
+    std::string system;
 
     double max_tokens;
 
@@ -60,17 +60,17 @@ public:
 class ClaudeResponse : public object, public std::enable_shared_from_this<ClaudeResponse> {
 public:
     using std::enable_shared_from_this<ClaudeResponse>::shared_from_this;
-    string id;
+    std::string id;
 
-    string type;
+    std::string type;
 
-    string role;
+    std::string role;
 
-    string model;
+    std::string model;
 
     array<object> content;
 
-    string stop_reason;
+    std::string stop_reason;
 
     object usage;
 };
@@ -78,13 +78,13 @@ public:
 class OpenAIMessage : public object, public std::enable_shared_from_this<OpenAIMessage> {
 public:
     using std::enable_shared_from_this<OpenAIMessage>::shared_from_this;
-    any role;
+    std::any role;
 
-    any content;
+    std::any content;
 
     array<object> tool_calls;
 
-    string tool_call_id;
+    std::string tool_call_id;
 };
 
 class ClaudeProxy : public object, public std::enable_shared_from_this<ClaudeProxy> {
@@ -101,11 +101,11 @@ public:
     virtual std::shared_ptr<Promise<std::shared_ptr<ClaudeResponse>>> handleGroqRequest(std::shared_ptr<ClaudeMessagesRequest> claudeRequest);
     virtual std::shared_ptr<Promise<std::shared_ptr<ClaudeResponse>>> handleOllamaRequest(std::shared_ptr<ClaudeMessagesRequest> claudeRequest);
     virtual array<std::shared_ptr<OpenAIMessage>> convertClaudeToOpenAI(std::shared_ptr<ClaudeMessagesRequest> claudeRequest);
-    virtual string convertClaudeToPrompt(std::shared_ptr<ClaudeMessagesRequest> claudeRequest);
-    virtual string formatOpenAIPrompt(array<std::shared_ptr<OpenAIMessage>> messages, string system = undefined);
-    virtual std::shared_ptr<ClaudeResponse> formatClaudeResponse(string text, string model);
+    virtual std::string convertClaudeToPrompt(std::shared_ptr<ClaudeMessagesRequest> claudeRequest);
+    virtual std::string formatOpenAIPrompt(array<std::shared_ptr<OpenAIMessage>> messages, std::string system = undefined);
+    virtual std::shared_ptr<ClaudeResponse> formatClaudeResponse(std::string text, std::string model);
 };
 
-any createClaudeHandler(std::shared_ptr<IAgentRuntime> runtime);
+std::any createClaudeHandler(std::shared_ptr<IAgentRuntime> runtime);
 
 #endif

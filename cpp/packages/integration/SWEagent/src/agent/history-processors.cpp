@@ -66,11 +66,11 @@ AbstractHistoryProcessor createHistoryProcessor(const std::any& config) {
             processor = new CacheControlHistoryProcessor({ cacheLastN: (config as { cacheLastN?: number }).cacheLastN });
             break;
             // case "remove_regex":
-            processor = new RemoveRegex({ patterns: (config as { patterns?: string[] }).patterns });
+            processor = new RemoveRegex({ patterns: (config as { patterns?: std::string[] }).patterns });
             break;
             // case "image_parsing":
             processor = new ImageParsingHistoryProcessor({
-                allowedMimeTypes: (config as { allowedMimeTypes?: string[] }).allowedMimeTypes,
+                allowedMimeTypes: (config as { allowedMimeTypes?: std::string[] }).allowedMimeTypes,
                 });
                 break;
                 // default:

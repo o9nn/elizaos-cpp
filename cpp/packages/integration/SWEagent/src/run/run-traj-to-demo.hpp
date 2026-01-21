@@ -33,7 +33,7 @@ void saveDemo(const std::any& data, const std::string& file, const std::string& 
 void convertTrajToActionDemo(const std::string& trajPath, const std::string& outputFile, bool includeUser = false);
 
 /**
- * Main function for traj-to-demo conversion
+ * Main std::function for traj-to-demo conversion
  */
 void trajToDemo(const std::string& trajPath, std::string outputDir = "./demos", std::string suffix = "", bool overwrite = false, bool includeUser = false);
 

@@ -28,7 +28,7 @@ void Main(void)
                 console->error(std::string("Verification failed: Manager authority did not update."));
             }
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             console->error(std::string("Error changing manager authority:"), error);
             if (is<anchor->AnchorError>(error)) {

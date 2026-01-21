@@ -333,7 +333,7 @@ void Main(void)
                 )->toThrow(std::string("Operations must be an array"));
             }
             );
-            it(std::string("should default dataType to string if not specified"), [=]() mutable
+            it(std::string("should default dataType to std::string if not specified"), [=]() mutable
             {
                 auto diff = object{
                     object::pair{std::string("operations"), array<object>{ object{

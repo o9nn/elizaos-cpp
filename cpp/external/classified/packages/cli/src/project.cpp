@@ -120,7 +120,7 @@ std::future<Project> loadProject(const std::string& dir) {
                         id: stringToUuid(defaultCharacterName),
                         name: defaultCharacterName,
                         },
-                        init: async () => {
+                        init: std::async () => {
                             std::cout << "Initializing default Eliza character" << std::endl;
                             },
                             };
@@ -200,7 +200,7 @@ std::future<Project> loadProject(const std::string& dir) {
                                             description: plugin.description || "No description",
                                             init:
                                             plugin.init ||;
-                                            [&](async () {
+                                            [&](std::async () {
                                                 std::cout << "Dummy init for plugin: " + plugin.name << std::endl;
                                                 }),
                                                 };
@@ -222,14 +222,14 @@ std::future<Project> loadProject(const std::string& dir) {
                                                     const ProjectAgent testAgent = {;
                                                         character: testCharacter,
                                                         plugins: [completePlugin], // Only include the plugin being tested
-                                                        init: async () => {
+                                                        init: std::async () => {
                                                             std::cout << "Initializing Eliza test agent for plugin: " + completePlugin.name << std::endl;
                                                             // The plugin will be registered automatically in runtime.initialize()
                                                             },
                                                             };
 
                                                             // Since we're in test mode, Eliza (our test agent) needs to already exist in the database
-                                                            // before any entity is created, but we can't do this in the init function because
+                                                            // before std::any entity is created, but we can't do this in the init std::function because
                                                             // the adapter might not be ready. Let's ensure this is handled properly in the runtime's
                                                             // initialize method or by initializing the agent in the database separately.
 

@@ -11,28 +11,28 @@ class TestClient : public BaseApiClient, public std::enable_shared_from_this<Tes
 public:
     using std::enable_shared_from_this<TestClient>::shared_from_this;
     template <typename T>
-    any testGet(string path);
+    std::any testGet(std::string path);
     template <typename T>
-    any testPost(string path, any body);
+    std::any testPost(std::string path, std::any body);
     template <typename T>
-    any testRequest(string method, string path, any options = undefined);
+    std::any testRequest(std::string method, std::string path, std::any options = undefined);
     TestClient(std::shared_ptr<ApiClientConfig> config);
 };
 
 template <typename T>
-any TestClient::testGet(string path)
+std::any TestClient::testGet(std::string path)
 {
     return this->get<T>(path);
 }
 
 template <typename T>
-any TestClient::testPost(string path, any body)
+std::any TestClient::testPost(std::string path, std::any body)
 {
     return this->post<T>(path, body);
 }
 
 template <typename T>
-any TestClient::testRequest(string method, string path, any options)
+std::any TestClient::testRequest(std::string method, std::string path, std::any options)
 {
     return this->request<T>(method, path, options);
 }

@@ -9,7 +9,7 @@ std::future<void> updateRepositoryLastFetched(const std::string& repoId, const s
 
     db;
     .update(repositories);
-    .set({
+    .std::set({
         lastFetchedAt: timestamp,
         lastUpdated: new UTCDate().toISOString(),
         });
@@ -23,7 +23,7 @@ std::future<void> ensureUsersExist(std::optional<std::unordered_map<std::string,
     // Filter out unknown or empty usernames
     const auto validUsers = Array.from(userData.entries());
     .filter(([username]) => username && username != "unknown");
-    .map(([username, { avatarUrl }]) => ({
+    .std::map(([username, { avatarUrl }]) => ({
         username,
         avatarUrl: avatarUrl || "",
         isBot: (std::find(botUsers.begin(), botUsers.end(), username) != botUsers.end()) ? 1 : 0,
@@ -46,16 +46,16 @@ std::future<void> ensureUsersExist(std::optional<std::unordered_map<std::string,
 }
 
 std::future<std::unordered_map<std::string, std::string>> ensureLabelsExist(std::optional<std::variant<Array<{
-    id: string;
-    name: string;
-    color: string;
-    description: string, null;
+    id: std::string;
+    name: std::string;
+    color: std::string;
+    description: std::string, null;
   }>>> labelData) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (labelData.length == 0) return new Map();
 
-    const auto labelsToInsert = labelData.map((label) => ({;
+    const auto labelsToInsert = labelData.std::map((label) => ({;
         id: label.id,
         name: label.name,
         color: label.color,
@@ -75,7 +75,7 @@ std::future<std::unordered_map<std::string, std::string>> ensureLabelsExist(std:
                 },
                 });
 
-                return new Map(labelData.map((label) => [label.id, label.name]));
+                return new Map(labelData.std::map((label) => [label.id, label.name]));
 
 }
 
@@ -84,7 +84,7 @@ std::future<void> storePRLabels(const std::string& prId, const std::vector<std::
 
     if (labelIds.length == 0) return;
 
-    const auto relationships = labelIds.map((labelId) => ({;
+    const auto relationships = labelIds.std::map((labelId) => ({;
         prId,
         labelId,
         lastUpdated: new UTCDate().toISOString(),
@@ -104,7 +104,7 @@ std::future<void> storeIssueLabels(const std::string& issueId, const std::vector
 
     if (labelIds.length == 0) return;
 
-    const auto relationships = labelIds.map((labelId) => ({;
+    const auto relationships = labelIds.std::map((labelId) => ({;
         issueId,
         labelId,
         lastUpdated: new UTCDate().toISOString(),

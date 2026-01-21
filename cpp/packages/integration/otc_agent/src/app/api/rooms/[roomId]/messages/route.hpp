@@ -17,7 +17,7 @@ namespace elizaos {
 
 
 
-// Extended Memory type with optional createdAt
+// Extended Memory type with std::optional createdAt
 
 // Next.js route context type
 struct RouteContext {

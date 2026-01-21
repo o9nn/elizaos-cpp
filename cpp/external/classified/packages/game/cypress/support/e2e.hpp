@@ -45,7 +45,7 @@ namespace elizaos {
 // Global before hook
   // Set up consistent test environment
 
-  // Clear any previous state
+  // Clear std::any previous state
 
   // Set up test environment
 
@@ -57,7 +57,7 @@ namespace elizaos {
 
   // Take final screenshot
 
-  // Clean up any remaining test data
+  // Clean up std::any remaining test data
   // cy.cleanupTestData(); // Disabled for now - UI elements not present
 
 // Add custom assertion

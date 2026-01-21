@@ -42,7 +42,7 @@ void Main(void)
                 expect(command->get_invokeFormat())->toBe(std::string("goto {line_number}"));
             }
             );
-            it(std::string("should handle optional brackets"), [=]() mutable
+            it(std::string("should handle std::optional brackets"), [=]() mutable
             {
                 auto command = std::make_shared<Command>(object{
                     object::pair{std::string("name"), std::string("open")}, 
@@ -99,7 +99,7 @@ void Main(void)
         );
         describe(std::string("Argument validation"), [=]() mutable
         {
-            it(std::string("should require required arguments before optional ones"), [=]() mutable
+            it(std::string("should require required arguments before std::optional ones"), [=]() mutable
             {
                 expect([=]() mutable
                 {
@@ -119,7 +119,7 @@ void Main(void)
                         }) }}
                     });
                 }
-                )->toThrow((new RegExp(std::string("Required argument.*cannot come after optional argument"))));
+                )->toThrow((new RegExp(std::string("Required argument.*cannot come after std::optional argument"))));
             }
             );
             it(std::string("should not allow duplicate argument names"), [=]() mutable
@@ -243,15 +243,15 @@ void Main(void)
         );
         describe(std::string("Function calling tool generation"), [=]() mutable
         {
-            it(std::string("should generate OpenAI function calling tool"), [=]() mutable
+            it(std::string("should generate OpenAI std::function calling tool"), [=]() mutable
             {
                 auto command = std::make_shared<Command>(object{
                     object::pair{std::string("name"), std::string("test_function")}, 
-                    object::pair{std::string("docstring"), std::string("A test function for OpenAI")}, 
+                    object::pair{std::string("docstring"), std::string("A test std::function for OpenAI")}, 
                     object::pair{std::string("arguments"), array<std::shared_ptr<ArgumentImpl>>{ std::make_shared<Argument>(object{
                         object::pair{std::string("name"), std::string("required_arg")}, 
                         object::pair{std::string("type"), std::string("string")}, 
-                        object::pair{std::string("description"), std::string("Required string argument")}, 
+                        object::pair{std::string("description"), std::string("Required std::string argument")}, 
                         object::pair{std::string("required"), true}
                     }), std::make_shared<Argument>(object{
                         object::pair{std::string("name"), std::string("enum_arg")}, 
@@ -268,13 +268,13 @@ void Main(void)
                 });
                 auto tool = command->getFunctionCallingTool();
                 expect(tool->type)->toBe(std::string("function"));
-                expect(tool->function["name"])->toBe(std::string("test_function"));
-                expect(tool->function["description"])->toBe(std::string("A test function for OpenAI"));
-                auto properties = tool->function["parameters"]["properties"];
+                expect(tool->std::function["name"])->toBe(std::string("test_function"));
+                expect(tool->std::function["description"])->toBe(std::string("A test std::function for OpenAI"));
+                auto properties = tool->std::function["parameters"]["properties"];
                 expect(properties["required_arg"]["type"])->toBe(std::string("string"));
                 expect(properties["optional_arg"]["type"])->toBe(std::string("integer"));
                 expect(properties["enum_arg"]["enum"])->toEqual(array<string>{ std::string("option1"), std::string("option2") });
-                auto required = tool->function["parameters"]["required"];
+                auto required = tool->std::function["parameters"]["required"];
                 expect(required)->toContain(std::string("required_arg"));
                 expect(required)->toContain(std::string("enum_arg"));
                 expect(required)->not->toContain(std::string("optional_arg"));

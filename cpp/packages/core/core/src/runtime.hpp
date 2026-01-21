@@ -17,17 +17,17 @@ class AbstractRuntime;
 class BashAction : public object, public std::enable_shared_from_this<BashAction> {
 public:
     using std::enable_shared_from_this<BashAction>::shared_from_this;
-    string command;
+    std::string command;
 
     double timeout;
 
-    any check;
+    std::any check;
 };
 
 class BashActionResult : public object, public std::enable_shared_from_this<BashActionResult> {
 public:
     using std::enable_shared_from_this<BashActionResult>::shared_from_this;
-    string output;
+    std::string output;
 
     double exitCode;
 };
@@ -35,7 +35,7 @@ public:
 class BashInterruptAction : public object, public std::enable_shared_from_this<BashInterruptAction> {
 public:
     using std::enable_shared_from_this<BashInterruptAction>::shared_from_this;
-    string type;
+    std::string type;
 };
 
 class CreateBashSessionRequest : public object, public std::enable_shared_from_this<CreateBashSessionRequest> {
@@ -49,15 +49,15 @@ public:
 class Command : public object, public std::enable_shared_from_this<Command> {
 public:
     using std::enable_shared_from_this<Command>::shared_from_this;
-    string command;
+    std::string command;
 
     boolean shell;
 
     boolean check;
 
-    Record<string, string> env;
+    Record<std::string, string> env;
 
-    string cwd;
+    std::string cwd;
 
     double timeout;
 };
@@ -67,41 +67,41 @@ public:
     using std::enable_shared_from_this<CommandResult>::shared_from_this;
     double exitCode;
 
-    string stdout;
+    std::string stdout;
 
-    string stderr;
+    std::string stderr;
 };
 
 class ReadFileRequest : public object, public std::enable_shared_from_this<ReadFileRequest> {
 public:
     using std::enable_shared_from_this<ReadFileRequest>::shared_from_this;
-    string path;
+    std::string path;
 
-    string encoding;
+    std::string encoding;
 
-    string errors;
+    std::string errors;
 };
 
 class ReadFileResponse : public object, public std::enable_shared_from_this<ReadFileResponse> {
 public:
     using std::enable_shared_from_this<ReadFileResponse>::shared_from_this;
-    string content;
+    std::string content;
 };
 
 class WriteFileRequest : public object, public std::enable_shared_from_this<WriteFileRequest> {
 public:
     using std::enable_shared_from_this<WriteFileRequest>::shared_from_this;
-    string path;
+    std::string path;
 
-    string content;
+    std::string content;
 };
 
 class UploadRequest : public object, public std::enable_shared_from_this<UploadRequest> {
 public:
     using std::enable_shared_from_this<UploadRequest>::shared_from_this;
-    string sourcePath;
+    std::string sourcePath;
 
-    string targetPath;
+    std::string targetPath;
 };
 
 class AbstractRuntime : public object, public std::enable_shared_from_this<AbstractRuntime> {

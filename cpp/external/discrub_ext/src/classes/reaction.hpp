@@ -21,7 +21,7 @@ class Reaction {
   me: boolean;
   me_burst: boolean;
   emoji: Emoji;
-  burst_colors: string[];
+  burst_colors: std::string[];
 
   constructor(opts: {
     count: number;
@@ -29,7 +29,7 @@ class Reaction {
     me: boolean;
     me_burst: boolean;
     emoji: Emoji;
-    burst_colors: string[];
+    burst_colors: std::string[];
   }) {
     this.count = opts.count;
     this.count_details = opts.count_details;

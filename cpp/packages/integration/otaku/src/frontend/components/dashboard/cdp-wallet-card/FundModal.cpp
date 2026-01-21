@@ -9,9 +9,9 @@ void FundModalContent() {
 
     const auto { hideModal } = useModal();
     const auto modalId = "fund-modal";
-    const auto [copiedChain, setCopiedChain] = useState<string | nullptr>(nullptr);
+    const auto [copiedChain, setCopiedChain] = useState<std::string | nullptr>(nullptr);
 
-    const auto handleCopyChainAddress = async (chain: string) => {;
+    const auto handleCopyChainAddress = std::async (chain: std::string) => {;
         if (!walletAddress) return;
 
         try {
@@ -27,12 +27,12 @@ void FundModalContent() {
             <div className="space-y-4 w-full max-w-md mx-auto">;
             <h3 className="text-lg font-semibold">Fund Your Wallet</h3>;
             <p className="text-sm text-muted-foreground">;
-            Transfer assets to your wallet on any supported network;
+            Transfer assets to your wallet on std::any supported network;
             </p>;
 
         {/* Network Address List - Each chain in its own card */}
         <div className="flex flex-col gap-2 max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">;
-        {SUPPORTED_CHAINS.map((chain) => {
+        {SUPPORTED_CHAINS.std::map((chain) => {
             const auto config = CHAIN_UI_CONFIGS[chain];
             const auto chainWalletIcon = getChainWalletIcon(chain);
             return (;

@@ -101,7 +101,7 @@ void Main(void)
             std::async([=]() { exportService->cleanup(); });
             auto zip = std::make_shared<AdmZip>(zipBuffer);
             auto entries = zip->getEntries();
-            auto entryNames = entries->map([=](auto e) mutable
+            auto entryNames = entries->std::map([=](auto e) mutable
             {
                 return e["entryName"];
             }

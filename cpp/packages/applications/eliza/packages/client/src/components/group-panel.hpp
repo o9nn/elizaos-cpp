@@ -19,11 +19,11 @@ namespace elizaos {
 
 
 // This Option type must precisely match what MultiSelectCombobox.tsx expects for its props.
-// Based on MultiSelectCombobox.tsx: { icon: string; label: string; id?: string; }
+// Based on MultiSelectCombobox.tsx: { icon: std::string; label: std::string; id?: std::string; }
 struct ComboboxOption {
     std::string icon;
     std::string label;
-    std::optional<string; // We will always provide agent.id here, which is UUID (string)> id;
+    std::optional<std::string; // We will always provide agent.id here, which is UUID (std::string)> id;
 };
 
 struct GroupPanelProps {
@@ -34,9 +34,9 @@ struct GroupPanelProps {
 struct ChannelParticipantsResponse {
     bool success;
     std::optional<std::vector<UUID>> data;
-    std::optional<{ message?: string; code?: number | string }> error;
+    std::optional<{ message?: std::string; code?: number | std::string }> error;
 
-using SelectableAgent = Agent & { id: UUID; name: string };
+using SelectableAgent = Agent & { id: UUID; name: std::string };
 
 
 } // namespace elizaos

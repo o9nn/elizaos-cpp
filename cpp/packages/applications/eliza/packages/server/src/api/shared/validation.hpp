@@ -18,7 +18,7 @@ namespace elizaos {
 
 
 /**
- * Validates and retrieves an agent runtime from the agents map
+ * Validates and retrieves an agent runtime from the agents std::map
  */
 
 /**

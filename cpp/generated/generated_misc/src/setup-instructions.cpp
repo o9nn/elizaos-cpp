@@ -18,13 +18,13 @@ std::shared_ptr<PlatformInstructions> getBunInstallInstructions()
         return object{
             object::pair{std::string("platform"), (platform == std::string("darwin")) ? std::string("macOS") : std::string("Linux")}, 
             object::pair{std::string("commands"), std::string("commands")}, 
-            object::pair{std::string("alternatives"), (alternatives->get_length() > 0) ? any(alternatives) : any(undefined)}
+            object::pair{std::string("alternatives"), (alternatives->get_length() > 0) ? std::any(alternatives) : std::any(undefined)}
         };
     }
 };
 
 
-void displayBasicSteps(string cdPath)
+void displayBasicSteps(std::string cdPath)
 {
     console->log(std::string("\
 To complete the ElizaOS setup, follow these steps:\
@@ -74,7 +74,7 @@ void displayBunInstructions()
 };
 
 
-void displayNextSteps(string targetDir)
+void displayNextSteps(std::string targetDir)
 {
     auto cdPath = path->relative(process->cwd(), targetDir);
     displayBasicSteps(cdPath);

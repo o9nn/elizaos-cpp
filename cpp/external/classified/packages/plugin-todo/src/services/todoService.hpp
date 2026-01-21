@@ -25,7 +25,7 @@ struct TodoData {
     UUID roomId;
     UUID entityId;
     std::string name;
-    std::optional<string | null> description;
+    std::optional<std::string | null> description;
     'daily' | 'one-off' | 'aspirational' type;
     std::optional<number | null> priority;
     bool isUrgent;
@@ -63,7 +63,7 @@ class TodoDataManager {
     // Fetch tags
 
   /**
-   * Get todos with optional filters
+   * Get todos with std::optional filters
    */
 
     // Apply filters
@@ -126,7 +126,7 @@ class TodoService extends Service {
 
   capabilityDescription = 'Manages todo data storage and retrieval';
 
-  async stop(): Promise<void> {
+  std::async stop(): Promise<void> {
     this.dataManager = null;
   }
 
@@ -139,7 +139,7 @@ class TodoService extends Service {
    */
 
   /**
-   * Get todos with optional filters (delegated to service)
+   * Get todos with std::optional filters (delegated to service)
    */
 
   /**

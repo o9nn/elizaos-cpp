@@ -16,7 +16,7 @@ std::shared_ptr<Promise<void>> Florence2Model::initialize()
         this->initialized = true;
         logger->info(std::string("[Florence2] Local model initialized successfully"));
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("[Florence2] Failed to initialize local model:"), error);
         this->initialized = true;
@@ -30,7 +30,7 @@ std::shared_ptr<Promise<std::shared_ptr<Florence2Result>>> Florence2Model::analy
         std::async([=]() { this->initialize(); });
     }
     if (!tile->data) {
-        throw any(std::make_shared<Error>(std::string("Tile has no image data")));
+        throw std::any(std::make_shared<Error>(std::string("Tile has no image data")));
     }
     try
     {
@@ -40,7 +40,7 @@ std::shared_ptr<Promise<std::shared_ptr<Florence2Result>>> Florence2Model::analy
             logger->debug(std::string("[Florence2] Analyzed tile ") + tile->id + std::string(": ") + result->caption + string_empty);
             return result;
         }
-        catch (const any& _modelError)
+        catch (const std::any& _modelError)
         {
             logger->warn(std::string("[Florence2] Local model analysis failed, falling back:"), _modelError);
         }
@@ -48,10 +48,10 @@ std::shared_ptr<Promise<std::shared_ptr<Florence2Result>>> Florence2Model::analy
         logger->debug(std::string("[Florence2] Mock analyzed tile ") + tile->id + std::string(": ") + result->caption + string_empty);
         return result;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("[Florence2] Analysis failed:"), error);
-        throw any(error);
+        throw std::any(error);
     }
 }
 
@@ -68,7 +68,7 @@ std::shared_ptr<Promise<std::shared_ptr<Florence2Result>>> Florence2Model::analy
             logger->debug(std::string("[Florence2] Analyzed image: ") + result->caption + string_empty);
             return result;
         }
-        catch (const any& _modelError)
+        catch (const std::any& _modelError)
         {
             logger->warn(std::string("[Florence2] Local model analysis failed, falling back:"), _modelError);
         }
@@ -76,10 +76,10 @@ std::shared_ptr<Promise<std::shared_ptr<Florence2Result>>> Florence2Model::analy
         logger->debug(std::string("[Florence2] Mock analyzed image: ") + result->caption + string_empty);
         return result;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("[Florence2] Image analysis failed:"), error);
-        throw any(error);
+        throw std::any(error);
     }
 }
 
@@ -177,12 +177,12 @@ std::shared_ptr<Promise<array<object>>> Florence2Model::detectUIElements(std::sh
         {
             result = std::async([=]() { this->localModel->analyzeImage(imageBuffer); });
         }
-        catch (const any& _modelError)
+        catch (const std::any& _modelError)
         {
             logger->warn(std::string("[Florence2] Local model failed for UI detection, using fallback"));
             result = std::async([=]() { this->mockAnalyzeBuffer(imageBuffer); });
         }
-        return (OR((result->objects), (array<any>())))->map([=](auto obj) mutable
+        return (OR((result->objects), (array<any>())))->std::map([=](auto obj) mutable
         {
             return (object{
                 object::pair{std::string("type"), this->mapToUIElementType(obj["label"])}, 
@@ -192,7 +192,7 @@ std::shared_ptr<Promise<array<object>>> Florence2Model::detectUIElements(std::sh
         }
         );
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("[Florence2] UI element detection failed:"), error);
         return array<any>();
@@ -304,7 +304,7 @@ std::shared_ptr<Promise<std::shared_ptr<Florence2Result>>> Florence2Model::mockA
     };
 }
 
-string Florence2Model::mapToUIElementType(string label)
+std::string Florence2Model::mapToUIElementType(std::string label)
 {
     auto mapping = object{
         object::pair{std::string("button"), std::string("button")}, 
@@ -389,7 +389,7 @@ std::shared_ptr<Promise<object>> Florence2Model::generateSceneGraph(array<std::s
     };
 }
 
-any Florence2Model::inferSpatialRelation(std::shared_ptr<BoundingBox> box1, std::shared_ptr<BoundingBox> box2)
+std::any Florence2Model::inferSpatialRelation(std::shared_ptr<BoundingBox> box1, std::shared_ptr<BoundingBox> box2)
 {
     auto center1 = object{
         object::pair{std::string("x"), box1->x + box1->width / 2}, 

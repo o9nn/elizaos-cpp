@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/plugin-specification/core-plugin-v1/src/__tests__/knowledge.test.h"
 
-std::function<any(double)> createTestUUID = [=](auto num) mutable
+std::function<std::any(double)> createTestUUID = [=](auto num) mutable
 {
     return std::string("00000000-0000-0000-0000-") + num->toString()->padStart(12, std::string("0")) + string_empty;
 };

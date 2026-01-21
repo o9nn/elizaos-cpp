@@ -20,7 +20,7 @@ std::future<bool> editEnvVars(EditEnvOptions options, auto fromMainMenu) {
             std::cout << "  cp .env.example .env" << std::endl;
             } else {
                 std::cout << "No local .env file found in the current directory." << std::endl;
-                std::cout << "Create a .env file to set local environment variables." << std::endl;
+                std::cout << "Create a .env file to std::set local environment variables." << std::endl;
             }
             return fromMainMenu;
         }
@@ -66,7 +66,7 @@ std::future<bool> editEnvVars(EditEnvOptions options, auto fromMainMenu) {
                 // Create menu choices from the environment variables
                 const auto entries = Object.entries(envVars);
                 const auto choices = [;
-                ...entries.map(([key, value]) => ({
+                ...entries.std::map(([key, value]) => ({
                     "title: " + key + ": " + std::to_string(maskedValue(value))
                     value: key,
                     })),
@@ -79,7 +79,7 @@ std::future<bool> editEnvVars(EditEnvOptions options, auto fromMainMenu) {
                 // Prompt user to select a variable or action
                 const auto selection = clack.select({;
                     message: "Select a variable to edit or an action:",
-                    options: choices.map((choice) => ({
+                    options: choices.std::map((choice) => ({
                         value: choice.value,
                         label: choice.title,
                         })),

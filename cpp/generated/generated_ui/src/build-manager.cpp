@@ -4,7 +4,7 @@ BuildManager::BuildManager(std::shared_ptr<IAgentRuntime> runtime) {
     this->runtime = runtime;
 }
 
-void BuildManager::translate(any entityId, std::tuple<double, double, double> position)
+void BuildManager::translate(std::any entityId, std::tuple<double, double, double> position)
 {
     auto service = this->getService();
     auto world = service->getWorld();
@@ -19,7 +19,7 @@ void BuildManager::translate(any entityId, std::tuple<double, double, double> po
     }
 }
 
-void BuildManager::rotate(any entityId, std::tuple<double, double, double, double> quaternion)
+void BuildManager::rotate(std::any entityId, std::tuple<double, double, double, double> quaternion)
 {
     auto service = this->getService();
     auto world = service->getWorld();
@@ -34,7 +34,7 @@ void BuildManager::rotate(any entityId, std::tuple<double, double, double, doubl
     }
 }
 
-void BuildManager::scale(any entityId, std::tuple<double, double, double> scale)
+void BuildManager::scale(std::any entityId, std::tuple<double, double, double> scale)
 {
     auto service = this->getService();
     auto world = service->getWorld();
@@ -49,7 +49,7 @@ void BuildManager::scale(any entityId, std::tuple<double, double, double> scale)
     }
 }
 
-void BuildManager::duplicate(any entityId)
+void BuildManager::duplicate(std::any entityId)
 {
     auto service = this->getService();
     auto world = service->getWorld();
@@ -98,7 +98,7 @@ void BuildManager::duplicate(any entityId)
     }
 }
 
-void BuildManager::delete(any entityId)
+void BuildManager::delete(std::any entityId)
 {
     auto service = this->getService();
     auto world = service->getWorld();
@@ -113,12 +113,12 @@ void BuildManager::delete(any entityId)
     }
 }
 
-void BuildManager::importEntity(string url, any position, any quaternion)
+void BuildManager::importEntity(std::string url, std::any position, std::any quaternion)
 {
     auto service = this->getService();
     auto world = service->getWorld();
     auto resolvedUrlurl = std::async([=]() { resolveUrl(url, world); });
-    any file;
+    std::any file;
     auto resp = std::async([=]() { fetch(resolvedUrlurl); });
     auto blob = std::async([=]() { resp->blob(); });
     file = std::make_shared<File>(array<std::shared_ptr<Blob>>{ blob }, url->split(std::string("/"))->pop(), object{
@@ -151,8 +151,8 @@ void BuildManager::importEntity(string url, any position, any quaternion)
         }
         )));
     };
-    position = (validVec3(position)) ? any(position) : any(array<double>{ 0, 0, 0 });
-    quaternion = (validQuat(quaternion)) ? any(quaternion) : any(array<double>{ 0, 0, 0, 1 });
+    position = (validVec3(position)) ? std::any(position) : std::any(array<double>{ 0, 0, 0 });
+    quaternion = (validQuat(quaternion)) ? std::any(quaternion) : std::any(array<double>{ 0, 0, 0, 1 });
     auto controls = world->controls;
     if (controls) {
         std::async([=]() { controls->goto(const_(position)[0], const_(position)[2]); });
@@ -170,7 +170,7 @@ void BuildManager::importEntity(string url, any position, any quaternion)
     }
 }
 
-void BuildManager::addApp(any file, any transform)
+void BuildManager::addApp(std::any file, std::any transform)
 {
     auto service = this->getService();
     shared world = service->getWorld();
@@ -207,7 +207,7 @@ void BuildManager::addApp(any file, any transform)
         object::pair{std::string("state"), object{}}
     };
     auto app = world->entities->add(data, true);
-    auto promises = info->assets->map([=](auto asset) mutable
+    auto promises = info->assets->std::map([=](auto asset) mutable
     {
         return world->network->upload(asset["file"]);
     }
@@ -217,7 +217,7 @@ void BuildManager::addApp(any file, any transform)
         std::async([=]() { Promise->all(promises); });
         app->onUploaded();
     }
-    catch (const any& err)
+    catch (const std::any& err)
     {
         console->error(std::string("failed to upload .hyp assets"));
         console->error(err);
@@ -225,7 +225,7 @@ void BuildManager::addApp(any file, any transform)
     }
 }
 
-void BuildManager::addModel(any file, any transform)
+void BuildManager::addModel(std::any file, std::any transform)
 {
     auto service = this->getService();
     auto world = service->getWorld();
@@ -279,7 +279,7 @@ void BuildManager::addModel(any file, any transform)
     app->onUploaded();
 }
 
-void BuildManager::entityUpdate(any entity)
+void BuildManager::entityUpdate(std::any entity)
 {
     auto service = this->getService();
     auto world = service->getWorld();
@@ -291,7 +291,7 @@ void BuildManager::entityUpdate(any entity)
     });
 }
 
-any BuildManager::getService()
+std::any BuildManager::getService()
 {
     return this->runtime->getService<std::shared_ptr<HyperfyService>>(HyperfyService::serviceType);
 }

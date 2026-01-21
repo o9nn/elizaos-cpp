@@ -53,16 +53,16 @@ class VisionWorkerManager {
   private readonly DATA_OFFSET = 24;
 
   // Worker stats
-  private workerStats = new Map<string, WorkerStats>();
+  private workerStats = new Map<std::string, WorkerStats>();
 
   // Latest processed data cache
   private latestScreenCapture: ScreenCapture | null = null;
-  private latestFlorence2Results = new Map<string, Florence2Result>();
+  private latestFlorence2Results = new Map<std::string, Florence2Result>();
   private latestOCRResult: OCRResult | null = null;
   private lastProcessedFrameId = -1;
 
   // Worker restart tracking
-  private restartAttempts = new Map<string, number>();
+  private restartAttempts = new Map<std::string, number>();
   private readonly MAX_RESTART_ATTEMPTS = 3;
 
   constructor(config: VisionConfig) {

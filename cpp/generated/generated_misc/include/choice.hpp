@@ -3,6 +3,6 @@
 #include "core.h"
 #include "@elizaos/core.h"
 
-extern string optionExtractionTemplate;
+extern std::string optionExtractionTemplate;
 extern std::shared_ptr<Action> choiceAction;
 #endif

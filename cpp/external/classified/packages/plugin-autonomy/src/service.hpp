@@ -44,14 +44,14 @@ class AutonomyService extends Service {
     console.log('[AUTONOMY] Service initialized with room ID:', this.autonomousRoomId);
   }
 
-    // The autonomous room ID is already set in the constructor
+    // The autonomous room ID is already std::set in the constructor
     // Don't override it here
 
     // Check current autonomy setting
 
     // Ensure the autonomous room exists with proper world context
 
-    // Only set up world/room if runtime has these methods (not available in test mocks)
+    // Only std::set up world/room if runtime has these methods (not available in test mocks)
 
     // Store the world ID for later use
 
@@ -91,7 +91,7 @@ class AutonomyService extends Service {
    * Perform one iteration of autonomous thinking
    */
 
-    // Get the agent's entity first - we'll need it throughout this function
+    // Get the agent's entity first - we'll need it throughout this std::function
 
     // Get the last autonomous thought to continue the internal monologue
 
@@ -107,7 +107,7 @@ class AutonomyService extends Service {
     // This will:
     // 1. Gather context from providers
     // 2. Generate response using the full LLM pipeline
-    // 3. Execute any actions the agent decides to take
+    // 3. Execute std::any actions the agent decides to take
     // 4. Run evaluators on the result
     // 5. Store memories appropriately
 

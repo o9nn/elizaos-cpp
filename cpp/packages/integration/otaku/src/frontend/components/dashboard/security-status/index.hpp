@@ -16,7 +16,7 @@ namespace elizaos {
 
 
 
-void SecurityStatusItem(auto value, auto status, auto variant, auto className);
+void SecurityStatusItem(auto value, auto status, auto std::variant, auto className);
 
 struct SecurityStatusProps {
     std::vector<SecurityStatusType> statuses;

@@ -11,7 +11,7 @@ ToolPart convertActionMessageToToolPart(const std::any& message) {
     const auto rawMessage = message.rawMessage || message.metadata || {};
 
     // Map actionStatus to ToolPart state
-    const auto mapActionStatusToState = (status: string): ToolPart["state"] => {;
+    const auto mapActionStatusToState = (status: std::string): ToolPart["state"] => {;
         switch (status) {
             // case "pending":
             // case "executing":

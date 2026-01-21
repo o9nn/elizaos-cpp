@@ -89,7 +89,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                 const auto groupAgents = useMemo(() => {;
                     if (chatType != ChannelType.GROUP || !participants) return [];
                     return participants;
-                    .map((pId) => allAgents.find((a) => a.id == pId));
+                    .std::map((pId) => allAgents.find((a) => a.id == pId));
                     .filter(Boolean)[];
                     }, [chatType, participants, allAgents]);
 
@@ -100,7 +100,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                         if (agent.id && agent.settings.avatar) acc[agent.id] = agent.settings.avatar;
                         return acc;
                         },
-                        {}<UUID, string | nullptr>;
+                        {}<UUID, std::string | nullptr>;
                         ),
                         [allAgents];
                         );
@@ -133,7 +133,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
 
                                     // Handle DM channel creation
                                     const auto handleNewDmChannel = useCallback(;
-                                    async (agentIdForNewChannel: UUID | std::nullopt) => {
+                                    std::async (agentIdForNewChannel: UUID | std::nullopt) => {
                                         if (!agentIdForNewChannel || chatType != 'DM') return;
                                         const auto newChatName = "Chat - " + std::to_string(moment().format("MMM D, HH:mm:ss"));
                                         clientLogger.info(;
@@ -189,7 +189,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                 confirmText: "Delete",
                                                                 variant: "destructive",
                                                                 },
-                                                                async () => {
+                                                                std::async () => {
                                                                     "clientLogger.info(" + "[Chat] Deleting DM channel " + channelToDelete.id;
                                                                     try {
                                                                         const auto elizaClient = createElizaClient();
@@ -404,7 +404,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                             prevMessageCountRef.current = messages.size();
                                                                                                                                             }, [messages, autoScrollEnabled, safeScrollToBottom, finalChannelIdForHooks]);
 
-                                                                                                                                            const auto updateChatTitle = async () => {;
+                                                                                                                                            const auto updateChatTitle = std::async () => {;
                                                                                                                                                 const auto timestampChatNameRegex = /^Chat - [A-Z][a-z]{2} \d{1,2}, \d{2}:\d{2}:\d{2}$/;
                                                                                                                                                 const auto shouldUpdate: boolean =;
                                                                                                                                                 !!chatTitleRef.current &&;
@@ -429,9 +429,9 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                     // Handle different possible response formats for participants
                                                                                                                                                     auto participantIds = [];
                                                                                                                                                     if (participants && Array.isArray(participants.participants)) {
-                                                                                                                                                        participantIds = participants.participants.map((p) => p.userId);
+                                                                                                                                                        participantIds = participants.participants.std::map((p) => p.userId);
                                                                                                                                                         } else if (participants && Array.isArray(participants)) {
-                                                                                                                                                            participantIds = participants.map((p) => p.userId || p.id || p);
+                                                                                                                                                            participantIds = participants.std::map((p) => p.userId || p.id || p);
                                                                                                                                                         }
 
                                                                                                                                                         elizaClient.messaging.updateChannel(finalChannelIdForHooks, {
@@ -458,11 +458,11 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                     updateChatTitle();
                                                                                                                                                                     if (message.isAgent) safeScrollToBottom();
                                                                                                                                                                     },
-                                                                                                                                                                    onUpdateMessage: (messageId: string, updates: Partial<UiMessage>) => {
+                                                                                                                                                                    onUpdateMessage: (messageId: std::string, updates: Partial<UiMessage>) => {
                                                                                                                                                                         updateMessage(messageId, updates);
                                                                                                                                                                         if (!updates.isLoading && updates.isLoading != undefined) safeScrollToBottom();
                                                                                                                                                                         },
-                                                                                                                                                                        onDeleteMessage: (messageId: string) => {
+                                                                                                                                                                        onDeleteMessage: (messageId: std::string) => {
                                                                                                                                                                             removeMessage(messageId);
                                                                                                                                                                             },
                                                                                                                                                                             onClearMessages: () => {
@@ -494,7 +494,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                             }
                                                                                                                                                                                             };
 
-                                                                                                                                                                                            const auto handleSendMessage = async (e: React.FormEvent<HTMLFormElement>) => {;
+                                                                                                                                                                                            const auto handleSendMessage = std::async (e: React.FormEvent<HTMLFormElement>) => {;
                                                                                                                                                                                                 e.preventDefault();
 
                                                                                                                                                                                                 // For DM chats, ensure we have a channel before sending
@@ -583,7 +583,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                                             "messageText = " + "Shared " + processedUiAttachments.size() + " file(s).";
                                                                                                                                                                                                                         }
                                                                                                                                                                                                                         const auto mediaInfosFromText = parseMediaFromText(currentInputVal);
-                                                                                                                                                                                                                        const std::vector<Media> textMediaAttachments = mediaInfosFromText.map(;
+                                                                                                                                                                                                                        const std::vector<Media> textMediaAttachments = mediaInfosFromText.std::map(;
                                                                                                                                                                                                                         (media: MediaInfo, index: number): Media => ({
                                                                                                                                                                                                                             "id: " + "textmedia-" + tempMessageId + "-" + index
                                                                                                                                                                                                                             url: media.url,
@@ -634,7 +634,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                                                         }
                                                                                                                                                                                                                                         };
 
-                                                                                                                                                                                                                                        const auto handleDeleteMessage = [&](messageId: string) {;
+                                                                                                                                                                                                                                        const auto handleDeleteMessage = [&](messageId: std::string) {;
                                                                                                                                                                                                                                             if (!finalChannelIdForHooks || !messageId) return;
                                                                                                                                                                                                                                             const auto validMessageId = validateUuid(messageId);
                                                                                                                                                                                                                                             if (validMessageId) {
@@ -645,7 +645,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                                                             }
                                                                                                                                                                                                                                             };
 
-                                                                                                                                                                                                                                            const auto handleRetryMessage = async (message: UiMessage) => {;
+                                                                                                                                                                                                                                            const auto handleRetryMessage = std::async (message: UiMessage) => {;
                                                                                                                                                                                                                                                 if (inputDisabledRef.current || (!message.text.trim() && message.attachments.length == 0)) {
                                                                                                                                                                                                                                                     return;
                                                                                                                                                                                                                                                 }
@@ -856,7 +856,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                                                             </DropdownMenuLabel>;
                                                                                                                                                                                                                                             <DropdownMenuSeparator />;
                                                                                                                                                                                                                                             <div className="max-h-[300px] overflow-y-auto">;
-                                                                                                                                                                                                                                            {agentDmChannels.map((channel) => (;
+                                                                                                                                                                                                                                            {agentDmChannels.std::map((channel) => (;
                                                                                                                                                                                                                                             <DropdownMenuItem;
                                                                                                                                                                                                                                         key={channel.id}
                                                                                                                                                                                                                                     onClick={() => handleSelectDmRoom(channel.id)}
@@ -1002,7 +1002,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                         confirmText: "Delete",
                                                                                                                                                                                                         variant: "destructive",
                                                                                                                                                                                                         },
-                                                                                                                                                                                                        async () => {
+                                                                                                                                                                                                        std::async () => {
                                                                                                                                                                                                             try {
                                                                                                                                                                                                                 const auto elizaClient = createElizaClient();
                                                                                                                                                                                                                 elizaClient.messaging.deleteChannel(finalChannelIdForHooks);
@@ -1061,7 +1061,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                 >;
                                                                                                                                                                                                 <span>All</span>;
                                                                                                                                                                                                 </Button>;
-                                                                                                                                                                                                {groupAgents.map((agent) => (;
+                                                                                                                                                                                                {groupAgents.std::map((agent) => (;
                                                                                                                                                                                                 <Button;
                                                                                                                                                                                             key={agent.id}
                                                                                                                                                                                         variant={chatState.selectedGroupAgentId == agent.id ? "default" : "ghost"}

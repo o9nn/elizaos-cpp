@@ -76,7 +76,7 @@ std::future<std::vector<CodexTokenEvent>> fetchCodexTokenEvents(const std::strin
                         cursor = newCursor;
                         } catch (error) {
                             std::cerr << "Error fetching data from Codex API:" << error << std::endl;
-                            // Return partial results if we have any, otherwise rethrow
+                            // Return partial results if we have std::any, otherwise rethrow
                             if (allItems.length > 0) {
                                 return allItems;
                             }
@@ -262,7 +262,7 @@ std::future<std::vector<CandleData>> fetchCodexBarsChunk(const std::string& apiU
                     //   return [];
                     // }
 
-                    if (!(response as any).getBars) {
+                    if (!(response as std::any).getBars) {
                         std::cerr << "Invalid response from Codex API:" << response << std::endl;
 
                         return [];

@@ -71,10 +71,10 @@ void useOTC() {
         withdrawConsignment: (consignmentId: bigint) => Promise<unknown>;
         createConsignmentOnChain: (
         params: ConsignmentParams,
-        onTxSubmitted?: (txHash: string) => void,
+        onTxSubmitted?: (txHash: std::string) => void,
         ) => Promise<ConsignmentCreationResult>;
         approveToken: (tokenAddress: Address, amount: bigint) => Promise<unknown>;
-        getTokenAddress: (tokenId: string) => Promise<Address>;
+        getTokenAddress: (tokenId: std::string) => Promise<Address>;
         getRequiredGasDeposit: () => Promise<bigint>;
         getRequiredPayment: (
         offerId: bigint,
@@ -85,7 +85,7 @@ void useOTC() {
 
 Promise<`0x$ writeContractAsync(std::optional<ReadContractConfig> config) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    string;
+    std::string;
 }
 
 } // namespace elizaos

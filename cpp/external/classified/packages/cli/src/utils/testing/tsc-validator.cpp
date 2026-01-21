@@ -35,7 +35,7 @@ std::future<TypeCheckResult> runTypeCheck(const std::string& projectPath, bool s
                     errors: hasErrors ? [stderr || stdout] : [],
                     warnings: (std::find(stderr.begin(), stderr.end(), "warning") != stderr.end()) ? [stderr] : [],
                     };
-                    } catch (error: any) {
+                    } catch (error: std::any) {
                         std::cerr << "TypeScript validation failed:" << error << std::endl;
                         return {
                             success: false,

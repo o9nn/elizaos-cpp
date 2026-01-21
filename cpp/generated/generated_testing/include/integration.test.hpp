@@ -10,12 +10,12 @@
 #include "uuid.h"
 using uuidv4 = v4;
 
-extern std::function<any()> tuuid;
+extern std::function<std::any()> tuuid;
 extern std::shared_ptr<Provider> mockRAGProvider;
 extern std::shared_ptr<Provider> mockRecentProvider;
-extern any mockRuntime;
-extern std::function<any(string, any)> createMockMessage;
-extern std::function<any(any)> createMockState;
-string detectDomain(string text);
+extern std::any mockRuntime;
+extern std::function<std::any(std::string, std::any)> createMockMessage;
+extern std::function<std::any(std::any)> createMockState;
+std::string detectDomain(std::string text);
 
 #endif

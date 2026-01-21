@@ -10,11 +10,11 @@ class SpartanTestSuite;
 class SpartanTestSuite : public TestSuite, public std::enable_shared_from_this<SpartanTestSuite> {
 public:
     using std::enable_shared_from_this<SpartanTestSuite>::shared_from_this;
-    string name = std::string("investment-manager");
+    std::string name = std::string("investment-manager");
 
-    string description = std::string("Tests for the investment manager agent");
+    std::string description = std::string("Tests for the investment manager agent");
 
-    any scenarioService;
+    std::any scenarioService;
 
     double completionTimeout;
 
@@ -25,7 +25,7 @@ public:
         {
             this->scenarioService = runtime->getService(std::string("scenario"));
             if (!this->scenarioService) {
-                throw any(std::make_shared<Error>(std::string("Scenario service not found")));
+                throw std::any(std::make_shared<Error>(std::string("Scenario service not found")));
             }
             auto worldId = std::async([=]() { this->scenarioService["createWorld"](std::string("Portfolio Test"), std::string("Test Investor")); });
             auto roomId = std::async([=]() { this->scenarioService["createRoom"](worldId, std::string("trading")); });
@@ -35,7 +35,7 @@ public:
             std::async([=]() { this->scenarioService["sendMessage"](runtime, worldId, roomId, std::string("Rebalance portfolio to 60% equities and 40% bonds")); });
             auto completed = std::async([=]() { this->scenarioService["waitForCompletion"](this->completionTimeout); });
             if (!completed) {
-                throw any(std::make_shared<Error>(std::string("Portfolio rebalancing timed out")));
+                throw std::any(std::make_shared<Error>(std::string("Portfolio rebalancing timed out")));
             }
         }
         }
@@ -45,7 +45,7 @@ public:
         {
             this->scenarioService = runtime->getService(std::string("scenario"));
             if (!this->scenarioService) {
-                throw any(std::make_shared<Error>(std::string("Scenario service not found")));
+                throw std::any(std::make_shared<Error>(std::string("Scenario service not found")));
             }
             auto worldId = std::async([=]() { this->scenarioService["createWorld"](std::string("Trading Test"), std::string("Test Trader")); });
             auto roomId = std::async([=]() { this->scenarioService["createRoom"](worldId, std::string("execution")); });
@@ -55,7 +55,7 @@ public:
             std::async([=]() { this->scenarioService["sendMessage"](runtime, worldId, roomId, std::string("Execute buy order for 1000 shares of AAPL at market price")); });
             auto completed = std::async([=]() { this->scenarioService["waitForCompletion"](this->completionTimeout); });
             if (!completed) {
-                throw any(std::make_shared<Error>(std::string("Trade execution timed out")));
+                throw std::any(std::make_shared<Error>(std::string("Trade execution timed out")));
             }
         }
         }
@@ -65,7 +65,7 @@ public:
         {
             this->scenarioService = runtime->getService(std::string("scenario"));
             if (!this->scenarioService) {
-                throw any(std::make_shared<Error>(std::string("Scenario service not found")));
+                throw std::any(std::make_shared<Error>(std::string("Scenario service not found")));
             }
             auto worldId = std::async([=]() { this->scenarioService["createWorld"](std::string("Risk Test"), std::string("Test Analyst")); });
             auto roomId = std::async([=]() { this->scenarioService["createRoom"](worldId, std::string("analysis")); });
@@ -75,7 +75,7 @@ public:
             std::async([=]() { this->scenarioService["sendMessage"](runtime, worldId, roomId, std::string("Analyze portfolio risk exposure and suggest mitigation strategies")); });
             auto completed = std::async([=]() { this->scenarioService["waitForCompletion"](this->completionTimeout); });
             if (!completed) {
-                throw any(std::make_shared<Error>(std::string("Risk assessment timed out")));
+                throw std::any(std::make_shared<Error>(std::string("Risk assessment timed out")));
             }
         }
         }
@@ -85,7 +85,7 @@ public:
         {
             this->scenarioService = runtime->getService(std::string("scenario"));
             if (!this->scenarioService) {
-                throw any(std::make_shared<Error>(std::string("Scenario service not found")));
+                throw std::any(std::make_shared<Error>(std::string("Scenario service not found")));
             }
             auto worldId = std::async([=]() { this->scenarioService["createWorld"](std::string("Compliance Test"), std::string("Test Auditor")); });
             auto roomId = std::async([=]() { this->scenarioService["createRoom"](worldId, std::string("regulatory")); });
@@ -95,7 +95,7 @@ public:
             std::async([=]() { this->scenarioService["sendMessage"](runtime, worldId, roomId, std::string("Verify all trades comply with SEC regulations")); });
             auto completed = std::async([=]() { this->scenarioService["waitForCompletion"](this->completionTimeout); });
             if (!completed) {
-                throw any(std::make_shared<Error>(std::string("Compliance check timed out")));
+                throw std::any(std::make_shared<Error>(std::string("Compliance check timed out")));
             }
         }
         }

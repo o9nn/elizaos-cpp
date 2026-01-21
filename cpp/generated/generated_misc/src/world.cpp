@@ -112,14 +112,14 @@ std::shared_ptr<Provider> worldProvider = object{
                 object::pair{std::string("text"), formattedText}
             };
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("Error in world provider: ") + (is<Error>(error)) ? error->message : String(error) + string_empty);
             return object{
                 object::pair{std::string("data"), object{
                     object::pair{std::string("world"), object{
                         object::pair{std::string("info"), std::string("Error retrieving world information")}, 
-                        object::pair{std::string("error"), (is<Error>(error)) ? any(error->message) : any(std::string("Unknown error"))}
+                        object::pair{std::string("error"), (is<Error>(error)) ? std::any(error->message) : std::any(std::string("Unknown error"))}
                     }}
                 }}, 
                 object::pair{std::string("text"), std::string("Error retrieving world information")}

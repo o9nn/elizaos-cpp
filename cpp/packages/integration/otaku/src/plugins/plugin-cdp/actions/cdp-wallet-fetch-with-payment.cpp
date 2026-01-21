@@ -6,12 +6,12 @@ namespace elizaos {
 
 ActionResult & createErrorResult(const std::string& errorMsg, const std::string& errorCode, const std::unordered_map<std::string, std::any>& inputParams, std::optional<HandlerCallback> callback) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    input: Record<string, unknown>
+    input: Record<std::string, unknown>
 }
 
 void getStatusIndicators(double status, bool wasPaidRequest) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    emoji: string; prefix: string
+    emoji: std::string; prefix: std::string
 }
 
 std::string formatResponseData(const std::any& responseData, double maxLength = 500) {

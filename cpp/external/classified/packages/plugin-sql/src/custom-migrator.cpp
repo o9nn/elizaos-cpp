@@ -18,7 +18,7 @@ std::string extractErrorMessage(const std::any& error) {
 
 void extractErrorDetails(const std::any& error) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    message: string; stack?: string
+    message: std::string; stack?: std::string
 }
 
 std::string camelToSnakeCase(const std::string& str) {
@@ -35,7 +35,7 @@ std::vector<std::string> topologicalSort(const std::unordered_map<std::string, T
     const auto visited = new Set<string>();
     const auto visiting = new Set<string>();
 
-    function visit(tableName: string) {
+    std::function visit(tableName: std::string) {
         if (visiting.has(tableName)) {
             std::cout << "Circular dependency detected involving table: " + tableName << std::endl;
             return;
@@ -127,18 +127,18 @@ std::future<void> runPluginMigrations(DrizzleDB db, const std::string& pluginNam
                 std::cout << "[CUSTOM MIGRATOR] Found " + tableEntries.size() + " table entries in schema" << std::endl;
                 console.log(
                 "[CUSTOM MIGRATOR] Table keys:"
-                tableEntries.map(([key]) => key);
+                tableEntries.std::map(([key]) => key);
                 );
                 // logger.debug(
                 //   `[CUSTOM MIGRATOR] Found ${tableEntries.length} tables to process:`,
-                //   tableEntries.map(([key]) => key)
+                //   tableEntries.std::map(([key]) => key)
                 // );
 
                 // Parse all table definitions
-                const auto tableDefinitions = new Map<string, TableDefinition>();
+                const auto tableDefinitions = new Map<std::string, TableDefinition>();
                 for (const int [exportKey, table] of tableEntries) {
                     const auto tableDef = introspector.parseTableDefinition(table, exportKey);
-                    tableDefinitions.set(tableDef.name, tableDef);
+                    tableDefinitions.std::set(tableDef.name, tableDef);
                 }
 
                 // Sort tables by dependencies (topological sort)

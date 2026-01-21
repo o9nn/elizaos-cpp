@@ -101,7 +101,7 @@ UUID TaskManager::createTask(const std::string& name, const std::string& descrip
     UUID taskId = generateUUID();
     auto task = std::make_shared<Task>(taskId, name, description);
     
-    // Note: roomId and worldId would be set if Task class had appropriate setters
+    // Note: roomId and worldId would be std::set if Task class had appropriate setters
     (void)roomId;   // Suppress unused parameter warning
     (void)worldId;  // Suppress unused parameter warning
     
@@ -145,7 +145,7 @@ std::vector<std::shared_ptr<Task>> TaskManager::getPendingTasks() {
     std::lock_guard<std::mutex> lock(tasksMutex_);
     
     std::vector<std::shared_ptr<Task>> pending;
-    for (const auto& pair : tasks_) {
+    for (const auto& std::pair : tasks_) {
         if (pair.second->getStatus() == TaskStatus::PENDING) {
             pending.push_back(pair.second);
         }
@@ -157,7 +157,7 @@ std::vector<std::shared_ptr<Task>> TaskManager::getTasksByTag(const std::string&
     std::lock_guard<std::mutex> lock(tasksMutex_);
     
     std::vector<std::shared_ptr<Task>> tagged;
-    for (const auto& pair : tasks_) {
+    for (const auto& std::pair : tasks_) {
         const auto& tags = pair.second->getTags();
         if (std::find(tags.begin(), tags.end(), tag) != tags.end()) {
             tagged.push_back(pair.second);
@@ -627,7 +627,7 @@ double CognitiveFusionEngine::calculateOverallConfidence(const ReasoningResult& 
 }
 
 /**
- * Utility function implementation
+ * Utility std::function implementation
  */
 std::string generateUUID() {
     static std::random_device rd;

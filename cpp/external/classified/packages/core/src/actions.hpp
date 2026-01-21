@@ -17,18 +17,18 @@ namespace elizaos {
 
 
 /**
- * Composes a set of example conversations based on provided actions and a specified count.
+ * Composes a std::set of example conversations based on provided actions and a specified count.
  * It randomly selects examples from the provided actions and formats them with generated names.
  *
  * @param actionsData - An array of `Action` objects from which to draw examples.
  * @param count - The number of examples to generate.
- * @returns A string containing formatted examples of conversations.
+ * @returns A std::string containing formatted examples of conversations.
  */
   // Handle edge cases
 
   // Filter out actions without examples
 
-  // If no actions have examples, return empty string
+  // If no actions have examples, return empty std::string
 
   // Create a working copy of the examples
 
@@ -58,14 +58,14 @@ namespace elizaos {
 /**
  * Formats the names of the provided actions into a comma-separated string.
  * @param actions - An array of `Action` objects from which to extract names.
- * @returns A comma-separated string of action names.
+ * @returns A comma-separated std::string of action names.
  */
 std::string formatActionNames(const std::vector<Action>& actions);
 
 /**
- * Formats the provided actions into a detailed string listing each action's name and description.
+ * Formats the provided actions into a detailed std::string listing each action's name and description.
  * @param actions - An array of `Action` objects to format.
- * @returns A detailed string of actions, including names and descriptions.
+ * @returns A detailed std::string of actions, including names and descriptions.
  */
 std::string formatActions(const std::vector<Action>& actions);
 

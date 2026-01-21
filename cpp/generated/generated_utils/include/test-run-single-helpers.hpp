@@ -9,9 +9,9 @@ class MockDeployment;
 class MockRuntime : public AbstractRuntime, public std::enable_shared_from_this<MockRuntime> {
 public:
     using std::enable_shared_from_this<MockRuntime>::shared_from_this;
-    std::shared_ptr<Map<string, string>> files = std::make_shared<Map>();
+    std::shared_ptr<Map<std::string, string>> files = std::make_shared<Map>();
 
-    string sessionOutput = string_empty;
+    std::string sessionOutput = string_empty;
 
     virtual std::shared_ptr<Promise<void>> createSession(std::shared_ptr<CreateBashSessionRequest> _request);
     template <typename P0>
@@ -61,7 +61,7 @@ file2\
     if (bashAction->command->startsWith(std::string("sleep "))) {
         auto seconds = parseFloat(bashAction->command->substring(6));
         if (AND((bashAction->timeout), (bashAction->timeout < seconds))) {
-            throw any(std::make_shared<Error>(std::string("Command timeout")));
+            throw std::any(std::make_shared<Error>(std::string("Command timeout")));
         }
         return object{
             object::pair{std::string("output"), string_empty}, 

@@ -7,5 +7,5 @@
 #include "@solana/web3.js.h"
 
 extern array<string> configAccountQueryKey;
-extern std::function<std::shared_ptr<Promise<any>>(any)> getConfigAccount;
+extern std::function<std::shared_ptr<Promise<any>>(std::any)> getConfigAccount;
 #endif

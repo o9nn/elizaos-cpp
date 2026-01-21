@@ -24,12 +24,12 @@ std::shared_ptr<anchor::web3::PublicKey> getLockedLiquidity(std::shared_ptr<anch
 };
 
 
-any LOCKING_PROGRAM = std::make_shared<anchor->web3->PublicKey>(std::string("LockrWmn6K5twhz3y9w1dQERbmgSaRkfnTeTKbpofwE"));
-string LOCK_CP_AUTH_SEED = std::string("lock_cp_authority_seed");
-string VAULT_CONFIG_SEED = std::string("raydium_vault_config");
-string POSITION_SEED = std::string("raydium_position");
-string NFT_FAUCET_SEED = std::string("raydium_vault_nft_seed");
-string LOCKED_CP_LIQUIDITY_SEED = std::string("locked_liquidity");
+std::any LOCKING_PROGRAM = std::make_shared<anchor->web3->PublicKey>(std::string("LockrWmn6K5twhz3y9w1dQERbmgSaRkfnTeTKbpofwE"));
+std::string LOCK_CP_AUTH_SEED = std::string("lock_cp_authority_seed");
+std::string VAULT_CONFIG_SEED = std::string("raydium_vault_config");
+std::string POSITION_SEED = std::string("raydium_position");
+std::string NFT_FAUCET_SEED = std::string("raydium_vault_nft_seed");
+std::string LOCKED_CP_LIQUIDITY_SEED = std::string("locked_liquidity");
 
 void Main(void)
 {

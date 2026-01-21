@@ -82,7 +82,7 @@ void Main(void)
             {
                 templates->forEach([=](auto template) mutable
                 {
-                    expect(template)->toContain(std::string("Do NOT include any thinking, reasoning, or <think> sections"));
+                    expect(template)->toContain(std::string("Do NOT include std::any thinking, reasoning, or <think> sections"));
                     expect(template)->toContain(std::string("IMPORTANT: Your response must ONLY contain the <response></response> XML block"));
                 }
                 );

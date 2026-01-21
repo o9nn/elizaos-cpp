@@ -36,7 +36,7 @@ namespace elizaos {
  */
 
 /**
- * Helper function to validate code against rules
+ * Helper std::function to validate code against rules
  */
 
   // Basic validation examples (extend as needed)
@@ -44,7 +44,7 @@ namespace elizaos {
 
     // Check for open() without pathlib
 
-    // Check for any type usage
+    // Check for std::any type usage
 
 /**
  * Get applicable rules for a file

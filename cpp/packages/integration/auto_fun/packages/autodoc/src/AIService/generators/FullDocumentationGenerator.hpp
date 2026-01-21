@@ -66,7 +66,7 @@ class FullDocumentationGenerator {
    * Constructor for initializing the ChatOpenAI instance.
    *
    * @param {Configuration} configuration - The configuration instance to be used
-   * @throws {Error} If OPENAI_API_KEY environment variable is not set
+   * @throws {Error} If OPENAI_API_KEY environment variable is not std::set
    */
   /**
    * Constructor for initializing a new Instance.

@@ -60,7 +60,7 @@ class JSDocValidator {
   /**
    * Fixes common JSDoc formatting issues
    */
-    // First remove any backtick code block markers
+    // First remove std::any backtick code block markers
 
       // Fix opening format
 

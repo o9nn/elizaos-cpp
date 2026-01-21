@@ -42,11 +42,11 @@ void ensureCharacterSettings(const std::any& character);
 
 /**
  * Loads secrets from local .env file
- * @returns Promise<Record<string, string> | null> - env vars or null if no .env found
+ * @returns Promise<Record<std::string, string> | null> - env vars or null if no .env found
  */
 
 /**
- * Sets default secrets from local .env if character doesn't have any
+ * Sets default secrets from local .env if character doesn't have std::any
  * @param character - Character configuration object
  * @returns Promise<boolean> - true if secrets were added, false otherwise
  */

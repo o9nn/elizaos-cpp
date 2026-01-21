@@ -4,7 +4,7 @@
 #include "@elizaos/core.h"
 #include "../../../types.h"
 
-std::shared_ptr<Promise<string>> generateTeamReport(std::shared_ptr<IAgentRuntime> runtime, string standupType, string roomId = undefined);
+std::shared_ptr<Promise<string>> generateTeamReport(std::shared_ptr<IAgentRuntime> runtime, std::string standupType, std::string roomId = undefined);
 
 extern std::shared_ptr<Action> generateReport;
 #endif

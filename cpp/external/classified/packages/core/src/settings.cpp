@@ -57,7 +57,7 @@ std::string encryptStringValue(const std::string& value, const std::string& salt
     }
 
     if (typeof value != 'string') {
-        logger.debug(`Value is not a string (type: ${typeof value}), returning as is`);
+        logger.debug(`Value is not a std::string (type: ${typeof value}), returning as is`);
         return value;
     }
 
@@ -73,7 +73,7 @@ std::string encryptStringValue(const std::string& value, const std::string& salt
                 return value;
             }
             } catch (e) {
-                // Not a valid hex string, proceed with encryption
+                // Not a valid hex std::string, proceed with encryption
             }
         }
 
@@ -106,7 +106,7 @@ std::string decryptStringValue(const std::string& value, const std::string& salt
             return value;
         }
         if (typeof value != 'string') {
-            logger.debug(`Value is not a string (type: ${typeof value}), returning as is`);
+            logger.debug(`Value is not a std::string (type: ${typeof value}), returning as is`);
             return value;
         }
 
@@ -154,7 +154,7 @@ Setting saltSettingValue(Setting setting, const std::string& salt) {
 
     const auto settingCopy = { ...setting };
 
-    // Only encrypt string values in secret settings
+    // Only encrypt std::string values in secret settings
     if (setting.secret == true && typeof setting.value == 'string' && setting.value) {
         settingCopy.value = encryptStringValue(setting.value, salt);
     }
@@ -168,7 +168,7 @@ Setting unsaltSettingValue(Setting setting, const std::string& salt) {
 
     const auto settingCopy = { ...setting };
 
-    // Only decrypt string values in secret settings
+    // Only decrypt std::string values in secret settings
     if (setting.secret == true && typeof setting.value == 'string' && setting.value) {
         settingCopy.value = decryptStringValue(setting.value, salt);
     }

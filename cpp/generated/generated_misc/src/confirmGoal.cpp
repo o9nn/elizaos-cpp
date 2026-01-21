@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-goals/src/actions/confirmGoal.h"
 
-std::shared_ptr<Promise<std::shared_ptr<ConfirmationResponse>>> extractConfirmationIntent(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<Memory> message, any pendingTask, std::shared_ptr<State> state)
+std::shared_ptr<Promise<std::shared_ptr<ConfirmationResponse>>> extractConfirmationIntent(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<Memory> message, std::any pendingTask, std::shared_ptr<State> state)
 {
     try
     {
@@ -17,10 +17,10 @@ std::shared_ptr<Promise<std::shared_ptr<ConfirmationResponse>>> extractConfirmat
         auto pendingTaskText = std::string("\
 Name: ") + pendingTask->name + std::string("\
 Type: ") + pendingTask->taskType + std::string("\
-") + (pendingTask->priority) ? any(std::string("Priority: ") + pendingTask->priority + string_empty) : any(string_empty) + std::string("\
+") + (pendingTask->priority) ? std::any(std::string("Priority: ") + pendingTask->priority + string_empty) : std::any(string_empty) + std::string("\
 ") + (pendingTask->urgent) ? std::string("Urgent: Yes") : string_empty + std::string("\
-") + (pendingTask->dueDate) ? any(std::string("Due Date: ") + pendingTask->dueDate + string_empty) : any(string_empty) + std::string("\
-") + (pendingTask->recurring) ? any(std::string("Recurring: ") + pendingTask->recurring + string_empty) : any(string_empty) + std::string("\
+") + (pendingTask->dueDate) ? std::any(std::string("Due Date: ") + pendingTask->dueDate + string_empty) : std::any(string_empty) + std::string("\
+") + (pendingTask->recurring) ? std::any(std::string("Recurring: ") + pendingTask->recurring + string_empty) : std::any(string_empty) + std::string("\
 ");
         auto prompt = composePrompt(object{
             object::pair{std::string("state"), object{
@@ -45,10 +45,10 @@ Type: ") + pendingTask->taskType + std::string("\
         return object{
             object::pair{std::string("isConfirmation"), String(parsedResult->isConfirmation) == std::string("true")}, 
             object::pair{std::string("shouldProceed"), String(parsedResult->shouldProceed) == std::string("true")}, 
-            object::pair{std::string("modifications"), (parsedResult->modifications == std::string("none")) ? any(undefined) : any(parsedResult->modifications)}
+            object::pair{std::string("modifications"), (parsedResult->modifications == std::string("none")) ? std::any(undefined) : std::any(parsedResult->modifications)}
         };
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Error extracting confirmation intent:"), error);
         return object{
@@ -59,7 +59,7 @@ Type: ") + pendingTask->taskType + std::string("\
 };
 
 
-string extractConfirmationTemplate = std::string("\
+std::string extractConfirmationTemplate = std::string("\
 # Task: Extract Confirmation Intent\
 \
 ## User Message\
@@ -270,7 +270,7 @@ std::shared_ptr<Action> confirmGoalAction = object{
                 object::pair{std::string("tags"), OR((pendingGoal->tags), (array<any>()))}
             }); });
             if (!createdGoalId) {
-                throw any(std::make_shared<Error>(std::string("Failed to create goal")));
+                throw std::any(std::make_shared<Error>(std::string("Failed to create goal")));
             }
             state["data"].Delete("pendingGoal");
             auto successMessage = string_empty;
@@ -279,7 +279,7 @@ std::shared_ptr<Action> confirmGoalAction = object{
             } else if (pendingGoal->taskType == std::string("one-off")) {
                 auto priorityText = std::string("Priority ") + (OR((pendingGoal->priority), (3))) + string_empty;
                 auto urgentText = (pendingGoal->urgent) ? std::string(", Urgent") : string_empty;
-                auto dueDateText = (pendingGoal->dueDate) ? any(std::string(", Due: ") + ((std::make_shared<Date>(pendingGoal->dueDate)))->toLocaleDateString() + string_empty) : any(string_empty);
+                auto dueDateText = (pendingGoal->dueDate) ? std::any(std::string(", Due: ") + ((std::make_shared<Date>(pendingGoal->dueDate)))->toLocaleDateString() + string_empty) : std::any(string_empty);
                 successMessage = std::string("✅ Created task: "") + pendingGoal->name + std::string("" (") + priorityText + string_empty + urgentText + string_empty + dueDateText + std::string(")");
             } else {
                 successMessage = std::string("✅ Created aspirational goal: "") + pendingGoal->name + std::string(""");
@@ -318,7 +318,7 @@ Note: I created the task as originally described. The modifications you mentione
                 object::pair{std::string("success"), true}
             };
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("Error in confirmGoal handler:"), error);
             auto errorMessage = std::string("I encountered an error while confirming your goal. Please try again.");
@@ -334,7 +334,7 @@ Note: I created the task as originally described. The modifications you mentione
                 object::pair{std::string("data"), object{
                     object::pair{std::string("actionName"), std::string("CONFIRM_GOAL")}, 
                     object::pair{std::string("error"), std::string("execution_error")}, 
-                    object::pair{std::string("errorDetails"), (is<Error>(error)) ? any(error->message) : any(std::string("Unknown error"))}
+                    object::pair{std::string("errorDetails"), (is<Error>(error)) ? std::any(error->message) : std::any(std::string("Unknown error"))}
                 }}, 
                 object::pair{std::string("values"), object{
                     object::pair{std::string("success"), false}, 

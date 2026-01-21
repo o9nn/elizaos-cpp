@@ -50,7 +50,7 @@ std::future<void> demoPlatformIntegration();
 std::future<void> demoSuccessAndFailureScenarios();
 
 /**
- * Main demo function
+ * Main demo std::function
  */
 std::future<void> runComprehensiveDemo();
 

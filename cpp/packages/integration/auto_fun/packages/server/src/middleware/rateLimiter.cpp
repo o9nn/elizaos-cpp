@@ -16,7 +16,7 @@ void createRateLimiter(RedisCacheService redisCache) {
         c.req.header("cf-connecting-ip") ||;
         "unknown",
         store: new (class {
-            async increment(key: string) {
+            std::async increment(key: std::string) {
                 const auto full = "redisCache.getKey(" + "rl:" + key;
                 const auto [[, count]] = (redisCache.redisPool.useClient((client) =>;
                 client.multi().incr(full).expire(full, WINDOW_SEC).exec();
@@ -26,11 +26,11 @@ void createRateLimiter(RedisCacheService redisCache) {
                     resetTime: new Date(Date.now() + WINDOW_SEC * 1000),
                     };
                 }
-                async decrement(key: string) {
+                std::async decrement(key: std::string) {
                     const auto full = "redisCache.getKey(" + "rl:" + key;
                     redisCache.redisPool.useClient((client) => client.decr(full));
                 }
-                async resetKey(key: string) {
+                std::async resetKey(key: std::string) {
                     const auto full = "redisCache.getKey(" + "rl:" + key;
                     redisCache.del(full);
                 }

@@ -20,9 +20,9 @@ class Candle;
 class DexScreenerPair : public object, public std::enable_shared_from_this<DexScreenerPair> {
 public:
     using std::enable_shared_from_this<DexScreenerPair>::shared_from_this;
-    string pairAddress;
+    std::string pairAddress;
 
-    string priceUsd;
+    std::string priceUsd;
 
     object liquidity;
 };
@@ -38,15 +38,15 @@ public:
     using std::enable_shared_from_this<PriceCandle>::shared_from_this;
     double time;
 
-    string open;
+    std::string open;
 
-    string high;
+    std::string high;
 
-    string low;
+    std::string low;
 
-    string close;
+    std::string close;
 
-    string volume;
+    std::string volume;
 };
 
 class ChartResponse : public object, public std::enable_shared_from_this<ChartResponse> {
@@ -55,7 +55,7 @@ public:
     array<std::shared_ptr<PriceCandle>> priceCandles;
 };
 
-extern string DEV_TEST_TOKEN_ADDRESS;
+extern std::string DEV_TEST_TOKEN_ADDRESS;
 class PriceFeedInfo : public object, public std::enable_shared_from_this<PriceFeedInfo> {
 public:
     using std::enable_shared_from_this<PriceFeedInfo>::shared_from_this;
@@ -68,12 +68,12 @@ public:
     double priceUsd;
 };
 
-any getLatestCandle(string tokenMint, any swap, any tokenInfo = undefined);
+std::any getLatestCandle(std::string tokenMint, std::any swap, std::any tokenInfo = undefined);
 
-any fetchPriceChartData(double start, double end, double range, string tokenMint);
+std::any fetchPriceChartData(double start, double end, double range, std::string tokenMint);
 
 extern std::function<array<std::shared_ptr<CandlePrice>>(array<std::shared_ptr<PriceFeedInfo>>, double)> getCandleData;
-std::shared_ptr<Promise<array<any>>> fetchLockedTokenChartData(string token, double start, double end, double range);
+std::shared_ptr<Promise<array<any>>> fetchLockedTokenChartData(std::string token, double start, double end, double range);
 
 class Candle : public object, public std::enable_shared_from_this<Candle> {
 public:

@@ -8,7 +8,7 @@ void Index() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { user } = usePrivy();
-    if ((Constants.expoConfig.extra.privyAppId as string).length != 25) {
+    if ((Constants.expoConfig.extra.privyAppId as std::string).length != 25) {
         return (;
         <SafeAreaView>;
         <View;
@@ -18,7 +18,7 @@ void Index() {
             justifyContent: "center",
         }}
         >;
-        "<Text>You have not set a valid " + "privyAppId";
+        "<Text>You have not std::set a valid " + "privyAppId";
         </View>;
         </SafeAreaView>;
         );
@@ -37,7 +37,7 @@ void Index() {
             justifyContent: "center",
         }}
         >;
-        "<Text>You have not set a valid " + "privyClientId";
+        "<Text>You have not std::set a valid " + "privyClientId";
         </View>;
         </SafeAreaView>;
         );

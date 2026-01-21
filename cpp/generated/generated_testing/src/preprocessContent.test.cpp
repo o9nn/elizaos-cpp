@@ -29,7 +29,7 @@ void Main(void)
             it(std::string("should normalize line endings in code content"), [=]() mutable
             {
                 auto content = object{
-                    object::pair{std::string("content"), std::string("function test() {
+                    object::pair{std::string("content"), std::string("std::function test() {
 \
   return true;
 \
@@ -37,7 +37,7 @@ void Main(void)
                     object::pair{std::string("contentType"), TagPatternType::CODE_CONTENT}
                 };
                 auto processed = preprocessContent(content);
-                expect(processed["content"])->toBe(std::string("function test() {\
+                expect(processed["content"])->toBe(std::string("std::function test() {\
   return true;\
 }"));
             }

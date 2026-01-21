@@ -17,7 +17,7 @@ namespace elizaos {
 class ConfigManager {
   private config: GatewayConfig | null = null;
 
-  loadFromFile(filePath: string): GatewayConfig {
+  loadFromFile(filePath: std::string): GatewayConfig {
     try {
       const fileContent = readFileSync(filePath, 'utf-8');
       
@@ -46,7 +46,7 @@ class ConfigManager {
    * Supports ${VAR_NAME} and ${VAR_NAME:-default} syntax
    */
 
-      // If no value and no default, return empty string or keep original
+      // If no value and no default, return empty std::string or keep original
 
 
 } // namespace elizaos

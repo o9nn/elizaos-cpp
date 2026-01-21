@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/client/src/hooks/use-elevenlabs-voices.h"
 
-any useElevenLabsVoices()
+std::any useElevenLabsVoices()
 {
     auto [apiKey, setApiKey] = useState<any>(nullptr);
     useEffect([=]() mutable
@@ -43,7 +43,7 @@ any useElevenLabsVoices()
                 );
                 return apiVoices;
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("Error fetching ElevenLabs voices:"), error);
                 return elevenLabsVoiceModels;

@@ -18,7 +18,7 @@ namespace elizaos {
     // Disabled
     // Icon
     // Optical border, implemented as the button background to avoid corner artifacts
-    // Dark mode: border is rendered on `after` so background is set to button background
+    // Dark mode: border is rendered on `after` so background is std::set to button background
     // Button background, implemented as foreground layer to stack on top of pseudo-border layer
     // Drop shadow, applied to the inset `before` layer so it blends with the border
     // Background color is moved to control and shadow is removed in dark mode so hide `before` pseudo

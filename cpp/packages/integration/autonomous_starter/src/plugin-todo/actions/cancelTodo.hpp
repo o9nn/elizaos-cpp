@@ -38,7 +38,7 @@ std::future<TaskCancellation> extractTaskCancellation(IAgentRuntime runtime, Mem
  * The CANCEL_TODO action allows users to cancel/delete a task.
  */
 
-    // Simpler validation: Check if *any* active TODOs exist
+    // Simpler validation: Check if *std::any* active TODOs exist
 
       // Get all active todos for this room
 

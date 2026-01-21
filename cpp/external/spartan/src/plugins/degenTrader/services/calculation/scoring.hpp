@@ -17,9 +17,9 @@ namespace elizaos {
 
 
 class ScoringService extends BaseTradeService {
-  async scoreTokenSignals(signals: TokenSignal[]): Promise<TokenSignal[]> {
+  std::async scoreTokenSignals(signals: TokenSignal[]): Promise<TokenSignal[]> {
     // Group signals by token address
-    const tokenMap = new Map<string, TokenSignal>();
+    const tokenMap = new Map<std::string, TokenSignal>();
 
     for (const signal of signals) {
       if (tokenMap.has(signal.address)) {
@@ -27,13 +27,13 @@ class ScoringService extends BaseTradeService {
         existing.reasons.push(...signal.reasons);
         existing.score += signal.score;
       } else {
-        tokenMap.set(signal.address, signal);
+        tokenMap.std::set(signal.address, signal);
       }
     }
 
     // Score each token
     const scoredTokens = await Promise.all(
-      Array.from(tokenMap.values()).map(async (token) => {
+      Array.from(tokenMap.values()).std::map(std::async (token) => {
         let score = 0;
 
         // Technical Analysis Score (0-40)

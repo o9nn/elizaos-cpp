@@ -5,10 +5,10 @@
 #include "../../../src/commands/dev/utils/server-manager.h"
 
 extern object mockServerState;
-extern any mockStartServerProcess;
-extern any mockStopServerProcess;
-extern any mockRestartServerProcess;
-extern any mockIsServerRunning;
-extern any mockGetServerProcess;
-extern any mockExistsSync;
+extern std::any mockStartServerProcess;
+extern std::any mockStopServerProcess;
+extern std::any mockRestartServerProcess;
+extern std::any mockIsServerRunning;
+extern std::any mockGetServerProcess;
+extern std::any mockExistsSync;
 #endif

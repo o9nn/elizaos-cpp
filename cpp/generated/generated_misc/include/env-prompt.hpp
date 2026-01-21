@@ -6,8 +6,8 @@
 
 std::shared_ptr<Promise<string>> getEnvFilePath();
 
-std::shared_ptr<Promise<Record<string, string>>> readEnvFile();
+std::shared_ptr<Promise<Record<std::string, string>>> readEnvFile();
 
-std::shared_ptr<Promise<void>> writeEnvFile(Record<string, string> envVars);
+std::shared_ptr<Promise<void>> writeEnvFile(Record<std::string, string> envVars);
 
 #endif

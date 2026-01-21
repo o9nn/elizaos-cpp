@@ -13,7 +13,7 @@ express::Router createDebugRouter(AgentServer serverInstance) {
     router.use(requireAuth, requireAdmin);
 
     // Debug endpoint to check message servers - ADMIN ONLY
-    router.get("/servers", async (_req: AuthenticatedRequest, res) => {
+    router.get("/servers", std::async (_req: AuthenticatedRequest, res) => {
         try {
             const auto servers = serverInstance.getServers();
             res.json({

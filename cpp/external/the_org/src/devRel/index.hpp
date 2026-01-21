@@ -23,8 +23,8 @@ namespace elizaos {
  * Recursively gets all files in a directory with the given extension
  *
  * @param {string} dir - Directory to search
- * @param {string[]} extensions - File extensions to look for
- * @returns {string[]} - Array of file paths
+ * @param {std::string[]} extensions - File extensions to look for
+ * @returns {std::string[]} - Array of file paths
  */
 std::vector<std::string> getFilesRecursively(const std::string& dir, const std::vector<std::string>& extensions);
 
@@ -33,7 +33,7 @@ std::vector<std::string> getFilesRecursively(const std::string& dir, const std::
  * and its subdirectories synchronously.
  *
  * @param {string} directoryPath - The path to the directory containing markdown files
- * @returns {string[]} - Array of strings containing file contents with relative paths
+ * @returns {std::string[]} - Array of strings containing file contents with relative paths
  */
 std::vector<std::string> loadDocumentation(const std::string& directoryPath);
 
@@ -42,7 +42,7 @@ std::vector<std::string> loadDocumentation(const std::string& directoryPath);
  * of all packages in the project synchronously.
  *
  * @param {string} packagesDir - The path to the packages directory
- * @returns {string[]} - Array of strings containing file contents with relative paths
+ * @returns {std::string[]} - Array of strings containing file contents with relative paths
  */
 std::vector<std::string> loadSourceCode(const std::string& packagesDir);
 
@@ -56,7 +56,7 @@ std::vector<std::string> loadSourceCode(const std::string& packagesDir);
 /**
  * A character object representing Eddy, a developer support agent for ElizaOS.
  */
-  // Knowledge will be set after adapter initialization
+  // Knowledge will be std::set after adapter initialization
 
 /**
  * Configuration object for onboarding settings.

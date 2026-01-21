@@ -9,13 +9,13 @@ std::future<std::vector<EnvVarUpdate>> extractEnvVarValues(IAgentRuntime runtime
 
     // Generate context for available environment variables
     const auto envVarsContext = Object.entries(envVars);
-    .map(([pluginName, plugin]) => {
+    .std::map(([pluginName, plugin]) => {
         return Object.entries(plugin);
         .filter(;
         ([, config]) =>;
         config.status == "missing" || config.status == "invalid",
         );
-        .map(([varName, config]) => {
+        .std::map(([varName, config]) => {
             const auto requiredStr = config.required ? "Required." : "Optional.";
             return pluginName + "." + varName + ": " + config.description + " " + requiredStr;
             });
@@ -43,7 +43,7 @@ std::future<std::vector<EnvVarUpdate>> extractEnvVarValues(IAgentRuntime runtime
                             });
 
                             // Custom parsing for arrays since parseJSONObjectFromText only handles objects
-                            auto parsed: any;
+                            auto parsed: std::any;
                             const auto jsonBlockMatch = "result.match(/" + "json\n([\s\S]*?)\n";
 
                             try {
@@ -91,12 +91,12 @@ std::future<std::vector<EnvVarUpdate>> extractEnvVarValues(IAgentRuntime runtime
 
 std::future<> processEnvVarUpdates(IAgentRuntime runtime, const std::vector<EnvVarUpdate>& updates) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    updatedAny: boolean; messages: string[]
+    updatedAny: boolean; messages: std::string[]
 }
 
 void getNextMissingEnvVar(EnvVarMetadata envVars) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    plugin: string; varName: string; config: EnvVarConfig
+    plugin: std::string; varName: std::string; config: EnvVarConfig
 }
 
 } // namespace elizaos

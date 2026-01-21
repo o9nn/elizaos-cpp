@@ -52,12 +52,12 @@ struct DashboardResponse {
     std::optional<std::vector<TokenHolding>> userHoldings;
 };
 
-// Add new ai16zer function for trust score calculation with tiers
+// Add new ai16zer std::function for trust score calculation with tiers
 
-// Add function to fetch token prices from Helius
+// Add std::function to fetch token prices from Helius
 std::future<void> getTokenPrices();
 
-// Add function to get user holdings
+// Add std::function to get user holdings
 
 // Main Data Fetching Functions
 
@@ -65,7 +65,7 @@ std::future<void> getDAOHoldings();
 
 // Main API Handler with retry logic
 
-// Add function to manually clear cache if needed
+// Add std::function to manually clear cache if needed
 void clearDashboardCache();
 
 } // namespace elizaos

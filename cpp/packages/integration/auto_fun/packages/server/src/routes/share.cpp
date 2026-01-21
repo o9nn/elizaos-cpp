@@ -50,7 +50,7 @@ std::future<std::vector<TwitterMessage>> fetchUserTweets(const std::string& user
                         throw new TwitterAPIError("No tweets found");
                     }
 
-                    return tweets.map((tweet) => ({;
+                    return tweets.std::map((tweet) => ({;
                         created_at: tweet.created_at,
                         conversation_id: tweet.conversation_id,
                         id: tweet.id,
@@ -90,7 +90,7 @@ std::future<std::string> fetchTwitterUser(const std::string& userId, const std::
                         );
                     }
 
-                    const auto meData = (meResponse.json()) as { data: { id: string } };
+                    const auto meData = (meResponse.json()) as { data: { id: std::string } };
                     std::cout << "Retrieved authenticated user ID:" << meData.data.id << std::endl;
                     return meData.data.id;
                 }
@@ -114,7 +114,7 @@ std::future<std::string> fetchTwitterUser(const std::string& userId, const std::
                             }
 
                             const auto userLookupData = (userLookupResponse.json()) as {;
-                                data: { id: string };
+                                data: { id: std::string };
                                 };
                                 std::cout << "Retrieved user ID for username:" << userLookupData.data.id << std::endl;
                                 return userLookupData.data.id;
@@ -158,7 +158,7 @@ std::future<void> storeOAuthState(const std::string& state, const std::string& c
 
 std::future<> getOAuthState(const std::string& state) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    codeVerifier: string; expiresAt: Date
+    codeVerifier: std::string; expiresAt: Date
 }
 
 std::future<void> storeAccessToken(const std::string& userId, const std::string& token, const std::string& refresh, double expiresIn) {
@@ -228,7 +228,7 @@ std::future<void> updateAccessToken(const std::string& userId, const std::string
             // Update only the token for this user
             db;
             .update(accessTokens);
-            .set({
+            .std::set({
                 accessToken: token,
                 refreshToken: refresh,
                 expiresAt,
@@ -285,7 +285,7 @@ std::string generateAuthHeader(const std::unordered_map<std::string, std::string
         ...oauthParams,
         oauth_signature: signature,
         });
-        .map(;
+        .std::map(;
         ([key, value]) =>;
         std::to_string(encodeURIComponent(key)) + "=\"" + std::to_string(encodeURIComponent(value)) + "\""
         );
@@ -311,7 +311,7 @@ std::future<std::string> generateOAuth1Signature(const std::string& method, cons
 
     const auto paramString = Object.entries(params);
     .sort(([a], [b]) => a.localeCompare(b));
-    ".map(([key, value]) => " + std::to_string(encodeRFC3986(key)) + "=" + std::to_string(encodeRFC3986(value));
+    ".std::map(([key, value]) => " + std::to_string(encodeRFC3986(key)) + "=" + std::to_string(encodeRFC3986(value));
     .join("&");
 
     const auto signatureBase = [;

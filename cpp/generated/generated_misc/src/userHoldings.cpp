@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/trust_scoreboard/src/pages/api/userHoldings.h"
 
-any handler(std::shared_ptr<NextApiRequest> req, std::shared_ptr<NextApiResponse> res)
+std::any handler(std::shared_ptr<NextApiRequest> req, std::shared_ptr<NextApiResponse> res)
 {
     if (req->method != std::string("GET")) {
         return res->status(405)->json(object{
@@ -36,7 +36,7 @@ any handler(std::shared_ptr<NextApiRequest> req, std::shared_ptr<NextApiResponse
         }); });
         auto data = std::async([=]() { response->json(); });
         if (OR((!response->ok), (data["error"]))) {
-            throw any(std::make_shared<Error>(OR((data["error"]["message"]), (std::string("Failed to fetch token data")))));
+            throw std::any(std::make_shared<Error>(OR((data["error"]["message"]), (std::string("Failed to fetch token data")))));
         }
         if (!data["result"]["items"]) {
             return res->status(200)->json(object{
@@ -46,7 +46,7 @@ any handler(std::shared_ptr<NextApiRequest> req, std::shared_ptr<NextApiResponse
         auto holdings = data["result"]["items"]["map"]([=](auto item) mutable
         {
             auto tokenInfo = OR((item["token_info"]), (object{}));
-            auto decimals = (tokenInfo["decimals"] != undefined) ? any(tokenInfo["decimals"]) : any(9);
+            auto decimals = (tokenInfo["decimals"] != undefined) ? std::any(tokenInfo["decimals"]) : std::any(9);
             auto rawAmount = OR((OR((tokenInfo["balance"]), (tokenInfo["amount"]))), (0));
             auto amount = Number(rawAmount) / Math->pow(10, decimals);
             auto price = OR((tokenInfo["price_info"]["price_per_token"]), (0));
@@ -74,7 +74,7 @@ any handler(std::shared_ptr<NextApiRequest> req, std::shared_ptr<NextApiResponse
         , 0);
         holdings["forEach"]([=](auto h) mutable
         {
-            h["allocation"] = (totalValue > 0) ? any((h["value"] / totalValue) * 100) : any(0);
+            h["allocation"] = (totalValue > 0) ? std::any((h["value"] / totalValue) * 100) : std::any(0);
         }
         );
         holdings["sort"]([=](auto a, auto b) mutable
@@ -86,17 +86,17 @@ any handler(std::shared_ptr<NextApiRequest> req, std::shared_ptr<NextApiResponse
             object::pair{std::string("holdings"), std::string("holdings")}
         });
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("API error:"), error);
         return res->status(500)->json(object{
-            object::pair{std::string("error"), (is<Error>(error)) ? any(error->message) : any(std::string("Failed to fetch holdings"))}
+            object::pair{std::string("error"), (is<Error>(error)) ? std::any(error->message) : std::any(std::string("Failed to fetch holdings"))}
         });
     }
 };
 
 
-string HELIUS_API = std::string("https://mainnet.helius-rpc.com/?api-key=") + process->env->NEXT_PUBLIC_SOLANA_API + string_empty;
+std::string HELIUS_API = std::string("https://mainnet.helius-rpc.com/?api-key=") + process->env->NEXT_PUBLIC_SOLANA_API + string_empty;
 
 void Main(void)
 {

@@ -13,7 +13,7 @@ namespace elizaos {
 
 
 /**
- * Represents a UUID string in the format "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+ * Represents a UUID std::string in the format "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
  */
 using UUID = `${string}-${string}-${string}-${string}-${string}`;
 
@@ -239,17 +239,17 @@ struct MessageExample {
 };
 
 /**
- * Handler function type for processing messages
+ * Handler std::function type for processing messages
  */
 using Handler = (
 
 /**
- * Callback function type for handlers
+ * Callback std::function type for handlers
  */
-using HandlerCallback = (response: Content, files?: any) => Promise<Memory[]>;
+using HandlerCallback = (response: Content, files?: std::any) => Promise<Memory[]>;
 
 /**
- * Validator function type for actions/evaluators
+ * Validator std::function type for actions/evaluators
  */
 using Validator = (
 
@@ -320,7 +320,7 @@ struct Account {
     UUID id;
     std::string name;
     std::string username;
-    std::optional<{ [key: string]: any }> details;
+    std::optional<{ [key: std::string]: std::any }> details;
 
 /**
  * Room participant with account details
@@ -361,7 +361,7 @@ using Media = {
  */
 using ClientInstance = {
   /** Client name */
-  // name: string;
+  // name: std::string;
 
   /** Stop client connection */
 
@@ -439,7 +439,7 @@ struct ModelConfiguration {
     std::optional<TelemetrySettings> experimental_telemetry;
 };
 
-using TemplateType = std::variant<std::string, ((options: { state: State }) => string)>;
+using TemplateType = std::variant<std::string, ((options: { state: State }) => std::string)>;
 
 /**
  * Configuration for an agent character
@@ -538,7 +538,7 @@ struct IDatabaseAdapter {
     std::string query_field_name;
     std::string query_field_sub_name;
     double query_match_count;
-    { [key: string]: unknown } body;
+    { [key: std::string]: unknown } body;
 
 struct IDatabaseCacheAdapter {
 };
@@ -597,7 +597,7 @@ struct IAgentRuntime {
     UUID agentId;
     std::string serverUrl;
     IDatabaseAdapter databaseAdapter;
-    string | null token;
+    std::string | null token;
     ModelProviderName modelProvider;
     ModelProviderName imageModelProvider;
     ModelProviderName imageVisionModelProvider;
@@ -625,9 +625,9 @@ struct IAgentRuntime {
     std::optional<bool> didRespond;
     std::optional<HandlerCallback> callback;
     UUID userId;
-    string | null userName;
-    string | null name;
-    string | null source;
+    std::string | null userName;
+    std::string | null name;
+    std::string | null source;
     UUID userId;
     UUID roomId;
     std::optional<std::string> userName;

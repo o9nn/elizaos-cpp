@@ -24,7 +24,7 @@ namespace elizaos {
 // Configure multer for channel uploads
     // Check if mimetype is in the allowed list
 
-// Helper function to save uploaded file
+// Helper std::function to save uploaded file
 
   // Ensure directory exists
 

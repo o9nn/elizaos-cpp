@@ -207,7 +207,7 @@ void Main(void)
                     console->log(std::string("  - No pool found (public RPC may block getProgramAccounts)"));
                 }
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->log(std::string("  - RPC error (expected on public RPCs):"), (as<std::shared_ptr<Error>>(error))->message->slice(0, 50));
             }

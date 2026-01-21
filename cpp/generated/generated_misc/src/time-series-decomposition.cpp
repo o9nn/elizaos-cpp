@@ -27,10 +27,10 @@ std::shared_ptr<Promise<std::shared_ptr<DecompositionResult>>> TimeSeriesDecompo
             object::pair{std::string("forecast"), std::async([=]() { this->generateComponentForecasts(components, config); })}
         };
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger["error"](std::string("Error in time series decomposition:"), error);
-        throw any(error);
+        throw std::any(error);
     }
 }
 
@@ -71,7 +71,7 @@ std::shared_ptr<Promise<std::shared_ptr<EMDResult>>> TimeSeriesDecomposer::perfo
 
 std::shared_ptr<Promise<array<std::shared_ptr<Changepoint>>>> TimeSeriesDecomposer::detectChangepoints(array<double> timeSeries, std::shared_ptr<DecompositionComponents> components)
 {
-    auto [trendChangepoints, seasonalChangepoints, structuralBreaks] = std::async([=]() { Promise->all(std::tuple<any, any, any>{ this->detectTrendChangepoints(components->trend), this->detectSeasonalChangepoints(components->seasonal), this->detectStructuralBreaks(timeSeries) }); });
+    auto [trendChangepoints, seasonalChangepoints, structuralBreaks] = std::async([=]() { Promise->all(std::tuple<std::any, std::any, any>{ this->detectTrendChangepoints(components->trend), this->detectSeasonalChangepoints(components->seasonal), this->detectStructuralBreaks(timeSeries) }); });
     return this->mergeChangepoints(trendChangepoints, seasonalChangepoints, structuralBreaks);
 }
 

@@ -49,7 +49,7 @@ void downloadJsonFile(const std::any& data, const std::string& filename);
 
 /**
  * Exports an agent's character data as a JSON file download
- * @param agent - The agent containing the character data to * @param toast - Optional toast function for notifications
+ * @param agent - The agent containing the character data to * @param toast - Optional toast std::function for notifications
  * @returns Export result with success status and filename or error
  */
 ExportResult exportCharacterAsJson(Agent agent, std::optional<ToastFunction> toast);

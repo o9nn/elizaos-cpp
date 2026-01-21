@@ -25,7 +25,7 @@ struct TokenBalance {
     std::string balanceFormatted;
     double usdValue;
     double usdPrice;
-    string | null contractAddress;
+    std::string | null contractAddress;
     std::string chain;
     double decimals;
     std::optional<std::string> icon;
@@ -56,8 +56,8 @@ struct Transaction {
     std::string blockNum;
     std::string explorerUrl;
     'sent' | 'received' direction;
-    std::optional<string | null> icon;
-    std::optional<string | null> contractAddress;
+    std::optional<std::string | null> icon;
+    std::optional<std::string | null> contractAddress;
 };
 
 struct SwapPriceResult {
@@ -104,9 +104,9 @@ class CdpTransactionManager {
   private static instance: CdpTransactionManager | null = null;
   
   private cdpClient: CdpClient | null = null;
-  private tokensCache = new Map<string, CacheEntry<any>>();
-  private nftsCache = new Map<string, CacheEntry<any>>();
-  private iconCache = new Map<string, string | null>(); // Global icon cache: contractAddress -> iconUrl (null = no icon)
+  private tokensCache = new Map<std::string, CacheEntry<any>>();
+  private nftsCache = new Map<std::string, CacheEntry<any>>();
+  private iconCache = new Map<std::string, std::string | null>(); // Global icon cache: contractAddress -> iconUrl (null = no icon)
   private readonly CACHE_TTL = 300 * 1000; // 5 minutes
 
   // Private constructor to prevent direct instantiation
@@ -144,7 +144,7 @@ class CdpTransactionManager {
       // Found in cache (could be null or a URL)
 
     // Not in cache - fetch token info to get icon
-      // Cache null to prevent future attempts
+      // Cache null to prevent std::future attempts
 
       // Cache the result (even if null)
       // Cache null to prevent retries
@@ -224,14 +224,14 @@ class CdpTransactionManager {
               // Cache icon from Alchemy if available
 
             // Extract USD price according to Alchemy Portfolio API spec:
-            // tokenPrices is an array of objects: [{ currency: string, value: string, lastUpdatedAt: string }]
+            // tokenPrices is an array of objects: [{ currency: std::string, value: std::string, lastUpdatedAt: std::string }]
             // Note: currency is lowercase "usd" not uppercase "USD"
             
               // Find USD price entry in the array (case-insensitive comparison)
-                // value is a string according to API spec, parse it
+                // value is a std::string according to API spec, parse it
               // Unexpected structure - log for debugging
 
-            // Convert balance from hex string to number
+            // Convert balance from hex std::string to number
 
             // Only add to total if it's a valid number
 
@@ -436,7 +436,7 @@ class CdpTransactionManager {
 
         // Get detailed info for top results (limit to 10 for performance)
 
-              // Find contract address for the requested chain or any supported chain
+              // Find contract address for the requested chain or std::any supported chain
 
                 // Get first available supported chain
 

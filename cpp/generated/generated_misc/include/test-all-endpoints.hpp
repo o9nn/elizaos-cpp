@@ -5,5 +5,5 @@
 #include "../birdeye.h"
 #include "../utils.h"
 
-extern any testAllEndpointsAction;
+extern std::any testAllEndpointsAction;
 #endif

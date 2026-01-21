@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/client/src/config/agent-templates.h"
 
-any getTemplateById(string id)
+std::any getTemplateById(std::string id)
 {
     return agentTemplates->find([=](auto template) mutable
     {
@@ -86,7 +86,7 @@ array<std::shared_ptr<AgentTemplate>> agentTemplates = array<std::shared_ptr<Age
         object::pair{std::string("plugins"), array<string>{ std::string("@elizaos/plugin-sql"), std::string("@elizaos/plugin-openai"), std::string("@elizaos/plugin-bootstrap"), std::string("@elizaos/plugin-slack") }}, 
         object::pair{std::string("style"), object{
             object::pair{std::string("all"), array<string>{ std::string("Be concise and clear"), std::string("Match the tone of the workspace"), std::string("Use Slack-appropriate formatting") }}, 
-            object::pair{std::string("chat"), array<string>{ std::string("Reference relevant messages when appropriate"), std::string("Use thread replies for detailed responses"), std::string("Include emojis when fitting the workspace culture") }}, 
+            object::pair{std::string("chat"), array<string>{ std::string("Reference relevant messages when appropriate"), std::string("Use std::thread replies for detailed responses"), std::string("Include emojis when fitting the workspace culture") }}, 
             object::pair{std::string("post"), array<string>{ std::string("Structure information with clear sections"), std::string("Use bullet points for lists"), std::string("Include relevant links when helpful") }}
         }}, 
         object::pair{std::string("settings"), object{

@@ -120,14 +120,14 @@ void Main(void)
                 maliciousVars["TEST_KEY"] = std::string("test_value");
                 maliciousVars["hasOwnProperty"] = [=]() mutable
                 {
-                    throw any(std::make_shared<Error>(std::string("hasOwnProperty was called directly!")));
+                    throw std::any(std::make_shared<Error>(std::string("hasOwnProperty was called directly!")));
                 };
                 auto error = nullptr;
                 try
                 {
                     std::async([=]() { service->write(maliciousVars); });
                 }
-                catch (const any& e)
+                catch (const std::any& e)
                 {
                     error = as<std::shared_ptr<Error>>(e);
                 }

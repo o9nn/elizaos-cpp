@@ -1,29 +1,29 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/server/src/routes/swap.h"
 
-any codex = std::make_shared<Codex>(process->env->CODEX_API_KEY);
-any router = std::make_shared<Hono<object>>();
-any ChartParamsSchema = z->object(object{
-    object::pair{std::string("pairIndex"), z->string()->transform([=](auto val) mutable
+std::any codex = std::make_shared<Codex>(process->env->CODEX_API_KEY);
+std::any router = std::make_shared<Hono<object>>();
+std::any ChartParamsSchema = z->object(object{
+    object::pair{std::string("pairIndex"), z->std::string()->transform([=](auto val) mutable
     {
         return parseInt(val);
     }
     )}, 
-    object::pair{std::string("start"), z->string()->transform([=](auto val) mutable
+    object::pair{std::string("start"), z->std::string()->transform([=](auto val) mutable
     {
         return parseInt(val);
     }
     )}, 
-    object::pair{std::string("end"), z->string()->transform([=](auto val) mutable
+    object::pair{std::string("end"), z->std::string()->transform([=](auto val) mutable
     {
         return parseInt(val);
     }
     )}, 
-    object::pair{std::string("range"), z->string()->transform([=](auto val) mutable
+    object::pair{std::string("range"), z->std::string()->transform([=](auto val) mutable
     {
         return parseInt(val);
     }
     )}, 
-    object::pair{std::string("token"), z->string()->min(32)->max(44)}
+    object::pair{std::string("token"), z->std::string()->min(32)->max(44)}
 });
 
 void Main(void)
@@ -57,7 +57,7 @@ void Main(void)
                 object::pair{std::string("table"), data}
             });
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             if (is<z->ZodError>(error)) {
                 c["json"](object{
@@ -111,7 +111,7 @@ void Main(void)
                 object::pair{std::string("imported"), tokens->imported}, 
                 object::pair{std::string("status"), tokens->status}
             })["from"](tokens)["where"](eq(tokens->mint, mint))["limit"](1); })))[0];
-            if (!token) throw any(std::make_shared<Error>(std::string("Token not found")));
+            if (!token) throw std::any(std::make_shared<Error>(std::string("Token not found")));
             auto isCodex = useCodex(token);
             if (isCodex) {
                 shared data = std::async([=]() { codex->queries->getTokenEvents(object{
@@ -125,7 +125,7 @@ void Main(void)
                 }); });
                 auto items = data->getTokenEvents->items;
                 responseData = object{
-                    object::pair{std::string("swaps"), items->map([=](auto swap) mutable
+                    object::pair{std::string("swaps"), items->std::map([=](auto swap) mutable
                     {
                         return object{
                             object::pair{std::string("account"), OR((swap["maker"]), (std::string("NA")))}, 
@@ -142,17 +142,17 @@ void Main(void)
             } else {
                 auto swapsResultRaw = array<any>();
                 auto [swapStrings] = std::async([=]() { Promise->all(array<std::shared_ptr<Promise<array<string>>>>{ redisCache->lrange(lookUpKey, 0, limit - 1) }); });
-                swapsResultRaw = swapStrings->map([=](auto s) mutable
+                swapsResultRaw = swapStrings->std::map([=](auto s) mutable
                 {
                     return JSON->parse(s);
                 }
                 );
-                auto formattedSwaps = swapsResultRaw->map([=](auto swap) mutable
+                auto formattedSwaps = swapsResultRaw->std::map([=](auto swap) mutable
                 {
                     return (utils::assign(object{
                         , 
                         object::pair{std::string("directionText"), (swap["direction"] == 0) ? std::string("buy") : std::string("sell")}, 
-                        object::pair{std::string("timestamp"), (swap["timestamp"]) ? any(((std::make_shared<Date>(swap["timestamp"])))->toISOString()) : any(nullptr)}
+                        object::pair{std::string("timestamp"), (swap["timestamp"]) ? std::any(((std::make_shared<Date>(swap["timestamp"])))->toISOString()) : std::any(nullptr)}
                     }, swap));
                 }
                 );
@@ -163,7 +163,7 @@ void Main(void)
             std::async([=]() { redisCache->setCompressed(cacheKey, responseData, 7); });
             return c["json"](responseData);
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger["error"](std::string("Error in swaps history route:"), error);
             return c["json"](object{

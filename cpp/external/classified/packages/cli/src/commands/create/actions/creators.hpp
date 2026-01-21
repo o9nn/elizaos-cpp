@@ -33,7 +33,7 @@ std::future<void> handleInteractiveConfiguration(const std::string& targetDir, c
 
     // Clean up if the directory didn't exist before and exists now
     // This handles cases where fn() created the directory but was interrupted
-    // before we could set directoryCreatedByUs flag
+    // before we could std::set directoryCreatedByUs flag
 
   // store handler references for proper cleanup
 

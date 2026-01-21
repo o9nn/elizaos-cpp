@@ -5,7 +5,7 @@ object mockConsole = object{
     object::pair{std::string("error"), mock()}, 
     object::pair{std::string("warn"), mock()}
 };
-std::function<any(std::shared_ptr<Record<string, string>>)> createMockRuntime = [=](auto settings = object{}) mutable
+std::function<std::any(std::shared_ptr<Record<std::string, string>>)> createMockRuntime = [=](auto settings = object{}) mutable
 {
     shared services = std::make_shared<Map>();
     return as<any>(object{
@@ -27,7 +27,7 @@ std::function<any(std::shared_ptr<Record<string, string>>)> createMockRuntime = 
         }, 
         object::pair{std::string("registerService"), [=](auto service) mutable
         {
-            services->set(service["constructor"]["serviceName"], service);
+            services->std::set(service["constructor"]["serviceName"], service);
         }
         }, 
         object::pair{std::string("initialize"), mock()}, 
@@ -45,7 +45,7 @@ std::function<any(std::shared_ptr<Record<string, string>>)> createMockRuntime = 
         object::pair{std::string("emitEvent"), mock()}
     });
 };
-any mockFetch = mock();
+std::any mockFetch = mock();
 
 void Main(void)
 {
@@ -232,7 +232,7 @@ void Main(void)
                 {
                     auto commands = cliCommands->getCommands();
                     expect(commands)->toHaveLength(6);
-                    expect(commands->map([=](auto c) mutable
+                    expect(commands->std::map([=](auto c) mutable
                     {
                         return c->name;
                     }
@@ -489,7 +489,7 @@ void Main(void)
             it(std::string("should handle concurrent validation requests"), [=]() mutable
             {
                 shared authService = std::make_shared<AuthenticationService>(mockRuntime);
-                auto promises = Array(10)->fill(0)->map([=]() mutable
+                auto promises = Array(10)->fill(0)->std::map([=]() mutable
                 {
                     return authService->validateApiKey(std::string("openai"), TEST_KEYS["OPENAI_TEST_KEY"]);
                 }
@@ -500,7 +500,7 @@ void Main(void)
                     return r->isValid;
                 }
                 ))->toBe(true);
-                expect(((std::make_shared<Set>(results->map([=](auto r) mutable
+                expect(((std::make_shared<Set>(results->std::map([=](auto r) mutable
                 {
                     return r->keyType;
                 }
@@ -518,7 +518,7 @@ void Main(void)
                     std::async([=]() { service->stop(); });
                     expect(true)->toBe(true);
                 }
-                catch (const any& error)
+                catch (const std::any& error)
                 {
                     expect(error)->toBeUndefined();
                 }

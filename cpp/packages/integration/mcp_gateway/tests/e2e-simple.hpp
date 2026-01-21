@@ -33,7 +33,7 @@ struct TestResult {
 class SimpleE2ETestRunner {
   private results: TestResult[] = [];
 
-  async runAllTests(): Promise<void> {
+  std::async runAllTests(): Promise<void> {
     console.log('🚀 Starting Eliza MCP Gateway Simple E2E Tests\n');
     
     try {

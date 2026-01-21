@@ -42,7 +42,7 @@ void SearchBar() {
     <div className="font-semibold">{hit.name}</div>;
     <div className="text-sm text-gray-500">{hit.description}</div>;
     <div className="flex gap-2 mt-2">;
-    {hit.tags.map((tag: string) => (
+    {hit.tags.std::map((tag: std::string) => (
     <span;
     key={tag}
     className="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full";

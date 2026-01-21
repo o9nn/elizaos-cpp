@@ -10,11 +10,11 @@ class CommunityManagerTestSuite;
 class CommunityManagerTestSuite : public TestSuite, public std::enable_shared_from_this<CommunityManagerTestSuite> {
 public:
     using std::enable_shared_from_this<CommunityManagerTestSuite>::shared_from_this;
-    string name = std::string("community-manager");
+    std::string name = std::string("community-manager");
 
-    string description = std::string("Tests for the community manager agent");
+    std::string description = std::string("Tests for the community manager agent");
 
-    any scenarioService;
+    std::any scenarioService;
 
     double completionTimeout;
 
@@ -25,7 +25,7 @@ public:
         {
             this->scenarioService = runtime->getService(std::string("scenario"));
             if (!this->scenarioService) {
-                throw any(std::make_shared<Error>(std::string("Scenario service not found")));
+                throw std::any(std::make_shared<Error>(std::string("Scenario service not found")));
             }
             auto worldId = std::async([=]() { this->scenarioService["createWorld"](std::string("Conflict Test"), std::string("Test Owner")); });
             auto roomId = std::async([=]() { this->scenarioService["createRoom"](worldId, std::string("general")); });
@@ -35,7 +35,7 @@ public:
             std::async([=]() { this->scenarioService["sendMessage"](runtime, worldId, roomId, std::string("There's a user causing disruptions in the general channel")); });
             auto completed = std::async([=]() { this->scenarioService["waitForCompletion"](this->completionTimeout); });
             if (!completed) {
-                throw any(std::make_shared<Error>(std::string("Agent did not resolve conflict in time")));
+                throw std::any(std::make_shared<Error>(std::string("Agent did not resolve conflict in time")));
             }
         }
         }
@@ -45,7 +45,7 @@ public:
         {
             this->scenarioService = runtime->getService(std::string("scenario"));
             if (!this->scenarioService) {
-                throw any(std::make_shared<Error>(std::string("Scenario service not found")));
+                throw std::any(std::make_shared<Error>(std::string("Scenario service not found")));
             }
             auto worldId = std::async([=]() { this->scenarioService["createWorld"](std::string("Onboarding Test"), std::string("Test Owner")); });
             auto roomId = std::async([=]() { this->scenarioService["createRoom"](worldId, std::string("welcome")); });
@@ -55,7 +55,7 @@ public:
             std::async([=]() { this->scenarioService["sendMessage"](runtime, worldId, roomId, std::string("Hi everyone, I'm new here!")); });
             auto completed = std::async([=]() { this->scenarioService["waitForCompletion"](this->completionTimeout); });
             if (!completed) {
-                throw any(std::make_shared<Error>(std::string("Agent did not complete onboarding in time")));
+                throw std::any(std::make_shared<Error>(std::string("Agent did not complete onboarding in time")));
             }
         }
         }
@@ -65,7 +65,7 @@ public:
         {
             this->scenarioService = runtime->getService(std::string("scenario"));
             if (!this->scenarioService) {
-                throw any(std::make_shared<Error>(std::string("Scenario service not found")));
+                throw std::any(std::make_shared<Error>(std::string("Scenario service not found")));
             }
             auto worldId = std::async([=]() { this->scenarioService["createWorld"](std::string("Moderation Test"), std::string("Test Owner")); });
             auto roomId = std::async([=]() { this->scenarioService["createRoom"](worldId, std::string("moderation")); });
@@ -75,7 +75,7 @@ public:
             std::async([=]() { this->scenarioService["sendMessage"](runtime, worldId, roomId, std::string("This user posted inappropriate content")); });
             auto completed = std::async([=]() { this->scenarioService["waitForCompletion"](this->completionTimeout); });
             if (!completed) {
-                throw any(std::make_shared<Error>(std::string("Agent did not handle moderation in time")));
+                throw std::any(std::make_shared<Error>(std::string("Agent did not handle moderation in time")));
             }
         }
         }
@@ -85,7 +85,7 @@ public:
         {
             this->scenarioService = runtime->getService(std::string("scenario"));
             if (!this->scenarioService) {
-                throw any(std::make_shared<Error>(std::string("Scenario service not found")));
+                throw std::any(std::make_shared<Error>(std::string("Scenario service not found")));
             }
             auto worldId = std::async([=]() { this->scenarioService["createWorld"](std::string("Engagement Test"), std::string("Test Owner")); });
             auto roomId = std::async([=]() { this->scenarioService["createRoom"](worldId, std::string("events")); });
@@ -95,7 +95,7 @@ public:
             std::async([=]() { this->scenarioService["sendMessage"](runtime, worldId, roomId, std::string("Let's plan the next community event")); });
             auto completed = std::async([=]() { this->scenarioService["waitForCompletion"](this->completionTimeout); });
             if (!completed) {
-                throw any(std::make_shared<Error>(std::string("Agent did not engage in time")));
+                throw std::any(std::make_shared<Error>(std::string("Agent did not engage in time")));
             }
         }
         }

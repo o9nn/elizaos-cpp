@@ -481,7 +481,7 @@ TEST_F(TheOrgTest, IntegrationWorkflow) {
     
     // Simulate developer relations workflow
     eddy->indexDocumentation("/docs/getting-started.md", "1.0.0");
-    eddy->addTechnicalKnowledge("setup", "How to set up the development environment", {"setup", "dev"});
+    eddy->addTechnicalKnowledge("setup", "How to std::set up the development environment", {"setup", "dev"});
     
     // Simulate project management workflow
     UUID projectId = jimmy->createProject("Community Platform", "Building the community platform");

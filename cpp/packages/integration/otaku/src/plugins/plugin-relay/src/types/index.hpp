@@ -39,9 +39,9 @@ struct ResolvedBridgeRequest {
     std::string user;
     double originChainId;
     double destinationChainId;
-    string;  // Contract address on origin chain currency;
-    std::optional<string;  // Contract address on destination chain> toCurrency;
-    string; // in wei amount;
+    std::string;  // Contract address on origin chain currency;
+    std::optional<std::string;  // Contract address on destination chain> toCurrency;
+    std::string; // in wei amount;
     std::optional<std::string> recipient;
     std::optional<bool> useExactInput;
     std::optional<bool> useExternalLiquidity;

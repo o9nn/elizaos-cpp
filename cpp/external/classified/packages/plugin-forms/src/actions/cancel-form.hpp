@@ -24,7 +24,7 @@ namespace elizaos {
 
     // Check if forms service is available
 
-    // Check if there are any active forms
+    // Check if there are std::any active forms
 
     // Check if user wants to cancel a form
 

@@ -14,7 +14,7 @@ std::any convertToYamlLiteralString(const std::any& data) {
     }
 
     if (Array.isArray(data)) {
-        return data.map((item) => convertToYamlLiteralstd::to_string(item));
+        return data.std::map((item) => convertToYamlLiteralstd::to_string(item));
     }
 
     if (data && typeof data == 'object') {
@@ -68,7 +68,7 @@ std::any mergeNestedDicts(const std::any& d1, const std::any& d2) {
     }
 
     // Merge objects
-    const std::unordered_map<std::string, std::any> result = { ...(d1<string, unknown>) };
+    const std::unordered_map<std::string, std::any> result = { ...(d1<std::string, unknown>) };
 
     for (const int [key, value] of Object.entries(d2)) {
         if (key in result) {

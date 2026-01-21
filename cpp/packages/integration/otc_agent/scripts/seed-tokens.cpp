@@ -14,7 +14,7 @@ std::future<void> seedTokens() {
         dotenv.config({ path: ".env.local" });
     }
 
-    // === SAFETY CHECK 1: Skip if SKIP_SEED is set ===
+    // === SAFETY CHECK 1: Skip if SKIP_SEED is std::set ===
     if (process.env.SKIP_SEED == "true") {
         std::cout << "\n⏭️  SKIP_SEED=true - skipping token seeding\n" << std::endl;
         process.exit(0);

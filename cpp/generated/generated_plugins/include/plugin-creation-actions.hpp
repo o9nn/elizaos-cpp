@@ -6,11 +6,11 @@
 #include "zod.h"
 #include "../utils/validation.h"
 
-extern any PluginSpecificationSchema;
+extern std::any PluginSpecificationSchema;
 extern std::shared_ptr<Action> createPluginAction;
 extern std::shared_ptr<Action> checkPluginCreationStatusAction;
 extern std::shared_ptr<Action> cancelPluginCreationAction;
 extern std::shared_ptr<Action> createPluginFromDescriptionAction;
-std::shared_ptr<Promise<std::shared_ptr<PluginSpecification>>> generatePluginSpecification(string description, std::shared_ptr<IAgentRuntime> runtime);
+std::shared_ptr<Promise<std::shared_ptr<PluginSpecification>>> generatePluginSpecification(std::string description, std::shared_ptr<IAgentRuntime> runtime);
 
 #endif

@@ -6,5 +6,5 @@
 typedef z::infer<AISummaryConfigSchema> AISummaryConfig;
 
 
-extern any AISummaryConfigSchema;
+extern std::any AISummaryConfigSchema;
 #endif

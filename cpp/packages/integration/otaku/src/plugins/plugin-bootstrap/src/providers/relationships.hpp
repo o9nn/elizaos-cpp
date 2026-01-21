@@ -26,7 +26,7 @@ namespace elizaos {
  *
  * @param {IAgentRuntime} runtime The runtime instance.
  * @param {Relationship[]} relationships The relationships to be formatted.
- * @returns {Promise<string>} A formatted string of the relationships.
+ * @returns {Promise<string>} A formatted std::string of the relationships.
  */
 std::future<void> formatRelationships(IAgentRuntime runtime, const std::vector<Relationship>& relationships);
 
@@ -36,7 +36,7 @@ std::future<void> formatRelationships(IAgentRuntime runtime, const std::vector<R
  * @type {Provider}
  * @property {string} name - The name of the provider ("RELATIONSHIPS").
  * @property {string} description - Description of the provider.
- * @property {Function} get - Asynchronous function to fetch relationships data.
+ * @property {Function} get - Asynchronous std::function to fetch relationships data.
  * @param {IAgentRuntime} runtime - The agent runtime object.
  * @param {Memory} message - The message object containing entity ID.
  * @returns {Promise<Object>} Object containing relationships data or error message.

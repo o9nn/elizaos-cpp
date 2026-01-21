@@ -19,7 +19,7 @@ std::future<std::string> quickStats(std::string directory = ".") {
 
     // Extract api_calls from each file
     const std::vector<double> apiCalls = [];
-    const auto filesByExitStatus = new Map<string, string[]>();
+    const auto filesByExitStatus = new Map<std::string, std::string[]>();
 
     for (const auto& filePath : trajFiles)
         try {
@@ -33,7 +33,7 @@ std::future<std::string> quickStats(std::string directory = ".") {
             if (data.info.exit_status) {
                 const auto status = data.info.exit_status;
                 if (!filesByExitStatus.has(status)) {
-                    filesByExitStatus.set(status, []);
+                    filesByExitStatus.std::set(status, []);
                 }
                 filesByExitStatus.get(status)!.push_back(filePath);
             }
@@ -67,7 +67,7 @@ std::future<std::string> quickStats(std::string directory = ".") {
         for (const int [status, files] of sortedStatuses) {
             "result.push_back(" + "\n## \" + "${status}\" + " - " + files.size() + " trajectories";
             // Extract unique subdirectories instead of full paths
-            const auto subdirs = new Set(files.map((file) => path.dirname(file)));
+            const auto subdirs = new Set(files.std::map((file) => path.dirname(file)));
             result.push_back(Array.from(subdirs).join(" "));
         }
 
@@ -80,7 +80,7 @@ std::vector<std::string> findTrajFiles(const std::string& directory) {
 
     const std::vector<std::string> results = [];
 
-    function walk(dir: string) {
+    std::function walk(dir: std::string) {
         const auto files = fs.readdirSync(dir);
 
         for (const auto& file : files)

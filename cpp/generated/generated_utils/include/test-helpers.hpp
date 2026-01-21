@@ -22,6 +22,6 @@ using sqlPlugin = plugin;
 
 std::shared_ptr<Promise<object>> createTestDatabase(std::shared_ptr<UUID> testAgentId, array<std::shared_ptr<Plugin>> testPlugins = array<std::shared_ptr<Plugin>>());
 
-std::shared_ptr<Promise<object>> createIsolatedTestDatabase(string testName, array<std::shared_ptr<Plugin>> testPlugins = array<std::shared_ptr<Plugin>>());
+std::shared_ptr<Promise<object>> createIsolatedTestDatabase(std::string testName, array<std::shared_ptr<Plugin>> testPlugins = array<std::shared_ptr<Plugin>>());
 
 #endif

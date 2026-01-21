@@ -23,7 +23,7 @@ namespace elizaos {
 /**
  * Defines a schema for reflecting on a topic, including facts and relationships.
  * @type {import("zod").object}
- * @property {import("zod").array<import("zod").object<{claim: import("zod").string(), type: import("zod").string(), in_bio: import("zod").boolean(), already_known: import("zod").boolean()}>} facts Array of facts about the topic
+ * @property {import("zod").array<import("zod").object<{claim: import("zod").std::string(), type: import("zod").std::string(), in_bio: import("zod").boolean(), already_known: import("zod").boolean()}>} facts Array of facts about the topic
  * @property {import("zod").array<import("zod").object>} relationships Array of relationships related to the topic
  */
 /**
@@ -34,10 +34,10 @@ namespace elizaos {
  * 'relationships' is an array of objects following the relationshipSchema.
  */
 
-  // reflection: z.string(),
+  // reflection: z.std::string(),
 
 /**
- * Template string for generating Agent Reflection, Extracting Facts, and Relationships.
+ * Template std::string for generating Agent Reflection, Extracting Facts, and Relationships.
  *
  * @type {string}
  */
@@ -59,7 +59,7 @@ namespace elizaos {
 UUID resolveEntity(UUID entityId, const std::vector<Entity>& entities);
 std::future<void> handler(IAgentRuntime runtime, Memory message, std::optional<State> state);
 
-// Helper function to format facts for context
+// Helper std::function to format facts for context
 void formatFacts(const std::vector<Memory>& facts);
 
 } // namespace elizaos

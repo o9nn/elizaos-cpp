@@ -8,12 +8,12 @@ TwitterParser::TwitterParser(std::shared_ptr<IAgentRuntime> runtime) {
 void TwitterParser::fillTimeframe()
 {
     auto cachedSentiments = std::async([=]() { this->runtime->getCache<array<std::shared_ptr<Sentiment>>>(std::string("sentiments")); });
-    auto sentiments = (cachedSentiments) ? any(cachedSentiments) : any(array<any>());
-    auto lookUpDate = (sentiments->get_length() > 0) ? any(const_(sentiments->sort([=](auto a, auto b) mutable
+    auto sentiments = (cachedSentiments) ? std::any(cachedSentiments) : std::any(array<any>());
+    auto lookUpDate = (sentiments->get_length() > 0) ? std::any(const_(sentiments->sort([=](auto a, auto b) mutable
     {
         return ((std::make_shared<Date>(b->timeslot)))->getTime() - ((std::make_shared<Date>(a->timeslot)))->getTime();
     }
-    ))[0]->timeslot) : any(nullptr);
+    ))[0]->timeslot) : std::any(nullptr);
     auto start = std::make_shared<Date>(OR((lookUpDate), (std::string("2025-01-01T00:00:00.000Z"))));
     start->setUTCHours(0, 0, 0, 0);
     auto today = std::make_shared<Date>();
@@ -53,11 +53,11 @@ void TwitterParser::fillTimeframe()
     logger->debug(std::string("Updated timeframes, added ") + timeSlots->get_length() + std::string(" new slots"));
 }
 
-any TwitterParser::parseTweets()
+std::any TwitterParser::parseTweets()
 {
     std::async([=]() { this->fillTimeframe(); });
     auto cachedSentiments = std::async([=]() { this->runtime->getCache<array<std::shared_ptr<Sentiment>>>(std::string("sentiments")); });
-    auto sentiments = (cachedSentiments) ? any(cachedSentiments) : any(array<any>());
+    auto sentiments = (cachedSentiments) ? std::any(cachedSentiments) : std::any(array<any>());
     auto now = std::make_shared<Date>();
     shared oneHourAgo = std::make_shared<Date>(now);
     oneHourAgo->setUTCHours(now->getUTCHours() - 1);
@@ -94,21 +94,21 @@ any TwitterParser::parseTweets()
     );
     if (OR((!tweets), (tweets->length == 0))) {
         logger->info(std::string("No tweets to process for timeslot ") + timeslot->toISOString() + string_empty);
-        auto updatedSentiments = sentiments->map([=](auto s) mutable
+        auto updatedSentiments = sentiments->std::map([=](auto s) mutable
         {
-            return (s->timeslot == unprocessedSentiment->timeslot) ? any(utils::assign(object{
+            return (s->timeslot == unprocessedSentiment->timeslot) ? std::any(utils::assign(object{
                 , 
                 object::pair{std::string("processed"), true}
-            }, s)) : any(s);
+            }, s)) : std::any(s);
         }
         );
         std::async([=]() { this->runtime->setCache<array<std::shared_ptr<Sentiment>>>(std::string("sentiments"), updatedSentiments); });
         return true;
     }
-    auto tweetArray = tweets->map([=](auto memory) mutable
+    auto tweetArray = tweets->std::map([=](auto memory) mutable
     {
         auto tweet = memory["content"];
-        return std::string("username: ") + (OR((tweet["tweet"]["username"]), (std::string("unknown")))) + std::string(" tweeted: ") + tweet["text"] + string_empty + (tweet["tweet"]["likes"]) ? any(std::string(" with ") + tweet["tweet"]["likes"] + std::string(" likes")) : any(string_empty) + string_empty + (tweet["tweet"]["retweets"]) ? any(std::string(" and ") + tweet["tweet"]["retweets"] + std::string(" retweets")) : any(string_empty) + std::string(".");
+        return std::string("username: ") + (OR((tweet["tweet"]["username"]), (std::string("unknown")))) + std::string(" tweeted: ") + tweet["text"] + string_empty + (tweet["tweet"]["likes"]) ? std::any(std::string(" with ") + tweet["tweet"]["likes"] + std::string(" likes")) : std::any(string_empty) + string_empty + (tweet["tweet"]["retweets"]) ? std::any(std::string(" and ") + tweet["tweet"]["retweets"] + std::string(" retweets")) : std::any(string_empty) + std::string(".");
     }
     );
     auto bulletpointTweets = makeBulletpointList(tweetArray);
@@ -121,14 +121,14 @@ any TwitterParser::parseTweets()
         object::pair{std::string("object"), true}
     }); });
     shared json = JSON->parse(OR((response), (std::string("{}"))));
-    auto updatedSentiments = sentiments->map([=](auto s) mutable
+    auto updatedSentiments = sentiments->std::map([=](auto s) mutable
     {
-        return (s->timeslot == unprocessedSentiment->timeslot) ? any(utils::assign(object{
+        return (s->timeslot == unprocessedSentiment->timeslot) ? std::any(utils::assign(object{
             , 
             object::pair{std::string("text"), json["text"]}, 
             object::pair{std::string("occuringTokens"), json["occuringTokens"]}, 
             object::pair{std::string("processed"), true}
-        }, s)) : any(s);
+        }, s)) : std::any(s);
     }
     );
     std::async([=]() { this->runtime->setCache<array<std::shared_ptr<Sentiment>>>(std::string("sentiments"), updatedSentiments); });
@@ -136,9 +136,9 @@ any TwitterParser::parseTweets()
     return true;
 }
 
-std::function<string(array<string>)> makeBulletpointList = [=](auto array) mutable
+std::function<std::string(array<string>)> makeBulletpointList = [=](auto array) mutable
 {
-    return array->map([=](auto a) mutable
+    return array->std::map([=](auto a) mutable
     {
         return std::string(" - ") + a + string_empty;
     }
@@ -202,8 +202,8 @@ partnerships with ethena and lido for yield generation"), std::string("lending v
 base tvl already crossing early targets"), std::string("700k users across 128 countries already using web3 phones\
 \
 jambo building real infrastructure while others just talk about adoption") };
-string rolePrompt = std::string("You are a tweet analyzer.");
-string template = std::string("Write a summary of what is happening in the tweets. The main topic is the cryptocurrency market, but you don't have to state that explicitly.\
+std::string rolePrompt = std::string("You are a tweet analyzer.");
+std::string template = std::string("Write a summary of what is happening in the tweets. The main topic is the cryptocurrency market, but you don't have to state that explicitly.\
 You will also be analyzing the tokens that occur in the tweet and tell us whether their sentiment is positive or negative.\
 \
 ## Analyze the followings tweets:\

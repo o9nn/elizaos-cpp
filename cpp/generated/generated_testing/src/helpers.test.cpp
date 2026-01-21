@@ -1,7 +1,7 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/tests/unit/utils/helpers.test.h"
 
 object originalConsoleLog = console->log;
-any consoleSpy = mock([=]() mutable
+std::any consoleSpy = mock([=]() mutable
 {
 }
 );
@@ -71,7 +71,7 @@ void Main(void)
                 displayAgent(agent);
             }
             );
-            it(std::string("should display bio string as array"), [=]() mutable
+            it(std::string("should display bio std::string as array"), [=]() mutable
             {
                 auto agent = object{
                     object::pair{std::string("name"), std::string("Test Agent")}, 

@@ -7,7 +7,7 @@ namespace elizaos {
 std::future<void> getActiveContributors(QueryParams params = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    // Find contributors with any activity in the time range
+    // Find contributors with std::any activity in the time range
     const auto activeUsernames = new Set<string>();
     // PRs
     const auto prAuthorsConditions = buildCommonWhereConditions(;

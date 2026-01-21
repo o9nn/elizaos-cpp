@@ -12,13 +12,13 @@ public:
     using std::enable_shared_from_this<ApiKeyValidationResult>::shared_from_this;
     boolean isValid;
 
-    string provider;
+    std::string provider;
 
-    any keyType;
+    std::any keyType;
 
     array<string> capabilities;
 
-    string errorMessage;
+    std::string errorMessage;
 
     object rateLimits;
 
@@ -28,7 +28,7 @@ public:
 class AuthStatus : public object, public std::enable_shared_from_this<AuthStatus> {
 public:
     using std::enable_shared_from_this<AuthStatus>::shared_from_this;
-    any overall;
+    std::any overall;
 
     object providers;
 
@@ -43,30 +43,30 @@ public:
     using std::enable_shared_from_this<AuthenticationService>::shared_from_this;
     std::shared_ptr<IAgentRuntime> runtime;
 
-    any lastAuthStatus = nullptr;
+    std::any lastAuthStatus = nullptr;
 
-    std::shared_ptr<Map<string, object>> validationCache = std::make_shared<Map<string, object>>();
+    std::shared_ptr<Map<std::string, object>> validationCache = std::make_shared<Map<std::string, object>>();
 
     double CACHE_TTL = 5 * 60 * 1000;
 
     AuthenticationService(std::shared_ptr<IAgentRuntime> runtime);
-    virtual std::shared_ptr<Promise<std::shared_ptr<ApiKeyValidationResult>>> validateApiKey(string provider, string apiKey);
+    virtual std::shared_ptr<Promise<std::shared_ptr<ApiKeyValidationResult>>> validateApiKey(std::string provider, std::string apiKey);
     virtual std::shared_ptr<Promise<std::shared_ptr<AuthStatus>>> getAuthStatus();
-    virtual std::shared_ptr<Promise<object>> testApiFunctionality(string provider);
+    virtual std::shared_ptr<Promise<object>> testApiFunctionality(std::string provider);
     virtual std::shared_ptr<Promise<object>> validateAllProviders();
-    virtual any getApiKey(string provider);
-    virtual boolean isTestKey(string apiKey);
-    virtual array<string> getTestKeyCapabilities(string provider);
-    virtual std::shared_ptr<Promise<std::shared_ptr<ApiKeyValidationResult>>> performRealKeyValidation(string provider, string apiKey);
-    virtual std::shared_ptr<Promise<std::shared_ptr<ApiKeyValidationResult>>> validateOpenAIKey(string apiKey);
-    virtual std::shared_ptr<Promise<std::shared_ptr<ApiKeyValidationResult>>> validateGroqKey(string apiKey);
-    virtual std::shared_ptr<Promise<std::shared_ptr<ApiKeyValidationResult>>> validateAnthropicKey(string apiKey);
-    virtual std::shared_ptr<Promise<object>> performApiTest(string provider, string apiKey);
-    virtual std::shared_ptr<Promise<object>> testOpenAI(string apiKey);
-    virtual std::shared_ptr<Promise<object>> testGroq(string apiKey);
-    virtual std::shared_ptr<Promise<object>> testAnthropic(string apiKey);
+    virtual std::any getApiKey(std::string provider);
+    virtual boolean isTestKey(std::string apiKey);
+    virtual array<string> getTestKeyCapabilities(std::string provider);
+    virtual std::shared_ptr<Promise<std::shared_ptr<ApiKeyValidationResult>>> performRealKeyValidation(std::string provider, std::string apiKey);
+    virtual std::shared_ptr<Promise<std::shared_ptr<ApiKeyValidationResult>>> validateOpenAIKey(std::string apiKey);
+    virtual std::shared_ptr<Promise<std::shared_ptr<ApiKeyValidationResult>>> validateGroqKey(std::string apiKey);
+    virtual std::shared_ptr<Promise<std::shared_ptr<ApiKeyValidationResult>>> validateAnthropicKey(std::string apiKey);
+    virtual std::shared_ptr<Promise<object>> performApiTest(std::string provider, std::string apiKey);
+    virtual std::shared_ptr<Promise<object>> testOpenAI(std::string apiKey);
+    virtual std::shared_ptr<Promise<object>> testGroq(std::string apiKey);
+    virtual std::shared_ptr<Promise<object>> testAnthropic(std::string apiKey);
     virtual void clearCache();
-    virtual any getCachedAuthStatus();
+    virtual std::any getCachedAuthStatus();
 };
 
 #endif

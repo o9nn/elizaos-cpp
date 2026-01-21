@@ -8,13 +8,13 @@ class TaskMetadata;
 class TableSchema : public object, public std::enable_shared_from_this<TableSchema> {
 public:
     using std::enable_shared_from_this<TableSchema>::shared_from_this;
-    string name;
+    std::string name;
 
-    string pluginName;
+    std::string pluginName;
 
-    string sql;
+    std::string sql;
 
-    string fallbackSql;
+    std::string fallbackSql;
 
     array<string> dependencies;
 };
@@ -23,17 +23,17 @@ extern array<std::shared_ptr<TableSchema>> GOALS_TABLES;
 class TaskMetadata : public object, public std::enable_shared_from_this<TaskMetadata> {
 public:
     using std::enable_shared_from_this<TaskMetadata>::shared_from_this;
-    string dueDate;
+    std::string dueDate;
 
     double streak;
 
     boolean completedToday;
 
-    string lastReminderSent;
+    std::string lastReminderSent;
 
     double pointsAwarded;
 
-    string completedAt;
+    std::string completedAt;
 };
 
 #endif

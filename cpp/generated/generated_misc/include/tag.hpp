@@ -7,5 +7,5 @@ enum struct Tag;
 enum struct Tag {
     TAGS_MADE_BY_USER = 0, TAGGED_USERS = 1
 };
-extern std::function<string(Tag)> getTagName;
+extern std::function<std::string(Tag)> getTagName;
 #endif

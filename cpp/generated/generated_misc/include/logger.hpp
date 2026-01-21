@@ -7,16 +7,16 @@ class Logger;
 class Logger : public object, public std::enable_shared_from_this<Logger> {
 public:
     using std::enable_shared_from_this<Logger>::shared_from_this;
-    string prefix;
+    std::string prefix;
 
-    Logger(string prefix = std::string("ElizaOS"));
-    virtual void log(string level, string message);
-    virtual void info(string message);
-    virtual void warn(string message);
-    virtual void error(string message);
-    virtual void debug(string message);
+    Logger(std::string prefix = std::string("ElizaOS"));
+    virtual void log(std::string level, std::string message);
+    virtual void info(std::string message);
+    virtual void warn(std::string message);
+    virtual void error(std::string message);
+    virtual void debug(std::string message);
 };
 
-std::shared_ptr<Logger> createLogger(string prefix = undefined);
+std::shared_ptr<Logger> createLogger(std::string prefix = undefined);
 
 #endif

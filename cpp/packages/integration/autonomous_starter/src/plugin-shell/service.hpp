@@ -29,10 +29,10 @@ struct ShellHistoryEntry {
 // Interface for file operations
 struct FileOperationEntry {
     double timestamp;
-    string; // e.g., "read", "write", "delete", "create_dir", "edit", "move", "copy" operationType;
-    string; // The full command command;
-    string; // The primary file or directory path involved target;
-    std::optional<string; // For commands like mv, cp> secondaryTarget;
+    std::string; // e.g., "read", "write", "delete", "create_dir", "edit", "move", "copy" operationType;
+    std::string; // The full command command;
+    std::string; // The primary file or directory path involved target;
+    std::optional<std::string; // For commands like mv, cp> secondaryTarget;
     std::string cwd;
 };
 
@@ -49,14 +49,14 @@ class ShellService extends Service {
   private maxHistoryLength = 100; // Store the last 100 commands
   private maxFileOperationHistoryLength = 10; // Store last 10 file operations
 
-  private currentWorkingDirectory: string = process.cwd();
+  private currentWorkingDirectory: std::string = process.cwd();
 
   constructor(runtime: IAgentRuntime) {
     super(runtime);
     logger.info("[ShellService] Initialized");
   }
 
-    // No specific async startup actions needed for now
+    // No specific std::async startup actions needed for now
 
       // Handle 'cd' command separately to update CWD
           // Attempt to change directory

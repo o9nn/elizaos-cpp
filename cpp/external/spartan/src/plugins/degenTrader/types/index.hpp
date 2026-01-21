@@ -76,7 +76,7 @@ struct PriceSignalMessage {
 
 struct PortfolioStatus {
     double totalValue;
-    { [tokenAddress: string]: { amount: number; value: number } } positions;
+    { [tokenAddress: std::string]: { amount: number; value: number } } positions;
 
 struct TradePerformanceData {
     std::string token_address;

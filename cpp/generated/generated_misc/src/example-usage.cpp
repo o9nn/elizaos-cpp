@@ -50,7 +50,7 @@ void createTodoPlugin(std::shared_ptr<Agent> agent)
 {
     auto description = std::string("\
         I need a plugin that helps manage todo lists. It should have:\
-        - An action to add new todos with title and optional due date\
+        - An action to add new todos with title and std::optional due date\
         - An action to mark todos as complete\
         - An action to list all todos with filtering options\
         - A provider that shows pending todo count\
@@ -76,7 +76,7 @@ Recent logs:\
 };
 
 
-any getDatabasePluginSpec()
+std::any getDatabasePluginSpec()
 {
     return object{
         object::pair{std::string("name"), std::string("@elizaos/plugin-postgres")}, 
@@ -123,7 +123,7 @@ any getDatabasePluginSpec()
 };
 
 
-any getSocialMediaPluginSpec()
+std::any getSocialMediaPluginSpec()
 {
     return object{
         object::pair{std::string("name"), std::string("@elizaos/plugin-social")}, 
@@ -134,7 +134,7 @@ any getSocialMediaPluginSpec()
             object::pair{std::string("description"), std::string("Post a message to Twitter/X")}, 
             object::pair{std::string("parameters"), object{
                 object::pair{std::string("message"), std::string("string")}, 
-                object::pair{std::string("mediaUrls"), std::string("string[]")}
+                object::pair{std::string("mediaUrls"), std::string("std::string[]")}
             }}
         }, object{
             object::pair{std::string("name"), std::string("schedulePost")}, 

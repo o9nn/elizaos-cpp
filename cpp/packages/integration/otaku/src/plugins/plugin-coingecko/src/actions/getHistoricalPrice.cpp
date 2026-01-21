@@ -55,7 +55,7 @@ std::string parseDateToApiFormat(const std::string& dateStr) {
                                 date = new Date();
                                 date.setFullYear(date.getFullYear() - years);
                                 } else {
-                                    // Try parsing as a date string (yyyy-mm-dd, mm/dd/yyyy, etc.)
+                                    // Try parsing as a date std::string (yyyy-mm-dd, mm/dd/yyyy, etc.)
                                     date = new Date(dateStr);
                                     if (isNaN(date.getTime())) {
                                         throw std::runtime_error(`Unable to parse date: ${dateStr}`);

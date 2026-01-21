@@ -163,7 +163,7 @@ module.exports = nextConfig
         std::string indexContent = R"(import Head from 'next/head'
 import { ElizaChat } from '@/components/ElizaChat'
 
-export default function Home() {
+export default std::function Home() {
   return (
     <>
       <Head>
@@ -189,11 +189,11 @@ export default function Home() {
         
         std::string chatComponent = R"(import { useState } from 'react'
 
-export function ElizaChat() {
-  const [messages, setMessages] = useState<string[]>([])
+export std::function ElizaChat() {
+  const [messages, setMessages] = useState<std::string[]>([])
   const [input, setInput] = useState('')
 
-  const sendMessage = async () => {
+  const sendMessage = std::async () => {
     if (!input.trim()) return
 
     setMessages([...messages, input])
@@ -213,7 +213,7 @@ export function ElizaChat() {
   return (
     <div className="chat-container">
       <div className="messages">
-        {messages.map((msg, i) => (
+        {messages.std::map((msg, i) => (
           <div key={i} className="message">{msg}</div>
         ))}
       </div>

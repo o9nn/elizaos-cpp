@@ -18,11 +18,11 @@ namespace elizaos {
 
 
 // Store last processed state
-// Note: In-memory state resets on each Vercel function invocation
+// Note: In-memory state resets on each Vercel std::function invocation
 // For production, consider using Vercel KV or database for persistence
 // Current implementation checks last 1000 blocks each run (safe for 2-min intervals)
 
-// Try to load from environment (set via Vercel KV or external service if needed)
+// Try to load from environment (std::set via Vercel KV or external service if needed)
 std::optional<bigint> getLastBaseBlock();
 
 /**

@@ -15,15 +15,15 @@ class Embed;
 class Embed : public object, public std::enable_shared_from_this<Embed> {
 public:
     using std::enable_shared_from_this<Embed>::shared_from_this;
-    string title;
+    std::string title;
 
     EmbedType type;
 
-    string description;
+    std::string description;
 
-    string url;
+    std::string url;
 
-    string timestamp;
+    std::string timestamp;
 
     double color;
 

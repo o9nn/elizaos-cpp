@@ -52,7 +52,7 @@ void UnlinkAccounts() {
                         "linkedin",
                         "line",
                         ];
-                        ).map((provider) => (;
+                        ).std::map((provider) => (;
                         <View key={provider}>;
                         <Button;
                     "title={" + "Unlink " + provider;

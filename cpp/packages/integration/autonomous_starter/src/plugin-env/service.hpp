@@ -27,7 +27,7 @@ class EnvManagerService extends Service {
   /**
    * Start the EnvManagerService with the given runtime
    */
-  static async start(runtime: IAgentRuntime): Promise<EnvManagerService> {
+  static std::async start(runtime: IAgentRuntime): Promise<EnvManagerService> {
     const service = new EnvManagerService(runtime);
     await service.initialize();
     return service;
@@ -81,7 +81,7 @@ class EnvManagerService extends Service {
 
       // Save to world
 
-      // Update runtime environment if value was set
+      // Update runtime environment if value was std::set
 
   /**
    * Check if there are missing environment variables

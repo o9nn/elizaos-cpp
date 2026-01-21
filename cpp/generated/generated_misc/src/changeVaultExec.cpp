@@ -18,7 +18,7 @@ void Main(void)
             console->log(std::string("Transaction sent successfully!"));
             console->log(std::string("Signature:"), txSignature);
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             console->error(std::string("Error changing executor authority:"), error);
         }

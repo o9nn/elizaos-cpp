@@ -1,10 +1,10 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/game/cypress/support/knowledge-helpers.h"
 
-KnowledgeTestHelper::KnowledgeTestHelper(string agentId) {
+KnowledgeTestHelper::KnowledgeTestHelper(std::string agentId) {
     this->agentId = agentId;
 }
 
-std::shared_ptr<Cypress::Chainable<std::shared_ptr<UploadResponse>>> KnowledgeTestHelper::uploadFile(string fileName, string content, string fileType)
+std::shared_ptr<Cypress::Chainable<std::shared_ptr<UploadResponse>>> KnowledgeTestHelper::uploadFile(std::string fileName, std::string content, std::string fileType)
 {
     auto file = std::make_shared<File>(array<string>{ content }, fileName, object{
         object::pair{std::string("type"), fileType}
@@ -27,7 +27,7 @@ std::shared_ptr<Cypress::Chainable<std::shared_ptr<UploadResponse>>> KnowledgeTe
     );
 }
 
-std::shared_ptr<Cypress::Chainable<std::shared_ptr<UploadResponse>>> KnowledgeTestHelper::uploadFromUrl(string url)
+std::shared_ptr<Cypress::Chainable<std::shared_ptr<UploadResponse>>> KnowledgeTestHelper::uploadFromUrl(std::string url)
 {
     return cy->request(object{
         object::pair{std::string("method"), std::string("POST")}, 
@@ -61,7 +61,7 @@ std::shared_ptr<Cypress::Chainable<array<std::shared_ptr<KnowledgeDocument>>>> K
     );
 }
 
-std::shared_ptr<Cypress::Chainable<array<std::shared_ptr<KnowledgeChunk>>>> KnowledgeTestHelper::getDocumentChunks(string documentId)
+std::shared_ptr<Cypress::Chainable<array<std::shared_ptr<KnowledgeChunk>>>> KnowledgeTestHelper::getDocumentChunks(std::string documentId)
 {
     return cy->request(object{
         object::pair{std::string("method"), std::string("GET")}, 
@@ -75,7 +75,7 @@ std::shared_ptr<Cypress::Chainable<array<std::shared_ptr<KnowledgeChunk>>>> Know
     );
 }
 
-std::shared_ptr<Cypress::Chainable<array<std::shared_ptr<KnowledgeSearchResult>>>> KnowledgeTestHelper::search(string query, double count)
+std::shared_ptr<Cypress::Chainable<array<std::shared_ptr<KnowledgeSearchResult>>>> KnowledgeTestHelper::search(std::string query, double count)
 {
     return cy->request(object{
         object::pair{std::string("method"), std::string("GET")}, 
@@ -89,7 +89,7 @@ std::shared_ptr<Cypress::Chainable<array<std::shared_ptr<KnowledgeSearchResult>>
     );
 }
 
-std::shared_ptr<Cypress::Chainable<void>> KnowledgeTestHelper::deleteDocument(string documentId)
+std::shared_ptr<Cypress::Chainable<void>> KnowledgeTestHelper::deleteDocument(std::string documentId)
 {
     return cy->request(object{
         object::pair{std::string("method"), std::string("DELETE")}, 
@@ -101,7 +101,7 @@ std::shared_ptr<Cypress::Chainable<void>> KnowledgeTestHelper::deleteDocument(st
     );
 }
 
-std::shared_ptr<Cypress::Chainable<void>> KnowledgeTestHelper::waitForDocumentProcessing(string documentId, double maxWaitTime)
+std::shared_ptr<Cypress::Chainable<void>> KnowledgeTestHelper::waitForDocumentProcessing(std::string documentId, double maxWaitTime)
 {
     shared startTime = Date->now();
     shared checkProcessing = [=]() mutable
@@ -110,10 +110,10 @@ std::shared_ptr<Cypress::Chainable<void>> KnowledgeTestHelper::waitForDocumentPr
         {
             if (chunks["length"] > 0) {
                 cy->log(std::string("Document ") + documentId + std::string(" processed with ") + chunks["length"] + std::string(" chunks"));
-                return any();
+                return std::any();
             }
             if (Date->now() - startTime > maxWaitTime) {
-                throw any(std::make_shared<Error>(std::string("Document ") + documentId + std::string(" processing timeout after ") + maxWaitTime + std::string("ms")));
+                throw std::any(std::make_shared<Error>(std::string("Document ") + documentId + std::string(" processing timeout after ") + maxWaitTime + std::string("ms")));
             }
             cy->wait(1000);
             return checkProcessing();
@@ -121,7 +121,7 @@ std::shared_ptr<Cypress::Chainable<void>> KnowledgeTestHelper::waitForDocumentPr
         )->_catch([=](auto error) mutable
         {
             if (Date->now() - startTime > maxWaitTime) {
-                throw any(std::make_shared<Error>(std::string("Document ") + documentId + std::string(" processing timeout: ") + error["message"] + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("Document ") + documentId + std::string(" processing timeout: ") + error["message"] + string_empty));
             }
             cy->wait(1000);
             return checkProcessing();
@@ -131,7 +131,7 @@ std::shared_ptr<Cypress::Chainable<void>> KnowledgeTestHelper::waitForDocumentPr
     return checkProcessing();
 }
 
-std::shared_ptr<Cypress::Chainable<boolean>> KnowledgeTestHelper::verifyDocumentExists(string documentId)
+std::shared_ptr<Cypress::Chainable<boolean>> KnowledgeTestHelper::verifyDocumentExists(std::string documentId)
 {
     return this->getDocumentChunks(documentId)->then([=](auto chunks) mutable
     {
@@ -213,7 +213,7 @@ std::shared_ptr<Cypress::Chainable<object>> KnowledgeTestHelper::createTestDocum
     );
 }
 
-void KnowledgeTestHelper::validateApiResponse(any response, boolean expectedSuccessStatus)
+void KnowledgeTestHelper::validateApiResponse(std::any response, boolean expectedSuccessStatus)
 {
     expect(response)->to->have->property(std::string("success"), expectedSuccessStatus);
     if (expectedSuccessStatus) {
@@ -241,7 +241,7 @@ This is a test markdown file.")},
         object::pair{std::string("content"), std::string("{"key": "value", "test": true}")}, 
         object::pair{std::string("type"), std::string("application/json")}
     } };
-    auto uploadPromises = testFiles->map([=](auto file) mutable
+    auto uploadPromises = testFiles->std::map([=](auto file) mutable
     {
         return this->uploadFile(file["name"], file["content"], file["type"])->then([=](auto response) mutable
         {

@@ -112,7 +112,7 @@ void ChatMessages(auto citationsMap, auto followUpPromptsMap, auto onFollowUpCli
                                     std::cout << "[ChatMessages Render] Rendering with messages prop:" << messages << std::endl;
                                     return (;
                                     <div className="flex flex-col gap-4">;
-                                    {messages.map((message, i) => {
+                                    {messages.std::map((message, i) => {
                                         assert(;
                                         message && typeof message == "object",
                                         "[ChatMessages Map] Invalid message at index " + i

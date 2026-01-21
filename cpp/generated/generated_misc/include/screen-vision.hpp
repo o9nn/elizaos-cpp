@@ -12,9 +12,9 @@ class ScreenVisionE2ETestSuite;
 class ScreenVisionE2ETestSuite : public TestSuite, public std::enable_shared_from_this<ScreenVisionE2ETestSuite> {
 public:
     using std::enable_shared_from_this<ScreenVisionE2ETestSuite>::shared_from_this;
-    string name = std::string("plugin-vision-screen-e2e");
+    std::string name = std::string("plugin-vision-screen-e2e");
 
-    string description = std::string("E2E tests for screen vision functionality including Florence-2 and OCR");
+    std::string description = std::string("E2E tests for screen vision functionality including Florence-2 and OCR");
 
     array<object> tests = array<object>{ object{
         object::pair{std::string("name"), std::string("Should initialize screen vision components")}, 
@@ -23,7 +23,7 @@ public:
             console->log(std::string("Testing screen vision initialization..."));
             auto visionService = runtime->getService<std::shared_ptr<VisionService>>(std::string("VISION"));
             if (!visionService) {
-                throw any(std::make_shared<Error>(std::string("Vision service not available")));
+                throw std::any(std::make_shared<Error>(std::string("Vision service not available")));
             }
             std::async([=]() { visionService->setVisionMode(VisionMode::SCREEN); });
             std::async([=]() { std::make_shared<Promise>([=](auto resolve) mutable
@@ -33,7 +33,7 @@ public:
             ); });
             auto mode = visionService->getVisionMode();
             if (mode != VisionMode::SCREEN) {
-                throw any(std::make_shared<Error>(std::string("Expected vision mode SCREEN but got ") + mode + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("Expected vision mode SCREEN but got ") + mode + string_empty));
             }
             console->log(std::string("✓ Screen vision mode activated"));
             auto screenInfo = std::async([=]() { visionService->getScreenCapture(); });
@@ -51,7 +51,7 @@ public:
             console->log(std::string("Testing screen capture and tiling..."));
             auto visionService = runtime->getService<std::shared_ptr<VisionService>>(std::string("VISION"));
             if (!visionService) {
-                throw any(std::make_shared<Error>(std::string("Vision service not available")));
+                throw std::any(std::make_shared<Error>(std::string("Vision service not available")));
             }
             std::async([=]() { visionService->setVisionMode(VisionMode::SCREEN); });
             std::async([=]() { std::make_shared<Promise>([=](auto resolve) mutable
@@ -68,7 +68,7 @@ public:
             console->log(std::string("✓ Divided into ") + screenCapture->tiles->length + std::string(" tiles"));
             auto firstTile = const_(screenCapture->tiles)[0];
             if (!firstTile) {
-                throw any(std::make_shared<Error>(std::string("No tiles created from screen capture")));
+                throw std::any(std::make_shared<Error>(std::string("No tiles created from screen capture")));
             }
             console->log(std::string("  First tile: ") + firstTile->id + std::string(" at (") + firstTile->x + std::string(", ") + firstTile->y + std::string(")"));
             console->log(std::string("  Tile size: ") + firstTile->width + std::string("x") + firstTile->height + string_empty);
@@ -90,7 +90,7 @@ public:
             console->log(std::string("Testing screen content analysis..."));
             auto visionService = runtime->getService<std::shared_ptr<VisionService>>(std::string("VISION"));
             if (!visionService) {
-                throw any(std::make_shared<Error>(std::string("Vision service not available")));
+                throw std::any(std::make_shared<Error>(std::string("Vision service not available")));
             }
             std::async([=]() { visionService->setVisionMode(VisionMode::SCREEN); });
             std::async([=]() { std::make_shared<Promise>([=](auto resolve) mutable
@@ -122,7 +122,7 @@ public:
             }
             if (AND((screenAnalysis->uiElements), (screenAnalysis->uiElements->length > 0))) {
                 console->log(std::string("✓ UI elements detected: ") + screenAnalysis->uiElements->length + string_empty);
-                auto elementTypes = screenAnalysis->uiElements->map([=](auto e) mutable
+                auto elementTypes = screenAnalysis->uiElements->std::map([=](auto e) mutable
                 {
                     return e["type"];
                 }
@@ -139,7 +139,7 @@ public:
             console->log(std::string("Testing vision mode switching..."));
             auto visionService = runtime->getService<std::shared_ptr<VisionService>>(std::string("VISION"));
             if (!visionService) {
-                throw any(std::make_shared<Error>(std::string("Vision service not available")));
+                throw std::any(std::make_shared<Error>(std::string("Vision service not available")));
             }
             auto modes = array<VisionMode>{ VisionMode::CAMERA, VisionMode::SCREEN, VisionMode::BOTH, VisionMode::OFF };
             for (auto& mode : modes)
@@ -153,7 +153,7 @@ public:
                 ); });
                 auto currentMode = visionService->getVisionMode();
                 if (currentMode != static_cast<long>(mode)) {
-                    throw any(std::make_shared<Error>(std::string("Failed to switch to ") + mode + std::string(" mode, current mode is ") + currentMode + string_empty));
+                    throw std::any(std::make_shared<Error>(std::string("Failed to switch to ") + mode + std::string(" mode, current mode is ") + currentMode + string_empty));
                 }
                 console->log(std::string("  ✓ Successfully switched to ") + mode + std::string(" mode"));
             }
@@ -162,7 +162,7 @@ public:
                 object::pair{std::string("id"), createUniqueUuid(runtime, std::string("test-msg"))}, 
                 object::pair{std::string("entityId"), runtime->agentId}, 
                 object::pair{std::string("content"), object{
-                    object::pair{std::string("text"), std::string("set vision mode to both")}
+                    object::pair{std::string("text"), std::string("std::set vision mode to both")}
                 }}, 
                 object::pair{std::string("agentId"), runtime->agentId}, 
                 object::pair{std::string("roomId"), createUniqueUuid(runtime, std::string("test-room"))}, 
@@ -181,11 +181,11 @@ public:
             }
             ); });
             if (!callbackCalled) {
-                throw any(std::make_shared<Error>(std::string("SET_VISION_MODE action did not call callback")));
+                throw std::any(std::make_shared<Error>(std::string("SET_VISION_MODE action did not call callback")));
             }
             auto finalMode = visionService->getVisionMode();
             if (finalMode != VisionMode::BOTH) {
-                throw any(std::make_shared<Error>(std::string("SET_VISION_MODE action failed, mode is ") + finalMode + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("SET_VISION_MODE action failed, mode is ") + finalMode + string_empty));
             }
             console->log(std::string("✓ Vision mode switching works correctly"));
         }
@@ -197,7 +197,7 @@ public:
             console->log(std::string("Testing combined camera and screen vision..."));
             auto visionService = runtime->getService<std::shared_ptr<VisionService>>(std::string("VISION"));
             if (!visionService) {
-                throw any(std::make_shared<Error>(std::string("Vision service not available")));
+                throw std::any(std::make_shared<Error>(std::string("Vision service not available")));
             }
             std::async([=]() { visionService->setVisionMode(VisionMode::BOTH); });
             std::async([=]() { std::make_shared<Promise>([=](auto resolve) mutable
@@ -246,7 +246,7 @@ public:
             console->log(std::string("Testing error handling..."));
             auto visionService = runtime->getService<std::shared_ptr<VisionService>>(std::string("VISION"));
             if (!visionService) {
-                throw any(std::make_shared<Error>(std::string("Vision service not available")));
+                throw std::any(std::make_shared<Error>(std::string("Vision service not available")));
             }
             auto originalConfig = (as<any>(visionService))["visionConfig"];
             (as<any>(visionService))["visionConfig"]["screenRegion"] = object{

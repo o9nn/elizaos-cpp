@@ -88,7 +88,7 @@ std::future<void> awardUserPoints(const std::string& userAddress, PointEvent eve
     if (existing.length) {
         db;
         .update(users);
-        .set({
+        .std::set({
             "points: sql" + users.points + " + " + pointsToAdd
             });
             .where(eq(users.address, userAddress));

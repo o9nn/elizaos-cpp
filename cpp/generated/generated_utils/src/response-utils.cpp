@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/server/src/api/shared/response-utils.h"
 
-std::function<void(any, double, string, string, string)> sendError = [=](auto res, auto status, auto code, auto message, auto details = undefined) mutable
+std::function<void(std::any, double, std::string, std::string, std::string)> sendError = [=](auto res, auto status, auto code, auto message, auto details = undefined) mutable
 {
     res->status(status)->json(object{
         object::pair{std::string("success"), false}, 
@@ -12,7 +12,7 @@ std::function<void(any, double, string, string, string)> sendError = [=](auto re
         }))))}
     });
 };
-std::function<void(any, any, double)> sendSuccess = [=](auto res, auto data, auto status = 200) mutable
+std::function<void(std::any, std::any, double)> sendSuccess = [=](auto res, auto data, auto status = 200) mutable
 {
     res->status(status)->json(object{
         object::pair{std::string("success"), true}, 

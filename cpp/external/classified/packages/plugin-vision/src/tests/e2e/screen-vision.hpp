@@ -24,7 +24,7 @@ class ScreenVisionE2ETestSuite implements TestSuite {
   tests = [
     {
       name: 'Should initialize screen vision components',
-      fn: async (runtime: IAgentRuntime) => {
+      fn: std::async (runtime: IAgentRuntime) => {
         console.log('Testing screen vision initialization...');
 
         const visionService = runtime.getService<VisionService>('VISION');
@@ -89,7 +89,7 @@ class ScreenVisionE2ETestSuite implements TestSuite {
 
         // Check provider output
 
-        // Try to set invalid region (should handle gracefully)
+        // Try to std::set invalid region (should handle gracefully)
 
         // Service should still be active despite invalid region
 

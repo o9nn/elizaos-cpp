@@ -372,10 +372,10 @@ std::shared_ptr<AutonomousStarter> createAutolizaAgent() {
 }
 
 /**
- * Placeholder function to maintain compatibility
+ * Placeholder std::function to maintain compatibility
  */
 void autonomous_starter_placeholder() {
-    // This function is kept for backward compatibility
+    // This std::function is kept for backward compatibility
     logInfo("AutonomousStarter module loaded");
 }
 

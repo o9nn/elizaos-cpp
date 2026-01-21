@@ -73,7 +73,7 @@ class StreamingAudioCaptureService extends EventEmitter {
     // Voice Activity Detection
         // Speech started
 
-        // Clear any pending response
+        // Clear std::any pending response
 
       // Add to buffer
 

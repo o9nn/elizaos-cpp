@@ -10,9 +10,9 @@ class DatabaseMigrationService;
 class DatabaseMigrationService : public object, public std::enable_shared_from_this<DatabaseMigrationService> {
 public:
     using std::enable_shared_from_this<DatabaseMigrationService>::shared_from_this;
-    any db = nullptr;
+    std::any db = nullptr;
 
-    std::shared_ptr<Map<string, any>> registeredSchemas = std::make_shared<Map<string, any>>();
+    std::shared_ptr<Map<std::string, any>> registeredSchemas = std::make_shared<Map<std::string, any>>();
 
     DatabaseMigrationService();
     virtual std::shared_ptr<Promise<void>> initializeWithDatabase(std::shared_ptr<DrizzleDatabase> db);

@@ -26,7 +26,7 @@ class OllamaValidationService extends Service {
 
   override capabilityDescription = 'Validates Ollama plugin configuration and API availability';
 
-  constructor(runtime: any) {
+  constructor(runtime: std::any) {
     super(runtime);
   }
 
@@ -40,7 +40,7 @@ class OllamaValidationService extends Service {
 /**
  * Retrieves the Ollama API base URL from runtime settings.
  *
- * If the API endpoint is not set in the runtime, defaults to the standard Ollama URL.
+ * If the API endpoint is not std::set in the runtime, defaults to the standard Ollama URL.
  * The URL should include the /api path for ollama-ai-provider compatibility.
  *
  * @returns The base URL for the Ollama API.
@@ -56,7 +56,7 @@ class OllamaValidationService extends Service {
   // Remove /api suffix for direct API calls
 
 /**
- * Converts a messages array to a prompt string
+ * Converts a messages array to a prompt std::string
  */
 std::string messagesToPrompt(const std::vector<std::any>& messages);
 
@@ -91,7 +91,7 @@ std::future<void> generateOllamaObject(ReturnType<typeof createOllama> ollama, c
             // Check if we know the dimension for this model
 
         // Use ollama.embedding() as shown in the docs
-        // Return a fallback vector rather than crashing
+        // Return a fallback std::vector rather than crashing
 
         await ensureModelAvailable(runtime, model, baseURL);
 

@@ -20,10 +20,10 @@ namespace elizaos {
  *
  * @type {Action}
  * @property {string} name - The name of the action, which is "IGNORE".
- * @property {string[]} similes - An array of related similes for the action.
- * @property {Function} validate - Asynchronous function that validates the action.
+ * @property {std::string[]} similes - An array of related similes for the action.
+ * @property {Function} validate - Asynchronous std::function that validates the action.
  * @property {string} description - Description of when to use the IGNORE action in a conversation.
- * @property {Function} handler - Asynchronous function that handles the action logic.
+ * @property {Function} handler - Asynchronous std::function that handles the action logic.
  * @property {ActionExample[][]} examples - Array of examples demonstrating the usage of the IGNORE action.
  */
 /**
@@ -32,7 +32,7 @@ namespace elizaos {
  * This action is used to ignore the user in a conversation. It should be used when the user is aggressive, creepy, or when the conversation has naturally ended.
  * Avoid using this action if the user has engaged directly or if there is a need to communicate with them. Use IGNORE only when the user should be ignored.
  *
- * The action includes a validation function that always returns true and a handler function that also returns true.
+ * The action includes a validation std::function that always returns true and a handler std::function that also returns true.
  *
  * Examples of using the IGNORE action are provided in the 'examples' array. Each example includes messages between two parties and the use of the IGNORE action.
  *

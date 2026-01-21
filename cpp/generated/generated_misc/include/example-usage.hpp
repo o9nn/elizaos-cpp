@@ -10,9 +10,9 @@ void createTodoPlugin(std::shared_ptr<Agent> agent);
 
 void monitorPluginCreation(std::shared_ptr<Agent> agent);
 
-any getDatabasePluginSpec();
+std::any getDatabasePluginSpec();
 
-any getSocialMediaPluginSpec();
+std::any getSocialMediaPluginSpec();
 
 void main();
 

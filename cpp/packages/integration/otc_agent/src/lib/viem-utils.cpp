@@ -6,7 +6,7 @@ namespace elizaos {
 
 std::future<> readERC20Info(PublicClient client, Address tokenAddress) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    symbol: string; name: string; decimals: number
+    symbol: std::string; name: std::string; decimals: number
 }
 
 std::future<bigint> readERC20Balance(PublicClient client, Address tokenAddress, Address account) {

@@ -5,7 +5,7 @@ std::shared_ptr<Provider> hyperfyEmoteProvider = object{
     object::pair{std::string("description"), std::string("Lists all available emotes and their descriptions")}, 
     object::pair{std::string("get"), [=](auto _runtime, auto _message) mutable
     {
-        auto animationListText = EMOTES_LIST->map([=](auto e) mutable
+        auto animationListText = EMOTES_LIST->std::map([=](auto e) mutable
         {
             return std::string("- **") + e["name"] + std::string("**: ") + e["description"] + string_empty;
         }

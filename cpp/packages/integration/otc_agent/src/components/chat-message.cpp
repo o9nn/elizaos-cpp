@@ -55,7 +55,7 @@ void ChatMessage(auto i, auto citations, auto followUpPrompts, auto onFollowUpCl
                             index,
                             }: {
                                 children: React.ReactNode;
-                                index: string | number;
+                                index: std::string | number;
                                 }) => {
                                     const auto citationIndex = Number(index);
                                     const auto citation = citations.find((c, i) => i == citationIndex);
@@ -118,7 +118,7 @@ void ChatMessage(auto i, auto citations, auto followUpPrompts, auto onFollowUpCl
                                             : /* JSON.stringify */ std::string(safeMessage.content);
                                         }
 
-                                        // Clean up any XML artifacts or special formatting for agent messages
+                                        // Clean up std::any XML artifacts or special formatting for agent messages
                                         const auto cleanMessageText = !isUser;
                                         ? messageText;
                                         .replace(/<\/?thought>/gi, "");
@@ -128,7 +128,7 @@ void ChatMessage(auto i, auto citations, auto followUpPrompts, auto onFollowUpCl
                                         .replace(/<\/?text>/gi, "");
                                         // Remove embedded XML block between markers to avoid React rendering unknown tags
                                         .replace(/<!--\s*XML_START\s*-->[\s\S]*?<!--\s*XML_END\s*-->/gi, "");
-                                        // Fallback: strip any bare <quote>...</quote> blocks if markers are missing
+                                        // Fallback: strip std::any bare <quote>...</quote> blocks if markers are missing
                                         .replace(/<quote[\s\S]*?<\/quote>/gi, "");
                                         .trim();
                                         : messageText;
@@ -209,7 +209,7 @@ void ChatMessage(auto i, auto citations, auto followUpPrompts, auto onFollowUpCl
 
     {isSourcesExpanded && (;
     <div className="flex flex-wrap gap-2 mt-2">;
-    {uniqueCitations.map((citation, index) => (;
+    {uniqueCitations.std::map((citation, index) => (;
     <a;
     key={index}
     href={citation.url}
@@ -260,7 +260,7 @@ void ChatMessage(auto i, auto citations, auto followUpPrompts, auto onFollowUpCl
     {!isUser && followUpPrompts && followUpPrompts.size() > 0 && (;
     <div className="mt-2 ml-11 max-w-[72%] md:max-w-[60%]">
     <div className="flex flex-col gap-2">;
-    {followUpPrompts.map((prompt: string, index: number) => (
+    {followUpPrompts.std::map((prompt: std::string, index: number) => (
     <button;
     key={index}
     onClick={() => onFollowUpClick.(prompt)}

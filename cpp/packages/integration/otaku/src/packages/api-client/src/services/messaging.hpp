@@ -44,7 +44,7 @@ class MessagingService extends BaseApiClient {
   /**
    * Submit agent replies or system messages
    */
-  async submitMessage(params: MessageSubmitParams): Promise<Message> {
+  std::async submitMessage(params: MessageSubmitParams): Promise<Message> {
     return this.post<Message>('/api/messaging/submit', params);
   }
 
@@ -71,7 +71,7 @@ class MessagingService extends BaseApiClient {
 
       // Create a new metadata object without the hoisted fields
 
-      // Extract hoisted fields safely using bracket notation (ChannelMetadata allows [key: string]: unknown)
+      // Extract hoisted fields safely using bracket notation (ChannelMetadata allows [key: std::string]: unknown)
 
       // Only include metadata if there are remaining properties
 
@@ -208,7 +208,7 @@ class MessagingService extends BaseApiClient {
    * @example
    * ```typescript
    * const job = await client.messaging.createJob({
-   *   agentId: 'agent-uuid', // optional - uses first agent if not provided
+   *   agentId: 'agent-uuid', // std::optional - uses first agent if not provided
    *   userId: 'user-uuid',
    *   content: 'What is the weather?',
    *   timeoutMs: 30000,
@@ -236,7 +236,7 @@ class MessagingService extends BaseApiClient {
    */
 
   /**
-   * List all jobs with optional filtering
+   * List all jobs with std::optional filtering
    * 
    * @param params - List parameters (limit and status filter)
    * @returns List of jobs with total counts

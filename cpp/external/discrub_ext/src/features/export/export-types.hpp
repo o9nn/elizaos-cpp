@@ -62,16 +62,16 @@ using ExportRoleMap = {
 
 using SpecialFormatting = std::vector<{
 
-using UserMentionRef = { raw: string; userName: string; id: Snowflake };
-using ChannelRef = std::variant<{ channelId: Snowflake, Maybe>; raw: string };
-using UnderlineRef = { text: string; raw: string };
-using CodeRef = { text: string; raw: string };
-using ItalicRef = { text: string; raw: string };
-using BoldRef = { text: string; raw: string };
+using UserMentionRef = { raw: std::string; userName: std::string; id: Snowflake };
+using ChannelRef = std::variant<{ channelId: Snowflake, Maybe>; raw: std::string };
+using UnderlineRef = { text: std::string; raw: std::string };
+using CodeRef = { text: std::string; raw: std::string };
+using ItalicRef = { text: std::string; raw: std::string };
+using BoldRef = { text: std::string; raw: std::string };
 using LinkRef = {
-using QuoteRef = { text: string; raw: string };
-using HyperlinkRef = { raw: string };
-using EmojiRef = { raw: string; name: string; id: Snowflake };
+using QuoteRef = { text: std::string; raw: std::string };
+using HyperlinkRef = { raw: std::string };
+using EmojiRef = { raw: std::string; name: std::string; id: Snowflake };
 
 using FilesFromMessagesProps = {
 

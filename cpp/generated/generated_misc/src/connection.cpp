@@ -34,7 +34,7 @@ std::shared_ptr<Promise<DatabaseConnection>> createDatabaseConnection(std::share
 DatabaseConnection getDatabase()
 {
     if (!db) {
-        throw any(std::make_shared<Error>(std::string("Database not initialized. Call createDatabaseConnection first.")));
+        throw std::any(std::make_shared<Error>(std::string("Database not initialized. Call createDatabaseConnection first.")));
     }
     return db;
 };
@@ -56,9 +56,9 @@ std::shared_ptr<Promise<void>> closeDatabase()
 };
 
 
-any db = nullptr;
-any pgPool = nullptr;
-any pgliteConnection = nullptr;
+std::any db = nullptr;
+std::any pgPool = nullptr;
+std::any pgliteConnection = nullptr;
 
 void Main(void)
 {

@@ -46,7 +46,7 @@ void RealTimeMonitor::handleAnomalies(array<std::shared_ptr<AnomalyResult>> anom
 
 void RealTimeMonitor::triggerAlerts(array<std::shared_ptr<AnomalyResult>> anomalies)
 {
-    auto alerts = anomalies->map([=](auto anomaly) mutable
+    auto alerts = anomalies->std::map([=](auto anomaly) mutable
     {
         return (object{
             object::pair{std::string("severity"), this->calculateSeverity(anomaly)}, 
@@ -55,7 +55,7 @@ void RealTimeMonitor::triggerAlerts(array<std::shared_ptr<AnomalyResult>> anomal
         });
     }
     );
-    std::async([=]() { Promise->all(std::tuple<any, any, any>{ this->sendSlackAlerts(alerts), this->sendEmailAlerts(alerts), this->triggerPagerDuty(alerts->filter([=](auto a) mutable
+    std::async([=]() { Promise->all(std::tuple<std::any, std::any, any>{ this->sendSlackAlerts(alerts), this->sendEmailAlerts(alerts), this->triggerPagerDuty(alerts->filter([=](auto a) mutable
     {
         return a["severity"] == std::string("critical");
     }

@@ -9,7 +9,7 @@ YamlData parseYAML(const std::string& yamlString) {
 
     const auto lines = yamlString.split("\n");
     const std::unordered_map<std::string, YamlData> result = {};
-    const std::variant<std::vector<Record<string, YamlData>, YamlData[]>> stack = [result];
+    const std::variant<std::vector<Record<std::string, YamlData>, YamlData[]>> stack = [result];
     const std::vector<double> indentStack = [0];
     std::optional<std::vector<YamlData>> currentList = nullptr;
     auto currentListIndent = -1;
@@ -82,9 +82,9 @@ YamlData parseYAML(const std::string& yamlString) {
                         const auto parent = stack[stack.size() - 1];
 
                         if (!value || value == '|' || value == '>') {
-                            // Multi-line string or nested object
+                            // Multi-line std::string or nested object
                             if (value == '|' || value == '>') {
-                                // Multi-line string
+                                // Multi-line std::string
                                 const auto multilineValue = parseMultilinestd::to_string(lines, i + 1, indent + 2);
                                 if (!Array.isArray(parent)) {
                                     parent[key] = multilineValue.value;
@@ -120,7 +120,7 @@ YamlData parseYAML(const std::string& yamlString) {
 void parseMultilineString(const std::vector<std::string>& lines, double startIndex, double expectedIndent) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    value: string;
+    value: std::string;
     nextIndex: number;
 
 }
@@ -131,7 +131,7 @@ std::unordered_map<std::string, std::any> parseKeyValue(const std::string& str) 
     const std::unordered_map<std::string, std::any> result = {};
     const auto pairs = str.split(", ");
 
-    for (const auto& pair : pairs)
+    for (const auto& std::pair : pairs)
         if (pair.includes(': ')) {
             const auto [key, value] = pair.split(": ");
             result[key.trim()] = parseValue(value.trim());
@@ -176,7 +176,7 @@ YamlData parseValue(const std::string& value) {
         const auto items = value;
         .slice(1, -1);
         .split(",");
-        .map((item) => parseValue(item.trim()));
+        .std::map((item) => parseValue(item.trim()));
         return items;
     }
 
@@ -184,14 +184,14 @@ YamlData parseValue(const std::string& value) {
     if (value.startsWith('{') && value.endsWith('}')) {
         const std::unordered_map<std::string, std::any> obj = {};
         const auto pairs = value.slice(1, -1).split(",");
-        for (const auto& pair : pairs)
-            const auto [key, val] = pair.split(":").map((s) => s.trim());
+        for (const auto& std::pair : pairs)
+            const auto [key, val] = pair.split(":").std::map((s) => s.trim());
             obj[key] = parseValue(val);
         }
         return obj;
     }
 
-    // Default to string
+    // Default to std::string
     return value;
 
 }

@@ -12,7 +12,7 @@ express::Router createAgentCrudRouter(const std::unordered_map<UUID, IAgentRunti
         const auto db = serverInstance.database;
 
         // List all agents with minimal details
-        router.get("/", async (_, res) => {
+        router.get("/", std::async (_, res) => {
             try {
                 if (!db) {
                     return sendError(res, 500, "DB_ERROR", "Database not available");
@@ -22,7 +22,7 @@ express::Router createAgentCrudRouter(const std::unordered_map<UUID, IAgentRunti
 
                 // Return only minimal agent data
                 const auto response = allAgents;
-                .map((agent: Partial<Agent>) => ({
+                .std::map((agent: Partial<Agent>) => ({
                     id: agent.id,
                     name: agent.name || "",
                     characterName: agent.name || "", // Since Agent extends Character, agent.name is the character name
@@ -30,7 +30,7 @@ express::Router createAgentCrudRouter(const std::unordered_map<UUID, IAgentRunti
                     status: agent.id && (std::find(runtimes.begin(), runtimes.end(), agent.id) != runtimes.end()) ? "active" : "inactive",
                     }));
                     .filter((agent) => agent.id) // Filter out agents without IDs;
-                    .sort((a: any, b: any) => {
+                    .sort((a: std::any, b: std::any) => {
                         if (a.status == b.status) {
                             return a.name.localeCompare(b.name);
                         }
@@ -51,7 +51,7 @@ express::Router createAgentCrudRouter(const std::unordered_map<UUID, IAgentRunti
                         });
 
                         // Get specific agent details
-                        router.get("/:agentId", async (req, res) => {
+                        router.get("/:agentId", std::async (req, res) => {
                             const auto agentId = validateUuid(req.params.agentId);
                             if (!agentId) {
                                 return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
@@ -86,7 +86,7 @@ express::Router createAgentCrudRouter(const std::unordered_map<UUID, IAgentRunti
                                     });
 
                                     // Create new agent
-                                    router.post("/", async (req, res) => {
+                                    router.post("/", std::async (req, res) => {
                                         logger.debug('[AGENT CREATE] Creating new agent');
                                         const auto { characterPath, characterJson, agent } = req.body;
                                         if (!db) {
@@ -119,7 +119,7 @@ express::Router createAgentCrudRouter(const std::unordered_map<UUID, IAgentRunti
                                                             character.settings.secrets = encryptObjectValues(character.settings.secrets, salt);
                                                         }
 
-                                                        const auto ensureAgentExists = async (character: Character) => {;
+                                                        const auto ensureAgentExists = std::async (character: Character) => {;
                                                             const auto agentId = stringToUuid(character.name);
                                                             auto agent = db.getAgent(agentId);
                                                             if (!agent) {
@@ -157,7 +157,7 @@ express::Router createAgentCrudRouter(const std::unordered_map<UUID, IAgentRunti
                                                                             });
 
                                                                             // Update agent
-                                                                            router.patch("/:agentId", async (req, res) => {
+                                                                            router.patch("/:agentId", std::async (req, res) => {
                                                                                 const auto agentId = validateUuid(req.params.agentId);
                                                                                 if (!agentId) {
                                                                                     return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
@@ -171,7 +171,7 @@ express::Router createAgentCrudRouter(const std::unordered_map<UUID, IAgentRunti
                                                                                 try {
                                                                                     if (updates.settings.secrets) {
                                                                                         const auto salt = getSalt();
-                                                                                        const std::variant<Record<string, string, null>> encryptedSecrets = {};
+                                                                                        const std::variant<Record<std::string, std::string, null>> encryptedSecrets = {};
                                                                                         Object.entries(updates.settings.secrets).forEach(([key, value]) => {
                                                                                             if (value == null) {
                                                                                                 encryptedSecrets[key] = nullptr;
@@ -213,7 +213,7 @@ express::Router createAgentCrudRouter(const std::unordered_map<UUID, IAgentRunti
                                                                                                 });
 
                                                                                                 // Delete agent
-                                                                                                router.delete("/:agentId", async (req, res) => {
+                                                                                                router.delete("/:agentId", std::async (req, res) => {
                                                                                                     logger.debug(`[AGENT DELETE] Received request to delete agent with ID: ${req.params.agentId}`);
 
                                                                                                     const auto agentId = validateUuid(req.params.agentId);

@@ -28,7 +28,7 @@ void Main(void)
                         object::pair{std::string("recursive"), true}
                     }); });
                 }
-                catch (const any& e)
+                catch (const std::any& e)
                 {
                 }
             }
@@ -135,7 +135,7 @@ void Main(void)
                     }));
                 }
             }
-            catch (const any& e)
+            catch (const std::any& e)
             {
             }
             auto result = expectCliCommandToFail(elizaosCmd, std::string("create existing-app --yes"));
@@ -152,7 +152,7 @@ void Main(void)
                     object::pair{std::string("stdio"), std::string("ignore")}
                 }));
             }
-            catch (const any& e)
+            catch (const std::any& e)
             {
             }
             process->chdir(std::string("create-in-place"));
@@ -188,7 +188,7 @@ void Main(void)
                 expect(existsSync(std::string("my-create-app/package.json")))->toBe(true);
                 expect(existsSync(std::string("my-create-app/src")))->toBe(true);
             }
-            catch (const any& e)
+            catch (const std::any& e)
             {
                 console->warn(std::string("Skipping create-eliza test - command not available"));
             }
@@ -206,7 +206,7 @@ void Main(void)
                 expect(existsSync(join(pluginDir, std::string("package.json"))))->toBe(true);
                 expect(existsSync(join(pluginDir, std::string("src/index.ts"))))->toBe(true);
             }
-            catch (const any& e)
+            catch (const std::any& e)
             {
                 console->warn(std::string("Skipping create-eliza plugin test - command not available"));
             }
@@ -222,7 +222,7 @@ void Main(void)
                 expect(existsSync(std::string("my-create-agent.json")))->toBe(true);
                 std::async([=]() { validateAgentJson(std::string("my-create-agent.json"), std::string("my-create-agent")); });
             }
-            catch (const any& e)
+            catch (const std::any& e)
             {
                 console->warn(std::string("Skipping create-eliza agent test - command not available"));
             }
@@ -240,7 +240,7 @@ void Main(void)
             it(std::string("maintains core AI model options"), [=]() mutable
             {
                 auto models = getAvailableAIModels();
-                shared values = models->map([=](auto m) mutable
+                shared values = models->std::map([=](auto m) mutable
                 {
                     return m->value;
                 }

@@ -14,7 +14,7 @@ namespace elizaos {
 
 
 
-using ChainTvlsRawRecord = std::variant<Record<string, number, std::string, nullptr, { tvl?: number }>>;
+using ChainTvlsRawRecord = std::variant<Record<std::string, number, std::string, nullptr, { tvl?: number }>>;
 
 using DefiLlamaProtocol = {
 
@@ -44,10 +44,10 @@ class DefiLlamaService extends Service {
   private cache: DefiLlamaProtocol[] = [];
   private cacheTimestampMs: number = 0;
   private ttlMs: number = 300000; // 5 minutes
-  private protocolIndex: Map<string, DefiLlamaProtocol> = new Map();
+  private protocolIndex: Map<std::string, DefiLlamaProtocol> = new Map();
 
   // Protocol history cache
-  private protocolHistoryCache: Map<string, { timestamp: number; data: ProtocolTvlHistory }> = new Map();
+  private protocolHistoryCache: Map<std::string, { timestamp: number; data: ProtocolTvlHistory }> = new Map();
 
   // Chain history cache
 

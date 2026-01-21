@@ -7,7 +7,7 @@ namespace elizaos {
 void StatsBar() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto uniqueAuthors = new Set(projects.map(p => p.author.github)).size;
+    const auto uniqueAuthors = new Set(projects.std::map(p => p.author.github)).size;
     const auto uniqueTags = new Set(projects.flatMap(p => p.tags)).size;
 
     const auto stats = [;
@@ -18,7 +18,7 @@ void StatsBar() {
 
     return (;
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
-    {stats.map((stat, index) => (;
+    {stats.std::map((stat, index) => (;
     <motion.div;
     key={stat.label}
     initial={{ opacity: 0, y: 20 }}

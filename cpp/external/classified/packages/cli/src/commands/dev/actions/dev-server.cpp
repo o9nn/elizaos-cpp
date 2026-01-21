@@ -76,7 +76,7 @@ std::future<void> startDevMode(DevOptions options) {
                                 }
 
                                 // Function to rebuild and restart the server
-                                const auto rebuildAndRestart = async () => {;
+                                const auto rebuildAndRestart = std::async () => {;
                                     try {
                                         // Ensure the server is stopped first
                                         serverManager.stop();
@@ -116,7 +116,7 @@ std::future<void> startDevMode(DevOptions options) {
 
                                         // Set up file watching if we're in a project, plugin, or monorepo directory
                                         if (isProject || isPlugin || isMonorepo) {
-                                            // Pass the rebuildAndRestart function as the onChange callback
+                                            // Pass the rebuildAndRestart std::function as the onChange callback
                                             watchDirectory(context.watchDirectory, rebuildAndRestart);
 
                                             std::cout << "Dev mode is active! The server will restart when files change." << std::endl;

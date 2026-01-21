@@ -23,7 +23,7 @@ std::any extractJsonFromResponse(const std::string& response) {
                 cleaned = cleaned.substring(0, cleaned.size() - 3);
             }
 
-            // Trim any remaining whitespace
+            // Trim std::any remaining whitespace
             cleaned = cleaned.trim();
 
             // Try to parse the JSON

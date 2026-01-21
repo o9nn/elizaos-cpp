@@ -1,7 +1,7 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/mobile/constants/Colors.h"
 
-string tintColorLight = std::string("#0a7ea4");
-string tintColorDark = std::string("#fff");
+std::string tintColorLight = std::string("#0a7ea4");
+std::string tintColorDark = std::string("#fff");
 object Colors = object{
     object::pair{std::string("light"), object{
         object::pair{std::string("text"), std::string("#11181C")}, 

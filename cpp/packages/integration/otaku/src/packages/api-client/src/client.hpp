@@ -44,7 +44,7 @@ class ElizaClient {
   public readonly jobs: JobsService;
   public readonly gamification: GamificationService;
 
-  private services: any[];
+  private services: std::any[];
 
   constructor(config: ApiClientConfig) {
     // Initialize all services with the same config

@@ -19,7 +19,7 @@ class CollaborativeFilter {
   private projectFactors: tf.Tensor2D | null = null;
   private readonly numFactors: number = 50;
 
-  async trainModel(interactions: UserProjectInteraction[]) {
+  std::async trainModel(interactions: UserProjectInteraction[]) {
     try {
       // Create sparse interaction matrix
       const { matrix, userIndex, projectIndex } = this.createInteractionMatrix(interactions);

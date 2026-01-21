@@ -11,7 +11,7 @@ express::Router createAgentPluginsRouter(const std::unordered_map<UUID, IAgentRu
         const auto router = express.Router();
 
         // Get plugin configurations for a specific agent
-        router.get("/:agentId/plugins", async (req, res) => {
+        router.get("/:agentId/plugins", std::async (req, res) => {
             try {
                 const auto agentId = validateUuid(req.params.agentId);
                 const auto runtime = agents.get(agentId);
@@ -68,7 +68,7 @@ express::Router createAgentPluginsRouter(const std::unordered_map<UUID, IAgentRu
                                 });
 
                                 // Update plugin configuration
-                                router.post("/:agentId/plugins/:pluginId/config", async (req, res) => {
+                                router.post("/:agentId/plugins/:pluginId/config", std::async (req, res) => {
                                     try {
                                         const auto agentId = validateUuid(req.params.agentId);
                                         const auto pluginId = req.params.pluginId;

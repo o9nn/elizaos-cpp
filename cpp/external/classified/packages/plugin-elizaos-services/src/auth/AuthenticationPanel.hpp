@@ -17,15 +17,15 @@ namespace elizaos {
  */
 
 struct AuthenticationPanelProps {
-    std::optional<any; // IAgentRuntime type> runtime;
+    std::optional<std::any; // IAgentRuntime type> runtime;
     std::optional<(status: AuthStatus) => void> onAuthChange;
 };
 
 struct ProviderCardProps {
     std::string provider;
     ApiKeyValidationResult result;
-    (provider: string) => void onTest;
-    (provider: string, key: string) => void onValidate;
+    (provider: std::string) => void onTest;
+    (provider: std::string, key: std::string) => void onValidate;
     bool testing;
 };
 

@@ -48,12 +48,12 @@ std::optional<OTCQuote> parseOTCQuoteXML(const std::string& xmlString) {
         return nullptr;
     }
 
-    const auto getElementText = (tagName: string): string => {;
+    const auto getElementText = (tagName: std::string): std::string => {;
         const auto elem = xmlDoc.getElementsByTagName(tagName)[0];
         return elem ? elem.textContent || "" : "";
         };
 
-        const auto getElementNumber = (tagName: string): number => {;
+        const auto getElementNumber = (tagName: std::string): number => {;
             const auto text = getElementText(tagName);
             return text ? parseFloat(text) : 0;
             };
@@ -111,12 +111,12 @@ std::optional<QuoteAccepted> parseQuoteAcceptedXML(const std::string& xmlString)
         return nullptr;
     }
 
-    const auto getElementText = (tagName: string): string => {;
+    const auto getElementText = (tagName: std::string): std::string => {;
         const auto elem = xmlDoc.getElementsByTagName(tagName)[0];
         return elem ? elem.textContent || "" : "";
         };
 
-        const auto getElementNumber = (tagName: string): number => {;
+        const auto getElementNumber = (tagName: std::string): number => {;
             const auto text = getElementText(tagName);
             return text ? parseFloat(text) : 0;
             };

@@ -1,12 +1,12 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/discrub-ext/src/theme.h"
 
-string primaryMain = std::string("#7289da");
-string primaryDark = std::string("rgb(79, 95, 152)");
-string secondaryMain = std::string("#d2d5f7");
-string backgroundDefault = std::string("#1e2124");
-string backgroundPaper = std::string("#282b30");
-string textPrimary = std::string("#ffffff");
-string textSecondary = std::string("#d2d5f7");
+std::string primaryMain = std::string("#7289da");
+std::string primaryDark = std::string("rgb(79, 95, 152)");
+std::string secondaryMain = std::string("#d2d5f7");
+std::string backgroundDefault = std::string("#1e2124");
+std::string backgroundPaper = std::string("#282b30");
+std::string textPrimary = std::string("#ffffff");
+std::string textSecondary = std::string("#d2d5f7");
 object toolTipStyle = object{
     object::pair{std::string("padding"), std::string("7px")}, 
     object::pair{std::string("background"), primaryDark}, 

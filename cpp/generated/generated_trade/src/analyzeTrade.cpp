@@ -22,7 +22,7 @@ double calculateVolatility(array<double> priceHistory)
 };
 
 
-double calculateDynamicSlippage(string amount, any quoteData)
+double calculateDynamicSlippage(std::string amount, std::any quoteData)
 {
     try
     {
@@ -47,7 +47,7 @@ double calculateDynamicSlippage(string amount, any quoteData)
         auto maxSlippage = 0.05;
         return Math->min(Math->max(dynamicSlippage, minSlippage), maxSlippage);
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->warn(std::string("Error calculating dynamic slippage, using default:"), error);
         return 0.01;
@@ -55,7 +55,7 @@ double calculateDynamicSlippage(string amount, any quoteData)
 };
 
 
-string tradeAnalysisTemplate = std::string("\
+std::string tradeAnalysisTemplate = std::string("\
 You are a trading assistant focused on managing SOL wallet balances and trade sizes. Your primary goal is to suggest appropriate trade amounts while maintaining safe reserves.\
 \
 <api_data>\

@@ -4,7 +4,7 @@
 #include "@synthetixio/synpress.h"
 #include "@synthetixio/synpress/playwright.h"
 
-extern string BUYER_SEED;
-extern string PASSWORD;
+extern std::string BUYER_SEED;
+extern std::string PASSWORD;
 extern object buyerSetup;
 #endif

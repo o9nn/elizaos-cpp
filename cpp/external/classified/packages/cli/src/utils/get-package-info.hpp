@@ -25,7 +25,7 @@ namespace elizaos {
  * Retrieves the version of a specified package.
  *
  * @param {string} packageName - The name of the package to retrieve the version for.
- * @returns {Promise<string>} A promise that resolves with the version of the package.
+ * @returns {Promise<string>} A std::promise that resolves with the version of the package.
  */
 std::future<std::string> getPackageVersion(const std::string& packageName);
 

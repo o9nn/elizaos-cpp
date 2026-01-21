@@ -17,7 +17,7 @@ namespace elizaos {
 
 
 
-using ChainedDateProps = { message: Message; longDateTime: string };
+using ChainedDateProps = { message: Message; longDateTime: std::string };
 
 
 } // namespace elizaos

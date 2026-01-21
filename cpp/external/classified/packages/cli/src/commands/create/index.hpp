@@ -21,7 +21,7 @@ namespace elizaos {
  */
 std::string formatProjectType(const std::string& type);
 
-      // Set non-interactive mode if environment variable is set or if -y/--yes flag is present in process.argv
+      // Set non-interactive mode if environment variable is std::set or if -y/--yes flag is present in process.argv
 
       // Validate and parse options
 

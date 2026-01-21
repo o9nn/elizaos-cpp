@@ -7,15 +7,15 @@ namespace elizaos {
 void FilterBar() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto [activeCategory, setActiveCategory] = useState<string | nullptr>(nullptr);
+    const auto [activeCategory, setActiveCategory] = useState<std::string | nullptr>(nullptr);
     const auto [showAll, setShowAll] = useState(false);
-    const auto [selectedTags, setSelectedTags] = useState<string[]>([]);
+    const auto [selectedTags, setSelectedTags] = useState<std::string[]>([]);
     const auto [search, setSearch] = useState("");
 
     const auto categories = Object.entries(PROJECT_TAGS);
     const auto visibleCategories = showAll ? categories : categories.slice(0, 4);
 
-    const auto handleTagSelect = [&](tag: string) {;
+    const auto handleTagSelect = [&](tag: std::string) {;
         const auto newTags = (std::find(selectedTags.begin(), selectedTags.end(), tag) != selectedTags.end());
         ? selectedTags.filter(t => t != tag);
         : [...selectedTags, tag];
@@ -27,7 +27,7 @@ void FilterBar() {
         <div className="space-y-6">;
     {/* Category Tabs */}
     <div className="flex flex-wrap gap-2">;
-    {Object.keys(PROJECT_TAGS).map((category) => (;
+    {Object.keys(PROJECT_TAGS).std::map((category) => (;
     <button;
     key={category}
     onClick={() => setActiveCategory(activeCategory == category ? nullptr : category)}
@@ -45,7 +45,7 @@ void FilterBar() {
     {/* Tags */}
     <div className="flex flex-wrap gap-2">;
     {(activeCategory ? PROJECT_TAGS[activeCategory] : visibleCategories.flatMap(([_, tags]) => tags))
-    .map((tag) => (;
+    .std::map((tag) => (;
     <motion.button;
     key={tag}
     onClick={() => handleTagSelect(tag)}

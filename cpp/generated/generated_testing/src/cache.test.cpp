@@ -31,7 +31,7 @@ void Main(void)
                 std::async([=]() { adapter->getDatabase()["delete"](cacheTable); });
             }
             );
-            it(std::string("should set and get a simple string value"), [=]() mutable
+            it(std::string("should std::set and get a simple std::string value"), [=]() mutable
             {
                 auto key = std::string("simple_key");
                 auto value = std::string("hello world");
@@ -40,7 +40,7 @@ void Main(void)
                 expect(retrievedValue)->toBe(value);
             }
             );
-            it(std::string("should set and get a complex object value"), [=]() mutable
+            it(std::string("should std::set and get a complex object value"), [=]() mutable
             {
                 auto key = std::string("complex_key");
                 auto value = object{

@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-personality/src/utils/json-parser.h"
 
-any extractJsonFromResponse(string response)
+std::any extractJsonFromResponse(std::string response)
 {
     auto cleaned = response->trim();
     if (cleaned->startsWith(std::string("```json"))) {
@@ -16,13 +16,13 @@ any extractJsonFromResponse(string response)
     {
         return JSON->parse(cleaned);
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         auto jsonMatch = response->match((new RegExp(std::string("\{[\s\S]*\"))));
         if (jsonMatch) {
             return JSON->parse((*const_(jsonMatch))[0]);
         }
-        throw any(error);
+        throw std::any(error);
     }
 };
 

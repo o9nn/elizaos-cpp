@@ -57,7 +57,7 @@ std::shared_ptr<Action> getLeaderboardAction = object{
                 object::pair{std::string("data"), std::string("data")}
             };
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             auto errorText = std::string("Error fetching leaderboard");
             std::async([=]() { callback(object{

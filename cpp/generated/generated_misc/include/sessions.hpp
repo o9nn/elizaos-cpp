@@ -10,33 +10,33 @@ class SessionsService;
 class SessionMessageQueryParams : public object, public std::enable_shared_from_this<SessionMessageQueryParams> {
 public:
     using std::enable_shared_from_this<SessionMessageQueryParams>::shared_from_this;
-    string limit;
+    std::string limit;
 
-    string before;
+    std::string before;
 
-    string after;
+    std::string after;
 };
 
 template <typename P0>
-any toTimestampString(P0 value, string paramName);
+std::any toTimestampString(P0 value, std::string paramName);
 
-any validateRequiredParam(any value, string paramName);
+std::any validateRequiredParam(std::any value, std::string paramName);
 
 class SessionsService : public BaseApiClient, public std::enable_shared_from_this<SessionsService> {
 public:
     using std::enable_shared_from_this<SessionsService>::shared_from_this;
     virtual std::shared_ptr<Promise<std::shared_ptr<SessionsHealthResponse>>> checkHealth();
     virtual std::shared_ptr<Promise<std::shared_ptr<CreateSessionResponse>>> createSession(std::shared_ptr<CreateSessionParams> params);
-    virtual std::shared_ptr<Promise<std::shared_ptr<SessionInfoResponse>>> getSession(string sessionId);
-    virtual std::shared_ptr<Promise<std::shared_ptr<MessageResponse>>> sendMessage(string sessionId, std::shared_ptr<SendMessageParams> params);
-    virtual std::shared_ptr<Promise<std::shared_ptr<GetMessagesResponse>>> getMessages(string sessionId, std::shared_ptr<GetMessagesParams> params = undefined);
-    virtual std::shared_ptr<Promise<object>> deleteSession(string sessionId);
+    virtual std::shared_ptr<Promise<std::shared_ptr<SessionInfoResponse>>> getSession(std::string sessionId);
+    virtual std::shared_ptr<Promise<std::shared_ptr<MessageResponse>>> sendMessage(std::string sessionId, std::shared_ptr<SendMessageParams> params);
+    virtual std::shared_ptr<Promise<std::shared_ptr<GetMessagesResponse>>> getMessages(std::string sessionId, std::shared_ptr<GetMessagesParams> params = undefined);
+    virtual std::shared_ptr<Promise<object>> deleteSession(std::string sessionId);
     virtual std::shared_ptr<Promise<std::shared_ptr<ListSessionsResponse>>> listSessions();
     SessionsService(std::shared_ptr<ApiClientConfig> config);
 };
 
 template <typename P0>
-any toTimestampString(P0 value, string paramName)
+std::any toTimestampString(P0 value, std::string paramName)
 {
     if (!value) return undefined;
     double timestamp;
@@ -46,7 +46,7 @@ any toTimestampString(P0 value, string paramName)
         auto date = std::make_shared<Date>(value);
         timestamp = date->getTime();
         if (isNaN(timestamp)) {
-            console->warn(std::string("Invalid date string for ") + paramName + std::string(": ") + value + string_empty);
+            console->warn(std::string("Invalid date std::string for ") + paramName + std::string(": ") + value + string_empty);
             return undefined;
         }
     } else if (type_of(value) == std::string("number")) {

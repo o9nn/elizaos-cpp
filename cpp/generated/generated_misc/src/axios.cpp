@@ -1,13 +1,13 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/trust_scoreboard/src/utils/axios.h"
 
-string baseURL = process->env->NEXT_PUBLIC_NEST_API_URL;
-any axiosInstance = axios->create(object{
+std::string baseURL = process->env->NEXT_PUBLIC_NEST_API_URL;
+std::any axiosInstance = axios->create(object{
     object::pair{std::string("baseURL"), std::string("baseURL")}, 
     object::pair{std::string("headers"), object{
         object::pair{std::string("Content-Type"), std::string("application/json")}
     }}
 });
-std::function<any(any, object)> get = [=](auto url, auto config = object{}) mutable
+std::function<std::any(std::any, object)> get = [=](auto url, auto config = object{}) mutable
 {
     return axiosInstance->get(url, config);
 };

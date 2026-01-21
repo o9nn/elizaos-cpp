@@ -23,6 +23,6 @@ namespace elizaos {
 
  // Path relative to this new location
 
-// This is the ProfileEditPageContent function, renamed and exported
+// This is the ProfileEditPageContent std::function, renamed and exported
 
 } // namespace elizaos

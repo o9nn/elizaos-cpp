@@ -26,7 +26,7 @@ std::string extractFileIdFromUrl(const std::string& url) {
 }
 
 std::future<HttpResponse> POST(const HttpRequest& request) {
-    return std::async(std::launch::async, [request]() {
+    return std::async(std::launch::std::async, [request]() {
         HttpResponse response;
         
         try {
@@ -65,7 +65,7 @@ std::future<HttpResponse> POST(const HttpRequest& request) {
 }
 
 std::future<HttpResponse> GET(const HttpRequest& request) {
-    return std::async(std::launch::async, [request]() {
+    return std::async(std::launch::std::async, [request]() {
         HttpResponse response;
         
         try {
@@ -177,7 +177,7 @@ std::string getContentTypeFromExtension(const std::string& filename) {
 }
 
 std::future<HttpResponse> OPTIONS() {
-    return std::async(std::launch::async, []() {
+    return std::async(std::launch::std::async, []() {
         HttpResponse response;
         response.statusCode = 200;
         response.headers["Access-Control-Allow-Origin"] = "*";

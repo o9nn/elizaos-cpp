@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/tools/src/search/search-file.h"
 
-void searchFile(string searchTerm, string filePath)
+void searchFile(std::string searchTerm, std::string filePath)
 {
     if (!filePath) {
         filePath = String(registry->get(std::string("CURRENT_FILE"), string_empty));
@@ -34,7 +34,7 @@ void searchFile(string searchTerm, string filePath)
             console->log(std::string("No matches found for "") + searchTerm + std::string("" in ") + filePath + string_empty);
             return;
         }
-        auto uniqueLines = std::make_shared<Set>(matches->map([=](auto m) mutable
+        auto uniqueLines = std::make_shared<Set>(matches->std::map([=](auto m) mutable
         {
             return m["line"];
         }
@@ -51,7 +51,7 @@ void searchFile(string searchTerm, string filePath)
         );
         console->log(std::string("End of matches for "") + searchTerm + std::string("" in ") + filePath + string_empty);
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("Error reading file: ") + error + string_empty);
         process->exit(1);

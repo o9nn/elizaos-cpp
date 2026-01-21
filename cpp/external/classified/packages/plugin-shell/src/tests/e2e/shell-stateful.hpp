@@ -23,7 +23,7 @@ class ShellStatefulE2ETestSuite implements TestSuite {
   tests = [
     {
       name: 'Should maintain current working directory across commands',
-      fn: async (runtime: IAgentRuntime) => {
+      fn: std::async (runtime: IAgentRuntime) => {
         console.log('Testing CWD persistence across commands...');
 
         const shellService = runtime.getService<ShellService>('SHELL');
@@ -51,7 +51,7 @@ class ShellStatefulE2ETestSuite implements TestSuite {
           cdMessage,
           state,
           {},
-          async () => {
+          std::async () => {
             return [];
           }
         );
@@ -77,13 +77,13 @@ class ShellStatefulE2ETestSuite implements TestSuite {
           createdAt: Date.now(),
         };
 
-        let pwdResponse: any = null;
+        let pwdResponse: std::any = null;
         await runShellCommandAction.handler(
           runtime,
           pwdMessage,
           state,
           {},
-          async (resp) => {
+          std::async (resp) => {
             pwdResponse = resp;
             return [];
           }
@@ -116,7 +116,7 @@ class ShellStatefulE2ETestSuite implements TestSuite {
 
         // Read the environment variable in the same session
 
-        // Note: Environment variables set via in a child process
+        // Note: Environment variables std::set via in a child process
         // won't persist in the parent. This is a limitation of using execSync.
         // The test should acknowledge this limitation.
 

@@ -8,9 +8,9 @@ class NaturalLanguageTestSuite;
 class NaturalLanguageTestSuite : public TestSuite, public std::enable_shared_from_this<NaturalLanguageTestSuite> {
 public:
     using std::enable_shared_from_this<NaturalLanguageTestSuite>::shared_from_this;
-    string name = std::string("natural-language");
+    std::string name = std::string("natural-language");
 
-    string description = std::string("E2E tests for natural language processing and agent responses");
+    std::string description = std::string("E2E tests for natural language processing and agent responses");
 
     array<object> tests = array<object>{ object{
         object::pair{std::string("name"), std::string("Agent responds to hello world")}, 
@@ -44,7 +44,7 @@ public:
                 }); });
                 console->log(std::string("Retrieved ") + messages["length"] + std::string(" messages from conversation"));
                 if (messages["length"] < 2) {
-                    throw any(std::make_shared<Error>(std::string("Expected at least 2 messages, got ") + messages["length"] + string_empty));
+                    throw std::any(std::make_shared<Error>(std::string("Expected at least 2 messages, got ") + messages["length"] + string_empty));
                 }
                 auto agentResponse = messages["find"]([=](auto m) mutable
                 {
@@ -52,7 +52,7 @@ public:
                 }
                 );
                 if (!agentResponse) {
-                    throw any(std::make_shared<Error>(std::string("Agent did not respond to hello world message")));
+                    throw std::any(std::make_shared<Error>(std::string("Agent did not respond to hello world message")));
                 }
                 console->log(std::string("Agent response:"), agentResponse["content"]["text"]);
                 shared responseText = agentResponse["content"]["text"]["toLowerCase"]();
@@ -63,13 +63,13 @@ public:
                 }
                 );
                 if (!containsGreeting) {
-                    throw any(std::make_shared<Error>(std::string("Agent response did not contain a greeting. ") + std::string("Response was: "") + agentResponse["content"]["text"] + std::string(""")));
+                    throw std::any(std::make_shared<Error>(std::string("Agent response did not contain a greeting. ") + std::string("Response was: "") + agentResponse["content"]["text"] + std::string(""")));
                 }
                 console->log(std::string("✓ Agent successfully responded to hello world"));
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
-                throw any(std::make_shared<Error>(std::string("Hello world test failed: ") + (as<std::shared_ptr<Error>>(error))->message + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("Hello world test failed: ") + (as<std::shared_ptr<Error>>(error))->message + string_empty));
             }
         }
         }
@@ -115,18 +115,18 @@ public:
                         }
                         );
                         if (!agentResponse) {
-                            throw any(std::make_shared<Error>(std::string("Agent did not respond to greeting: "") + greeting + std::string(""")));
+                            throw std::any(std::make_shared<Error>(std::string("Agent did not respond to greeting: "") + greeting + std::string(""")));
                         }
                         if (OR((!agentResponse["content"]["text"]), (agentResponse["content"]["text"]["length"] < 2))) {
-                            throw any(std::make_shared<Error>(std::string("Agent gave empty response to: "") + greeting + std::string(""")));
+                            throw std::any(std::make_shared<Error>(std::string("Agent gave empty response to: "") + greeting + std::string(""")));
                         }
                         console->log(std::string("✓ Agent responded to: "") + greeting + std::string("""));
                     }
                 }
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
-                throw any(std::make_shared<Error>(std::string("Casual greeting test failed: ") + (as<std::shared_ptr<Error>>(error))->message + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("Casual greeting test failed: ") + (as<std::shared_ptr<Error>>(error))->message + string_empty));
             }
         }
         }
@@ -179,7 +179,7 @@ public:
                     object::pair{std::string("limit"), 10}
                 }); });
                 if (messages["length"] < 4) {
-                    throw any(std::make_shared<Error>(std::string("Expected at least 4 messages, got ") + messages["length"] + string_empty));
+                    throw std::any(std::make_shared<Error>(std::string("Expected at least 4 messages, got ") + messages["length"] + string_empty));
                 }
                 auto agentResponses = messages["filter"]([=](auto m) mutable
                 {
@@ -187,7 +187,7 @@ public:
                 }
                 );
                 if (agentResponses["length"] < 2) {
-                    throw any(std::make_shared<Error>(std::string("Agent did not respond to both messages")));
+                    throw std::any(std::make_shared<Error>(std::string("Agent did not respond to both messages")));
                 }
                 auto secondResponse = const_(agentResponses)[agentResponses["length"] - 1];
                 shared responseText = secondResponse["content"]["text"]["toLowerCase"]();
@@ -202,9 +202,9 @@ public:
                 }
                 console->log(std::string("✓ Agent maintained conversation context"));
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
-                throw any(std::make_shared<Error>(std::string("Context test failed: ") + (as<std::shared_ptr<Error>>(error))->message + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("Context test failed: ") + (as<std::shared_ptr<Error>>(error))->message + string_empty));
             }
         }
         }

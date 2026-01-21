@@ -10,7 +10,7 @@ class SignalCalculationService;
 class SignalCalculationService : public BaseTradeService, public std::enable_shared_from_this<SignalCalculationService> {
 public:
     using std::enable_shared_from_this<SignalCalculationService>::shared_from_this;
-    virtual any calculateTechnicalSignals(any marketData);
+    virtual std::any calculateTechnicalSignals(std::any marketData);
     virtual std::shared_ptr<Promise<array<std::shared_ptr<TokenSignal>>>> scoreTokenSignals(array<std::shared_ptr<TokenSignal>> signals);
     virtual std::shared_ptr<Promise<double>> calculateDrawdown(object portfolio);
     virtual std::shared_ptr<Promise<double>> getHighWaterMark();

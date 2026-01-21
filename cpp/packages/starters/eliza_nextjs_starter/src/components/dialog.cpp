@@ -4,19 +4,19 @@
 
 namespace elizaos {
 
-void Dialog(auto className, auto children, auto variant) {
+void Dialog(auto className, auto children, auto std::variant) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
     <Headless.Dialog {...props}>;
-    {variant == "modal" && (;
+    {std::variant == "modal" && (;
     <Headless.DialogBackdrop;
     transition;
     className="fixed inset-0 flex w-screen justify-center overflow-y-auto bg-zinc-950/25 px-2 py-2 transition duration-100 focus:outline-0 data-[closed]:opacity-0 data-[enter]:ease-out data-[leave]:ease-in sm:px-6 sm:py-8 lg:px-8 lg:py-16 dark:bg-zinc-950/50"
     />;
     )}
 
-    {variant == "modal" ? (;
+    {std::variant == "modal" ? (;
     <div className="fixed inset-0 w-screen overflow-y-auto pt-6 sm:pt-0">
     <div className="grid min-h-full grid-rows-[1fr_auto] justify-items-center sm:grid-rows-[1fr_auto_3fr] sm:p-4">
     <Headless.DialogPanel;

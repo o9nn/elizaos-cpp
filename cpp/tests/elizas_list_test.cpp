@@ -112,7 +112,7 @@ TEST(elizas_listTest, MemoryTest_NoLeaks) {
 
 // Thread Safety Tests
 TEST(elizas_listTest, ThreadSafety_ConcurrentAccess) {
-    // Test thread safety with concurrent access
+    // Test std::thread safety with concurrent access
     EXPECT_NO_THROW({
         // Concurrent access test
     });

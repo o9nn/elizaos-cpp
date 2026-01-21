@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/packages/api-client/src/services/cdp.h"
 
-std::shared_ptr<Promise<std::shared_ptr<WalletInfo>>> CdpService::getOrCreateWallet(string name)
+std::shared_ptr<Promise<std::shared_ptr<WalletInfo>>> CdpService::getOrCreateWallet(std::string name)
 {
     auto response = std::async([=]() { this->post<std::shared_ptr<WalletInfo>>(std::string("/api/cdp/wallet"), object{
         object::pair{std::string("name"), std::string("name")}
@@ -8,14 +8,14 @@ std::shared_ptr<Promise<std::shared_ptr<WalletInfo>>> CdpService::getOrCreateWal
     return response;
 }
 
-std::shared_ptr<Promise<std::shared_ptr<TokensResponse>>> CdpService::getTokens(string chain)
+std::shared_ptr<Promise<std::shared_ptr<TokensResponse>>> CdpService::getTokens(std::string chain)
 {
-    auto params = (chain) ? any(std::string("?chain=") + encodeURIComponent(chain) + string_empty) : any(string_empty);
+    auto params = (chain) ? std::any(std::string("?chain=") + encodeURIComponent(chain) + string_empty) : std::any(string_empty);
     auto response = std::async([=]() { this->get<std::shared_ptr<TokensResponse>>(std::string("/api/cdp/wallet/tokens") + params + string_empty); });
     return response;
 }
 
-std::shared_ptr<Promise<std::shared_ptr<TokensResponse>>> CdpService::syncTokens(string chain)
+std::shared_ptr<Promise<std::shared_ptr<TokensResponse>>> CdpService::syncTokens(std::string chain)
 {
     auto body = (chain) ? object{
         object::pair{std::string("chain"), std::string("chain")}
@@ -24,14 +24,14 @@ std::shared_ptr<Promise<std::shared_ptr<TokensResponse>>> CdpService::syncTokens
     return response;
 }
 
-std::shared_ptr<Promise<std::shared_ptr<NFTsResponse>>> CdpService::getNFTs(string chain)
+std::shared_ptr<Promise<std::shared_ptr<NFTsResponse>>> CdpService::getNFTs(std::string chain)
 {
-    auto params = (chain) ? any(std::string("?chain=") + encodeURIComponent(chain) + string_empty) : any(string_empty);
+    auto params = (chain) ? std::any(std::string("?chain=") + encodeURIComponent(chain) + string_empty) : std::any(string_empty);
     auto response = std::async([=]() { this->get<std::shared_ptr<NFTsResponse>>(std::string("/api/cdp/wallet/nfts") + params + string_empty); });
     return response;
 }
 
-std::shared_ptr<Promise<std::shared_ptr<NFTsResponse>>> CdpService::syncNFTs(string chain)
+std::shared_ptr<Promise<std::shared_ptr<NFTsResponse>>> CdpService::syncNFTs(std::string chain)
 {
     auto body = (chain) ? object{
         object::pair{std::string("chain"), std::string("chain")}
@@ -95,7 +95,7 @@ std::shared_ptr<Promise<std::shared_ptr<TopAndTrendingTokensResponse>>> CdpServi
 CdpService::CdpService(std::shared_ptr<ApiClientConfig> config) : BaseApiClient(config) {
 }
 
-string NATIVE_TOKEN_ADDRESS = std::string("0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE");
+std::string NATIVE_TOKEN_ADDRESS = std::string("0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE");
 
 void Main(void)
 {

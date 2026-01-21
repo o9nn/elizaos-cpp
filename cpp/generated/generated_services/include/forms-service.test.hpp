@@ -8,6 +8,6 @@ using uuidv4 = v4;
 #include "../services/forms-service.h"
 #include "../types.h"
 
-extern std::function<any(string)> createMockMemory;
-extern std::function<any()> createTypedMockRuntime;
+extern std::function<std::any(std::string)> createMockMemory;
+extern std::function<std::any()> createTypedMockRuntime;
 #endif

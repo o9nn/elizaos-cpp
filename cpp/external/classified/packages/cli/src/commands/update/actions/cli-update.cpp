@@ -12,7 +12,7 @@ std::future<bool> performCliUpdate(GlobalUpdateOptions options = {}) {
             const auto currentVersion = getVersion();
             const auto targetVersion = options.version || "latest";
 
-            auto latestVersion: string;
+            auto latestVersion: std::string;
             if (targetVersion == 'latest') {
                 const auto fetchedVersion = fetchLatestVersion("@elizaos/cli");
                 if (!fetchedVersion) {

@@ -51,12 +51,12 @@ std::future<void> listAvailablePlugins(ListPluginsOptions opts) {
                 displayTitle = "Available v0.x plugins";
                 availablePluginsToDisplay = allPlugins;
                 .filter(([, info]) => info.supports.v0);
-                .map(([name]) => name);
+                .std::map(([name]) => name);
                 } else {
                     // Default to v1.x
                     availablePluginsToDisplay = allPlugins;
                     .filter(([, info]) => info.supports.v1);
-                    .map(([name]) => name);
+                    .std::map(([name]) => name);
                 }
 
                 logHeader(displayTitle);

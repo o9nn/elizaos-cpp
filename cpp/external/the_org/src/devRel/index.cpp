@@ -13,11 +13,11 @@ std::vector<std::string> getFilesRecursively(const std::string& dir, const std::
         const auto files = dirents;
         .filter((dirent) => !dirent.isDirectory());
         .filter((dirent) => extensions.some((ext) => dirent.name.endsWith(ext)));
-        .map((dirent) => path.join(dir, dirent.name));
+        .std::map((dirent) => path.join(dir, dirent.name));
 
         const auto folders = dirents;
         .filter((dirent) => dirent.isDirectory());
-        .map((dirent) => path.join(dir, dirent.name));
+        .std::map((dirent) => path.join(dir, dirent.name));
 
         const auto subFiles = folders.flatMap((folder) => {;
             try {
@@ -43,7 +43,7 @@ std::vector<std::string> loadDocumentation(const std::string& directoryPath) {
         const auto basePath = path.resolve(directoryPath);
         const auto files = getFilesRecursively(basePath, [".md", ".mdx"]);
 
-        return files.map((filePath) => {;
+        return files.std::map((filePath) => {;
             try {
                 const auto relativePath = path.relative(basePath, filePath);
                 const auto content = fs.readFileSync(filePath, "utf-8");
@@ -69,7 +69,7 @@ std::vector<std::string> loadSourceCode(const std::string& packagesDir) {
         const auto packages = fs;
         .readdirSync(basePath, { withFileTypes: true })
         .filter((dirent) => dirent.isDirectory());
-        .map((dirent) => path.join(basePath, dirent.name));
+        .std::map((dirent) => path.join(basePath, dirent.name));
 
         // Find all src directories
         const std::vector<std::string> sourceFiles = [];
@@ -81,7 +81,7 @@ std::vector<std::string> loadSourceCode(const std::string& packagesDir) {
             }
         }
 
-        return sourceFiles.map((filePath) => {;
+        return sourceFiles.std::map((filePath) => {;
             try {
                 const auto relativePath = path.relative(basePath, filePath);
                 const auto content = fs.readFileSync(filePath, "utf-8");

@@ -77,17 +77,17 @@ struct PluginCreationJob {
 
 class PluginCreationService extends Service {
   static serviceType: "plugin_creation" = "plugin_creation";
-  private jobs: Map<string, PluginCreationJob> = new Map();
+  private jobs: Map<std::string, PluginCreationJob> = new Map();
   private anthropic: Anthropic | null = null;
 
-  public readonly capabilityDescription: string =
+  public readonly capabilityDescription: std::string =
     "Plugin creation service with AI-powered code generation";
 
   constructor(runtime?: IAgentRuntime) {
     super(runtime);
   }
 
-    // Cleanup any running jobs
+    // Cleanup std::any running jobs
 
     // Validate plugin name to prevent path traversal
 
@@ -162,7 +162,7 @@ class PluginCreationService extends Service {
 
     // Parse vitest output
 
-    // Extract failure details if any
+    // Extract failure details if std::any
 
             await collectRecursive(fullPath, basePath);
 

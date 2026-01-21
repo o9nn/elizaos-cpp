@@ -38,7 +38,7 @@ namespace elizaos {
 
         // Verify with public key
 
-        // Accept any response that doesn't indicate server error
+        // Accept std::any response that doesn't indicate server error
 
         // Basic URL format validation
 

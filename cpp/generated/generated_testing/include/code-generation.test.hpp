@@ -10,9 +10,9 @@ class CodeGenerationE2ETestSuite;
 class CodeGenerationE2ETestSuite : public TestSuite, public std::enable_shared_from_this<CodeGenerationE2ETestSuite> {
 public:
     using std::enable_shared_from_this<CodeGenerationE2ETestSuite>::shared_from_this;
-    string name = std::string("code-generation-e2e");
+    std::string name = std::string("code-generation-e2e");
 
-    string description = std::string("E2E tests for code generation workflow");
+    std::string description = std::string("E2E tests for code generation workflow");
 
     array<object> tests = array<object>{ object{
         object::pair{std::string("name"), std::string("should handle full plugin generation workflow")}, 
@@ -28,7 +28,7 @@ public:
             {
                 dbReady = std::async([=]() { runtime->isReady(); });
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->log(std::string("⚠️ Database readiness check failed:"), (is<Error>(error)) ? error->message : String(error));
             }
@@ -53,7 +53,7 @@ public:
                 {
                     std::async([=]() { runtime->createMemory(createMessage, std::string("messages")); });
                 }
-                catch (const any& error)
+                catch (const std::any& error)
                 {
                     console->log(std::string("Note: Error creating memory:"), (is<Error>(error)) ? error->message : String(error));
                 }
@@ -77,7 +77,7 @@ public:
                         object::pair{std::string("tableName"), std::string("messages")}
                     }); });
                 }
-                catch (const any& error)
+                catch (const std::any& error)
                 {
                     console->log(std::string("Note: Error getting memories:"), (is<Error>(error)) ? error->message : String(error));
                 }
@@ -91,7 +91,7 @@ public:
                 }
                 );
                 if (!formResponse) {
-                    throw any(std::make_shared<Error>(std::string("Agent did not create form for project details")));
+                    throw std::any(std::make_shared<Error>(std::string("Agent did not create form for project details")));
                 }
                 console->log(std::string("✓ Form created for project details"));
             }

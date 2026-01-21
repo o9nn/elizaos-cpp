@@ -81,7 +81,7 @@ std::vector<BatchInstance> filterBatchItems(const std::vector<BatchInstance>& in
     if (options.filter) {
         const auto regex = new RegExp(options.filter);
         filtered = filtered.filter((instance) => {
-            const auto id = (instance.problemStatement as { id?: string }).id || "";
+            const auto id = (instance.problemStatement as { id?: std::string }).id || "";
             return regex.test(id);
             });
         }
@@ -142,7 +142,7 @@ SimpleBatchInstance fromSWEBench(const std::unordered_map<std::string, std::any>
                 if (typeof imageAssets == 'string') {
                     imageAssets = /* JSON.parse */ imageAssets;
                 }
-                if ((imageAssets as any).problem_statement) {
+                if ((imageAssets as std::any).problem_statement) {
                     result.extraFields = { ...result.extraFields, issue_images: (imageAssets).problem_statement };
                 }
             }

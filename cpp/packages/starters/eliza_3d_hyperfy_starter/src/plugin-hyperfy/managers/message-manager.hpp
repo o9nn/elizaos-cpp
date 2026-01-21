@@ -38,7 +38,7 @@ class MessageManager {
 
         // Create the message memory
 
-        // Create a callback function to handle responses
+        // Create a callback std::function to handle responses
           
           // Send response back to Hyperfy
 

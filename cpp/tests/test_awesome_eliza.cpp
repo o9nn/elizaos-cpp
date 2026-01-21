@@ -90,7 +90,7 @@ TEST_F(AwesomeElizaTest, CategoryCountsTest) {
     
     // Total should match individual counts
     size_t total_from_counts = 0;
-    for (const auto& pair : counts) {
+    for (const auto& std::pair : counts) {
         total_from_counts += pair.second;
     }
     EXPECT_EQ(total_from_counts, manager->getResourceCount());

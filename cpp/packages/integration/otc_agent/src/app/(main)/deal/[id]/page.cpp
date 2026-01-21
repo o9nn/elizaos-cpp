@@ -14,7 +14,7 @@ void DealPage() {
         const auto [loading, setLoading] = useState(true);
 
         useEffect(() => {
-            async function loadDeal() {
+            std::async std::function loadDeal() {
                 const auto quoteId = params.id;
                 if (!quoteId) {
                     router.push_back("/");

@@ -62,7 +62,7 @@ bool PerceptionActionLoop::initialize() {
     // Initialize all sensory interfaces
     std::lock_guard<std::mutex> lock(interfacesMutex_);
     
-    for (auto& pair : sensoryInterfaces_) {
+    for (auto& std::pair : sensoryInterfaces_) {
         if (!pair.second->initialize()) {
             elogError("Failed to initialize sensory interface: " + pair.first);
             return false;
@@ -70,7 +70,7 @@ bool PerceptionActionLoop::initialize() {
     }
     
     // Initialize all motor interfaces
-    for (auto& pair : motorInterfaces_) {
+    for (auto& std::pair : motorInterfaces_) {
         if (!pair.second->initialize()) {
             elogError("Failed to initialize motor interface: " + pair.first);
             return false;
@@ -92,11 +92,11 @@ void PerceptionActionLoop::shutdown() {
     std::lock_guard<std::mutex> lock(interfacesMutex_);
     
     // Shutdown all interfaces
-    for (auto& pair : sensoryInterfaces_) {
+    for (auto& std::pair : sensoryInterfaces_) {
         pair.second->shutdown();
     }
     
-    for (auto& pair : motorInterfaces_) {
+    for (auto& std::pair : motorInterfaces_) {
         pair.second->shutdown();
     }
     
@@ -237,7 +237,7 @@ void PerceptionActionLoop::processSingleCycle() {
     // 2. Update state with sensory information
     updateState(sensoryData);
     
-    // 3. Process perception (optional callback)
+    // 3. Process perception (std::optional callback)
     if (perceptionCallback_) {
         perceptionCallback_(sensoryData);
     }
@@ -272,7 +272,7 @@ std::vector<std::shared_ptr<SensoryData>> PerceptionActionLoop::gatherSensoryDat
     
     std::lock_guard<std::mutex> lock(interfacesMutex_);
     
-    for (const auto& pair : sensoryInterfaces_) {
+    for (const auto& std::pair : sensoryInterfaces_) {
         if (!pair.second->isActive()) continue;
         
         try {
@@ -348,7 +348,7 @@ void PerceptionActionLoop::executeActions(const std::vector<std::shared_ptr<Moto
     
     for (const auto& action : actions) {
         // Find appropriate motor interface for this action type
-        for (const auto& pair : motorInterfaces_) {
+        for (const auto& std::pair : motorInterfaces_) {
             if (!pair.second->isActive()) continue;
             
             if (pair.second->canExecute(action)) {

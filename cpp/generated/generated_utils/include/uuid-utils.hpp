@@ -3,9 +3,9 @@
 #include "core.h"
 #include "js-sha1.h"
 
-extern std::function<string(std::shared_ptr<Uint8Array>)> uint8ArrayToHex;
-string generateUUIDFromString(string inputString);
+extern std::function<std::string(std::shared_ptr<Uint8Array>)> uint8ArrayToHex;
+std::string generateUUIDFromString(std::string inputString);
 
-string generateQueryRoomId(string seed, string query);
+std::string generateQueryRoomId(std::string seed, std::string query);
 
 #endif

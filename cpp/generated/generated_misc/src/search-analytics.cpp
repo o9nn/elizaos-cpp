@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-list/src/lib/search-analytics.h"
 
-void trackSearch(string query, string userId)
+void trackSearch(std::string query, std::string userId)
 {
     std::async([=]() { prisma->searchQuery->create(object{
         object::pair{std::string("data"), object{
@@ -12,7 +12,7 @@ void trackSearch(string query, string userId)
 };
 
 
-any getPopularSearches(double limit)
+std::any getPopularSearches(double limit)
 {
     auto searches = std::async([=]() { prisma->searchQuery->groupBy(object{
         object::pair{std::string("by"), array<string>{ std::string("query") }}, 

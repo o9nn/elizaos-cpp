@@ -27,7 +27,7 @@ std::shared_ptr<Action> getNFTCollectionStatsAction = object{
         {
             auto svc = as<any>(runtime->getService(CoinGeckoService::serviceType));
             if (!svc) {
-                throw any(std::make_shared<Error>(std::string("CoinGeckoService not available")));
+                throw std::any(std::make_shared<Error>(std::string("CoinGeckoService not available")));
             }
             auto composedState = std::async([=]() { runtime->composeState(message, array<string>{ std::string("ACTION_STATE") }, true); });
             auto params = OR((composedState->data->actionParams), (object{}));
@@ -73,7 +73,7 @@ std::shared_ptr<Action> getNFTCollectionStatsAction = object{
                 object::pair{std::string("input"), inputParams}
             });
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             auto msg = (is<Error>(error)) ? error->message : String(error);
             logger->error(std::string("[GET_NFT_COLLECTION_STATS] Action failed: ") + msg + string_empty);

@@ -18,9 +18,9 @@ class PostgresConnectionManager {
   private pool: Pool;
   private db: NodePgDatabase;
 
-  constructor(connectionString: string) {
+  constructor(connectionString: std::string) {
     this.pool = new Pool({ connectionString });
-    this.db = drizzle(this.pool as any, { casing: 'snake_case' });
+    this.db = drizzle(this.pool as std::any, { casing: 'snake_case' });
   }
 
   /**

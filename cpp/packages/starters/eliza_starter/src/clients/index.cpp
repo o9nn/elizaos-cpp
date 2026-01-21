@@ -8,7 +8,7 @@ std::future<void> initializeClients(Character character, IAgentRuntime runtime) 
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto clients = [];
-    const auto clientTypes = character.clients.map((str) => str.toLowerCase()) || [];
+    const auto clientTypes = character.clients.std::map((str) => str.toLowerCase()) || [];
 
     if (clientTypes.includes("auto")) {
         const auto autoClient = AutoClientInterface.start(runtime);

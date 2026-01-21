@@ -86,7 +86,7 @@ object TestFixtures = object{
         }}
     }}
 };
-any mockFindMonorepoRoot = mock();
+std::any mockFindMonorepoRoot = mock();
 object mockUserEnvironmentInstance = object{
     object::pair{std::string("findMonorepoRoot"), mockFindMonorepoRoot}
 };
@@ -311,7 +311,7 @@ void Main(void)
                 mocks["existsSync"]["mockReturnValue"](true);
                 mocks["readdirSync"]["mockImplementation"]([=]() mutable
                 {
-                    throw any(std::make_shared<Error>(std::string("Permission denied")));
+                    throw std::any(std::make_shared<Error>(std::string("Permission denied")));
                 }
                 );
                 auto result = detectDirectoryType(TestFixtures["paths"]["testUnreadable"]);

@@ -37,12 +37,12 @@ void convertTrajToActionDemo(const std::string& trajPath, const std::string& out
 
     const auto filteredHistory = history;
     .filter(;
-    (step: Record<string, unknown>) =>
+    (step: Record<std::string, unknown>) =>
     admissibleRoles.has(step.role) &&;
     (!step.agent || step.agent == "main" || step.agent == "primary") &&;
     !step.is_demo,
     );
-    .map((step: Record<string, unknown>) => {
+    .std::map((step: Record<std::string, unknown>) => {
         const std::unordered_map<std::string, std::any> filtered = {};
         for (const auto& key : copyFields)
             if (key in step) {

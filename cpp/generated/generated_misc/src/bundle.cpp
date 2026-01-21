@@ -9,20 +9,20 @@ Bundle::Bundle(object config) {
 void Bundle::validateTools()
 {
     if (!fs->existsSync(this->path)) {
-        throw any(std::make_shared<Error>(std::string("Bundle path does not exist: ") + this->path + string_empty));
+        throw std::any(std::make_shared<Error>(std::string("Bundle path does not exist: ") + this->path + string_empty));
     }
     auto configPath = path->join(this->path, std::string("config.yaml"));
     if (!fs->existsSync(configPath)) {
-        throw any(std::make_shared<Error>(std::string("Bundle config not found: ") + configPath + string_empty));
+        throw std::any(std::make_shared<Error>(std::string("Bundle config not found: ") + configPath + string_empty));
     }
     auto configContent = fs->readFileSync(configPath, std::string("utf-8"));
     this->_config = as<std::shared_ptr<BundleConfig>>(yaml->load(configContent));
     if (OR((!this->_config->tools), (type_of(this->_config->tools) != std::string("object")))) {
-        throw any(std::make_shared<Error>(std::string("Bundle config must contain tools object")));
+        throw std::any(std::make_shared<Error>(std::string("Bundle config must contain tools object")));
     }
 }
 
-any Bundle::get_stateCommand()
+std::any Bundle::get_stateCommand()
 {
     return this->get_config()->stateCommand;
 }

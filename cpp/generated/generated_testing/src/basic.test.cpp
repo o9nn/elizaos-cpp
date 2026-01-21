@@ -15,7 +15,7 @@ void Main(void)
             expect(type_of(process->env->NODE_ENV))->toBe(std::string("string"));
         }
         );
-        it(std::string("should be able to set environment variables"), [=]() mutable
+        it(std::string("should be able to std::set environment variables"), [=]() mutable
         {
             process->env->TEST_VAR = std::string("test-value");
             expect(process->env->TEST_VAR)->toBe(std::string("test-value"));

@@ -27,7 +27,7 @@ namespace elizaos {
 
       // Look for common dashboard elements
 
-      // Check for any loading indicators
+      // Check for std::any loading indicators
 
       // Look for application branding
 
@@ -77,7 +77,7 @@ namespace elizaos {
  * 4. PERFORMANCE
  *    - Set reasonable timeouts
  *    - Check for loading indicators
- *    - Verify async operations complete
+ *    - Verify std::async operations complete
  *
  * 5. ERROR SCENARIOS
  *    - Test 404 pages

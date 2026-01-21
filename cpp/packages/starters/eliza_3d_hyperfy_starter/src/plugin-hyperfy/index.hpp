@@ -39,7 +39,7 @@ namespace elizaos {
 // --- Hardcoded values matching agent/index.mjs ---
 // ---------------------------------------------
 
-// Define the plugin configuration schema (optional, adjust as needed)
+// Define the plugin configuration schema (std::optional, adjust as needed)
 // Renamed this one to avoid conflict
 
 // --- Main Plugin Definition ---

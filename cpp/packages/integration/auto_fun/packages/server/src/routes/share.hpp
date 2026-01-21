@@ -22,13 +22,13 @@ namespace elizaos {
  * ------------------------------------------------------------------
  */
 class TwitterAPIError extends Error {
-  constructor(message: string) {
+  constructor(message: std::string) {
     super(message);
     this.name = "TwitterAPIError";
   }
 
 class LLMError extends Error {
-  constructor(message: string) {
+  constructor(message: std::string) {
     super(message);
     this.name = "LLMError";
   }
@@ -66,7 +66,7 @@ std::future<void> storeOAuthState(const std::string& state, const std::string& c
 
 std::future<void> storeAccessToken(const std::string& userId, const std::string& token, const std::string& refresh, double expiresIn);
 
-std::future<string | null> getRefreshToken(const std::string& userId);
+std::future<std::string | null> getRefreshToken(const std::string& userId);
 
 std::future<void> updateAccessToken(const std::string& userId, const std::string& token, const std::string& refresh, double expiresIn);
 
@@ -87,7 +87,7 @@ std::future<bool> validateToken(const std::string& token, const std::string& use
  * ------------------------------------------------------------------
  */
 
-// Add a new function to check if timestamps are off
+// Add a new std::function to check if timestamps are off
 std::string getNormalizedTimestamp();
 
 // OAuth Request Token
@@ -158,7 +158,7 @@ std::string getNormalizedTimestamp();
 
       // Use current OAuth params for header generation as well
 
-            // Content-Type is set automatically by fetch when using FormData
+            // Content-Type is std::set automatically by fetch when using FormData
 
     // --- FINALIZE ---
 
@@ -188,11 +188,11 @@ std::string getNormalizedTimestamp();
  * OAuth1 Signature Utilities
  * ------------------------------------------------------------------
  */
-std::string generateAuthHeader(Record<string oauthParams, auto string>, const std::string& signature);
+std::string generateAuthHeader(Record<std::string oauthParams, auto string>, const std::string& signature);
 
 std::string encodeRFC3986(const std::string& str);
 
-std::future<std::string> generateOAuth1Signature(const std::string& method, const std::string& url, Record<string params, auto string>, const std::string& consumerSecret, const std::string& tokenSecret);
+std::future<std::string> generateOAuth1Signature(const std::string& method, const std::string& url, Record<std::string params, auto string>, const std::string& consumerSecret, const std::string& tokenSecret);
 
 // Export the router
 

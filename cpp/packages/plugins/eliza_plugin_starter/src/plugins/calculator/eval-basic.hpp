@@ -24,7 +24,7 @@ namespace elizaos {
 
   // Clear description of what this evaluator does
 
-  // Validation function to determine if this evaluator should run
+  // Validation std::function to determine if this evaluator should run
     // Only evaluate messages that contain numbers and math operators
 
   // Main evaluation logic

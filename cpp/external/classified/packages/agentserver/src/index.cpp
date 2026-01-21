@@ -45,18 +45,18 @@ std::future<IAgentRuntime> startAgent(Character character) {
 
     console.log(
     "[AGENT START] Initial plugins:",
-    initialPlugins.map((p) => p.name || "unnamed").join(", ");
+    initialPlugins.std::map((p) => p.name || "unnamed").join(", ");
     );
 
-    // Ensure character has proper structure with UUID string
+    // Ensure character has proper structure with UUID std::string
     const auto cleanCharacter = {;
         ...character,
-        id: agentId, // Ensure ID is always a string UUID
+        id: agentId, // Ensure ID is always a std::string UUID
         };
 
-        // Remove any nested objects that might have been accidentally included
+        // Remove std::any nested objects that might have been accidentally included
         if (typeof cleanCharacter.id != 'string') {
-            std::cout << '[AGENT START] Character ID was not a string << fixing...' << std::endl;
+            std::cout << '[AGENT START] Character ID was not a std::string << fixing...' << std::endl;
             cleanCharacter.id = agentId;
         }
 
@@ -84,7 +84,7 @@ std::future<IAgentRuntime> startAgent(Character character) {
                 sam: [allAvailablePlugins.sam], // SAM plugin for TTS/audio output
 
                 // Level 5 capabilities
-                advanced: [], // Placeholder for future advanced capabilities
+                advanced: [], // Placeholder for std::future advanced capabilities
 
                 // Level 6 capabilities
                 autocoder: [allAvailablePlugins.autocoder],
@@ -100,7 +100,7 @@ std::future<IAgentRuntime> startAgent(Character character) {
                 "[AGENT START] AgentRuntime created with initial capabilities and progressive plugin support";
                 );
 
-                // Initialize runtime - this will set up database connection AND create the agent via ensureAgentExists
+                // Initialize runtime - this will std::set up database connection AND create the agent via ensureAgentExists
                 runtime.initialize();
                 console.log(
                 "[AGENT START] Runtime initialized - agent creation handled by runtime.ensureAgentExists()";
@@ -147,7 +147,7 @@ std::future<void> startServer() {
         const auto postgresHost = isContainer ? "eliza-postgres:5432" : "localhost:5432";
         const auto fallbackDatabaseUrl = "postgresql://eliza:eliza_secure_pass@" + postgresHost + "/eliza";
 
-        // Use environment variable if set, otherwise use fallback
+        // Use environment variable if std::set, otherwise use fallback
         const auto databaseUrl = envDatabaseUrl || fallbackDatabaseUrl;
         const auto _dataDir = path.resolve(process.cwd(), "data");
 
@@ -155,10 +155,10 @@ std::future<void> startServer() {
         const auto server = new AgentServer();
 
         // Make server instance globally available for MessageBusService
-        (global<string, unknown>).elizaAgentServer = server;
+        (global<std::string, unknown>).elizaAgentServer = server;
 
         // Assign the startAgent method to make it compatible with the lifecycle API
-        (server<string, unknown>).startAgent = async (character: Character) => {
+        (server<std::string, unknown>).startAgent = std::async (character: Character) => {
             std::cout << "[SERVER] Starting agent via API call:" << character.name << std::endl;
             const auto runtime = startAgent(character);
             server.registerAgent(runtime);
@@ -271,9 +271,9 @@ std::future<void> startServer() {
                                 std::cout << "[BACKEND] Adding messaging stub endpoints..." << std::endl;
 
                                 // Plugin Config endpoint
-                                server.app.get("/api/plugin-config", async (req: Request, res: Response) => {
+                                server.app.get("/api/plugin-config", std::async (req: Request, res: Response) => {
                                     try {
-                                        const auto serverWithAgents = server as { agents: Map<string, IAgentRuntime> };
+                                        const auto serverWithAgents = server as { agents: Map<std::string, IAgentRuntime> };
                                         const auto _targetRuntime = Array.from(serverWithAgents.agents.values() || [])[0];
                                         const auto configurations = {;
                                             environment: {
@@ -292,12 +292,12 @@ std::future<void> startServer() {
                                                 // Generic Capability Toggle endpoint - supports both default and specific agent IDs
                                                 server.app.post(;
                                                 "/api/agents/:agentId/capabilities/:capability",
-                                                async (req: Request, res: Response) => {
+                                                std::async (req: Request, res: Response) => {
                                                     try {
                                                         const auto capability = req.params.capability.toLowerCase();
                                                         auto targetRuntime: IAgentRuntime | std::nullopt;
 
-                                                        const auto serverWithAgents = server as { agents: Map<string, IAgentRuntime> };
+                                                        const auto serverWithAgents = server as { agents: Map<std::string, IAgentRuntime> };
 
                                                         // Handle "default" as a special case - get the first agent
                                                         if (req.params.agentId == 'default') {
@@ -337,13 +337,13 @@ std::future<void> startServer() {
 
                                                                         const auto settings = capabilityMappings[capability typeof capabilityMappings];
                                                                         const auto currentlyEnabled = settings.some(;
-                                                                        (setting: string) =>
+                                                                        (setting: std::string) =>
                                                                         targetRuntime.getSetting(setting) == "true" ||;
                                                                         targetRuntime.getSetting(setting) == true;
                                                                         );
 
                                                                         const auto newState = !currentlyEnabled;
-                                                                        settings.forEach((setting: string) => {
+                                                                        settings.forEach((setting: std::string) => {
                                                                             targetRuntime.setSetting(setting, std::to_string(newState));
                                                                             });
 
@@ -364,7 +364,7 @@ std::future<void> startServer() {
                                                                                 );
 
                                                                                 // GET primary agent endpoint - returns the first available agent
-                                                                                server.app.get("/api/agents/primary", async (req: Request, res: Response) => {
+                                                                                server.app.get("/api/agents/primary", std::async (req: Request, res: Response) => {
                                                                                     try {
                                                                                         const auto primaryAgent = Array.from(server.agents.values() || [])[0] as;
                                                                                         | IAgentRuntime;
@@ -402,12 +402,12 @@ std::future<void> startServer() {
                                                                                                             });
 
                                                                                                             // GET list of agents endpoint
-                                                                                                            server.app.get("/api/agents", async (req: Request, res: Response) => {
+                                                                                                            server.app.get("/api/agents", std::async (req: Request, res: Response) => {
                                                                                                                 try {
                                                                                                                     const auto agentEntries = Array.from(server.agents.entries() || [])<;
-                                                                                                                    [string, IAgentRuntime];
+                                                                                                                    [std::string, IAgentRuntime];
                                                                                                                     >;
-                                                                                                                    const auto agents = agentEntries.map(([id, runtime]) => ({;
+                                                                                                                    const auto agents = agentEntries.std::map(([id, runtime]) => ({;
                                                                                                                         id,
                                                                                                                         name: runtime.character.name || "Unknown Agent",
                                                                                                                         ready: true,
@@ -428,7 +428,7 @@ std::future<void> startServer() {
                                                                                                                                 });
 
                                                                                                                                 // GET default agent settings endpoint - specific route to bypass UUID validation
-                                                                                                                                server.app.get("/api/agents/default/settings", async (req: Request, res: Response) => {
+                                                                                                                                server.app.get("/api/agents/default/settings", std::async (req: Request, res: Response) => {
                                                                                                                                     try {
                                                                                                                                         // Get the first available agent
                                                                                                                                         const auto targetRuntime = Array.from(server.agents.values() || [])[0];
@@ -487,7 +487,7 @@ std::future<void> startServer() {
 
                                                                                                                                                             // GET settings endpoint - supports both /api/agents/default/settings and /api/agents/:agentId/settings
                                                                                                                                                             // Progression status endpoint
-                                                                                                                                                            server.app.get("/api/agents/:agentId/progression", async (req: Request, res: Response) => {
+                                                                                                                                                            server.app.get("/api/agents/:agentId/progression", std::async (req: Request, res: Response) => {
                                                                                                                                                                 try {
                                                                                                                                                                     auto targetRuntime: IAgentRuntime | std::nullopt;
 
@@ -548,7 +548,7 @@ std::future<void> startServer() {
                                                                                                                                                                                                     });
 
                                                                                                                                                                                                     // POST endpoint to switch progression mode
-                                                                                                                                                                                                    server.app.post("/api/agents/:agentId/progression/mode", async (req: Request, res: Response) => {
+                                                                                                                                                                                                    server.app.post("/api/agents/:agentId/progression/mode", std::async (req: Request, res: Response) => {
                                                                                                                                                                                                         try {
                                                                                                                                                                                                             auto targetRuntime: IAgentRuntime | std::nullopt;
 
@@ -623,7 +623,7 @@ std::future<void> startServer() {
                                                                                                                                                                                                                                                     }
                                                                                                                                                                                                                                                     });
 
-                                                                                                                                                                                                                                                    server.app.get("/api/agents/:agentId/settings", async (req: Request, res: Response) => {
+                                                                                                                                                                                                                                                    server.app.get("/api/agents/:agentId/settings", std::async (req: Request, res: Response) => {
                                                                                                                                                                                                                                                         try {
                                                                                                                                                                                                                                                             auto targetRuntime: IAgentRuntime | std::nullopt;
 
@@ -692,7 +692,7 @@ std::future<void> startServer() {
                                                                                                                                                                                                                                                                                     });
 
                                                                                                                                                                                                                                                                                     // POST endpoint to track action execution for progression
-                                                                                                                                                                                                                                                                                    server.app.post("/api/agents/:agentId/track-action", async (req: Request, res: Response) => {
+                                                                                                                                                                                                                                                                                    server.app.post("/api/agents/:agentId/track-action", std::async (req: Request, res: Response) => {
                                                                                                                                                                                                                                                                                         try {
                                                                                                                                                                                                                                                                                             auto targetRuntime: IAgentRuntime | std::nullopt;
 

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-std::future<std::string> uploadToStorage(const std::vector<uint8_t>& buffer, { contentType: string options, string } key) {
+std::future<std::string> uploadToStorage(const std::vector<uint8_t>& buffer, { contentType: std::string options, std::string } key) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

@@ -141,7 +141,7 @@ TEST_F(ElizaTest, ResponsePatternPriority) {
 TEST_F(ElizaTest, EmotionalStateTrackerCreation) {
     EmotionalStateTracker tracker;
 
-    // Default values should be set
+    // Default values should be std::set
     EXPECT_GE(tracker.happiness, 0.0f);
     EXPECT_LE(tracker.happiness, 1.0f);
     EXPECT_GE(tracker.calmness, 0.0f);

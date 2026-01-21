@@ -1,9 +1,9 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/tests/unit/utils/testing/timeout-manager.test.h"
 
-std::function<any(double)> originalmockExit = process->exit;
-any mockExit = mock([=]() mutable
+std::function<std::any(double)> originalmockExit = process->exit;
+std::any mockExit = mock([=]() mutable
 {
-    throw any(std::make_shared<Error>(std::string("process.exit called")));
+    throw std::any(std::make_shared<Error>(std::string("process.exit called")));
 }
 );
 

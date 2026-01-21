@@ -43,7 +43,7 @@ class RunSingle {
   private env: SWEEnv;
   private agent: AbstractAgent;
   private problemStatement: ProblemStatement | ProblemStatementConfig;
-  private outputDir: string;
+  private outputDir: std::string;
   private hooks: RunHook[];
   private actions: RunSingleActionConfig;
   private logger: AgentLogger;
@@ -52,7 +52,7 @@ class RunSingle {
     env: SWEEnv;
     agent: AbstractAgent;
     problemStatement: ProblemStatement | ProblemStatementConfig;
-    outputDir?: string;
+    outputDir?: std::string;
     hooks?: RunHook[];
     actions?: RunSingleActionConfig;
   }) {

@@ -79,7 +79,7 @@ std::shared_ptr<Promise<object>> createTestDatabase(std::shared_ptr<UUID> testAg
 };
 
 
-std::shared_ptr<Promise<object>> createIsolatedTestDatabase(string testName, array<std::shared_ptr<Plugin>> testPlugins)
+std::shared_ptr<Promise<object>> createIsolatedTestDatabase(std::string testName, array<std::shared_ptr<Plugin>> testPlugins)
 {
     auto testAgentId = as<std::shared_ptr<UUID>>(v4());
     auto testId = testName->replace((new RegExp(std::string("[^a-zA-Z0-9]"))), std::string("_"))->toLowerCase();
@@ -114,7 +114,7 @@ std::shared_ptr<Promise<object>> createIsolatedTestDatabase(string testName, arr
             {
                 std::async([=]() { db->execute(sql->raw(std::string("DROP SCHEMA IF EXISTS ") + schemaName + std::string(" CASCADE"))); });
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("[TEST] Failed to drop schema ") + schemaName + std::string(":"), error);
             }
@@ -161,7 +161,7 @@ std::shared_ptr<Promise<object>> createIsolatedTestDatabase(string testName, arr
                     object::pair{std::string("force"), true}
                 });
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("[TEST] Failed to remove temp directory ") + tempDir + std::string(":"), error);
             }

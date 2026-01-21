@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/autodoc/src/TypeScriptParser.h"
 
-any TypeScriptParser::parse(string file)
+std::any TypeScriptParser::parse(std::string file)
 {
     try
     {
@@ -25,7 +25,7 @@ any TypeScriptParser::parse(string file)
         }
         return ast;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         if (is<Error>(error)) {
             this->handleParseError(error);
@@ -36,7 +36,7 @@ any TypeScriptParser::parse(string file)
     }
 }
 
-object TypeScriptParser::extractExports(string file)
+object TypeScriptParser::extractExports(std::string file)
 {
     auto ast = this->parse(file);
     shared exports = object{
@@ -63,7 +63,7 @@ object TypeScriptParser::extractExports(string file)
     return exports;
 }
 
-any TypeScriptParser::findActionBounds(any ast)
+std::any TypeScriptParser::findActionBounds(std::any ast)
 {
     shared startLine = nullptr;
     shared endLine = nullptr;
@@ -104,7 +104,7 @@ any TypeScriptParser::findActionBounds(any ast)
     return nullptr;
 }
 
-string TypeScriptParser::extractActionCode(string filePath, std::shared_ptr<ActionBounds> bounds)
+std::string TypeScriptParser::extractActionCode(std::string filePath, std::shared_ptr<ActionBounds> bounds)
 {
     auto fileContent = fs->readFileSync(filePath, std::string("utf-8"));
     auto lines = fileContent->split(std::string("\

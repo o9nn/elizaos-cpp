@@ -26,7 +26,7 @@ struct SplitButtonProps {
     std::vector<SplitButtonOption> options;
     std::optional<std::string> defaultValue;
     std::optional<std::string> value;
-    std::optional<std::string> variant;
+    std::optional<std::string> std::variant;
     std::optional<std::string> className;
     std::optional<std::string> buttonClassName;
     std::optional<std::string> dropdownClassName;

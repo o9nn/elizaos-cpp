@@ -38,7 +38,7 @@ bool isValidPostgresUrl(const std::string& url);
 std::future<void> getElizaDirectories(std::optional<std::string> targetProjectDir);
 
 /**
- * Generic function to ensure a directory exists
+ * Generic std::function to ensure a directory exists
  * @param dirPath Path to the directory
  */
 std::future<void> ensureDir(const std::string& dirPath);
@@ -62,10 +62,10 @@ std::future<void> ensureElizaDir(std::optional<std::string> targetProjectDir);
  * @param elizaDbDir The directory for PGLite database
  * @param envFilePath Path to the .env file
  */
-std::future<void> setupPgLite(string | undefined dbDir, string | undefined envPath, std::optional<std::string> targetProjectDir);
+std::future<void> setupPgLite(std::string | undefined dbDir, std::string | undefined envPath, std::optional<std::string> targetProjectDir);
 
 /**
- * Stores the provided Postgres connection URL in the specified `.env` file, replacing any existing entry.
+ * Stores the provided Postgres connection URL in the specified `.env` file, replacing std::any existing entry.
  *
  * Updates the `POSTGRES_URL` environment variable in both the file and the current process.
  *
@@ -77,7 +77,7 @@ std::future<void> setupPgLite(string | undefined dbDir, string | undefined envPa
 std::future<void> storePostgresUrl(const std::string& url, const std::string& envFilePath);
 
 /**
- * Stores the provided PGLite data directory in the specified `.env` file, replacing any existing entry.
+ * Stores the provided PGLite data directory in the specified `.env` file, replacing std::any existing entry.
  *
  * Updates the `PGLITE_DATA_DIR` environment variable in both the file and the current process.
  *
@@ -92,7 +92,7 @@ std::future<void> storePgliteDataDir(const std::string& dataDir, const std::stri
  * Prompts the user for a Postgres URL, validates it, and stores it
  * @returns The configured Postgres URL or null if user cancels
  */
-std::future<string | null> promptAndStorePostgresUrl(const std::string& envFilePath);
+std::future<std::string | null> promptAndStorePostgresUrl(const std::string& envFilePath);
 
 /**
  * Validates an OpenAI API key format
@@ -149,13 +149,13 @@ struct ProviderPromptConfig {
     std::optional<std::string> placeholder;
     std::optional<std::string> initialValue;
     'text' | 'password' type;
-    (value: string) => string | undefined validate;
-    (config: any, envFilePath: string) => Promise<void> storeFunction;
+    (value: std::string) => std::string | undefined validate;
+    (config: std::any, envFilePath: std::string) => Promise<void> storeFunction;
     std::string successMessage;
 };
 
 /**
- * Generic function to prompt for provider configuration
+ * Generic std::function to prompt for provider configuration
  * @param config Provider-specific configuration
  * @param envFilePath Path to the .env file
  * @returns The configured values or null if user cancels
@@ -170,14 +170,14 @@ struct ProviderPromptConfig {
  * @param envFilePath Path to the .env file
  * @returns The configured OpenAI API key or null if user cancels
  */
-std::future<string | null> promptAndStoreOpenAIKey(const std::string& envFilePath);
+std::future<std::string | null> promptAndStoreOpenAIKey(const std::string& envFilePath);
 
 /**
  * Prompts the user for an Anthropic API key, validates it, and stores it
  * @param envFilePath Path to the .env file
  * @returns The configured Anthropic API key or null if user cancels
  */
-std::future<string | null> promptAndStoreAnthropicKey(const std::string& envFilePath);
+std::future<std::string | null> promptAndStoreAnthropicKey(const std::string& envFilePath);
 
 /**
  * Validates an Ollama API endpoint format
@@ -191,7 +191,7 @@ bool isValidOllamaEndpoint(const std::string& endpoint);
  * @param config The Ollama configuration to store
  * @param envFilePath Path to the .env file
  */
-std::future<void> storeOllamaConfig({ endpoint: string; model: string } config, const std::string& envFilePath);
+std::future<void> storeOllamaConfig({ endpoint: std::string; model: std::string } config, const std::string& envFilePath);
 
 /**
  * Prompts the user for Ollama embedding model selection
@@ -225,7 +225,7 @@ std::future<void> storeOllamaConfig({ endpoint: string; model: string } config, 
  * @param envFilePath Path to the .env file
  * @returns The configured Google API key or null if user cancels
  */
-std::future<string | null> promptAndStoreGoogleKey(const std::string& envFilePath);
+std::future<std::string | null> promptAndStoreGoogleKey(const std::string& envFilePath);
 
 /**
  * Validates an OpenRouter API key format
@@ -246,14 +246,14 @@ std::future<void> storeOpenRouterKey(const std::string& key, const std::string& 
  * @param envFilePath Path to the .env file
  * @returns The configured OpenRouter API key or null if user cancels
  */
-std::future<string | null> promptAndStoreOpenRouterKey(const std::string& envFilePath);
+std::future<std::string | null> promptAndStoreOpenRouterKey(const std::string& envFilePath);
 
 /**
  * Configures the database to use, either PGLite or PostgreSQL
  * @param reconfigure If true, force reconfiguration even if already configured
  * @returns The postgres URL if using Postgres, otherwise null
  */
-std::future<string | null> configureDatabaseSettings(auto reconfigure = false);
+std::future<std::string | null> configureDatabaseSettings(auto reconfigure = false);
 
 // Main config schema
 /**

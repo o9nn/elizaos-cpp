@@ -6,6 +6,6 @@
 #include "@elizaos/core.h"
 #include "../services/plugin-creation-service.h"
 
-extern std::function<any(string)> createMockMemory;
-extern std::function<any()> createMockRuntime;
+extern std::function<std::any(std::string)> createMockMemory;
+extern std::function<std::any()> createMockRuntime;
 #endif

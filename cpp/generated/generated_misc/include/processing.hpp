@@ -27,7 +27,7 @@ public:
     object params;
 };
 
-string validateSecureFilePath(string filePath);
+std::string validateSecureFilePath(std::string filePath);
 
 std::shared_ptr<express::Router> createAudioProcessingRouter(std::shared_ptr<Map<std::shared_ptr<UUID>, std::shared_ptr<IAgentRuntime>>> agents);
 

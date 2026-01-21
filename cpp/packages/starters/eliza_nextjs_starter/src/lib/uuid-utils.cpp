@@ -16,7 +16,7 @@ std::string generateUUIDFromString(const std::string& inputString) {
         const auto hashBytes = sha1.array(inputString);
         const auto hashBuffer = new Uint8Array(hashBytes);
 
-        // Apply version (pseudo-v5 using SHA-1) and variant (RFC4122)
+        // Apply version (pseudo-v5 using SHA-1) and std::variant (RFC4122)
         hashBuffer[6] = (hashBuffer[6] & 0x0f) | 0x50; // Version 5;
         hashBuffer[8] = (hashBuffer[8] & 0x3f) | 0x80; // Variant RFC4122;
 

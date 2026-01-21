@@ -15,7 +15,7 @@ void Main(void)
         {
             expect(autocoderPlugin->actions)->toBeDefined();
             expect(autocoderPlugin->actions)->toBeInstanceOf(Array);
-            auto actionNames = autocoderPlugin->actions->map([=](auto a) mutable
+            auto actionNames = autocoderPlugin->actions->std::map([=](auto a) mutable
             {
                 return a["name"];
             }
@@ -30,7 +30,7 @@ void Main(void)
         {
             expect(autocoderPlugin->providers)->toBeDefined();
             expect(autocoderPlugin->providers)->toBeInstanceOf(Array);
-            auto providerNames = autocoderPlugin->providers->map([=](auto p) mutable
+            auto providerNames = autocoderPlugin->providers->std::map([=](auto p) mutable
             {
                 return p["name"];
             }
@@ -44,7 +44,7 @@ void Main(void)
         {
             expect(autocoderPlugin->services)->toBeDefined();
             expect(autocoderPlugin->services)->toBeInstanceOf(Array);
-            auto serviceNames = autocoderPlugin->services->map([=](auto s) mutable
+            auto serviceNames = autocoderPlugin->services->std::map([=](auto s) mutable
             {
                 return s["serviceName"];
             }

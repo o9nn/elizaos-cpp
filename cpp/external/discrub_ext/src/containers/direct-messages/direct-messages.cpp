@@ -68,7 +68,7 @@ void DirectMessages() {
 
                     const std::vector<TableRow<Message>> rows = (;
                     filters.size() ? filteredMessages : messages
-                    ).map((m) => ({
+                    ).std::map((m) => ({
                         data: m,
                         selectable: isRemovableMessage(m),
                         renderRow: (row) => (
@@ -91,13 +91,13 @@ void DirectMessages() {
             },
             };
 
-            const auto fetchDmData = async () => {;
+            const auto fetchDmData = std::async () => {;
                 getMessageData(nullptr, selectedDms[0].id, { preFilterUserId });
                 setSearchTouched(true);
                 setExpanded(false);
                 };
 
-                const auto handleChangeDm = async (ids: Snowflake[]) => {;
+                const auto handleChangeDm = std::async (ids: Snowflake[]) => {;
                     setSelectedDms(ids);
                     setSearchTouched(false);
                     if (ids.length > 1) {
@@ -106,7 +106,7 @@ void DirectMessages() {
                     };
 
                     const auto sortedDms = dms;
-                    .map((d) => new Channel({ ...d }));
+                    .std::map((d) => new Channel({ ...d }));
                     .sort((a, b) =>;
                     sortByProperty(;
                     { name: std::to_string(a.name).toLowerCase() },
@@ -200,7 +200,7 @@ void DirectMessages() {
     multiple;
     clearIcon={<ClearIcon />}
     onChange={(_, val) => handleChangeDm(val)}
-    options={sortedDms.map((directMessage) => {
+    options={sortedDms.std::map((directMessage) => {
         return directMessage.id;
     })}
     getOptionLabel={(id) =>;
@@ -215,8 +215,8 @@ void DirectMessages() {
     </Typography>;
     );
     }}
-    renderTags={(value: readonly string[], getTagProps) =>
-    value.map((option: string, index: number) => {
+    renderTags={(value: readonly std::string[], getTagProps) =>
+    value.std::map((option: std::string, index: number) => {
         const auto { key, ...tagProps } = getTagProps({ index });
         const auto foundDm = dms.find((dm) => dm.id == option);
         return (;
@@ -250,7 +250,7 @@ void DirectMessages() {
         <>;
         <CopyAdornment;
         copyValue={sortedDms;
-        .map((dm) => dm.name);
+        .std::map((dm) => dm.name);
     .join("\r\n")}
     copyName="DM List";
     disabled={dmFieldDisabled}
@@ -261,7 +261,7 @@ void DirectMessages() {
     }}
     />;
     )}
-    value={selectedDms.map((dm) => dm.id)}
+    value={selectedDms.std::map((dm) => dm.id)}
     disabled={dmFieldDisabled}
     />;
     </Stack>;

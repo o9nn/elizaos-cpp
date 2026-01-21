@@ -11,7 +11,7 @@ express::Router createAgentKnowledgeRouter(const std::unordered_map<UUID, IAgent
         const auto router = express.Router();
 
         // Get knowledge files for a specific agent
-        router.get("/:agentId/knowledge", async (req, res) => {
+        router.get("/:agentId/knowledge", std::async (req, res) => {
             try {
                 const auto agentId = validateUuid(req.params.agentId);
                 const auto runtime = agents.get(agentId);
@@ -33,7 +33,7 @@ express::Router createAgentKnowledgeRouter(const std::unordered_map<UUID, IAgent
                     });
 
                     // Format documents as knowledge files for consistent API response
-                    const auto knowledgeFiles = documents.map((doc: KnowledgeItem) => ({;
+                    const auto knowledgeFiles = documents.std::map((doc: KnowledgeItem) => ({;
                         id: doc.id,
                         name: doc.metadata.originalFilename || doc.metadata.title || "Untitled",
                         title: doc.metadata.title || doc.metadata.originalFilename || "Untitled",
@@ -61,7 +61,7 @@ express::Router createAgentKnowledgeRouter(const std::unordered_map<UUID, IAgent
                         });
 
                         // Delete a knowledge file
-                        router.delete("/:agentId/knowledge/:fileId", async (req, res) => {
+                        router.delete("/:agentId/knowledge/:fileId", std::async (req, res) => {
                             try {
                                 const auto agentId = validateUuid(req.params.agentId);
                                 const auto fileId = req.params.fileId;

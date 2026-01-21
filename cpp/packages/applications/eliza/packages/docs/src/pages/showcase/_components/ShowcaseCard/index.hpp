@@ -15,7 +15,7 @@ namespace elizaos {
 
 
 
-void TagIcon(auto { label, { label: string; color: string } color });
+void TagIcon(auto { label, { label: std::string; color: std::string } color });
 
 std::string getShortLabel(const std::string& label);
 

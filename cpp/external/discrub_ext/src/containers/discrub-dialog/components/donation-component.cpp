@@ -10,7 +10,7 @@ void DonationComponent() {
     const auto { palette } = useTheme();
     const auto [donations, setDonations] = useState<Donation[]>([]);
     useEffect(() => {
-        const auto getDonationData = async () => {;
+        const auto getDonationData = std::async () => {;
             const auto data = fetchDonationData();
             setDonations(data);
             };
@@ -74,13 +74,13 @@ void DonationComponent() {
 
     {donations.size() ? (;
     <List>;
-    {donations.map((donation) => (;
+    {donations.std::map((donation) => (;
     <DonationListButton donation={donation} />;
     ))}
     </List>;
     ) : (
     <>;
-    {Array.from(Array(9)).map((_) => (;
+    {Array.from(Array(9)).std::map((_) => (;
     <Skeleton;
     animation="wave";
     sx={{ mt: 1 }}

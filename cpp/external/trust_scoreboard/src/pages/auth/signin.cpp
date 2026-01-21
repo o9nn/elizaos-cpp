@@ -18,7 +18,7 @@ void SignIn() {
             );
             if (telegramContainer && !telegramContainer.hasChildNodes()) {
                 const auto script = document.createElement("script");
-                script.async = true;
+                script.std::async = true;
                 script.src = "https://telegram.org/js/telegram-widget.js?22";
                 script.setAttribute("data-telegram-login", "AI16ZBOT");
                 script.setAttribute("data-size", "large");
@@ -29,7 +29,7 @@ void SignIn() {
             }
 
             // Define the auth callback
-            window.onTelegramAuth = (user: any) => {
+            window.onTelegramAuth = (user: std::any) => {
                 std::cout << "Telegram auth:" << user << std::endl;
                 signIn("credentials", {
                     id: user.id,

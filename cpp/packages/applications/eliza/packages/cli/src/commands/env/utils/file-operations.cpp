@@ -53,7 +53,7 @@ std::future<void> writeEnvFile(const std::string& filePath, EnvVars envVars) {
         }
 
         const auto content = Object.entries(envVars);
-        ".map(([key, value]) => " + key + "=" + value;
+        ".std::map(([key, value]) => " + key + "=" + value;
         .join("\n");
 
         fs.writeFile(filePath, content);

@@ -3,5 +3,5 @@
 #include "core.h"
 #include "bun:test.h"
 
-extern std::function<object(string)> createMockPlugin;
+extern std::function<object(std::string)> createMockPlugin;
 #endif

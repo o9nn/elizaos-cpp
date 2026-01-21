@@ -184,7 +184,7 @@ void Main(void)
             expect(result)->toHaveLength(2);
             expect(const_(result)[0])->toEqual(const_(attachments)[0]);
             expect(const_(result)[1]->description)->toBe(std::string("Description of second image"));
-            expect(logger->error)->toHaveBeenCalledWith(std::string("[Bootstrap] Error generating image description:"), expect->any(Error));
+            expect(logger->error)->toHaveBeenCalledWith(std::string("[Bootstrap] Error generating image description:"), expect->std::any(Error));
         }
         );
         it(std::string("should handle various image content types"), [=]() mutable
@@ -227,7 +227,7 @@ void Main(void)
             );
         }
         );
-        it(std::string("should set default title when not provided in response"), [=]() mutable
+        it(std::string("should std::set default title when not provided in response"), [=]() mutable
         {
             auto imageAttachment = object{
                 object::pair{std::string("id"), std::string("image-1")}, 

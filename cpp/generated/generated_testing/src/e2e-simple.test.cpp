@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-todo/src/tests/e2e-simple.test.h"
 
-any mockRuntime = createMockRuntime(object{
+std::any mockRuntime = createMockRuntime(object{
     object::pair{std::string("db"), nullptr}, 
     object::pair{std::string("getService"), [=]() mutable
     {

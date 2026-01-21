@@ -4,13 +4,13 @@
 #include "../types.h"
 #include "@elizaos/core.h"
 
-extern string tradeAnalysisTemplate;
+extern std::string tradeAnalysisTemplate;
 template <typename RET>
 RET assessMarketCondition(std::shared_ptr<IAgentRuntime> runtime);
 
 double calculateVolatility(array<double> priceHistory);
 
-double calculateDynamicSlippage(string amount, any quoteData);
+double calculateDynamicSlippage(std::string amount, std::any quoteData);
 
 template <typename RET>
 RET assessMarketCondition(std::shared_ptr<IAgentRuntime> runtime)
@@ -29,7 +29,7 @@ RET assessMarketCondition(std::shared_ptr<IAgentRuntime> runtime)
         if (priceChange < -5) return std::string("bearish");
         return std::string("neutral");
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->log(std::string("Error assessing market condition:"), error);
         return std::string("neutral");

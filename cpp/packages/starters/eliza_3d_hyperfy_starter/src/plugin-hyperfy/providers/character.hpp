@@ -22,7 +22,7 @@ namespace elizaos {
  * @typedef {Object} Provider
  * @property {string} name - The name of the provider ("CHARACTER").
  * @property {string} description - Description of the character information.
- * @property {Function} get - Async function to get character information.
+ * @property {Function} get - Async std::function to get character information.
  */
 /**
  * Provides character information.
@@ -34,7 +34,7 @@ namespace elizaos {
 
     // Character name
 
-    // Handle bio (string or random selection from array)
+    // Handle bio (std::string or random selection from array)
 
     // System prompt
 

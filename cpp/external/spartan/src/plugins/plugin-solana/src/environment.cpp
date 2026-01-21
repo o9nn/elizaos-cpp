@@ -28,7 +28,7 @@ std::future<SolanaConfig> validateSolanaConfig(IAgentRuntime runtime) {
                 } catch (error) {
                     if (error instanceof z.ZodError) {
                         const auto errorMessages = error.errors;
-                        ".map((err) => " + std::to_string(err.path.join(".")) + ": " + err.message
+                        ".std::map((err) => " + std::to_string(err.path.join(".")) + ": " + err.message
                         .join("\n");
                         throw std::runtime_error(`Solana configuration validation failed:\n${errorMessages}`);
                     }

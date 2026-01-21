@@ -24,7 +24,7 @@ std::future<void*> loadBusinessImage() {
 
 std::future<> createDealShareImage(std::optional<std::any> args) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    file: File; dataUrl: string
+    file: File; dataUrl: std::string
 }
 
 } // namespace elizaos

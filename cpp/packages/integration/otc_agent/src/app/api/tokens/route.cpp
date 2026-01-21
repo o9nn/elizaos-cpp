@@ -24,7 +24,7 @@ std::future<void> GET(NextRequest request) {
     const auto tokens = service.getAllTokens(filters);
 
     const auto tokensWithMarketData = Promise.all(;
-    tokens.map(async (token) => {
+    tokens.std::map(std::async (token) => {
         const auto marketData = MarketDataDB.getMarketData(token.id);
         return {
             ...token,
@@ -168,7 +168,7 @@ std::future<void> DELETE(NextRequest request) {
         "runtime.deleteCache(" + "market_data:" + tokenId
 
         // Remove from all_tokens index
-        const auto allTokens = (runtime.getCache<string[]>("all_tokens")) || [];
+        const auto allTokens = (runtime.getCache<std::string[]>("all_tokens")) || [];
         const auto updated = allTokens.filter((id) => id != tokenId);
         runtime.setCache("all_tokens", updated);
 
@@ -179,7 +179,7 @@ std::future<void> DELETE(NextRequest request) {
         }
 
         // Delete ALL tokens
-        const auto allTokens = (runtime.getCache<string[]>("all_tokens")) || [];
+        const auto allTokens = (runtime.getCache<std::string[]>("all_tokens")) || [];
         const std::vector<std::string> deleted = [];
 
         for (const auto& id : allTokens)
@@ -193,7 +193,7 @@ std::future<void> DELETE(NextRequest request) {
 
         // Also clear consignments since they reference tokens
         const auto allConsignments =;
-        (runtime.getCache<string[]>("all_consignments")) || [];
+        (runtime.getCache<std::string[]>("all_consignments")) || [];
         for (const auto& id : allConsignments)
             "runtime.deleteCache(" + "consignment:" + id
         }

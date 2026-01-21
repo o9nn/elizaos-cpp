@@ -31,7 +31,7 @@ namespace elizaos {
 std::vector<TagPattern> matchPatterns(const std::vector<TagPattern>& patterns, MatchContent content);
 
 /**
- * Checks if *any* pattern in the list matches the given content.
+ * Checks if *std::any* pattern in the list matches the given content.
  * More efficient than calling matchPatterns and checking the length if only existence is needed.
  *
  * @param patterns An array of TagPattern configurations.

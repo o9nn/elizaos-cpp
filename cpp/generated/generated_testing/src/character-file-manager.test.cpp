@@ -58,7 +58,7 @@ void Main(void)
             expect(result["errors"])->toContain(std::string("Too many topics - maximum 50 allowed"));
         }
         );
-        it(std::string("should reject empty string values"), [=]() mutable
+        it(std::string("should reject empty std::string values"), [=]() mutable
         {
             auto modification = object{
                 object::pair{std::string("bio"), array<string>{ string_empty, std::string("Valid bio") }}, 

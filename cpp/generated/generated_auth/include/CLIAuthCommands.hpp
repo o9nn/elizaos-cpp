@@ -11,25 +11,25 @@ class CLIAuthCommands;
 class CLICommand : public object, public std::enable_shared_from_this<CLICommand> {
 public:
     using std::enable_shared_from_this<CLICommand>::shared_from_this;
-    string name;
+    std::string name;
 
-    string description;
+    std::string description;
 
     array<std::shared_ptr<CLIOption>> options;
 
-    std::function<std::shared_ptr<Promise<void>>(any, std::shared_ptr<IAgentRuntime>)> handler;
+    std::function<std::shared_ptr<Promise<void>>(std::any, std::shared_ptr<IAgentRuntime>)> handler;
 };
 
 class CLIOption : public object, public std::enable_shared_from_this<CLIOption> {
 public:
     using std::enable_shared_from_this<CLIOption>::shared_from_this;
-    string name;
+    std::string name;
 
-    string description;
+    std::string description;
 
     boolean required;
 
-    any type;
+    std::any type;
 };
 
 class CLIAuthCommands : public object, public std::enable_shared_from_this<CLIAuthCommands> {
@@ -45,7 +45,7 @@ public:
     virtual std::shared_ptr<Promise<void>> handleTestKeys();
     virtual std::shared_ptr<Promise<void>> handleClearCache();
     virtual std::shared_ptr<Promise<void>> handleSetup();
-    virtual string getStatusIcon(string status);
+    virtual std::string getStatusIcon(std::string status);
 };
 
 array<std::shared_ptr<CLICommand>> registerAuthCommands(std::shared_ptr<IAgentRuntime> runtime);

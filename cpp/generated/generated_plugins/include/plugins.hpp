@@ -2,7 +2,7 @@
 #define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_TYPES_PLUGINS_H
 #include "core.h"
 
-typedef Record<string, string> RawRegistry;
+typedef Record<std::string, string> RawRegistry;
 
 class VersionInfo;
 class CachedRegistry;
@@ -20,9 +20,9 @@ public:
 class CachedRegistry : public object, public std::enable_shared_from_this<CachedRegistry> {
 public:
     using std::enable_shared_from_this<CachedRegistry>::shared_from_this;
-    string lastUpdatedAt;
+    std::string lastUpdatedAt;
 
-    Record<string, std::shared_ptr<VersionInfo>> registry;
+    Record<std::string, std::shared_ptr<VersionInfo>> registry;
 };
 
 #endif

@@ -12,7 +12,7 @@ std::string extractContext(const std::vector<Memory>& messages) {
     // Get last 3 messages for context
     const auto recentMessages = messages.slice(-3);
     return recentMessages;
-    .map((m) => m.content.text);
+    .std::map((m) => m.content.text);
     .filter(Boolean);
     .join(" -> ");
 
@@ -92,7 +92,7 @@ std::string extractLearning(const std::string& text, const std::string& type) {
         // case "success":
         return "This approach successfully completes the task";
         // default:
-        return "Experience recorded for future reference";
+        return "Experience recorded for std::future reference";
     }
 
 }

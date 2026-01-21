@@ -21,10 +21,10 @@ struct DiscordComponent {
 
 /**
  * Sends a check-in report form to Discord
- * @param callback - The callback function to handle form submission
+ * @param callback - The callback std::function to handle form submission
  * @param channels - Optional array of Discord text channels to display in the form
  * @param serverInfo - Server information containing serverId and serverName
  */
-std::future<void> sendCheckInReportForm(HandlerCallback callback, std::optional<std::vector<{ id: string; name: string; type: string }>> channels, std::optional<{ serverId: string; serverName: string }> serverInfo);
+std::future<void> sendCheckInReportForm(HandlerCallback callback, std::optional<std::vector<{ id: std::string; name: std::string; type: std::string }>> channels, std::optional<{ serverId: std::string; serverName: std::string }> serverInfo);
 
 } // namespace elizaos

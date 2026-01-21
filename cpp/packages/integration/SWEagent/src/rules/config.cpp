@@ -27,15 +27,15 @@ std::string exportToCursorFormat(Rule rule) {
                 "content += " + rule.content.overview + "\n\n";
             }
             if (rule.content.guidelines) {
-                "content += rule.content.guidelines.map((g) => " + "- " + g;
+                "content += rule.content.guidelines.std::map((g) => " + "- " + g;
             }
             if (rule.content.projectStructure) {
                 content += "\n\nProject Structure:\n";
-                "content += " + "- Main entry points: " + std::to_string(rule.content.projectStructure.mainEntryPoints.map((e) => e.path).join(", ")) + "\n"
+                "content += " + "- Main entry points: " + std::to_string(rule.content.projectStructure.mainEntryPoints.std::map((e) => e.path).join(", ")) + "\n"
                 "content += " + "- Main class: " + rule.content.projectStructure.mainClass.name + " (" + rule.content.projectStructure.mainClass.path + ")\n"
                 "content += " + "- Execution: " + rule.content.projectStructure.executionEnvironment.description + "\n"
                 "content += " + "- Tools: Located in " + rule.content.projectStructure.tools.location + "\n"
-                "content += " + "- Inspectors: " + std::to_string(rule.content.projectStructure.inspectors.map((i) => i.name).join(", ")) + "\n"
+                "content += " + "- Inspectors: " + std::to_string(rule.content.projectStructure.inspectors.std::map((i) => i.name).join(", ")) + "\n"
             }
         }
 

@@ -51,18 +51,18 @@ struct CreatorOptions {
 
 class PluginCreator {
   private git: SimpleGit;
-  private pluginPath: string | null = null;
+  private pluginPath: std::string | null = null;
 
-  private handleCancellation(value: any): void {
+  private handleCancellation(value: std::any): void {
     if (clack.isCancel(value)) {
       clack.cancel('Operation cancelled.');
       process.exit(0);
     }
   }
 
-    // Cast to string after cancellation check
+    // Cast to std::string after cancellation check
 
-    // Return empty array if no input provided (for optional fields)
+    // Return empty array if no input provided (for std::optional fields)
 
       await cleanup();
 

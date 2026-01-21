@@ -14,11 +14,11 @@ using React = _default;
 #include "process/browser.h"
 using process = _default;
 
-extern std::function<any()> createTestQueryClient;
-any mountWithProviders(std::shared_ptr<React::ReactNode> component, object options = object{});
+extern std::function<std::any()> createTestQueryClient;
+std::any mountWithProviders(std::shared_ptr<React::ReactNode> component, object options = object{});
 
-any mountWithRouter(std::shared_ptr<React::ReactNode> component, object options = object{});
+std::any mountWithRouter(std::shared_ptr<React::ReactNode> component, object options = object{});
 
-any mountRadix(std::shared_ptr<React::ReactNode> component, object options = object{});
+std::any mountRadix(std::shared_ptr<React::ReactNode> component, object options = object{});
 
 #endif

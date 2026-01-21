@@ -89,9 +89,9 @@ double deleteDataFiles(const std::string& directory, ReturnType<typeof createLog
 
         // Add database row
 
-        // Function to create a map of directory paths to info
+        // Function to create a std::map of directory paths to info
 
-        // Create a set of all unique directory paths
+        // Create a std::set of all unique directory paths
 
         // Add all paths from both current and remote
 
@@ -116,7 +116,7 @@ double deleteDataFiles(const std::string& directory, ReturnType<typeof createLog
       // Step 6: Copy data from worktree to data directory
 
         // Copy all files except the database file and dump directory
-        // Use a filtering function to exclude .sqlite files and dump directory
+        // Use a filtering std::function to exclude .sqlite files and dump directory
 
       // Step 7: Copy database file and apply final migrations
 

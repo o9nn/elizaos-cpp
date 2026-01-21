@@ -7,6 +7,6 @@ using fs = promises;
 #include "path.h"
 using path = _default;
 
-any GET();
+std::any GET();
 
 #endif

@@ -56,7 +56,7 @@ struct TransferParams {
       
         // Calculate amount from percentage
 
-        // Convert back to formatted string for display
+        // Convert back to formatted std::string for display
         
         // Calculate USD value from already-available wallet token data (no extra fetch)
         

@@ -3,8 +3,8 @@
 #include "core.h"
 #include "commander.h"
 
-string getAgentRuntimeUrl(std::shared_ptr<OptionValues> opts);
+std::string getAgentRuntimeUrl(std::shared_ptr<OptionValues> opts);
 
-string getAgentsBaseUrl(std::shared_ptr<OptionValues> opts);
+std::string getAgentsBaseUrl(std::shared_ptr<OptionValues> opts);
 
 #endif

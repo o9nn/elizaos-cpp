@@ -65,7 +65,7 @@ struct ProjectMetricsForSummary {
     std::vector<CompletedItem> completedItems;
 };
 
-std::future<string | null> generateProjectSummary(RepositoryMetrics metrics, AISummaryConfig config, { startDate: string } dateInfo, IntervalType intervalType);
+std::future<std::string | null> generateProjectSummary(RepositoryMetrics metrics, AISummaryConfig config, { startDate: std::string } dateInfo, IntervalType intervalType);
 
 /**
  * Calculate appropriate max tokens based on prompt length and interval type
@@ -76,6 +76,6 @@ double calculateMaxTokens(const std::string& prompt, IntervalType intervalType, 
 /**
  * Format project metrics into a structured prompt for analysis based on interval type
  */
-std::string formatAnalysisPrompt(RepositoryMetrics metrics, { startDate: string } dateInfo, IntervalType intervalType, AISummaryConfig config);
+std::string formatAnalysisPrompt(RepositoryMetrics metrics, { startDate: std::string } dateInfo, IntervalType intervalType, AISummaryConfig config);
 
 } // namespace elizaos

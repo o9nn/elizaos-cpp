@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void ConfirmationDialog(auto onOpenChange, auto title, auto description, auto confirmText, auto cancelText, auto onConfirm, auto variant) {
+void ConfirmationDialog(auto onOpenChange, auto title, auto description, auto confirmText, auto cancelText, auto onConfirm, auto std::variant) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto handleConfirm = [&]() {;
@@ -24,7 +24,7 @@ void ConfirmationDialog(auto onOpenChange, auto title, auto description, auto co
         <AlertDialogAction;
     onClick={handleConfirm}
     className={
-        variant == "destructive" ? "bg-destructive text-destructive-foreground" : std::nullopt
+        std::variant == "destructive" ? "bg-destructive text-destructive-foreground" : std::nullopt
     }
     >;
     {confirmText}

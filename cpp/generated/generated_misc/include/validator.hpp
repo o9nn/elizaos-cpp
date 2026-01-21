@@ -4,6 +4,6 @@
 #include "@elizaos/core.h"
 #include "@solana/web3.js.h"
 
-boolean validateSolanaAddress(any address);
+boolean validateSolanaAddress(std::any address);
 
 #endif

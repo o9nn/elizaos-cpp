@@ -7,7 +7,7 @@
 #include "uuid.h"
 using uuidv4 = v4;
 
-any setupReminderDemo(std::shared_ptr<IAgentRuntime> runtime);
+std::any setupReminderDemo(std::shared_ptr<IAgentRuntime> runtime);
 
 void monitorReminders(std::shared_ptr<IAgentRuntime> runtime, double duration = 60000);
 

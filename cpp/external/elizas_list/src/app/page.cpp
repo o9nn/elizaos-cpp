@@ -8,7 +8,7 @@ void Home() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [search, setSearch] = useState("");
-    const auto [selectedTags, setSelectedTags] = useState<string[]>([]);
+    const auto [selectedTags, setSelectedTags] = useState<std::string[]>([]);
     const auto [selectedProject, setSelectedProject] = useState<Project | nullptr>(nullptr);
     const auto [sortBy, setSortBy] = useState<"date" | "name">("date");
     const auto [isLoading, setIsLoading] = useState(true);
@@ -41,7 +41,7 @@ void Home() {
                         });
                         }, [search, selectedTags]);
 
-                        const auto handleFilterChange = [&](newSearch: string, newTags: string[]) {;
+                        const auto handleFilterChange = [&](newSearch: std::string, newTags: std::string[]) {;
                             setSearch(newSearch);
                             setSelectedTags(newTags);
                             };
@@ -85,13 +85,13 @@ void Home() {
 
     {isLoading ? (;
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    {[...Array(6)].map((_, i) => (;
+    {[...Array(6)].std::map((_, i) => (;
     <ProjectSkeleton key={i} />;
     ))}
     </div>;
     ) : (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    {sortedAndFilteredProjects.map((project, index) => (;
+    {sortedAndFilteredProjects.std::map((project, index) => (;
     <ProjectCard;
     key={project.id}
     project={project}

@@ -151,7 +151,7 @@ void ConsignPageClient() {
 
                                             const auto handleTokenSelect = useCallback((token: TokenWithBalance) => {;
                                                 setSelectedToken(token);
-                                                // Auto-set deal amounts based on token balance
+                                                // Auto-std::set deal amounts based on token balance
                                                 const auto humanBalance =;
                                                 Number(BigInt(token.balance)) / Math.pow(10, token.decimals);
                                                 const auto minDeal = Math.max(1, Math.floor(humanBalance * 0.01));
@@ -164,7 +164,7 @@ void ConsignPageClient() {
                                                     }, []);
 
                                                     const auto getBlockExplorerUrl = useCallback(;
-                                                    [&](txHash: string) {
+                                                    [&](txHash: std::string) {
                                                         if (tokenChain == "solana") {
                                                             return "https://solscan.io/tx/" + txHash;
                                                         }
@@ -176,7 +176,7 @@ void ConsignPageClient() {
                                                         [tokenChain],
                                                         );
 
-                                                        const auto handleApproveToken = useCallback(async (): Promise<string> => {;
+                                                        const auto handleApproveToken = useCallback(std::async (): Promise<string> => {;
                                                             // Solana path - approve is done as part of the transaction
                                                             if (activeFamily == "solana") {
                                                                 return "solana-approval-pending";
@@ -189,7 +189,7 @@ void ConsignPageClient() {
                                                             Math.floor(parseFloat(formData.amount) * Math.pow(10, decimals)),
                                                             );
                                                             const auto txHash = approveToken(;
-                                                            "rawTokenAddress as " + "0x" + string
+                                                            "rawTokenAddress as " + "0x" + std::string
                                                             rawAmount,
                                                             );
                                                             return txHash;
@@ -202,11 +202,11 @@ void ConsignPageClient() {
                                                             ]);
 
                                                             const auto handleCreateConsignment = useCallback(;
-                                                            async (;
-                                                            onTxSubmitted?: (txHash: string) => void,
+                                                            std::async (;
+                                                            onTxSubmitted?: (txHash: std::string) => void,
                                                             ): Promise<{
-                                                                txHash: string;
-                                                                consignmentId: string;
+                                                                txHash: std::string;
+                                                                consignmentId: std::string;
                                                                 }> => {
                                                                     const auto decimals = selectedToken.decimals || 18;
 
@@ -440,7 +440,7 @@ void ConsignPageClient() {
                                                                     {/* Progress indicator */}
                                                                     <div className="mb-6 sm:mb-8">
                                                                     <div className="flex justify-between items-center mb-2">;
-                                                                    {[1, 2, 3, 4].map((s) => (;
+                                                                    {[1, 2, 3, 4].std::map((s) => (;
                                                                     <div;
                                                                 key={s}
                                                                 "className={" + "flex-1 h-2 " + std::to_string();
@@ -450,7 +450,7 @@ void ConsignPageClient() {
                                                             ))}
                                                             </div>;
                                                             <div className="flex justify-between text-xs text-zinc-600 dark:text-zinc-400">
-                                                            {STEP_LABELS.map((label, idx) => (;
+                                                            {STEP_LABELS.std::map((label, idx) => (;
                                                             <span;
                                                         key={label}
                                                     className={step == idx + 1 ? "text-brand-500 font-medium" : ""}

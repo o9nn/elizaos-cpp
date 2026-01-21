@@ -116,7 +116,7 @@ struct BaseActionSamplerConfig {
 using ActionSamplerConfig = std::variant<, (BinaryTrajectoryComparisonConfig & BaseActionSamplerConfig), (AskColleaguesConfig & BaseActionSamplerConfig)>;
 
 /**
- * Factory function to create action sampler from configuration
+ * Factory std::function to create action sampler from configuration
  */
 AbstractActionSampler createActionSampler(ActionSamplerConfig config, AbstractModel model, ToolHandler tools);
 

@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/server/src/api/shared/file-utils.h"
 
-string sanitizeFilename(string filename)
+std::string sanitizeFilename(std::string filename)
 {
     if (!filename) {
         return std::string("unnamed");
@@ -20,7 +20,7 @@ string sanitizeFilename(string filename)
 };
 
 
-std::function<void(string)> cleanupFile = [=](auto filePath) mutable
+std::function<void(std::string)> cleanupFile = [=](auto filePath) mutable
 {
     try
     {
@@ -30,7 +30,7 @@ std::function<void(string)> cleanupFile = [=](auto filePath) mutable
             logger->debug(std::string("[FILE] Successfully cleaned up file: ") + normalizedPath + string_empty);
         }
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Error cleaning up file ") + filePath + std::string(":"), error);
     }
@@ -45,7 +45,7 @@ std::function<void(array<any>)> cleanupFiles = [=](auto files) mutable
         );
     }
 };
-std::function<void(any)> cleanupUploadedFile = [=](auto file) mutable
+std::function<void(std::any)> cleanupUploadedFile = [=](auto file) mutable
 {
     logger->debug(std::string("[FILE] Multer file ") + file->originalname + std::string(" in memory, no cleanup needed"));
 };

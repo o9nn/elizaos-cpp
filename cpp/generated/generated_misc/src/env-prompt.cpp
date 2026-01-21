@@ -7,14 +7,14 @@ std::shared_ptr<Promise<string>> getEnvFilePath()
 };
 
 
-std::shared_ptr<Promise<Record<string, string>>> readEnvFile()
+std::shared_ptr<Promise<Record<std::string, string>>> readEnvFile()
 {
     auto service = std::async([=]() { getEnvFileService(); });
     return service->read();
 };
 
 
-std::shared_ptr<Promise<void>> writeEnvFile(Record<string, string> envVars)
+std::shared_ptr<Promise<void>> writeEnvFile(Record<std::string, string> envVars)
 {
     auto service = std::async([=]() { getEnvFileService(); });
     std::async([=]() { service->write(envVars, object{

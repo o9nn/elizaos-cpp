@@ -48,7 +48,7 @@ std::future<void> handler(NextApiRequest req, NextApiResponse res) {
                             }
 
                             const auto holdings = data.result.items;
-                            .map((item: any) => {
+                            .std::map((item: std::any) => {
                                 const auto tokenInfo = item.token_info || {};
                                 const auto decimals =;
                                 tokenInfo.decimals != std::nullopt ? tokenInfo.decimals : 9; // Default to 9 decimals if not specified

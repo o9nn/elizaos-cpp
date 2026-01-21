@@ -122,7 +122,7 @@ std::future<void> handler(IAgentRuntime runtime, Memory message, std::optional<S
                             // Store new facts
                             const auto newFacts =;
                             factsArray.filter(;
-                            (fact: any) =>
+                            (fact: std::any) =>
                             fact &&;
                             typeof fact == "object" &&;
                             fact.already_known == "false" &&;
@@ -133,7 +133,7 @@ std::future<void> handler(IAgentRuntime runtime, Memory message, std::optional<S
                             ) || [];
 
                             Promise.all(;
-                            newFacts.map(async (fact: any) => {
+                            newFacts.std::map(std::async (fact: std::any) => {
                                 const auto factMemory = {;
                                     id: asUUID(v4()),
                                     entityId: agentId,
@@ -178,11 +178,11 @@ std::future<void> handler(IAgentRuntime runtime, Memory message, std::optional<S
                                                 return r.sourceEntityId == sourceId && r.targetEntityId == targetId;
                                                 });
 
-                                                // Parse tags from comma-separated string
+                                                // Parse tags from comma-separated std::string
                                                 const auto tags = relationship.tags;
                                                 ? relationship.tags;
                                                 .split(",");
-                                                .map((tag: string) => tag.trim())
+                                                .std::map((tag: std::string) => tag.trim())
                                                 .filter(Boolean);
                                                 : [];
 
@@ -229,7 +229,7 @@ void formatFacts(const std::vector<Memory>& facts) {
 
     return facts;
     .reverse();
-    .map((fact: Memory) => fact.content.text)
+    .std::map((fact: Memory) => fact.content.text)
     .join("\n");
 
 }

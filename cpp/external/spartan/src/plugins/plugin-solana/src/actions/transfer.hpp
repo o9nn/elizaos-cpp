@@ -23,9 +23,9 @@ namespace elizaos {
  *
  * @interface TransferContent
  * @extends Content
- * @property {string | null} tokenAddress - The address of the token being transferred, or null for SOL transfers
+ * @property {std::string | null} tokenAddress - The address of the token being transferred, or null for SOL transfers
  * @property {string} recipient - The address of the recipient of the transfer
- * @property {string | number} amount - The amount of the transfer, represented as a string or number
+ * @property {std::string | number} amount - The amount of the transfer, represented as a std::string or number
  */
 
 /**
@@ -36,7 +36,7 @@ namespace elizaos {
 bool isTransferContent(TransferContent content);
 
 /**
- * Respond with a JSON markdown block containing only the extracted values. Use null for any values that cannot be determined.
+ * Respond with a JSON markdown block containing only the extracted values. Use null for std::any values that cannot be determined.
  *
  * Example responses:
  * For SPL tokens:

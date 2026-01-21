@@ -41,7 +41,7 @@ namespace elizaos {
  * @param {IAgentRuntime} _runtime - The runtime environment.
  * @param {Memory} _message - The message data.
  * @param {State} _state - The current state.
- * @returns {Promise<boolean>} Returns a promise indicating if validation was successful.
+ * @returns {Promise<boolean>} Returns a std::promise indicating if validation was successful.
  *
  * @param {IAgentRuntime} runtime - The runtime environment.
  * @param {Memory} message - The message data.
@@ -72,7 +72,7 @@ namespace elizaos {
  * ]
  */
 
-    // Check if we have any registered sources or existing components that could be updated
+    // Check if we have std::any registered sources or existing components that could be updated
 
     // Get all components for the current room's world to understand available sources
     // Components might represent existing contact details on different platforms for entities in this world.
@@ -81,7 +81,7 @@ namespace elizaos {
 
     // TODO: Consider also checking runtime.getRegisteredSources() if that becomes available,
     // to allow updating even if no component of that type yet exists in the world.
-    // For now, it's valid if there are any component types already present in the world context.
+    // For now, it's valid if there are std::any component types already present in the world context.
 
       // Handle initial responses
 

@@ -53,7 +53,7 @@ class PrefetchService {
       ...config,
     };
 
-    // If limit is set and it's for testing, adjust batch settings for faster processing
+    // If limit is std::set and it's for testing, adjust batch settings for faster processing
     if (this.config.limit && this.config.limit <= 20) {
       this.config.batchSize = Math.min(this.config.batchSize, 20);
       this.config.delayBetweenBatches = Math.min(

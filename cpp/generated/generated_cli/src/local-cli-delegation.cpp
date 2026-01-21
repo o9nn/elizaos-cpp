@@ -10,7 +10,7 @@ boolean isRunningFromLocalCli()
         auto isInLocalCli = path->resolve(currentScriptPath) == path->resolve(expectedLocalCliPath);
         return isInLocalCli;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->debug(std::string("Error checking if running from local CLI:"), error);
         return false;
@@ -18,14 +18,14 @@ boolean isRunningFromLocalCli()
 };
 
 
-any getLocalCliPath()
+std::any getLocalCliPath()
 {
     auto localCliPath = path->join(process->cwd(), std::string("node_modules"), std::string("@elizaos"), std::string("cli"), std::string("dist"), std::string("index.js"));
-    return (existsSync(localCliPath)) ? any(localCliPath) : any(nullptr);
+    return (existsSync(localCliPath)) ? std::any(localCliPath) : std::any(nullptr);
 };
 
 
-Record<string, string> setupLocalEnvironment()
+Record<std::string, string> setupLocalEnvironment()
 {
     auto env = utils::assign(object{
     }, process->env);
@@ -50,7 +50,7 @@ Record<string, string> setupLocalEnvironment()
 };
 
 
-std::shared_ptr<Promise<void>> delegateToLocalCli(string localCliPath)
+std::shared_ptr<Promise<void>> delegateToLocalCli(std::string localCliPath)
 {
     return std::make_shared<Promise>([=](auto resolve, auto reject) mutable
     {
@@ -68,7 +68,7 @@ std::shared_ptr<Promise<void>> delegateToLocalCli(string localCliPath)
             if (code != nullptr) {
                 process->exit(code);
             } else if (signal) {
-                auto exitCode = (signal == std::string("SIGINT")) ? any(130) : any((signal == std::string("SIGTERM")) ? 143 : 1);
+                auto exitCode = (signal == std::string("SIGINT")) ? std::any(130) : std::any((signal == std::string("SIGTERM")) ? 143 : 1);
                 process->exit(exitCode);
             }
             resolve();
@@ -141,7 +141,7 @@ std::shared_ptr<Promise<boolean>> tryDelegateToLocalCli()
         std::async([=]() { delegateToLocalCli(localCliPath); });
         return true;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Error during local CLI delegation:"), error);
         logger->info(std::string("Falling back to global CLI installation"));

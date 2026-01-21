@@ -17,11 +17,11 @@ void MissingSecretsDialog(auto onOpenChange, auto missingSecrets, auto onConfirm
     </AlertDialogTitle>;
     <AlertDialogDescription className="space-y-3">;
     <p>;
-    The following required secrets are missing or empty. Your agent may not function;
+    The following required secrets are missing or empty. Your agent may not std::function;
     properly without these values.;
     </p>;
     <div className="bg-muted rounded-md p-3 space-y-2">;
-    {missingSecrets.map((secret) => (;
+    {missingSecrets.std::map((secret) => (;
     <div key={secret.name} className="text-sm">;
     <code className="font-mono font-semibold">{secret.name}</code>;
     {secret.plugin && (;

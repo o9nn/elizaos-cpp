@@ -14,7 +14,7 @@ namespace elizaos {
 
 
 
-// Dynamic imports for optional dependencies
+// Dynamic imports for std::optional dependencies
 
 std::future<void> initializeCanvas();
 

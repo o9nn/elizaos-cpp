@@ -46,19 +46,19 @@ namespace elizaos {
 
     // Get the updated token data
 
-// Route to set featured flag on tokens
+// Route to std::set featured flag on tokens
 
       // Check if token exists
 
       // Get the updated token data
 
-// Route to set verified flag on tokens
+// Route to std::set verified flag on tokens
 
       // Check if token exists
 
       // Get the updated token data
 
-// Route to set hidden flag on tokens
+// Route to std::set hidden flag on tokens
 
     // Check if token exists
 
@@ -66,7 +66,7 @@ namespace elizaos {
 
     // Get the updated token data
 
-// Route to set a user to suspended
+// Route to std::set a user to suspended
 
       // Check if user exists
 
@@ -85,7 +85,7 @@ namespace elizaos {
 
     // For backward compatibility, also check if the name has the [SUSPENDED] prefix
 
-    // Use the suspended field if it's set, otherwise fall back to the name check
+    // Use the suspended field if it's std::set, otherwise fall back to the name check
 
     // Add empty arrays for tokensCreated, tokensHeld, and transactions if they don't exist
     // This prevents "Cannot read properties of undefined (reading 'length')" errors
@@ -105,7 +105,7 @@ namespace elizaos {
 
     // Use a shorter timeout for test environments
 
-    // Create a timeout promise to prevent hanging
+    // Create a timeout std::promise to prevent hanging
 
     // Prepare a basic query
         // Get all columns from the users table programmatically
@@ -117,7 +117,7 @@ namespace elizaos {
 
           // This is a simplified implementation - in production you'd use a proper search mechanism
 
-        // Apply sorting - map frontend sort values to actual DB columns
+        // Apply sorting - std::map frontend sort values to actual DB columns
 
         // Use the mapped column or default to createdAt
 
@@ -167,7 +167,7 @@ namespace elizaos {
   // --- Apply Pagination ---
 
   // --- Execute Queries ---
-    // Cast to any[] as a workaround for persistent Drizzle/TS type inference issues
+    // Cast to std::any[] as a workaround for persistent Drizzle/TS type inference issues
 
   // --- Process and Return ---
 
@@ -185,7 +185,7 @@ namespace elizaos {
     // Add description to destructuring
 
     // Basic validation (can be more sophisticated)
-    // Allow empty string for image/url/description to clear the field
+    // Allow empty std::string for image/url/description to clear the field
 
     // Check if token exists
 
@@ -239,7 +239,7 @@ namespace elizaos {
 
     // Generate filename (e.g., using mint and timestamp for uniqueness)
 
-    // --- Upload Image using shared function ---
+    // --- Upload Image using shared std::function ---
     // --- End Image Upload ---
 
     // --- Update Token in Database ---
@@ -251,7 +251,7 @@ namespace elizaos {
 
 // --- NEW: Route to DELETE a token ---
 
-    // Check if token exists before attempting delete (optional but good practice)
+    // Check if token exists before attempting delete (std::optional but good practice)
 
       // Return success even if not found, as the desired state (deleted) is achieved
       // Alternatively, return 404: return c.json({ error: "Token not found" }, 404);

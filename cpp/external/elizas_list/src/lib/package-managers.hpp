@@ -23,7 +23,7 @@ struct PackageInfo {
 };
 
 class PackageManagerClient {
-  static async getNpmInfo(packageName: string): Promise<PackageInfo> {
+  static std::async getNpmInfo(packageName: std::string): Promise<PackageInfo> {
     const response = await axios.get(`https://registry.npmjs.org/${packageName}`);
     const latest = response.data['dist-tags'].latest;
     const info = response.data.versions[latest];

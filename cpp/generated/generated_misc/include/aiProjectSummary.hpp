@@ -19,7 +19,7 @@ class ProjectMetricsForSummary;
 class CompletedItem : public object, public std::enable_shared_from_this<CompletedItem> {
 public:
     using std::enable_shared_from_this<CompletedItem>::shared_from_this;
-    string title;
+    std::string title;
 
     double prNumber;
 
@@ -29,7 +29,7 @@ public:
 class FocusArea : public object, public std::enable_shared_from_this<FocusArea> {
 public:
     using std::enable_shared_from_this<FocusArea>::shared_from_this;
-    string area;
+    std::string area;
 
     double count;
 };
@@ -77,7 +77,7 @@ public:
 class ContributorInfo : public object, public std::enable_shared_from_this<ContributorInfo> {
 public:
     using std::enable_shared_from_this<ContributorInfo>::shared_from_this;
-    string username;
+    std::string username;
 };
 
 class ProjectMetricsForSummary : public object, public std::enable_shared_from_this<ProjectMetricsForSummary> {
@@ -100,8 +100,8 @@ public:
 
 std::shared_ptr<Promise<any>> generateProjectSummary(std::shared_ptr<RepositoryMetrics> metrics, std::shared_ptr<AISummaryConfig> config, object dateInfo, std::shared_ptr<IntervalType> intervalType);
 
-double calculateMaxTokens(string prompt, std::shared_ptr<IntervalType> intervalType, std::shared_ptr<AISummaryConfig> config);
+double calculateMaxTokens(std::string prompt, std::shared_ptr<IntervalType> intervalType, std::shared_ptr<AISummaryConfig> config);
 
-string formatAnalysisPrompt(std::shared_ptr<RepositoryMetrics> metrics, object dateInfo, std::shared_ptr<IntervalType> intervalType, std::shared_ptr<AISummaryConfig> config);
+std::string formatAnalysisPrompt(std::shared_ptr<RepositoryMetrics> metrics, object dateInfo, std::shared_ptr<IntervalType> intervalType, std::shared_ptr<AISummaryConfig> config);
 
 #endif

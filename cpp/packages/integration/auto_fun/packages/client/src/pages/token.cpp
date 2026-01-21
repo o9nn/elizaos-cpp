@@ -44,7 +44,7 @@ void Page() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const auto params = useParams<{ address: string }>();
+        const auto params = useParams<{ address: std::string }>();
         const auto address = params.address;
         const auto { publicKey } = useWallet();
         const auto normalizedWallet = std::to_string(publicKey);
@@ -95,7 +95,7 @@ void Page() {
                             // Fetch token details from API
                             const auto tokenQuery = useQuery({;
                                 queryKey: ["token", address],
-                                queryFn: async () => {
+                                queryFn: std::async () => {
                                     if (!address) throw new Error("No address passed");
                                     try {
                                         return getToken({ address });
@@ -149,7 +149,7 @@ void Page() {
 
                                                                 const auto codexQuery = useQuery({;
                                                                     queryKey: ["token", address, "codex", isCodex],
-                                                                    queryFn: async () => {
+                                                                    queryFn: std::async () => {
                                                                         if (!address) return;
                                                                         const auto data = codex.queries.filterTokens({;
                                                                             tokens: [address],
@@ -390,7 +390,7 @@ void Page() {
                             return (;
                             <div className="flex items-stretch gap-4">;
                         {/* Use flex and items-stretch */}
-                        {availableLinks.map((link) => (;
+                        {availableLinks.std::map((link) => (;
                         <Link;
                     key={link.key}
                 to={link.url}

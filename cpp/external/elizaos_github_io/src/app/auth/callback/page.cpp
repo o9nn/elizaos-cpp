@@ -12,7 +12,7 @@ void CallbackContent() {
     const auto [processed, setProcessed] = useState(false);
 
     useEffect(() => {
-        const auto processAuth = async () => {;
+        const auto processAuth = std::async () => {;
             std::cout << { processed } << std::endl;
             if (processed) return;
 

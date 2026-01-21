@@ -15,7 +15,7 @@ protected:
     }
 
     void TearDown() override {
-        // Cleanup temp files if any
+        // Cleanup temp files if std::any
     }
 
     std::shared_ptr<CharacterFileLoader> loader_;
@@ -81,7 +81,7 @@ TEST_F(CharacterFileTest, LoadFromInvalidJson) {
 
     auto result = loader.loadFromJson("{ invalid json }");
 
-    // Should return empty optional for invalid JSON
+    // Should return empty std::optional for invalid JSON
     EXPECT_FALSE(result.has_value());
 }
 

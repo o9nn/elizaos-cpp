@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-plugin-manager/src/actions/searchPluginAction.h"
 
-any extractSearchQuery(string text)
+std::any extractSearchQuery(std::string text)
 {
     auto patterns = array<std::shared_ptr<RegExp>>{ (new RegExp(std::string("search\s+for\s+plugins?\s+(?:that\s+)?(?:can\s+)?(.+)"))), (new RegExp(std::string("find\s+plugins?\s+(?:for|that|to)\s+(.+)"))), (new RegExp(std::string("look\s+for\s+plugins?\s+(?:that\s+)?(.+)"))), (new RegExp(std::string("discover\s+plugins?\s+(?:for|that)\s+(.+)"))), (new RegExp(std::string("show\s+me\s+plugins?\s+(?:for|that)\s+(.+)"))), (new RegExp(std::string("need\s+(?:a\s+)?plugins?\s+(?:for|that|to)\s+(.+)"))), (new RegExp(std::string("want\s+(?:a\s+)?plugins?\s+(?:for|that|to)\s+(.+)"))), (new RegExp(std::string("plugins?\s+(?:for|that\s+can|to)\s+(.+)"))), (new RegExp(std::string("what\s+plugins?\s+(?:can|do|handle)\s+(.+)"))), (new RegExp(std::string("plugins?\s+(.+)"))) };
     auto& __array6429_6912 = patterns;
@@ -64,7 +64,7 @@ std::shared_ptr<Action> searchPluginAction = object{
    🏷️ Tags: wallet, multi-chain, transaction, security\
    📦 Features: Wallet creation, Transaction signing, Balance tracking\
 \
-Would you like me to show details for any of these plugins or help you install one?")}, 
+Would you like me to show details for std::any of these plugins or help you install one?")}, 
             object::pair{std::string("actions"), array<string>{ std::string("SEARCH_PLUGINS") }}
         }}
     } } }}, 
@@ -120,8 +120,8 @@ For example:\
 ");
             results->forEach([=](auto plugin, auto index) mutable
             {
-                auto score = (plugin->score) ? any((plugin->score * 100)->toFixed(0)) : any(string_empty);
-                responseText += string_empty + (index + 1) + std::string(". **") + plugin->name + std::string("**") + (score) ? any(std::string(" (Score: ") + score + std::string("%)")) : any(string_empty) + std::string("\
+                auto score = (plugin->score) ? std::any((plugin->score * 100)->toFixed(0)) : std::any(string_empty);
+                responseText += string_empty + (index + 1) + std::string(". **") + plugin->name + std::string("**") + (score) ? std::any(std::string(" (Score: ") + score + std::string("%)")) : std::any(string_empty) + std::string("\
 ");
                 if (plugin->description) {
                     responseText += std::string("   💡 ") + plugin->description + std::string("\
@@ -158,7 +158,7 @@ For example:\
                 }); });
             }
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             elizaLogger->error(std::string("[searchPluginAction] Search failed:"), error);
             if (callback) {
@@ -276,7 +276,7 @@ To install: "install ") + details->name + std::string(""");
                 }); });
             }
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             elizaLogger->error(std::string("[getPluginDetailsAction] Failed to get plugin details:"), error);
             if (callback) {

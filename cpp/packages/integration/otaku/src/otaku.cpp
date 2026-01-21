@@ -58,7 +58,7 @@ static std::map<std::string, double> mockProtocolRisks = {
     {"convex", 0.35}
 };
 
-// Utility function to generate random hex string
+// Utility std::function to generate random hex std::string
 static std::string generateHexString(size_t length) {
     static std::random_device rd;
     static std::mt19937 gen(rd());
@@ -395,7 +395,7 @@ std::vector<std::string> PortfolioManager::getHighRiskPositions(const std::strin
     std::vector<std::string> highRisk;
     auto allocation = getAssetAllocation(walletAddress);
 
-    // Consider any position > 30% as high risk concentration
+    // Consider std::any position > 30% as high risk concentration
     for (const auto& [asset, pct] : allocation) {
         if (pct > 30.0) {
             highRisk.push_back(asset + " (" + std::to_string(static_cast<int>(pct)) + "%)");
@@ -1509,7 +1509,7 @@ GasEstimate OtakuAgent::getGasEstimate(const std::string& txData) {
 bool OtakuAgent::setGasStrategy(const std::string& strategy) {
     if (strategy == "fast" || strategy == "standard" || strategy == "slow") {
         gasStrategy_ = strategy;
-        elizaos::logInfo("Gas strategy set to: " + strategy, "otaku");
+        elizaos::logInfo("Gas strategy std::set to: " + strategy, "otaku");
         return true;
     }
     return false;
@@ -1533,7 +1533,7 @@ std::vector<std::string> OtakuAgent::getContractWarnings(const std::string& cont
 
 void OtakuAgent::setSlippageTolerance(double percentage) {
     slippageTolerance_ = percentage;
-    elizaos::logInfo("Slippage tolerance set to: " + std::to_string(percentage) + "%", "otaku");
+    elizaos::logInfo("Slippage tolerance std::set to: " + std::to_string(percentage) + "%", "otaku");
 }
 
 void OtakuAgent::setMEVProtection(bool enabled) {

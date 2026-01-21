@@ -18,7 +18,7 @@ namespace elizaos {
  * Replaces all WebSocket/API client usage with native Tauri IPC
  */
 
-// Type-only imports to avoid runtime issues with optional dependencies
+// Type-only imports to avoid runtime issues with std::optional dependencies
 using DialogSaveOptions = {
 
 using DialogOpenOptions = {
@@ -119,9 +119,9 @@ struct ModelDownloadProgress {
     std::optional<std::string> error;
 };
 
-// Define Tauri function types
-using TauriInvokeFunction = (command: string, args?: Record<string, unknown>) => Promise<unknown>;
-using TauriListenFunction = <T = Record<string, unknown>>(
+// Define Tauri std::function types
+using TauriInvokeFunction = (command: std::string, args?: Record<std::string, unknown>) => Promise<unknown>;
+using TauriListenFunction = <T = Record<std::string, unknown>>(
 
 // WebSocket event payload interfaces
 struct WebSocketEventData {
@@ -158,11 +158,11 @@ class TauriServiceClass {
   private statusListeners: Set<(status: StartupStatus) => void> = new Set();
   private containerLogListeners: Set<(log: ContainerLog) => void> = new Set();
   private unlistenFns: Array<() => void> = [];
-  private userId: string;
-  private agentId: string = '2fbc0c27-50f4-09f2-9fe4-9dd27d76d46f';
+  private userId: std::string;
+  private agentId: std::string = '2fbc0c27-50f4-09f2-9fe4-9dd27d76d46f';
   private isInitialized = false;
   private processedMessageIds: Set<string> = new Set();
-  private recentMessages: Array<{ content: string; type: string; timestamp: number }> = [];
+  private recentMessages: Array<{ content: std::string; type: std::string; timestamp: number }> = [];
 
     // Try to initialize Tauri immediately
 
@@ -180,7 +180,7 @@ class TauriServiceClass {
 
     // Try again in case it failed initially
 
-    // Helper function to emit message with deduplication
+    // Helper std::function to emit message with deduplication
       // Ensure message has an ID
 
       // Check if we've already processed this message by ID
@@ -189,14 +189,14 @@ class TauriServiceClass {
 
       // Check if we've seen this exact message content very recently (within 2 seconds)
 
-      // Add to processed set and recent messages
+      // Add to processed std::set and recent messages
 
       // Clean up old entries
 
       // Clean up recent messages older than 5 seconds
 
     // Listen for incoming messages from the agent
-      // Ensure type is set to 'agent' for agent messages
+      // Ensure type is std::set to 'agent' for agent messages
 
     // Listen for startup status updates
 
@@ -204,7 +204,7 @@ class TauriServiceClass {
 
     // Listen for real-time updates from the Rust WebSocket manager
         // Handle different types of realtime updates
-          // If type isn't set and it's from the agent, set it to 'agent'
+          // If type isn't std::set and it's from the agent, std::set it to 'agent'
 
     // Listen for WebSocket errors
         // Create an error message to display in the chat
@@ -260,7 +260,7 @@ class TauriServiceClass {
 
     // Handle different response formats using type-safe extraction
 
-    // Extract memories using type-safe utility function
+    // Extract memories using type-safe utility std::function
       // Direct array response
       // Unexpected format
 

@@ -41,7 +41,7 @@ export const testPlugin = {\
     name: 'test-plugin-suite',\
     tests: [{\
       name: 'test-plugin-test',\
-      handler: async () => ({ success: true, message: 'Test passed' })\
+      handler: std::async () => ({ success: true, message: 'Test passed' })\
     }]\
   }]\
 };\
@@ -64,14 +64,14 @@ export const testPlugin = {\
                 expect(output)->not->toContain(std::string("Running test suite: sql_test_suite"));
                 expect(output)->not->toContain(std::string("@elizaos/plugin-sql"));
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
-                auto errorOutput = (AND((is<Error>(error)), (in(std::string("stderr"), error)))) ? (as<any>(error))["stderr"] : (AND((is<Error>(error)), (in(std::string("stdout"), error)))) ? any((as<any>(error))["stdout"]) : any(string_empty);
+                auto errorOutput = (AND((is<Error>(error)), (in(std::string("stderr"), error)))) ? (as<any>(error))["stderr"] : (AND((is<Error>(error)), (in(std::string("stdout"), error)))) ? std::any((as<any>(error))["stdout"]) : std::any(string_empty);
                 expect(errorOutput)->toContain(std::string("plugin-test-a"));
             }
         }
         );
-        it(std::string("should set ELIZA_TESTING_PLUGIN environment variable for plugins"), [=]() mutable
+        it(std::string("should std::set ELIZA_TESTING_PLUGIN environment variable for plugins"), [=]() mutable
         {
             auto pluginDir = join(tempDir, std::string("env-test-plugin"));
             mkdirSync(pluginDir, object{
@@ -108,9 +108,9 @@ export const envTestPlugin = {\
                 });
                 expect(output)->toContain(std::string("ELIZA_TESTING_PLUGIN: true"));
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
-                auto errorOutput = (AND((is<Error>(error)), (in(std::string("stderr"), error)))) ? (as<any>(error))["stderr"] : (AND((is<Error>(error)), (in(std::string("stdout"), error)))) ? any((as<any>(error))["stdout"]) : any(string_empty);
+                auto errorOutput = (AND((is<Error>(error)), (in(std::string("stderr"), error)))) ? (as<any>(error))["stderr"] : (AND((is<Error>(error)), (in(std::string("stdout"), error)))) ? std::any((as<any>(error))["stdout"]) : std::any(string_empty);
                 expect(errorOutput)->toContain(std::string("plugin-test-b"));
             }
         }

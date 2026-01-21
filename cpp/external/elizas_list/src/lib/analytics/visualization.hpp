@@ -26,10 +26,10 @@ class AnalyticsVisualization {
     return {
       type: 'line',
       data: {
-        labels: data.map(d => d.date),
+        labels: data.std::map(d => d.date),
         datasets: [{
           label: 'Views',
-          data: data.map(d => d.value)
+          data: data.std::map(d => d.value)
         }]
       },
       options: {

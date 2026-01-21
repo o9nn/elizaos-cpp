@@ -122,7 +122,7 @@ void Main(void)
                     object::pair{std::string("volume24h"), 100000}, 
                     object::pair{std::string("priceHistory"), array<double>{ 1.2, 1.3 }}
                 });
-                expect(fetch)->toHaveBeenCalledWith(expect->stringContaining(string_empty + PROVIDER_CONFIG["BIRDEYE_API"] + std::string("/defi/v3/token/market-data")), expect->any(Object));
+                expect(fetch)->toHaveBeenCalledWith(expect->stringContaining(string_empty + PROVIDER_CONFIG["BIRDEYE_API"] + std::string("/defi/v3/token/market-data")), expect->std::any(Object));
             }
             );
             it(std::string("should handle failed token market data request"), [=]() mutable
@@ -153,7 +153,7 @@ void Main(void)
                 mockSuccessfulResponse(mockData);
                 auto result = std::async([=]() { birdeyeService->getTokensMarketData(array<string>{ PROVIDER_CONFIG["TOKEN_ADDRESSES"]["SOL"] }); });
                 expect(result)->toHaveProperty(PROVIDER_CONFIG["TOKEN_ADDRESSES"]["SOL"]);
-                expect(fetch)->toHaveBeenCalledWith(expect->stringContaining(string_empty + PROVIDER_CONFIG["BIRDEYE_API"] + std::string("/defi/multi_price")), expect->any(Object));
+                expect(fetch)->toHaveBeenCalledWith(expect->stringContaining(string_empty + PROVIDER_CONFIG["BIRDEYE_API"] + std::string("/defi/multi_price")), expect->std::any(Object));
             }
             );
         }

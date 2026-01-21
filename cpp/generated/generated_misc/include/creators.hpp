@@ -13,12 +13,12 @@ using colors = _default;
 #include "../utils.h"
 #include "./setup.h"
 
-std::shared_ptr<Promise<void>> createPlugin(string pluginName, string targetDir, boolean isNonInteractive = false);
+std::shared_ptr<Promise<void>> createPlugin(std::string pluginName, std::string targetDir, boolean isNonInteractive = false);
 
-std::shared_ptr<Promise<void>> createAgent(string agentName, string targetDir, boolean isNonInteractive = false);
+std::shared_ptr<Promise<void>> createAgent(std::string agentName, std::string targetDir, boolean isNonInteractive = false);
 
-std::shared_ptr<Promise<void>> createTEEProject(string projectName, string targetDir, string database, string aiModel, string embeddingModel = undefined, boolean isNonInteractive = false);
+std::shared_ptr<Promise<void>> createTEEProject(std::string projectName, std::string targetDir, std::string database, std::string aiModel, std::string embeddingModel = undefined, boolean isNonInteractive = false);
 
-std::shared_ptr<Promise<void>> createProject(string projectName, string targetDir, string database, string aiModel, string embeddingModel = undefined, boolean isNonInteractive = false);
+std::shared_ptr<Promise<void>> createProject(std::string projectName, std::string targetDir, std::string database, std::string aiModel, std::string embeddingModel = undefined, boolean isNonInteractive = false);
 
 #endif

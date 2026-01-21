@@ -19,7 +19,7 @@ std::future<void> POST() {
         const auto runtime = agentRuntime.getRuntime();
 
         // Get all token IDs
-        const auto allTokenIds = (runtime.getCache<string[]>("all_tokens")) || [];
+        const auto allTokenIds = (runtime.getCache<std::string[]>("all_tokens")) || [];
 
         // Delete each token
         for (const auto& tokenId : allTokenIds)

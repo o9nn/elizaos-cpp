@@ -23,7 +23,7 @@ std::shared_ptr<Action> cancelFormAction = object{
     {
         auto formsService = runtime->getService<std::shared_ptr<FormsService>>(std::string("forms"));
         if (!formsService) {
-            throw any(std::make_shared<Error>(std::string("Forms service not available")));
+            throw std::any(std::make_shared<Error>(std::string("Forms service not available")));
         }
         auto activeForms = std::async([=]() { formsService->listForms(std::string("active")); });
         if (activeForms->length == 0) {
@@ -36,7 +36,7 @@ std::shared_ptr<Action> cancelFormAction = object{
                 object::pair{std::string("message"), std::string("No active forms")}
             };
         }
-        any targetForm;
+        std::any targetForm;
         shared specifiedFormId = OR((OR((options["formId"]), (state->data->activeFormId))), (state->values->activeFormId));
         if (specifiedFormId) {
             targetForm = activeForms->find([=](auto f) mutable

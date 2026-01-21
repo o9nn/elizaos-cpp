@@ -21,9 +21,9 @@ struct DiscordComponent {
 
 /**
  * Sends a check-in schedule setup form to Discord
- * @param callback - The callback function to handle form submission
+ * @param callback - The callback std::function to handle form submission
  * @param channels - Optional array of Discord text channels to display in the form
  */
-std::future<void> sendCheckInScheduleForm(HandlerCallback callback, std::optional<std::vector<{ id: string; name: string; type: string }>> channels);
+std::future<void> sendCheckInScheduleForm(HandlerCallback callback, std::optional<std::vector<{ id: std::string; name: std::string; type: std::string }>> channels);
 
 } // namespace elizaos

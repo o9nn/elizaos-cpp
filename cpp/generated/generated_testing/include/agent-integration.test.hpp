@@ -11,9 +11,9 @@ class AgentIntegrationTestSuite;
 class AgentIntegrationTestSuite : public TestSuite, public std::enable_shared_from_this<AgentIntegrationTestSuite> {
 public:
     using std::enable_shared_from_this<AgentIntegrationTestSuite>::shared_from_this;
-    string name = std::string("agent-integration");
+    std::string name = std::string("agent-integration");
 
-    string description = std::string("Integration tests for self-modification plugin with packages/agent autonomy loop");
+    std::string description = std::string("Integration tests for self-modification plugin with packages/agent autonomy loop");
 
     array<object> tests = array<object>{ object{
         object::pair{std::string("name"), std::string("Plugin loads correctly in agent runtime")}, 
@@ -27,11 +27,11 @@ public:
             );
             auto hasSelfModPlugin = pluginNames["includes"](std::string("@elizaos/plugin-personality"));
             if (!hasSelfModPlugin) {
-                throw any(std::make_shared<Error>(std::string("Self-modification plugin not loaded in runtime")));
+                throw std::any(std::make_shared<Error>(std::string("Self-modification plugin not loaded in runtime")));
             }
             auto hasSQL = pluginNames["includes"](std::string("@elizaos/plugin-sql"));
             if (!hasSQL) {
-                throw any(std::make_shared<Error>(std::string("SQL plugin dependency not available")));
+                throw std::any(std::make_shared<Error>(std::string("SQL plugin dependency not available")));
             }
             auto hasAutonomous = pluginNames["includes"](std::string("@elizaos/plugin-autonomy"));
             if (!hasAutonomous) {
@@ -47,7 +47,7 @@ public:
             console->log(std::string("Testing character evolution with agent character..."));
             auto originalCharacter = utils::assign(object{
             }, runtime["character"]);
-            auto originalBioLength = (Array->isArray(originalCharacter["bio"])) ? any(originalCharacter["bio"]["length"]) : any(1);
+            auto originalBioLength = (Array->isArray(originalCharacter["bio"])) ? std::any(originalCharacter["bio"]["length"]) : std::any(1);
             auto originalTopicsLength = OR((originalCharacter["topics"]["length"]), (0));
             auto roomId = asUUID(uuidv4());
             auto userId = asUUID(uuidv4());
@@ -90,7 +90,7 @@ public:
             }
             );
             if (!action) {
-                throw any(std::make_shared<Error>(std::string("MODIFY_CHARACTER action not available")));
+                throw std::any(std::make_shared<Error>(std::string("MODIFY_CHARACTER action not available")));
             }
             shared modificationExecuted = false;
             auto callback = [=](auto content) mutable
@@ -107,18 +107,18 @@ public:
             };
             auto result = std::async([=]() { action["handler"](runtime, modificationMessage, state, object{}, callback); });
             if (!result["success"]) {
-                throw any(std::make_shared<Error>(std::string("Character modification failed: ") + (OR((result["error"]), (result["reason"]))) + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("Character modification failed: ") + (OR((result["error"]), (result["reason"]))) + string_empty));
             }
             if (!modificationExecuted) {
-                throw any(std::make_shared<Error>(std::string("Modification action was not executed")));
+                throw std::any(std::make_shared<Error>(std::string("Modification action was not executed")));
             }
             auto updatedCharacter = runtime["character"];
-            auto newBioLength = (Array->isArray(updatedCharacter["bio"])) ? any(updatedCharacter["bio"]["length"]) : any(1);
+            auto newBioLength = (Array->isArray(updatedCharacter["bio"])) ? std::any(updatedCharacter["bio"]["length"]) : std::any(1);
             auto newTopicsLength = OR((updatedCharacter["topics"]["length"]), (0));
             auto bioExpanded = newBioLength > originalBioLength;
             auto topicsExpanded = newTopicsLength > originalTopicsLength;
             if (AND((!bioExpanded), (!topicsExpanded))) {
-                throw any(std::make_shared<Error>(std::string("Character was not modified as expected")));
+                throw std::any(std::make_shared<Error>(std::string("Character was not modified as expected")));
             }
             auto bioText = (Array->isArray(updatedCharacter["bio"])) ? updatedCharacter["bio"]["join"](std::string(" ")) : updatedCharacter["bio"];
             auto hasStartupContent = OR((bioText["toLowerCase"]()["includes"](std::string("startup"))), (bioText["toLowerCase"]()["includes"](std::string("mentor"))));
@@ -128,7 +128,7 @@ public:
             }
             );
             if (AND((!hasStartupContent), (!hasBusinessTopic))) {
-                throw any(std::make_shared<Error>(std::string("Expected content was not added to character")));
+                throw std::any(std::make_shared<Error>(std::string("Expected content was not added to character")));
             }
             console->log(std::string("Character successfully evolved:"));
             console->log(std::string("- Bio elements: ") + originalBioLength + std::string(" → ") + newBioLength + string_empty);
@@ -154,23 +154,23 @@ public:
             };
             auto state = std::async([=]() { runtime["composeState"](message, array<string>{ std::string("CHARACTER_EVOLUTION") }); });
             if (!state) {
-                throw any(std::make_shared<Error>(std::string("State composition failed")));
+                throw std::any(std::make_shared<Error>(std::string("State composition failed")));
             }
             auto hasEvolutionContext = state["text"]["includes"](std::string("CHARACTER EVOLUTION CONTEXT"));
             if (!hasEvolutionContext) {
-                throw any(std::make_shared<Error>(std::string("Evolution provider did not provide context")));
+                throw std::any(std::make_shared<Error>(std::string("Evolution provider did not provide context")));
             }
             if (type_of(state["values"]["hasEvolutionCapability"]) != std::string("boolean")) {
-                throw any(std::make_shared<Error>(std::string("Evolution capability flag not set")));
+                throw std::any(std::make_shared<Error>(std::string("Evolution capability flag not set")));
             }
             auto character = runtime["character"];
-            auto expectedBioCount = (Array->isArray(character["bio"])) ? any(character["bio"]["length"]) : any(1);
+            auto expectedBioCount = (Array->isArray(character["bio"])) ? std::any(character["bio"]["length"]) : std::any(1);
             auto expectedTopicCount = OR((character["topics"]["length"]), (0));
             if (!state["text"]["includes"](std::string("Bio elements: ") + expectedBioCount + string_empty)) {
-                throw any(std::make_shared<Error>(std::string("Bio count in evolution context is incorrect")));
+                throw std::any(std::make_shared<Error>(std::string("Bio count in evolution context is incorrect")));
             }
             if (!state["text"]["includes"](std::string("Topics: ") + expectedTopicCount + string_empty)) {
-                throw any(std::make_shared<Error>(std::string("Topic count in evolution context is incorrect")));
+                throw std::any(std::make_shared<Error>(std::string("Topic count in evolution context is incorrect")));
             }
             console->log(std::string("✅ Evolution provider integration test PASSED"));
         }
@@ -182,7 +182,7 @@ public:
             console->log(std::string("Testing file manager integration..."));
             auto fileManager = runtime["getService"](std::string("character-file-manager"));
             if (!fileManager) {
-                throw any(std::make_shared<Error>(std::string("Character file manager service not available")));
+                throw std::any(std::make_shared<Error>(std::string("Character file manager service not available")));
             }
             auto backupPath = std::async([=]() { fileManager["createBackup"](); });
             console->log(std::string("Backup result:"), (backupPath) ? std::string("Success") : std::string("No file detected (expected in test)"));
@@ -192,17 +192,17 @@ public:
             };
             auto validation = fileManager["validateModification"](validModification);
             if (!validation["valid"]) {
-                throw any(std::make_shared<Error>(std::string("Valid modification was rejected: ") + validation["errors"]["join"](std::string(", ")) + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("Valid modification was rejected: ") + validation["errors"]["join"](std::string(", ")) + string_empty));
             }
             auto applyResult = std::async([=]() { fileManager["applyModification"](validModification); });
             if (!applyResult["success"]) {
-                throw any(std::make_shared<Error>(std::string("Modification application failed: ") + applyResult["error"] + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("Modification application failed: ") + applyResult["error"] + string_empty));
             }
             auto character = runtime["character"];
             auto bioText = (Array->isArray(character["bio"])) ? character["bio"]["join"](std::string(" ")) : character["bio"];
             auto hasAgentContent = OR((bioText["toLowerCase"]()["includes"](std::string("autonomous"))), (bioText["toLowerCase"]()["includes"](std::string("agent"))));
             if (!hasAgentContent) {
-                throw any(std::make_shared<Error>(std::string("Character modification was not applied to runtime")));
+                throw std::any(std::make_shared<Error>(std::string("Character modification was not applied to runtime")));
             }
             console->log(std::string("✅ File manager integration test PASSED"));
         }
@@ -242,7 +242,7 @@ public:
                     object::pair{std::string("entityId"), runtime["agentId"]}, 
                     object::pair{std::string("roomId"), std::string("roomId")}, 
                     object::pair{std::string("content"), object{
-                        object::pair{std::string("text"), std::string("I appreciate the feedback about ") + (i == 0) ? any(std::string("business strategy")) : any((i == 1) ? any(std::string("startup insights")) : any((i == 2) ? std::string("market analysis") : std::string("strategic thinking"))) + std::string(".")}, 
+                        object::pair{std::string("text"), std::string("I appreciate the feedback about ") + (i == 0) ? std::any(std::string("business strategy")) : std::any((i == 1) ? std::any(std::string("startup insights")) : std::any((i == 2) ? std::string("market analysis") : std::string("strategic thinking"))) + std::string(".")}, 
                         object::pair{std::string("source"), std::string("agent")}
                     }}, 
                     object::pair{std::string("createdAt"), Date->now() + i * 1000 + 500}
@@ -263,7 +263,7 @@ public:
             }
             );
             if (!evaluator) {
-                throw any(std::make_shared<Error>(std::string("CHARACTER_EVOLUTION evaluator not found")));
+                throw std::any(std::make_shared<Error>(std::string("CHARACTER_EVOLUTION evaluator not found")));
             }
             auto lastMessage = object{
                 object::pair{std::string("id"), asUUID(uuidv4())}, 

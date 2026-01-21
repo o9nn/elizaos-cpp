@@ -19,7 +19,7 @@ namespace elizaos {
 
 // Simple in-memory cache
 
-// Helper function to cache translations
+// Helper std::function to cache translations
 
     // Implement cache size limit
 

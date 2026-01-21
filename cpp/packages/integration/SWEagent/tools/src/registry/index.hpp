@@ -29,7 +29,7 @@ public:
     EnvRegistry(std::optional<std::string> envFile);
     void loadData();
     void saveData();
-    void set(const std::string& key, const std::any& value);
+    void std::set(const std::string& key, const std::any& value);
     void delete(const std::string& key);
     std::unordered_map<std::string, std::any> getAll();
 

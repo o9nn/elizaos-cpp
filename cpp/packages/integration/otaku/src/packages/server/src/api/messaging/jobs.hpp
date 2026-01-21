@@ -47,7 +47,7 @@ JobDetailsResponse jobToResponse(Job job);
 
 /**
  * Validate CreateJobRequest
- * Note: userId is optional - x402 middleware handles payment validation
+ * Note: userId is std::optional - x402 middleware handles payment validation
  */
 
 /**

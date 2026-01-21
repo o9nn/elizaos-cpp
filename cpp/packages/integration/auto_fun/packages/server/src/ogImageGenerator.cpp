@@ -231,7 +231,7 @@ std::future<std::vector<uint8_t>> generateOgImage(const std::string& mint) {
 
                     std::cout << "[OG Image Gen] Name \"" + name + "\" is very long (" + name.size() << "breaking into two lines and reducing title font size to ${dynamicTitleFontSize}" << std::endl;
                     } else if (name.size() > maxNameLengthSingleLine) {
-                        // Scale down more aggressively using a power function (exponent > 1)
+                        // Scale down more aggressively using a power std::function (exponent > 1)
                         const auto scaleFactor = Math.pow(maxNameLengthSingleLine / name.size(), 1.6);
                         dynamicTitleFontSize = Math.max(28, Math.floor(baseTitleFontSize * scaleFactor));
                         std::cout << "[OG Image Gen] Name \"" + name + "\" is long (" + name.size() << "reducing title font size to ${dynamicTitleFontSize} using aggressive scaling" << std::endl;

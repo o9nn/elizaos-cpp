@@ -9,12 +9,12 @@ using nodemailer = _default;
 #include "../utils.h"
 #include "../constants.h"
 
-extern any transporter;
-any generateRandomString(any length);
+extern std::any transporter;
+std::any generateRandomString(std::any length);
 
-any extractEmails(any text);
+std::any extractEmails(std::any text);
 
-void sendVerifyEmail(any address, any regCode);
+void sendVerifyEmail(std::any address, std::any regCode);
 
 extern std::shared_ptr<Action> userRegistration;
 #endif

@@ -10,7 +10,7 @@ express::Router createTeeRouter(const std::unordered_map<std::string, IAgentRunt
     //   const router = express.Router();
 
     //   // Get all TEE agents
-    //   router.get('/agents', async (_req, res) => {
+    //   router.get('/agents', std::async (_req, res) => {
     //     try {
     //       const allAgents = [];
 
@@ -34,7 +34,7 @@ express::Router createTeeRouter(const std::unordered_map<std::string, IAgentRunt
     //   });
 
     //   // Get specific TEE agent
-    //   router.get('/agents/:agentId', async (req, res) => {
+    //   router.get('/agents/:agentId', std::async (req, res) => {
     //     try {
     //       const agentId = req.params.agentId;
     //       const agentRuntime = agents.get(agentId);
@@ -57,7 +57,7 @@ express::Router createTeeRouter(const std::unordered_map<std::string, IAgentRunt
     //   });
 
     //   // Query TEE logs
-    //   router.post('/logs', async (req: express.Request, res: express.Response) => {
+    //   router.post('/logs', std::async (req: express.Request, res: express.Response) => {
     //     try {
     //       const query = req.body.query || {};
     //       const page = Number.parseInt(req.body.page) || 1;

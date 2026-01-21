@@ -27,7 +27,7 @@ array<std::shared_ptr<TagPattern>> matchPatterns(array<std::shared_ptr<TagPatter
                 return array<any>();
             }
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             console->error(std::string("Error executing negative matcher for pattern "") + pattern->pattern + std::string("" (type: ") + pattern->patternType + std::string(", target: ") + pattern->target + std::string("):"), error);
         }
@@ -47,7 +47,7 @@ array<std::shared_ptr<TagPattern>> matchPatterns(array<std::shared_ptr<TagPatter
                 matchingPatterns->push(pattern);
             }
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             console->error(std::string("Error executing matcher for pattern "") + pattern->pattern + std::string("" (type: ") + pattern->patternType + std::string(", target: ") + pattern->target + std::string("):"), error);
         }
@@ -78,7 +78,7 @@ boolean matchAnyPattern(array<std::shared_ptr<TagPattern>> patterns, MatchConten
                 return true;
             }
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             console->error(std::string("Error executing matcher for pattern "") + pattern->pattern + std::string("" during matchAnyPattern:"), error);
         }

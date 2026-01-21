@@ -37,9 +37,9 @@ enum ErrorCode {
 class ElizaError extends Error {
   constructor(
     public code: ErrorCode,
-    message: string,
+    message: std::string,
     public statusCode: number = 500,
-    public details?: any
+    public details?: std::any
   ) {
     super(message);
     this.name = 'ElizaError';

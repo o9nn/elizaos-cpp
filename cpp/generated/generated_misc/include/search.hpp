@@ -11,19 +11,19 @@ class MarketResult;
 class TokenMarketSearchParams : public object, public std::enable_shared_from_this<TokenMarketSearchParams> {
 public:
     using std::enable_shared_from_this<TokenMarketSearchParams>::shared_from_this;
-    any chain;
+    std::any chain;
 
-    string keyword;
+    std::string keyword;
 
-    any target;
+    std::any target;
 
-    any sort_by;
+    std::any sort_by;
 
-    any sort_type;
+    std::any sort_type;
 
     boolean verify_token;
 
-    string markets;
+    std::string markets;
 
     double offset;
 
@@ -41,13 +41,13 @@ public:
 class TokenResult : public object, public std::enable_shared_from_this<TokenResult> {
 public:
     using std::enable_shared_from_this<TokenResult>::shared_from_this;
-    string name;
+    std::string name;
 
-    string symbol;
+    std::string symbol;
 
-    string address;
+    std::string address;
 
-    string network;
+    std::string network;
 
     double fdv;
 
@@ -77,27 +77,27 @@ public:
 
     double unique_view_24h_change_percent;
 
-    string last_trade_human_time;
+    std::string last_trade_human_time;
 
     double last_trade_unix_time;
 
-    string creation_time;
+    std::string creation_time;
 
     double volume_24h_usd;
 
-    string logo_uri;
+    std::string logo_uri;
 };
 
 class MarketResult : public object, public std::enable_shared_from_this<MarketResult> {
 public:
     using std::enable_shared_from_this<MarketResult>::shared_from_this;
-    string name;
+    std::string name;
 
-    string address;
+    std::string address;
 
     double liquidity;
 
-    string source;
+    std::string source;
 
     double trade_24h;
 
@@ -107,19 +107,19 @@ public:
 
     double unique_wallet_24h_change_percent;
 
-    string last_trade_human_time;
+    std::string last_trade_human_time;
 
     double last_trade_unix_time;
 
-    string base_mint;
+    std::string base_mint;
 
-    string quote_mint;
+    std::string quote_mint;
 
     double amount_base;
 
     double amout_quote;
 
-    string creation_time;
+    std::string creation_time;
 
     double volume_24h_usd;
 };

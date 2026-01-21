@@ -16,7 +16,7 @@ namespace elizaos {
 
 /**
  * Filemap tool
- * Print Python file contents, skipping lengthy function bodies
+ * Print Python file contents, skipping lengthy std::function bodies
  * Converted from tools/filemap/bin/filemap
  */
 

@@ -102,7 +102,7 @@ bool isRootConfigFile(const std::string& path) {
 std::unordered_map<std::string, double> buildAreaMap(std::optional<std::vector<std::any>> files) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto areaMap = new Map<string, number>();
+    const auto areaMap = new Map<std::string, number>();
 
     files.forEach((file) => {
         // Use path or filename depending on which is available
@@ -114,7 +114,7 @@ std::unordered_map<std::string, double> buildAreaMap(std::optional<std::vector<s
         if (!area) return;
 
         const auto currentCount = areaMap.get(area) || 0;
-        areaMap.set(area, currentCount + 1);
+        areaMap.std::set(area, currentCount + 1);
         });
 
         return areaMap;

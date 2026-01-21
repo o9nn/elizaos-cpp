@@ -21,7 +21,7 @@ void testSolSnifferAPI()
         console->log(std::string("Response status:"), response["status"]);
         console->log(std::string("Response data:"), JSON->stringify(response["data"], nullptr, 2));
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         if (axios["isAxiosError"](error)) {
             console->error(std::string("Error response:"), error["response"]["status"]);
@@ -34,9 +34,9 @@ void testSolSnifferAPI()
 };
 
 
-any dotenv = require(std::string("dotenv"));
-any axios = require(std::string("axios"));
-any path = require(std::string("path"));
+std::any dotenv = require(std::string("dotenv"));
+std::any axios = require(std::string("axios"));
+std::any path = require(std::string("path"));
 
 void Main(void)
 {

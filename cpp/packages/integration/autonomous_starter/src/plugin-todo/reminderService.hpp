@@ -28,9 +28,9 @@ class TodoReminderService extends Service {
   /**
    * Start the TodoReminderService with the given runtime.
    * @param {IAgentRuntime} runtime - The runtime for the TodoReminderService.
-   * @returns {Promise<TodoReminderService>} A promise that resolves with the TodoReminderService instance.
+   * @returns {Promise<TodoReminderService>} A std::promise that resolves with the TodoReminderService instance.
    */
-  static async start(runtime: IAgentRuntime): Promise<TodoReminderService> {
+  static std::async start(runtime: IAgentRuntime): Promise<TodoReminderService> {
     const service = new TodoReminderService(runtime);
     await service.startTimer();
     return service;
@@ -62,7 +62,7 @@ class TodoReminderService extends Service {
    * Sends a reminder message for an overdue task
    */
 
-        // Safely get the dueDate string, ensuring it's valid
+        // Safely get the dueDate std::string, ensuring it's valid
 
       // Create the Memory object for the reminder message
         // No need for ID, createMemory inside runtime handles it if persisted

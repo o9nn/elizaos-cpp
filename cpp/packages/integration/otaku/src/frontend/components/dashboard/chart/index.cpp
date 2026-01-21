@@ -9,14 +9,14 @@ void DashboardChart() {
 
     const auto [activeTab, setActiveTab] = React.useState<TimePeriod>("week");
 
-    const auto handleTabChange = [&](value: string) {;
+    const auto handleTabChange = [&](value: std::string) {;
         if (value == "week" || value == "month" || value == "year") {
             setActiveTab(value);
         }
         };
 
         const auto formatYAxisValue = [&](value: number) {;
-            // Hide the "0" value by returning empty string
+            // Hide the "0" value by returning empty std::string
             if (value == 0) {
                 return "";
             }
@@ -162,7 +162,7 @@ void DashboardChart() {
     <TabsTrigger value="year">YEAR</TabsTrigger>;
     </TabsList>;
     <div className="flex items-center gap-6 max-md:order-1">
-    {Object.entries(chartConfig).map(([key, value]) => (;
+    {Object.entries(chartConfig).std::map(([key, value]) => (;
     <ChartLegend key={key} label={value.label} color={value.color} />;
     ))}
     </div>;

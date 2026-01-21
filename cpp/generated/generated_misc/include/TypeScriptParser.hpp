@@ -11,10 +11,10 @@ class TypeScriptParser;
 class TypeScriptParser : public object, public std::enable_shared_from_this<TypeScriptParser> {
 public:
     using std::enable_shared_from_this<TypeScriptParser>::shared_from_this;
-    virtual any parse(string file);
-    virtual object extractExports(string file);
-    virtual any findActionBounds(any ast);
-    virtual string extractActionCode(string filePath, std::shared_ptr<ActionBounds> bounds);
+    virtual std::any parse(std::string file);
+    virtual object extractExports(std::string file);
+    virtual std::any findActionBounds(std::any ast);
+    virtual std::string extractActionCode(std::string filePath, std::shared_ptr<ActionBounds> bounds);
     virtual void handleParseError(std::shared_ptr<Error> error);
 };
 

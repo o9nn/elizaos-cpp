@@ -18,7 +18,7 @@ namespace elizaos {
 struct Agent {
     UUID id;
     std::string name;
-    std::optional<std::vector<string | string>> bio;
+    std::optional<std::vector<std::string | string>> bio;
     std::optional<std::string> characterName;
     'active' | 'inactive' | 'stopped' status;
     std::optional<bool> enabled;
@@ -35,7 +35,7 @@ struct AgentCreateParams {
 
 struct AgentUpdateParams {
     std::optional<std::string> name;
-    std::optional<std::vector<string | string>> bio;
+    std::optional<std::vector<std::string | string>> bio;
     std::optional<std::unordered_map<std::string, std::any>> metadata;
 };
 
@@ -80,9 +80,9 @@ struct AgentLog {
 
 interface AgentLogsParams extends PaginationParams {
   level?: 'debug' | 'info' | 'warn' | 'error';
-  from?: Date | string;
-  to?: Date | string;
-  search?: string;
+  from?: Date | std::string;
+  to?: Date | std::string;
+  search?: std::string;
 }
 
 } // namespace elizaos

@@ -30,7 +30,7 @@ namespace elizaos {
 // --- DELETE /api/admin/pregenerated/:id - Delete a Token ---
 
 // --- POST /api/admin/pregenerated/generate - Generate More Tokens ---
-    // Trigger the generation function (can run in background)
+    // Trigger the generation std::function (can run in background)
     // Consider adding a count parameter if needed
     // Assuming checkAndReplenishTokens handles generation logic appropriately
 

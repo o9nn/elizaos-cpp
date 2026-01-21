@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/tools/src/search/find-file.h"
 
-void findFile(string fileName, string dir)
+void findFile(std::string fileName, std::string dir)
 {
     if (!fs::existsSync(dir)) {
         console->error(std::string("Directory ") + dir + std::string(" not found"));
@@ -31,7 +31,7 @@ void findFile(string fileName, string dir)
                 }
                 );
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 matches = array<any>();
             }
@@ -48,7 +48,7 @@ void findFile(string fileName, string dir)
         }
         );
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("Error finding files: ") + error + string_empty);
         process->exit(1);

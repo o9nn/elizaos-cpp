@@ -68,7 +68,7 @@ void initDistributionChart(auto holders) {
                                 },
                                 tooltip: {
                                     callbacks: {
-                                        label: function(context) {
+                                        label: std::function(context) {
                                             const auto total = context.dataset.data.reduce((sum, val) => sum + val, 0);
                                             const auto percentage = ((context.parsed / total) * 100).toFixed(1);
                                             return context.label + ": " + formatNumber(context.parsed, 2) + " (" + percentage + "%)";

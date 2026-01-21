@@ -209,7 +209,7 @@ void Main(void)
                     }); });
                     expect(false)->toBe(true);
                 }
-                catch (const any& error)
+                catch (const std::any& error)
                 {
                     expect(error)->toBeInstanceOf(ProcessTimeoutError);
                     expect(mockProc["kill"])->toHaveBeenCalledTimes(1);
@@ -306,7 +306,7 @@ void Main(void)
                         object::pair{std::string("timeout"), 50}
                     }); });
                 }
-                catch (const any& error)
+                catch (const std::any& error)
                 {
                     expect(error)->toBeInstanceOf(ProcessTimeoutError);
                 }
@@ -412,7 +412,7 @@ void Main(void)
                     std::async([=]() { bunExec(std::string("bad-command")); });
                     expect(false)->toBe(true);
                 }
-                catch (const any& error)
+                catch (const std::any& error)
                 {
                     expect(error)->toBeInstanceOf(ProcessExecutionError);
                     expect(mockProc["kill"])->toHaveBeenCalled();
@@ -426,7 +426,7 @@ void Main(void)
                     object::pair{std::string("exitCode"), nullptr}, 
                     object::pair{std::string("kill"), mock([=]() mutable
                     {
-                        throw any(std::make_shared<Error>(std::string("Kill failed")));
+                        throw std::any(std::make_shared<Error>(std::string("Kill failed")));
                     }
                     )}, 
                     object::pair{std::string("exited"), Promise->reject(std::make_shared<Error>(std::string("Process error")))}
@@ -441,7 +441,7 @@ void Main(void)
                     std::async([=]() { bunExec(std::string("bad-command")); });
                     expect(false)->toBe(true);
                 }
-                catch (const any& error)
+                catch (const std::any& error)
                 {
                     expect(error)->toBeInstanceOf(ProcessExecutionError);
                     expect((as<std::shared_ptr<ProcessExecutionError>>(error))->message)->toContain(std::string("Process error"));
@@ -460,7 +460,7 @@ void Main(void)
                     object::pair{std::string("kill"), mock([=]() mutable
                     {
                         mockProc["exitCode"] = 1;
-                        throw any(std::make_shared<Error>(std::string("Process not found")));
+                        throw std::any(std::make_shared<Error>(std::string("Process not found")));
                     }
                     )}, 
                     object::pair{std::string("killed"), false}
@@ -475,11 +475,11 @@ void Main(void)
                     std::async([=]() { bunExec(std::string("race-condition-test")); });
                     expect(false)->toBe(true);
                 }
-                catch (const any& error)
+                catch (const std::any& error)
                 {
                     expect(error)->toBeInstanceOf(ProcessExecutionError);
                     expect(mockProc["kill"])->toHaveBeenCalledTimes(1);
-                    expect(mockLogger["debug"])->toHaveBeenCalledWith(std::string("[bunExec] Process cleanup error (process may have already exited):"), expect->any(Error));
+                    expect(mockLogger["debug"])->toHaveBeenCalledWith(std::string("[bunExec] Process cleanup error (process may have already exited):"), expect->std::any(Error));
                 }
             }
             );
@@ -524,7 +524,7 @@ void Main(void)
                     std::async([=]() { bunExecSimple(std::string("false")); });
                     expect(false)->toBe(true);
                 }
-                catch (const any& error)
+                catch (const std::any& error)
                 {
                     expect(error)->toBeInstanceOf(ProcessExecutionError);
                 }
@@ -639,7 +639,7 @@ void Main(void)
                 {
                     Bun->spawn = mock([=]() mutable
                     {
-                        throw any(std::make_shared<Error>(std::string("Command failed")));
+                        throw std::any(std::make_shared<Error>(std::string("Command failed")));
                     }
                     );
                     auto exists = std::async([=]() { commandExists(std::string("bad-command")); });

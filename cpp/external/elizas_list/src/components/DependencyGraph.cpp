@@ -22,19 +22,19 @@ void DependencyGraph() {
         <ForceGraph2D;
     ref={graphRef}
     graphData={dependencies}
-    nodeColor={(node: any) => {
+    nodeColor={(node: std::any) => {
         const auto colors = ["#3b82f6", "#10b981", "#f59e0b"];
         return colors[node.level % colors.size()];
     }}
-    nodeLabel={(node: any) => node.name}
+    nodeLabel={(node: std::any) => node.name}
     linkColor={() => theme == "dark" ? "#4b5563" : "#d1d5db"}
     backgroundColor={theme == "dark" ? "#1f2937" : "#ffffff"}
-    nodeCanvasObject={(node: any, ctx, globalScale) => {
+    nodeCanvasObject={(node: std::any, ctx, globalScale) => {
         const auto label = node.name;
         const auto fontSize = 12/globalScale;
         "ctx.font = " + fontSize + "px Sans-Serif";
         const auto textWidth = ctx.measureText(label).width;
-        const auto bckgDimensions = [textWidth, fontSize].map(n => n + fontSize * 0.2);
+        const auto bckgDimensions = [textWidth, fontSize].std::map(n => n + fontSize * 0.2);
 
         ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
         ctx.fillRect(;

@@ -322,7 +322,7 @@ exit\
         );
         describe(std::string("Function calling"), [=]() mutable
         {
-            it(std::string("should handle function calling format"), [=]() mutable
+            it(std::string("should handle std::function calling format"), [=]() mutable
             {
                 auto agent = DefaultAgent::fromConfig(functionCallingAgentConfig);
                 auto validResponse = object{
@@ -446,7 +446,7 @@ test\
                 jest->spyOn(dummyEnv, std::string("communicate"))->mockImplementation([=](auto command) mutable
                 {
                     if (command->trim() == std::string("raise")) {
-                        throw any(std::make_shared<Error>(std::string("SwerexException")));
+                        throw std::any(std::make_shared<Error>(std::string("SwerexException")));
                     }
                     return string_empty;
                 }

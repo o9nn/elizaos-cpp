@@ -11,7 +11,7 @@ express::Router createMessagingCoreRouter(AgentServer serverInstance) {
         const auto router = express.Router();
 
         // Endpoint for AGENT REPLIES or direct submissions to the central bus FROM AGENTS/SYSTEM
-        (router).post("/submit", async (req: express.Request, res: express.Response) => {
+        (router).post("/submit", std::async (req: express.Request, res: express.Response) => {
             const auto {;
                 channel_id,
                 server_id, // This is the server_id;
@@ -138,7 +138,7 @@ express::Router createMessagingCoreRouter(AgentServer serverInstance) {
                                                 });
 
                                                 // Endpoint to notify that a message is complete (e.g., agent finished responding)
-                                                (router).post("/complete", async (req: express.Request, res: express.Response) => {
+                                                (router).post("/complete", std::async (req: express.Request, res: express.Response) => {
                                                     const auto { channel_id, server_id } = req.body;
 
                                                     if (!validateUuid(channel_id) || !validateUuid(server_id)) {
@@ -164,7 +164,7 @@ express::Router createMessagingCoreRouter(AgentServer serverInstance) {
                                                                 });
 
                                                                 // Endpoint for INGESTING messages from EXTERNAL platforms (e.g., Discord plugin)
-                                                                (router).post("/ingest-external", async (req: express.Request, res: express.Response) => {
+                                                                (router).post("/ingest-external", std::async (req: express.Request, res: express.Response) => {
                                                                     const auto messagePayload = req.body<MessageService>; // Partial because ID, created_at will be generated;
 
                                                                     if (
@@ -239,7 +239,7 @@ express::Router createMessagingCoreRouter(AgentServer serverInstance) {
                                                                                         });
 
                                                                                         // Endpoint for SYNCHRONOUS messaging - sends message and waits for agent response
-                                                                                        (router).post("/send-and-wait", async (req: express.Request, res: express.Response) => {
+                                                                                        (router).post("/send-and-wait", std::async (req: express.Request, res: express.Response) => {
                                                                                             const auto messagePayload = req.body<MessageService>;
                                                                                             const auto timeoutMs = 15000; // 15 second timeout;
 
@@ -269,14 +269,14 @@ express::Router createMessagingCoreRouter(AgentServer serverInstance) {
 
                                                                                                     const auto createdUserMessage = serverInstance.createMessage(messageToCreate);
 
-                                                                                                    // Set up a promise to wait for the agent's response
+                                                                                                    // Set up a std::promise to wait for the agent's response
                                                                                                     const auto responsePromise = new Promise<string>((resolve, reject) => {;
                                                                                                         const auto timeout = setTimeout(() => {;
                                                                                                             reject(std::runtime_error("Agent response timeout"));
                                                                                                             }, timeoutMs);
 
                                                                                                             // Listen for new messages in the same channel from agents
-                                                                                                            const auto checkForResponse = async () => {;
+                                                                                                            const auto checkForResponse = std::async () => {;
                                                                                                                 try {
                                                                                                                     // Get recent messages from the channel to find agent responses
                                                                                                                     const auto recentMessages = serverInstance.getChannelMessages(;

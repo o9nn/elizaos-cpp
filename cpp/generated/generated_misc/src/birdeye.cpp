@@ -1,8 +1,8 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/degenIntel/tasks/birdeye.h"
 
-string makeBulletpointList(array<string> array)
+std::string makeBulletpointList(array<string> array)
 {
-    return array->map([=](auto a) mutable
+    return array->std::map([=](auto a) mutable
     {
         return std::string(" - ") + a + string_empty;
     }
@@ -14,7 +14,7 @@ string makeBulletpointList(array<string> array)
 Birdeye::Birdeye(std::shared_ptr<IAgentRuntime> runtime) {
     auto apiKey = runtime->getSetting(std::string("BIRDEYE_API_KEY"));
     if (!apiKey) {
-        throw any(std::make_shared<Error>(std::string("Failed to initialize Birdeye provider due to missing API key.")));
+        throw std::any(std::make_shared<Error>(std::string("Failed to initialize Birdeye provider due to missing API key.")));
     }
     this->apiKey = apiKey;
     this->sentimentRoomId = createUniqueUuid(runtime, std::string("sentiment-analysis"));
@@ -22,7 +22,7 @@ Birdeye::Birdeye(std::shared_ptr<IAgentRuntime> runtime) {
     this->runtime = runtime;
 }
 
-any Birdeye::syncWalletHistory()
+std::any Birdeye::syncWalletHistory()
 {
     try
     {
@@ -63,7 +63,7 @@ any Birdeye::syncWalletHistory()
                 }
             }
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->debug(std::string("Failed to get cached transactions, continuing with Birdeye data only"));
         }
@@ -83,13 +83,13 @@ any Birdeye::syncWalletHistory()
             std::async([=]() { this->runtime->setCache<array<std::shared_ptr<TransactionHistory>>>(std::string("transaction_history"), transactions); });
             logger->debug(std::string("Updated transaction history with ") + transactions->get_length() + std::string(" transactions"));
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
-            logger->debug(std::string("Failed to set transaction cache, continuing without caching"), error);
+            logger->debug(std::string("Failed to std::set transaction cache, continuing without caching"), error);
         }
         return transactions;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Failed to sync wallet history from Birdeye"), error);
         return array<any>();
@@ -116,7 +116,7 @@ void Birdeye::syncWalletPortfolio()
     }); });
 }
 
-any Birdeye::syncWallet()
+std::any Birdeye::syncWallet()
 {
     std::async([=]() { this->syncWalletHistory(); });
     std::async([=]() { this->syncWalletPortfolio(); });
@@ -170,7 +170,7 @@ void Birdeye::fillTimeframe()
     logger->info(std::string("Filled timeframe slots for sentiment analysis"));
 }
 
-any Birdeye::parseTweets()
+std::any Birdeye::parseTweets()
 {
     std::async([=]() { this->fillTimeframe(); });
     auto now = std::make_shared<Date>();
@@ -219,10 +219,10 @@ any Birdeye::parseTweets()
         }, std::string("messages")); });
         return true;
     }
-    auto tweetArray = tweets->map([=](auto tweet) mutable
+    auto tweetArray = tweets->std::map([=](auto tweet) mutable
     {
         auto content = as<any>(tweet["content"]);
-        return std::string("username: ") + (OR((content["tweet"]["username"]), (std::string("unknown")))) + std::string(" tweeted: ") + content["text"] + string_empty + (content["tweet"]["likes"]) ? any(std::string(" with ") + content["tweet"]["likes"] + std::string(" likes")) : any(string_empty) + string_empty + (content["tweet"]["retweets"]) ? any(std::string(" and ") + content["tweet"]["retweets"] + std::string(" retweets")) : any(string_empty) + std::string(".");
+        return std::string("username: ") + (OR((content["tweet"]["username"]), (std::string("unknown")))) + std::string(" tweeted: ") + content["text"] + string_empty + (content["tweet"]["likes"]) ? std::any(std::string(" with ") + content["tweet"]["likes"] + std::string(" likes")) : std::any(string_empty) + string_empty + (content["tweet"]["retweets"]) ? std::any(std::string(" and ") + content["tweet"]["retweets"] + std::string(" retweets")) : std::any(string_empty) + std::string(".");
     }
     );
     auto bulletpointTweets = makeBulletpointList(tweetArray);
@@ -255,8 +255,8 @@ any Birdeye::parseTweets()
     return true;
 }
 
-string rolePrompt = std::string("You are a sentiment analyzer for cryptocurrency and market data.");
-string template = std::string("Write a summary of what is happening in the tweets. The main topic is the cryptocurrency market.\
+std::string rolePrompt = std::string("You are a sentiment analyzer for cryptocurrency and market data.");
+std::string template = std::string("Write a summary of what is happening in the tweets. The main topic is the cryptocurrency market.\
 You will also be analyzing the tokens that occur in the tweet and tell us whether their sentiment is positive or negative.\
 \
 ## Analyze the followings tweets:\

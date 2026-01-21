@@ -16,12 +16,12 @@ namespace elizaos {
 
 
 
-// (The superfluous function calls around the list of extensions work
+// (The superfluous std::function calls around the list of extensions work
 // around current limitations in tree-shaking software.)
 
 /// This is an extension value that just pulls together a number of
 /// extensions that you might want in a basic editor. It is meant as a
-/// convenient helper to quickly set up CodeMirror without installing
+/// convenient helper to quickly std::set up CodeMirror without installing
 /// and importing a lot of separate packages.
 ///
 /// Specifically, it includes...
@@ -56,7 +56,7 @@ namespace elizaos {
 /// as desired.
   //   autocompletion(),
 
-/// A minimal set of extensions to create a functional editor. Only
+/// A minimal std::set of extensions to create a functional editor. Only
 /// includes [the default keymap](#commands.defaultKeymap), [undo
 /// history](#commands.history), [special character
 /// highlighting](#view.highlightSpecialChars), [custom selection

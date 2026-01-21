@@ -8,17 +8,17 @@ class QuoteAccepted;
 class OTCQuote : public object, public std::enable_shared_from_this<OTCQuote> {
 public:
     using std::enable_shared_from_this<OTCQuote>::shared_from_this;
-    string quoteId;
+    std::string quoteId;
 
-    string beneficiary;
+    std::string beneficiary;
 
-    string tokenAmount;
+    std::string tokenAmount;
 
-    string tokenAmountFormatted;
+    std::string tokenAmountFormatted;
 
-    string tokenSymbol;
+    std::string tokenSymbol;
 
-    any tokenChain;
+    std::any tokenChain;
 
     double apr;
 
@@ -42,21 +42,21 @@ public:
 
     double finalPriceUsd;
 
-    string paymentCurrency;
+    std::string paymentCurrency;
 
-    string paymentAmount;
+    std::string paymentAmount;
 
-    string paymentSymbol;
+    std::string paymentSymbol;
 
     double ethPrice;
 
-    string createdAt;
+    std::string createdAt;
 
-    string status;
+    std::string status;
 
-    string message;
+    std::string message;
 
-    string consignmentId;
+    std::string consignmentId;
 
     boolean isFixedPrice;
 };
@@ -64,47 +64,47 @@ public:
 class QuoteAccepted : public object, public std::enable_shared_from_this<QuoteAccepted> {
 public:
     using std::enable_shared_from_this<QuoteAccepted>::shared_from_this;
-    string quoteId;
+    std::string quoteId;
 
-    string offerId;
+    std::string offerId;
 
-    string transactionHash;
+    std::string transactionHash;
 
-    string tokenAmount;
+    std::string tokenAmount;
 
-    string tokenAmountFormatted;
+    std::string tokenAmountFormatted;
 
-    string tokenSymbol;
+    std::string tokenSymbol;
 
-    string tokenName;
+    std::string tokenName;
 
-    string paidAmount;
+    std::string paidAmount;
 
-    string paymentCurrency;
+    std::string paymentCurrency;
 
     double discountBps;
 
     double discountPercent;
 
-    string totalSaved;
+    std::string totalSaved;
 
-    string finalPrice;
+    std::string finalPrice;
 
-    string status;
+    std::string status;
 
-    string timestamp;
+    std::string timestamp;
 
-    string message;
+    std::string message;
 };
 
-any extractXMLFromMessage(string messageText);
+std::any extractXMLFromMessage(std::string messageText);
 
-any parseOTCQuoteXML(string xmlString);
+std::any parseOTCQuoteXML(std::string xmlString);
 
-any parseQuoteAcceptedXML(string xmlString);
+std::any parseQuoteAcceptedXML(std::string xmlString);
 
-boolean messageContainsQuote(string messageText);
+boolean messageContainsQuote(std::string messageText);
 
-object parseMessageXML(string messageText);
+object parseMessageXML(std::string messageText);
 
 #endif

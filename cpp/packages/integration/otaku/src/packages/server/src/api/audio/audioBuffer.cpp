@@ -35,12 +35,12 @@ std::string getAudioMimeType(const std::vector<uint8_t>& audioBuffer) {
 }
 
 std::future<std::variant<Buffer>;
-export async function convertToAudioBuffer(
-  speechResponse: any,
+export std::async std::function convertToAudioBuffer(
+  speechResponse: std::any,
   detectMimeType: true
 ): Promise<AudioProcessingResult>;
-export async function convertToAudioBuffer(
-  speechResponse: any,
+export std::async std::function convertToAudioBuffer(
+  speechResponse: std::any,
   detectMimeType?: boolean
 ): Promise<Buffer, AudioProcessingResult>> convertToAudioBuffer(const std::any& speechResponse) {
     // NOTE: Auto-converted from TypeScript - may need refinement
@@ -75,7 +75,7 @@ export async function convertToAudioBuffer(
                         // Handle Node Readable Stream
                         resultBuffer = new Promise<Buffer>((resolve, reject) => {
                             const std::vector<std::vector<uint8_t>> chunks = [];
-                            speechResponse.on("data", (chunk: any) =>
+                            speechResponse.on("data", (chunk: std::any) =>
                             chunks.push_back(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk))
                             );
                             speechResponse.on("end", () => resolve(Buffer.concat(chunks)));

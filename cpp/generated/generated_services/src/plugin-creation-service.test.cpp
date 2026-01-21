@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-dynamic/__tests__/plugin-creation-service.test.h"
 
-std::function<any()> createMockRuntime = [=]() mutable
+std::function<std::any()> createMockRuntime = [=]() mutable
 {
     auto runtime = as<any>(object{
         object::pair{std::string("getSetting"), vi->fn()}, 
@@ -209,12 +209,12 @@ void Main(void)
                 auto jobId2 = std::async([=]() { service->createPlugin(spec2); });
                 auto jobs = service->getAllJobs();
                 expect(jobs)->toHaveLength(2);
-                expect(jobs->map([=](auto j) mutable
+                expect(jobs->std::map([=](auto j) mutable
                 {
                     return j->id;
                 }
                 ))->toContain(jobId1);
-                expect(jobs->map([=](auto j) mutable
+                expect(jobs->std::map([=](auto j) mutable
                 {
                     return j->id;
                 }
@@ -492,7 +492,7 @@ void Main(void)
                 };
                 std::async([=]() { service->createPlugin(specification, std::string("test-api-key")); });
                 std::async([=]() { vi->advanceTimersByTimeAsync(100); });
-                expect(mockSpawn)->toHaveBeenCalledWith(expect->any(String), expect->any(Array), expect->objectContaining(object{
+                expect(mockSpawn)->toHaveBeenCalledWith(expect->std::any(String), expect->std::any(Array), expect->objectContaining(object{
                     object::pair{std::string("shell"), false}
                 }));
             }

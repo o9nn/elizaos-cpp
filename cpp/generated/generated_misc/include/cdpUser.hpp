@@ -12,17 +12,17 @@ class CdpUserInfo;
 class CdpAuthMethod : public object, public std::enable_shared_from_this<CdpAuthMethod> {
 public:
     using std::enable_shared_from_this<CdpAuthMethod>::shared_from_this;
-    string email;
+    std::string email;
 
-    string name;
+    std::string name;
 };
 
 class CdpSmsMethod : public object, public std::enable_shared_from_this<CdpSmsMethod> {
 public:
     using std::enable_shared_from_this<CdpSmsMethod>::shared_from_this;
-    string phoneNumber;
+    std::string phoneNumber;
 
-    string countryCode;
+    std::string countryCode;
 };
 
 class CdpAuthenticationMethods : public object, public std::enable_shared_from_this<CdpAuthenticationMethods> {
@@ -40,13 +40,13 @@ public:
 class CdpUser : public object, public std::enable_shared_from_this<CdpUser> {
 public:
     using std::enable_shared_from_this<CdpUser>::shared_from_this;
-    string userId;
+    std::string userId;
 
-    string email;
+    std::string email;
 
-    string name;
+    std::string name;
 
-    string displayName;
+    std::string displayName;
 
     std::shared_ptr<CdpAuthenticationMethods> authenticationMethods;
 };
@@ -60,21 +60,21 @@ public:
 class CdpUserInfo : public object, public std::enable_shared_from_this<CdpUserInfo> {
 public:
     using std::enable_shared_from_this<CdpUserInfo>::shared_from_this;
-    string email;
+    std::string email;
 
-    string username;
+    std::string username;
 
-    string phoneNumber;
+    std::string phoneNumber;
 };
 
-any extractEmailFromCdpUser(any user, boolean isSignedIn);
+std::any extractEmailFromCdpUser(std::any user, boolean isSignedIn);
 
-any extractUsernameFromCdpUser(any user, string emailForFallback = undefined);
+std::any extractUsernameFromCdpUser(std::any user, std::string emailForFallback = undefined);
 
-any extractPhoneFromCdpUser(any user);
+std::any extractPhoneFromCdpUser(std::any user);
 
-any generateEmailFromPhone(string phone);
+std::any generateEmailFromPhone(std::string phone);
 
-std::shared_ptr<CdpUserInfo> resolveCdpUserInfo(any user, std::shared_ptr<CdpUserInfoOptions> options = undefined);
+std::shared_ptr<CdpUserInfo> resolveCdpUserInfo(std::any user, std::shared_ptr<CdpUserInfoOptions> options = undefined);
 
 #endif

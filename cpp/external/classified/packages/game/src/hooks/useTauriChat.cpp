@@ -10,11 +10,11 @@ UseTauriChatReturn useTauriChat() {
 
         const auto [isConnected, setIsConnected] = useState(false);
         const auto [messages, setMessages] = useState<TauriMessage[]>([]);
-        const auto [error, setError] = useState<string | nullptr>(nullptr);
+        const auto [error, setError] = useState<std::string | nullptr>(nullptr);
         const auto [isLoading, setIsLoading] = useState(false);
 
         useEffect(() => {
-            const auto initialize = async () => {;
+            const auto initialize = std::async () => {;
                 setIsLoading(true);
 
                 // Give TauriService a moment to detect Tauri environment
@@ -27,12 +27,12 @@ UseTauriChatReturn useTauriChat() {
                 if (TauriService.isRunningInTauri()) {
                     setIsConnected(true);
 
-                    // Load initial messages if any
+                    // Load initial messages if std::any
                     const auto initialMessages = TauriService.fetchMemories();
                     setMessages(initialMessages);
 
                     // Auto-send greeting message after confirming services are ready
-                    setTimeout(async () => {
+                    setTimeout(std::async () => {
                         try {
                             std::cout << "[AUTO-GREETING] Checking if agent and Ollama are ready..." << std::endl;
 
@@ -71,7 +71,7 @@ UseTauriChatReturn useTauriChat() {
                                         };
                                         }, []);
 
-                                        const auto sendMessage = async (content: string) => {;
+                                        const auto sendMessage = std::async (content: std::string) => {;
                                             TauriService.sendMessage(content);
                                             };
 

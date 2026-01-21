@@ -23,8 +23,8 @@ namespace elizaos {
  * - Normalizes path separators
  * - Trims whitespace
  *
- * @param content The file path content string
- * @returns The preprocessed content string
+ * @param content The file path content std::string
+ * @returns The preprocessed content std::string
  */
 std::string preprocessFilePathContent(const std::string& content);
 
@@ -32,8 +32,8 @@ std::string preprocessFilePathContent(const std::string& content);
  * Preprocesses text content (commit messages, PR titles, etc.)
  * - Trims whitespace
  *
- * @param content The text content string
- * @returns The preprocessed content string
+ * @param content The text content std::string
+ * @returns The preprocessed content std::string
  */
 std::string preprocessTextContent(const std::string& content);
 
@@ -42,8 +42,8 @@ std::string preprocessTextContent(const std::string& content);
  * - Trims whitespace
  * - Normalizes line endings
  *
- * @param content The code content string
- * @returns The preprocessed content string
+ * @param content The code content std::string
+ * @returns The preprocessed content std::string
  */
 std::string preprocessCodeContent(const std::string& content);
 
@@ -52,8 +52,8 @@ std::string preprocessCodeContent(const std::string& content);
  * - Trims whitespace
  * - Converts to lowercase
  *
- * @param content The label content string
- * @returns The preprocessed content string
+ * @param content The label content std::string
+ * @returns The preprocessed content std::string
  */
 std::string preprocessLabelContent(const std::string& content);
 

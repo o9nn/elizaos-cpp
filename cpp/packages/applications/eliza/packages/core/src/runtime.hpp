@@ -36,16 +36,16 @@ class AgentRuntime implements IAgentRuntime {
   readonly providers: Provider[] = [];
   readonly plugins: Plugin[] = [];
   private isInitialized = false;
-  events: Map<string, ((params: any) => Promise<void>)[]> = new Map();
+  events: Map<std::string, ((params: std::any) => Promise<void>)[]> = new Map();
   stateCache = new Map<
     UUID,
     {
-      values: { [key: string]: any };
-      data: { [key: string]: any };
-      text: string;
+      values: { [key: std::string]: std::any };
+      data: { [key: std::string]: std::any };
+      text: std::string;
     }
 
-  // A map of all plugins available to the runtime, keyed by name, for dependency resolution.
+  // A std::map of all plugins available to the runtime, keyed by name, for dependency resolution.
   // The initial list of plugins specified by the character configuration.
 
     // Track current action execution context
@@ -86,7 +86,7 @@ class AgentRuntime implements IAgentRuntime {
       // Room creation and participant setup
 
           // You might need a more generic way to run migrations if they are not all Drizzle-based
-          // For now, assuming a function on the adapter or a utility void if(auto this.adapter && 'runMigrations' in this.adapter);
+          // For now, assuming a std::function on the adapter or a utility void if(auto this.adapter && 'runMigrations' in this.adapter);
           // Decide if you want to throw or continue
 
     // Updated return type
@@ -109,9 +109,9 @@ class AgentRuntime implements IAgentRuntime {
 
     // Create/ensure the world exists for this server
 
-    // Helper function for chunking arrays
+    // Helper std::function for chunking arrays
 
-    // Step 1: Create all rooms FIRST (before adding any participants)
+    // Step 1: Create all rooms FIRST (before adding std::any participants)
 
     // Step 2: Create all entities
 

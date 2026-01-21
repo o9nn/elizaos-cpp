@@ -5,12 +5,12 @@ void Main(void)
     describe(std::string("matchString"), [=]() mutable
     {
         shared content = std::string("this is a test string");
-        test(std::string("should match when string is contained in content"), [=]() mutable
+        test(std::string("should match when std::string is contained in content"), [=]() mutable
         {
             expect(matchString(std::string("test"), content, object{}))->toBe(true);
         }
         );
-        test(std::string("should not match when string is not in content"), [=]() mutable
+        test(std::string("should not match when std::string is not in content"), [=]() mutable
         {
             expect(matchString(std::string("missing"), content, object{}))->toBe(false);
         }

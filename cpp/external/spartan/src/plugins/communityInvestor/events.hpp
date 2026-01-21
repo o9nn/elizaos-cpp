@@ -24,7 +24,7 @@ namespace elizaos {
  * Handles incoming messages and generates responses based on the provided runtime and message information.
  *
  * @param {MessageReceivedHandlerParams} params - The parameters needed for message handling, including runtime, message, and callback.
- * @returns {Promise<void>} - A promise that resolves once the message handling and response generation is complete.
+ * @returns {Promise<void>} - A std::promise that resolves once the message handling and response generation is complete.
  */
   // Use the consistent, seeded ID for storing community investor plugin-specific components.
 

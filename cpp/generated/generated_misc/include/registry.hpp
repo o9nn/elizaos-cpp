@@ -8,17 +8,17 @@ class EnvRegistry;
 class EnvRegistry : public object, public std::enable_shared_from_this<EnvRegistry> {
 public:
     using std::enable_shared_from_this<EnvRegistry>::shared_from_this;
-    Record<string, any> data = object{};
+    Record<std::string, any> data = object{};
 
-    any envFile;
+    std::any envFile;
 
     EnvRegistry();
     virtual void load();
     virtual void save();
-    virtual any get(string key);
-    virtual void set(string key, any value);
-    virtual boolean has(string key);
-    virtual void delete(string key);
+    virtual std::any get(std::string key);
+    virtual void std::set(std::string key, std::any value);
+    virtual boolean has(std::string key);
+    virtual void delete(std::string key);
     virtual void clear();
 };
 

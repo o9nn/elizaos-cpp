@@ -5,10 +5,10 @@
 using uuidv4 = v4;
 #include "@elizaos/core.h"
 
-extern any taskTestAgentId;
-extern any taskTestRoomId;
-extern any taskTestWorldId;
-extern any taskTestEntityId;
+extern std::any taskTestAgentId;
+extern std::any taskTestRoomId;
+extern std::any taskTestWorldId;
+extern std::any taskTestEntityId;
 extern array<std::shared_ptr<Task>> taskTestTasks;
 extern std::shared_ptr<Task> taskTestTaskDifferentRoom;
 extern std::shared_ptr<Task> taskTestTaskWithSpecificTags;

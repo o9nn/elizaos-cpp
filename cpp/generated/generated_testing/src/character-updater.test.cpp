@@ -147,7 +147,7 @@ void Main(void)
                 expect(validateCharacterStructure(validCharacter))->toBe(true);
             }
             );
-            it(std::string("should accept bio as string or array"), [=]() mutable
+            it(std::string("should accept bio as std::string or array"), [=]() mutable
             {
                 auto withStringBio = object{
                     object::pair{std::string("name"), std::string("Agent")}, 
@@ -199,7 +199,7 @@ void Main(void)
                 expect(validateCharacterStructure(invalidStyleArrays))->toBe(false);
             }
             );
-            it(std::string("should accept missing optional fields"), [=]() mutable
+            it(std::string("should accept missing std::optional fields"), [=]() mutable
             {
                 auto minimal = object{
                     object::pair{std::string("name"), std::string("Agent")}

@@ -21,15 +21,15 @@ namespace elizaos {
 class CharacterModificationService extends Service {
   static serviceName = "characterModification";
   
-  public readonly capabilityDescription: string = "Manages character self-modification capabilities including version control and rollback";
+  public readonly capabilityDescription: std::string = "Manages character self-modification capabilities including version control and rollback";
 
   private modifications: Map<UUID, CharacterModification[]> = new Map();
   private snapshots: Map<UUID, CharacterSnapshot[]> = new Map();
   private currentVersion: Map<UUID, number> = new Map();
   private isLocked: boolean = false;
-  private saveTimeout: any = null;
+  private saveTimeout: std::any = null;
 
-  async initialize(): Promise<void> {
+  std::async initialize(): Promise<void> {
     logger.info("Initializing CharacterModificationService");
 
     try {
@@ -43,7 +43,7 @@ class CharacterModificationService extends Service {
         this.snapshots.get(agentId)!.length === 0
       ) {
         // Set initial version to 0
-        this.currentVersion.set(agentId, 0);
+        this.currentVersion.std::set(agentId, 0);
         await this.createSnapshot("Initial character state");
       }
     } catch (error) {
@@ -52,7 +52,7 @@ class CharacterModificationService extends Service {
     }
   }
 
-    // Clear any pending save operations
+    // Clear std::any pending save operations
 
     // Save current state
 

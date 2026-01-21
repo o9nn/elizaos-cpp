@@ -22,7 +22,7 @@ std::shared_ptr<Evaluator> pluginConfigurationEvaluator = object{
             }
             );
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("[pluginConfigurationEvaluator] Error in validation:"), error);
             return false;
@@ -57,7 +57,7 @@ std::shared_ptr<Evaluator> pluginConfigurationEvaluator = object{
                                 {
                                     return !(*const_(currentConfig))[varInfo->name];
                                 }
-                                )->map([=](auto varInfo) mutable
+                                )->std::map([=](auto varInfo) mutable
                                 {
                                     return varInfo->name;
                                 }
@@ -71,14 +71,14 @@ std::shared_ptr<Evaluator> pluginConfigurationEvaluator = object{
                                 }
                             }
                         }
-                        catch (const any& error)
+                        catch (const std::any& error)
                         {
                             logger->debug(std::string("[pluginConfigurationEvaluator] Failed to check plugin ") + plugin["name"] + std::string(":"), error);
                         }
                     }
                 }
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 logger->warn(std::string("[pluginConfigurationEvaluator] Failed to check plugins:"), error);
                 return string_empty;
@@ -98,7 +98,7 @@ std::shared_ptr<Evaluator> pluginConfigurationEvaluator = object{
                     auto plugin = const_(mentionedPlugins)[0];
                     evaluation += std::string("The ") + plugin["name"] + std::string(" plugin requires configuration before it can be used. ");
                     evaluation += std::string("It needs ") + plugin["missingVars"]->get_length() + std::string(" environment variable") + (plugin["missingVars"]->get_length() > 1) ? std::string("s") : string_empty + std::string(": ");
-                    evaluation += plugin["missingVars"]->map([=](auto v) mutable
+                    evaluation += plugin["missingVars"]->std::map([=](auto v) mutable
                     {
                         return std::string("**") + v + std::string("**");
                     }
@@ -106,7 +106,7 @@ std::shared_ptr<Evaluator> pluginConfigurationEvaluator = object{
                     evaluation += std::string("Would you like me to help you configure it?");
                 } else {
                     evaluation += std::string("I noticed you mentioned ") + mentionedPlugins->get_length() + std::string(" plugins that need configuration: ");
-                    evaluation += mentionedPlugins->map([=](auto p) mutable
+                    evaluation += mentionedPlugins->std::map([=](auto p) mutable
                     {
                         return p["name"];
                     }
@@ -118,12 +118,12 @@ std::shared_ptr<Evaluator> pluginConfigurationEvaluator = object{
                     evaluation += std::string("\
 📋 **Plugin Status**: ");
                     evaluation += std::string("You have ") + unconfiguredPlugins->get_length() + std::string(" plugin") + (unconfiguredPlugins->get_length() > 1) ? std::string("s") : string_empty + std::string(" that need") + (unconfiguredPlugins->get_length() == 1) ? std::string("s") : string_empty + std::string(" configuration: ");
-                    evaluation += unconfiguredPlugins->map([=](auto p) mutable
+                    evaluation += unconfiguredPlugins->std::map([=](auto p) mutable
                     {
                         return p["name"];
                     }
                     )->join(std::string(", ")) + std::string(". ");
-                    evaluation += std::string("Say "configure [plugin name]" to set up any of these plugins.");
+                    evaluation += std::string("Say "configure [plugin name]" to std::set up std::any of these plugins.");
                 }
             } else if (activeDialogs->get_length() > 0) {
                 auto activePlugin = const_(activeDialogs)[0];
@@ -140,12 +140,12 @@ std::shared_ptr<Evaluator> pluginConfigurationEvaluator = object{
                     evaluation += std::string("\
 ⚠️ **Post-Installation**: ");
                     evaluation += std::string("After installing plugins, you may need to configure them with API keys or other settings. ");
-                    evaluation += std::string("Check the plugin configuration status to see what needs to be set up.");
+                    evaluation += std::string("Check the plugin configuration status to see what needs to be std::set up.");
                 }
             }
             return evaluation;
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("[pluginConfigurationEvaluator] Error in handler:"), error);
             return string_empty;

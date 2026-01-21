@@ -167,7 +167,7 @@ void Main(void)
                     object::pair{std::string("source"), std::string("test")}
                 })); });
             }
-            catch (const any& e)
+            catch (const std::any& e)
             {
                 console->log(std::string("messageHandler threw an error directly in test:"), e);
             }
@@ -192,7 +192,7 @@ void Main(void)
             }
             );
             if (messageHandler) {
-                any error;
+                std::any error;
                 try
                 {
                     std::async([=]() { messageHandler(as<std::shared_ptr<MessagePayload>>(object{
@@ -202,7 +202,7 @@ void Main(void)
                         object::pair{std::string("source"), std::string("test")}
                     })); });
                 }
-                catch (const any& e)
+                catch (const std::any& e)
                 {
                     error = as<std::shared_ptr<Error>>(e);
                 }
@@ -258,7 +258,7 @@ void Main(void)
                 object::pair{std::string("code"), std::string("23505")}
             });
             if (reactionHandler) {
-                any error;
+                std::any error;
                 try
                 {
                     std::async([=]() { reactionHandler(as<std::shared_ptr<MessagePayload>>(object{
@@ -267,7 +267,7 @@ void Main(void)
                         object::pair{std::string("source"), std::string("test")}
                     })); });
                 }
-                catch (const any& e)
+                catch (const std::any& e)
                 {
                     error = as<std::shared_ptr<Error>>(e);
                 }
@@ -352,7 +352,7 @@ void Main(void)
                 expect(mockRuntime->updateEntity)->toHaveBeenCalledWith(expect->objectContaining(object{
                     object::pair{std::string("metadata"), expect->objectContaining(object{
                         object::pair{std::string("status"), std::string("INACTIVE")}, 
-                        object::pair{std::string("leftAt"), expect->any(Number)}
+                        object::pair{std::string("leftAt"), expect->std::any(Number)}
                     })}
                 }));
             }
@@ -364,7 +364,7 @@ void Main(void)
             expect(entityLeftHandler)->toBeDefined();
             mockRuntime->getEntityById = mock()->mockRejectedValue(std::make_shared<Error>(std::string("Entity not found")));
             if (entityLeftHandler) {
-                any error;
+                std::any error;
                 try
                 {
                     std::async([=]() { entityLeftHandler(as<std::shared_ptr<EntityPayload>>(object{
@@ -374,7 +374,7 @@ void Main(void)
                         object::pair{std::string("source"), std::string("test")}
                     })); });
                 }
-                catch (const any& e)
+                catch (const std::any& e)
                 {
                     error = as<std::shared_ptr<Error>>(e);
                 }

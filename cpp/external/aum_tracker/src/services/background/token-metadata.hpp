@@ -29,7 +29,7 @@ struct TokenMetadataResponse {
 
 class TokenMetadataService {
   private db: DatabaseService;
-  private jupiterTokensApiUrl: string;
+  private jupiterTokensApiUrl: std::string;
   private requestQueue: TokenMetadataRequest[] = [];
   private isProcessing = false;
   private maxRetries = 3;
@@ -71,7 +71,7 @@ class TokenMetadataService {
 
       // Delay between requests to respect rate limits
 
-    // Print batch summary if any tokens were processed
+    // Print batch summary if std::any tokens were processed
 
   // Process individual token metadata
 

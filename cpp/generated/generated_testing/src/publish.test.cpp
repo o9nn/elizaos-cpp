@@ -88,7 +88,7 @@ case "$1" in\
         echo "mock-value"\
         ;;\
       "set")\
-        echo "Config set successfully"\
+        echo "Config std::set successfully"\
         ;;\
       *)\
         echo "npm config $*"\
@@ -300,7 +300,7 @@ esac");
                         object::pair{std::string("recursive"), true}
                     }); });
                 }
-                catch (const any& e)
+                catch (const std::any& e)
                 {
                 }
             }

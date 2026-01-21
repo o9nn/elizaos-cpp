@@ -16,16 +16,16 @@ public:
     AnalyticsService(std::shared_ptr<IAgentRuntime> runtime_);
     virtual std::shared_ptr<Promise<void>> initialize();
     virtual std::shared_ptr<Promise<void>> stop();
-    virtual std::shared_ptr<Promise<double>> scoreTechnicalSignals(any signals);
-    virtual std::shared_ptr<Promise<double>> scoreSocialMetrics(any metrics);
+    virtual std::shared_ptr<Promise<double>> scoreTechnicalSignals(std::any signals);
+    virtual std::shared_ptr<Promise<double>> scoreSocialMetrics(std::any metrics);
     virtual std::shared_ptr<Promise<double>> scoreMarketMetrics(object metrics);
-    virtual std::shared_ptr<Promise<void>> trackSlippageImpact(string tokenAddress, string expectedAmount, string actualAmount, double slippageBps, boolean isSell);
+    virtual std::shared_ptr<Promise<void>> trackSlippageImpact(std::string tokenAddress, std::string expectedAmount, std::string actualAmount, double slippageBps, boolean isSell);
     virtual double calculateRSI(array<double> prices, double period);
     virtual object calculateMACD(array<double> prices);
     virtual double calculateEMA(array<double> prices, double period);
     virtual std::shared_ptr<Promise<void>> trackTradeExecution(object data);
     virtual std::shared_ptr<Promise<any>> addTradePerformance(std::shared_ptr<TradePerformanceData> data, boolean isSimulation);
-    virtual std::shared_ptr<Promise<void>> updateTokenStatistics(string tokenAddress, object data);
+    virtual std::shared_ptr<Promise<void>> updateTokenStatistics(std::string tokenAddress, object data);
 };
 
 #endif

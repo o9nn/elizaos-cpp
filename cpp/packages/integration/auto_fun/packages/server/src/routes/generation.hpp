@@ -27,7 +27,7 @@ namespace elizaos {
 // Generate media endpoint
   // Create overall endpoint timeout
 
-  // Create a function to clear timeout on exit
+  // Create a std::function to clear timeout on exit
         // Clear timeout for browser
         // Clear timeout for Node.js
 
@@ -82,7 +82,7 @@ namespace elizaos {
 
     // Parse request body
 
-    // Define schema with optional prompt
+    // Define schema with std::optional prompt
 
     // Validate with detailed error handling
 
@@ -118,7 +118,7 @@ namespace elizaos {
 
     // Mark the token as used
 
-    // Delete any other tokens with the same name or ticker
+    // Delete std::any other tokens with the same name or ticker
 
 // Endpoint to enhance a prompt and generate media
 
@@ -144,7 +144,7 @@ namespace elizaos {
 
     // Prepare generation parameters
 
-    // Add optional parameters based on media type
+    // Add std::optional parameters based on media type
 
     // Validate response
 
@@ -155,8 +155,8 @@ namespace elizaos {
           // For diffrhythm model
       // Handle image result formats
         // For flux ultra
-      // Handle any other format
-    // Last resort - if the result itself is a string URL
+      // Handle std::any other format
+    // Last resort - if the result itself is a std::string URL
 
     // Save generation to database
       // Log but continue - don't fail the request just because we couldn't save to DB

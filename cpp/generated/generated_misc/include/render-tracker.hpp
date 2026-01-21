@@ -5,16 +5,16 @@
 typedef object RenderRecord;
 
 
-extern std::shared_ptr<Map<string, std::shared_ptr<RenderRecord>>> renderCounts;
+extern std::shared_ptr<Map<std::string, std::shared_ptr<RenderRecord>>> renderCounts;
 extern object CONFIG;
-string summarizeValue(any value);
+std::string summarizeValue(std::any value);
 
-Record<string, string> getPropsSnapshot(Record<string, any> props);
+Record<std::string, string> getPropsSnapshot(Record<std::string, any> props);
 
-array<string> findChanges(any prev, Record<string, string> curr);
+array<string> findChanges(std::any prev, Record<std::string, string> curr);
 
-void trackRender(string componentName, Record<string, any> props = undefined, Record<string, any> state = undefined);
+void trackRender(std::string componentName, Record<std::string, any> props = undefined, Record<std::string, any> state = undefined);
 
-void useRenderTracker(string componentName, Record<string, any> props = undefined, Record<string, any> state = undefined);
+void useRenderTracker(std::string componentName, Record<std::string, any> props = undefined, Record<std::string, any> state = undefined);
 
 #endif

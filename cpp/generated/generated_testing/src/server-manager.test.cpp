@@ -4,7 +4,7 @@ object mockServerState = object{
     object::pair{std::string("process"), as<any>(nullptr)}, 
     object::pair{std::string("isRunning"), false}
 };
-any mockStartServerProcess = mock([=](auto args = array<string>()) mutable
+std::any mockStartServerProcess = mock([=](auto args = array<string>()) mutable
 {
     if (AND((mockServerState["process"]), (mockServerState["isRunning"]))) {
         std::async([=]() { mockStopServerProcess(); });
@@ -23,7 +23,7 @@ any mockStartServerProcess = mock([=](auto args = array<string>()) mutable
     return Promise->resolve();
 }
 );
-any mockStopServerProcess = mock([=]() mutable
+std::any mockStopServerProcess = mock([=]() mutable
 {
     if (OR((!mockServerState["process"]), (!mockServerState["isRunning"]))) {
         return false;
@@ -39,24 +39,24 @@ any mockStopServerProcess = mock([=]() mutable
     return true;
 }
 );
-any mockRestartServerProcess = mock([=](auto args = array<string>()) mutable
+std::any mockRestartServerProcess = mock([=](auto args = array<string>()) mutable
 {
     console->info(std::string("Restarting server..."));
     std::async([=]() { mockStopServerProcess(); });
     std::async([=]() { mockStartServerProcess(args); });
 }
 );
-any mockIsServerRunning = mock([=]() mutable
+std::any mockIsServerRunning = mock([=]() mutable
 {
     return AND((mockServerState["isRunning"]), (mockServerState["process"] != nullptr));
 }
 );
-any mockGetServerProcess = mock([=]() mutable
+std::any mockGetServerProcess = mock([=]() mutable
 {
     return mockServerState["process"];
 }
 );
-any mockExistsSync = mock([=]() mutable
+std::any mockExistsSync = mock([=]() mutable
 {
     return false;
 }
@@ -367,7 +367,7 @@ void Main(void)
             {
                 mockStartServerProcess->mockImplementationOnce([=]() mutable
                 {
-                    throw any(std::make_shared<Error>(std::string("Process creation failed")));
+                    throw std::any(std::make_shared<Error>(std::string("Process creation failed")));
                 }
                 );
                 auto manager = createServerManager();
@@ -375,7 +375,7 @@ void Main(void)
                 {
                     std::async([=]() { manager->start(); });
                 }
-                catch (const any& error)
+                catch (const std::any& error)
                 {
                     expect(error)->toBeDefined();
                 }
@@ -387,14 +387,14 @@ void Main(void)
                 std::async([=]() { manager->start(); });
                 mockStopServerProcess->mockImplementationOnce([=]() mutable
                 {
-                    throw any(std::make_shared<Error>(std::string("Process stop failed")));
+                    throw std::any(std::make_shared<Error>(std::string("Process stop failed")));
                 }
                 );
                 try
                 {
                     std::async([=]() { manager->stop(); });
                 }
-                catch (const any& error)
+                catch (const std::any& error)
                 {
                     expect(error)->toBeDefined();
                 }

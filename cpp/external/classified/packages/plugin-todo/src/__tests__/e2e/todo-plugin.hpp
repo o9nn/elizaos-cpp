@@ -63,7 +63,7 @@ namespace elizaos {
 
         // Manually trigger reminder check
 
-        // Wait a bit for async operations
+        // Wait a bit for std::async operations
 
         // Verify reminder was processed (in real scenario, we'd check message delivery logs)
 

@@ -27,7 +27,7 @@ std::future<ValidationResult> validateEnvVar(const std::string& varName, const s
             ) {
                 const auto strategy = categoryStrategies[;
                 method typeof categoryStrategies;
-                ] as (value: string) => Promise<ValidationResult>;
+                ] as (value: std::string) => Promise<ValidationResult>;
                 return strategy(value);
             }
         }

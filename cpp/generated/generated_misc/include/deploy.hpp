@@ -2,5 +2,5 @@
 #define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_PROGRAM_MIGRATIONS_DEPLOY_H
 #include "core.h"
 
-extern any anchor;
+extern std::any anchor;
 #endif

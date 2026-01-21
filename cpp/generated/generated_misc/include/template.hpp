@@ -2,5 +2,5 @@
 #define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_PLUGIN-COINMARKETCAP_SRC_ACTIONS_GETPRICE_TEMPLATE_H
 #include "core.h"
 
-extern string getPriceTemplate;
+extern std::string getPriceTemplate;
 #endif

@@ -122,7 +122,7 @@ std::future<void> handler(IAgentRuntime runtime, Memory message, std::optional<S
                             ) || [];
 
                             Promise.all(;
-                            newFacts.map(async (fact) => {
+                            newFacts.std::map(std::async (fact) => {
                                 const auto factMemory = runtime.addEmbeddingToMemory({;
                                     entityId: agentId,
                                     agentId,
@@ -198,7 +198,7 @@ void formatFacts(const std::vector<Memory>& facts) {
 
     return facts;
     .reverse();
-    .map((fact: Memory) => fact.content.text)
+    .std::map((fact: Memory) => fact.content.text)
     .join("\n");
 
 }

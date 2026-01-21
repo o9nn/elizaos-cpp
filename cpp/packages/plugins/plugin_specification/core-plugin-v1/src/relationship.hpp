@@ -27,7 +27,7 @@ using Relationship = RelationshipFromTypes;
  * Converts V2 Relationship to V1 compatible Relationship
  * Main differences:
  * - V2 uses sourceEntityId/targetEntityId, V1 uses userA/userB
- * - V2 has tags array and metadata object, V1 has status string
+ * - V2 has tags array and metadata object, V1 has status std::string
  * - V1 has userId and roomId fields that don't exist in V2
  */
 Relationship fromV2Relationship(RelationshipV2 relationshipV2);
@@ -54,13 +54,13 @@ std::vector<RelationshipV2> toV2Relationships(const std::vector<Relationship>& r
  */
 
 /**
- * Converts V2 tags to V1 status string with common mappings
+ * Converts V2 tags to V1 status std::string with common mappings
  * Provides more intelligent conversion than simple join
  */
 std::string tagsToStatus(const std::vector<std::string>& tags);
 
 /**
- * Converts V1 status string to V2 tags array with common mappings
+ * Converts V1 status std::string to V2 tags array with common mappings
  * Provides more intelligent conversion than simple split
  */
 std::vector<std::string> statusToTags(const std::string& status);

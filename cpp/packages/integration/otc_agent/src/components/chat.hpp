@@ -69,7 +69,7 @@ std::optional<ChatMessage> parseRoomMessage(RawRoomMessage msg, const std::strin
 
   // Load room data - only when roomId or entityId changes, NOT on messages change
 
-        // Format messages using helper function
+        // Format messages using helper std::function
 
         // Sort by timestamp
 
@@ -91,7 +91,7 @@ std::optional<ChatMessage> parseRoomMessage(RawRoomMessage msg, const std::strin
 
     // Stop polling after 30 seconds
 
-  // Send message function - accepts optional targetRoomId to handle newly created rooms
+  // Send message std::function - accepts std::optional targetRoomId to handle newly created rooms
 
       // Add user message to UI immediately with a client-generated ID
 

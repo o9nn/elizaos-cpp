@@ -17,7 +17,7 @@ std::future<std::optional<std::any>> safeReadJson(const std::string& res) {
 
 std::future<std::vector> fetchCoinsList(std::optional<AbortSignal> signal) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    id: string; symbol: string; name: string
+    id: std::string; symbol: std::string; name: std::string
 }
 
 std::future<std::vector<std::string>> rankIdsByMarkets(const std::vector<std::string>& ids) {
@@ -47,7 +47,7 @@ std::future<std::vector<std::string>> rankIdsByMarkets(const std::vector<std::st
                     clearTimeout(timeout);
                     if (!r.ok) return ids;
                     const auto rows = (r.json())<{;
-                        id: string;
+                        id: std::string;
                         market_cap?: number | nullptr;
                         total_volume?: number | nullptr;
                         market_cap_rank?: number | nullptr;
@@ -65,7 +65,7 @@ std::future<std::vector<std::string>> rankIdsByMarkets(const std::vector<std::st
                             const auto rankB = typeof b.market_cap_rank == "number" && b.market_cap_rank > 0 ? b.market_cap_rank : 10_000_000;
                             return rankA - rankB;
                             });
-                            .map((row) => row.id);
+                            .std::map((row) => row.id);
                             } catch (e) {
                                 clearTimeout(timeout);
                                 std::cout << "[CoinGecko:rankIdsByMarkets] fetch failed: " + std::to_string(true /* instanceof check */ ? e.message : std::to_string(e)) << std::endl;
@@ -92,7 +92,7 @@ std::optional<double> usd(const std::any& obj, const std::vector<std::string>& p
 
 void choosePlatform(const std::any& data, std::optional<std::string> preferredPlatform) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    platformKey: string | nullptr; address: string | nullptr; decimals: number | nullptr
+    platformKey: std::string | nullptr; address: std::string | nullptr; decimals: number | nullptr
 }
 
 std::string platformToNet(std::optional<std::string> p) {
@@ -149,7 +149,7 @@ std::any formatCoinMetadata(const std::string& requestId, const std::any& data, 
                 },
                 relationships: {
                     top_pools: {
-                        data: []<{ id: string; type: string }>,
+                        data: []<{ id: std::string; type: std::string }>,
                         },
                         },
                         market_data: {

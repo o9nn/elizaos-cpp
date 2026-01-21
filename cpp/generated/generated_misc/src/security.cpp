@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/packages/server/src/middleware/security.h"
 
-std::function<std::function<void(any, any, any)>()> securityMiddleware = [=]() mutable
+std::function<std::function<void(std::any, std::any, std::any)>()> securityMiddleware = [=]() mutable
 {
     return [=](auto req, auto res, auto next) mutable
     {

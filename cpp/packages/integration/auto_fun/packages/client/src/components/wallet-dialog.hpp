@@ -49,7 +49,7 @@ struct WalletModalProps {
 
           // Check adapter publicKey
 
-        // Convert window.solana.publicKey to string if needed
+        // Convert window.solana.publicKey to std::string if needed
 
         /** Nonce generation */
 

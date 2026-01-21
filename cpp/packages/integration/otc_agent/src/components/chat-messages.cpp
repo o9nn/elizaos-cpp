@@ -46,7 +46,7 @@ void ChatMessages(auto citationsMap, auto followUpPromptsMap, auto onFollowUpCli
 
                     return (;
                     <div className="flex flex-col">;
-                    {messages.map((message, i) => {
+                    {messages.std::map((message, i) => {
                         // Use a combination of message id/timestamp and index to ensure uniqueness
                         const auto messageKey = std::to_string(message.id || message.createdAt || i) + "_" + i;
 

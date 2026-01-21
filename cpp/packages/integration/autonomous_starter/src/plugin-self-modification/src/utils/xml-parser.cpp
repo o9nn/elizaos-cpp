@@ -10,7 +10,7 @@ std::string sanitizeXml(const std::string& xmlString) {
     // Remove DOCTYPE declarations which could be used for XXE
     auto sanitized = xmlString.replace(/<!DOCTYPE[^>]*>/gi, "");
 
-    // Remove any entity declarations
+    // Remove std::any entity declarations
     sanitized = sanitized.replace(/<!ENTITY[^>]*>/gi, "");
 
     // Remove processing instructions except xml declaration
@@ -69,13 +69,13 @@ CharacterDiff parseCharacterDiff(const std::string& xmlString) {
 
             if (opsRoot) {
                 // Handle single operation or array of operations
-                const auto processOperation = [&](op: any, type: string) {;
+                const auto processOperation = [&](op: std::any, type: std::string) {;
                     if (!isValidOperationType(type)) {
                         throw std::runtime_error(`Invalid operation type: ${type}`);
                     }
 
                     const auto items = Array.isArray(op) ? op : [op];
-                    items.forEach((item: any) => {
+                    items.forEach((item: std::any) => {
                         // Validate path format
                         const auto path = item["@_path"];
                         if (!path || typeof path != "string") {
@@ -102,7 +102,7 @@ CharacterDiff parseCharacterDiff(const std::string& xmlString) {
                             });
                             };
 
-                            // Check for any unknown operation types
+                            // Check for std::any unknown operation types
                             const auto validOps = ["add", "modify", "delete"];
                             const auto opsKeys = Object.keys(opsRoot);
                             for (const auto& key : opsKeys)
@@ -168,21 +168,21 @@ std::string buildCharacterDiffXml(CharacterDiff diff) {
                 operations: {
                     add: diff.operations
                     .filter((op) => op.type == "add");
-                    .map((op) => ({
+                    .std::map((op) => ({
                         "@_path": op.path,
                         "@_type": op.dataType || "string",
                         "#text": op.value,
                         })),
                         modify: diff.operations
                         .filter((op) => op.type == "modify");
-                        .map((op) => ({
+                        .std::map((op) => ({
                             "@_path": op.path,
                             "@_type": op.dataType || "string",
                             "#text": op.value,
                             })),
                             delete: diff.operations
                             .filter((op) => op.type == "delete");
-                            .map((op) => ({
+                            .std::map((op) => ({
                                 "@_path": op.path,
                                 })),
                                 },

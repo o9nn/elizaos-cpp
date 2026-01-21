@@ -14,7 +14,7 @@ namespace elizaos {
 
 // Pair Trades Types
 struct PairTradesParams {
-    std::string pair;
+    std::string std::pair;
     std::optional<double> limit;
     std::optional<double> offset;
 };

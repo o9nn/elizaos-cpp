@@ -29,10 +29,10 @@ namespace elizaos {
  *
  * @typedef {Object} Character
  * @property {string} name - The name of the character
- * @property {string[]} plugins - List of plugins used by the character
+ * @property {std::string[]} plugins - List of plugins used by the character
  * @property {Object} secrets - Object containing secret keys for Discord application
  * @property {string} system - Description of the character's system and capabilities
- * @property {string[]} bio - Bio of the character highlighting its specialties and traits
+ * @property {std::string[]} bio - Bio of the character highlighting its specialties and traits
  * @property {Object[]} messageExamples - Examples of messages exchanged by the character in chats
  * @property {Object} style - Object containing communication style guidelines for the character
  */

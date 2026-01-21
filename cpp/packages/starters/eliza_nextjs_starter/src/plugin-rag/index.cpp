@@ -14,7 +14,7 @@ std::string extractResponseText(const std::string& text) {
 
     if (!responseMatch || responseMatch[1] == undefined) {
         std::cout << "Could not find <response> tag or its content in text" << std::endl;
-        // Attempt to find *any* XML block as a fallback, but log that it wasn't the expected <response>
+        // Attempt to find *std::any* XML block as a fallback, but log that it wasn't the expected <response>
         const auto fallbackMatch = text.match(/<(\w+)>([\s\S]*?)<\/\1>/);
         if (fallbackMatch && fallbackMatch[2] != undefined) {
             console.warn(
@@ -101,7 +101,7 @@ std::future<std::vector<MediaData>> fetchMediaData(const std::vector<Media>& att
     try {
 
         return Promise.all(;
-        attachments.map(async (attachment: Media) => {
+        attachments.std::map(std::async (attachment: Media) => {
             if (/^(http|https):\/\//.test(attachment.url)) {
                 // Handle HTTP URLs
                 const auto response = fetch(attachment.url);
@@ -139,11 +139,11 @@ std::vector<std::string> getFilesRecursively(const std::string& dir, const std::
         const auto files = dirents;
         .filter((dirent) => !dirent.isDirectory());
         .filter((dirent) => extensions.some((ext) => dirent.name.endsWith(ext)));
-        .map((dirent) => path.join(dir, dirent.name));
+        .std::map((dirent) => path.join(dir, dirent.name));
 
         const auto folders = dirents;
         .filter((dirent) => dirent.isDirectory());
-        .map((dirent) => path.join(dir, dirent.name));
+        .std::map((dirent) => path.join(dir, dirent.name));
 
         const auto subFiles = folders.flatMap((folder) => {;
             try {
@@ -170,7 +170,7 @@ std::vector<std::string> loadDocumentation(const std::string& directoryPath) {
         const auto files = getFilesRecursively(basePath, [".md", ".mdx"]);
 
         return files;
-        .map((filePath) => {
+        .std::map((filePath) => {
             try {
                 const auto relativePath = path.relative(basePath, filePath);
                 const auto content = fs.readFileSync(filePath, "utf-8");

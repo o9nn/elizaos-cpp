@@ -6,35 +6,35 @@ typedef  UUID;
 
 typedef object Media;
 
-typedef Record<string, any> Metadata;
+typedef Record<std::string, any> Metadata;
 
 class Content;
 enum struct ContentType;
 
-UUID asUUID(string id);
+UUID asUUID(std::string id);
 
 class Content : public object, public std::enable_shared_from_this<Content> {
 public:
     using std::enable_shared_from_this<Content>::shared_from_this;
-    string thought;
+    std::string thought;
 
-    string text;
+    std::string text;
 
     array<string> actions;
 
     array<string> providers;
 
-    string source;
+    std::string source;
 
-    string target;
+    std::string target;
 
-    string url;
+    std::string url;
 
     UUID inReplyTo;
 
     array<Media> attachments;
 
-    string channelType;
+    std::string channelType;
 };
 
 enum struct ContentType {

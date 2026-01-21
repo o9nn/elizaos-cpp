@@ -191,7 +191,7 @@ void Main(void)
         describe(std::string("getOrCreateDmChannel"), [=]() mutable
         {
             shared mockParams = object{
-                object::pair{std::string("participantIds"), as<std::tuple<any, any>>(std::tuple<string, string>{ std::string("user-1"), std::string("user-2") })}
+                object::pair{std::string("participantIds"), as<std::tuple<std::any, any>>(std::tuple<std::string, string>{ std::string("user-1"), std::string("user-2") })}
             };
             it(std::string("should get or create DM channel successfully"), [=]() mutable
             {

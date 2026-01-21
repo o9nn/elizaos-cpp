@@ -34,11 +34,11 @@ public:
 
     std::shared_ptr<User> author;
 
-    string content;
+    std::string content;
 
-    string timestamp;
+    std::string timestamp;
 
-    any edited_timestamp;
+    std::any edited_timestamp;
 
     boolean tts;
 
@@ -54,7 +54,7 @@ public:
 
     array<std::shared_ptr<Reaction>> reactions;
 
-    any nonce;
+    std::any nonce;
 
     boolean pinned;
 
@@ -72,11 +72,11 @@ public:
 
     double flags;
 
-    any referenced_message;
+    std::any referenced_message;
 
     MessageInteractionObject interaction;
 
-    std::shared_ptr<Channel> thread;
+    std::shared_ptr<Channel> std::thread;
 
     array<std::shared_ptr<ComponentObject>> components;
 
@@ -90,7 +90,7 @@ public:
 
     std::shared_ptr<ResolvedDataObject> resolved;
 
-    string userName;
+    std::string userName;
 
     Message(object opts);
 };

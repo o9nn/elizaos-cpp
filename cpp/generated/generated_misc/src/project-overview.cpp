@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/rules/project-overview.h"
 
-any getComponentByPath(string path)
+std::any getComponentByPath(std::string path)
 {
     auto entryPoint = ENTRY_POINTS->find([=](auto ep) mutable
     {
@@ -49,14 +49,14 @@ any getComponentByPath(string path)
 array<string> getPythonModules()
 {
     auto modules = array<string>();
-    modules->push(const_(ENTRY_POINTS->map([=](auto ep) mutable
+    modules->push(const_(ENTRY_POINTS->std::map([=](auto ep) mutable
     {
         return ep->path;
     }
     ))[0]);
     modules->push(MAIN_AGENT_CLASS->path);
     modules->push(SWE_ENV_CLASS->path);
-    modules->push(const_(INSPECTORS->map([=](auto i) mutable
+    modules->push(const_(INSPECTORS->std::map([=](auto i) mutable
     {
         return i->path;
     }
@@ -113,8 +113,8 @@ std::shared_ptr<ProjectStructure> PROJECT_STRUCTURE = object{
     object::pair{std::string("tools"), TOOLS_INFO}, 
     object::pair{std::string("inspectors"), INSPECTORS}
 };
-string PROJECT_OVERVIEW = std::string("SWE-agent implements an AI software engineering agent that uses language models to fix github issues.");
-Record<string, string> TYPESCRIPT_EQUIVALENTS = object{
+std::string PROJECT_OVERVIEW = std::string("SWE-agent implements an AI software engineering agent that uses language models to fix github issues.");
+Record<std::string, string> TYPESCRIPT_EQUIVALENTS = object{
     object::pair{std::string("sweagent/run/run_single.py"), std::string("src/run/run-single.ts")}, 
     object::pair{std::string("sweagent/run/run_batch.py"), std::string("src/run/run-batch.ts")}, 
     object::pair{std::string("sweagent/agent/agents.py"), std::string("src/agent/agents.ts")}, 

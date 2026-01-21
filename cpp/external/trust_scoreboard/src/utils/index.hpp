@@ -16,7 +16,7 @@ namespace elizaos {
 
 
 
-// Concatenates classes into a single className string
+// Concatenates classes into a single className std::string
 
 /**
  * Formats number as currency string.

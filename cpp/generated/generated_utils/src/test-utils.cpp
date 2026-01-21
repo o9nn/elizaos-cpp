@@ -316,7 +316,7 @@ Partial<std::shared_ptr<State>> createMockState(Partial<std::shared_ptr<State>> 
 };
 
 
-any createMockService(Partial<Record<string, any>> overrides)
+std::any createMockService(Partial<Record<std::string, any>> overrides)
 {
     return utils::assign(object{
         object::pair{std::string("name"), std::string("mock-service")}, 
@@ -327,7 +327,7 @@ any createMockService(Partial<Record<string, any>> overrides)
 };
 
 
-any setupActionTest(object options)
+std::any setupActionTest(object options)
 {
     auto mockRuntime = createMockRuntime(options["runtimeOverrides"]);
     auto mockMessage = createMockMemory(options["messageOverrides"]);

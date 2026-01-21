@@ -14,17 +14,17 @@ class TeePluginConfig;
 class TeeAgent : public object, public std::enable_shared_from_this<TeeAgent> {
 public:
     using std::enable_shared_from_this<TeeAgent>::shared_from_this;
-    string id;
+    std::string id;
 
-    string agentId;
+    std::string agentId;
 
-    string agentName;
+    std::string agentName;
 
     double createdAt;
 
-    string publicKey;
+    std::string publicKey;
 
-    string attestation;
+    std::string attestation;
 };
 
 enum struct TEEMode {
@@ -33,7 +33,7 @@ enum struct TEEMode {
 class RemoteAttestationQuote : public object, public std::enable_shared_from_this<RemoteAttestationQuote> {
 public:
     using std::enable_shared_from_this<RemoteAttestationQuote>::shared_from_this;
-    string quote;
+    std::string quote;
 
     double timestamp;
 };
@@ -41,17 +41,17 @@ public:
 class DeriveKeyAttestationData : public object, public std::enable_shared_from_this<DeriveKeyAttestationData> {
 public:
     using std::enable_shared_from_this<DeriveKeyAttestationData>::shared_from_this;
-    string agentId;
+    std::string agentId;
 
-    string publicKey;
+    std::string publicKey;
 
-    string subject;
+    std::string subject;
 };
 
 class RemoteAttestationMessage : public object, public std::enable_shared_from_this<RemoteAttestationMessage> {
 public:
     using std::enable_shared_from_this<RemoteAttestationMessage>::shared_from_this;
-    string agentId;
+    std::string agentId;
 
     double timestamp;
 
@@ -64,7 +64,7 @@ enum struct TeeType {
 class TeePluginConfig : public object, public std::enable_shared_from_this<TeePluginConfig> {
 public:
     using std::enable_shared_from_this<TeePluginConfig>::shared_from_this;
-    string vendor;
+    std::string vendor;
 
     Metadata vendorConfig;
 };

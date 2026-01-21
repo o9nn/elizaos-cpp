@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-manager/actions/startPluginConfiguration.h"
 
-std::shared_ptr<Promise<any>> extractPluginNameFromMessage(std::shared_ptr<IAgentRuntime> runtime, string text)
+std::shared_ptr<Promise<any>> extractPluginNameFromMessage(std::shared_ptr<IAgentRuntime> runtime, std::string text)
 {
     auto patterns = array<std::shared_ptr<RegExp>>{ (new RegExp(std::string("configure\s+(?:the\s+)?(\w+)\s+plugin"))), (new RegExp(std::string("setup\s+(?:the\s+)?(\w+)\s+plugin"))), (new RegExp(std::string("(\w+)\s+plugin\s+config"))), (new RegExp(std::string("set\s+up\s+(?:the\s+)?(\w+)\s+plugin"))), (new RegExp(std::string("configure\s+(\w+)"))) };
     for (auto& pattern : patterns)
@@ -34,7 +34,7 @@ Plugin name:");
             return extracted;
         }
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->warn(std::string("[startPluginConfiguration] AI extraction failed:"), error);
     }
@@ -44,7 +44,7 @@ Plugin name:");
 
 std::shared_ptr<Action> startPluginConfigurationAction = object{
     object::pair{std::string("name"), std::string("START_PLUGIN_CONFIGURATION")}, 
-    object::pair{std::string("similes"), array<string>{ std::string("configure plugin"), std::string("setup plugin"), std::string("plugin configuration"), std::string("setup environment variables"), std::string("configure environment"), std::string("plugin setup"), std::string("set up plugin") }}, 
+    object::pair{std::string("similes"), array<string>{ std::string("configure plugin"), std::string("setup plugin"), std::string("plugin configuration"), std::string("setup environment variables"), std::string("configure environment"), std::string("plugin setup"), std::string("std::set up plugin") }}, 
     object::pair{std::string("description"), std::string("Initiates configuration dialog for a plugin to collect required environment variables")}, 
     object::pair{std::string("examples"), array<any>()}, 
     object::pair{std::string("validate"), [=](auto runtime, auto message, auto state = undefined) mutable
@@ -62,14 +62,14 @@ std::shared_ptr<Action> startPluginConfigurationAction = object{
                 return false;
             }
             shared text = message->content->text->toLowerCase();
-            auto configKeywords = array<string>{ std::string("configure"), std::string("setup"), std::string("config"), std::string("environment"), std::string("env var"), std::string("environment variable"), std::string("plugin config"), std::string("set up") };
+            auto configKeywords = array<string>{ std::string("configure"), std::string("setup"), std::string("config"), std::string("environment"), std::string("env var"), std::string("environment variable"), std::string("plugin config"), std::string("std::set up") };
             return configKeywords->some([=](auto keyword) mutable
             {
                 return text->includes(keyword);
             }
             );
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("[startPluginConfiguration] Error in validation:"), error);
             return false;
@@ -91,20 +91,20 @@ std::shared_ptr<Action> startPluginConfigurationAction = object{
             if (!pluginName) {
                 return std::string("🔧 **Plugin Configuration**\
 \
-To help you configure a plugin, I need to know which plugin you'd like to set up. Could you please specify the plugin name?\
+To help you configure a plugin, I need to know which plugin you'd like to std::set up. Could you please specify the plugin name?\
 \
 For example: "configure the openai plugin" or "setup discord plugin"");
             }
             auto result = std::async([=]() { configService->parsePluginRequirements(std::string("./plugins/") + pluginName + string_empty); });
             if (OR((!result), (result["requiredVars"]->get_length() == 0))) {
-                return std::string("ℹ️ The plugin "") + pluginName + std::string("" doesn't require any configuration, or I couldn't find it. Please check the plugin name and try again.");
+                return std::string("ℹ️ The plugin "") + pluginName + std::string("" doesn't require std::any configuration, or I couldn't find it. Please check the plugin name and try again.");
             }
             shared currentConfig = std::async([=]() { configService->getPluginConfiguration(pluginName); });
             shared missingVars = result["requiredVars"]->filter([=](auto varInfo) mutable
             {
                 return !(*const_(currentConfig))[varInfo->name];
             }
-            )->map([=](auto varInfo) mutable
+            )->std::map([=](auto varInfo) mutable
             {
                 return varInfo->name;
             }
@@ -139,14 +139,14 @@ I'll help you configure the "") + pluginName + std::string("" plugin step by ste
 \
 ") + firstPrompt + string_empty;
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("[startPluginConfiguration] Error in handler:"), error);
             return std::string("❌ **Configuration Error**\
 \
 Sorry, I encountered an error while trying to start the plugin configuration. Please try again or check if the plugin exists.\
 \
-Error: ") + (is<Error>(error)) ? any(error->message) : any(std::string("Unknown error")) + string_empty;
+Error: ") + (is<Error>(error)) ? std::any(error->message) : std::any(std::string("Unknown error")) + string_empty;
         }
     }
     }

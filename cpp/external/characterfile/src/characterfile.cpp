@@ -157,7 +157,7 @@ bool CharacterFileLoader::saveToFile(const CharacterProfile& character, const st
 std::string CharacterFileLoader::exportToJson(const CharacterProfile& character) {
     JsonValue json = exportToJsonValue(character);
     
-    // Convert to formatted JSON string
+    // Convert to formatted JSON std::string
     std::ostringstream oss;
     oss << "{\n";
     oss << "  \"name\": \"" << character.name << "\",\n";
@@ -232,7 +232,7 @@ std::vector<std::string> CharacterFileLoader::getSupportedExtensions() const {
 
 bool CharacterFileLoader::isCharacterFile(const std::string& filename) {
     auto extensions = getSupportedExtensions();
-    std::string ext = std::filesystem::path(filename).extension().string();
+    std::string ext = std::filesystem::path(filename).extension().std::string();
     std::transform(ext.begin(), ext.end(), ext.begin(),
         [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
     std::transform(ext.begin(), ext.end(), ext.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
@@ -262,13 +262,13 @@ std::vector<CharacterProfile> CharacterFileLoader::loadFromDirectory(const std::
     
     try {
         for (const auto& entry : std::filesystem::directory_iterator(directory)) {
-            if (entry.is_regular_file() && isCharacterFile(entry.path().string())) {
-                auto character = loadFromFile(entry.path().string());
+            if (entry.is_regular_file() && isCharacterFile(entry.path().std::string())) {
+                auto character = loadFromFile(entry.path().std::string());
                 if (character) {
                     characters.push_back(*character);
                 }
             } else if (entry.is_directory() && recursive) {
-                auto subCharacters = loadFromDirectory(entry.path().string(), recursive);
+                auto subCharacters = loadFromDirectory(entry.path().std::string(), recursive);
                 characters.insert(characters.end(), subCharacters.begin(), subCharacters.end());
             }
         }
@@ -599,12 +599,12 @@ CharacterFileManager::~CharacterFileManager() {
 
 void CharacterFileManager::setCharacterManager(std::shared_ptr<CharacterManager> manager) {
     characterManager_ = manager;
-    logger_->log("Character manager set for file operations", "characterfile", "manager", LogLevel::INFO);
+    logger_->log("Character manager std::set for file operations", "characterfile", "manager", LogLevel::INFO);
 }
 
 int CharacterFileManager::importFromDirectory(const std::string& directory, bool recursive) {
     if (!characterManager_) {
-        logger_->log("No character manager set for import", "characterfile", "manager", LogLevel::ERROR);
+        logger_->log("No character manager std::set for import", "characterfile", "manager", LogLevel::ERROR);
         return 0;
     }
     
@@ -629,7 +629,7 @@ int CharacterFileManager::importFromDirectory(const std::string& directory, bool
 
 int CharacterFileManager::exportToDirectory(const std::string& directory) {
     if (!characterManager_) {
-        logger_->log("No character manager set for export", "characterfile", "manager", LogLevel::ERROR);
+        logger_->log("No character manager std::set for export", "characterfile", "manager", LogLevel::ERROR);
         return 0;
     }
     
@@ -661,7 +661,7 @@ bool CharacterFileManager::syncWithManager(const std::string& directory) {
     // Import new/updated characters
     int imported = importFromDirectory(directory, false);
     
-    // Export any characters that don't have files
+    // Export std::any characters that don't have files
     int exported = exportToDirectory(directory);
     
     logger_->log("Sync complete: " + std::to_string(imported) + " imported, " + 
@@ -682,7 +682,7 @@ bool CharacterFileManager::watchDirectory(const std::string& directory, bool aut
                 " (auto-import: " + (autoImport ? "enabled" : "disabled") + ")", 
                 "characterfile", "manager", LogLevel::INFO);
     
-    // In a real implementation, would set up filesystem watching
+    // In a real implementation, would std::set up filesystem watching
     // For now, just log that we're "watching"
     
     return true;
@@ -757,10 +757,10 @@ std::vector<std::string> CharacterFileManager::findCharacterFiles(const std::str
     
     try {
         for (const auto& entry : std::filesystem::directory_iterator(directory)) {
-            if (entry.is_regular_file() && loader_->isCharacterFile(entry.path().string())) {
-                files.push_back(entry.path().string());
+            if (entry.is_regular_file() && loader_->isCharacterFile(entry.path().std::string())) {
+                files.push_back(entry.path().std::string());
             } else if (entry.is_directory() && recursive) {
-                auto subFiles = findCharacterFiles(entry.path().string(), recursive);
+                auto subFiles = findCharacterFiles(entry.path().std::string(), recursive);
                 files.insert(files.end(), subFiles.begin(), subFiles.end());
             }
         }
@@ -866,7 +866,7 @@ std::optional<JsonValue> CharacterFileTemplate::loadTemplate(const std::string& 
 bool CharacterFileTemplate::saveTemplate(const JsonValue& templateJson, const std::string& filename) {
     CharacterFileLoader loader;
     
-    // Convert template to JSON string
+    // Convert template to JSON std::string
     std::ostringstream oss;
     oss << "{\n";
     for (auto it = templateJson.begin(); it != templateJson.end(); ++it) {
@@ -925,7 +925,7 @@ std::string createFilename(const std::string& characterName) {
 
 std::string extractNameFromFilename(const std::string& filename) {
     std::filesystem::path path(filename);
-    std::string stem = path.stem().stem().string(); // Remove .character.json
+    std::string stem = path.stem().stem().std::string(); // Remove .character.json
     return stem;
 }
 

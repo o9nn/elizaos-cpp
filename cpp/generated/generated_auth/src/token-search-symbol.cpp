@@ -1,7 +1,7 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/plugin-birdeye/src/actions/token-search-symbol.h"
 
-string SYMBOL_SEARCH_MODE = std::string("strict");
-any tokenSearchSymbolAction = as<std::shared_ptr<Action>>(object{
+std::string SYMBOL_SEARCH_MODE = std::string("strict");
+std::any tokenSearchSymbolAction = as<std::shared_ptr<Action>>(object{
     object::pair{std::string("name"), std::string("TOKEN_SEARCH_SYMBOL")}, 
     object::pair{std::string("similes"), array<string>{ std::string("SEARCH_TOKEN_SYMBOL"), std::string("FIND_TOKEN_SYMBOL"), std::string("LOOKUP_TOKEN_SYMBOL"), std::string("CHECK_TOKEN_SYMBOL"), std::string("GET_TOKEN_BY_SYMBOL"), std::string("SYMBOL_SEARCH"), std::string("SYMBOL_LOOKUP"), std::string("SYMBOL_CHECK"), std::string("TOKEN_SYMBOL_INFO"), std::string("TOKEN_SYMBOL_DETAILS"), std::string("TOKEN_SYMBOL_LOOKUP"), std::string("TOKEN_SYMBOL_SEARCH"), std::string("TOKEN_SYMBOL_CHECK"), std::string("TOKEN_SYMBOL_QUERY"), std::string("TOKEN_SYMBOL_FIND"), std::string("GET_TOKEN_INFO"), std::string("TOKEN_INFO"), std::string("TOKEN_REPORT"), std::string("TOKEN_ANALYSIS"), std::string("TOKEN_OVERVIEW"), std::string("TOKEN_SUMMARY"), std::string("TOKEN_INSIGHT"), std::string("TOKEN_DATA"), std::string("TOKEN_STATS"), std::string("TOKEN_METRICS"), std::string("TOKEN_PROFILE"), std::string("TOKEN_REVIEW"), std::string("TOKEN_CHECK"), std::string("TOKEN_LOOKUP"), std::string("TOKEN_FIND"), std::string("TOKEN_DISCOVER"), std::string("TOKEN_EXPLORE") }}, 
     object::pair{std::string("description"), std::string("Search for detailed token information including security and trade data by symbol")}, 
@@ -12,7 +12,7 @@ any tokenSearchSymbolAction = as<std::shared_ptr<Action>>(object{
             shared provider = std::make_shared<BirdeyeProvider>(runtime);
             shared symbols = extractSymbols(message->content->text, SYMBOL_SEARCH_MODE);
             elizaLogger->info(std::string("Searching Birdeye provider for ") + symbols->get_length() + std::string(" symbols"));
-            auto results = std::async([=]() { Promise->all(symbols->map([=](auto symbol) mutable
+            auto results = std::async([=]() { Promise->all(symbols->std::map([=](auto symbol) mutable
             {
                 return provider->fetchSearchTokenMarketData(object{
                     object::pair{std::string("keyword"), symbol}, 
@@ -23,7 +23,7 @@ any tokenSearchSymbolAction = as<std::shared_ptr<Action>>(object{
                 });
             }
             )); });
-            auto validResults = as<array<array<std::shared_ptr<TokenResult>>>>(results->map([=](auto r, auto i) mutable
+            auto validResults = as<array<array<std::shared_ptr<TokenResult>>>>(results->std::map([=](auto r, auto i) mutable
             {
                 return r->data->items->filter([=](auto item) mutable
                 {
@@ -45,7 +45,7 @@ any tokenSearchSymbolAction = as<std::shared_ptr<Action>>(object{
             }
             auto completeResults = std::string("I performed a search for the token symbols you requested and found the following results (for more details search by contract address):\
 \
-") + validResults->map([=](auto result, auto i) mutable
+") + validResults->std::map([=](auto result, auto i) mutable
             {
                 return string_empty + formatTokenSummary(const_(symbols)[i], i, result) + string_empty;
             }
@@ -56,7 +56,7 @@ any tokenSearchSymbolAction = as<std::shared_ptr<Action>>(object{
             });
             return true;
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             console->error(std::string("Error in searchTokens handler:"), error["message"]);
             callback(object{
@@ -128,9 +128,9 @@ any tokenSearchSymbolAction = as<std::shared_ptr<Action>>(object{
         }}
     } } })}
 });
-std::function<string(string, double, array<std::shared_ptr<TokenResult>>)> formatTokenSummary = [=](auto symbol, auto _index, auto tokens) mutable
+std::function<std::string(std::string, double, array<std::shared_ptr<TokenResult>>)> formatTokenSummary = [=](auto symbol, auto _index, auto tokens) mutable
 {
-    return tokens->map([=](auto token, auto i) mutable
+    return tokens->std::map([=](auto token, auto i) mutable
     {
         auto output = string_empty;
         if (i == 0) {
@@ -138,7 +138,7 @@ std::function<string(string, double, array<std::shared_ptr<TokenResult>>)> forma
 \
 ");
         }
-        output += std::string("Search Result #") + (tokens->get_length() > 0) ? any(i + 1) : any(string_empty) + std::string(":\
+        output += std::string("Search Result #") + (tokens->get_length() > 0) ? std::any(i + 1) : std::any(string_empty) + std::string(":\
 ");
         output += std::string("🔖 Symbol: $") + token->symbol->toUpperCase() + std::string("\
 ");
@@ -150,10 +150,10 @@ std::function<string(string, double, array<std::shared_ptr<TokenResult>>)> forma
 ");
         output += std::string("💸 Volume (24h USD): ") + formatValue(token->volume_24h_usd) + std::string("\
 ");
-        output += (token->market_cap) ? any(std::string("💰 Market Cap: ") + formatValue(token->market_cap) + std::string("\
-")) : any(string_empty);
-        output += (token->fdv) ? any(std::string("🌊 FDV: ") + formatValue(token->fdv) + std::string("\
-")) : any(string_empty);
+        output += (token->market_cap) ? std::any(std::string("💰 Market Cap: ") + formatValue(token->market_cap) + std::string("\
+")) : std::any(string_empty);
+        output += (token->fdv) ? std::any(std::string("🌊 FDV: ") + formatValue(token->fdv) + std::string("\
+")) : std::any(string_empty);
         return output;
     }
     )->join(std::string("\

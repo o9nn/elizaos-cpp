@@ -9,7 +9,7 @@ std::shared_ptr<Promise<CoinMarketCapConfig>> validateCoinMarketCapConfig(std::s
         };
         return coinmarketcapEnvSchema->parse(config);
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         if (is<z->ZodError>(error)) {
             auto errorMessages = error["errors"]["map"]([=](auto err) mutable
@@ -18,16 +18,16 @@ std::shared_ptr<Promise<CoinMarketCapConfig>> validateCoinMarketCapConfig(std::s
             }
             )["join"](std::string("\
 "));
-            throw any(std::make_shared<Error>(std::string("CoinMarketCap configuration validation failed:\
+            throw std::any(std::make_shared<Error>(std::string("CoinMarketCap configuration validation failed:\
 ") + errorMessages + string_empty));
         }
-        throw any(error);
+        throw std::any(error);
     }
 };
 
 
-any coinmarketcapEnvSchema = z->object(object{
-    object::pair{std::string("COINMARKETCAP_API_KEY"), z->string()->min(1, std::string("CoinMarketCap API key is required"))}
+std::any coinmarketcapEnvSchema = z->object(object{
+    object::pair{std::string("COINMARKETCAP_API_KEY"), z->std::string()->min(1, std::string("CoinMarketCap API key is required"))}
 });
 
 void Main(void)

@@ -7,27 +7,27 @@ class VoiceModel;
 class VoiceModel : public object, public std::enable_shared_from_this<VoiceModel> {
 public:
     using std::enable_shared_from_this<VoiceModel>::shared_from_this;
-    string value;
+    std::string value;
 
-    string label;
+    std::string label;
 
-    any provider;
+    std::any provider;
 
-    any gender;
+    std::any gender;
 
-    string language;
+    std::string language;
 
     array<string> features;
 };
 
-extern Record<string, string> providerPluginMap;
+extern Record<std::string, string> providerPluginMap;
 extern array<std::shared_ptr<VoiceModel>> noVoiceModel;
 extern array<std::shared_ptr<VoiceModel>> localVoiceModels;
 extern array<std::shared_ptr<VoiceModel>> elevenLabsVoiceModels;
 extern array<std::shared_ptr<VoiceModel>> openAIVoiceModels;
 extern std::function<array<std::shared_ptr<VoiceModel>>()> getAllVoiceModels;
-extern std::function<array<std::shared_ptr<VoiceModel>>(any)> getVoiceModelsByProvider;
-extern std::function<std::shared_ptr<VoiceModel>(string)> getVoiceModelByValue;
-extern std::function<string(string)> getRequiredPluginForProvider;
+extern std::function<array<std::shared_ptr<VoiceModel>>(std::any)> getVoiceModelsByProvider;
+extern std::function<std::shared_ptr<VoiceModel>(std::string)> getVoiceModelByValue;
+extern std::function<std::string(std::string)> getRequiredPluginForProvider;
 extern std::function<array<string>()> getAllRequiredPlugins;
 #endif

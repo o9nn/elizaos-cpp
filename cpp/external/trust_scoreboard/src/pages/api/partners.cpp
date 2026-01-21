@@ -23,7 +23,7 @@ std::future<void> handler(NextApiRequest req, NextApiResponse res) {
         const auto allPartners = getAllPartners();
 
         // Transform data to match expected PartnerData interface
-        const auto formattedPartners = allPartners.map(partner => ({;
+        const auto formattedPartners = allPartners.std::map(partner => ({;
             address: partner.owner,
             holdings: partner.amount,
             trustScore: partner.trustScore

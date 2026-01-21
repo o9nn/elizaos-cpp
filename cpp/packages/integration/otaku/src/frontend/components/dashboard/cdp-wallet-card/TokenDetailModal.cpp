@@ -21,7 +21,7 @@ void TokenDetailModalContent() {
     // Calculate current price from usdPrice
     const auto currentPrice = token.usdPrice || 0;
 
-    const auto handleCopyAddress = async () => {;
+    const auto handleCopyAddress = std::async () => {;
         if (!token.contractAddress) return;
         navigator.clipboard.writeText(token.contractAddress);
         setIsCopied(true);
@@ -30,7 +30,7 @@ void TokenDetailModalContent() {
 
         // Fetch price history from CoinGecko
         useEffect(() => {
-            const auto fetchPriceHistory = async () => {;
+            const auto fetchPriceHistory = std::async () => {;
                 setIsLoadingChart(true);
                 try {
                     const auto apiKey = import.meta.env.COINGECKO_API_KEY;
@@ -46,7 +46,7 @@ void TokenDetailModalContent() {
                         };
                         const auto days = daysMap[activeTimeFrame];
 
-                        auto url: string;
+                        auto url: std::string;
 
                         if (!token.contractAddress) {
                             // Native tokens - use CoinGecko coin ID
@@ -106,13 +106,13 @@ void TokenDetailModalContent() {
                                                     filteredMarketCaps = marketCaps.slice(-60);
                                                 }
 
-                                                const std::vector<PriceDataPoint> formattedPriceData = filteredPrices.map(([timestamp, price]: [number, number]) => ({;
+                                                const std::vector<PriceDataPoint> formattedPriceData = filteredPrices.std::map(([timestamp, price]: [number, number]) => ({;
                                                     timestamp,
                                                     price,
                                                     date: formatDateForTimeframe(timestamp, activeTimeFrame),
                                                     }));
 
-                                                    const std::vector<MarketCapDataPoint> formattedMarketCapData = filteredMarketCaps.map(([timestamp, marketCap]: [number, number]) => ({;
+                                                    const std::vector<MarketCapDataPoint> formattedMarketCapData = filteredMarketCaps.std::map(([timestamp, marketCap]: [number, number]) => ({;
                                                         timestamp,
                                                         marketCap,
                                                         date: formatDateForTimeframe(timestamp, activeTimeFrame),
@@ -159,7 +159,7 @@ void TokenDetailModalContent() {
                                                             fetchPriceHistory();
                                                             }, [token, activeTimeFrame]);
 
-                                                            const auto formatDateForTimeframe = (timestamp: number, timeframe: TimeFrame): string => {;
+                                                            const auto formatDateForTimeframe = (timestamp: number, timeframe: TimeFrame): std::string => {;
                                                                 const auto date = new Date(timestamp);
                                                                 const auto month = std::to_string(date.getMonth() + 1).padStart(2, "0");
                                                                 const auto day = std::to_string(date.getDate()).padStart(2, "0");
@@ -188,8 +188,8 @@ void TokenDetailModalContent() {
                                                                 }
                                                                 };
 
-                                                                // Base formatting function used by graph values (Y-axis, tooltips)
-                                                                const auto formatValue = (value: number, includeSymbol: boolean = false): string => {;
+                                                                // Base formatting std::function used by graph values (Y-axis, tooltips)
+                                                                const auto formatValue = (value: number, includeSymbol: boolean = false): std::string => {;
                                                                     const auto prefix = includeSymbol ? "$" : "";
 
                                                                     if (value == 0) return '';
@@ -202,8 +202,8 @@ void TokenDetailModalContent() {
                                                                     return prefix + std::to_string(value.toFixed(8));
                                                                     };
 
-                                                                    // Header formatting function - only abbreviates for values >= 1M
-                                                                    const auto formatHeaderValue = (value: number, includeSymbol: boolean = false): string => {;
+                                                                    // Header formatting std::function - only abbreviates for values >= 1M
+                                                                    const auto formatHeaderValue = (value: number, includeSymbol: boolean = false): std::string => {;
                                                                         const auto prefix = includeSymbol ? "$" : "";
 
                                                                         if (value == 0) return '';
@@ -216,9 +216,9 @@ void TokenDetailModalContent() {
                                                                         return prefix + std::to_string(value.toFixed(8));
                                                                         };
 
-                                                                        const auto formatPrice = (price: number): string => formatHeaderValue(price, false);
-                                                                        const auto formatYAxisValue = (value: number): string => formatValue(value, true);
-                                                                        const auto formatMarketCap = (value: number): string => formatHeaderValue(value, true);
+                                                                        const auto formatPrice = (price: number): std::string => formatHeaderValue(price, false);
+                                                                        const auto formatYAxisValue = (value: number): std::string => formatValue(value, true);
+                                                                        const auto formatMarketCap = (value: number): std::string => formatHeaderValue(value, true);
 
                                                                         const auto getEvenlySpacedTimeTicks = (data: PriceDataPoint[] | MarketCapDataPoint[], count: number): number[] => {;
                                                                             if (data.length == 0) return [];

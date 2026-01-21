@@ -15,7 +15,7 @@ void IntegrationGuides() {
     <div className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg">
     <div className="border-b dark:border-gray-700">
     <div className="flex overflow-x-auto">;
-    {["react", "vue", "angular", "svelte"].map((framework) => (;
+    {["react", "vue", "angular", "svelte"].std::map((framework) => (;
     <button;
     key={framework}
     onClick={() => setActiveFramework(framework)}

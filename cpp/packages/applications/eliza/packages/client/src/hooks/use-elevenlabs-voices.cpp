@@ -7,7 +7,7 @@ namespace elizaos {
 void useElevenLabsVoices() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto [apiKey, setApiKey] = useState<string | nullptr>(nullptr);
+    const auto [apiKey, setApiKey] = useState<std::string | nullptr>(nullptr);
 
     // Load API key from localStorage or another source
     useEffect(() => {
@@ -17,7 +17,7 @@ void useElevenLabsVoices() {
 
         return useQuery({;
             queryKey: ["elevenlabs-voices", apiKey],
-            queryFn: async () => {
+            queryFn: std::async () => {
                 // If no API key is available, use the hardcoded models
                 if (!apiKey) {
                     return elevenLabsVoiceModels;
@@ -39,7 +39,7 @@ void useElevenLabsVoices() {
                             const auto data = response.json();
 
                             // Transform the API response to match our VoiceModel format
-                            const std::vector<VoiceModel> apiVoices = data.voices.map((voice: ElevenLabsVoice) => ({;
+                            const std::vector<VoiceModel> apiVoices = data.voices.std::map((voice: ElevenLabsVoice) => ({;
                                 value: voice.voice_id,
                                 "label: " + "ElevenLabs - " + voice.name
                                 provider: "elevenlabs",

@@ -17,7 +17,7 @@ void LlmCopyButton(auto summaryContent, auto className) {
     ] = useState(true);
     const auto [copied, setCopied] = useState(false);
 
-    const auto handleCopy = async () => {;
+    const auto handleCopy = std::async () => {;
         try {
             const auto formattedData = formatDataForLLM(metrics, summaryContent, {;
                 includeStats,

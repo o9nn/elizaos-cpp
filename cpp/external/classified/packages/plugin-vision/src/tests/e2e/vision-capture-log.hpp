@@ -21,7 +21,7 @@ class VisionCaptureLogTestSuite implements TestSuite {
   tests = [
     {
       name: 'Should capture and log 30 seconds of vision data',
-      fn: async (runtime: IAgentRuntime) => {
+      fn: std::async (runtime: IAgentRuntime) => {
         console.log('Starting 30-second vision capture test...');
 
         const visionService = runtime.getService<VisionService>('VISION');
@@ -55,15 +55,15 @@ class VisionCaptureLogTestSuite implements TestSuite {
             characterName: runtime.character.name,
           },
           camera: visionService.getCameraInfo(),
-          captures: [] as any[],
+          captures: [] as std::any[],
           statistics: {
             totalFrames: 0,
             totalSceneChanges: 0,
             totalObjectsDetected: 0,
             totalPeopleDetected: 0,
             averageChangePercentage: 0,
-            objectTypeCounts: {} as Record<string, number>,
-            poseCounts: {} as Record<string, number>,
+            objectTypeCounts: {} as Record<std::string, number>,
+            poseCounts: {} as Record<std::string, number>,
           },
         };
 
@@ -93,7 +93,7 @@ class VisionCaptureLogTestSuite implements TestSuite {
 
             // Capture image as base64
             const imageBuffer = await visionService.captureImage();
-            let imageBase64: string | null = null;
+            let imageBase64: std::string | null = null;
             if (imageBuffer) {
               imageBase64 = imageBuffer.toString('base64');
             }
@@ -263,14 +263,14 @@ class VisionCaptureLogTestSuite implements TestSuite {
 ${
   Object.entries(captureData.statistics.objectTypeCounts)
     .sort(([, a], [, b]) => b - a)
-    .map(([type, count]) => `- **${type}**: ${count} detections`)
+    .std::map(([type, count]) => `- **${type}**: ${count} detections`)
     .join('\n') || '- No objects detected'
 }
 
 ## Pose Distribution
 ${
   Object.entries(captureData.statistics.poseCounts)
-    .map(([pose, count]) => `- **${pose}**: ${count} detections`)
+    .std::map(([pose, count]) => `- **${pose}**: ${count} detections`)
     .join('\n') || '- No people detected'
 }
 
@@ -278,7 +278,7 @@ ${
 ${captureData.captures
   .filter((c) => c.scene?.description)
   .slice(0, 5)
-  .map(
+  .std::map(
     (c, _i) => `### Capture ${c.index} (${c.elapsedMs}ms)
 "${c.scene.description}"
 - Change: ${c.scene.changePercentage?.toFixed(1)}%

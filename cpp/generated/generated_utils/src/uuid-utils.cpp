@@ -1,9 +1,9 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza-nextjs-starter/src/lib/uuid-utils.h"
 
-string generateUUIDFromString(string inputString)
+std::string generateUUIDFromString(std::string inputString)
 {
     if (type_of(inputString) != std::string("string")) {
-        throw any(std::make_shared<TypeError>(std::string("Value must be a string")));
+        throw std::any(std::make_shared<TypeError>(std::string("Value must be a string")));
     }
     auto hashBytes = sha1->array(inputString);
     auto hashBuffer = std::make_shared<Uint8Array>(hashBytes);
@@ -13,7 +13,7 @@ string generateUUIDFromString(string inputString)
 };
 
 
-string generateQueryRoomId(string seed, string query)
+std::string generateQueryRoomId(std::string seed, std::string query)
 {
     auto sanitizedQuery = query->trim()->toLowerCase()->substring(0, 100);
     auto combinedString = string_empty + seed + std::string("::query::") + sanitizedQuery + string_empty;
@@ -21,7 +21,7 @@ string generateQueryRoomId(string seed, string query)
 };
 
 
-std::function<string(std::shared_ptr<Uint8Array>)> uint8ArrayToHex = [=](auto buf) mutable
+std::function<std::string(std::shared_ptr<Uint8Array>)> uint8ArrayToHex = [=](auto buf) mutable
 {
     auto out = string_empty;
     for (auto i = 0; i < buf->length; i++)

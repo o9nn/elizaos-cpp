@@ -52,7 +52,7 @@ struct SecurityStatus {
     std::string title;
     std::string value;
     std::string status;
-    std::string variant;
+    std::string std::variant;
 };
 
 struct Notification {

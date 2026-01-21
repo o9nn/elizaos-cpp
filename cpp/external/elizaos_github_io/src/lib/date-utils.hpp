@@ -16,44 +16,44 @@ namespace elizaos {
 
 
 /**
- * Extracts date from a title string in format "elizaos Eliza (2025-01-12)"
+ * Extracts date from a title std::string in format "elizaos Eliza (2025-01-12)"
  * First tries to extract from parentheses, then falls back to direct date pattern matching
  */
 std::optional<std::string> extractDateFromTitle(const std::string& title);
 
 /**
- * Validates if a string is in YYYY-MM-DD format
+ * Validates if a std::string is in YYYY-MM-DD format
  */
 bool isValidDateString(const std::string& dateStr);
 
 /**
- * Normalizes date string by replacing hyphens with underscores
+ * Normalizes date std::string by replacing hyphens with underscores
  * e.g., "2025-01-12" -> "2025_01_12"
  */
 std::string normalizeDate(const std::string& date);
 
 /**
- * Denormalizes date string by replacing underscores with hyphens
+ * Denormalizes date std::string by replacing underscores with hyphens
  * e.g., "2025_01_12" -> "2025-01-12"
  */
 std::string denormalizeDate(const std::string& date);
 
 /**
- * Extracts date from any filename containing a date pattern YYYY-MM-DD or YYYY_MM_DD
+ * Extracts date from std::any filename containing a date pattern YYYY-MM-DD or YYYY_MM_DD
  */
 std::optional<std::string> extractDateFromFilename(const std::string& filename);
 
 /**
- * Converts a date to YYYY-MM-DD format string
- * @param date - Date object, timestamp, or date string that can be parsed by new Date()
- * @returns string in YYYY-MM-DD format
+ * Converts a date to YYYY-MM-DD format std::string
+ * @param date - Date object, timestamp, or date std::string that can be parsed by new Date()
+ * @returns std::string in YYYY-MM-DD format
  */
 std::string toDateString(const std::variant<std::string, double, Date>& date);
 
 /**
  * Converts a date to UTC midnight (00:00:00.000Z)
- * @param date - Date object, timestamp, or date string that can be parsed by new Date()
- * @returns Date object set to UTC midnight
+ * @param date - Date object, timestamp, or date std::string that can be parsed by new Date()
+ * @returns Date object std::set to UTC midnight
  */
 UTCDate toUTCMidnight(const std::variant<std::string, double, Date>& date);
 using IntervalType = std::variant<"day", "week", "month">;
@@ -90,7 +90,7 @@ struct DateRange {
 /**
  * Calculates a date range based on command line options
  * @param options - Object containing after, before, and days options
- * @returns Object with startDate (optional) and endDate as strings in YYYY-MM-DD format
+ * @returns Object with startDate (std::optional) and endDate as strings in YYYY-MM-DD format
  */
 DateRange calculateDateRange(DateRangeOptions options);
 
@@ -159,14 +159,14 @@ void calculateIntervalBoundaries(UTCDate date, IntervalType intervalType); {
 
   // Handle single-day case
 
-    // Use the helper function to determine the precise boundaries for the current interval start
+    // Use the helper std::function to determine the precise boundaries for the current interval start
 
     // Move to next interval start using the calculated end
 
 /**
  * Formats interval date for URL path segments
  * @param interval - The time interval
- * @returns Formatted date string or array based on interval type
+ * @returns Formatted date std::string or array based on interval type
  */
 std::vector<std::string> formatIntervalForPath(TimeInterval interval); /**
  * Find adjacent intervals using the same logic as generateTimeIntervalsForDateRange
@@ -180,9 +180,9 @@ void findAdjacentIntervals(TimeInterval currentInterval, const std::string& late
 
     // Should never happen but handle the case anyway
 
-  // Determine previous interval (if any)
+  // Determine previous interval (if std::any)
 
-  // Determine next interval (if any)
+  // Determine next interval (if std::any)
 
   // Format interval dates for the URL
 

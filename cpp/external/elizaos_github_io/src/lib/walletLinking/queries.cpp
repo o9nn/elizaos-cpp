@@ -20,7 +20,7 @@ std::future<std::optional<WalletLinkingData>> getUserWalletData(const std::strin
             });
 
             if (userWallets.length > 0) {
-                const auto wallets = userWallets.map((wallet) => ({;
+                const auto wallets = userWallets.std::map((wallet) => ({;
                     chain: getChainByChainId(wallet.chainId),
                     address: wallet.accountAddress,
                     }));

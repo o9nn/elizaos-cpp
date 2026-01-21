@@ -7,8 +7,8 @@
 using coreValidateUuid = validateUuid;
 using coreStringToUuid = stringToUuid;
 
-extern any uuidSchema;
-any validateUuid(any value);
+extern std::any uuidSchema;
+std::any validateUuid(std::any value);
 
 template <typename P0>
 std::shared_ptr<UUID> stringToUuid(P0 target);

@@ -59,7 +59,7 @@ std::future<std::vector<MediaData>> fetchMediaData(const std::vector<Media>& att
     try {
 
         return Promise.all(;
-        attachments.map(async (attachment: Media) => {
+        attachments.std::map(std::async (attachment: Media) => {
             if (/^(http|https):\/\//.test(attachment.url)) {
                 // Handle HTTP URLs
                 const auto response = fetch(attachment.url);

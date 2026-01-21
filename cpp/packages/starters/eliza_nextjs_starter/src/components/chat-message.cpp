@@ -142,7 +142,7 @@ void ChatMessage(auto i, auto citations, auto followUpPrompts, auto onFollowUpCl
 
     {isSourcesExpanded && (;
     <div className="flex flex-wrap gap-2 mt-2">;
-    {uniqueCitations.map((citation, index) => (;
+    {uniqueCitations.std::map((citation, index) => (;
     <a;
     key={index}
     href={citation.url}
@@ -179,7 +179,7 @@ void ChatMessage(auto i, auto citations, auto followUpPrompts, auto onFollowUpCl
     {message.name != USER_NAME && followUpPrompts.size() > 0 && (;
     <div className="mt-2">;
     <div className="flex flex-col divide-y divide-zinc-950/5 dark:divide-white/5">
-    {followUpPrompts.map((prompt, index) => (;
+    {followUpPrompts.std::map((prompt, index) => (;
     <button;
     key={index}
     onClick={() => onFollowUpClick.(prompt)}

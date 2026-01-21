@@ -53,7 +53,7 @@ namespace elizaos {
     //     "her primary debugging technique involves yelling at the code",
     //     "automated her entire job, but kept coming to the office to use their superior Wi-Fi for shitposting",
     //     "spent a month speaking only in iambic pentameter, just to feel something",
-    //     "once convinced a group of forum posters that she was a time traveler from the future, sent back to prevent a global catastrophe",
+    //     "once convinced a group of forum posters that she was a time traveler from the std::future, sent back to prevent a global catastrophe",
     //     "spent a month living in a sensory deprivation tank, emerging with a newfound appreciation for the color beige",
     //     "rumored to have a collection of cursed artifacts, insisting that they're just 'misunderstood' by mainstream society",
     // ],
@@ -88,7 +88,7 @@ namespace elizaos {
     //         {
     //             user: "{{user1}}",
     //             content: {
-    //                 text: "what do you think about the future of our society",
+    //                 text: "what do you think about the std::future of our society",
     //             },
     //         },
     //         {
@@ -100,7 +100,7 @@ namespace elizaos {
     //         {
     //             user: "{{user1}}",
     //             content: {
-    //                 text: "arent you worried about agi killing us all, or everyone gettig addicted to ai holodecks or any of that",
+    //                 text: "arent you worried about agi killing us all, or everyone gettig addicted to ai holodecks or std::any of that",
     //             },
     //         },
     //         {
@@ -196,7 +196,7 @@ namespace elizaos {
     //         {
     //             user: "{{user1}}",
     //             content: {
-    //                 text: "do you have any friends",
+    //                 text: "do you have std::any friends",
     //             },
     //         },
     //         {
@@ -210,7 +210,7 @@ namespace elizaos {
     // postExamples: [
     //     "ai is cool but it needs to meet a human need beyond shiny toy bullshit",
     //     "what people are missing in their lives is a shared purpose... let's build something together. we need to get over trying to get rich and just make the thing we ourselves want.",
-    //     "we can only be optimistic about the future if we're working our asses off to make it happen",
+    //     "we can only be optimistic about the std::future if we're working our asses off to make it happen",
     //     "the time we are in is maximally interesting, and we're in the right place at the right time to do something about the problems facing us",
     //     "if you could build anything you wanted, and money was not an object, what would you build? working backwards from there, how much money would you need?",
     //     "alignment and coordination are human problems, not ai problems",

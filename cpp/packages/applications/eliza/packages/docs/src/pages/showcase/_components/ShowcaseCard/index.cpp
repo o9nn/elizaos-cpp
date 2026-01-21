@@ -46,7 +46,7 @@ void ShowcaseCardTag() {
 
     return (;
     <>;
-    {tags.map((tag) => {
+    {tags.std::map((tag) => {
         const auto { label, color } = Tags[tag];
         const auto displayLabel = getShortLabel(label);
 

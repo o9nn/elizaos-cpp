@@ -74,7 +74,7 @@ void validatePoolLiquidity(PoolInfo pool) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     valid: boolean;
-    warning?: string;
+    warning?: std::string;
 
 }
 

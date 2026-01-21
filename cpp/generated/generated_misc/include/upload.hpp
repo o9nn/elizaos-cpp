@@ -11,29 +11,29 @@ using multer = _default;
 #include "./api/shared/file-utils.js.h"
 #include "./api/shared/constants.js.h"
 
-string generateSecureFilename(string originalName);
+std::string generateSecureFilename(std::string originalName);
 
 template <typename P1>
-string ensureUploadDir(string id, P1 type);
+std::string ensureUploadDir(std::string id, P1 type);
 
-extern any storage;
-extern std::function<any()> agentAudioUpload;
-extern std::function<any()> agentMediaUpload;
-extern std::function<any()> channelUpload;
-extern std::function<any()> genericUpload;
-extern std::function<any()> upload;
+extern std::any storage;
+extern std::function<std::any()> agentAudioUpload;
+extern std::function<std::any()> agentMediaUpload;
+extern std::function<std::any()> channelUpload;
+extern std::function<std::any()> genericUpload;
+extern std::function<std::any()> upload;
 boolean validateAudioFile(std::shared_ptr<Express::Multer::File> file);
 
 boolean validateMediaFile(std::shared_ptr<Express::Multer::File> file);
 
 template <typename P2>
-std::shared_ptr<Promise<object>> processUploadedFile(std::shared_ptr<Express::Multer::File> file, string targetId, P2 type);
+std::shared_ptr<Promise<object>> processUploadedFile(std::shared_ptr<Express::Multer::File> file, std::string targetId, P2 type);
 
 template <typename P1>
-string ensureUploadDir(string id, P1 type)
+std::string ensureUploadDir(std::string id, P1 type)
 {
     if (!validateUuid(id)) {
-        throw any(std::make_shared<Error>(std::string("Invalid ") + type->slice(0, -1) + std::string(" ID format")));
+        throw std::any(std::make_shared<Error>(std::string("Invalid ") + type->slice(0, -1) + std::string(" ID format")));
     }
     auto uploadDir = createSecureUploadDir(id, type);
     if (!fs->existsSync(uploadDir)) {
@@ -47,7 +47,7 @@ string ensureUploadDir(string id, P1 type)
 
 
 template <typename P2>
-std::shared_ptr<Promise<object>> processUploadedFile(std::shared_ptr<Express::Multer::File> file, string targetId, P2 type)
+std::shared_ptr<Promise<object>> processUploadedFile(std::shared_ptr<Express::Multer::File> file, std::string targetId, P2 type)
 {
     try
     {
@@ -63,10 +63,10 @@ std::shared_ptr<Promise<object>> processUploadedFile(std::shared_ptr<Express::Mu
             object::pair{std::string("url"), std::string("url")}
         };
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("[UPLOAD] Error processing uploaded file:"), error);
-        throw any(error);
+        throw std::any(error);
     }
 };
 

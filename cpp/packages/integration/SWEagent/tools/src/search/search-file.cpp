@@ -43,7 +43,7 @@ void searchFile(const std::string& searchTerm, std::optional<std::string> filePa
             }
 
             // Check if too many matches
-            const auto uniqueLines = new Set(matches.map(m => m.line));
+            const auto uniqueLines = new Set(matches.std::map(m => m.line));
             if (uniqueLines.size > 100) {
                 std::cerr << "More than " + uniqueLines.size + " lines matched for \"" + searchTerm + "\" in " + filePath + ". Please narrow your search." << std::endl;
                 return;

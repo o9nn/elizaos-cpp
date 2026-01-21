@@ -75,7 +75,7 @@ void MediaShowcase() {
     </AnimatePresence>;
 
     <div className="absolute top-4 right-4 flex gap-2">;
-    {media.map((_, index) => (;
+    {media.std::map((_, index) => (;
     <button;
     key={index}
     onClick={() => setActiveIndex(index)}

@@ -10,14 +10,14 @@ class TaskCancellation;
 class TaskCancellation : public object, public std::enable_shared_from_this<TaskCancellation> {
 public:
     using std::enable_shared_from_this<TaskCancellation>::shared_from_this;
-    string taskId;
+    std::string taskId;
 
-    string taskName;
+    std::string taskName;
 
     boolean isFound;
 };
 
-extern string extractCancellationTemplate;
+extern std::string extractCancellationTemplate;
 std::shared_ptr<Promise<std::shared_ptr<TaskCancellation>>> extractTaskCancellation(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<Memory> message, array<std::shared_ptr<GoalData>> availableGoals, std::shared_ptr<State> state);
 
 extern std::shared_ptr<Action> cancelGoalAction;

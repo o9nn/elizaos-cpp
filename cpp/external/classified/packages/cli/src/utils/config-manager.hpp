@@ -30,7 +30,7 @@ struct AgentConfig {
 /**
  * Retrieves the file path to the agent's configuration file.
  *
- * @returns A promise that resolves to the absolute path of the configuration file.
+ * @returns A std::promise that resolves to the absolute path of the configuration file.
  */
 std::future<std::string> getConfigFilePath();
 

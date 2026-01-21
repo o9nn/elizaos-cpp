@@ -201,7 +201,7 @@ void CommChannel::processMessages() {
             
             lock.unlock();
             
-            // Call message handler if set
+            // Call message handler if std::set
             if (messageHandler_) {
                 try {
                     messageHandler_(message);
@@ -218,7 +218,7 @@ void CommChannel::processMessages() {
 }
 
 MessageValidationResult CommChannel::validateMessage(const Message& message) const {
-    // Use channel-specific validator if set
+    // Use channel-specific validator if std::set
     if (messageValidator_) {
         // For channel validation, we check against all participants
         // In practice, this might be called with specific agent context
@@ -334,7 +334,7 @@ void AgentComms::broadcastMessage(const Message& message, bool validate) {
         }
     }
     
-    for (const auto& pair : channels_) {
+    for (const auto& std::pair : channels_) {
         pair.second->sendMessage(message, false); // Already validated
     }
 }
@@ -419,7 +419,7 @@ std::vector<ChannelId> AgentComms::getActiveChannels() const {
     std::lock_guard<std::mutex> lock(channelsMutex_);
     
     std::vector<ChannelId> activeChannels;
-    for (const auto& pair : channels_) {
+    for (const auto& std::pair : channels_) {
         if (pair.second->isActive()) {
             activeChannels.push_back(pair.first);
         }
@@ -433,7 +433,7 @@ void AgentComms::setGlobalMessageHandler(MessageHandler handler) {
     globalHandler_ = handler;
     
     // Update all existing channels
-    for (const auto& pair : channels_) {
+    for (const auto& std::pair : channels_) {
         pair.second->setMessageHandler(handler);
     }
 }
@@ -443,7 +443,7 @@ void AgentComms::setGlobalMessageValidator(MessageValidator validator) {
     globalValidator_ = validator;
     
     // Update all existing channels
-    for (const auto& pair : channels_) {
+    for (const auto& std::pair : channels_) {
         pair.second->setMessageValidator(validator);
     }
 }
@@ -461,7 +461,7 @@ void AgentComms::start() {
     started_ = true;
     
     // Start all existing channels
-    for (const auto& pair : channels_) {
+    for (const auto& std::pair : channels_) {
         pair.second->start();
     }
 }
@@ -475,7 +475,7 @@ void AgentComms::stop() {
     started_ = false;
     
     // Stop all channels
-    for (const auto& pair : channels_) {
+    for (const auto& std::pair : channels_) {
         pair.second->stop();
     }
 }
@@ -483,7 +483,7 @@ void AgentComms::stop() {
 MessageValidationResult AgentComms::validateMessage(const Message& message, const AgentId& target_agent_id) const {
     AgentId agent_to_check = target_agent_id.empty() ? agent_id_ : target_agent_id;
     
-    // Use global validator if set
+    // Use global validator if std::set
     if (globalValidator_) {
         return globalValidator_(message, agent_to_check);
     }
@@ -519,7 +519,7 @@ TCPConnector::~TCPConnector() {
 
 bool TCPConnector::connect(const std::string& connectionString) {
     // Basic implementation - in a full implementation this would
-    // parse the connection string and establish a TCP connection
+    // parse the connection std::string and establish a TCP connection
     (void)connectionString; // Suppress unused parameter warning
     connected_ = true;
     return true;

@@ -9,10 +9,10 @@ std::string decodeBase64(const std::string& encodedString) {
     try {
 
         try {
-            // First decode base64 to binary string
+            // First decode base64 to binary std::string
             const auto binaryString = atob(encodedString);
 
-            // Convert binary string to Uint8Array
+            // Convert binary std::string to Uint8Array
             const auto bytes = new Uint8Array(binaryString.size());
             for (int i = 0; i < binaryString.length; i++) {
                 bytes[i] = binaryString.charCodeAt(i);

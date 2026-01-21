@@ -68,7 +68,7 @@ void AdminTokensList() {
 
                     // Mutation for toggling hidden status for a specific token
                     const auto toggleHiddenMutation = useMutation({;
-                        mutationFn: async (tokenAddress: string) => {
+                        mutationFn: std::async (tokenAddress: std::string) => {
                             const auto token = tokensPagination.items.find(;
                             [&](t) { return t.mint == tokenAddress,; }
                             );
@@ -99,7 +99,7 @@ void AdminTokensList() {
 
                                             // --- NEW: Mutation for deleting a token ---
                                             const auto deleteTokenMutation = useMutation({;
-                                                mutationFn: async (tokenAddress: string) => {
+                                                mutationFn: std::async (tokenAddress: std::string) => {
                                                     return "fetcher(" + "/api/admin/tokens/" + tokenAddress;
                                                     },
                                                     onSuccess: (_, tokenAddress) => {
@@ -203,7 +203,7 @@ void AdminTokensList() {
                                                 </tr>;
                                                 </TableHeader>;
                                                 <TableBody>;
-                                                {tokensPagination.items.map((token: IToken) => (
+                                                {tokensPagination.items.std::map((token: IToken) => (
                                                 <TableRow;
                                             key={token.mint}
                                             className="border-b border-autofun-background-primary";
@@ -416,7 +416,7 @@ void AdminTokenDetails() {
 
             // State for the new image upload
             const auto [selectedImageFile, setSelectedImageFile] = useState<File | nullptr>(nullptr);
-            const auto [selectedImageBase64, setSelectedImageBase64] = useState<string | nullptr>(;
+            const auto [selectedImageBase64, setSelectedImageBase64] = useState<std::string | nullptr>(;
             nullptr,
             );
             const auto fileInputRef = useRef<HTMLInputElement>(nullptr); // Ref for file input;
@@ -426,13 +426,13 @@ void AdminTokenDetails() {
             const auto [originalMetadataContent, setOriginalMetadataContent] =;
             useState<string>("");
             const auto [isLoadingMetadata, setIsLoadingMetadata] = useState<boolean>(false);
-            const auto [metadataError, setMetadataError] = useState<string | nullptr>(nullptr);
+            const auto [metadataError, setMetadataError] = useState<std::string | nullptr>(nullptr);
             const auto [isMetadataJsonValid, setIsMetadataJsonValid] = useState<boolean>(true);
 
-            // Fetch token data using the getToken function
+            // Fetch token data using the getToken std::function
             const auto tokenQuery = useQuery<AdminToken>({;
                 queryKey: ["token", address],
-                queryFn: async () => {
+                queryFn: std::async () => {
                     if (!address) throw new Error("No address provided");
                     try {
                         // Cast the result to AdminToken with featured and verified properties
@@ -457,7 +457,7 @@ void AdminTokenDetails() {
                             setEditDescription(tokenData.description || "");
                         }
 
-                        // Update original details ONLY IF they haven't been set yet OR the fetched data differs significantly
+                        // Update original details ONLY IF they haven't been std::set yet OR the fetched data differs significantly
                         // This helps prevent stale `originalDetails` if a save happened between refetches
                         if (
                         !originalDetails.name || // First load;
@@ -492,7 +492,7 @@ void AdminTokenDetails() {
 
                                 // --- Effect to fetch metadata content --- (Separate useEffect for clarity)
                                 useEffect(() => {
-                                    const auto fetchMetadata = async () => {;
+                                    const auto fetchMetadata = std::async () => {;
                                         if (
                                         tokenQuery.data &&;
                                         tokenQuery.data.url &&;
@@ -585,7 +585,7 @@ void AdminTokenDetails() {
 
                                                                             // Mutation for updating token social links
                                                                             const auto updateSocialLinksMutation = useMutation({;
-                                                                                mutationFn: async (links: SocialLinks) => {
+                                                                                mutationFn: std::async (links: SocialLinks) => {
                                                                                     return fetcher(;
                                                                                     "/api/admin/tokens/" + address + "/social"
                                                                                     "POST",
@@ -605,7 +605,7 @@ void AdminTokenDetails() {
 
                                                                                             // Mutation for toggling featured status
                                                                                             const auto toggleFeaturedMutation = useMutation({;
-                                                                                                mutationFn: async () => {
+                                                                                                mutationFn: std::async () => {
                                                                                                     return "fetcher(" + "/api/admin/tokens/" + address + "/featured";
                                                                                                         featured: tokenQuery.data ? !tokenQuery.data.featured : false,
                                                                                                         });
@@ -625,7 +625,7 @@ void AdminTokenDetails() {
 
                                                                                                                 // Mutation for toggling verified status
                                                                                                                 const auto toggleVerifiedMutation = useMutation({;
-                                                                                                                    mutationFn: async () => {
+                                                                                                                    mutationFn: std::async () => {
                                                                                                                         return "fetcher(" + "/api/admin/tokens/" + address + "/verified";
                                                                                                                             verified: tokenQuery.data ? !tokenQuery.data.verified : false,
                                                                                                                             });
@@ -645,7 +645,7 @@ void AdminTokenDetails() {
 
                                                                                                                                     // Mutation for toggling hidden status
                                                                                                                                     const auto toggleHiddenMutation = useMutation({;
-                                                                                                                                        mutationFn: async () => {
+                                                                                                                                        mutationFn: std::async () => {
                                                                                                                                             return "fetcher(" + "/api/admin/tokens/" + address + "/hidden";
                                                                                                                                                 hidden: tokenQuery.data ? !tokenQuery.data.hidden : false,
                                                                                                                                                 });
@@ -665,12 +665,12 @@ void AdminTokenDetails() {
 
                                                                                                                                                         // Mutation for updating token details (name, ticker, image, url)
                                                                                                                                                         const auto updateTokenDetailsMutation = useMutation({;
-                                                                                                                                                            mutationFn: async (details: {
-                                                                                                                                                                name: string;
-                                                                                                                                                                ticker: string;
-                                                                                                                                                                image: string;
-                                                                                                                                                                url: string;
-                                                                                                                                                                description: string;
+                                                                                                                                                            mutationFn: std::async (details: {
+                                                                                                                                                                name: std::string;
+                                                                                                                                                                ticker: std::string;
+                                                                                                                                                                image: std::string;
+                                                                                                                                                                url: std::string;
+                                                                                                                                                                description: std::string;
                                                                                                                                                                 }) => {
                                                                                                                                                                     // Add description to type
                                                                                                                                                                     return fetcher(;
@@ -709,11 +709,11 @@ void AdminTokenDetails() {
 
                                                                                                                                                                                 // --- NEW: Mutation for updating metadata JSON ---
                                                                                                                                                                                 const auto updateMetadataMutation = useMutation({;
-                                                                                                                                                                                    mutationFn: async (newMetadataString: string) => {
-                                                                                                                                                                                        // Use fetch directly to send raw string body
+                                                                                                                                                                                    mutationFn: std::async (newMetadataString: std::string) => {
+                                                                                                                                                                                        // Use fetch directly to send raw std::string body
                                                                                                                                                                                         const auto authToken = localStorage.getItem("authToken");
                                                                                                                                                                                         const std::unordered_map<std::string, std::string> headers = {;
-                                                                                                                                                                                            "Content-Type": "application/json", // Backend expects JSON string
+                                                                                                                                                                                            "Content-Type": "application/json", // Backend expects JSON std::string
                                                                                                                                                                                             Accept: "application/json",
                                                                                                                                                                                             };
                                                                                                                                                                                             if (authToken) {
@@ -725,7 +725,7 @@ void AdminTokenDetails() {
                                                                                                                                                                                             {
                                                                                                                                                                                                 method: "POST",
                                                                                                                                                                                                 headers,
-                                                                                                                                                                                                body: newMetadataString, // Send the raw string
+                                                                                                                                                                                                body: newMetadataString, // Send the raw std::string
                                                                                                                                                                                                 credentials: "include",
                                                                                                                                                                                                 },
                                                                                                                                                                                                 );
@@ -743,7 +743,7 @@ void AdminTokenDetails() {
                                                                                                                                                                                             onSuccess: (data) => {
                                                                                                                                                                                                 toast.success(data.message || "Metadata updated successfully!");
                                                                                                                                                                                                 // Update original content to prevent immediate re-save
-                                                                                                                                                                                                // Re-format potentially un-prettified input string before saving as original
+                                                                                                                                                                                                // Re-format potentially un-prettified input std::string before saving as original
                                                                                                                                                                                                 auto savedContent = metadataContent;
                                                                                                                                                                                                 try {
                                                                                                                                                                                                     savedContent = /* JSON.stringify */ std::string(/* JSON.parse */ metadataContent, nullptr, 2);
@@ -764,7 +764,7 @@ void AdminTokenDetails() {
 
                                                                                                                                                                                                         // --- NEW: Mutation for uploading token image ---
                                                                                                                                                                                                         const auto uploadImageMutation = useMutation({;
-                                                                                                                                                                                                            mutationFn: async (imageBase64: string) => {
+                                                                                                                                                                                                            mutationFn: std::async (imageBase64: std::string) => {
                                                                                                                                                                                                                 if (!imageBase64) throw new Error("No image data provided");
                                                                                                                                                                                                                 return fetcher(;
                                                                                                                                                                                                                 "/api/admin/tokens/" + address + "/image"
@@ -799,7 +799,7 @@ void AdminTokenDetails() {
                                                                                                                                                                                                                         },
                                                                                                                                                                                                                         });
 
-                                                                                                                                                                                                                        // --- Helper function to handle image selection ---
+                                                                                                                                                                                                                        // --- Helper std::function to handle image selection ---
                                                                                                                                                                                                                         const auto handleImageSelect = [&](event: React.ChangeEvent<HTMLInputElement>) {;
                                                                                                                                                                                                                             const auto file = event.target.files.[0];
                                                                                                                                                                                                                             if (file) {
@@ -866,7 +866,7 @@ void AdminTokenDetails() {
 
                                                                                                                                                                                                                                                 // Add delete token mutation
                                                                                                                                                                                                                                                 const auto deleteTokenMutation = useMutation({;
-                                                                                                                                                                                                                                                    mutationFn: async () => {
+                                                                                                                                                                                                                                                    mutationFn: std::async () => {
                                                                                                                                                                                                                                                         return "fetcher(" + "/api/admin/tokens/" + address;
                                                                                                                                                                                                                                                         },
                                                                                                                                                                                                                                                         onSuccess: () => {

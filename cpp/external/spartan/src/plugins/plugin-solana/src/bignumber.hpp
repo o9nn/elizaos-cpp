@@ -19,9 +19,9 @@ namespace elizaos {
 
 // Re-BigNumber constructor
 
-// Helper function to create new BigNumber instances
+// Helper std::function to create new BigNumber instances
 /**
- * Convert a string, number, or BigNumber to a BigNumber object.
+ * Convert a std::string, number, or BigNumber to a BigNumber object.
  *
  * @param value - The value to convert to a BigNumber.
  * @returns A BigNumber object representing the input value.

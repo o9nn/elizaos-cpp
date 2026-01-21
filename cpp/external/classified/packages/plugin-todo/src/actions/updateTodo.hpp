@@ -61,7 +61,7 @@ std::future<TodoData> applyTaskUpdate(TodoService dataService, TodoData task, Ta
  * The UPDATE_TODO action allows users to modify an existing task.
  */
 
-    // Check if *any* active (non-completed) TODO exists
+    // Check if *std::any* active (non-completed) TODO exists
 
       // Get all active todos for this room
 

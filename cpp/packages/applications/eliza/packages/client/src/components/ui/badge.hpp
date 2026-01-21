@@ -18,7 +18,7 @@ namespace elizaos {
 /// <reference types="cypress" />
 /// <reference path="../../../cypress/support/types.d.ts" />
 
-    // Test the badgeVariants function directly
+    // Test the badgeVariants std::function directly
 
 
 } // namespace elizaos

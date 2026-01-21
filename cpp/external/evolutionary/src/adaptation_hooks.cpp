@@ -129,7 +129,7 @@ public:
     
     void onAdaptationUpdate(const EvolutionaryOptimizer::Statistics& stats,
                            EvolutionaryOptimizer::Config& config) override {
-        // Use historical patterns to inform future searches
+        // Use historical patterns to inform std::future searches
         if (discoveredPatterns_.size() > 10) {
             // Bias towards previously successful patterns
             config.eliteRatio = std::min(0.3, config.eliteRatio + 0.05);

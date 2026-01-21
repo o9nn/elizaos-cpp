@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/client/cypress/support/component.h"
 
-any mountWithProviders(std::shared_ptr<React::ReactNode> component, object options)
+std::any mountWithProviders(std::shared_ptr<React::ReactNode> component, object options)
 {
     auto queryClient = createTestQueryClient();
     auto wrapped = React->createElement(TooltipProvider, object{
@@ -20,7 +20,7 @@ any mountWithProviders(std::shared_ptr<React::ReactNode> component, object optio
 };
 
 
-any mountWithRouter(std::shared_ptr<React::ReactNode> component, object options)
+std::any mountWithRouter(std::shared_ptr<React::ReactNode> component, object options)
 {
     auto queryClient = createTestQueryClient();
     auto wrapped = React->createElement(TooltipProvider, object{
@@ -40,7 +40,7 @@ any mountWithRouter(std::shared_ptr<React::ReactNode> component, object options)
 };
 
 
-any mountRadix(std::shared_ptr<React::ReactNode> component, object options)
+std::any mountRadix(std::shared_ptr<React::ReactNode> component, object options)
 {
     auto queryClient = createTestQueryClient();
     auto wrapped = React->createElement(TooltipProvider, object{
@@ -62,7 +62,7 @@ any mountRadix(std::shared_ptr<React::ReactNode> component, object options)
 };
 
 
-std::function<any()> createTestQueryClient = [=]() mutable
+std::function<std::any()> createTestQueryClient = [=]() mutable
 {
     return std::make_shared<QueryClient>(object{
         object::pair{std::string("defaultOptions"), object{

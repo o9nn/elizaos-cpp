@@ -16,9 +16,9 @@ namespace elizaos {
 
 // Plugin definitions with metadata and sample prompts
 
-// Helper function to extract chart data from a message
+// Helper std::function to extract chart data from a message
 
-// Helper function to find all chart data in an action group
+// Helper std::function to find all chart data in an action group
 
 struct Message {
     std::string id;
@@ -38,9 +38,9 @@ struct ChatInterfaceProps {
     Agent agent;
     std::string userId;
     std::string serverId;
-    string | null channelId;
+    std::string | null channelId;
     std::optional<bool> isNewChatMode;
-    std::optional<(channelId: string, channelName: string) => void> onChannelCreated;
+    std::optional<(channelId: std::string, channelName: std::string) => void> onChannelCreated;
     std::optional<() => void // Callback when agent completes an action> onActionCompleted;
 };
 

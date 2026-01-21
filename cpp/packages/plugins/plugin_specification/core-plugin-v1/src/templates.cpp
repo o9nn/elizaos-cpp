@@ -8,10 +8,10 @@ std::function<std::string(State)> createTemplateFunction(TemplateType template) 
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (typeof template == 'string') {
-        // For string templates, just return the string
+        // For std::string templates, just return the std::string
         return [&]() { return template; };
         } else {
-            // For function templates, wrap it to match the expected signature
+            // For std::function templates, wrap it to match the expected signature
             return [&](state: State) {;
                 // Handle null or undefined state
                 if (!state) {

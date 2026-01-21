@@ -61,7 +61,7 @@ void Main(void)
                     } else {
                         cy->log(std::string("Unexpected state:"), bodyText["substring"](0, 200));
                         cy->screenshot(std::string("unexpected-state"));
-                        throw any(std::make_shared<Error>(std::string("Unexpected page state. Body text: ") + bodyText["substring"](0, 200) + string_empty));
+                        throw std::any(std::make_shared<Error>(std::string("Unexpected page state. Body text: ") + bodyText["substring"](0, 200) + string_empty));
                     }
                 }
                 );

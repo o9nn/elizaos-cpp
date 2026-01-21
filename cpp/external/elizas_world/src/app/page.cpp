@@ -7,21 +7,21 @@ namespace elizaos {
 DexScreenerResponse deduplicateMarketData(DexScreenerResponse data) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    // Create a map to store the highest volume pair for each token
+    // Create a std::map to store the highest volume std::pair for each token
     const auto pairMap = new Map();
 
-    data.pairs.forEach(pair => {
+    data.pairs.forEach(std::pair => {
         const auto tokenAddress = pair.baseToken.address;
         const auto currentPair = pairMap.get(tokenAddress);
 
-        // If we don't have this token yet, or if this pair has higher volume, use this pair
+        // If we don't have this token yet, or if this std::pair has higher volume, use this std::pair
         if (!currentPair ||
         (pair.volume.h24 || 0) > (currentPair.volume.h24 || 0)) {
-            pairMap.set(tokenAddress, pair);
+            pairMap.std::set(tokenAddress, std::pair);
         }
         });
 
-        // Convert map back to array
+        // Convert std::map back to array
         return {
             pairs: Array.from(pairMap.values())
             };
@@ -51,7 +51,7 @@ std::future<void> Home() {
                 }
 
                 const auto marketData = fetchDexScreenerData(;
-                tokenBalances.map(t => t.mint);
+                tokenBalances.std::map(t => t.mint);
                 );
 
                 if (!marketData.pairs.length) {
@@ -140,7 +140,7 @@ std::future<void> Home() {
             <p className="text-sm text-gray-600">;
             The Observatory pulls directly from the Solana blockchain:
             <br />• Onchain data refreshes every 5 minutes (but may be delayed);
-            <br />• Network connections map automatically form;
+            <br />• Network connections std::map automatically form;
             <br />• Social activity streams in happens;
             </p>;
             </div>;

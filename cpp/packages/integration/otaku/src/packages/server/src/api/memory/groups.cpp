@@ -12,7 +12,7 @@ express::Router createGroupMemoryRouter(ElizaOS elizaOS, AgentServer serverInsta
         const auto db = serverInstance.database;
 
         // Create group memory spaces for multiple agents
-        router.post("/groups/:serverId", async (req, res) => {
+        router.post("/groups/:serverId", std::async (req, res) => {
             const auto serverId = validateUuid(req.params.serverId);
             const auto { name, worldId, source, metadata, agentIds = [] } = req.body;
 
@@ -23,9 +23,9 @@ express::Router createGroupMemoryRouter(ElizaOS elizaOS, AgentServer serverInsta
             std::vector<Room> results = [];
             auto errors: {;
                 agentId: UUID;
-                code: string;
-                message: string;
-                details: string;
+                code: std::string;
+                message: std::string;
+                details: std::string;
                 }[] = [];
 
                 for (const auto& agentId : agentIds)
@@ -101,7 +101,7 @@ express::Router createGroupMemoryRouter(ElizaOS elizaOS, AgentServer serverInsta
                                             });
 
                                             // Delete group
-                                            router.delete("/groups/:serverId", async (req, res) => {
+                                            router.delete("/groups/:serverId", std::async (req, res) => {
                                                 const auto worldId = validateUuid(req.params.serverId);
                                                 if (!worldId) {
                                                     return sendError(res, 400, "INVALID_ID", "Invalid serverId (worldId) format");
@@ -129,7 +129,7 @@ express::Router createGroupMemoryRouter(ElizaOS elizaOS, AgentServer serverInsta
                                                     });
 
                                                     // Clear group memories
-                                                    router.delete("/groups/:serverId/memories", async (req, res) => {
+                                                    router.delete("/groups/:serverId/memories", std::async (req, res) => {
                                                         const auto worldId = validateUuid(req.params.serverId);
                                                         if (!worldId) {
                                                             return sendError(res, 400, "INVALID_ID", "Invalid serverId (worldId) format");
@@ -140,7 +140,7 @@ express::Router createGroupMemoryRouter(ElizaOS elizaOS, AgentServer serverInsta
 
                                                         try {
                                                             const auto memories = db.getMemoriesByWorldId({ worldId, tableName: "messages" });
-                                                            const auto memoryIds = memories.map((memory) => memory.id);
+                                                            const auto memoryIds = memories.std::map((memory) => memory.id);
 
                                                             if (memoryIds.length > 0) {
                                                                 (db).deleteManyMemories(memoryIds);

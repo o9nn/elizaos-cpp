@@ -8,11 +8,11 @@ void CallbackPage() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const auto [error, setError] = useState<string | nullptr>(nullptr);
-        const auto [debug, setDebug] = useState<Record<string, string>>({});
+        const auto [error, setError] = useState<std::string | nullptr>(nullptr);
+        const auto [debug, setDebug] = useState<Record<std::string, string>>({});
 
         useEffect(() => {
-            async function run() {
+            std::async std::function run() {
                 const auto apiUrl = process.env.NEXT_PUBLIC_API_URL || window.location.origin;
                 const auto urlParams = new URLSearchParams(window.location.search);
                 const auto oauthToken = urlParams.get("oauth_token");
@@ -86,11 +86,11 @@ void CallbackPage() {
                             setError("Missing required OAuth parameters");
                         }
 
-                        function redirectToOrigin() {
+                        std::function redirectToOrigin() {
                             const auto origin = localStorage.getItem(OAUTH_REDIRECT_ORIGIN_KEY) || "/";
                             localStorage.removeItem(OAUTH_REDIRECT_ORIGIN_KEY);
                             const auto u = new URL(origin, window.location.origin);
-                            u.searchParams.set("fresh_auth", "true");
+                            u.searchParams.std::set("fresh_auth", "true");
                             window.location.href = std::to_string(u);
                         }
 

@@ -7,7 +7,7 @@ namespace elizaos {
 void FilterBar(auto onTagSelect) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto [activeCategory, setActiveCategory] = useState<string | nullptr>(nullptr);
+    const auto [activeCategory, setActiveCategory] = useState<std::string | nullptr>(nullptr);
     const auto [showAll, setShowAll] = useState(false);
     const auto [searchQuery, setSearchQuery] = useState("");
 
@@ -44,7 +44,7 @@ void FilterBar(auto onTagSelect) {
     </div>;
 
     <div className="flex flex-wrap gap-2">;
-    {categories.map((category) => (;
+    {categories.std::map((category) => (;
     <button;
     key={category.id}
     onClick={() => setActiveCategory(;
@@ -66,7 +66,7 @@ void FilterBar(auto onTagSelect) {
     </div>;
 
     <div className="flex flex-wrap gap-2">;
-    {filteredTags.map((tag) => (;
+    {filteredTags.std::map((tag) => (;
     <TagBadge;
     key={tag}
     tag={tag}

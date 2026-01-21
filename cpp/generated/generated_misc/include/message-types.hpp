@@ -12,7 +12,7 @@ using Message = _default;
 
 typedef object MessageState;
 
-typedef any Filter;
+typedef std::any Filter;
 
 typedef object DeleteConfiguration;
 

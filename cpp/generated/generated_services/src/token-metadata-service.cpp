@@ -5,12 +5,12 @@ void main()
     console->log(std::string("🚀 Token Metadata Service"));
     console->log(std::string("========================"));
     static switch_type __switch311_807 = {
-        { any(std::string("start")), 1 },
-        { any(std::string("refresh")), 2 },
-        { any(std::string("health")), 3 },
-        { any(std::string("queue")), 4 },
-        { any(std::string("clear")), 5 },
-        { any(std::string("help")), 6 }
+        { std::any(std::string("start")), 1 },
+        { std::any(std::string("refresh")), 2 },
+        { std::any(std::string("health")), 3 },
+        { std::any(std::string("queue")), 4 },
+        { std::any(std::string("clear")), 5 },
+        { std::any(std::string("help")), 6 }
     };
     switch (__switch311_807[command])
     {
@@ -80,7 +80,7 @@ void startContinuousService()
         }
         ); });
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("❌ Error starting continuous service:"), error);
         process->exit(1);
@@ -119,7 +119,7 @@ void refreshStaleMetadata()
         }
         console->log(std::string("✅ Metadata refresh completed"));
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("❌ Error during metadata refresh:"), error);
         process->exit(1);
@@ -140,7 +140,7 @@ void healthCheck()
             process->exit(1);
         }
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("❌ Health check failed:"), error);
         process->exit(1);
@@ -210,7 +210,7 @@ DATABASE_PATH           - Path to SQLite database (default: ./data/portfolio.db)
 
 
 array<string> args = process->argv->slice(2);
-string command = OR((const_(args)[0]), (std::string("start")));
+std::string command = OR((const_(args)[0]), (std::string("start")));
 
 void Main(void)
 {
@@ -220,9 +220,9 @@ void Main(void)
         process->exit(1);
     }
     );
-    process->on(std::string("unhandledRejection"), [=](auto reason, auto promise) mutable
+    process->on(std::string("unhandledRejection"), [=](auto reason, auto std::promise) mutable
     {
-        console->error(std::string("❌ Unhandled Rejection at:"), promise, std::string("reason:"), reason);
+        console->error(std::string("❌ Unhandled Rejection at:"), std::promise, std::string("reason:"), reason);
         process->exit(1);
     }
     );

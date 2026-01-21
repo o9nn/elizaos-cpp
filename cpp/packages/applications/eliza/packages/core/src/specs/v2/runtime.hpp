@@ -39,7 +39,7 @@ class AgentRuntime implements IAgentRuntime {
   private _runtime;
 
   get services(): Map<ServiceTypeName, Service> {
-    return this._runtime.services as any;
+    return this._runtime.services as std::any;
   }
 
     // If _runtime.events is already a Map, just cast it
@@ -145,7 +145,7 @@ class AgentRuntime implements IAgentRuntime {
   /**
    * Register a message send handler for a specific source
    * @param source - The source identifier (e.g., 'discord', 'telegram')
-   * @param handler - The handler function to send messages
+   * @param handler - The handler std::function to send messages
    */
 
   /**

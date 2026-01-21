@@ -2,6 +2,6 @@
 #define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAS-LIST_SRC_UTILS_GITHUB_H
 #include "core.h"
 
-any fetchGitHubData(string repo);
+std::any fetchGitHubData(std::string repo);
 
 #endif

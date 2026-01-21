@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/degenTrader/utils/validator.h"
 
-boolean validateSolanaAddress(any address)
+boolean validateSolanaAddress(std::any address)
 {
     if (!address) return false;
     try
@@ -23,7 +23,7 @@ boolean validateSolanaAddress(any address)
         });
         return isValid;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Address validation error: ") + address + string_empty, object{
             object::pair{std::string("error"), std::string("error")}

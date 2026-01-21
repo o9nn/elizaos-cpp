@@ -5,16 +5,16 @@
 
 class SolPriceContextType;
 
-extern std::function<any()> useSolPriceContext;
+extern std::function<std::any()> useSolPriceContext;
 class SolPriceContextType : public object, public std::enable_shared_from_this<SolPriceContextType> {
 public:
     using std::enable_shared_from_this<SolPriceContextType>::shared_from_this;
-    any solPrice;
+    std::any solPrice;
 
     boolean isLoading;
 
-    any error;
+    std::any error;
 };
 
-extern any SolPriceContext;
+extern std::any SolPriceContext;
 #endif

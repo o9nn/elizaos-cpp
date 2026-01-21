@@ -48,7 +48,7 @@ void Main(void)
                     object::pair{std::string("cwd"), testRepoPath}
                 });
             }
-            catch (const any& e)
+            catch (const std::any& e)
             {
                 console->warn(std::string("Git setup failed:"), e);
             }
@@ -75,7 +75,7 @@ void Main(void)
                 expect(config->outputDir)->toBe(tmpDir);
             }
             );
-            it(std::string("should handle optional fields"), [=]() mutable
+            it(std::string("should handle std::optional fields"), [=]() mutable
             {
                 auto config = object{
                     object::pair{std::string("trajPath"), testTrajPath}, 

@@ -1,8 +1,8 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-bootstrap/providers/facts.h"
 
-any formatFacts(array<std::shared_ptr<Memory>> facts)
+std::any formatFacts(array<std::shared_ptr<Memory>> facts)
 {
-    return facts->reverse()->map([=](auto fact) mutable
+    return facts->reverse()->std::map([=](auto fact) mutable
     {
         return fact->content->text;
     }
@@ -23,7 +23,7 @@ std::shared_ptr<Provider> factsProvider = object{
             object::pair{std::string("count"), 10}, 
             object::pair{std::string("unique"), false}
         }); });
-        auto last5Messages = recentMessages->slice(-5)->map([=](auto message) mutable
+        auto last5Messages = recentMessages->slice(-5)->std::map([=](auto message) mutable
         {
             return message["content"]->text;
         }
@@ -32,7 +32,7 @@ std::shared_ptr<Provider> factsProvider = object{
         auto embedding = std::async([=]() { runtime->useModel(ModelType->TEXT_EMBEDDING, object{
             object::pair{std::string("text"), last5Messages}
         }); });
-        auto [relevantFacts, recentFactsData] = std::async([=]() { Promise->all(std::tuple<any, any>{ runtime->searchMemories(object{
+        auto [relevantFacts, recentFactsData] = std::async([=]() { Promise->all(std::tuple<std::any, any>{ runtime->searchMemories(object{
             object::pair{std::string("tableName"), std::string("facts")}, 
             object::pair{std::string("embedding"), std::string("embedding")}, 
             object::pair{std::string("roomId"), message->roomId}, 

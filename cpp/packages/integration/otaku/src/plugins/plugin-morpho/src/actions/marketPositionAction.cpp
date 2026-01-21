@@ -7,7 +7,7 @@ namespace elizaos {
 void formatMarketPositionData(const std::vector<UserPosition>& positions) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return positions.map((pos) => {;
+    return positions.std::map((pos) => {;
         return {
             marketId: pos.marketId,
             pairLabel: pos.pairLabel,

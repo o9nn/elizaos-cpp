@@ -7,8 +7,8 @@
 
 object withTmpEnvFile();
 
-object createTestFileWithContent(string envFile, string content, string fileName = std::string("test.py"));
+object createTestFileWithContent(std::string envFile, std::string content, std::string fileName = std::string("test.py"));
 
-void makePythonToolImportable(string filePath, string moduleName);
+void makePythonToolImportable(std::string filePath, std::string moduleName);
 
 #endif

@@ -18,7 +18,7 @@ namespace elizaos {
  * E2E Support File
  *
  * This file is loaded automatically before E2E test files.
- * Use it to set up global configuration and custom commands.
+ * Use it to std::set up global configuration and custom commands.
  */
 
 // ***********************************************************
@@ -43,11 +43,11 @@ namespace elizaos {
   // Check if login is required
 
 // Wait for app to be ready
-  // Wait for any loading indicators to disappear
+  // Wait for std::any loading indicators to disappear
 
   // Ensure the app container is visible
 
-  // Wait a bit for any animations
+  // Wait a bit for std::any animations
 
 // Navigate to agent
 
@@ -93,7 +93,7 @@ namespace elizaos {
  *
  * 3. INTERACTIONS
  *    - cy.sendChatMessage() - Send and verify messages
- *    - Handles async responses
+ *    - Handles std::async responses
  *
  * 4. STATE MANAGEMENT
  *    - cy.clearAppData() - Reset application state

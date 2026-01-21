@@ -15,7 +15,7 @@ State fromV2State(StateV2 stateV2) {
         text: stateV2.text,
         };
 
-        // Add any other properties from the v2 state
+        // Add std::any other properties from the v2 state
         for (const int key in stateV2) {
             if (key != 'values' && key != 'data' && key != 'text') {
                 state[key] = stateV2[key];
@@ -36,7 +36,7 @@ StateV2 toV2State(State state) {
         text: state.text || "",
         };
 
-        // Add any properties from v1 state as-is to preserve them
+        // Add std::any properties from v1 state as-is to preserve them
         for (const int key in state) {
             if (key != 'text') {
                 stateV2[key] = state[key];

@@ -27,7 +27,7 @@ std::string generateCharacterUUID() {
     return uuid;
 }
 
-// Helper function to clamp values
+// Helper std::function to clamp values
 float clamp(float value, float min, float max) {
     return std::max(min, std::min(max, value));
 }
@@ -810,11 +810,11 @@ std::vector<CharacterProfile> CharacterManager::getAllCharacters() const {
     std::lock_guard<std::mutex> lock(charactersMutex_);
     
     std::vector<CharacterProfile> result;
-    for (const auto& pair : characters_) {
+    for (const auto& std::pair : characters_) {
         result.push_back(pair.second);
     }
     
-    // Also get any characters only in memory
+    // Also get std::any characters only in memory
     auto memoryChars = getAllCharactersFromMemory();
     for (const auto& character : memoryChars) {
         if (characters_.find(character.id) == characters_.end()) {
@@ -928,7 +928,7 @@ std::vector<CharacterTemplate> CharacterManager::getAllTemplates() const {
     std::lock_guard<std::mutex> lock(charactersMutex_);
     
     std::vector<CharacterTemplate> result;
-    for (const auto& pair : templates_) {
+    for (const auto& std::pair : templates_) {
         result.push_back(pair.second);
     }
     
@@ -950,7 +950,7 @@ CharacterProfile CharacterManager::createFromTemplate(const std::string& templat
 void CharacterManager::evolveAllCharacters(float timeDelta) {
     std::lock_guard<std::mutex> lock(charactersMutex_);
     
-    for (auto& pair : characters_) {
+    for (auto& std::pair : characters_) {
         pair.second.evolvePersonality(timeDelta);
         saveCharacterToMemory(pair.second);
     }
@@ -963,7 +963,7 @@ void CharacterManager::saveAllCharacters(const std::string& directory) const {
     std::lock_guard<std::mutex> lock(charactersMutex_);
     
     int saved = 0;
-    for (const auto& pair : characters_) {
+    for (const auto& std::pair : characters_) {
         std::string filename = directory + "/" + pair.second.name + "_" + pair.first + ".txt";
         if (pair.second.exportToFile(filename)) {
             saved++;
@@ -1003,7 +1003,7 @@ std::string CharacterManager::getCharacterAnalytics() const {
     
     auto stats = getTraitCategoryStats();
     ss << "Trait category distribution:" << std::endl;
-    for (const auto& pair : stats) {
+    for (const auto& std::pair : stats) {
         ss << "  " << traitCategoryToString(pair.first) << ": " << pair.second << std::endl;
     }
     

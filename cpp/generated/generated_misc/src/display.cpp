@@ -5,7 +5,7 @@ std::shared_ptr<Promise<void>> listAgents(std::shared_ptr<OptionValues> opts)
     try
     {
         auto agents = std::async([=]() { getAgents(opts); });
-        auto agentData = agents->map([=](auto agent) mutable
+        auto agentData = agents->std::map([=](auto agent) mutable
         {
             return (object{
                 object::pair{std::string("Name"), agent->name}, 
@@ -27,7 +27,7 @@ Available agents:"));
         }
         return std::shared_ptr<Promise<void>>();
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         std::async([=]() { checkServer(opts); });
         handleError(error);

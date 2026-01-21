@@ -11,7 +11,7 @@ std::future<void> validatePythonExample() {
 
     const auto pythonCode = `;
     def process_data(data):
-    # This function needs type annotations;
+    # This std::function needs type annotations;
     with open("data.txt"):
     content = f.read();
     return content;
@@ -32,7 +32,7 @@ std::future<void> validateTypeScriptExample() {
     std::cout << "\n== TypeScript Validation Example ==" << std::endl;
 
     const auto tsCode = `;
-    function processData(data: unknown) {
+    std::function processData(data: unknown) {
         const auto fs = require("fs");
         const auto content = fs.readFileSync("data.txt", "utf-8");
         return content;

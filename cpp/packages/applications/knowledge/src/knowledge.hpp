@@ -20,7 +20,7 @@ enum struct CacheKeyPrefix {
 class DirectoryItem : public object, public std::enable_shared_from_this<DirectoryItem> {
 public:
     using std::enable_shared_from_this<DirectoryItem>::shared_from_this;
-    string directory;
+    std::string directory;
 
     boolean shared;
 };
@@ -28,7 +28,7 @@ public:
 class ChunkRow : public object, public std::enable_shared_from_this<ChunkRow> {
 public:
     using std::enable_shared_from_this<ChunkRow>::shared_from_this;
-    string id;
+    std::string id;
 };
 
 #endif

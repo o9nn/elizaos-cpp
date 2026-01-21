@@ -22,7 +22,7 @@ struct WalletToken {
     std::string balanceFormatted;
     double usdValue;
     double usdPrice;
-    string | null contractAddress;
+    std::string | null contractAddress;
     std::string chain;
     double decimals;
 };

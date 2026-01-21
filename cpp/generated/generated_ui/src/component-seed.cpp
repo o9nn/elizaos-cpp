@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/plugin-sql/src/__tests__/integration/seed/component-seed.h"
 
-any componentTestAgentSettings = as<std::shared_ptr<Agent>>(object{
+std::any componentTestAgentSettings = as<std::shared_ptr<Agent>>(object{
     object::pair{std::string("id"), as<std::shared_ptr<UUID>>(v4())}, 
     object::pair{std::string("name"), std::string("Component Test Agent")}, 
     object::pair{std::string("username"), std::string("component_test_agent")}, 

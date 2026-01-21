@@ -19,7 +19,7 @@ std::optional<JSX::Element> CopyPageButton() {
         const auto isExcludedPath = EXCLUDED_PATHS.some((regex) => regex.test(location.pathname));
 
         useEffect(() => {
-            function handleClickOutside(event: MouseEvent) {
+            std::function handleClickOutside(event: MouseEvent) {
                 if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
                     setIsOpen(false);
                 }
@@ -43,7 +43,7 @@ std::optional<JSX::Element> CopyPageButton() {
                             setIsOpen(!isOpen);
                             };
 
-                            const auto getEditUrl = (): string | nullptr => {;
+                            const auto getEditUrl = (): std::string | nullptr => {;
                                 const auto editLinkElement = document.querySelector("a.theme-edit-this-page");
                                 if (editLinkElement && editLinkElement.getAttribute('href')) {
                                     return editLinkElement.getAttribute("href");
@@ -76,7 +76,7 @@ std::optional<JSX::Element> CopyPageButton() {
                                 return nullptr;
                                 };
 
-                                const auto getRawUrl = (url: string): string | nullptr => {;
+                                const auto getRawUrl = (url: std::string): std::string | nullptr => {;
                                     if (!url) return null;
                                     const auto githubEditRegex = /github\.com\/([^/]+)\/([^/]+)\/(edit|tree)\/([^/]+)\/(.+)/;
                                     const auto match = url.match(githubEditRegex);
@@ -93,7 +93,7 @@ std::optional<JSX::Element> CopyPageButton() {
                                     return url;
                                     };
 
-                                    const auto getContent = async (url: string): Promise<string> => {;
+                                    const auto getContent = std::async (url: std::string): Promise<string> => {;
                                         if (process.env.NODE_ENV == 'development' && !url.startsWith('http')) {
                                             try {
                                                 const auto localUrl = "url.startsWith("/") ? url : " + "/" + url;
@@ -116,7 +116,7 @@ std::optional<JSX::Element> CopyPageButton() {
                                             return response.text();
                                             };
 
-                                            const auto copyPageAsMarkdown = async () => {;
+                                            const auto copyPageAsMarkdown = std::async () => {;
                                                 const auto currentEditUrl = getEditUrl();
                                                 if (!currentEditUrl) {
                                                     std::cerr << "Edit URL not available for copying markdown." << std::endl;
@@ -137,7 +137,7 @@ std::optional<JSX::Element> CopyPageButton() {
                                                         }
                                                         };
 
-                                                        const auto viewAsMarkdown = async () => {;
+                                                        const auto viewAsMarkdown = std::async () => {;
                                                             const auto currentEditUrl = getEditUrl();
                                                             if (!currentEditUrl) {
                                                                 alert("Could not determine the source file to view.");

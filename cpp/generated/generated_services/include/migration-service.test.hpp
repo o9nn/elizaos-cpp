@@ -6,5 +6,5 @@
 #include "@elizaos/core.h"
 
 extern object mockLogger;
-extern any mockRunPluginMigrations;
+extern std::any mockRunPluginMigrations;
 #endif

@@ -20,7 +20,7 @@ void CodeBlock() {
             setElement(node);
             }, []);
 
-            const auto getLanguageExtension = useCallback((lang: string) => {;
+            const auto getLanguageExtension = useCallback((lang: std::string) => {;
                 switch (lang.toLowerCase()) {
                     // case "javascript":
                     // case "js":
@@ -82,7 +82,7 @@ void CodeBlock() {
                                     };
                                     }, [children, element, resolvedTheme, language, getLanguageExtension]);
 
-                                    const auto copyToClipboard = async () => {;
+                                    const auto copyToClipboard = std::async () => {;
                                         try {
                                             navigator.clipboard.writeText(children.trim());
                                             setCopySuccess("Copied!");
@@ -90,7 +90,7 @@ void CodeBlock() {
                                             setTimeout(() => {
                                                 setCopySuccess("");
                                                 }, 500);
-                                                } catch (err: any) {
+                                                } catch (err: std::any) {
                                                     setCopySuccess("Failed to copy.");
                                                     std::cerr << err << std::endl;
                                                 }

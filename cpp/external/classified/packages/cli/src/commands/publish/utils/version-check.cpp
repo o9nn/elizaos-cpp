@@ -53,7 +53,7 @@ std::future<std::string> checkCliVersion() {
 
                 if (update) {
                     std::cout << "Updating CLI..." << std::endl;
-                    // Instead of using npx (which gets blocked), directly call the update function
+                    // Instead of using npx (which gets blocked), directly call the update std::function
                     try {
                         performCliUpdate();
                         // If update is successful, exit

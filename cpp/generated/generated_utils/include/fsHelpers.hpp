@@ -4,10 +4,10 @@
 #include "fs/promises.h"
 #include "path.h"
 
-void ensureDir(string dirPath);
+void ensureDir(std::string dirPath);
 
-void writeToFile(string filePath, string data);
+void writeToFile(std::string filePath, std::string data);
 
-any getRepoFilePath(string outputDir, string repoId, string dataType, string intervalType, string fileName);
+std::any getRepoFilePath(std::string outputDir, std::string repoId, std::string dataType, std::string intervalType, std::string fileName);
 
 #endif

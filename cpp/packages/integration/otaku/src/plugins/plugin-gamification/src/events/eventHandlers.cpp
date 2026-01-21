@@ -16,7 +16,7 @@ std::future<std::optional<UUID>> getUserIdFromMessage(std::optional<UUID> messag
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Helper to resolve the actual user ID from an entity (handles agent-scoped entities)
-    const auto resolveActualUserId = async (id: UUID): Promise<UUID | nullptr> => {;
+    const auto resolveActualUserId = std::async (id: UUID): Promise<UUID | nullptr> => {;
         try {
             const auto entity = runtime.getEntityById(id);
             if (!entity) return null;

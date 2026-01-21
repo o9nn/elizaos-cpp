@@ -9,12 +9,12 @@ void ElizaWrapper() {
     try {
 
         const auto [status, setStatus] = useState<"starting" | "running" | "error">("starting");
-        const auto [error, setError] = useState<string | nullptr>(nullptr);
+        const auto [error, setError] = useState<std::string | nullptr>(nullptr);
         const auto [retryCount, setRetryCount] = useState(0);
         const auto [isServerAccessible, setIsServerAccessible] = useState(false);
 
         // Function to check if server is accessible
-        const auto checkServerAccessibility = async () => {;
+        const auto checkServerAccessibility = std::async () => {;
             try {
                 fetch("http://localhost:3000", {
                     method: "HEAD",
@@ -28,12 +28,12 @@ void ElizaWrapper() {
 
                     // Start the Eliza server
                     useEffect(() => {
-                        const auto startServer = async () => {;
+                        const auto startServer = std::async () => {;
                             try {
                                 setStatus("running");
 
                                 // Start polling to check if the server is accessible
-                                const auto checkInterval = setInterval(async () => {;
+                                const auto checkInterval = setInterval(std::async () => {;
                                     const auto isAccessible = checkServerAccessibility();
                                     if (isAccessible) {
                                         setIsServerAccessible(true);

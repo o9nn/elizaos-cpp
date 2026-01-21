@@ -17,16 +17,16 @@ public:
     std::shared_ptr<IAgentRuntime> runtime;
 
     BuildManager(std::shared_ptr<IAgentRuntime> runtime);
-    virtual void translate(any entityId, std::tuple<double, double, double> position);
-    virtual void rotate(any entityId, std::tuple<double, double, double, double> quaternion);
-    virtual void scale(any entityId, std::tuple<double, double, double> scale);
-    virtual void duplicate(any entityId);
-    virtual void delete(any entityId);
-    virtual void importEntity(string url, any position = undefined, any quaternion = undefined);
-    virtual void addApp(any file, any transform);
-    virtual void addModel(any file, any transform);
-    virtual void entityUpdate(any entity);
-    virtual any getService();
+    virtual void translate(std::any entityId, std::tuple<double, double, double> position);
+    virtual void rotate(std::any entityId, std::tuple<double, double, double, double> quaternion);
+    virtual void scale(std::any entityId, std::tuple<double, double, double> scale);
+    virtual void duplicate(std::any entityId);
+    virtual void delete(std::any entityId);
+    virtual void importEntity(std::string url, std::any position = undefined, std::any quaternion = undefined);
+    virtual void addApp(std::any file, std::any transform);
+    virtual void addModel(std::any file, std::any transform);
+    virtual void entityUpdate(std::any entity);
+    virtual std::any getService();
 };
 
 #endif

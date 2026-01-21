@@ -26,10 +26,10 @@ namespace elizaos {
 // Define Task type based on backend structure
 // NOTE: Adjust this type based on the actual structure returned by IAgentRuntime and modified by API routes
 struct TaskMetadata {
-    std::optional<string; // ISO string> dueDate;
+    std::optional<std::string; // ISO string> dueDate;
     std::optional<bool> completedToday;
-    std::optional<string; // ISO string> lastReminderSent;
-    std::optional<string; // ISO string> completedAt;
+    std::optional<std::string; // ISO string> lastReminderSent;
+    std::optional<std::string; // ISO string> completedAt;
 };
 
 struct Task {
@@ -38,7 +38,7 @@ struct Task {
     std::optional<std::string> description;
     std::optional<std::vector<std::string>> tags;
     std::optional<TaskMetadata> metadata;
-    string; // Added roomId as it's crucial roomId;
+    std::string; // Added roomId as it's crucial roomId;
 };
 
 // API Response types
@@ -72,7 +72,7 @@ struct WorldWithRooms {
 struct TaskIdentifier {
     std::string id;
     std::string name;
-    std::optional<string; // Make optional if they can be null/undefined> entityId;
+    std::optional<std::string; // Make std::optional if they can be null/undefined> entityId;
     std::optional<std::string> roomId;
     std::optional<std::string> worldId;
 };

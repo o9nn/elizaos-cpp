@@ -43,7 +43,7 @@ struct UserSummary {
     double level;
     std::string levelName;
     double pointsNeeded;
-    string | null lastLoginDate;
+    std::string | null lastLoginDate;
     std::optional<double> swapsCompleted;
 };
 
@@ -67,13 +67,13 @@ class GamificationService extends BaseApiClient {
    * @param limit Number of entries to return (default: 50)
    * @param userId Optional user ID to get user's rank
    */
-  async getLeaderboard(
+  std::async getLeaderboard(
     agentId: UUID,
     scope: 'weekly' | 'all_time' = 'weekly',
     limit: number = 50,
     userId?: UUID
   ): Promise<LeaderboardResponse> {
-    const params: Record<string, string> = {
+    const params: Record<std::string, string> = {
       scope,
       limit: limit.toString(),
     };

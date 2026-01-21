@@ -16,20 +16,20 @@ class EmoteManager;
 class EmoteManager : public object, public std::enable_shared_from_this<EmoteManager> {
 public:
     using std::enable_shared_from_this<EmoteManager>::shared_from_this;
-    std::shared_ptr<Map<string, string>> emoteHashMap;
+    std::shared_ptr<Map<std::string, string>> emoteHashMap;
 
-    any currentEmoteTimeout;
+    std::any currentEmoteTimeout;
 
-    any movementCheckInterval = nullptr;
+    std::any movementCheckInterval = nullptr;
 
     std::shared_ptr<IAgentRuntime> runtime;
 
-    EmoteManager(any runtime);
+    EmoteManager(std::any runtime);
     virtual void uploadEmotes();
-    virtual void playEmote(string name);
-    virtual void clearEmote(any player);
+    virtual void playEmote(std::string name);
+    virtual void clearEmote(std::any player);
     virtual void clearTimers();
-    virtual any getService();
+    virtual std::any getService();
 };
 
 #endif

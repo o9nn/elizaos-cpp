@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/tools/src/search/search-dir.h"
 
-void searchDir(string searchTerm, string dir)
+void searchDir(std::string searchTerm, std::string dir)
 {
     if (!fs::existsSync(dir)) {
         console->error(std::string("Directory ") + dir + std::string(" not found"));
@@ -10,7 +10,7 @@ void searchDir(string searchTerm, string dir)
     try
     {
         auto grepCmd = std::string("find "") + absDir + std::string("" -type f ! -path '*/.*' -exec grep -nIH -- "") + searchTerm + std::string("" {} + 2>/dev/null | cut -d: -f1 | sort | uniq -c");
-        string matches;
+        std::string matches;
         try
         {
             matches = execSync(grepCmd, object{
@@ -18,14 +18,14 @@ void searchDir(string searchTerm, string dir)
                 object::pair{std::string("stdio"), array<string>{ std::string("pipe"), std::string("pipe"), std::string("ignore") }}
             });
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             auto execError = as<object>(error);
             if (OR((execError["status"] == 1), (!execError["stdout"]))) {
                 console->log(std::string("No matches found for "") + searchTerm + std::string("" in ") + absDir + string_empty);
                 return;
             }
-            throw any(error);
+            throw std::any(error);
         }
         if (!matches->trim()) {
             console->log(std::string("No matches found for "") + searchTerm + std::string("" in ") + absDir + string_empty);
@@ -65,7 +65,7 @@ void searchDir(string searchTerm, string dir)
         );
         console->log(std::string("End of matches for "") + searchTerm + std::string("" in ") + absDir + string_empty);
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("Error searching directory: ") + error + string_empty);
         process->exit(1);

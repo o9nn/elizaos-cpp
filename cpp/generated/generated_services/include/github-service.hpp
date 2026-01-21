@@ -7,9 +7,9 @@ typedef object Announcement;
 typedef object Donation;
 
 
-extern string GITHUB_GIST_URL;
-extern string ANNOUNCEMENT_ENDPOINT;
-extern string DONATION_ENDPOINT;
+extern std::string GITHUB_GIST_URL;
+extern std::string ANNOUNCEMENT_ENDPOINT;
+extern std::string DONATION_ENDPOINT;
 extern std::function<std::shared_ptr<Promise<std::shared_ptr<Announcement>>>()> fetchAnnouncementData;
 extern std::function<std::shared_ptr<Promise<array<std::shared_ptr<Donation>>>>()> fetchDonationData;
 #endif

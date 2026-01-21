@@ -9,9 +9,9 @@ class ClaudeCodeStressTestSuite;
 class ClaudeCodeStressTestSuite : public TestSuite, public std::enable_shared_from_this<ClaudeCodeStressTestSuite> {
 public:
     using std::enable_shared_from_this<ClaudeCodeStressTestSuite>::shared_from_this;
-    string name = std::string("code-generation-stress-test");
+    std::string name = std::string("code-generation-stress-test");
 
-    string description = std::string("Stress tests for code generation under various conditions");
+    std::string description = std::string("Stress tests for code generation under various conditions");
 
     array<object> tests = array<object>{ object{
         object::pair{std::string("name"), std::string("should handle multiple concurrent code generation requests")}, 
@@ -26,7 +26,7 @@ public:
             }
             shared codeGenService = runtime->getService<std::shared_ptr<CodeGenerationService>>(std::string("code-generation"));
             if (!codeGenService) {
-                throw any(std::make_shared<Error>(std::string("CodeGenerationService not available")));
+                throw std::any(std::make_shared<Error>(std::string("CodeGenerationService not available")));
             }
             auto concurrentRequests = 3;
             auto requests = array<any>();
@@ -39,7 +39,7 @@ public:
                     {
                         auto result = std::async([=]() { codeGenService->generateCode(object{
                             object::pair{std::string("projectName"), std::string("concurrent-test-") + i + string_empty}, 
-                            object::pair{std::string("description"), std::string("Generate a simple function called "test") + i + std::string("" that returns the number ") + i + string_empty}, 
+                            object::pair{std::string("description"), std::string("Generate a simple std::function called "test") + i + std::string("" that returns the number ") + i + string_empty}, 
                             object::pair{std::string("targetType"), std::string("plugin")}, 
                             object::pair{std::string("requirements"), array<string>{ std::string("Function test") + i + std::string(" that returns ") + i + string_empty }}, 
                             object::pair{std::string("apis"), array<any>()}
@@ -52,7 +52,7 @@ public:
                             object::pair{std::string("index"), i}
                         };
                     }
-                    catch (const any& error)
+                    catch (const std::any& error)
                     {
                         auto duration = Date->now() - startTime;
                         return object{
@@ -87,7 +87,7 @@ public:
                 );
             }
             if (successful->get_length() == 0) {
-                throw any(std::make_shared<Error>(std::string("All concurrent requests failed")));
+                throw std::any(std::make_shared<Error>(std::string("All concurrent requests failed")));
             }
             auto& __array2963_3244 = successful;
             for (auto __indx2963_3244 = 0_N; __indx2963_3244 < __array2963_3244->get_length(); __indx2963_3244++)
@@ -95,7 +95,7 @@ public:
                 auto& result = const_(__array2963_3244)[__indx2963_3244];
                 {
                     if (OR((OR((!result["response"]), (!result["response"]["files"]))), (result["response"]["files"]["length"] == 0))) {
-                        throw any(std::make_shared<Error>(std::string("Request ") + result["index"] + std::string(" did not generate any files")));
+                        throw std::any(std::make_shared<Error>(std::string("Request ") + result["index"] + std::string(" did not generate std::any files")));
                     }
                 }
             }
@@ -120,7 +120,7 @@ public:
             }
             auto codeGenService = runtime->getService<std::shared_ptr<CodeGenerationService>>(std::string("code-generation"));
             if (!codeGenService) {
-                throw any(std::make_shared<Error>(std::string("CodeGenerationService not available")));
+                throw std::any(std::make_shared<Error>(std::string("CodeGenerationService not available")));
             }
             try
             {
@@ -149,27 +149,27 @@ public:
                 }); });
                 auto duration = Date->now() - startTime;
                 if (!result->success) {
-                    throw any(std::make_shared<Error>(std::string("Large context generation failed: ") + result->errors->join(std::string(", ")) + string_empty));
+                    throw std::any(std::make_shared<Error>(std::string("Large context generation failed: ") + result->errors->join(std::string(", ")) + string_empty));
                 }
                 if (OR((!result->files), (result->files->length == 0))) {
-                    throw any(std::make_shared<Error>(std::string("No files generated for large context")));
+                    throw std::any(std::make_shared<Error>(std::string("No files generated for large context")));
                 }
-                auto allContent = result->files->map([=](auto f) mutable
+                auto allContent = result->files->std::map([=](auto f) mutable
                 {
                     return f["content"];
                 }
                 )->join(std::string("\
 "))->toLowerCase();
                 if (OR((!allContent->includes(std::string("plugin"))), (!allContent->includes(std::string("action"))))) {
-                    throw any(std::make_shared<Error>(std::string("Generated code does not contain expected plugin structure")));
+                    throw std::any(std::make_shared<Error>(std::string("Generated code does not contain expected plugin structure")));
                 }
                 console->log(std::string("✅ Large context handled successfully in ") + duration + std::string("ms"));
                 console->log(std::string("📏 Requirements: ") + requirements->get_length() + std::string(", APIs: ") + apis->get_length() + std::string(", Files generated: ") + result->files->length + string_empty);
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("❌ Large context test failed:"), error);
-                throw any(error);
+                throw std::any(error);
             }
         }
         }
@@ -186,7 +186,7 @@ public:
             }
             auto codeGenService = runtime->getService<std::shared_ptr<CodeGenerationService>>(std::string("code-generation"));
             if (!codeGenService) {
-                throw any(std::make_shared<Error>(std::string("CodeGenerationService not available")));
+                throw std::any(std::make_shared<Error>(std::string("CodeGenerationService not available")));
             }
             auto requestCount = 5;
             auto results = array<any>();
@@ -211,7 +211,7 @@ public:
                     });
                     console->log(std::string("✅ Request ") + (i + 1) + std::string("/") + requestCount + std::string(" completed in ") + duration + std::string("ms"));
                 }
-                catch (const any& error)
+                catch (const std::any& error)
                 {
                     auto duration = Date->now() - startTime;
                     results->push(object{
@@ -240,7 +240,7 @@ public:
             );
             console->log(std::string("📊 Sequential requests: ") + successful->get_length() + std::string("/") + requestCount + std::string(" successful"));
             if (successful->get_length() == 0) {
-                throw any(std::make_shared<Error>(std::string("All sequential requests failed")));
+                throw std::any(std::make_shared<Error>(std::string("All sequential requests failed")));
             }
             auto& __array8263_8545 = successful;
             for (auto __indx8263_8545 = 0_N; __indx8263_8545 < __array8263_8545->get_length(); __indx8263_8545++)
@@ -248,7 +248,7 @@ public:
                 auto& result = const_(__array8263_8545)[__indx8263_8545];
                 {
                     if (OR((OR((!result["response"]), (!result["response"]["files"]))), (result["response"]["files"]["length"] == 0))) {
-                        throw any(std::make_shared<Error>(std::string("Request ") + result["index"] + std::string(" did not generate any files")));
+                        throw std::any(std::make_shared<Error>(std::string("Request ") + result["index"] + std::string(" did not generate std::any files")));
                     }
                 }
             }
@@ -273,7 +273,7 @@ public:
             }
             auto codeGenService = runtime->getService<std::shared_ptr<CodeGenerationService>>(std::string("code-generation"));
             if (!codeGenService) {
-                throw any(std::make_shared<Error>(std::string("CodeGenerationService not available")));
+                throw std::any(std::make_shared<Error>(std::string("CodeGenerationService not available")));
             }
             try
             {
@@ -288,14 +288,14 @@ public:
                 }); });
                 auto duration = Date->now() - startTime;
                 if (!result->success) {
-                    throw any(std::make_shared<Error>(std::string("Complex project generation failed: ") + result->errors->join(std::string(", ")) + string_empty));
+                    throw std::any(std::make_shared<Error>(std::string("Complex project generation failed: ") + result->errors->join(std::string(", ")) + string_empty));
                 }
                 if (OR((!result->files), (result->files->length == 0))) {
-                    throw any(std::make_shared<Error>(std::string("No files generated for complex project")));
+                    throw std::any(std::make_shared<Error>(std::string("No files generated for complex project")));
                 }
                 console->log(std::string("✅ Complex project generated in ") + duration + std::string("ms"));
                 console->log(std::string("📁 Generated ") + result->files->length + std::string(" files"));
-                auto fileNames = result->files->map([=](auto f) mutable
+                auto fileNames = result->files->std::map([=](auto f) mutable
                 {
                     return f["path"];
                 }
@@ -304,7 +304,7 @@ public:
                 for (auto& file : requiredFiles)
                 {
                     if (!fileNames->includes(file)) {
-                        throw any(std::make_shared<Error>(std::string("Missing required file: ") + file + string_empty));
+                        throw std::any(std::make_shared<Error>(std::string("Missing required file: ") + file + string_empty));
                     }
                 }
                 auto totalLines = result->files->reduce([=](auto sum, auto file) mutable
@@ -322,7 +322,7 @@ public:
                 console->log(std::string("  Total lines: ") + totalLines + string_empty);
                 console->log(std::string("  Average file size: ") + averageFileSize->toFixed(0) + std::string(" chars"));
                 console->log(std::string("  Files generated: ") + result->files->length + string_empty);
-                auto allContent = result->files->map([=](auto f) mutable
+                auto allContent = result->files->std::map([=](auto f) mutable
                 {
                     return f["content"];
                 }
@@ -337,7 +337,7 @@ public:
                     }
                 }
                 if (featuresFound < features->get_length() * 0.7) {
-                    throw any(std::make_shared<Error>(std::string("Only ") + featuresFound + std::string("/") + features->get_length() + std::string(" expected features found in generated code")));
+                    throw std::any(std::make_shared<Error>(std::string("Only ") + featuresFound + std::string("/") + features->get_length() + std::string(" expected features found in generated code")));
                 }
                 console->log(std::string("✅ Advanced features found: ") + featuresFound + std::string("/") + features->get_length() + string_empty);
                 if (result->executionResults) {
@@ -348,10 +348,10 @@ public:
                     console->log(std::string("  Build: ") + (result->executionResults->buildPass) ? std::string("✅") : std::string("❌") + string_empty);
                 }
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("❌ Complex project generation failed:"), error);
-                throw any(error);
+                throw std::any(error);
             }
         }
         }
@@ -367,7 +367,7 @@ public:
             }
             auto codeGenService = runtime->getService<std::shared_ptr<CodeGenerationService>>(std::string("code-generation"));
             if (!codeGenService) {
-                throw any(std::make_shared<Error>(std::string("CodeGenerationService not available")));
+                throw std::any(std::make_shared<Error>(std::string("CodeGenerationService not available")));
             }
             try
             {
@@ -406,7 +406,7 @@ public:
                     console->log(std::string("⚠️ Service state affected by previous error, but handled gracefully"));
                 }
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->log(std::string("🔄 Testing service stability after error..."));
                 try
@@ -424,13 +424,13 @@ public:
                         console->log(std::string("✅ Service remained stable despite error"));
                     }
                 }
-                catch (const any& recoveryError)
+                catch (const std::any& recoveryError)
                 {
                     console->error(std::string("❌ Service failed to recover:"), recoveryError);
-                    throw any(recoveryError);
+                    throw std::any(recoveryError);
                 }
                 if (AND((!(as<std::shared_ptr<Error>>(error))->message->includes(std::string("timeout"))), (!(as<std::shared_ptr<Error>>(error))->message->includes(std::string("rate limit"))))) {
-                    throw any(error);
+                    throw std::any(error);
                 } else {
                     console->log(std::string("✅ Expected error handled correctly"));
                 }
@@ -466,11 +466,11 @@ public:
                 {
                     auto codeGenService = runtime->getService<std::shared_ptr<CodeGenerationService>>(std::string("code-generation"));
                     if (!codeGenService) {
-                        throw any(std::make_shared<Error>(std::string("CodeGenerationService not available")));
+                        throw std::any(std::make_shared<Error>(std::string("CodeGenerationService not available")));
                     }
                     auto result = std::async([=]() { codeGenService->generateCode(object{
                         object::pair{std::string("projectName"), std::string("load-test-") + requestCount + string_empty}, 
-                        object::pair{std::string("description"), std::string("Create a simple function called "loadTest") + requestCount + std::string("" that returns "Load test ") + requestCount + std::string("".")}, 
+                        object::pair{std::string("description"), std::string("Create a simple std::function called "loadTest") + requestCount + std::string("" that returns "Load test ") + requestCount + std::string("".")}, 
                         object::pair{std::string("targetType"), std::string("plugin")}, 
                         object::pair{std::string("requirements"), array<string>{ std::string("Function loadTest") + requestCount + std::string(" returning "Load test ") + requestCount + std::string(""") }}, 
                         object::pair{std::string("apis"), array<any>()}
@@ -483,7 +483,7 @@ public:
                     });
                     console->log(std::string("✅ Load test request ") + requestCount + std::string(" completed in ") + duration + std::string("ms"));
                 }
-                catch (const any& error)
+                catch (const std::any& error)
                 {
                     auto duration = Date->now() - requestStartTime;
                     results->push(object{
@@ -529,12 +529,12 @@ public:
                     return sum + r["duration"];
                 }
                 , 0) / successful->get_length();
-                auto maxDuration = Math->max(const_(successful->map([=](auto r) mutable
+                auto maxDuration = Math->max(const_(successful->std::map([=](auto r) mutable
                 {
                     return r["duration"];
                 }
                 ))[0]);
-                auto minDuration = Math->min(const_(successful->map([=](auto r) mutable
+                auto minDuration = Math->min(const_(successful->std::map([=](auto r) mutable
                 {
                     return r["duration"];
                 }
@@ -544,11 +544,11 @@ public:
                 console->log(std::string("  Min response time: ") + minDuration + std::string("ms"));
             }
             if (successful->get_length() == 0) {
-                throw any(std::make_shared<Error>(std::string("No successful requests during sustained load test")));
+                throw std::any(std::make_shared<Error>(std::string("No successful requests during sustained load test")));
             }
             auto successRate = successful->get_length() / results->get_length();
             if (successRate < 0.5) {
-                throw any(std::make_shared<Error>(std::string("Success rate too low: ") + (successRate * 100)->toFixed(1) + std::string("%")));
+                throw std::any(std::make_shared<Error>(std::string("Success rate too low: ") + (successRate * 100)->toFixed(1) + std::string("%")));
             }
             console->log(std::string("✅ Sustained load test completed successfully"));
         }

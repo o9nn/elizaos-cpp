@@ -8,8 +8,8 @@
 #include "../process-manager.js.h"
 #include "../websocket-client.js.h"
 
-extern std::function<any()> createMockRuntime;
-extern std::function<any(string)> createMemory;
+extern std::function<std::any()> createMockRuntime;
+extern std::function<std::any(std::string)> createMemory;
 extern std::shared_ptr<StagehandService> service;
 extern std::shared_ptr<IAgentRuntime> runtime;
 #endif

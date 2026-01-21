@@ -58,7 +58,7 @@ std::future<void> detokenizeText(IAgentRuntime runtime, ModelTypeName model, con
 std::any getTracer(IAgentRuntime runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    // Tracing is currently disabled - could be implemented in the future
+    // Tracing is currently disabled - could be implemented in the std::future
     return nullptr;
 
 }
@@ -81,7 +81,7 @@ std::future<void> generateGroqText(ReturnType<typeof createGroq> groq, const std
                 return groqResponse;
                 } catch (error: unknown) {
                     try {
-                        return handleRateLimitError(error, async () => {;
+                        return handleRateLimitError(error, std::async () => {;
                             const auto { text: groqRetryResponse } = generateText({;
                                 model: groq.languageModel(model),
                                 prompt: params.prompt,

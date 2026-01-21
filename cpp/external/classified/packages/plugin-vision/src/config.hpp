@@ -48,9 +48,9 @@ using VisionConfigOutput = z.output<typeof VisionConfigSchema>;
 
 class ConfigurationManager {
   private config: VisionConfigOutput;
-  private runtime: any;
+  private runtime: std::any;
 
-  constructor(runtime: any) {
+  constructor(runtime: std::any) {
     this.runtime = runtime;
     this.config = this.loadConfiguration();
   }

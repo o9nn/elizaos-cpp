@@ -21,17 +21,17 @@ namespace elizaos {
  */
 
 /**
- * Render a template string with the given context
+ * Render a template std::string with the given context
  * Supports:
  * - Variable substitution: {{variable}}
  * - Conditional blocks: {% if condition %} ... {% endif %}
  * - For loops: {% for item in items %} ... {% endfor %}
  */
 /**
- * Render a template string with the given context, replacing placeholders with values
- * @param template - The template string with {{variable}} placeholders
+ * Render a template std::string with the given context, replacing placeholders with values
+ * @param template - The template std::string with {{variable}} placeholders
  * @param context - Object containing values to replace in the template
- * @returns The rendered template string
+ * @returns The rendered template std::string
  */
 std::string renderTemplate(const std::string& template, const std::unordered_map<std::string, std::any>& context);
 
@@ -71,12 +71,12 @@ bool evaluateCondition(const std::string& condition, const std::unordered_map<st
 std::any applyFilter(const std::any& value, const std::string& filterStr);
 
 /**
- * Escape special characters in a string for use in templates
+ * Escape special characters in a std::string for use in templates
  */
 std::string escapeTemplate(const std::string& str);
 
 /**
- * Check if a string contains template syntax
+ * Check if a std::string contains template syntax
  */
 bool hasTemplateSyntax(const std::string& str);
 

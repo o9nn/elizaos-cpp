@@ -137,7 +137,7 @@ ContentScanner::ScanResult ContentScanner::scanContent(const std::string& conten
         }
     }
     
-    // Build reason string
+    // Build reason std::string
     if (result.violation && result.reason.empty()) {
         result.reason = "Content policy violation detected";
     }

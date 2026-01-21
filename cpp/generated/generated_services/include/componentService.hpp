@@ -12,11 +12,11 @@ public:
     std::shared_ptr<IAgentRuntime> runtime;
 
     ComponentService(std::shared_ptr<IAgentRuntime> runtime_);
-    virtual std::shared_ptr<Promise<any>> getComponent(std::shared_ptr<UUID> entityId, string componentType);
+    virtual std::shared_ptr<Promise<any>> getComponent(std::shared_ptr<UUID> entityId, std::string componentType);
     virtual std::shared_ptr<Promise<boolean>> createComponent(object params);
     virtual std::shared_ptr<Promise<boolean>> updateComponent(object params);
     virtual std::shared_ptr<Component> normalizeComponent(std::shared_ptr<Component> component);
-    virtual void normalizeBooleans(any obj);
+    virtual void normalizeBooleans(std::any obj);
 };
 
 std::shared_ptr<ComponentService> createComponentService(std::shared_ptr<IAgentRuntime> runtime);

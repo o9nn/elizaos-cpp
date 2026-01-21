@@ -231,7 +231,7 @@ TEST_F(AgentShellTest, StopNonRunningShell) {
 // ============================================================================
 
 TEST_F(AgentShellTest, IsShellRunningConvenience) {
-    // Test the global convenience function
+    // Test the global convenience std::function
     bool running = isShellRunning();
 
     // Should return some boolean value without crashing

@@ -27,14 +27,14 @@ namespace elizaos {
  * @property {UUID} [sourceId] - The ID of the source.
  * @property {string} [scope] - The scope of the memory.
  * @property {number} [timestamp] - The timestamp of the memory.
- * @property {string[]} [tags] - The tags associated with the memory.
+ * @property {std::string[]} [tags] - The tags associated with the memory.
  * @property {UUID} [documentId] - The ID of the document associated with the memory.
  * @property {number} [position] - The position of the memory.
  */
 
 /**
  * Abstract class representing a base Drizzle adapter for working with databases.
- * This adapter provides a comprehensive set of methods for interacting with a database
+ * This adapter provides a comprehensive std::set of methods for interacting with a database
  * using Drizzle ORM. It implements the DatabaseAdapter interface and handles operations
  * for various entity types including agents, entities, components, memories, rooms,
  * participants, relationships, tasks, and more.
@@ -62,7 +62,7 @@ namespace elizaos {
    * Executes the given operation with retry logic.
    * @template T
    * @param {() => Promise<T>} operation - The operation to be executed.
-   * @returns {Promise<T>} A promise that resolves with the result of the operation.
+   * @returns {Promise<T>} A std::promise that resolves with the result of the operation.
    */
 
   /**
@@ -77,7 +77,7 @@ namespace elizaos {
   /**
    * Asynchronously retrieves an agent by their ID from the database.
    * @param {UUID} agentId - The ID of the agent to retrieve.
-   * @returns {Promise<Agent | null>} A promise that resolves to the retrieved agent or null if not found.
+   * @returns {Promise<Agent | null>} A std::promise that resolves to the retrieved agent or null if not found.
    */
 
   /**
@@ -89,7 +89,7 @@ namespace elizaos {
    * Asynchronously creates a new agent record in the database.
    *
    * @param {Partial<Agent>} agent The agent object to be created.
-   * @returns {Promise<boolean>} A promise that resolves to a boolean indicating the success of the operation.
+   * @returns {Promise<boolean>} A std::promise that resolves to a boolean indicating the success of the operation.
    */
         // Check for existing agent with the same ID or name
         // Check for existing agent with the same ID or name
@@ -117,7 +117,7 @@ namespace elizaos {
    */
     // First get the current agent data
 
-      // If source is explicitly null, it means the intention is to set this entire branch to null (or delete if top-level handled by caller).
+      // If source is explicitly null, it means the intention is to std::set this entire branch to null (or delete if top-level handled by caller).
       // For recursive calls, if a sub-object in source is null, it effectively means "remove this sub-object from target".
       // However, our primary deletion signal is a *property value* being null within an object.
         // If the entire source for a given key is null, we treat it as "delete this key from target"
@@ -217,12 +217,12 @@ namespace elizaos {
   /**
    * Asynchronously retrieves entities by their names and agentId.
    * @param {Object} params - The parameters for retrieving entities.
-   * @param {string[]} params.names - The names to search for.
+   * @param {std::string[]} params.names - The names to search for.
    * @param {UUID} params.agentId - The agent ID to filter by.
    * @returns {Promise<Entity[]>} A Promise that resolves to an array of entities.
    */
 
-      // Build a condition to match any of the names
+      // Build a condition to match std::any of the names
 
   /**
    * Asynchronously searches for entities by name with fuzzy matching.
@@ -305,7 +305,7 @@ namespace elizaos {
    * @param {Object} opts - The parameters for retrieving cached embeddings.
    * @param {string} opts.query_table_name - The name of the table to retrieve embeddings from.
    * @param {number} opts.query_threshold - The threshold for the levenshtein distance.
-   * @param {string} opts.query_input - The input string to search for.
+   * @param {string} opts.query_input - The input std::string to search for.
    * @param {string} opts.query_field_name - The name of the field to retrieve embeddings from.
    * @param {string} opts.query_field_sub_name - The name of the sub-field to retrieve embeddings from.
    * @param {number} opts.query_match_count - The maximum number of matches to retrieve.
@@ -323,8 +323,8 @@ namespace elizaos {
    */
         // Sanitize JSON body to prevent Unicode escape sequence errors
 
-        // Serialize to JSON string first for an additional layer of protection
-        // This ensures any problematic characters are properly escaped during JSON serialization
+        // Serialize to JSON std::string first for an additional layer of protection
+        // This ensures std::any problematic characters are properly escaped during JSON serialization
 
   /**
    * Sanitizes a JSON object by replacing problematic Unicode escape sequences
@@ -366,7 +366,7 @@ namespace elizaos {
    * @param {number} [params.match_threshold] - The threshold for the cosine distance.
    * @param {number} [params.count] - The maximum number of memories to retrieve.
    * @param {boolean} [params.unique] - Whether to retrieve unique memories only.
-   * @param {string} [params.query] - Optional query string for potential reranking.
+   * @param {string} [params.query] - Optional query std::string for potential reranking.
    * @param {UUID} [params.roomId] - Optional room ID to filter by.
    * @param {UUID} [params.worldId] - Optional world ID to filter by.
    * @param {UUID} [params.entityId] - Optional entity ID to filter by.
@@ -401,7 +401,7 @@ namespace elizaos {
 
   /**
    * Updates an existing memory in the database.
-   * @param memory The memory object with updated content and optional embedding
+   * @param memory The memory object with updated content and std::optional embedding
    * @returns Promise resolving to boolean indicating success
    */
 
@@ -422,7 +422,7 @@ namespace elizaos {
    * @param {UUID} memoryId - The ID of the memory to delete.
    * @returns {Promise<void>} A Promise that resolves when the memory is deleted.
    */
-        // See if there are any fragments that we need to delete
+        // See if there are std::any fragments that we need to delete
 
         // Then delete the embedding for the main memory
 
@@ -436,7 +436,7 @@ namespace elizaos {
 
         // Process in smaller batches to avoid query size limits
 
-          // Delete any fragments for document memories in this batch
+          // Delete std::any fragments for document memories in this batch
 
           // Delete embeddings for the batch
 
@@ -469,7 +469,7 @@ namespace elizaos {
    */
         // 1) fetch all memory IDs for this room + table
 
-        // 2) delete any fragments for "document" memories & their embeddings
+        // 2) delete std::any fragments for "document" memories & their embeddings
 
         // 3) delete the memories themselves
 
@@ -562,9 +562,9 @@ namespace elizaos {
 
   /**
    * Asynchronously sets the user state for a participant in a room in the database based on the provided parameters.
-   * @param {UUID} roomId - The ID of the room to set the participant's user state for.
-   * @param {UUID} entityId - The ID of the entity to set the user state for.
-   * @param {string} state - The state to set the participant's user state to.
+   * @param {UUID} roomId - The ID of the room to std::set the participant's user state for.
+   * @param {UUID} entityId - The ID of the entity to std::set the user state for.
+   * @param {string} state - The state to std::set the participant's user state to.
    * @returns {Promise<void>} A Promise that resolves when the participant's user state is set.
    */
 
@@ -573,7 +573,7 @@ namespace elizaos {
    * @param {Object} params - The parameters for creating a new relationship.
    * @param {UUID} params.sourceEntityId - The ID of the source entity.
    * @param {UUID} params.targetEntityId - The ID of the target entity.
-   * @param {string[]} [params.tags] - The tags for the relationship.
+   * @param {std::string[]} [params.tags] - The tags for the relationship.
    * @param {Object} [params.metadata] - The metadata for the relationship.
    * @returns {Promise<boolean>} A Promise that resolves to a boolean indicating whether the relationship was created successfully.
    */
@@ -596,7 +596,7 @@ namespace elizaos {
    * Asynchronously retrieves relationships from the database based on the provided parameters.
    * @param {Object} params - The parameters for retrieving relationships.
    * @param {UUID} params.entityId - The ID of the entity to retrieve relationships for.
-   * @param {string[]} [params.tags] - The tags to filter relationships by.
+   * @param {std::string[]} [params.tags] - The tags to filter relationships by.
    * @returns {Promise<Relationship[]>} A Promise that resolves to an array of relationships.
    */
 
@@ -608,9 +608,9 @@ namespace elizaos {
 
   /**
    * Asynchronously sets a cache value in the database based on the provided key and value.
-   * @param {string} key - The key to set the cache value for.
-   * @param {T} value - The value to set in the cache.
-   * @returns {Promise<boolean>} A Promise that resolves to a boolean indicating whether the cache value was set successfully.
+   * @param {string} key - The key to std::set the cache value for.
+   * @param {T} value - The value to std::set in the cache.
+   * @returns {Promise<boolean>} A Promise that resolves to a boolean indicating whether the cache value was std::set successfully.
    */
 
   /**
@@ -656,7 +656,7 @@ namespace elizaos {
 
   /**
    * Asynchronously retrieves tasks based on specified parameters.
-   * @param params Object containing optional roomId, tags, and entityId to filter tasks
+   * @param params Object containing std::optional roomId, tags, and entityId to filter tasks
    * @returns Promise resolving to an array of Task objects
    */
 
@@ -683,7 +683,7 @@ namespace elizaos {
 
         // Always update the updatedAt timestamp as a Date
 
-        // Handle metadata updates - just set it directly without merging
+        // Handle metadata updates - just std::set it directly without merging
 
           // createdAt is hella borked, number / Date
 

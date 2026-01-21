@@ -18,7 +18,7 @@ namespace elizaos {
 
 // Interface for storing report channel configuration
 struct ReportChannelConfig {
-    std::optional<string; // Made optional> serverId;
+    std::optional<std::string; // Made optional> serverId;
     std::string serverName;
     std::string channelId;
     std::string createdAt;
@@ -30,11 +30,11 @@ using BaseInteraction = std::variant<ButtonInteraction, StringSelectMenuInteract
 struct ExtendedInteraction {
     std::string customId;
     std::optional<User> user;
-    std::optional<{ user?: { id: string } }> member;
+    std::optional<{ user?: { id: std::string } }> member;
 
 class CheckInService extends Service {
-  private formSelections: Map<string, Record<string, string[]>> = new Map();
-  private reportChannelConfigs: Map<string, ReportChannelConfig> = new Map(); // Store report channel configs by server ID
+  private formSelections: Map<std::string, Record<std::string, std::string[]>> = new Map();
+  private reportChannelConfigs: Map<std::string, ReportChannelConfig> = new Map(); // Store report channel configs by server ID
   static serviceType = 'CHECKIN_SERVICE';
   capabilityDescription = 'Manages team member check-in schedules';
 

@@ -93,7 +93,7 @@ private:
     void onReady(const dpp::ready_t& event);
     void onMessageCreate(const dpp::message_create_t& event);
     
-    // Bot thread function
+    // Bot std::thread std::function
     void runBot();
 };
 

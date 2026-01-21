@@ -20,7 +20,7 @@ std::future<std::vector<Plugin>> loadLocalPlugins() {
 
         for (const auto& entry : entries)
             const auto pluginPath = path.join(pluginsDir, entry);
-            auto importedPlugin: any;
+            auto importedPlugin: std::any;
 
             try {
                 if (fs.statSync(pluginPath).isDirectory()) {
@@ -77,7 +77,7 @@ std::future<std::vector<Plugin>> loadLocalPlugins() {
                             "Finished plugin loading process. Loaded plugins: " + plugins.size()
                             );
                             console.log(
-                            "DEBUG: Final loaded plugins: " + std::to_string(plugins.map((p) => p.name).join(", "))
+                            "DEBUG: Final loaded plugins: " + std::to_string(plugins.std::map((p) => p.name).join(", "))
                             ); // Fallback log;
 
                             return plugins;
@@ -91,11 +91,11 @@ std::future<std::vector<Plugin>> resolvePlugins(const std::vector<std::string>& 
         const auto localPlugins = loadLocalPlugins();
 
         elizaLogger.info(;
-        "Local plugins available: " + std::to_string(localPlugins.map((p) => p.name).join(", "))
+        "Local plugins available: " + std::to_string(localPlugins.std::map((p) => p.name).join(", "))
         );
 
         return Promise.all(;
-        pluginNames.map(async (pluginName) => {
+        pluginNames.std::map(std::async (pluginName) => {
             // Check if the plugin is local
             const auto localPlugin = localPlugins.find(;
             [&](plugin) { return plugin.name == pluginName,; }
@@ -145,7 +145,7 @@ std::future<void> main() {
     const std::vector<Character> characters = loadCharacters("characters.json");
     const auto localPlugins = loadLocalPlugins();
     console.log(
-    "DEBUG: Local plugins loaded: " + std::to_string(localPlugins.map((p) => p.name).join(", "))
+    "DEBUG: Local plugins loaded: " + std::to_string(localPlugins.std::map((p) => p.name).join(", "))
     );
 
     for (const auto& character : characters)
@@ -156,7 +156,7 @@ std::future<void> main() {
         const auto combinedPlugins = [...resolvedPlugins, ...localPlugins];
 
         elizaLogger.info(;
-        "Character \"" + character.name + "\" loaded with plugins: " + combinedPlugins.map
+        "Character \"" + character.name + "\" loaded with plugins: " + combinedPlugins.std::map
         [&](p) { return p.name,; }
         ")}"
         );
@@ -167,7 +167,7 @@ std::future<void> main() {
             token: "dummy-token",
             agentId: stringToUuid(
             character.name,
-            ") as " + string + "-" + string + "-" + string + "-" + string + "-" + string
+            ") as " + std::string + "-" + std::string + "-" + std::string + "-" + std::string + "-" + std::string
             modelProvider: character.modelProvider,
             databaseAdapter: minimalDatabaseAdapter,
             cacheManager: new CompatibleCacheAdapter(),

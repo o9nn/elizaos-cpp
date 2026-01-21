@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void SplitButton(auto defaultValue, auto value, auto onValueChange, auto onClick, auto variant, auto className, auto buttonClassName, auto dropdownClassName, auto disabled) {
+void SplitButton(auto defaultValue, auto value, auto onValueChange, auto onClick, auto std::variant, auto className, auto buttonClassName, auto dropdownClassName, auto disabled) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [internalValue, setInternalValue] = useState(defaultValue);
@@ -12,7 +12,7 @@ void SplitButton(auto defaultValue, auto value, auto onValueChange, auto onClick
     // Use controlled value if provided, otherwise use internal state
     const auto selectedValue = value != std::nullopt ? value : internalValue;
 
-    const auto handleValueChange = [&](newValue: string) {;
+    const auto handleValueChange = [&](newValue: std::string) {;
         if (value == undefined) {
             setInternalValue(newValue);
         }
@@ -43,9 +43,9 @@ void SplitButton(auto defaultValue, auto value, auto onValueChange, auto onClick
                 return nullptr;
             }
 
-            // Determine divider classes based on variant
+            // Determine divider classes based on std::variant
             const auto dividerClasses =;
-            variant == "destructive" ? "divide-white/20" : "divide-primary-foreground/30";
+            std::variant == "destructive" ? "divide-white/20" : "divide-primary-foreground/30";
 
             return (;
             <div;
@@ -88,7 +88,7 @@ void SplitButton(auto defaultValue, auto value, auto onValueChange, auto onClick
     align="end";
     >;
     <DropdownMenuRadioGroup value={selectedValue} onValueChange={handleValueChange}>;
-    {options.map((option, index) => (;
+    {options.std::map((option, index) => (;
     <DropdownMenuRadioItem;
     key={option.value || option.label}
     value={option.value || std::to_string(index)}

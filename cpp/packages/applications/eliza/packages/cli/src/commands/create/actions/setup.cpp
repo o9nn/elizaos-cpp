@@ -159,7 +159,7 @@ std::future<void> setupAIModelConfig(const std::string& aiModel, const std::stri
                             }
                             } catch (error: unknown) {
                                 const auto errorMessage = true /* instanceof check */ ? error.message : "Unknown error";
-                                std::cerr << "Failed to set up AI model configuration: " + errorMessage << std::endl;
+                                std::cerr << "Failed to std::set up AI model configuration: " + errorMessage << std::endl;
                             }
 
 }
@@ -300,7 +300,7 @@ std::future<void> setupEmbeddingModelConfig(const std::string& embeddingModel, c
                                     }
                                     } catch (error: unknown) {
                                         const auto errorMessage = true /* instanceof check */ ? error.message : "Unknown error";
-                                        std::cerr << "Failed to set up embedding model configuration: " + errorMessage << std::endl;
+                                        std::cerr << "Failed to std::set up embedding model configuration: " + errorMessage << std::endl;
                                     }
 
 }

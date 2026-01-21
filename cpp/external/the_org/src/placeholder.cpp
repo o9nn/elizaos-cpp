@@ -3,6 +3,6 @@
 
 namespace elizaos {
     void the_org_placeholder() {
-        // Placeholder function to make library linkable
+        // Placeholder std::function to make library linkable
     }
 }

@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/scripts/generate-unit-tests.h"
 
-std::shared_ptr<Promise<array<string>>> findAllSourceFiles(string dir, array<string> files)
+std::shared_ptr<Promise<array<string>>> findAllSourceFiles(std::string dir, array<string> files)
 {
     auto entries = std::async([=]() { readdir(dir); });
     for (auto& entry : entries)
@@ -19,7 +19,7 @@ std::shared_ptr<Promise<array<string>>> findAllSourceFiles(string dir, array<str
 };
 
 
-string getTestPath(string sourcePath, string category)
+std::string getTestPath(std::string sourcePath, std::string category)
 {
     auto relativePath = relative(join(process->cwd(), std::string("src")), sourcePath);
     auto testFileName = basename(sourcePath)->replace(std::string(".ts"), std::string(".test.ts"));
@@ -36,7 +36,7 @@ string getTestPath(string sourcePath, string category)
 };
 
 
-std::shared_ptr<Promise<string>> generateTestContent(string sourcePath)
+std::shared_ptr<Promise<string>> generateTestContent(std::string sourcePath)
 {
     auto sourceContent = std::async([=]() { readFile(sourcePath, std::string("utf-8")); });
     auto relativePath = relative(process->cwd(), sourcePath);
@@ -44,17 +44,17 @@ std::shared_ptr<Promise<string>> generateTestContent(string sourcePath)
     auto exportMatches = sourceContent->matchAll((new RegExp(std::string("export\s+(async\s+)?function\s+(\w+)"))));
     auto classMatches = sourceContent->matchAll((new RegExp(std::string("export\s+class\s+(\w+)"))));
     auto constMatches = sourceContent->matchAll((new RegExp(std::string("export\s+const\s+(\w+)"))));
-    auto functions = Array->from(exportMatches)->map([=](auto m) mutable
+    auto functions = Array->from(exportMatches)->std::map([=](auto m) mutable
     {
         return const_(m)[2];
     }
     );
-    auto classes = Array->from(classMatches)->map([=](auto m) mutable
+    auto classes = Array->from(classMatches)->std::map([=](auto m) mutable
     {
         return const_(m)[1];
     }
     );
-    auto constants = Array->from(constMatches)->map([=](auto m) mutable
+    auto constants = Array->from(constMatches)->std::map([=](auto m) mutable
     {
         return const_(m)[1];
     }
@@ -164,7 +164,7 @@ void main()
             console->log(std::string("✅ Created: ") + relative(process->cwd(), file->testPath) + string_empty);
             created++;
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             console->error(std::string("❌ Failed: ") + relative(process->cwd(), file->testPath) + string_empty);
             console->error(std::string("   Error: ") + error["message"] + string_empty);

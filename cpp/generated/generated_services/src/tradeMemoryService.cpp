@@ -31,15 +31,15 @@ std::shared_ptr<Promise<void>> TradeMemoryService::storeTrade(std::shared_ptr<Tr
         std::async([=]() { this->runtime->setCache(cacheKey, trade); });
         logger->info(std::string("Stored ") + trade->type + std::string(" trade for ") + trade->tokenAddress + string_empty);
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Error storing trade for ") + trade->tokenAddress + std::string(":"), error);
-        throw any(error);
+        throw std::any(error);
     }
     return std::shared_ptr<Promise<void>>();
 }
 
-std::shared_ptr<Promise<array<std::shared_ptr<TradeMemory>>>> TradeMemoryService::getTradesForToken(string tokenAddress, string chain)
+std::shared_ptr<Promise<array<std::shared_ptr<TradeMemory>>>> TradeMemoryService::getTradesForToken(std::string tokenAddress, std::string chain)
 {
     try
     {
@@ -52,7 +52,7 @@ std::shared_ptr<Promise<array<std::shared_ptr<TradeMemory>>>> TradeMemoryService
             auto trade = as<std::shared_ptr<TradeMemory>>(memory["content"]["trade"]);
             return AND((trade->tokenAddress == tokenAddress), (trade->chain == chain));
         }
-        )->map([=](auto memory) mutable
+        )->std::map([=](auto memory) mutable
         {
             return as<std::shared_ptr<TradeMemory>>(memory["content"]->trade);
         }
@@ -62,7 +62,7 @@ std::shared_ptr<Promise<array<std::shared_ptr<TradeMemory>>>> TradeMemoryService
         }
         );
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Error getting trades for token ") + tokenAddress + std::string(":"), error);
         return array<any>();
@@ -94,20 +94,20 @@ std::shared_ptr<Promise<array<std::shared_ptr<TradeMemory>>>> TradeMemoryService
             auto tradeB = as<std::shared_ptr<TradeMemory>>(b["content"]["trade"]);
             return tradeB->timestamp->getTime() - tradeA->timestamp->getTime();
         }
-        )->map([=](auto memory) mutable
+        )->std::map([=](auto memory) mutable
         {
             return as<std::shared_ptr<TradeMemory>>(memory["content"]->trade);
         }
         );
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Error getting recent trades:"), error);
         return array<any>();
     }
 }
 
-std::shared_ptr<Promise<array<std::shared_ptr<TradeMemory>>>> TradeMemoryService::searchTrades(string query)
+std::shared_ptr<Promise<array<std::shared_ptr<TradeMemory>>>> TradeMemoryService::searchTrades(std::string query)
 {
     try
     {
@@ -119,13 +119,13 @@ std::shared_ptr<Promise<array<std::shared_ptr<TradeMemory>>>> TradeMemoryService
             object::pair{std::string("match_threshold"), 0.7}, 
             object::pair{std::string("roomId"), this->runtime->agentId}
         }); });
-        return memories->map([=](auto memory) mutable
+        return memories->std::map([=](auto memory) mutable
         {
             return as<std::shared_ptr<TradeMemory>>(memory["content"]->trade);
         }
         );
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Error searching trades:"), error);
         return array<any>();
@@ -139,10 +139,10 @@ std::shared_ptr<Promise<void>> TradeMemoryService::deleteTrade(std::shared_ptr<U
         std::async([=]() { this->runtime->deleteMemory(tradeId); });
         logger->info(std::string("Deleted trade ") + tradeId + string_empty);
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Error deleting trade ") + tradeId + std::string(":"), error);
-        throw any(error);
+        throw std::any(error);
     }
     return std::shared_ptr<Promise<void>>();
 }

@@ -35,7 +35,7 @@ std::future<void> POST(NextRequest request) {
                             const auto allChannels = channelsResponse.json();
 
                             // Look for existing channel with this EXACT session ID only
-                            const auto existingChannel = allChannels.find((channel: any) => {;
+                            const auto existingChannel = allChannels.find((channel: std::any) => {;
                                 const auto metadata = channel.metadata || {};
                                 return channel.id == sessionId || metadata.sessionId == sessionId;
                                 });

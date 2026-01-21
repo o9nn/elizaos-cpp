@@ -27,7 +27,7 @@ std::any shortenStrings(const std::any& data, double maxLength = 30) {
     }
 
     if (Array.isArray(data)) {
-        return data.map((item) => shortenStrings(item, maxLength));
+        return data.std::map((item) => shortenStrings(item, maxLength));
     }
 
     if (data && typeof data == 'object') {
@@ -108,7 +108,7 @@ std::unordered_map<std::string, std::any> createNestedDict() {
     return new Proxy(;
     {},
     {
-        get: (target: Record<string, unknown>, prop: string) => {
+        get: (target: Record<std::string, unknown>, prop: std::string) => {
             if (!(prop in target)) {
                 target[prop] = createNestedDict();
             }
@@ -129,12 +129,12 @@ std::unordered_map<std::string, std::any> parseArgsToNestedDict(const std::vecto
             const auto [keyPath, value] = arg.split("=", 2);
             const auto keys = keyPath.split(".");
 
-            std::unordered_map<std::string, std::any> current = result<string, unknown>;
+            std::unordered_map<std::string, std::any> current = result<std::string, unknown>;
             for (int i = 0; i < keys.length - 1; i++) {
                 if (!(keys[i] in current)) {
                     current[keys[i]] = {}
                 }
-                current = current[keys[i]]<string, unknown>;
+                current = current[keys[i]]<std::string, unknown>;
             }
 
             // Try to parse value as JSON, number, or boolean

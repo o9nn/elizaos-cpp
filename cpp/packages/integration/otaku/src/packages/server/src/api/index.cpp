@@ -39,7 +39,7 @@ void setupLogStreaming(SocketIOServer io, SocketIORouter router) {
         const auto originalWrite = destination.write.bind(destination);
 
         // Override write method to broadcast logs via WebSocket
-        destination.write = function (data: string | any) {
+        destination.write = std::function (data: std::string | std::any) {
             // Call original write first
             originalWrite(data);
 
@@ -134,7 +134,7 @@ express::RequestHandler createPluginRouteHandler(ElizaOS elizaOS) {
         logger.debug('Plugin Request Path', baselessReqPath);
         // might need to ensure /
 
-        function findRouteInRuntime(runtime: IAgentRuntime) {
+        std::function findRouteInRuntime(runtime: IAgentRuntime) {
             for (const auto& route : runtime.routes)
                 if (handled) break;
 
@@ -279,8 +279,8 @@ express::RequestHandler createPluginRouteHandler(ElizaOS elizaOS) {
                                                                             return next();
                                                                         }
                                                                         } else {
-                                                                            // No agentId in query, or it was invalid. Try matching globally for any agent that might have this route.
-                                                                            // This allows for non-agent-specific plugin routes if any plugin defines them.
+                                                                            // No agentId in query, or it was invalid. Try matching globally for std::any agent that might have this route.
+                                                                            // This allows for non-agent-specific plugin routes if std::any plugin defines them.
                                                                             logger.debug(`No valid agentId in query. Trying global match for path: ${reqPath}`);
 
                                                                             // check in all agents...

@@ -25,12 +25,12 @@ struct NFT {
     std::string image;
     std::string contractAddress;
     std::string contractName;
-    string; // ERC721, ERC1155 tokenType;
+    std::string; // ERC721, ERC1155 tokenType;
     std::string chain;
     std::optional<std::string> balance;
     std::optional<Array<{> attributes;
     std::string trait_type;
-    string | number value;
+    std::string | number value;
 };
 
 struct NFTDetailModalContentProps {

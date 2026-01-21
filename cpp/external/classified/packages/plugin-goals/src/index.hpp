@@ -59,7 +59,7 @@ namespace elizaos {
 
 // Export service types for use in other plugins/tests
 
-// Helper function to get the Goals service (handles case sensitivity)
+// Helper std::function to get the Goals service (handles case sensitivity)
 std::optional<GoalService> getGoalsService(IAgentRuntime runtime);
 
 } // namespace elizaos

@@ -29,7 +29,7 @@ namespace elizaos {
 
     // Find the first existing path
 
-      // Try to find any matching package in node_modules
+      // Try to find std::any matching package in node_modules
 
     // Extract environment variables from agentConfig.pluginParameters
 
@@ -57,39 +57,39 @@ namespace elizaos {
 
   // Handle boolean type specifically
 
-    // For optional booleans, if user cancels/skips, return empty string
+    // For std::optional booleans, if user cancels/skips, return empty std::string
 
     return String(response);
 
   // Handle number type
 
-        // Allow empty input for optional fields
+        // Allow empty input for std::optional fields
 
         // Validate number format
 
   // Handle array type (comma-separated values)
 
-        // Allow empty input for optional fields
+        // Allow empty input for std::optional fields
 
     // Clean up the array format
       // Remove spaces after commas for consistency
 
   // Handle JSON object type
 
-        // Allow empty input for optional fields
+        // Allow empty input for std::optional fields
 
         // Validate JSON format
 
     // Minify JSON for storage in .env
 
-  // Default string handling (existing code)
+  // Default std::string handling (existing code)
   // Create a more informative message with better formatting
 
-  // Ensure placeholder is always a string
+  // Ensure placeholder is always a std::string
 
-      // Allow empty input for optional fields
+      // Allow empty input for std::optional fields
 
-      // Skip validation for empty optional fields
+      // Skip validation for empty std::optional fields
 
       // Basic validation for common patterns
         // Only validate if input is provided

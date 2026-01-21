@@ -17,7 +17,7 @@ namespace elizaos {
  */
 
 /**
- * Extract keys from a format string
+ * Extract keys from a format std::string
  */
 std::unordered_set<std::string> extractKeys(const std::string& formatString);
 
@@ -30,7 +30,7 @@ struct IArgument {
     std::optional<std::unordered_map<std::string, std::string>> items;
     std::string description;
     bool required;
-    std::optional<string[] | null> enum;
+    std::optional<std::string[] | null> enum;
     std::string argumentFormat;
 };
 
@@ -38,22 +38,22 @@ struct IArgument {
  * Command argument implementation
  */
 class ArgumentImpl implements IArgument {
-  name: string;
-  type: string;
-  items?: Record<string, string> | null;
-  description: string;
+  name: std::string;
+  type: std::string;
+  items?: Record<std::string, string> | null;
+  description: std::string;
   required: boolean;
-  enum?: string[] | null;
-  argumentFormat: string;
+  enum?: std::string[] | null;
+  argumentFormat: std::string;
 
   constructor(config: {
-    name: string;
-    type: string;
-    items?: Record<string, string> | null;
-    description: string;
+    name: std::string;
+    type: std::string;
+    items?: Record<std::string, string> | null;
+    description: std::string;
     required: boolean;
-    enum?: string[] | null;
-    argumentFormat?: string;
+    enum?: std::string[] | null;
+    argumentFormat?: std::string;
   }) {
     this.name = config.name;
     this.type = config.type;
@@ -70,17 +70,17 @@ class ArgumentImpl implements IArgument {
  * Command definition
  */
 class Command {
-  name: string;
-  docstring: string | null;
-  signature: string | null;
-  endName?: string;
+  name: std::string;
+  docstring: std::string | null;
+  signature: std::string | null;
+  endName?: std::string;
   arguments: IArgument[];
 
   constructor(config: {
-    name: string;
-    docstring?: string | null;
-    signature?: string | null;
-    endName?: string;
+    name: std::string;
+    docstring?: std::string | null;
+    signature?: std::string | null;
+    endName?: std::string;
     arguments?: IArgument[];
   }) {
     this.name = config.name;
@@ -93,12 +93,12 @@ class Command {
   }
 
     // If there's a custom signature, process it
-      // Replace angle brackets (and optional brackets) with curly braces for arguments
+      // Replace angle brackets (and std::optional brackets) with curly braces for arguments
       // Handle both <arg> and [<arg>] patterns
 
-    // Build the default invocation format string
+    // Build the default invocation format std::string
 
-    // Check for required arguments after optional ones
+    // Check for required arguments after std::optional ones
 
     // Check for duplicate argument names
 

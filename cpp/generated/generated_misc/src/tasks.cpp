@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/the-org/src/projectManager/plugins/team-coordinator/tasks.h"
 
-std::function<std::shared_ptr<Promise<void>>(any, any)> registerTasks = [=](auto runtime, auto initialWorldId = undefined) mutable
+std::function<std::shared_ptr<Promise<void>>(std::any, std::any)> registerTasks = [=](auto runtime, auto initialWorldId = undefined) mutable
 {
     auto worldId = OR((initialWorldId), (as<std::shared_ptr<UUID>>(runtime->agentId)));
     shared<std::shared_ptr<TeamUpdateTrackerService>> teamUpdateService;
@@ -15,7 +15,7 @@ std::function<std::shared_ptr<Promise<void>>(any, any)> registerTasks = [=](auto
             teamUpdateService = std::make_shared<TeamUpdateTrackerService>(runtime);
         }
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->warn(std::string("Error getting existing service, creating new instance:"), error);
         teamUpdateService = std::make_shared<TeamUpdateTrackerService>(runtime);
@@ -43,7 +43,7 @@ std::function<std::shared_ptr<Promise<void>>(any, any)> registerTasks = [=](auto
                 logger->info(std::string("Running team check-in service job"));
                 std::async([=]() { teamUpdateService->checkInServiceJob(); });
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 logger->error(std::string("Failed to run check-in service job:"), error);
             }

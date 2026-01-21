@@ -22,13 +22,13 @@ namespace elizaos {
  */
 class ModuleLoader {
   private require: NodeRequire;
-  private asyncCache = new Map<string, any>();
-  private syncCache = new Map<string, any>();
-  private projectPath: string;
+  private asyncCache = new Map<std::string, any>();
+  private syncCache = new Map<std::string, any>();
+  private projectPath: std::string;
 
-  constructor(projectPath?: string) {
+  constructor(projectPath?: std::string) {
     this.projectPath = projectPath || this.detectProjectPath();
-    // Create require function scoped to the project directory
+    // Create require std::function scoped to the project directory
     // This ensures module resolution starts from the project's package.json
     this.require = createRequire(pathToFileURL(path.join(this.projectPath, 'package.json')).href);
 
@@ -113,14 +113,14 @@ class ModuleLoader {
 ModuleLoader getModuleLoader();
 
 /**
- * Convenience function to load a module using the default loader.
+ * Convenience std::function to load a module using the default loader.
  *
  * @param moduleName - The name of the module to load
  * @returns The loaded module
  */
 
 /**
- * Convenience function to synchronously load a module using the default loader.
+ * Convenience std::function to synchronously load a module using the default loader.
  *
  * @param moduleName - The name of the module to load
  * @returns The loaded module

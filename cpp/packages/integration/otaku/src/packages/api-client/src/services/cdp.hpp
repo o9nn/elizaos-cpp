@@ -26,10 +26,10 @@ struct Token {
     std::string balanceFormatted;
     double usdValue;
     double usdPrice;
-    string | null contractAddress;
+    std::string | null contractAddress;
     std::string chain;
     double decimals;
-    std::optional<string; // Token icon URL from CoinGecko> icon;
+    std::optional<std::string; // Token icon URL from CoinGecko> icon;
 };
 
 struct NFT {
@@ -41,7 +41,7 @@ struct NFT {
     std::string image;
     std::string contractName;
     std::string tokenType;
-    std::optional<string; // For ERC1155> balance;
+    std::optional<std::string; // For ERC1155> balance;
 };
 
 struct Transaction {
@@ -160,9 +160,9 @@ struct CoinGeckoToken {
     std::string id;
     std::string symbol;
     std::string name;
-    string | null contractAddress;
-    string | null chain;
-    string | null icon;
+    std::string | null contractAddress;
+    std::string | null chain;
+    std::string | null icon;
     number | null price;
     std::optional<std::unordered_map<std::string, std::string>> platforms;
     std::optional<double> decimals;
@@ -182,7 +182,7 @@ class CdpService extends BaseApiClient {
   /**
    * Get or create a server wallet for a user
    */
-  async getOrCreateWallet(name: string): Promise<WalletInfo> {
+  std::async getOrCreateWallet(name: std::string): Promise<WalletInfo> {
     const response = await this.post<WalletInfo>('/api/cdp/wallet', { name });
     return response;
   }

@@ -144,7 +144,7 @@ std::optional<CharacterProfile> CharacterJsonLoader::loadFromJsonString(const st
         if (j.contains("knowledge") && j["knowledge"].is_array()) {
             for (const auto& knowledgeItem : j["knowledge"]) {
                 if (knowledgeItem.is_string()) {
-                    // Handle simple string format
+                    // Handle simple std::string format
                     character.background.additionalContext["knowledge"] += knowledgeItem.get<std::string>() + "; ";
                 } else if (knowledgeItem.is_object() && knowledgeItem.contains("content")) {
                     // Handle object format with id, path, content
@@ -279,8 +279,8 @@ std::vector<CharacterProfile> CharacterJsonLoader::loadFromDirectory(const std::
         
         for (const auto& entry : std::filesystem::directory_iterator(directoryPath)) {
             if (entry.is_regular_file()) {
-                std::string filepath = entry.path().string();
-                std::string extension = entry.path().extension().string();
+                std::string filepath = entry.path().std::string();
+                std::string extension = entry.path().extension().std::string();
                 
                 // Check for JSON files
                 if (extension == ".json" || filepath.find(".character.json") != std::string::npos) {
@@ -401,7 +401,7 @@ std::vector<std::string> CharacterJsonLoader::getStringArrayFromJson(const JsonV
     auto it = json.find(key);
     if (it != json.end()) {
         // This is a simplified implementation - would need proper JSON array parsing
-        // For now, just return empty vector
+        // For now, just return empty std::vector
     }
     return result;
 }

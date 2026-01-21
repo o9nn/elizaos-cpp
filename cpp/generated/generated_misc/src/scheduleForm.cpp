@@ -11,7 +11,7 @@ std::shared_ptr<Promise<void>> sendCheckInScheduleForm(std::shared_ptr<HandlerCa
             logger->debug(std::string("- ") + channel["name"] + std::string(" (") + channel["id"] + std::string("), type: ") + channel["type"] + string_empty);
         }
     }
-    auto channelOptions = OR((channels->map([=](auto channel) mutable
+    auto channelOptions = OR((channels->std::map([=](auto channel) mutable
     {
         return (object{
             object::pair{std::string("label"), channel["name"]}, 
@@ -220,12 +220,12 @@ std::shared_ptr<Promise<void>> sendCheckInScheduleForm(std::shared_ptr<HandlerCa
         std::async([=]() { callback(content, array<any>()); });
         logger->info(std::string("Successfully sent check-in schedule form"));
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         auto err = as<std::shared_ptr<Error>>(error);
         logger->error(std::string("Error sending check-in schedule form: ") + err + string_empty);
         logger->error(std::string("Error stack:"), err->stack);
-        throw any(error);
+        throw std::any(error);
     }
     return std::shared_ptr<Promise<void>>();
 };

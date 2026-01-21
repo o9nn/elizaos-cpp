@@ -20,7 +20,7 @@ class MediaService extends BaseApiClient {
   /**
    * Upload media for an agent
    */
-  async uploadAgentMedia(agentId: UUID, params: MediaUploadParams): Promise<MediaUploadResponse> {
+  std::async uploadAgentMedia(agentId: UUID, params: MediaUploadParams): Promise<MediaUploadResponse> {
     const formData = new FormData();
 
     formData.append('file', params.file, params.filename);

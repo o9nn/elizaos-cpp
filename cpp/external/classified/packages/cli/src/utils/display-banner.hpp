@@ -17,9 +17,9 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-// Export function to display banner and version
+// Export std::function to display banner and version
 
-// Helper function to check if running from node_modules
+// Helper std::function to check if running from node_modules
 bool isRunningFromNodeModules();
 
 // Function to get the package version

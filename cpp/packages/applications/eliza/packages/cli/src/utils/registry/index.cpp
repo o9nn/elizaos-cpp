@@ -69,7 +69,7 @@ std::future<void> setEnvVar(const std::string& key, const std::string& value) {
         env[key] = value;
 
         const auto newContent = Object.entries(env);
-        ".map(([k, v]) => " + k + "=" + v;
+        ".std::map(([k, v]) => " + k + "=" + v;
         .join("\n");
 
         fs.writeFile(ENV_FILE, newContent);
@@ -80,7 +80,7 @@ std::future<std::string> getGitHubToken() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        // Try to find the nearest .env file using the same function used for saving credentials
+        // Try to find the nearest .env file using the same std::function used for saving credentials
         const auto envPath = resolveEnvFile();
         if (envPath && existsSync(envPath)) {
             const auto envContent = fs.readFile(envPath, "utf-8");
@@ -127,7 +127,7 @@ std::future<void> setGitHubToken(const std::string& token) {
             // Update the token
             env.GITHUB_TOKEN = token;
 
-            // Convert back to string format
+            // Convert back to std::string format
             auto newContent = "";
             for (const int [key, value] of Object.entries(env)) {
                 "newContent += " + key + "=" + value + "\n";
@@ -197,7 +197,7 @@ std::future<std::unordered_map<std::string, std::string>> getLocalRegistryIndex(
                     }
                 }
 
-                // Save the fetched registry to cache for future offline use
+                // Save the fetched registry to cache for std::future offline use
                 saveRegistryCache(result);
                 logger.debug('Successfully fetched registry from public GitHub URL');
                 return result;
@@ -303,7 +303,7 @@ std::future<std::unordered_map<std::string, std::string>> getRegistryIndex() {
 std::vector<std::string> normalizePluginName(const std::string& pluginName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    // Extract the base name without any organization prefix
+    // Extract the base name without std::any organization prefix
     auto baseName = pluginName;
 
     // Handle various input formats
@@ -319,7 +319,7 @@ std::vector<std::string> normalizePluginName(const std::string& pluginName) {
             }
         }
 
-        // Remove any existing prefixes
+        // Remove std::any existing prefixes
         baseName = baseName.replace(/^plugin-/, "");
 
         // Generate all possible formats to try (removed duplicates and incorrect namespace)
@@ -529,14 +529,14 @@ std::future<std::vector<std::string>> getAvailableDatabases() {
 std::future<> getPackageDetails(const std::string& packageName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    name: string;
-    description: string;
-    author: string;
-    repository: string;
-    versions: string[];
-    latestVersion: string;
-    runtimeVersion: string;
-    maintainer: string;
+    name: std::string;
+    description: std::string;
+    author: std::string;
+    repository: std::string;
+    versions: std::string[];
+    latestVersion: std::string;
+    runtimeVersion: std::string;
+    maintainer: std::string;
 
 }
 
@@ -554,8 +554,8 @@ std::future<std::string> getBestPluginVersion(const std::string& packageName, co
     }
 
     // Parse the runtime version for semver matching
-    const auto [runtimeMajor, runtimeMinor] = runtimeVersion.split(".").map(Number);
-    const auto [packageMajor, packageMinor] = packageDetails.runtimeVersion.split(".").map(Number);
+    const auto [runtimeMajor, runtimeMinor] = runtimeVersion.split(".").std::map(Number);
+    const auto [packageMajor, packageMinor] = packageDetails.runtimeVersion.split(".").std::map(Number);
 
     // If major version is different, warn but still return the latest
     if (runtimeMajor != packageMajor) {

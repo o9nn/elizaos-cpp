@@ -14,11 +14,11 @@ class InteractiveClaudeCodeTester;
 class TestSession : public object, public std::enable_shared_from_this<TestSession> {
 public:
     using std::enable_shared_from_this<TestSession>::shared_from_this;
-    string sessionId;
+    std::string sessionId;
 
     std::shared_ptr<IAgentRuntime> runtime;
 
-    string projectPath;
+    std::string projectPath;
 
     object currentProject;
 };
@@ -26,14 +26,14 @@ public:
 class CodeGenService : public object, public std::enable_shared_from_this<CodeGenService> {
 public:
     using std::enable_shared_from_this<CodeGenService>::shared_from_this;
-    virtual std::shared_ptr<Promise<any>> generateCode(any request) = 0;
+    virtual std::shared_ptr<Promise<any>> generateCode(std::any request) = 0;
     virtual std::shared_ptr<Promise<void>> stop() = 0;
 };
 
 class E2bService : public object, public std::enable_shared_from_this<E2bService> {
 public:
     using std::enable_shared_from_this<E2bService>::shared_from_this;
-    virtual std::shared_ptr<Promise<any>> executeCode(string code, any options = undefined) = 0;
+    virtual std::shared_ptr<Promise<any>> executeCode(std::string code, std::any options = undefined) = 0;
     virtual std::shared_ptr<Promise<void>> stop() = 0;
 };
 
@@ -47,13 +47,13 @@ public:
     InteractiveClaudeCodeTester();
     virtual void start();
     virtual void showMainMenu();
-    virtual void handleMenuChoice(string choice);
-    virtual void callClaude(string prompt);
-    virtual void generateProject(string description);
-    virtual void runSandboxCommand(string command);
-    virtual void writeFile(string filename, string content);
-    virtual void readFile(string filename);
-    virtual void listFiles(string path);
+    virtual void handleMenuChoice(std::string choice);
+    virtual void callClaude(std::string prompt);
+    virtual void generateProject(std::string description);
+    virtual void runSandboxCommand(std::string command);
+    virtual void writeFile(std::string filename, std::string content);
+    virtual void readFile(std::string filename);
+    virtual void listFiles(std::string path);
     virtual void cleanup();
 };
 

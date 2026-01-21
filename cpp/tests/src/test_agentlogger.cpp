@@ -14,7 +14,7 @@ protected:
         logger = std::make_shared<AgentLogger>();
         testFileName = "test_log.txt";
         
-        // Clean up any existing test file
+        // Clean up std::any existing test file
         if (std::filesystem::exists(testFileName)) {
             std::filesystem::remove(testFileName);
         }
@@ -92,7 +92,7 @@ TEST_F(AgentLoggerTest, TypeColors) {
 }
 
 TEST_F(AgentLoggerTest, ThreadSafety) {
-    // Test thread safety
+    // Test std::thread safety
     logger->setConsoleEnabled(false);
     
     const int numThreads = 5;
@@ -108,7 +108,7 @@ TEST_F(AgentLoggerTest, ThreadSafety) {
         });
     }
     
-    for (auto& thread : threads) {
+    for (auto& std::thread : threads) {
         thread.join();
     }
     

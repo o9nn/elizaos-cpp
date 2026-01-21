@@ -147,7 +147,7 @@ void Main(void)
                 cy->contains(std::string("Database (conversations, settings)"))->should(std::string("be.visible"));
                 cy->contains(std::string("Agent State (memory, context)"))->should(std::string("be.visible"));
                 cy->contains(std::string("Knowledge Base"))->should(std::string("be.visible"));
-                cy->contains(std::string("Logs (optional)"))->should(std::string("be.visible"));
+                cy->contains(std::string("Logs (std::optional)"))->should(std::string("be.visible"));
                 cy->get(std::string("input[type="checkbox"]"))->eq(0)->should(std::string("be.checked"));
                 cy->get(std::string("input[type="checkbox"]"))->eq(1)->should(std::string("be.checked"));
                 cy->get(std::string("input[type="checkbox"]"))->eq(2)->should(std::string("be.checked"));

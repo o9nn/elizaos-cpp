@@ -5,13 +5,13 @@ std::shared_ptr<OrganizedDocs> DocumentOrganizer::organizeDocumentation(array<st
     return docs->reduce([=](auto acc, auto doc) mutable
     {
         static switch_type __switch675_1360 = {
-            { any(std::string("ClassDeclaration")), 1 },
-            { any(std::string("MethodDefinition")), 2 },
-            { any(std::string("TSMethodSignature")), 3 },
-            { any(std::string("TSInterfaceDeclaration")), 4 },
-            { any(std::string("TSTypeAliasDeclaration")), 5 },
-            { any(std::string("FunctionDeclaration")), 6 },
-            { any(std::string("VariableDeclaration")), 7 }
+            { std::any(std::string("ClassDeclaration")), 1 },
+            { std::any(std::string("MethodDefinition")), 2 },
+            { std::any(std::string("TSMethodSignature")), 3 },
+            { std::any(std::string("TSInterfaceDeclaration")), 4 },
+            { std::any(std::string("TSTypeAliasDeclaration")), 5 },
+            { std::any(std::string("FunctionDeclaration")), 6 },
+            { std::any(std::string("VariableDeclaration")), 7 }
         };
         switch (__switch675_1360[doc->nodeType])
         {
@@ -55,7 +55,7 @@ array<std::shared_ptr<FileDocsGroup>> DocumentOrganizer::groupDocsByFile(std::sh
         return filePaths->add(item->filePath);
     }
     );
-    return Array->from(filePaths)->map([=](auto filePath) mutable
+    return Array->from(filePaths)->std::map([=](auto filePath) mutable
     {
         return object{
             object::pair{std::string("filePath"), std::string("filePath")}, 

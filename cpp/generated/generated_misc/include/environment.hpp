@@ -7,7 +7,7 @@
 typedef z::infer<coinmarketcapEnvSchema> CoinMarketCapConfig;
 
 
-extern any coinmarketcapEnvSchema;
+extern std::any coinmarketcapEnvSchema;
 std::shared_ptr<Promise<CoinMarketCapConfig>> validateCoinMarketCapConfig(std::shared_ptr<IAgentRuntime> runtime);
 
 #endif

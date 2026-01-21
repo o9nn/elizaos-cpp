@@ -49,7 +49,7 @@ Active Form: ") + form->name + std::string(" (ID: ") + form->id + std::string(")
 ");
                         completedFields->forEach([=](auto field) mutable
                         {
-                            auto displayValue = (field["secret"]) ? any(std::string("[SECRET]")) : any(field["value"]);
+                            auto displayValue = (field["secret"]) ? std::any(std::string("[SECRET]")) : std::any(field["value"]);
                             contextText += std::string("  - ") + field["label"] + std::string(": ") + displayValue + std::string("\
 ");
                         }
@@ -65,7 +65,7 @@ Active Form: ") + form->name + std::string(" (ID: ") + form->id + std::string(")
 ");
                         remainingRequired->forEach([=](auto field) mutable
                         {
-                            contextText += std::string("  - ") + field["label"] + string_empty + (field["description"]) ? any(std::string(" (") + field["description"] + std::string(")")) : any(string_empty) + std::string("\
+                            contextText += std::string("  - ") + field["label"] + string_empty + (field["description"]) ? std::any(std::string(" (") + field["description"] + std::string(")")) : std::any(string_empty) + std::string("\
 ");
                         }
                         );
@@ -80,7 +80,7 @@ Active Form: ") + form->name + std::string(" (ID: ") + form->id + std::string(")
 ");
                         optionalFields->forEach([=](auto field) mutable
                         {
-                            contextText += std::string("  - ") + field["label"] + string_empty + (field["description"]) ? any(std::string(" (") + field["description"] + std::string(")")) : any(string_empty) + std::string("\
+                            contextText += std::string("  - ") + field["label"] + string_empty + (field["description"]) ? std::any(std::string(" (") + field["description"] + std::string(")")) : std::any(string_empty) + std::string("\
 ");
                         }
                         );
@@ -100,9 +100,9 @@ Active Form: ") + form->name + std::string(" (ID: ") + form->id + std::string(")
                 }}
             };
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
-            auto errorMessage = (is<Error>(error)) ? any(error->message) : any(std::string("Unknown error"));
+            auto errorMessage = (is<Error>(error)) ? std::any(error->message) : std::any(std::string("Unknown error"));
             return object{
                 object::pair{std::string("text"), std::string("Error retrieving forms context: ") + errorMessage + string_empty}, 
                 object::pair{std::string("values"), object{}}, 

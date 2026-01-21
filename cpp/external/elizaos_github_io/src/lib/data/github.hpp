@@ -25,7 +25,7 @@ using GitHubFileContent = z.infer<typeof GitHubFileContentSchema>;
 using UpdateFileResponse = z.infer<typeof UpdateFileResponseSchema>;
 
 struct BatchFileContentResult {
-    string | null content;
+    std::string | null content;
     bool repoExists;
     bool fileExists;
 };
@@ -60,12 +60,12 @@ struct TokenBucket {
 // Define interfaces for the GraphQL response
 struct GitHubPageInfo {
     bool hasNextPage;
-    string | null endCursor;
+    std::string | null endCursor;
 };
 
 class RateLimitExceededError extends Error {
   constructor(
-    message: string,
+    message: std::string,
     public resetAt: Date,
   ) {
     super(message);
@@ -74,7 +74,7 @@ class RateLimitExceededError extends Error {
 
 class SecondaryRateLimitError extends Error {
   constructor(
-    message: string,
+    message: std::string,
     public waitTime: number,
   ) {
     super(message);
@@ -86,7 +86,7 @@ class SecondaryRateLimitError extends Error {
  */
 class GitHubClient {
   private logger: Logger;
-  private token: string;
+  private token: std::string;
   private rateLimitInfo: RateLimitInfo | null = null;
   private readonly retryConfig: RetryConfig = {
     maxRetries: 5,

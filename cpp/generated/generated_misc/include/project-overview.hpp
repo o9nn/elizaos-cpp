@@ -10,10 +10,10 @@ extern std::shared_ptr<ExecutionEnvironment> EXECUTION_ENVIRONMENT;
 extern std::shared_ptr<ToolsInfo> TOOLS_INFO;
 extern array<std::shared_ptr<Inspector>> INSPECTORS;
 extern std::shared_ptr<ProjectStructure> PROJECT_STRUCTURE;
-extern string PROJECT_OVERVIEW;
-any getComponentByPath(string path);
+extern std::string PROJECT_OVERVIEW;
+std::any getComponentByPath(std::string path);
 
 array<string> getPythonModules();
 
-extern Record<string, string> TYPESCRIPT_EQUIVALENTS;
+extern Record<std::string, string> TYPESCRIPT_EQUIVALENTS;
 #endif

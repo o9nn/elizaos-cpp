@@ -144,10 +144,10 @@ void TokenSelectionStep(auto updateFormData, auto onNext, auto onTokenSelect) {
                 nullptr,
                 );
                 const auto [isSearchingAddress, setIsSearchingAddress] = useState(false);
-                const auto [addressSearchError, setAddressSearchError] = useState<string | nullptr>(;
+                const auto [addressSearchError, setAddressSearchError] = useState<std::string | nullptr>(;
                 nullptr,
                 );
-                const auto addressSearchRef = useRef<string | nullptr>(nullptr);
+                const auto addressSearchRef = useRef<std::string | nullptr>(nullptr);
 
                 const auto { isLoading: loading, hasLoadedOnce } = loadingState;
 
@@ -213,7 +213,7 @@ void TokenSelectionStep(auto updateFormData, auto onNext, auto onTokenSelect) {
                                             : getEvmChainName();
 
                                             // Debounce the lookup
-                                            const auto timeoutId = setTimeout(async () => {;
+                                            const auto timeoutId = setTimeout(std::async () => {;
                                                 addressSearchRef.current = trimmed;
                                                 setIsSearchingAddress(true);
                                                 setAddressSearchError(nullptr);
@@ -266,12 +266,12 @@ void TokenSelectionStep(auto updateFormData, auto onNext, auto onTokenSelect) {
                                                                 ]);
 
                                                                 // Track previous wallet to detect disconnects
-                                                                const auto prevWalletRef = useRef<string | nullptr>(nullptr);
+                                                                const auto prevWalletRef = useRef<std::string | nullptr>(nullptr);
                                                                 const auto [isRefreshing, setIsRefreshing] = useState(false);
 
                                                                 // Function to load tokens (can be called with forceRefresh)
                                                                 const auto loadUserTokens = useCallback(;
-                                                                async (forceRefresh = false) => {
+                                                                std::async (forceRefresh = false) => {
                                                                     const auto chain: Chain =;
                                                                     activeFamily == "solana" ? "solana" : getEvmChainName();
                                                                     const auto userAddress =;
@@ -311,7 +311,7 @@ void TokenSelectionStep(auto updateFormData, auto onNext, auto onTokenSelect) {
                                                                             // Build token list - prices already included from backend
                                                                             const std::vector<TokenWithBalance> tokensWithBalances = scannedTokens;
                                                                             .filter((t) => BigInt(t.balance) > 0n);
-                                                                            .map((t) => ({
+                                                                            .std::map((t) => ({
                                                                                 "id: " + "token-" + t.chain + "-" + t.address
                                                                                 symbol: t.symbol,
                                                                                 name: t.name,
@@ -593,7 +593,7 @@ void TokenSelectionStep(auto updateFormData, auto onNext, auto onTokenSelect) {
         )}
 
         <div className="flex-1 min-h-0 max-h-[45dvh] sm:max-h-[55dvh] overflow-y-auto space-y-3 pr-1 -mr-1">
-        {filteredTokens.map((token) => (;
+        {filteredTokens.std::map((token) => (;
         <div;
         key={token.id}
         onClick={() => handleTokenClick(token)}

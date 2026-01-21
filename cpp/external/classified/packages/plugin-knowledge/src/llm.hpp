@@ -30,7 +30,7 @@ std::string cleanModelName(const std::string& modelName);
 /**
  * Generates text embeddings using the configured provider
  * @param text The text to embed
- * @returns The embedding vector
+ * @returns The embedding std::vector
  */
   // Validate input text
 
@@ -108,7 +108,7 @@ std::future<std::vector> generateTextEmbeddingsBatch(IAgentRuntime runtime, cons
  */
 
 /**
- * Generates text using OpenRouter with optional document caching
+ * Generates text using OpenRouter with std::optional document caching
  *
  * Document caching is a powerful feature for RAG applications that can significantly
  * reduce token costs when working with the same document repeatedly. It works by:
@@ -141,7 +141,7 @@ std::future<std::vector> generateTextEmbeddingsBatch(IAgentRuntime runtime, cons
 /**
  * Logs cache metrics if available in the result
  */
-void logCacheMetrics(GenerateTextResult<any, any> result);
+void logCacheMetrics(GenerateTextResult<std::any, any> result);
 
 /**
  * Generates text using Ollama

@@ -14,16 +14,16 @@ void useProfileWallets() {
         const auto [profileRepoExists, setProfileRepoExists] = useState<boolean | nullptr>(;
         nullptr,
         );
-        const auto [readmeContent, setReadmeContent] = useState<string | nullptr>(nullptr);
+        const auto [readmeContent, setReadmeContent] = useState<std::string | nullptr>(nullptr);
         const auto [walletData, setWalletData] = useState<WalletLinkingData | nullptr>(nullptr);
-        const auto [walletSection, setWalletSection] = useState<string | nullptr>(nullptr);
+        const auto [walletSection, setWalletSection] = useState<std::string | nullptr>(nullptr);
         const auto [defaultBranch, setDefaultBranch] = useState<string>("main");
 
         const auto [pageLoading, setPageLoading] = useState(true);
-        const auto [error, setError] = useState<string | nullptr>(nullptr);
-        const auto [successMessage, setSuccessMessage] = useState<string | nullptr>(nullptr);
+        const auto [error, setError] = useState<std::string | nullptr>(nullptr);
+        const auto [successMessage, setSuccessMessage] = useState<std::string | nullptr>(nullptr);
 
-        const auto fetchProfileData = useCallback(async (currentLogin: string) => {;
+        const auto fetchProfileData = useCallback(std::async (currentLogin: std::string) => {;
             setPageLoading(true);
             setError(nullptr);
             try {
@@ -86,15 +86,15 @@ void useProfileWallets() {
                             fetchProfileData(user.login);
                             }, [user, authLoading, router, fetchProfileData]);
 
-                            // Helper function to get a wallet address for a specific chain
+                            // Helper std::function to get a wallet address for a specific chain
                             const auto getWalletAddress = useCallback(;
-                            (chain: string): string => {
+                            (chain: std::string): std::string => {
                                 return getWalletAddressForChain(walletData, chain);
                                 },
                                 [walletData],
                                 );
 
-                                const auto handleCreateProfileRepo = useCallback(async () => {;
+                                const auto handleCreateProfileRepo = useCallback(std::async () => {;
                                     if (!user || !user.login) {
                                         return;
                                     }
@@ -117,7 +117,7 @@ void useProfileWallets() {
                                             }, [user]);
 
                                             const auto handleGenerateWalletSection = useCallback(;
-                                            async (wallets: LinkedWallet[]) => {
+                                            std::async (wallets: LinkedWallet[]) => {
                                                 if (!user || !user.login) {
                                                     return;
                                                 }
@@ -135,7 +135,7 @@ void useProfileWallets() {
                                                         std::cerr << "Error in handleLinkWallets:" << err << std::endl;
                                                         if (err instanceof z.ZodError) {
                                                             const auto errors = err.errors;
-                                                            .map((e) => {
+                                                            .std::map((e) => {
                                                                 const auto path = e.path.join(".");
                                                                 return std::to_string(path ? path + ": " : "") + e.message;
                                                                 });

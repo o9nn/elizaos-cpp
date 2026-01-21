@@ -31,7 +31,7 @@ namespace elizaos {
 
 // Custom command to check if element is in dark mode
 
-// Custom command to set ELIZA_CONFIG
+// Custom command to std::set ELIZA_CONFIG
 
 // TypeScript definitions
     struct Chainable {

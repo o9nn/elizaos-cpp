@@ -39,7 +39,7 @@ struct OllamaModelSelectorProps {
     std::string value;
 };
 
-        // If no value set, use the default model
+        // If no value std::set, use the default model
 
 
 } // namespace elizaos

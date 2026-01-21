@@ -237,7 +237,7 @@ TEST_F(AgentLoopTest, InputTypeConversionSafety) {
     // EOF should be negative (typically -1)
     EXPECT_LT(eofValue, 0);
     
-    // EOF should not equal any valid character
+    // EOF should not equal std::any valid character
     EXPECT_NE(eofValue, spaceValue);
     EXPECT_NE(eofValue, qValue);
     

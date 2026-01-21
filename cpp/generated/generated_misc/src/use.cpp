@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza-3d-hyperfy-starter/src/plugin-hyperfy/actions/use.h"
 
-string useItemTemplate = std::string("\
+std::string useItemTemplate = std::string("\
 # Task: Decide if the agent should interact with an entity (e.g. pick up or activate) based on recent context.\
 # DO NOT assume the last message has a command. Look at overall context.\
 # ONLY return entity IDs that exist in the Hyperfy World State.\
@@ -61,7 +61,7 @@ std::shared_ptr<Action> hyperfyUseItemAction = object{
                     logger->warn(std::string("[USE ITEM] No valid entityId extracted."));
                 }
             }
-            catch (const any& err)
+            catch (const std::any& err)
             {
                 logger->error(std::string("[USE ITEM] Extraction failed:"), err);
             }

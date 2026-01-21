@@ -58,7 +58,7 @@ bool isTestOrCiEnvironment();
 
 /**
  * Attempts to delegate to local CLI if available and not already running from it
- * This function should be called at the very beginning of the main CLI entry point
+ * This std::function should be called at the very beginning of the main CLI entry point
  *
  * @returns Promise<boolean> - true if delegated to local CLI, false if continuing with current CLI
  */

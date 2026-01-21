@@ -5,7 +5,7 @@
 #include "@/lib/logger.h"
 using clientLogger = _default;
 
-extern string SIDEBAR_STATE_KEY;
-any useSidebarState();
+extern std::string SIDEBAR_STATE_KEY;
+std::any useSidebarState();
 
 #endif

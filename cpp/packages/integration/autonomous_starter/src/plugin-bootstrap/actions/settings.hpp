@@ -18,17 +18,17 @@ namespace elizaos {
  * Interface representing the structure of a setting update object.
  * @interface
  * @property {string} key - The key of the setting to be updated.
- * @property {string|boolean} value - The new value for the setting, can be a string or a boolean.
+ * @property {string|boolean} value - The new value for the setting, can be a std::string or a boolean.
  */
 /**
  * Interface for updating settings.
  * @typedef {Object} SettingUpdate
  * @property {string} key - The key of the setting to update.
- * @property {string | boolean} value - The new value of the setting, can be a string or a boolean.
+ * @property {std::string | boolean} value - The new value of the setting, can be a std::string or a boolean.
  */
 struct SettingUpdate {
     std::string key;
-    string | boolean value;
+    std::string | boolean value;
 };
 
 // Template for success responses when settings are updated
@@ -47,7 +47,7 @@ struct SettingUpdate {
  * 1. Acknowledge the successful update of settings
  * 2. Maintain {{agentName}}'s personality and tone
  * 3. Provide clear guidance on the next setting that needs to be configured
- * 4. Explain what the next setting is for and how to set it
+ * 4. Explain what the next setting is for and how to std::set it
  * 5. If appropriate, mention how many required settings remain
  *
  * Write a natural, conversational response that {{agentName}} would send about the successful update and next steps.
@@ -60,7 +60,7 @@ struct SettingUpdate {
  * Template for generating a response for failed setting updates.
  *
  * @template T
- * @param {string} failureTemplate - The failure template string to fill in with dynamic content.
+ * @param {string} failureTemplate - The failure template std::string to fill in with dynamic content.
  * @returns {string} - The filled-in template for generating the response.
  */
 
@@ -148,7 +148,7 @@ void categorizeSettings(WorldSettings worldSettings); {
  * Processes multiple setting updates atomically
  */
 
-    // Create a copy of the state for atomic updates
+    // Create a copy of the state for std::atomic updates
 
     // Process all updates
 
@@ -158,7 +158,7 @@ void categorizeSettings(WorldSettings worldSettings); {
 
       // Execute onSetAction if defined
 
-    // If any updates were made, save the entire state to world metadata
+    // If std::any updates were made, save the entire state to world metadata
       // Save to world metadata
 
       // Verify save by retrieving it again

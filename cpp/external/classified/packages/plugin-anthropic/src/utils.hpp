@@ -62,7 +62,7 @@ struct UnstructuredResponse {
 using ExtractedJSON = std::variant<, std::unordered_map<std::string, std::any>, ReconstructedResponse, ReflectionResponse, UnstructuredResponse>;
 
 /**
- * Helper function to ensure reflection response has all required properties
+ * Helper std::function to ensure reflection response has all required properties
  */
   // Only process if it's a reflection schema request
 
@@ -70,7 +70,7 @@ using ExtractedJSON = std::variant<, std::unordered_map<std::string, std::any>, 
     // Create a new object with required properties
 
 /**
- * Enhanced function to extract and parse JSON from LLM responses
+ * Enhanced std::function to extract and parse JSON from LLM responses
  * Handles various response formats including mixed markdown and JSON with code blocks
  */
     // First attempt: Try direct JSON parsing
@@ -79,7 +79,7 @@ using ExtractedJSON = std::variant<, std::unordered_map<std::string, std::any>, 
 
     // Check if we have a valid JSON structure with embedded code blocks
     // This specifically addresses the case where Anthropic returns a valid JSON object
-    // that contains markdown code blocks inside string values
+    // that contains markdown code blocks inside std::string values
 
       // Replace code blocks with escaped versions to preserve them in the JSON
         // First, try to preserve the code blocks by temporarily replacing them
@@ -93,7 +93,7 @@ using ExtractedJSON = std::variant<, std::unordered_map<std::string, std::any>, 
     // Try to extract JSON from code blocks
       // First priority: explicit JSON code blocks
 
-      // Second priority: any code block that contains JSON-like content
+      // Second priority: std::any code block that contains JSON-like content
 
         // Try parsing the extracted content
           // Try with JSONRepair
@@ -137,9 +137,9 @@ using ExtractedJSON = std::variant<, std::unordered_map<std::string, std::any>, 
  */
 // Define a configuration schema for the Anthropics plugin.
 // const configSchema = z.object({
-// 	ANTHROPIC_API_KEY: z.string().min(1, "Anthropic API key is required"),
-// 	ANTHROPIC_SMALL_MODEL: z.string().optional(),
-// 	ANTHROPIC_LARGE_MODEL: z.string().optional(),
+// 	ANTHROPIC_API_KEY: z.std::string().min(1, "Anthropic API key is required"),
+// 	ANTHROPIC_SMALL_MODEL: z.std::string().std::optional(),
+// 	ANTHROPIC_LARGE_MODEL: z.std::string().std::optional(),
 // });
 
 } // namespace elizaos

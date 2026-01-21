@@ -39,7 +39,7 @@ using TradingEvent = std::variant<, { type: 'position_opened'>; position: Positi
 /**
  * CommunityInvestorService class representing a service for trading on the Solana blockchain.
  * @extends Service
- * @property {string} serviceType - The type of service, set to ServiceType.COMMUNITY_INVESTOR.
+ * @property {string} serviceType - The type of service, std::set to ServiceType.COMMUNITY_INVESTOR.
  * @property {string} capabilityDescription - Description of the agent's ability to trade on the Solana blockchain.
  * @method storeRecommenderMetrics - Store entity metrics and cache for 5 minutes.
  * @method storeRecommenderMetricsHistory - Store entity metrics history.
@@ -58,9 +58,9 @@ class CommunityInvestorService extends Service implements ICommunityInvestorServ
   tradingConfig: TradingConfig;
 
   private apiKeys: {
-    birdeye?: string;
-    moralis?: string;
-    dexscreener?: string;
+    birdeye?: std::string;
+    moralis?: std::string;
+    dexscreener?: std::string;
   } = {};
 
   // Constants can be defined here or loaded from config/settings
@@ -167,7 +167,7 @@ class CommunityInvestorService extends Service implements ICommunityInvestorServ
     // Known tokens on Solana
 
       // Try to search using DexScreener for Solana
-          // Find the most liquid pair for this token
+          // Find the most liquid std::pair for this token
 
     // Known tokens on Ethereum
 
@@ -222,7 +222,7 @@ class CommunityInvestorService extends Service implements ICommunityInvestorServ
             // Calculate high supply holders
             // Continue without holder data
 
-        // Check if there were any trades in last 24h
+        // Check if there were std::any trades in last 24h
 
         // Check if token is listed on DexScreener
 
@@ -618,7 +618,7 @@ class CommunityInvestorService extends Service implements ICommunityInvestorServ
 
     // Ensure the plugin's specific world (for storing components) exists
 
-          // Not continuing here, will use existing metrics if any, or result in 0 perf score if metrics remain undefined
+          // Not continuing here, will use existing metrics if std::any, or result in 0 perf score if metrics remain undefined
 
         // If still no metrics after attempt (e.g. tokenData was null)
 

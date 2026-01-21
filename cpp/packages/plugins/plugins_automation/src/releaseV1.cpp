@@ -42,7 +42,7 @@ std::future<void> main() {
                         repo: repo.name,
                         branch: TARGET_BRANCH,
                         });
-                        } catch (error: any) {
+                        } catch (error: std::any) {
                             if (error.status == 404) {
                                 console.log(
                                 "Skipping " + ORG_NAME + "/" + repo.name + " (no " + TARGET_BRANCH + " branch)";
@@ -71,7 +71,7 @@ std::future<void> main() {
                                         continue;
                                     }
                                 }
-                                } catch (error: any) {
+                                } catch (error: std::any) {
                                     if (error.status != 404) {
                                         throw;
                                     }
@@ -121,7 +121,7 @@ std::future<void> updateWorkflowFile(Octokit octokit, const std::string& repoNam
                     throw std::runtime_error("Unexpected response format");
                 }
                 existingFile = response.data;
-                } catch (error: any) {
+                } catch (error: std::any) {
                     if (error.status != 404) {
                         throw;
                     }
@@ -183,7 +183,7 @@ std::future<void> updatePackageJsonDependencies(Octokit octokit, const std::stri
                     throw std::runtime_error("Unexpected response format");
                 }
                 packageFile = response.data;
-                } catch (error: any) {
+                } catch (error: std::any) {
                     if (error.status == 404) {
                         std::cout << "  ⚠️ No package.json found in " + repoName << std::endl;
                         return;
@@ -195,10 +195,10 @@ std::future<void> updatePackageJsonDependencies(Octokit octokit, const std::stri
                 "utf8";
                 );
                 const auto pkg = /* JSON.parse */ packageContent as {;
-                    dependencies?: Record<string, string>;
-                    devDependencies?: Record<string, string>;
-                    peerDependencies?: Record<string, string>;
-                    [key: string]: any;
+                    dependencies?: Record<std::string, string>;
+                    devDependencies?: Record<std::string, string>;
+                    peerDependencies?: Record<std::string, string>;
+                    [key: std::string]: std::any;
                     };
 
                     auto updated = false;
@@ -287,7 +287,7 @@ std::future<void> removeBunLockfile(Octokit octokit, const std::string& repoName
                 console.log(
                 "  🗑️ Removed bun.lock in " + repoName + " (will be regenerated on next install)";
                 );
-                } catch (error: any) {
+                } catch (error: std::any) {
                     if (error.status == 404) {
                         std::cout << "  ℹ️ No bun.lock found in " + repoName << std::endl;
                         } else {

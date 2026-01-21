@@ -9,19 +9,19 @@
 #include "./util.h"
 
 extern std::shared_ptr<PythCluster> PYTHNET_CLUSTER_NAME;
-extern string SOLUSD_SYMBOL;
+extern std::string SOLUSD_SYMBOL;
 extern double MAX_CONCURRENT_TOKENS;
 extern double totalUpdatesProcessed;
 extern double failedUpdates;
-extern any lastUpdateTime;
+extern std::any lastUpdateTime;
 std::shared_ptr<Promise<double>> getSOLPrice();
 
 std::shared_ptr<Promise<double>> fetchSOLPriceFromPyth();
 
-std::shared_ptr<Promise<any>> calculateTokenMarketData(any token, double solPrice);
+std::shared_ptr<Promise<any>> calculateTokenMarketData(std::any token, double solPrice);
 
-any calculateRaydiumTokenMarketData(any token);
+std::any calculateRaydiumTokenMarketData(std::any token);
 
-any getMarketDataMetrics();
+std::any getMarketDataMetrics();
 
 #endif

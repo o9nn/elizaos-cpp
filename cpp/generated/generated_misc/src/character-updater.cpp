@@ -8,9 +8,9 @@ std::shared_ptr<Character> applyOperationsToCharacter(std::shared_ptr<Character>
         try
         {
             static switch_type __switch420_737 = {
-                { any(std::string("add")), 1 },
-                { any(std::string("modify")), 2 },
-                { any(std::string("delete")), 3 }
+                { std::any(std::string("add")), 1 },
+                { std::any(std::string("modify")), 2 },
+                { std::any(std::string("delete")), 3 }
             };
             switch (__switch420_737[op->type])
             {
@@ -25,16 +25,16 @@ std::shared_ptr<Character> applyOperationsToCharacter(std::shared_ptr<Character>
                 break;
             }
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
-            throw any(std::make_shared<Error>(std::string("Failed to apply operation ") + op->type + std::string(" at path ") + op->path + std::string(": ") + error["message"] + string_empty));
+            throw std::any(std::make_shared<Error>(std::string("Failed to apply operation ") + op->type + std::string(" at path ") + op->path + std::string(": ") + error["message"] + string_empty));
         }
     }
     return updatedCharacter;
 };
 
 
-void addValue(any obj, string path, any value)
+void addValue(std::any obj, std::string path, std::any value)
 {
     auto normalizedPath = (path->startsWith(std::string("$"))) ? path : std::string("$.") + path + string_empty;
     if (path->includes(std::string("[]"))) {
@@ -75,14 +75,14 @@ void addValue(any obj, string path, any value)
 };
 
 
-void modifyValue(any obj, string path, any value)
+void modifyValue(std::any obj, std::string path, std::any value)
 {
     auto normalizedPath = (path->startsWith(std::string("$"))) ? path : std::string("$.") + path + string_empty;
     shared found = false;
     JSONPath(object{
         object::pair{std::string("path"), normalizedPath}, 
         object::pair{std::string("json"), obj}, 
-        object::pair{std::string("callback"), [=](any val, any type, any payload) mutable
+        object::pair{std::string("callback"), [=](std::any val, std::any type, std::any payload) mutable
         {
             if (AND((AND((payload), (payload["parent"]))), (payload["parentProperty"] != undefined))) {
                 payload["parent"][payload["parentProperty"]] = value;
@@ -92,18 +92,18 @@ void modifyValue(any obj, string path, any value)
         }
     });
     if (!found) {
-        throw any(std::make_shared<Error>(std::string("Path ") + path + std::string(" does not exist")));
+        throw std::any(std::make_shared<Error>(std::string("Path ") + path + std::string(" does not exist")));
     }
 };
 
 
-void deleteValue(any obj, string path)
+void deleteValue(std::any obj, std::string path)
 {
     auto normalizedPath = (path->startsWith(std::string("$"))) ? path : std::string("$.") + path + string_empty;
     JSONPath(object{
         object::pair{std::string("path"), normalizedPath}, 
         object::pair{std::string("json"), obj}, 
-        object::pair{std::string("callback"), [=](any val, any type, any payload) mutable
+        object::pair{std::string("callback"), [=](std::any val, std::any type, std::any payload) mutable
         {
             if (AND((payload), (payload["parent"]))) {
                 if (Array->isArray(payload["parent"])) {
@@ -121,7 +121,7 @@ void deleteValue(any obj, string path)
 };
 
 
-boolean validateCharacterStructure(any character)
+boolean validateCharacterStructure(std::any character)
 {
     if (OR((!character["name"]), (type_of(character["name"]) != std::string("string")))) {
         return false;

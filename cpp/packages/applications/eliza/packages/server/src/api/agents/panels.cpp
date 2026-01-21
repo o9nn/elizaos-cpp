@@ -11,7 +11,7 @@ express::Router createAgentPanelsRouter(const std::unordered_map<UUID, IAgentRun
         const auto router = express.Router();
 
         // Get Agent Panels (public GET routes)
-        router.get("/:agentId/panels", async (req, res) => {
+        router.get("/:agentId/panels", std::async (req, res) => {
             const auto agentId = validateUuid(req.params.agentId);
             if (!agentId) {
                 return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
@@ -26,7 +26,7 @@ express::Router createAgentPanelsRouter(const std::unordered_map<UUID, IAgentRun
                 const auto publicPanels = runtime.plugins;
                 .flatMap((plugin) => plugin.routes || []);
                 .filter((route) => route.public == true && route.type == "GET" && route.name);
-                .map((route) => ({
+                .std::map((route) => ({
                     name: route.name,
                     "path: " + "/api" + std::to_string(route.path.startsWith("/") ? route.path : `/${route.path}`) + "?agentId=" + agentId
                     }));

@@ -14,15 +14,15 @@ namespace elizaos {
 
 
 
-// Local utility function to avoid circular dependency
-bool parseBooleanFromText(string | undefined | null value);
+// Local utility std::function to avoid circular dependency
+bool parseBooleanFromText(std::string | undefined | null value);
 
 /**
  * Interface representing a log entry.
  */
 struct LogEntry {
     std::optional<double> time;
-    std::optional<string | number> level;
+    std::optional<std::string | number> level;
     std::optional<std::string> msg;
     std::optional<std::string> message;
     std::optional<std::string> agentName;
@@ -75,14 +75,14 @@ class InMemoryLogger {
 
 // Basic adze setup (no configuration needed for this version)
 
-// Helper function to capture logs to in-memory storage
+// Helper std::function to capture logs to in-memory storage
 void captureLogEntry(const std::string& level, const std::vector<std::any>& args);
 
 // Create the main logger instance with custom methods
 class ElizaLogger {
-  private context: any;
+  private context: std::any;
 
-  constructor(config?: any) {
+  constructor(config?: std::any) {
     this.context = config?.context || {};
 
     // Bind all standard methods
@@ -125,7 +125,7 @@ class ElizaLogger {
 
 // Add symbol for accessing in-memory logger (for compatibility with logging router)
 
-// Create logger factory function
+// Create logger factory std::function
 
   // Add in-memory logger access
 

@@ -39,7 +39,7 @@ std::future<KeypairResult> getWalletKey(IAgentRuntime runtime, auto requirePriva
 
                         if (!publicKeyString) {
                             throw new Error(
-                            "Solana Public key not found in settings, but plugin was loaded, please set SOLANA_PUBLIC_KEY";
+                            "Solana Public key not found in settings, but plugin was loaded, please std::set SOLANA_PUBLIC_KEY";
                             );
                         }
 

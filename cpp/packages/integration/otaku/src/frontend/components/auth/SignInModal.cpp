@@ -23,7 +23,7 @@ void SignInModal() {
         // Local state for auth flow
         const auto [authMethod, setAuthMethod] = useState<AuthMethod>("email");
         const auto [authStep, setAuthStep] = useState<AuthStep>("credentials");
-        const auto [flowId, setFlowId] = useState<string | nullptr>(nullptr);
+        const auto [flowId, setFlowId] = useState<std::string | nullptr>(nullptr);
 
         // Email auth state
         const auto [email, setEmail] = useState("");
@@ -65,7 +65,7 @@ void SignInModal() {
                     if (!isOpen) return null;
 
                     // Handle email submission (first step)
-                    const auto handleEmailSubmit = async () => {;
+                    const auto handleEmailSubmit = std::async () => {;
                         if (!email || isLoading || !emailHook) return;
                         setError("");
                         setIsLoading(true);
@@ -76,7 +76,7 @@ void SignInModal() {
                             setFlowId(result.flowId);
                             setAuthStep("verification");
                             std::cout << " OTP sent to:" << email << std::endl;
-                            } catch (err: any) {
+                            } catch (err: std::any) {
                                 std::cerr << " CDP email sign in failed:" << err << std::endl;
                                 std::cerr << "Error details:" << /* JSON.stringify */ std::string(err, nullptr, 2) << std::endl;
                                 const auto errorMessage = err.message || err.errorMessage || "Failed to send OTP";
@@ -87,7 +87,7 @@ void SignInModal() {
                                 };
 
                                 // Handle SMS submission (first step)
-                                const auto handleSmsSubmit = async () => {;
+                                const auto handleSmsSubmit = std::async () => {;
                                     if (!phoneNumber || isLoading || !smsHook) return;
                                     setError("");
                                     setIsLoading(true);
@@ -98,7 +98,7 @@ void SignInModal() {
                                         setFlowId(result.flowId);
                                         setAuthStep("verification");
                                         std::cout << " OTP sent to:" << fullPhoneNumber << std::endl;
-                                        } catch (err: any) {
+                                        } catch (err: std::any) {
                                             std::cerr << " CDP SMS sign in failed:" << err << std::endl;
                                             const auto errorMessage = err.message || err.errorMessage || "Failed to send SMS OTP";
                                             setError(errorMessage);
@@ -108,7 +108,7 @@ void SignInModal() {
                                             };
 
                                             // Handle email OTP verification (second step)
-                                            const auto handleEmailOtpSubmit = async () => {;
+                                            const auto handleEmailOtpSubmit = std::async () => {;
                                                 if (!flowId || !otp || isLoading || !emailOtpHook) return;
                                                 setError("");
                                                 setIsLoading(true);
@@ -116,7 +116,7 @@ void SignInModal() {
                                                     const auto { user } = emailOtpHook.verifyEmailOTP({ flowId, otp });
                                                     std::cout << " CDP wallet connected via email!" << user.evmAccounts.[0] << std::endl;
                                                     resetForm();
-                                                    } catch (err: any) {
+                                                    } catch (err: std::any) {
                                                         std::cerr << " CDP email OTP verification failed:" << err << std::endl;
                                                         const auto errorMessage = err.message || err.errorMessage || "Invalid OTP code";
                                                         setError(errorMessage);
@@ -126,7 +126,7 @@ void SignInModal() {
                                                         };
 
                                                         // Handle SMS OTP verification (second step)
-                                                        const auto handleSmsOtpSubmit = async () => {;
+                                                        const auto handleSmsOtpSubmit = std::async () => {;
                                                             if (!flowId || !otp || isLoading || !smsOtpHook) return;
                                                             setError("");
                                                             setIsLoading(true);
@@ -134,7 +134,7 @@ void SignInModal() {
                                                                 const auto { user } = smsOtpHook.verifySmsOTP({ flowId, otp });
                                                                 std::cout << " CDP wallet connected via SMS!" << user.evmAccounts.[0] << std::endl;
                                                                 resetForm();
-                                                                } catch (err: any) {
+                                                                } catch (err: std::any) {
                                                                     std::cerr << " CDP SMS OTP verification failed:" << err << std::endl;
                                                                     const auto errorMessage = err.message || err.errorMessage || "Invalid OTP code";
                                                                     setError(errorMessage);
@@ -144,7 +144,7 @@ void SignInModal() {
                                                                     };
 
                                                                     // Handle Google OAuth
-                                                                    const auto handleGoogleSignIn = async () => {;
+                                                                    const auto handleGoogleSignIn = std::async () => {;
                                                                         if (isLoading || !oauthHook) return;
                                                                         setError("");
                                                                         setIsLoading(true);
@@ -152,7 +152,7 @@ void SignInModal() {
                                                                             oauthHook.signInWithOAuth("google");
                                                                             std::cout << " Redirecting to Google OAuth..." << std::endl;
                                                                             // OAuth will redirect, so we don't need to do anything else
-                                                                            } catch (err: any) {
+                                                                            } catch (err: std::any) {
                                                                                 std::cerr << " CDP Google OAuth failed:" << err << std::endl;
                                                                                 const auto errorMessage = err.message || err.errorMessage || "Failed to start Google sign-in";
                                                                                 setError(errorMessage);

@@ -20,7 +20,7 @@ std::future<std::any> parseUserModificationRequest(IAgentRuntime runtime, const 
 
     "${messageText}";
 
-    Extract any of the following types of modifications:
+    Extract std::any of the following types of modifications:
     - Name changes (what the agent should be called);
     - System prompt changes (fundamental behavioral instructions);
     - Bio elements (personality traits, background info);
@@ -60,9 +60,9 @@ std::future<> evaluateModificationSafety(IAgentRuntime runtime, const std::any& 
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     isAppropriate: boolean;
-    concerns: string[];
-    reasoning: string;
-    acceptableChanges?: any;
+    concerns: std::string[];
+    reasoning: std::string;
+    acceptableChanges?: std::any;
 
 }
 

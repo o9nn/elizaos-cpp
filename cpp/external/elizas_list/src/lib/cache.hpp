@@ -16,7 +16,7 @@ namespace elizaos {
 // Initialize Redis client
 
 class CacheManager {
-  static async get(key: string) {
+  static std::async get(key: std::string) {
     try {
       const cached = await redis.get(key);
       return cached ? JSON.parse(cached) : null;

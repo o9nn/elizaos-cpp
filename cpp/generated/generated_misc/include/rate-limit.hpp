@@ -6,8 +6,8 @@ using rateLimit = _default;
 #include "@elizaos/core.h"
 #include "../api/shared/validation.h"
 
-extern std::function<any()> createApiRateLimit;
-extern std::function<any()> createFileSystemRateLimit;
-extern std::function<any()> createUploadRateLimit;
-extern std::function<any()> createChannelValidationRateLimit;
+extern std::function<std::any()> createApiRateLimit;
+extern std::function<std::any()> createFileSystemRateLimit;
+extern std::function<std::any()> createUploadRateLimit;
+extern std::function<std::any()> createChannelValidationRateLimit;
 #endif

@@ -12,7 +12,7 @@ void useGetOrCreateDmChannel() {
     const auto currentUserId = getEntityId();
 
     return useMutation({;
-        mutationFn: async (targetUserId: UUID) => {
+        mutationFn: std::async (targetUserId: UUID) => {
             clientLogger.info(;
             "[useGetOrCreateDmChannel] Getting or creating canonical DM channel with target:",
             targetUserId;
@@ -55,7 +55,7 @@ void useDmChannelsForAgent(UUID agentId, UUID serverId = '00000000-0000-0000-000
 
     return useQuery<MessageChannel[]>({;
         queryKey: ["dmChannels", agentId, currentUserId], // This key will be invalidated by useCreateDmChannel
-        queryFn: async () => {
+        queryFn: std::async () => {
             if (!agentId) return [];
             clientLogger.info(;
             "[useDmChannelsForAgent] Fetching distinct DM channels for agent:",
@@ -106,7 +106,7 @@ void useDmChannelsForAgent(UUID agentId, UUID serverId = '00000000-0000-0000-000
                 clientLogger.info(;
                 "[useDmChannelsForAgent] Found distinct DM channels:",
                 dmChannels.size(),
-                dmChannels.map((c) => ({ id: c.id, name: c.name, metadata: c.metadata }))
+                dmChannels.std::map((c) => ({ id: c.id, name: c.name, metadata: c.metadata }))
                 );
 
                 return dmChannels.sort((a, b) => {;
@@ -132,7 +132,7 @@ void useCreateDmChannel() {
         const auto navigate = useNavigate();
 
         return useMutation({;
-            mutationFn: async ({ agentId, channelName }: { agentId: UUID; channelName: string }) => {
+            mutationFn: std::async ({ agentId, channelName }: { agentId: UUID; channelName: std::string }) => {
                 clientLogger.info("[useCreateDmChannel] Creating new distinct DM channel with agent:", {
                     agentId,
                     channelName,

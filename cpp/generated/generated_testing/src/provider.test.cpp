@@ -1,13 +1,13 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/plugin-specification/core-plugin-v1/src/__tests__/provider.test.h"
 
-any mockRuntime = as<any>(object{
+std::any mockRuntime = as<any>(object{
     object::pair{std::string("getSetting"), vi->fn()->mockReturnValue(std::string("test-setting"))}, 
     object::pair{std::string("logger"), object{
         object::pair{std::string("info"), vi->fn()}, 
         object::pair{std::string("error"), vi->fn()}
     }}
 });
-any mockMessage = as<any>(object{
+std::any mockMessage = as<any>(object{
     object::pair{std::string("id"), std::string("00000000-0000-0000-0000-000000000001")}, 
     object::pair{std::string("roomId"), std::string("00000000-0000-0000-0000-000000000002")}, 
     object::pair{std::string("content"), object{
@@ -155,7 +155,7 @@ void Main(void)
         {
             auto stringProvider = object{
                 object::pair{std::string("name"), std::string("stringProvider")}, 
-                object::pair{std::string("get"), vi->fn()->mockResolvedValue(std::string("Just a string result"))}
+                object::pair{std::string("get"), vi->fn()->mockResolvedValue(std::string("Just a std::string result"))}
             };
             auto numberProvider = object{
                 object::pair{std::string("name"), std::string("numberProvider")}, 
@@ -168,7 +168,7 @@ void Main(void)
             expect(stringResult)->toEqual(object{
                 object::pair{std::string("values"), object{}}, 
                 object::pair{std::string("data"), object{}}, 
-                object::pair{std::string("text"), std::string("Just a string result")}
+                object::pair{std::string("text"), std::string("Just a std::string result")}
             });
             expect(numberResult)->toEqual(object{
                 object::pair{std::string("values"), object{}}, 

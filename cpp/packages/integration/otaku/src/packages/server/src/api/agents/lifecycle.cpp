@@ -12,7 +12,7 @@ express::Router createAgentLifecycleRouter(ElizaOS elizaOS, AgentServer serverIn
         const auto db = serverInstance.database;
 
         // Start an existing agent - ADMIN ONLY
-        router.post("/:agentId/start", requireAuth, requireAdmin, async (req: AuthenticatedRequest, res) => {
+        router.post("/:agentId/start", requireAuth, requireAdmin, std::async (req: AuthenticatedRequest, res) => {
             const auto agentId = validateUuid(req.params.agentId);
             if (!agentId) {
                 return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
@@ -70,7 +70,7 @@ express::Router createAgentLifecycleRouter(ElizaOS elizaOS, AgentServer serverIn
                         });
 
                         // Stop an existing agent - ADMIN ONLY
-                        router.post("/:agentId/stop", requireAuth, requireAdmin, async (req: AuthenticatedRequest, res) => {
+                        router.post("/:agentId/stop", requireAuth, requireAdmin, std::async (req: AuthenticatedRequest, res) => {
                             const auto agentId = validateUuid(req.params.agentId);
                             if (!agentId) {
                                 logger.debug('[AGENT STOP] Invalid agent ID format');

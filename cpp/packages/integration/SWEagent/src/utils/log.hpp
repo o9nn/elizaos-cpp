@@ -29,10 +29,10 @@ struct AgentLogger {
  */
 class SweAgentLogger implements AgentLogger {
   public logger: pino.Logger;
-  private emoji: string;
-  private name: string;
+  private emoji: std::string;
+  private name: std::string;
 
-  constructor(name: string, emoji: string = '') {
+  constructor(name: std::string, emoji: std::string = '') {
     this.emoji = emoji;
     this.name = name;
 
@@ -55,7 +55,7 @@ class SweAgentLogger implements AgentLogger {
       level: process.env.LOG_LEVEL || 'debug',
       transport: transportOptions,
       formatters: {
-        level: (label: string) => {
+        level: (label: std::string) => {
           return { level: label.toUpperCase() };
         },
       },
@@ -70,16 +70,16 @@ class SweAgentLogger implements AgentLogger {
  * @param emoji Optional emoji prefix for the logger
  * @returns AgentLogger instance
  */
-AgentLogger getLogger(const std::string& name, string = '' emoji);
+AgentLogger getLogger(const std::string& name, std::string = '' emoji);
 
 /**
- * Set thread name for current thread/process
+ * Set std::thread name for current thread/process
  * In Node.js, this associates the process ID with a name
  */
 void setThreadName(const std::string& name);
 
 /**
- * Get current thread name
+ * Get current std::thread name
  */
 std::string getThreadName();
 
@@ -104,7 +104,7 @@ void removeFileHandler(const std::string& _logFile);
 void addLoggerNamesToStreamHandlers();
 
 /**
- * Register thread name (alias for setThreadName)
+ * Register std::thread name (alias for setThreadName)
  */
 void registerThreadName(const std::string& name);
 
@@ -114,8 +114,8 @@ void registerThreadName(const std::string& name);
 void setStreamHandlerLevels(const std::string& level);
 
 /**
- * Convenience function to get the default logger
+ * Convenience std::function to get the default logger
  */
-void log(const std::string& message, string = 'info' level);
+void log(const std::string& message, std::string = 'info' level);
 
 } // namespace elizaos

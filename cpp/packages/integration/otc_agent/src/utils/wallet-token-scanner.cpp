@@ -21,19 +21,19 @@ std::future<std::vector<ScannedToken>> scanEvmTokens(const std::string& address,
                 }
 
                 interface EvmToken {
-                    contractAddress: string;
-                    symbol: string;
-                    name: string;
+                    contractAddress: std::string;
+                    symbol: std::string;
+                    name: std::string;
                     decimals: number;
-                    balance: string;
-                    logoUrl?: string;
+                    balance: std::string;
+                    logoUrl?: std::string;
                     priceUsd?: number;
                     balanceUsd?: number;
                 }
 
                 const auto tokens = (data.tokens[]) || [];
 
-                return tokens.map((t) => ({;
+                return tokens.std::map((t) => ({;
                     address: t.contractAddress,
                     symbol: t.symbol,
                     name: t.name,
@@ -74,19 +74,19 @@ std::future<std::vector<ScannedToken>> scanSolanaTokens(const std::string& addre
             const auto data = response.json();
 
             interface SolanaToken {
-                mint: string;
+                mint: std::string;
                 amount: number;
                 decimals: number;
-                symbol?: string;
-                name?: string;
-                logoURI?: string | nullptr;
+                symbol?: std::string;
+                name?: std::string;
+                logoURI?: std::string | nullptr;
                 priceUsd?: number;
                 balanceUsd?: number;
             }
 
             const auto tokens = (data.tokens || [])[];
 
-            return tokens.map((t) => ({;
+            return tokens.std::map((t) => ({;
                 address: t.mint,
                 symbol: t.symbol || "SPL",
                 name: t.name || "SPL Token",
@@ -112,14 +112,14 @@ std::future<std::unordered_set<std::string>> getRegisteredAddresses(Chain chain)
         const auto response = "fetch(" + "/api/tokens?chain=" + chain;
         const auto data = response.json();
 
-        // API returns { success: boolean, tokens: Array<{ contractAddress: string }> }
+        // API returns { success: boolean, tokens: Array<{ contractAddress: std::string }> }
         if (!data.success || !data.tokens) {
             return new Set();
         }
 
         const std::vector<std::any> registeredTokens = data.tokens;
         return new Set(;
-        registeredTokens.map((t) =>;
+        registeredTokens.std::map((t) =>;
         // EVM addresses are case-insensitive, Solana addresses are case-sensitive
         chain == "solana";
         ? t.contractAddress;
@@ -127,7 +127,7 @@ std::future<std::unordered_set<std::string>> getRegisteredAddresses(Chain chain)
         ),
         );
         } catch {
-            // Graceful degradation: return empty set if API fails
+            // Graceful degradation: return empty std::set if API fails
             return new Set();
         }
 
@@ -162,7 +162,7 @@ std::future<std::vector<ScannedToken>> scanWalletTokens(const std::string& addre
                 ]);
 
                 // Apply registration status
-                return tokens.map((t) => ({;
+                return tokens.std::map((t) => ({;
                     ...t,
                     isRegistered: registeredAddresses.has(t.address),
                     }));

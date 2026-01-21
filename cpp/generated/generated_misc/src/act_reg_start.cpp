@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/autonomous-trader/actions/act_reg_start.h"
 
-any generateRandomString(any length)
+std::any generateRandomString(std::any length)
 {
     auto chars = std::string("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
     auto result = string_empty;
@@ -13,7 +13,7 @@ any generateRandomString(any length)
 };
 
 
-any extractEmails(any text)
+std::any extractEmails(std::any text)
 {
     auto emailRegex = (new RegExp(std::string("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}")));
     auto matches = text["match"](emailRegex);
@@ -21,7 +21,7 @@ any extractEmails(any text)
 };
 
 
-void sendVerifyEmail(any address, any regCode)
+void sendVerifyEmail(std::any address, std::any regCode)
 {
     console->log(std::string("sending verify email to"), address);
     auto mailOptions = object{
@@ -35,14 +35,14 @@ void sendVerifyEmail(any address, any regCode)
         auto info = std::async([=]() { transporter->sendMail(mailOptions); });
         console->log(std::string("Email sent:"), info->envelope);
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("Error sending email:"), error);
     }
 };
 
 
-any transporter = nodemailer->createTransport(object{
+std::any transporter = nodemailer->createTransport(object{
     object::pair{std::string("host"), process->env->SMTP_HOST}, 
     object::pair{std::string("port"), OR((parseInt(process->env->SMTP_PORT)), (587))}, 
     object::pair{std::string("secure"), false}, 

@@ -85,7 +85,7 @@ void Main(void)
             expect(validatePort(std::string("8080.0")))->toBe(8080);
         }
         );
-        it(std::string("should handle string with spaces correctly"), [=]() mutable
+        it(std::string("should handle std::string with spaces correctly"), [=]() mutable
         {
             expect(validatePort(std::string(" 3000 ")))->toBe(3000);
             expect(validatePort(std::string("30 00")))->toBe(30);

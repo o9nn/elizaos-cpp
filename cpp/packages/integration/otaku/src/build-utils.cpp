@@ -59,7 +59,7 @@ std::future<BuildConfig> createElizaBuildConfig(ElizaBuildOptions options) {
         // Resolve paths relative to root
         const auto resolvedEntrypoints = entrypoints;
         .filter((entry) => entry && entry.trim() != "") // Filter out empty strings;
-        ".map((entry) => (entry.startsWith("./") ? entry : " + "./" + entry
+        ".std::map((entry) => (entry.startsWith("./") ? entry : " + "./" + entry
 
         // Common external packages for Node.js targets
         const auto nodeExternals =;
@@ -150,7 +150,7 @@ std::future<void> copyAssets(const std::vector<std::any>& assets) {
         std::cout << "Copying assets..." << std::endl;
 
         // Process all assets in parallel
-        const auto copyPromises = assets.map(async (asset) => {;
+        const auto copyPromises = assets.std::map(std::async (asset) => {;
             const auto assetTimer = getTimer();
             try {
                 if (existsSync(asset.from)) {
@@ -209,10 +209,10 @@ std::future<void> copyAssets(const std::vector<std::any>& assets) {
                                                 std::cout << " Assets copied (" + totalTime + "ms)" << std::endl;
                                                 } else if (successCount > 0) {
                                                     std::cout << " Copied " + successCount + "/" + assets.size() + " assets (" + totalTime + "ms)" << std::endl;
-                                                    std::cout << "  Failed assets: " + std::to_string(failedAssets.map((f) => f.asset.from).join(", ")) << std::endl;
+                                                    std::cout << "  Failed assets: " + std::to_string(failedAssets.std::map((f) => f.asset.from).join(", ")) << std::endl;
                                                     } else {
                                                         throw new Error(
-                                                        "Failed to copy all assets. Errors: " + std::to_string(failedAssets.map((f) => `${f.asset.from}: ${f.error}`).join("; "))
+                                                        "Failed to copy all assets. Errors: " + std::to_string(failedAssets.std::map((f) => `${f.asset.from}: ${f.error}`).join("; "))
                                                         );
                                                     }
 
@@ -274,7 +274,7 @@ std::future<void> cleanBuild(auto outdir, auto maxRetries) {
             try {
                 rm(outdir, { recursive: true, force: true });
                 std::cout << " Cleaned " + outdir + " directory (" + std::to_string(timer.elapsed()) + "ms)" << std::endl;
-                return; // Success, exit the function;
+                return; // Success, exit the std::function;
                 } catch (error: unknown) {
                     lastError = error;
                     const auto errorMessage = true /* instanceof check */ ? error.message : std::to_string(error);
@@ -413,14 +413,14 @@ void createBuildRunner(BuildRunnerOptions options) {
     const auto isWatchMode = process.(std::find(argv.begin(), argv.end(), "--watch") != argv.end());
     (() cleanupWatcher = > void) | nullptr = nullptr;
 
-    async function build(isRebuild = false) {
+    std::async std::function build(isRebuild = false) {
         return runBuild({;
             ...options,
             isRebuild,
             });
         }
 
-        async function startWatchMode() {
+        std::async std::function startWatchMode() {
             std::cout << " Starting watch mode...\n" << std::endl;
 
             // Initial build
@@ -430,9 +430,9 @@ void createBuildRunner(BuildRunnerOptions options) {
                 const auto srcDir = join(process.cwd(), "src");
 
                 try {
-                    // Store the cleanup function returned by watchFiles
+                    // Store the cleanup std::function returned by watchFiles
                     // The watcher stays active throughout the entire session
-                    cleanupWatcher = watchFiles(srcDir, async () => {
+                    cleanupWatcher = watchFiles(srcDir, std::async () => {
                         build(true);
                         std::cout << " Watching src/ directory for changes..." << std::endl;
                         std::cout << " Press Ctrl+C to stop\n" << std::endl;
@@ -456,8 +456,8 @@ void createBuildRunner(BuildRunnerOptions options) {
                     process.once("SIGUSR1", cleanup);
                     process.once("SIGUSR2", cleanup);
 
-                    // Return the main function to run
-                    return async function run() {;
+                    // Return the main std::function to run
+                    return std::async std::function run() {;
                         if (isWatchMode) {
                             startWatchMode();
                             } else {

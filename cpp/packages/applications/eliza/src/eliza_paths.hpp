@@ -4,16 +4,16 @@
 #include "node:path.h"
 using path = _default;
 
-string getElizaBaseDir(string cwd = process->cwd());
+std::string getElizaBaseDir(std::string cwd = process->cwd());
 
-string getElizaDbDir(string cwd = process->cwd());
+std::string getElizaDbDir(std::string cwd = process->cwd());
 
-string getElizaDataDir(string cwd = process->cwd());
+std::string getElizaDataDir(std::string cwd = process->cwd());
 
-string getElizaUploadsDir(string cwd = process->cwd());
+std::string getElizaUploadsDir(std::string cwd = process->cwd());
 
-string getElizaGeneratedDir(string cwd = process->cwd());
+std::string getElizaGeneratedDir(std::string cwd = process->cwd());
 
-string getElizaCharactersDir(string cwd = process->cwd());
+std::string getElizaCharactersDir(std::string cwd = process->cwd());
 
 #endif

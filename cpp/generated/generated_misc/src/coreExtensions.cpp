@@ -4,7 +4,7 @@ void extendRuntimeWithEventUnregistration(std::shared_ptr<IAgentRuntime> runtime
 {
     auto extendedRuntime = as<any>(runtime);
     if (!extendedRuntime["unregisterEvent"]) {
-        extendedRuntime["unregisterEvent"] = [=](string event, std::function<std::shared_ptr<Promise<void>>(any)> handler) mutable
+        extendedRuntime["unregisterEvent"] = [=](std::string event, std::function<std::shared_ptr<Promise<void>>(std::any)> handler) mutable
         {
             auto handlers = this["events"]["get"](event);
             if (handlers) {
@@ -28,7 +28,7 @@ void extendRuntimeWithComponentUnregistration(std::shared_ptr<IAgentRuntime> run
 {
     auto extendedRuntime = as<any>(runtime);
     if (!extendedRuntime["unregisterAction"]) {
-        extendedRuntime["unregisterAction"] = [=](string actionName) mutable
+        extendedRuntime["unregisterAction"] = [=](std::string actionName) mutable
         {
             auto index = this["actions"]["findIndex"]([=](auto a) mutable
             {
@@ -41,7 +41,7 @@ void extendRuntimeWithComponentUnregistration(std::shared_ptr<IAgentRuntime> run
         };
     }
     if (!extendedRuntime["unregisterProvider"]) {
-        extendedRuntime["unregisterProvider"] = [=](string providerName) mutable
+        extendedRuntime["unregisterProvider"] = [=](std::string providerName) mutable
         {
             auto index = this["providers"]["findIndex"]([=](auto p) mutable
             {
@@ -54,7 +54,7 @@ void extendRuntimeWithComponentUnregistration(std::shared_ptr<IAgentRuntime> run
         };
     }
     if (!extendedRuntime["unregisterEvaluator"]) {
-        extendedRuntime["unregisterEvaluator"] = [=](string evaluatorName) mutable
+        extendedRuntime["unregisterEvaluator"] = [=](std::string evaluatorName) mutable
         {
             auto index = this["evaluators"]["findIndex"]([=](auto e) mutable
             {
@@ -67,7 +67,7 @@ void extendRuntimeWithComponentUnregistration(std::shared_ptr<IAgentRuntime> run
         };
     }
     if (!extendedRuntime["unregisterService"]) {
-        extendedRuntime["unregisterService"] = [=](string serviceType) mutable
+        extendedRuntime["unregisterService"] = [=](std::string serviceType) mutable
         {
             auto service = this["services"]["get"](serviceType);
             if (service) {

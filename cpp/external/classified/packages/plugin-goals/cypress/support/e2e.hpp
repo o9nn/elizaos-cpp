@@ -41,7 +41,7 @@ namespace elizaos {
 
 // Prevent TypeScript errors
 
-// Disable uncaught exception handling for React development warnings
+// Disable uncaught std::exception handling for React development warnings
   // Returning false here prevents Cypress from failing the test
   // on uncaught exceptions, which is useful for React development warnings
 

@@ -52,7 +52,7 @@ IDatabaseAdapter fromV2DatabaseAdapter(std::shared_ptr<IDatabaseAdapterV2> adapt
                 }
                 return nullptr;
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("Error getting account by ID:"), error);
                 return nullptr;
@@ -66,7 +66,7 @@ IDatabaseAdapter fromV2DatabaseAdapter(std::shared_ptr<IDatabaseAdapterV2> adapt
                 auto entity = toV2Entity(account);
                 return std::async([=]() { adapterV2->createEntities(array<any>{ entity }); });
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("Error creating account:"), error);
                 return false;
@@ -122,7 +122,7 @@ IDatabaseAdapter fromV2DatabaseAdapter(std::shared_ptr<IDatabaseAdapterV2> adapt
             try
             {
                 auto entities = std::async([=]() { adapterV2->getEntitiesForRoom(params["roomId"]); });
-                return entities->map([=](auto entity) mutable
+                return entities->std::map([=](auto entity) mutable
                 {
                     return (object{
                         object::pair{std::string("id"), entity["id"]}, 
@@ -137,7 +137,7 @@ IDatabaseAdapter fromV2DatabaseAdapter(std::shared_ptr<IDatabaseAdapterV2> adapt
                 }
                 );
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("Error getting actor details:"), error);
                 return array<any>();
@@ -229,7 +229,7 @@ IDatabaseAdapter fromV2DatabaseAdapter(std::shared_ptr<IDatabaseAdapterV2> adapt
         object::pair{std::string("getRoom"), [=](auto roomId) mutable
         {
             auto rooms = std::async([=]() { adapterV2->getRoomsByIds(array<any>{ roomId }); });
-            return (AND((rooms), (rooms->length > 0))) ? any(roomId) : any(nullptr);
+            return (AND((rooms), (rooms->length > 0))) ? std::any(roomId) : std::any(nullptr);
         }
         }, 
         object::pair{std::string("createRoom"), [=](auto roomId = undefined) mutable
@@ -271,7 +271,7 @@ IDatabaseAdapter fromV2DatabaseAdapter(std::shared_ptr<IDatabaseAdapterV2> adapt
         object::pair{std::string("getParticipantsForAccount"), [=](auto userId) mutable
         {
             auto participants = std::async([=]() { adapterV2->getParticipantsForEntity(userId); });
-            return participants->map([=](auto p) mutable
+            return participants->std::map([=](auto p) mutable
             {
                 return (object{
                     object::pair{std::string("id"), p["id"]}, 
@@ -327,7 +327,7 @@ IDatabaseAdapter fromV2DatabaseAdapter(std::shared_ptr<IDatabaseAdapterV2> adapt
             auto relationships = std::async([=]() { adapterV2->getRelationships(object{
                 object::pair{std::string("entityId"), params["userId"]}
             }); });
-            return relationships->map([=](auto rel) mutable
+            return relationships->std::map([=](auto rel) mutable
             {
                 return (object{
                     object::pair{std::string("id"), rel["id"]}, 
@@ -378,7 +378,7 @@ IDatabaseAdapter fromV2DatabaseAdapter(std::shared_ptr<IDatabaseAdapterV2> adapt
 
 std::shared_ptr<IDatabaseAdapterV2> toV2DatabaseAdapter(IDatabaseAdapter adapterV1)
 {
-    throw any(std::make_shared<Error>(std::string("toV2DatabaseAdapter not yet fully implemented - V2 interface is significantly different")));
+    throw std::any(std::make_shared<Error>(std::string("toV2DatabaseAdapter not yet fully implemented - V2 interface is significantly different")));
     return std::shared_ptr<IDatabaseAdapterV2>();
 };
 

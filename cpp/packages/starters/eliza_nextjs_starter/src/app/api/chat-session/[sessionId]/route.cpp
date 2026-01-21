@@ -49,7 +49,7 @@ std::future<void> GET(NextRequest request) {
                 const auto channels = channelsData.data.channels || channelsData.channels || [];
 
                 // Find the channel with matching sessionId ONLY
-                const auto sessionChannel = channels.find((channel: any) => {;
+                const auto sessionChannel = channels.find((channel: std::any) => {;
                     const auto metadata = channel.metadata || {};
                     return channel.id == sessionId || metadata.sessionId == sessionId;
                     });
@@ -90,7 +90,7 @@ std::future<void> GET(NextRequest request) {
                             new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
                             );
                             .find(;
-                            (msg: any) =>
+                            (msg: std::any) =>
                             msg.authorId == userId || msg.rawMessage.senderId == userId,
                             );
 

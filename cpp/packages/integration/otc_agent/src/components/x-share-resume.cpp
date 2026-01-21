@@ -8,7 +8,7 @@ void XShareResume() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     useEffect(() => {
-        // Best-effort resume for any pending X share
+        // Best-effort resume for std::any pending X share
         resumeFreshAuth().catch(() => {});
         }, []);
         return nullptr;

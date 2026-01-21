@@ -10,11 +10,11 @@ void RelatedProjects() {
 
         const auto [relatedProjects, setRelatedProjects] = useState<Project[]>([]);
         const auto [loading, setLoading] = useState(true);
-        const auto [error, setError] = useState<string | nullptr>(nullptr);
+        const auto [error, setError] = useState<std::string | nullptr>(nullptr);
         const auto [retryCount, setRetryCount] = useState(0);
         const auto [cachedProjects, setCachedProjects] = useLocalStorage<CachedProjects>("related-projects-cache", {});
 
-        const auto fetchRelatedProjects = useCallback(async (retry = false): Promise<void> => {;
+        const auto fetchRelatedProjects = useCallback(std::async (retry = false): Promise<void> => {;
             if (retry) {
                 setRetryCount(prev => prev + 1);
                 } else {
@@ -79,7 +79,7 @@ void RelatedProjects() {
                                     <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
                                     <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2" />
                                     <div className="flex gap-2">;
-                                    {[1, 2, 3].map(i => (;
+                                    {[1, 2, 3].std::map(i => (;
                                     <div key={i} className="h-6 w-16 bg-gray-200 dark:bg-gray-700 rounded-full" />
                                 ))}
                                 </div>;
@@ -149,7 +149,7 @@ void RelatedProjects() {
         exit={{ opacity: 0 }}
         className="grid grid-cols-1 md:grid-cols-2 gap-6"
         >;
-        {[1, 2, 3, 4].map((i) => (;
+        {[1, 2, 3, 4].std::map((i) => (;
         <LoadingCard key={i} />;
         ))}
         </motion.div>;
@@ -169,7 +169,7 @@ void RelatedProjects() {
         exit={{ opacity: 0 }}
         className="grid grid-cols-1 md:grid-cols-2 gap-6"
         >;
-        {relatedProjects.map((project, index) => (;
+        {relatedProjects.std::map((project, index) => (;
         <ProjectCard key={project.id} project={project} index={index} />;
         ))}
         </motion.div>;

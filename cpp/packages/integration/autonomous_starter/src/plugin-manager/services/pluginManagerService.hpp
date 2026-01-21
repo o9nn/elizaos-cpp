@@ -49,7 +49,7 @@ void resetRegistryCache();
 
 // Registry functions
 
-// Real plugin installation function using npm/git
+// Real plugin installation std::function using npm/git
 std::future<void> installPlugin(const std::string& pluginName, const std::string& targetDir, std::optional<std::string> version);
 
 // Install plugin from npm
@@ -64,7 +64,7 @@ class PluginManagerService extends Service implements PluginRegistry {
   override capabilityDescription =
     "Manages dynamic loading and unloading of plugins at runtime, including registry installation";
 
-  public plugins: Map<string, PluginState> = new Map();
+  public plugins: Map<std::string, PluginState> = new Map();
   private pluginManagerConfig: PluginManagerConfig;
   private originalPlugins: Plugin[] = [];
   private originalActions: Set<string> = new Set();
@@ -73,7 +73,7 @@ class PluginManagerService extends Service implements PluginRegistry {
   private originalServices: Set<string> = new Set();
 
   // Add registry installation state management
-  private installedPlugins: Map<string, DynamicPluginInfo> = new Map();
+  private installedPlugins: Map<std::string, DynamicPluginInfo> = new Map();
 
   constructor(runtime: IAgentRuntime, config?: PluginManagerConfig) {
     super(runtime);
@@ -148,13 +148,13 @@ class PluginManagerService extends Service implements PluginRegistry {
 
     // Remove plugin from runtime plugins array
 
-    // Clean up any resources
+    // Clean up std::any resources
 
   // Registry installation methods
 
       // Ensure plugin directory exists
 
-      // Install using real installation function
+      // Install using real installation std::function
       await installPlugin(pluginName, pluginDir, version);
 
       // Parse plugin metadata

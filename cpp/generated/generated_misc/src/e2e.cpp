@@ -81,7 +81,7 @@ void Main(void)
         cy->screenshot(std::string("failed-") + runnable["parent"]["title"] + std::string("-") + runnable["title"] + string_empty, object{
             object::pair{std::string("capture"), std::string("runner")}
         });
-        throw any(error);
+        throw std::any(error);
     }
     );
 }

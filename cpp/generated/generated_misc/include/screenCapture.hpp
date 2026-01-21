@@ -13,13 +13,13 @@ public:
 
     boolean getUserMedia;
 
-    string error;
+    std::string error;
 };
 
 std::shared_ptr<ScreenCaptureCapabilities> checkScreenCaptureCapabilities();
 
 std::shared_ptr<Promise<boolean>> testScreenCapture();
 
-string getScreenCaptureErrorMessage(any error);
+std::string getScreenCaptureErrorMessage(std::any error);
 
 #endif

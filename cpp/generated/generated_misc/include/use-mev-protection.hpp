@@ -6,5 +6,5 @@
 typedef boolean TMevProtection;
 
 
-extern std::function<any()> useMevProtection;
+extern std::function<std::any()> useMevProtection;
 #endif

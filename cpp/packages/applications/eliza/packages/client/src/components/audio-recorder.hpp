@@ -20,7 +20,7 @@ using Props = {
 
 using Record = {
 
-// Utility function to pad a number with leading zeros
+// Utility std::function to pad a number with leading zeros
 
   // States
   // Calculate the hours, minutes, and seconds from the timer

@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-autocoder/src/actions/create-project.h"
 
-any extractProjectName(string text)
+std::any extractProjectName(std::string text)
 {
     auto quotedMatch = text->match((new RegExp(std::string("["']([^"']+)["'"))));
     if (quotedMatch) {
@@ -22,12 +22,12 @@ any extractProjectName(string text)
 };
 
 
-any getFormTemplate(string projectType)
+std::any getFormTemplate(std::string projectType)
 {
     static switch_type __switch1650_6261 = {
-        { any(std::string("plugin")), 1 },
-        { any(std::string("agent")), 2 },
-        { any(std::string("workflow")), 3 }
+        { std::any(std::string("plugin")), 1 },
+        { std::any(std::string("agent")), 2 },
+        { std::any(std::string("workflow")), 3 }
     };
     switch (__switch1650_6261[projectType])
     {
@@ -58,14 +58,14 @@ any getFormTemplate(string projectType)
                 object::pair{std::string("helpText"), std::string("What specific features or capabilities should this plugin have?")}
             }, object{
                 object::pair{std::string("id"), std::string("apis")}, 
-                object::pair{std::string("label"), std::string("External APIs (optional)")}, 
+                object::pair{std::string("label"), std::string("External APIs (std::optional)")}, 
                 object::pair{std::string("type"), std::string("textarea")}, 
                 object::pair{std::string("placeholder"), std::string("OpenAI API, Discord API, etc.")}, 
                 object::pair{std::string("required"), false}, 
-                object::pair{std::string("helpText"), std::string("List any external APIs or services this plugin will use")}
+                object::pair{std::string("helpText"), std::string("List std::any external APIs or services this plugin will use")}
             }, object{
                 object::pair{std::string("id"), std::string("test_scenarios")}, 
-                object::pair{std::string("label"), std::string("Test Scenarios (optional)")}, 
+                object::pair{std::string("label"), std::string("Test Scenarios (std::optional)")}, 
                 object::pair{std::string("type"), std::string("textarea")}, 
                 object::pair{std::string("placeholder"), std::string("User asks for weather, plugin responds with...")}, 
                 object::pair{std::string("required"), false}, 
@@ -253,7 +253,7 @@ std::shared_ptr<Action> createProjectAction = object{
             }}, 
             object::pair{std::string("createdAt"), Date->now()}
         }, std::string("project_metadata")); });
-        auto responseText = (projectType == std::string("agent")) ? any(std::string("Great! Let's create your ElizaOS agent. I'll help you design their personality and capabilities.")) : any((projectType == std::string("plugin")) ? std::string("Excellent! Let's build your ElizaOS plugin. I'll help you define its features and functionality.") : std::string("Perfect! Let's create your project. Please fill out the details below."));
+        auto responseText = (projectType == std::string("agent")) ? std::any(std::string("Great! Let's create your ElizaOS agent. I'll help you design their personality and capabilities.")) : std::any((projectType == std::string("plugin")) ? std::string("Excellent! Let's build your ElizaOS plugin. I'll help you define its features and functionality.") : std::string("Perfect! Let's create your project. Please fill out the details below."));
         if (callback) {
             std::async([=]() { callback(object{
                 object::pair{std::string("text"), responseText}, 

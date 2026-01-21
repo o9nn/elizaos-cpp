@@ -8,11 +8,11 @@
 #include "./config.h"
 #include "./general.h"
 
-extern any program;
+extern std::any program;
 std::shared_ptr<Promise<array<string>>> findProjectFiles();
 
 std::shared_ptr<Promise<array<string>>> resolveFiles(array<string> patterns);
 
-std::shared_ptr<Promise<array<string>>> findFilesInDir(string dir);
+std::shared_ptr<Promise<array<string>>> findFilesInDir(std::string dir);
 
 #endif

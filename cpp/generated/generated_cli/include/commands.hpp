@@ -14,11 +14,11 @@ namespace global {
         public:
             using std::enable_shared_from_this<Chainable>::shared_from_this;
             virtual std::shared_ptr<Chainable<void>> waitForApp() = 0;
-            virtual std::shared_ptr<Chainable<void>> login(string email, string password) = 0;
+            virtual std::shared_ptr<Chainable<void>> login(std::string email, std::string password) = 0;
             virtual std::shared_ptr<Chainable<void>> connectWebSocket() = 0;
             virtual std::shared_ptr<Chainable<void>> cleanupTestData() = 0;
-            virtual std::shared_ptr<Chainable<std::shared_ptr<JQuery<std::shared_ptr<HTMLElement>>>>> getByTestId(string testId) = 0;
-            virtual std::shared_ptr<Chainable<any>> waitForApi(string alias, double timeout = undefined) = 0;
+            virtual std::shared_ptr<Chainable<std::shared_ptr<JQuery<std::shared_ptr<HTMLElement>>>>> getByTestId(std::string testId) = 0;
+            virtual std::shared_ptr<Chainable<any>> waitForApi(std::string alias, double timeout = undefined) = 0;
         };
 
     }

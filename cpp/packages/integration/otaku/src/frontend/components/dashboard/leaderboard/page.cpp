@@ -13,13 +13,13 @@ void LeaderboardPage() {
 
         const auto { data: leaderboardData, isLoading, error, refetch } = useQuery({;
             queryKey: ["leaderboard", agentId, scope, userId],
-            queryFn: async () => {
+            queryFn: std::async () => {
                 if (!gamificationClient) {
                     throw std::runtime_error('Gamification service not available');
                 }
                 try {
                     return gamificationClient.getLeaderboard(agentId, scope, 50, userId);
-                    } catch (err: any) {
+                    } catch (err: std::any) {
                         std::cerr << "[LeaderboardPage] Error fetching leaderboard:" << err << std::endl;
                         // If 404, return empty data instead of throwing
                         if (err.response.status == 404 || err.status == 404) {
@@ -46,8 +46,8 @@ void LeaderboardPage() {
                         "/avatars/user_pek.png",
                         ];
 
-                        // Simple hash function to deterministically select avatar based on userId
-                        const auto getRandomAvatar = (userId: string): string => {;
+                        // Simple hash std::function to deterministically select avatar based on userId
+                        const auto getRandomAvatar = (userId: std::string): std::string => {;
                             // Use userId as seed for deterministic randomization
                             auto hash = 0;
                             for (int i = 0; i < userId.length; i++) {
@@ -60,14 +60,14 @@ void LeaderboardPage() {
                             };
 
                             // Check if avatar is the default krimson avatar (early users have this)
-                            const auto isKrimsonAvatar = (avatar: string | std::nullopt): boolean => {;
+                            const auto isKrimsonAvatar = (avatar: std::string | std::nullopt): boolean => {;
                                 if (!avatar) return false;
                                 return (std::find(avatar.begin(), avatar.end(), "user_krimson.png") != avatar.end()) || (std::find(avatar.begin(), avatar.end(), "user_krimson") != avatar.end());
                                 };
 
                                 // Transform leaderboard entries to RebelRanking format
                                 // API already limits to 50 entries
-                                const std::vector<RebelRanking> rebels = (leaderboardData.entries || []).map((entry: LeaderboardEntry, index: number) => {;
+                                const std::vector<RebelRanking> rebels = (leaderboardData.entries || []).std::map((entry: LeaderboardEntry, index: number) => {;
                                     const auto username = "entry.username || " + "User " + std::to_string(entry.userId.substring(0, 8));
                                     // Randomize if no avatar or if avatar is the default krimson avatar
                                     const auto avatar = (!entry.avatar || isKrimsonAvatar(entry.avatar));
@@ -92,7 +92,7 @@ void LeaderboardPage() {
                                             // Query for referral code
                                             const auto { data: referralData, isLoading: isLoadingReferral, refetch: refetchReferral } = useQuery({;
                                                 queryKey: ["referralCode", agentId, userId],
-                                                queryFn: async () => {
+                                                queryFn: std::async () => {
                                                     if (!gamificationClient || !userId) {
                                                         throw std::runtime_error('Gamification service or userId not available');
                                                     }
@@ -102,7 +102,7 @@ void LeaderboardPage() {
                                                     staleTime: Infinity, // Referral code doesn't change
                                                     });
 
-                                                    const auto handleCopyReferralLink = async () => {;
+                                                    const auto handleCopyReferralLink = std::async () => {;
                                                         if (!referralData.referralLink) return;
 
                                                         try {
@@ -171,7 +171,7 @@ void LeaderboardPage() {
                                             ) : isLoading ? (
                                             <DashboardCard title="WEEKLY LEADERBOARD">;
                                             <div className="space-y-4">;
-                                            {[...Array(10)].map((_, i) => (;
+                                            {[...Array(10)].std::map((_, i) => (;
                                             <div key={i} className="flex items-center gap-4 animate-pulse">;
                                             <div className="h-8 w-8 bg-muted rounded" />;
                                             <div className="h-12 w-12 bg-muted rounded-lg" />;
@@ -216,7 +216,7 @@ void LeaderboardPage() {
                                 ) : isLoading ? (
                                 <DashboardCard title="ALL-TIME LEADERBOARD">;
                                 <div className="space-y-4">;
-                                {[...Array(10)].map((_, i) => (;
+                                {[...Array(10)].std::map((_, i) => (;
                                 <div key={i} className="flex items-center gap-4 animate-pulse">;
                                 <div className="h-8 w-8 bg-muted rounded" />;
                                 <div className="h-12 w-12 bg-muted rounded-lg" />;

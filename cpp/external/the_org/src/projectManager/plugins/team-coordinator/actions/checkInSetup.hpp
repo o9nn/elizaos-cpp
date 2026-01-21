@@ -35,7 +35,7 @@ struct TextChannel {
  * Validates the Discord configuration for a specific server.
  * @param {IAgentRuntime} runtime - The Agent runtime.
  * @param {string} serverId - The ID of the server to validate.
- * @returns {Promise<{ isValid: boolean; error?: string }>}
+ * @returns {Promise<{ isValid: boolean; error?: std::string }>}
  */
     // logger.info(`Validating Discord config for server ${serverId}`);
     // const worldSettings = await getWorldSettings(runtime, serverId);

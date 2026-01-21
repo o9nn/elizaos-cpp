@@ -48,12 +48,12 @@ bool EmbodimentManager::initialize() {
     elogSystem("Initializing Embodiment Manager");
     
     if (!state_) {
-        elogError("State not set - cannot initialize");
+        elogError("State not std::set - cannot initialize");
         return false;
     }
     
     if (!memory_) {
-        elogError("Memory manager not set - cannot initialize");
+        elogError("Memory manager not std::set - cannot initialize");
         return false;
     }
     
@@ -128,7 +128,7 @@ void EmbodimentManager::stop() {
     
     running_ = false;
     
-    // Stop validation thread
+    // Stop validation std::thread
     if (validationThread_ && validationThread_->joinable()) {
         validationThread_->join();
     }

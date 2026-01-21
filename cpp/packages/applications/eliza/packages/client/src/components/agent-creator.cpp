@@ -14,7 +14,7 @@ void AgentCreator() {
         ...defaultCharacter,
         });
         const auto secretPanelRef = useRef<SecretPanelRef>(nullptr);
-        const auto [currentSecrets, setCurrentSecrets] = useState<Record<string, string | nullptr>>({});
+        const auto [currentSecrets, setCurrentSecrets] = useState<Record<std::string, std::string | nullptr>>({});
 
         // Use agent update hook for proper handling of nested fields
         const auto agentState = useAgentUpdate(initialCharacter);
@@ -37,7 +37,7 @@ void AgentCreator() {
                     };
                     };
 
-                    const auto handleSubmit = async (character: Agent) => {;
+                    const auto handleSubmit = std::async (character: Agent) => {;
                         try {
                             const auto completeCharacter = ensureRequiredFields(character);
 

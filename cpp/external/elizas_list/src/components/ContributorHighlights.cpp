@@ -8,7 +8,7 @@ void ContributorHighlights() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [contributors, setContributors] = useState<Contributor[]>([]);
-    const auto [selectedContributor, setSelectedContributor] = useState<string | nullptr>(nullptr);
+    const auto [selectedContributor, setSelectedContributor] = useState<std::string | nullptr>(nullptr);
 
     const auto contributionTypeIcons = {;
         code: "💻",
@@ -23,7 +23,7 @@ void ContributorHighlights() {
         <h2 className="text-2xl font-bold">Top Contributors</h2>;
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {contributors.map((contributor) => (;
+        {contributors.std::map((contributor) => (;
         <motion.div;
     key={contributor.id}
     layoutId={contributor.id}
@@ -45,7 +45,7 @@ void ContributorHighlights() {
     </div>;
 
     <div className="mt-4 flex flex-wrap gap-2">;
-    {contributor.contributions.map((contribution) => (;
+    {contributor.contributions.std::map((contribution) => (;
     <span;
     key={contribution.type}
     className="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-sm"
@@ -123,7 +123,7 @@ void ContributorHighlights() {
 
     <div className="space-y-4">;
     <h4 className="font-semibold">Contribution Highlights</h4>;
-    {contributor.highlights.map((highlight, index) => (;
+    {contributor.highlights.std::map((highlight, index) => (;
     <div;
     key={index}
     className="border-l-2 border-blue-500 pl-4 py-2";

@@ -22,11 +22,11 @@ namespace elizaos {
 // https://discord.com/developers/docs/resources/channel#embed-object
 
 class Embed {
-  title?: string;
+  title?: std::string;
   type?: EmbedType;
-  description?: string;
-  url?: string;
-  timestamp?: string;
+  description?: std::string;
+  url?: std::string;
+  timestamp?: std::string;
   color?: number;
   footer?: EmbedFooterObject;
   image?: EmbedImageObject;
@@ -37,11 +37,11 @@ class Embed {
   fields?: EmbedFieldObject[];
 
   constructor(opts: {
-    title?: string;
+    title?: std::string;
     type?: EmbedType;
-    description?: string;
-    url?: string;
-    timestamp?: string;
+    description?: std::string;
+    url?: std::string;
+    timestamp?: std::string;
     color?: number;
     footer?: EmbedFooterObject;
     image?: EmbedImageObject;

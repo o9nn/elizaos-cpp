@@ -10,7 +10,7 @@ void ChatTtsButton() {
     const auto { toast } = useToast();
     const auto [playing, setPlaying] = useState<boolean>(false);
     const auto [audioBlob, setAudioBlob] = useState<Blob | nullptr>(nullptr);
-    const auto [audioUrl, setAudioUrl] = useState<string | nullptr>(nullptr);
+    const auto [audioUrl, setAudioUrl] = useState<std::string | nullptr>(nullptr);
     const auto audioRef = useRef<HTMLAudioElement | nullptr>(nullptr);
     const auto audioBlobRef = useRef<Blob | nullptr>(nullptr);
 
@@ -27,7 +27,7 @@ void ChatTtsButton() {
 
             const auto mutation = useMutation({;
                 mutationKey: ["tts", text],
-                mutationFn: async () => {
+                mutationFn: std::async () => {
                     std::cout << "🎵 Starting TTS API call..." << std::endl;
                     std::cout << "🎵 agentId:" << agentId << std::endl;
                     std::cout << "🎵 text:" << text << std::endl;
@@ -35,12 +35,12 @@ void ChatTtsButton() {
                     const auto response = elizaClient.audio.generateSpeech(agentId, { text });
                     std::cout << "🎵 TTS API response:" << response << std::endl;
 
-                    // Convert base64 audio string to Blob
+                    // Convert base64 audio std::string to Blob
                     const auto { audio, format } = response;
 
                     // Handle data URL format (data:audio/mp3;base64,...)
-                    auto audioData: string;
-                    auto mimeType: string;
+                    auto audioData: std::string;
+                    auto mimeType: std::string;
 
                     if (audio.startsWith('data:')) {
                         const auto [header, base64Data] = audio.split(",");
@@ -48,7 +48,7 @@ void ChatTtsButton() {
                         "mimeType = mimeMatch ? mimeMatch[1] : " + "audio/" + std::to_string(format || "mpeg")
                         audioData = base64Data;
                         } else {
-                            // Plain base64 string
+                            // Plain base64 std::string
                             audioData = audio;
                             "mimeType = " + "audio/" + std::to_string(format || "mpeg");
                         }
@@ -82,10 +82,10 @@ void ChatTtsButton() {
                                         },
                                         });
 
-                                        const auto play = async () => {;
+                                        const auto play = std::async () => {;
                                             if (audioRef.current) {
                                                 try {
-                                                    // Stop any currently playing audio
+                                                    // Stop std::any currently playing audio
                                                     if (currentlyPlayingAudio && currentlyPlayingAudio != audioRef.current) {
                                                         currentlyPlayingAudio.pause();
                                                         currentlyPlayingAudio.currentTime = 0;
@@ -123,7 +123,7 @@ void ChatTtsButton() {
                                                         setPlaying(false);
                                                         };
 
-                                                        const auto execute = async () => {;
+                                                        const auto execute = std::async () => {;
                                                             if (mutation.isPending) {
                                                                 return;
                                                             }

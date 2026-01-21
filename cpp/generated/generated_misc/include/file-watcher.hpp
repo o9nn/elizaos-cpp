@@ -9,9 +9,9 @@ using path = _default;
 #include "../types.h"
 
 extern std::shared_ptr<WatcherConfig> DEFAULT_WATCHER_CONFIG;
-array<string> findTsFiles(string dir, string watchDir);
+array<string> findTsFiles(std::string dir, std::string watchDir);
 
-std::shared_ptr<Promise<void>> watchDirectory(string dir, std::function<void()> onChange, Partial<std::shared_ptr<WatcherConfig>> config = object{});
+std::shared_ptr<Promise<void>> watchDirectory(std::string dir, std::function<void()> onChange, Partial<std::shared_ptr<WatcherConfig>> config = object{});
 
 std::function<void()> createDebouncedHandler(std::function<void()> handler, double delay = 300);
 

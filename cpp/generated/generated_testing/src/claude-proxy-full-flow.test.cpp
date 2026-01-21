@@ -69,7 +69,7 @@ void Main(void)
             expect(result["files"])->toBeDefined();
             expect(result["files"]["length"])->toBeGreaterThan(0);
             expect(statusUpdates->get_length())->toBeGreaterThan(0);
-            auto statuses = statusUpdates->map([=](auto u) mutable
+            auto statuses = statusUpdates->std::map([=](auto u) mutable
             {
                 return u["status"];
             }
@@ -118,7 +118,7 @@ void Main(void)
             auto inferenceService = as<any>(runtime->getService(std::string("inference")));
             expect(inferenceService)->toBeDefined();
             auto response = std::async([=]() { runtime->useModel(std::string("text_large"), object{
-                object::pair{std::string("prompt"), std::string("Generate a simple TypeScript function that adds two numbers")}, 
+                object::pair{std::string("prompt"), std::string("Generate a simple TypeScript std::function that adds two numbers")}, 
                 object::pair{std::string("temperature"), 0.7}, 
                 object::pair{std::string("max_tokens"), 200}
             }); });
@@ -234,7 +234,7 @@ void Main(void)
                     object::pair{std::string("force"), true}
                 }); });
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("Failed to clean up test directory:"), error);
             }

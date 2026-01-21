@@ -89,7 +89,7 @@ std::future<void> migrateCliToBun(const std::string& targetVersion) {
             );
         }
 
-        std::cout << "Starting atomic CLI migration from npm to bun..." << std::endl;
+        std::cout << "Starting std::atomic CLI migration from npm to bun..." << std::endl;
 
         try {
             // Step 2: Install with bun (without removing npm yet)

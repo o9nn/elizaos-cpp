@@ -16,7 +16,7 @@ std::string tryLoadFile(const std::string& filePath) {
 std::future<std::string> tryLoadFileAsync(const std::string& filePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    // Since this is a deprecated function delegating to server,
+    // Since this is a deprecated std::function delegating to server,
     // we need to load the server module asynchronously
     const auto serverModule = loadModule("@elizaos/server");
     return serverModule.tryLoadFile(filePath);
@@ -67,7 +67,7 @@ bool hasValidRemoteUrls() {
 std::future<bool> hasValidRemoteUrlsAsync() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    // Since this is a deprecated function delegating to server,
+    // Since this is a deprecated std::function delegating to server,
     // we need to load the server module asynchronously
     const auto serverModule = loadModule("@elizaos/server");
     return serverModule.hasValidRemoteUrls();

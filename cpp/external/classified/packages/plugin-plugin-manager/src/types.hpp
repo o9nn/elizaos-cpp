@@ -48,7 +48,7 @@ struct PluginComponents {
     std::unordered_set<std::string> providers;
     std::unordered_set<std::string> evaluators;
     std::unordered_set<std::string> services;
-    std::unordered_map<std::string, std::unordered_set<(params: any) => Promise<void>>> eventHandlers;
+    std::unordered_map<std::string, std::unordered_set<(params: std::any) => Promise<void>>> eventHandlers;
 };
 
 struct ComponentRegistration {

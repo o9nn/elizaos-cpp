@@ -20,10 +20,10 @@ namespace elizaos {
 
 /**
  * General API rate limiting middleware
- * With trust proxy set to 1, express-rate-limit automatically handles X-Forwarded-For headers
+ * With trust proxy std::set to 1, express-rate-limit automatically handles X-Forwarded-For headers
  */
     // No custom keyGenerator needed - express-rate-limit handles IP detection automatically
-    // when trust proxy is set (which we set to 1 in index.ts)
+    // when trust proxy is std::set (which we std::set to 1 in index.ts)
 
 /**
  * Strict rate limiting for file system operations

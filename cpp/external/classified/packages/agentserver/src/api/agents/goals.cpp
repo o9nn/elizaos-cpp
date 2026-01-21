@@ -11,7 +11,7 @@ express::Router createAgentGoalsRouter(const std::unordered_map<UUID, IAgentRunt
         const auto router = express.Router();
 
         // Get all goals for an agent
-        router.get("/:agentId/goals", async (req, res) => {
+        router.get("/:agentId/goals", std::async (req, res) => {
             const auto agentId = validateUuid(req.params.agentId);
             if (!agentId) {
                 return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
@@ -34,7 +34,7 @@ express::Router createAgentGoalsRouter(const std::unordered_map<UUID, IAgentRunt
                 const auto goalsData = (goalsService).getAllGoalsForOwner("agent", agentId);
 
                 // Transform to the expected format
-                const std::vector<Goal> goals = goalsData.map((goal: any) => ({;
+                const std::vector<Goal> goals = goalsData.std::map((goal: std::any) => ({;
                     id: goal.id,
                     name: goal.name,
                     description: goal.description || "",
@@ -59,7 +59,7 @@ express::Router createAgentGoalsRouter(const std::unordered_map<UUID, IAgentRunt
                     });
 
                     // Create a new goal
-                    router.post("/:agentId/goals", async (req, res) => {
+                    router.post("/:agentId/goals", std::async (req, res) => {
                         const auto agentId = validateUuid(req.params.agentId);
                         if (!agentId) {
                             return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
@@ -127,7 +127,7 @@ express::Router createAgentGoalsRouter(const std::unordered_map<UUID, IAgentRunt
                                     });
 
                                     // Update a goal
-                                    router.put("/:agentId/goals/:goalId", async (req, res) => {
+                                    router.put("/:agentId/goals/:goalId", std::async (req, res) => {
                                         const auto agentId = validateUuid(req.params.agentId);
                                         if (!agentId) {
                                             return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
@@ -204,7 +204,7 @@ express::Router createAgentGoalsRouter(const std::unordered_map<UUID, IAgentRunt
                                                         });
 
                                                         // Delete a goal
-                                                        router.delete("/:agentId/goals/:goalId", async (req, res) => {
+                                                        router.delete("/:agentId/goals/:goalId", std::async (req, res) => {
                                                             const auto agentId = validateUuid(req.params.agentId);
                                                             if (!agentId) {
                                                                 return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");

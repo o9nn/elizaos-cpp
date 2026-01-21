@@ -13,7 +13,7 @@ boolean isTransferContent(std::shared_ptr<TransferContent> content)
 };
 
 
-string transferTemplate = std::string("Respond with a JSON markdown block containing only the extracted values. Use null for any values that cannot be determined.\
+std::string transferTemplate = std::string("Respond with a JSON markdown block containing only the extracted values. Use null for std::any values that cannot be determined.\
 \
 Example responses:\
 For SPL tokens:\

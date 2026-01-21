@@ -30,9 +30,9 @@ namespace elizaos {
 struct ISellSignalOutput {
     std::string recommended_sell;
     std::string recommend_sell_address;
-    std::optional<string; // Or reason_for_selling, adjust based on actual LLM output> reason;
-    std::optional<string; // Alternative for reason> reason_for_selling;
-    string | number sell_amount;
+    std::optional<std::string; // Or reason_for_selling, adjust based on actual LLM output> reason;
+    std::optional<std::string; // Alternative for reason> reason_for_selling;
+    std::string | number sell_amount;
     std::optional<number | string> slippage;
 };
 
@@ -71,7 +71,7 @@ double calculateAmountOutSell(double reserveLamport, double amount, double _toke
   // Apply the fee instruction to the transaction
 
 class SellService extends BaseTradeService {
-  private pendingSells: { [tokenAddress: string]: BN } = {};
+  private pendingSells: { [tokenAddress: std::string]: BN } = {};
 
   // https://github.com/elizaOS/auto.fun/blob/7b9c4e6a38ff93c882a87198388e5381a3d40a7a/packages/client/src/utils/swapUtils.ts#L37
   // https://github.com/elizaOS/auto.fun/blob/7b9c4e6a38ff93c882a87198388e5381a3d40a7a/packages/client/src/hooks/use-swap.ts#L3
@@ -108,7 +108,7 @@ class SellService extends BaseTradeService {
 
     // for anchor
 
-    // Use the imported IDL for typing, cast to any to bypass potential strict type mismatch
+    // Use the imported IDL for typing, cast to std::any to bypass potential strict type mismatch
 
     // is this right?
 

@@ -66,16 +66,16 @@ void sliceSpecToSlice(const std::string& sliceSpec); {
  * Load instances from file
  */
 class InstancesFromFile extends AbstractInstanceSource {
-  private path: string;
-  private _filter: string;
-  private _slice: string;
+  private path: std::string;
+  private _filter: std::string;
+  private _slice: std::string;
   private _shuffle: boolean;
   private _deployment: DeploymentConfig;
 
   constructor(config: {
-    path: string;
-    filter?: string;
-    slice?: string;
+    path: std::string;
+    filter?: std::string;
+    slice?: std::string;
     shuffle?: boolean;
     deployment?: DeploymentConfig;
   }) {
@@ -106,7 +106,7 @@ class InstancesFromFile extends AbstractInstanceSource {
 /**
  * Convert SWE-bench instance to SimpleBatchInstance
  */
-SimpleBatchInstance fromSWEBench(Record<string sweBenchInstance, auto unknown>);
+SimpleBatchInstance fromSWEBench(Record<std::string sweBenchInstance, auto unknown>);
 
 /**
  * SWE-bench instances
@@ -114,9 +114,9 @@ SimpleBatchInstance fromSWEBench(Record<string sweBenchInstance, auto unknown>);
 class SWEBenchInstances extends AbstractInstanceSource {
   public readonly subset: 'lite' | 'verified' | 'full' | 'multimodal' | 'multilingual';
   public readonly split: 'dev' | 'test';
-  private pathOverride?: string;
-  private _filter: string;
-  private _slice: string;
+  private pathOverride?: std::string;
+  private _filter: std::string;
+  private _slice: std::string;
   private _shuffle: boolean;
   public readonly evaluate: boolean;
   private _deployment: DeploymentConfig;
@@ -124,9 +124,9 @@ class SWEBenchInstances extends AbstractInstanceSource {
   constructor(config: {
     subset?: 'lite' | 'verified' | 'full' | 'multimodal' | 'multilingual';
     split?: 'dev' | 'test';
-    pathOverride?: string;
-    filter?: string;
-    slice?: string;
+    pathOverride?: std::string;
+    filter?: std::string;
+    slice?: std::string;
     shuffle?: boolean;
     evaluate?: boolean;
     deployment?: DeploymentConfig;

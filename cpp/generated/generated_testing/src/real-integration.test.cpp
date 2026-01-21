@@ -9,7 +9,7 @@ object RealIntegrationTestSuite = object{
             console->log(std::string("🔥 REAL TEST: OpenAI Text Generation with actual API"));
             auto apiKey = process->env->OPENAI_API_KEY;
             if (OR((!apiKey), (apiKey->get_length() < 20))) {
-                throw any(std::make_shared<Error>(std::string("OPENAI_API_KEY missing or invalid - cannot run real tests")));
+                throw std::any(std::make_shared<Error>(std::string("OPENAI_API_KEY missing or invalid - cannot run real tests")));
             }
             console->log(std::string("✅ Using OpenAI API Key: ") + apiKey->substring(0, 10) + std::string("..."));
             try
@@ -20,19 +20,19 @@ object RealIntegrationTestSuite = object{
                     object::pair{std::string("temperature"), 0}
                 }); });
                 if (OR((type_of(response) != std::string("string")), (response->trim()->get_length() == 0))) {
-                    throw any(std::make_shared<Error>(std::string("Invalid response type or empty: ") + type_of(response) + std::string(", content: "") + response + std::string(""")));
+                    throw std::any(std::make_shared<Error>(std::string("Invalid response type or empty: ") + type_of(response) + std::string(", content: "") + response + std::string(""")));
                 }
                 auto trimmed = response->trim();
                 if (!trimmed->includes(std::string("4"))) {
-                    throw any(std::make_shared<Error>(std::string("Expected "4" in response, got: "") + trimmed + std::string(""")));
+                    throw std::any(std::make_shared<Error>(std::string("Expected "4" in response, got: "") + trimmed + std::string(""")));
                 }
                 console->log(std::string("✅ REAL API SUCCESS: Got response "") + trimmed + std::string("""));
                 console->log(std::string("✅ OpenAI integration working with real API"));
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("❌ REAL API FAILURE:"), error);
-                throw any(std::make_shared<Error>(std::string("Real OpenAI API test failed: ") + (is<Error>(error)) ? any(error->message) : any(std::string("Unknown error")) + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("Real OpenAI API test failed: ") + (is<Error>(error)) ? std::any(error->message) : std::any(std::string("Unknown error")) + string_empty));
             }
         }
         }
@@ -43,7 +43,7 @@ object RealIntegrationTestSuite = object{
             console->log(std::string("🔥 REAL TEST: OpenAI Embeddings with actual API"));
             auto apiKey = process->env->OPENAI_API_KEY;
             if (OR((!apiKey), (apiKey->get_length() < 20))) {
-                throw any(std::make_shared<Error>(std::string("OPENAI_API_KEY missing or invalid")));
+                throw std::any(std::make_shared<Error>(std::string("OPENAI_API_KEY missing or invalid")));
             }
             try
             {
@@ -51,10 +51,10 @@ object RealIntegrationTestSuite = object{
                     object::pair{std::string("text"), std::string("This is a test sentence for embedding generation.")}
                 }); });
                 if (!Array->isArray(embedding)) {
-                    throw any(std::make_shared<Error>(std::string("Expected array, got ") + type_of(embedding) + string_empty));
+                    throw std::any(std::make_shared<Error>(std::string("Expected array, got ") + type_of(embedding) + string_empty));
                 }
                 if (embedding->get_length() != 1536) {
-                    throw any(std::make_shared<Error>(std::string("Expected 1536 dimensions, got ") + embedding->get_length() + string_empty));
+                    throw std::any(std::make_shared<Error>(std::string("Expected 1536 dimensions, got ") + embedding->get_length() + string_empty));
                 }
                 auto nonZeroCount = embedding->filter([=](auto x) mutable
                 {
@@ -62,7 +62,7 @@ object RealIntegrationTestSuite = object{
                 }
                 )->get_length();
                 if (nonZeroCount < 100) {
-                    throw any(std::make_shared<Error>(std::string("Too few non-zero values (") + nonZeroCount + std::string("), likely fake embedding")));
+                    throw std::any(std::make_shared<Error>(std::string("Too few non-zero values (") + nonZeroCount + std::string("), likely fake embedding")));
                 }
                 auto magnitude = Math->sqrt(embedding->reduce([=](auto sum, auto val) mutable
                 {
@@ -75,10 +75,10 @@ object RealIntegrationTestSuite = object{
                 console->log(std::string("✅ REAL EMBEDDING SUCCESS: ") + embedding->get_length() + std::string(" dimensions, magnitude: ") + magnitude->toFixed(4) + string_empty);
                 console->log(std::string("✅ OpenAI embeddings working with real API"));
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("❌ REAL EMBEDDING FAILURE:"), error);
-                throw any(std::make_shared<Error>(std::string("Real OpenAI embedding test failed: ") + (is<Error>(error)) ? any(error->message) : any(std::string("Unknown error")) + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("Real OpenAI embedding test failed: ") + (is<Error>(error)) ? std::any(error->message) : std::any(std::string("Unknown error")) + string_empty));
             }
         }
         }
@@ -102,19 +102,19 @@ object RealIntegrationTestSuite = object{
                     object::pair{std::string("temperature"), 0}
                 }); });
                 if (OR((type_of(response) != std::string("string")), (response->trim()->get_length() == 0))) {
-                    throw any(std::make_shared<Error>(std::string("Invalid response: ") + type_of(response) + std::string(", content: "") + response + std::string(""")));
+                    throw std::any(std::make_shared<Error>(std::string("Invalid response: ") + type_of(response) + std::string(", content: "") + response + std::string(""")));
                 }
                 auto trimmed = response->trim();
                 if (!trimmed->includes(std::string("105"))) {
-                    throw any(std::make_shared<Error>(std::string("Expected "105" in response, got: "") + trimmed + std::string(""")));
+                    throw std::any(std::make_shared<Error>(std::string("Expected "105" in response, got: "") + trimmed + std::string(""")));
                 }
                 console->log(std::string("✅ REAL GROQ SUCCESS: Got response "") + trimmed + std::string("""));
                 console->log(std::string("✅ Groq integration working with real API"));
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("❌ REAL GROQ FAILURE:"), error);
-                throw any(std::make_shared<Error>(std::string("Real Groq API test failed: ") + (is<Error>(error)) ? any(error->message) : any(std::string("Unknown error")) + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("Real Groq API test failed: ") + (is<Error>(error)) ? std::any(error->message) : std::any(std::string("Unknown error")) + string_empty));
             }
         }
         }
@@ -144,11 +144,11 @@ object RealIntegrationTestSuite = object{
             {
                 auto service = runtime->getService(std::string("elizaos-services"));
                 if (!service) {
-                    throw any(std::make_shared<Error>(std::string("ElizaOS Services service not available")));
+                    throw std::any(std::make_shared<Error>(std::string("ElizaOS Services service not available")));
                 }
                 auto storage = (as<any>(service))["getStorage"]();
                 if (!storage) {
-                    throw any(std::make_shared<Error>(std::string("Storage service not available")));
+                    throw std::any(std::make_shared<Error>(std::string("Storage service not available")));
                 }
                 console->log(std::string("✅ Storage configured: ") + endpoint + std::string("/") + bucket + string_empty);
                 auto testKey = std::string("test-") + Date->now() + std::string("-real-integration.txt");
@@ -160,46 +160,46 @@ object RealIntegrationTestSuite = object{
                     console->log(std::string("✅ Upload successful: ") + uploadResult + string_empty);
                     auto exists = std::async([=]() { storage["fileExists"](testKey); });
                     if (!exists) {
-                        throw any(std::make_shared<Error>(std::string("File existence check failed after upload")));
+                        throw std::any(std::make_shared<Error>(std::string("File existence check failed after upload")));
                     }
                     console->log(std::string("✅ File existence check passed"));
                     auto metadata = std::async([=]() { storage["getFileMetadata"](testKey); });
                     if (!metadata) {
-                        throw any(std::make_shared<Error>(std::string("Could not retrieve file metadata")));
+                        throw std::any(std::make_shared<Error>(std::string("Could not retrieve file metadata")));
                     }
                     console->log(std::string("✅ Metadata retrieved: ") + metadata["size"] + std::string(" bytes, ") + metadata["contentType"] + string_empty);
                     auto downloadedData = std::async([=]() { storage["downloadFile"](testKey); });
                     if (!downloadedData["equals"](testData)) {
-                        throw any(std::make_shared<Error>(std::string("Downloaded data does not match uploaded data")));
+                        throw std::any(std::make_shared<Error>(std::string("Downloaded data does not match uploaded data")));
                     }
                     console->log(std::string("✅ Download and data integrity check passed"));
                     auto signedUrl = std::async([=]() { storage["getSignedUrl"](testKey, std::string("get"), 300); });
                     if (!signedUrl["startsWith"](std::string("http"))) {
-                        throw any(std::make_shared<Error>(std::string("Invalid signed URL generated")));
+                        throw std::any(std::make_shared<Error>(std::string("Invalid signed URL generated")));
                     }
                     console->log(std::string("✅ Signed URL generated: ") + signedUrl["substring"](0, 50) + std::string("..."));
                     std::async([=]() { storage["deleteFile"](testKey); });
                     console->log(std::string("✅ File cleanup completed"));
                     console->log(std::string("✅ REAL R2 STORAGE SUCCESS: All operations completed"));
                 }
-                catch (const any& storageError)
+                catch (const std::any& storageError)
                 {
                     if (endpoint->includes(std::string("demo"))) {
                         console->log(std::string("⚠️  Storage operations failed with demo credentials (expected)"));
                         console->log(std::string("✅ Storage service handled missing credentials gracefully"));
                         return std::shared_ptr<Promise<void>>();
                     }
-                    throw any(storageError);
+                    throw std::any(storageError);
                 }
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("❌ REAL R2 STORAGE FAILURE:"), error);
                 if (endpoint->includes(std::string("demo"))) {
                     console->log(std::string("✅ Demo storage test completed (failures expected with demo credentials)"));
                     return std::shared_ptr<Promise<void>>();
                 }
-                throw any(std::make_shared<Error>(std::string("Real R2 storage test failed: ") + (is<Error>(error)) ? any(error->message) : any(std::string("Unknown error")) + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("Real R2 storage test failed: ") + (is<Error>(error)) ? std::any(error->message) : std::any(std::string("Unknown error")) + string_empty));
             }
         }
         }
@@ -235,19 +235,19 @@ object RealIntegrationTestSuite = object{
                         object::pair{std::string("text"), std::string("Test embedding for cost tracking.")}
                     }); });
                     if (eventsCaptured == 0) {
-                        throw any(std::make_shared<Error>(std::string("No usage events were captured - cost tracking not working")));
+                        throw std::any(std::make_shared<Error>(std::string("No usage events were captured - cost tracking not working")));
                     }
                     console->log(std::string("✅ Captured ") + eventsCaptured + std::string(" usage events"));
                     for (auto& event : capturedEvents)
                     {
                         if (OR((OR((!event["provider"]), (!event["type"]))), (!event["tokens"]))) {
-                            throw any(std::make_shared<Error>(std::string("Invalid usage event structure: ") + JSON->stringify(event) + string_empty));
+                            throw std::any(std::make_shared<Error>(std::string("Invalid usage event structure: ") + JSON->stringify(event) + string_empty));
                         }
                         if (OR((type_of(event["tokens"]["total"]) != std::string("number")), (event["tokens"]["total"] <= 0))) {
-                            throw any(std::make_shared<Error>(std::string("Invalid token count: ") + event["tokens"]["total"] + string_empty));
+                            throw std::any(std::make_shared<Error>(std::string("Invalid token count: ") + event["tokens"]["total"] + string_empty));
                         }
                         if (OR((type_of(event["cost"]) != std::string("number")), (event["cost"] < 0))) {
-                            throw any(std::make_shared<Error>(std::string("Invalid cost: ") + event["cost"] + string_empty));
+                            throw std::any(std::make_shared<Error>(std::string("Invalid cost: ") + event["cost"] + string_empty));
                         }
                     }
                     console->log(std::string("✅ All usage events have valid structure"));
@@ -268,7 +268,7 @@ object RealIntegrationTestSuite = object{
             auto openaiKey = process->env->OPENAI_API_KEY;
             auto groqKey = process->env->GROQ_API_KEY;
             if (AND((!openaiKey), (!groqKey))) {
-                throw any(std::make_shared<Error>(std::string("No API keys available for multi-provider test")));
+                throw std::any(std::make_shared<Error>(std::string("No API keys available for multi-provider test")));
             }
             try
             {
@@ -278,7 +278,7 @@ object RealIntegrationTestSuite = object{
                     object::pair{std::string("temperature"), 0}
                 }); });
                 if (!response1->toLowerCase()->includes(std::string("paris"))) {
-                    throw any(std::make_shared<Error>(std::string("Expected "Paris", got: "") + response1 + std::string(""")));
+                    throw std::any(std::make_shared<Error>(std::string("Expected "Paris", got: "") + response1 + std::string(""")));
                 }
                 console->log(std::string("✅ Primary provider working: "") + response1->trim() + std::string("""));
                 auto response2 = std::async([=]() { runtime->useModel(ModelType->TEXT_LARGE, object{
@@ -287,15 +287,15 @@ object RealIntegrationTestSuite = object{
                     object::pair{std::string("temperature"), 0}
                 }); });
                 if (!response2->includes(std::string("25"))) {
-                    throw any(std::make_shared<Error>(std::string("Expected "25", got: "") + response2 + std::string(""")));
+                    throw std::any(std::make_shared<Error>(std::string("Expected "25", got: "") + response2 + std::string(""")));
                 }
                 console->log(std::string("✅ Large model working: "") + response2->trim() + std::string("""));
                 console->log(std::string("✅ REAL MULTI-PROVIDER SUCCESS"));
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("❌ REAL MULTI-PROVIDER FAILURE:"), error);
-                throw any(std::make_shared<Error>(std::string("Multi-provider test failed: ") + (is<Error>(error)) ? any(error->message) : any(std::string("Unknown error")) + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("Multi-provider test failed: ") + (is<Error>(error)) ? std::any(error->message) : std::any(std::string("Unknown error")) + string_empty));
             }
         }
         }
@@ -308,24 +308,24 @@ object RealIntegrationTestSuite = object{
             {
                 auto service = runtime->getService(std::string("elizaos-services"));
                 if (!service) {
-                    throw any(std::make_shared<Error>(std::string("ElizaOS Services not registered")));
+                    throw std::any(std::make_shared<Error>(std::string("ElizaOS Services not registered")));
                 }
                 console->log(std::string("✅ Service registered successfully"));
                 auto storage = (as<any>(service))["getStorage"]();
                 if (!storage) {
-                    throw any(std::make_shared<Error>(std::string("Storage service not available")));
+                    throw std::any(std::make_shared<Error>(std::string("Storage service not available")));
                 }
                 console->log(std::string("✅ Storage service available"));
                 auto apiKey = OR((process->env->OPENAI_API_KEY), (process->env->GROQ_API_KEY));
                 if (!apiKey) {
-                    throw any(std::make_shared<Error>(std::string("No API keys available for health check")));
+                    throw std::any(std::make_shared<Error>(std::string("No API keys available for health check")));
                 }
                 auto healthCheck = std::async([=]() { runtime->useModel(ModelType->TEXT_SMALL, object{
                     object::pair{std::string("prompt"), std::string("Hello")}, 
                     object::pair{std::string("maxTokens"), 5}
                 }); });
                 if (OR((type_of(healthCheck) != std::string("string")), (healthCheck->get_length() == 0))) {
-                    throw any(std::make_shared<Error>(std::string("Model health check failed")));
+                    throw std::any(std::make_shared<Error>(std::string("Model health check failed")));
                 }
                 console->log(std::string("✅ Model API responding"));
                 auto config = object{
@@ -339,10 +339,10 @@ object RealIntegrationTestSuite = object{
                 console->log(std::string("   Storage: ") + (config["storageEndpoint"]) ? std::string("configured") : std::string("not configured") + string_empty);
                 console->log(std::string("✅ REAL SERVICE HEALTH CHECK PASSED"));
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("❌ SERVICE HEALTH CHECK FAILED:"), error);
-                throw any(std::make_shared<Error>(std::string("Service health check failed: ") + (is<Error>(error)) ? any(error->message) : any(std::string("Unknown error")) + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("Service health check failed: ") + (is<Error>(error)) ? std::any(error->message) : std::any(std::string("Unknown error")) + string_empty));
             }
         }
         }

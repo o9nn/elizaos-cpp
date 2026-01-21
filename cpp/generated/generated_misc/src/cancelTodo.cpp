@@ -4,7 +4,7 @@ std::shared_ptr<Promise<std::shared_ptr<TaskCancellation>>> extractTaskCancellat
 {
     try
     {
-        auto tasksText = availableTasks->map([=](auto task) mutable
+        auto tasksText = availableTasks->std::map([=](auto task) mutable
         {
             return std::string("ID: ") + task->id + std::string("\
 Name: ") + task->name + std::string("\
@@ -42,13 +42,13 @@ Tags: ") + (OR((task->tags->join(std::string(", "))), (std::string("none")))) + 
             };
         }
         auto finalResult = object{
-            object::pair{std::string("taskId"), (parsedResult->taskId == std::string("null")) ? any(string_empty) : any(OR((parsedResult->taskId), (string_empty)))}, 
-            object::pair{std::string("taskName"), (parsedResult->taskName == std::string("null")) ? any(string_empty) : any(OR((parsedResult->taskName), (string_empty)))}, 
+            object::pair{std::string("taskId"), (parsedResult->taskId == std::string("null")) ? std::any(string_empty) : std::any(OR((parsedResult->taskId), (string_empty)))}, 
+            object::pair{std::string("taskName"), (parsedResult->taskName == std::string("null")) ? std::any(string_empty) : std::any(OR((parsedResult->taskName), (string_empty)))}, 
             object::pair{std::string("isFound"), String(parsedResult->isFound)->toLowerCase() == std::string("true")}
         };
         return finalResult;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Error extracting task cancellation information:"), error);
         return object{
@@ -60,7 +60,7 @@ Tags: ") + (OR((task->tags->join(std::string(", "))), (std::string("none")))) + 
 };
 
 
-string extractCancellationTemplate = std::string("\
+std::string extractCancellationTemplate = std::string("\
 # Task: Extract Task Cancellation Information\
 \
 ## User Message\
@@ -117,7 +117,7 @@ std::shared_ptr<Action> cancelTodoAction = object{
             );
             return activeTasks->length > 0;
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("Error validating CANCEL_TODO action:"), error);
             return false;
@@ -139,7 +139,7 @@ std::shared_ptr<Action> cancelTodoAction = object{
             );
             if (availableTasks->length == 0) {
                 std::async([=]() { callback(object{
-                    object::pair{std::string("text"), std::string("You don't have any active tasks to cancel. Would you like to create a new task?")}, 
+                    object::pair{std::string("text"), std::string("You don't have std::any active tasks to cancel. Would you like to create a new task?")}, 
                     object::pair{std::string("actions"), array<string>{ std::string("CANCEL_TODO_NO_TASKS") }}, 
                     object::pair{std::string("source"), message->content->source}
                 }); });
@@ -150,7 +150,7 @@ std::shared_ptr<Action> cancelTodoAction = object{
                 std::async([=]() { callback(object{
                     object::pair{std::string("text"), std::string("I couldn't determine which task you want to cancel. Could you be more specific? Here are your current tasks:\
 \
-") + availableTasks->map([=](auto task) mutable
+") + availableTasks->std::map([=](auto task) mutable
                     {
                         return std::string("- ") + task["name"] + string_empty;
                     }
@@ -182,7 +182,7 @@ std::shared_ptr<Action> cancelTodoAction = object{
                 object::pair{std::string("source"), message->content->source}
             }); });
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("Error in cancelTodo handler:"), error);
             std::async([=]() { callback(object{

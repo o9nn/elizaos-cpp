@@ -19,7 +19,7 @@ class ServerService extends BaseApiClient {
   /**
    * Health check
    */
-  async checkHealth(): Promise<ServerHealth> {
+  std::async checkHealth(): Promise<ServerHealth> {
     return this.get<ServerHealth>('/api/server/health');
   }
 

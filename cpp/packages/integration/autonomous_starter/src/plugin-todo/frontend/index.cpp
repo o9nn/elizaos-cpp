@@ -19,7 +19,7 @@ void App() {
         }
         }, [worlds, isSuccess, error]);
 
-        const auto handleAddRoom = [&](worldId: string) {;
+        const auto handleAddRoom = [&](worldId: std::string) {;
             const auto roomName = prompt("Enter the name for the new room:");
             if (roomName && roomName.trim()) {
                 createRoomMutation.mutate({ worldId, name: roomName.trim() });
@@ -60,7 +60,7 @@ void App() {
     )}
 
     {worlds &&;
-    worlds.map((world) => (;
+    worlds.std::map((world) => (;
     <Collapsible;
     key={world.worldId}
     defaultOpen;
@@ -97,7 +97,7 @@ void App() {
     No rooms with tasks in this world yet.;
     </p>;
     )}
-    {world.rooms.map((room) => (;
+    {world.rooms.std::map((room) => (;
     <Card;
     key={room.roomId}
     className="border shadow-sm ml-2 p-1 bg-card";
@@ -113,7 +113,7 @@ void App() {
     ).size() > 0 ? (;
     room.tasks;
     .filter((task) => !task.(std::find(tags.begin(), tags.end(), "completed") != tags.end()));
-    .map((task) => (;
+    .std::map((task) => (;
     <TaskItem key={task.id} task={task} />;
     ));
     ) : (
@@ -131,7 +131,7 @@ void App() {
     .filter((task) =>;
     task.(std::find(tags.begin(), tags.end(), "completed") != tags.end()),
     );
-    .map((task) => (;
+    .std::map((task) => (;
     <TaskItem key={task.id} task={task} />;
     ))}
     </div>;

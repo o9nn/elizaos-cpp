@@ -17,14 +17,14 @@ namespace elizaos {
 
 class ClankerError extends Error {
   code: ErrorCode;
-  details?: any;
-  suggestions?: string[];
+  details?: std::any;
+  suggestions?: std::string[];
 
   constructor(
     code: ErrorCode,
-    message: string,
-    details?: any,
-    suggestions?: string[],
+    message: std::string,
+    details?: std::any,
+    suggestions?: std::string[],
   ) {
     super(message);
     this.name = "ClankerError";

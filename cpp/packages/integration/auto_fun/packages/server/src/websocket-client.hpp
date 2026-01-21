@@ -20,7 +20,7 @@ class WebSocketClient {
 
   constructor(/*  - Remove if Env is not used */) {
     // Initialization logic removed - we use the imported singleton manager
-    // this.webSocketDO = (env as any).WEBSOCKET_DO || null;
+    // this.webSocketDO = (env as std::any).WEBSOCKET_DO || null;
   }
 
   // Send a message to a specific room (token or global)
@@ -29,9 +29,9 @@ class WebSocketClient {
 
   // Helper that returns an object with direct emit method for chaining
 
-// Helper function to get websocket client instance
+// Helper std::function to get websocket client instance
 // Since WebSocketClient now just wraps the singleton manager,
-// we might not even need this class/function anymore.
+// we might not even need this class/std::function anymore.
 // Code using getWebSocketClient() could potentially just import webSocketManager directly.
 // However, keeping it maintains the existing interface.
 

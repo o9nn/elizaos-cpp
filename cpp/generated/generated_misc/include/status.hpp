@@ -4,7 +4,7 @@
 #include "./abstract.h"
 #include "../repo.h"
 
-typedef std::function<void(string, string)> StatusCallback;
+typedef std::function<void(std::string, std::string)> StatusCallback;
 
 class SetStatusEnvironmentHook;
 
@@ -13,10 +13,10 @@ public:
     using std::enable_shared_from_this<SetStatusEnvironmentHook>::shared_from_this;
     StatusCallback callable;
 
-    string id;
+    std::string id;
 
-    SetStatusEnvironmentHook(string id, StatusCallback callable);
-    virtual void update(string message);
+    SetStatusEnvironmentHook(std::string id, StatusCallback callable);
+    virtual void update(std::string message);
     template <typename P0>
     void onCopyRepoStarted(P0 repo);
     virtual void onStartDeployment();
@@ -28,7 +28,7 @@ public:
 template <typename P0>
 void SetStatusEnvironmentHook::onCopyRepoStarted(P0 repo)
 {
-    auto repoName = (in(std::string("repoName"), repo)) ? any(repo["repoName"]) : any(std::string("unknown"));
+    auto repoName = (in(std::string("repoName"), repo)) ? std::any(repo["repoName"]) : std::any(std::string("unknown"));
     this->update(std::string("Copying repo ") + repoName + string_empty);
 }
 

@@ -113,7 +113,7 @@ void MemoryGraph(auto onNodeClick) {
                                         {shouldRender && (;
                                         <ForceGraph2D;
                                         {...({
-                                            ref: (graph: any) => {
+                                            ref: (graph: std::any) => {
                                                 graphRef.current = graph;
                                                 if (graph && !initialized) {
                                                     handleGraphInit(graph);

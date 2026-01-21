@@ -16,13 +16,13 @@ class ToolHandler;
 class ToolFilterConfig : public object, public std::enable_shared_from_this<ToolFilterConfig> {
 public:
     using std::enable_shared_from_this<ToolFilterConfig>::shared_from_this;
-    string blocklistErrorTemplate;
+    std::string blocklistErrorTemplate;
 
     array<string> blocklist;
 
     array<string> blocklistStandalone;
 
-    Record<string, string> blockUnlessRegex;
+    Record<std::string, string> blockUnlessRegex;
 };
 
 extern std::shared_ptr<ToolFilterConfig> defaultToolFilterConfig;
@@ -35,23 +35,23 @@ public:
 
     array<string> propagateEnvVariables;
 
-    Record<string, any> envVariables;
+    Record<std::string, any> envVariables;
 
-    Record<string, any> registryVariables;
+    Record<std::string, any> registryVariables;
 
-    string submitCommand;
+    std::string submitCommand;
 
-    any parseFunction;
+    std::any parseFunction;
 
     boolean enableBashTool;
 
-    string formatErrorTemplate;
+    std::string formatErrorTemplate;
 
-    string commandDocs;
+    std::string commandDocs;
 
-    Record<string, string> multiLineCommandEndings;
+    Record<std::string, string> multiLineCommandEndings;
 
-    any submitCommandEndName;
+    std::any submitCommandEndName;
 
     array<any> resetCommands;
 
@@ -69,7 +69,7 @@ public:
 
     array<std::shared_ptr<Command>> commands;
 
-    array<Record<string, any>> tools;
+    array<Record<std::string, any>> tools;
 };
 
 extern std::shared_ptr<ToolConfig> defaultToolConfig;
@@ -80,7 +80,7 @@ public:
 
     std::shared_ptr<AbstractParseFunction> parser;
 
-    std::shared_ptr<Map<string, string>> multilineCommands = std::make_shared<Map>();
+    std::shared_ptr<Map<std::string, string>> multilineCommands = std::make_shared<Map>();
 
     std::shared_ptr<AgentLogger> logger;
 
@@ -90,20 +90,20 @@ public:
     virtual std::shared_ptr<Promise<void>> install(std::shared_ptr<SWEEnv> env);
     virtual std::shared_ptr<Promise<void>> uploadBundle(std::shared_ptr<SWEEnv> _env, std::shared_ptr<Bundle> bundle);
     virtual std::shared_ptr<Promise<void>> reset(std::shared_ptr<SWEEnv> env);
-    virtual std::shared_ptr<Promise<Record<string, string>>> getState(std::shared_ptr<SWEEnv> env);
-    virtual boolean shouldBlockAction(string action);
-    virtual boolean checkForSubmissionCmd(string observation);
+    virtual std::shared_ptr<Promise<Record<std::string, string>>> getState(std::shared_ptr<SWEEnv> env);
+    virtual boolean shouldBlockAction(std::string action);
+    virtual boolean checkForSubmissionCmd(std::string observation);
     template <typename P0>
-    std::tuple<string, string> parseActions(P0 output);
-    virtual string guardMultilineInput(string action);
+    std::tuple<std::string, string> parseActions(P0 output);
+    virtual std::string guardMultilineInput(std::string action);
 };
 
 template <typename P0>
-std::tuple<string, string> ToolHandler::parseActions(P0 output)
+std::tuple<std::string, string> ToolHandler::parseActions(P0 output)
 {
-    auto modelResponse = (type_of(output) == std::string("string")) ? any(object{
+    auto modelResponse = (type_of(output) == std::string("string")) ? std::any(object{
         object::pair{std::string("message"), output}
-    }) : any(output);
+    }) : std::any(output);
     return this->parser->parse(modelResponse, OR((this->config->commands), (array<any>())), false);
 }
 

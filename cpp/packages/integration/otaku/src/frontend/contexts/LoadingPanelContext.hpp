@@ -17,15 +17,15 @@ struct LoadingPanelState {
     bool isVisible;
     'loading' | 'success' | 'error' type;
     std::string title;
-    std::vector<string | string> messages;
-    string | null; // Track which component is showing the panel id;
+    std::vector<std::string | string> messages;
+    std::string | null; // Track which component is showing the panel id;
 };
 
 struct LoadingPanelContextType {
-    (title: string, messages: string | string[], id?: string) => void showLoading;
-    (title: string, messages: string | string[], id?: string, autoClose?: boolean) => void showSuccess;
-    (title: string, messages: string | string[], id?: string) => void showError;
-    (id?: string) => void hide;
+    (title: std::string, messages: std::string | std::string[], id?: std::string) => void showLoading;
+    (title: std::string, messages: std::string | std::string[], id?: std::string, autoClose?: boolean) => void showSuccess;
+    (title: std::string, messages: std::string | std::string[], id?: std::string) => void showError;
+    (id?: std::string) => void hide;
     bool isVisible;
 };
 

@@ -5,7 +5,7 @@
 namespace elizaos {
 
 std::variant<Character, null;
-  export function jsonToCharacter(json: any): Character;
+  export std::function jsonToCharacter(json: std::any): Character;
 }
 
 declare module '@elizaos/plugin-sql'> loadCharacterTryPath(const std::string& path) {

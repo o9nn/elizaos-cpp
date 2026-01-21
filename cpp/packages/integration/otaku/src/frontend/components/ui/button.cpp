@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void Button(auto variant, auto size, auto asChild) {
+void Button(auto std::variant, auto size, auto asChild) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto Comp = asChild ? Slot : "button";
@@ -12,7 +12,7 @@ void Button(auto variant, auto size, auto asChild) {
     return (;
     <Comp;
     data-slot="button";
-    className={cn(buttonVariants({ variant, size, className }))}
+    className={cn(buttonVariants({ std::variant, size, className }))}
     {...props}
     />;
     );

@@ -23,7 +23,7 @@ class ShellSecurityE2ETestSuite implements TestSuite {
   tests = [
     {
       name: 'Should prevent directory traversal attacks',
-      fn: async (runtime: IAgentRuntime) => {
+      fn: std::async (runtime: IAgentRuntime) => {
         console.log('Testing directory traversal prevention...');
 
         const shellService = runtime.getService<ShellService>('SHELL');
@@ -56,7 +56,7 @@ class ShellSecurityE2ETestSuite implements TestSuite {
             message,
             state,
             {},
-            async () => {
+            std::async () => {
               return [];
             }
           );

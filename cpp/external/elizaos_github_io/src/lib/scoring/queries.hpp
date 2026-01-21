@@ -40,8 +40,8 @@ namespace elizaos {
 /**
  * Get aggregated user score for a time period
  * @param username - User's username
- * @param startDate - Start date string (YYYY-MM-DD)
- * @param endDate - End date string (YYYY-MM-DD)
+ * @param startDate - Start date std::string (YYYY-MM-DD)
+ * @param endDate - End date std::string (YYYY-MM-DD)
  * @returns Total score and component scores
  */
 std::future<void> getUserAggregatedScore(const std::string& username, std::optional<std::string> startDate, std::optional<std::string> endDate);
@@ -50,8 +50,8 @@ std::future<void> getUserAggregatedScore(const std::string& username, std::optio
  * Get scores aggregated by a specific time period
  * @param username - Optional username to filter by
  * @param period - Aggregation period (daily, weekly, monthly, quarterly, yearly)
- * @param startDate - Start date string (YYYY-MM-DD)
- * @param endDate - End date string (YYYY-MM-DD)
+ * @param startDate - Start date std::string (YYYY-MM-DD)
+ * @param endDate - End date std::string (YYYY-MM-DD)
  * @param limit - Maximum number of results to return (default: 100)
  * @returns Array of scores grouped by the specified period
  */
@@ -67,8 +67,8 @@ std::future<void> getUserAggregatedScore(const std::string& username, std::optio
  * Get user score trend data showing progression over time
  * @param username - User's username
  * @param period - Aggregation period (daily, weekly, monthly, quarterly, yearly)
- * @param startDate - Start date string (YYYY-MM-DD)
- * @param endDate - End date string (YYYY-MM-DD)
+ * @param startDate - Start date std::string (YYYY-MM-DD)
+ * @param endDate - End date std::string (YYYY-MM-DD)
  * @param limit - Maximum number of results to return (default: 100)
  * @returns Array of scores over time with running totals
  */
@@ -78,8 +78,8 @@ std::future<void> getUserScoreTrend(const std::string& username, AggregationPeri
  * Compare scores between users or teams
  * @param usernames - Array of usernames to compare
  * @param period - Aggregation period (daily, weekly, monthly, quarterly, yearly)
- * @param startDate - Start date string (YYYY-MM-DD)
- * @param endDate - End date string (YYYY-MM-DD)
+ * @param startDate - Start date std::string (YYYY-MM-DD)
+ * @param endDate - End date std::string (YYYY-MM-DD)
  * @returns Comparative data for each user
  */
 std::future<void> compareUserScores(const std::vector<std::string>& usernames, AggregationPeriod period = "monthly", std::optional<std::string> startDate, std::optional<std::string> endDate);
@@ -87,8 +87,8 @@ std::future<void> compareUserScores(const std::vector<std::string>& usernames, A
 /**
  * Get activity heatmap data for visualizing user activity patterns
  * @param username - User's username
- * @param startDate - Start date string (YYYY-MM-DD)
- * @param endDate - End date string (YYYY-MM-DD)
+ * @param startDate - Start date std::string (YYYY-MM-DD)
+ * @param endDate - End date std::string (YYYY-MM-DD)
  * @returns Daily activity data suitable for heatmap visualization
  */
 

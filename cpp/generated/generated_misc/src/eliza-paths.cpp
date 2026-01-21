@@ -1,36 +1,36 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/utils/eliza-paths.h"
 
-string getElizaBaseDir(string cwd)
+std::string getElizaBaseDir(std::string cwd)
 {
     return path->join(cwd, std::string(".eliza"));
 };
 
 
-string getElizaDbDir(string cwd)
+std::string getElizaDbDir(std::string cwd)
 {
     return path->join(getElizaBaseDir(cwd), std::string(".elizadb"));
 };
 
 
-string getElizaDataDir(string cwd)
+std::string getElizaDataDir(std::string cwd)
 {
     return path->join(getElizaBaseDir(cwd), std::string("data"));
 };
 
 
-string getElizaUploadsDir(string cwd)
+std::string getElizaUploadsDir(std::string cwd)
 {
     return path->join(getElizaDataDir(cwd), std::string("uploads"));
 };
 
 
-string getElizaGeneratedDir(string cwd)
+std::string getElizaGeneratedDir(std::string cwd)
 {
     return path->join(getElizaDataDir(cwd), std::string("generated"));
 };
 
 
-string getElizaCharactersDir(string cwd)
+std::string getElizaCharactersDir(std::string cwd)
 {
     return path->join(getElizaDataDir(cwd), std::string("characters"));
 };

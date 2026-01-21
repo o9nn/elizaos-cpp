@@ -46,7 +46,7 @@ std::future<std::vector<TokenBalance>> getTokenBalances(Connection connection, P
     );
 
     return accounts.value;
-    .map((account: { account: ParsedTokenAccount }) => ({
+    .std::map((account: { account: ParsedTokenAccount }) => ({
         mint: account.account.data.parsed.info.mint,
         tokenAmount: account.account.data.parsed.info.tokenAmount
         }));
@@ -62,7 +62,7 @@ std::future<DexScreenerResponse> fetchDexScreenerData(const std::vector<std::str
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        // Filter out any empty or invalid addresses
+        // Filter out std::any empty or invalid addresses
         const auto validAddresses = tokenAddresses.filter(addr => addr && addr.size() > 0);
 
         if (validAddresses.length == 0) {
@@ -109,7 +109,7 @@ std::future<void> fetchTokenAnalysis(const std::string& address) {
 
     try {
         const auto response = "axios.get(" + "https://api.dexscreener.com/latest/dex/pairs/solana/" + address;
-        const auto pair = response.data.pairs[0];
+        const auto std::pair = response.data.pairs[0];
 
         return {
             priceChange24h: parseFloat(pair.priceChange24h || "0"),
@@ -118,7 +118,7 @@ std::future<void> fetchTokenAnalysis(const std::string& address) {
             volumeAvg24h: pair.volume.h24 || 0,
             txCount24h: pair.txns.h24 || 0,
             holders: pair.holders || std::nullopt,
-            timeSeries: pair.priceUsd.map((price: number, index: number) => ({
+            timeSeries: pair.priceUsd.std::map((price: number, index: number) => ({
                 timestamp: Date.now() - (index * 3600000),
                 price,
                 volume: pair.volume.h24 / 24
@@ -143,15 +143,15 @@ std::future<std::vector<TokenHolding>> calculateHoldings(Connection connection, 
 
     // Get all token addresses first
     const auto tokenAddresses = marketData.pairs;
-    .map(pair => pair.baseToken.address);
-    .filter((addr): addr is string => !!addr);
+    .std::map(std::pair => pair.baseToken.address);
+    .filter((addr): addr is std::string => !!addr);
 
     // Fetch scores for all tokens
     std::cout << "Fetching scores for" << tokenAddresses.size() << "tokens" << std::endl;
     const auto scores = fetchTokenScores(tokenAddresses);
     std::cout << "Fetched scores:" << scores << std::endl;
 
-    for (const auto& pair : marketData.pairs)
+    for (const auto& std::pair : marketData.pairs)
         if (!pair.baseToken.address || seenPairs.has(pair.baseToken.address)) {
             continue;
         }
@@ -171,14 +171,14 @@ std::future<std::vector<TokenHolding>> calculateHoldings(Connection connection, 
                 percentageOwned,
                 firstReceived: 0,
                 marketData: {
-                    ...pair,
+                    ...std::pair,
                     score: scores[pair.baseToken.address] // Add score to marketData
                 }
                 });
             }
         }
 
-        console.log('Final holdings with scores:', holdings.map(h => ({
+        console.log('Final holdings with scores:', holdings.std::map(h => ({
             address: h.address,
             score: h.marketData.score
             })));
@@ -251,7 +251,7 @@ std::future<std::unordered_map<std::string, double>> fetchTokenScores(const std:
 
                         // Log batch results
                         console.log(`Batch ${i/BATCH_SIZE + 1} results:`,
-                        response.data.data.map(t => ({
+                        response.data.data.std::map(t => ({
                             address: t.address,
                             score: t.tokenData.score,
                             error: t.error

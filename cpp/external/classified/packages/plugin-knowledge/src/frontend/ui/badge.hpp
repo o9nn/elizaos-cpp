@@ -16,10 +16,10 @@ namespace elizaos {
 
 struct BadgeProps {
     ReactNode children;
-    std::optional<std::variant<'default', 'outline', 'secondary', 'destructive'>> variant;
+    std::optional<std::variant<'default', 'outline', 'secondary', 'destructive'>> std::variant;
     std::optional<std::string> className;
 };
 
-void Badge(auto { children, auto variant = 'default', BadgeProps className = '' });
+void Badge(auto { children, auto std::variant = 'default', BadgeProps className = '' });
 
 } // namespace elizaos

@@ -27,7 +27,7 @@ std::shared_ptr<Action> getProtocolTvlAction = object{
         {
             auto svc = as<any>(runtime->getService(DefiLlamaService::serviceType));
             if (!svc) {
-                throw any(std::make_shared<Error>(std::string("DefiLlamaService not available")));
+                throw std::any(std::make_shared<Error>(std::string("DefiLlamaService not available")));
             }
             auto composedState = std::async([=]() { runtime->composeState(message, array<string>{ std::string("ACTION_STATE") }, true); });
             auto params = OR((composedState->data->actionParams), (object{}));
@@ -51,7 +51,7 @@ std::shared_ptr<Action> getProtocolTvlAction = object{
                 }
                 return errorResult;
             }
-            auto names = protocolsRaw->split(std::string(","))->map([=](auto s) mutable
+            auto names = protocolsRaw->split(std::string(","))->std::map([=](auto s) mutable
             {
                 return s->trim();
             }
@@ -143,7 +143,7 @@ std::shared_ptr<Action> getProtocolTvlAction = object{
                 object::pair{std::string("text"), messageText}, 
                 object::pair{std::string("success"), true}, 
                 object::pair{std::string("data"), results}, 
-                object::pair{std::string("values"), successes->map([=](auto r) mutable
+                object::pair{std::string("values"), successes->std::map([=](auto r) mutable
                 {
                     return r->data;
                 }
@@ -151,7 +151,7 @@ std::shared_ptr<Action> getProtocolTvlAction = object{
                 object::pair{std::string("input"), inputParams}
             });
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             auto msg = (is<Error>(error)) ? error->message : String(error);
             logger->error(std::string("[GET_PROTOCOL_TVL] Action failed: ") + msg + string_empty);

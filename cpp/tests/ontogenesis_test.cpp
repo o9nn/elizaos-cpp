@@ -112,7 +112,7 @@ TEST(ontogenesisTest, MemoryTest_NoLeaks) {
 
 // Thread Safety Tests
 TEST(ontogenesisTest, ThreadSafety_ConcurrentAccess) {
-    // Test thread safety with concurrent access
+    // Test std::thread safety with concurrent access
     EXPECT_NO_THROW({
         // Concurrent access test
     });

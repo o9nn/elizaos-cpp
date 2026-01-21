@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-web-search/src/actions/webSearch.h"
 
-string MaxTokens(string data, double maxTokens)
+std::string MaxTokens(std::string data, double maxTokens)
 {
     return (data->get_length() > maxTokens) ? data->slice(0, maxTokens) : data;
 };
@@ -67,7 +67,7 @@ std::shared_ptr<Action> webSearch = object{
             auto service = runtime->getService<std::shared_ptr<TavilyService>>(std::string("TAVILY"));
             return !!service;
         }
-        catch (const any& err)
+        catch (const std::any& err)
         {
             logger->warn(std::string("TavilyService not available:"), (as<std::shared_ptr<Error>>(err))->message);
             return false;
@@ -80,7 +80,7 @@ std::shared_ptr<Action> webSearch = object{
         {
             auto tavilyService = runtime->getService<std::shared_ptr<TavilyService>>(std::string("TAVILY"));
             if (!tavilyService) {
-                throw any(std::make_shared<Error>(std::string("TavilyService not initialized")));
+                throw std::any(std::make_shared<Error>(std::string("TavilyService not initialized")));
             }
             auto composedState = std::async([=]() { runtime->composeState(message, array<string>{ std::string("ACTION_STATE") }, true); });
             auto params = OR((OR((composedState->data->actionParams), (composedState->data->webSearch))), (object{}));
@@ -106,7 +106,7 @@ std::shared_ptr<Action> webSearch = object{
             }
             auto source = params["source"]["trim"]();
             auto topic = (params["topic"] == std::string("finance")) ? std::string("finance") : std::string("general");
-            auto maxResults = (params["max_results"]) ? any(Math->min(Math->max(1, params["max_results"]), 20)) : any(5);
+            auto maxResults = (params["max_results"]) ? std::any(Math->min(Math->max(1, params["max_results"]), 20)) : std::any(5);
             auto searchDepth = (params["search_depth"] == std::string("advanced")) ? std::string("advanced") : std::string("basic");
             auto enhancedQuery = query;
             if (source) {
@@ -135,15 +135,15 @@ std::shared_ptr<Action> webSearch = object{
                 object::pair{std::string("include_images"), false}
             }); });
             if (AND((searchResponse), (searchResponse->results->length))) {
-                auto responseList = (searchResponse->answer) ? any(string_empty + searchResponse->answer + string_empty + (AND((Array->isArray(searchResponse->results)), (searchResponse->results->length > 0))) ? any(std::string("\
+                auto responseList = (searchResponse->answer) ? std::any(string_empty + searchResponse->answer + string_empty + (AND((Array->isArray(searchResponse->results)), (searchResponse->results->length > 0))) ? std::any(std::string("\
 \
 For more details, you can check out these resources:\
-") + searchResponse->results->map([=](auto result, auto index) mutable
+") + searchResponse->results->std::map([=](auto result, auto index) mutable
                 {
                     return string_empty + (index + 1) + std::string(". [") + result["title"] + std::string("](") + result["url"] + std::string(")");
                 }
                 )->join(std::string("\
-")) + string_empty) : any(string_empty) + string_empty) : any(string_empty);
+")) + string_empty) : std::any(string_empty) + string_empty) : std::any(string_empty);
                 auto result = as<any>(object{
                     object::pair{std::string("text"), MaxTokens(responseList, DEFAULT_MAX_WEB_SEARCH_CHARS)}, 
                     object::pair{std::string("success"), true}, 
@@ -171,7 +171,7 @@ For more details, you can check out these resources:\
             }
             return noResult;
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             auto errMsg = (is<Error>(error)) ? error->message : String(error);
             logger->error(std::string("[WEB_SEARCH] Action failed: ") + errMsg + string_empty);

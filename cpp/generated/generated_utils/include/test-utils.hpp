@@ -4,7 +4,7 @@
 #include "bun:test.h"
 #include "@elizaos/core.h"
 
-typedef any MockRuntime;
+typedef std::any MockRuntime;
 
 
 MockRuntime createMockRuntime(Partial<MockRuntime> overrides = object{});
@@ -13,8 +13,8 @@ Partial<std::shared_ptr<Memory>> createMockMemory(Partial<std::shared_ptr<Memory
 
 Partial<std::shared_ptr<State>> createMockState(Partial<std::shared_ptr<State>> overrides = object{});
 
-any createMockService(Partial<Record<string, any>> overrides = object{});
+std::any createMockService(Partial<Record<std::string, any>> overrides = object{});
 
-any setupActionTest(object options = undefined);
+std::any setupActionTest(object options = undefined);
 
 #endif

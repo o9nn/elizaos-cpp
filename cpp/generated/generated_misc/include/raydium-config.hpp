@@ -5,12 +5,12 @@
 #include "@solana/spl-token.h"
 #include "@solana/web3.js.h"
 
-typedef any Cluster;
+typedef std::any Cluster;
 
 
-extern std::function<string()> getRpcUrl;
-extern any txVersion;
-extern any raydium;
+extern std::function<std::string()> getRpcUrl;
+extern std::any txVersion;
+extern std::any raydium;
 extern std::function<std::shared_ptr<Promise<any>>(object)> initSdk;
 extern std::function<std::shared_ptr<Promise<any>>()> fetchTokenAccountData;
 #endif

@@ -27,23 +27,23 @@ extern std::shared_ptr<AgentLogger> logger;
 class Repo : public object, public std::enable_shared_from_this<Repo> {
 public:
     using std::enable_shared_from_this<Repo>::shared_from_this;
-    string baseCommit;
+    std::string baseCommit;
 
-    string repoName;
+    std::string repoName;
 
     virtual std::shared_ptr<Promise<void>> copy(std::shared_ptr<AbstractDeployment> deployment) = 0;
     virtual array<string> getResetCommands() = 0;
 };
 
-array<string> getGitResetCommands(string baseCommit);
+array<string> getGitResetCommands(std::string baseCommit);
 
-extern any PreExistingRepoConfigSchema;
+extern std::any PreExistingRepoConfigSchema;
 class PreExistingRepo : public Repo, public std::enable_shared_from_this<PreExistingRepo> {
 public:
     using std::enable_shared_from_this<PreExistingRepo>::shared_from_this;
-    string repoName;
+    std::string repoName;
 
-    string baseCommit;
+    std::string baseCommit;
 
     boolean reset;
 
@@ -52,15 +52,15 @@ public:
     virtual array<string> getResetCommands();
 };
 
-extern any LocalRepoConfigSchema;
+extern std::any LocalRepoConfigSchema;
 class LocalRepo : public Repo, public std::enable_shared_from_this<LocalRepo> {
 public:
     using std::enable_shared_from_this<LocalRepo>::shared_from_this;
-    string path;
+    std::string path;
 
-    string baseCommit;
+    std::string baseCommit;
 
-    string repoName;
+    std::string repoName;
 
     LocalRepo(LocalRepoConfig config);
     virtual void checkValidRepo();
@@ -68,30 +68,30 @@ public:
     virtual array<string> getResetCommands();
 };
 
-extern any GithubRepoConfigSchema;
+extern std::any GithubRepoConfigSchema;
 class GithubRepo : public Repo, public std::enable_shared_from_this<GithubRepo> {
 public:
     using std::enable_shared_from_this<GithubRepo>::shared_from_this;
-    string githubUrl;
+    std::string githubUrl;
 
-    string baseCommit;
+    std::string baseCommit;
 
     double cloneTimeout;
 
-    string repoName;
+    std::string repoName;
 
     GithubRepo(GithubRepoConfig config);
-    virtual string getUrlWithToken(string token);
+    virtual std::string getUrlWithToken(std::string token);
     virtual std::shared_ptr<Promise<void>> copy(std::shared_ptr<AbstractDeployment> deployment);
     virtual array<string> getResetCommands();
 };
 
-extern any RepoConfigSchema;
+extern std::any RepoConfigSchema;
 template <typename P2>
-std::shared_ptr<Repo> repoFromSimplifiedInput(string input, string baseCommit = std::string("HEAD"), P2 type = std::string("auto"));
+std::shared_ptr<Repo> repoFromSimplifiedInput(std::string input, std::string baseCommit = std::string("HEAD"), P2 type = std::string("auto"));
 
 template <typename P2>
-std::shared_ptr<Repo> repoFromSimplifiedInput(string input, string baseCommit, P2 type)
+std::shared_ptr<Repo> repoFromSimplifiedInput(std::string input, std::string baseCommit, P2 type)
 {
     if (type == std::string("auto")) {
         if (input->includes(std::string("github.com"))) {
@@ -103,9 +103,9 @@ std::shared_ptr<Repo> repoFromSimplifiedInput(string input, string baseCommit, P
         }
     }
     static switch_type __switch6933_7354 = {
-        { any(std::string("github")), 1 },
-        { any(std::string("local")), 2 },
-        { any(std::string("preexisting")), 3 }
+        { std::any(std::string("github")), 1 },
+        { std::any(std::string("local")), 2 },
+        { std::any(std::string("preexisting")), 3 }
     };
     switch (__switch6933_7354[type])
     {
@@ -130,7 +130,7 @@ std::shared_ptr<Repo> repoFromSimplifiedInput(string input, string baseCommit, P
             object::pair{std::string("reset"), true}
         });
     default:
-        throw any(std::make_shared<Error>(std::string("Unknown repo type: ") + type + string_empty));
+        throw std::any(std::make_shared<Error>(std::string("Unknown repo type: ") + type + string_empty));
     }
 };
 

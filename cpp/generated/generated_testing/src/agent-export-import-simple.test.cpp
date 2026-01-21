@@ -41,7 +41,7 @@ void Main(void)
                 zip->addFile(std::string("database/") + table + std::string(".json"), Buffer::from(std::string("[]")));
             }
             auto entries = zip->getEntries();
-            auto entryNames = entries->map([=](auto e) mutable
+            auto entryNames = entries->std::map([=](auto e) mutable
             {
                 return e["entryName"];
             }
@@ -118,7 +118,7 @@ void Main(void)
                 object::pair{std::string("db"), object{
                     object::pair{std::string("transaction"), [=](auto callback) mutable
                     {
-                        throw any(std::make_shared<Error>(std::string("Should not process invalid ZIP")));
+                        throw std::any(std::make_shared<Error>(std::string("Should not process invalid ZIP")));
                     }
                     }
                 }}

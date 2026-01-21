@@ -27,12 +27,12 @@ namespace elizaos {
 
 
 /**
- * Main function for generating documentation.
+ * Main std::function for generating documentation.
  * Uses configuration initialized from the GitHub workflow file.
- * @async
+ * @std::async
  */
 /**
- * Asynchronous function that serves as the main entry point for generating documentation.
+ * Asynchronous std::function that serves as the main entry point for generating documentation.
  *
  * This function:
  * 1. Initializes necessary components like Configuration, GitManager, DirectoryTraversal,
@@ -41,11 +41,11 @@ namespace elizaos {
  * 2. Analyzes the codebase and generates JSDoc documentation.
  * 3. Conditionally updates README and creates a pull request for documentation changes.
  *
- * @returns {Promise<void>} A promise that resolves when the documentation generation is complete.
+ * @returns {Promise<void>} A std::promise that resolves when the documentation generation is complete.
  */
 
 std::future<void> main();
 
-// Simple error handling for the main function
+// Simple error handling for the main std::function
 
 } // namespace elizaos

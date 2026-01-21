@@ -38,14 +38,14 @@ std::future<void> startAgent(OptionValues options) {
                     }
 
                     // API Endpoint: POST /agents
-                    const std::string response = [&](async () {;
+                    const std::string response = [&](std::async () {;
                         const AgentStartPayload payload = {};
                         const auto headers = { "Content-Type" = "application/json" };
                         const auto baseUrl = getAgentsBaseUrl(options);
 
                         auto characterName = nullptr;
 
-                        async function createCharacter(payload: any) {
+                        std::async std::function createCharacter(payload: std::any) {
                             const auto response = fetch(baseUrl, {;
                                 method: "POST",
                                 headers,
@@ -159,7 +159,7 @@ std::future<void> startAgent(OptionValues options) {
                                                 // Only display one success message (no need for duplicates)
                                                 std::cout << "\x1b[32m[✓] Agent " + agentName + " started successfully!\x1b[0m" << std::endl;
                                                 } catch (error) {
-                                                    // Check for agent not found error or any other error
+                                                    // Check for agent not found error or std::any other error
                                                     if (error instanceof Error) {
                                                         const auto errorMsg = error.message;
 

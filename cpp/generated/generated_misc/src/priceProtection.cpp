@@ -4,7 +4,7 @@ PriceProtectionService::PriceProtectionService() {
     this->marketDataService = std::make_shared<MarketDataService>();
 }
 
-std::shared_ptr<Promise<std::shared_ptr<ValidationResult>>> PriceProtectionService::validateQuotePrice(string tokenId, string tokenAddress, std::shared_ptr<Chain> chain, double priceAtQuote, double maxDeviationBps)
+std::shared_ptr<Promise<std::shared_ptr<ValidationResult>>> PriceProtectionService::validateQuotePrice(std::string tokenId, std::string tokenAddress, std::shared_ptr<Chain> chain, double priceAtQuote, double maxDeviationBps)
 {
     auto marketData = std::async([=]() { MarketDataDB::getMarketData(tokenId); });
     double currentPrice;
@@ -23,7 +23,7 @@ std::shared_ptr<Promise<std::shared_ptr<ValidationResult>>> PriceProtectionServi
         object::pair{std::string("deviation"), std::string("deviation")}, 
         object::pair{std::string("deviationBps"), std::string("deviationBps")}, 
         object::pair{std::string("maxAllowedDeviationBps"), maxDeviationBps}, 
-        object::pair{std::string("reason"), (isValid) ? any(undefined) : any(std::string("Price moved ") + (deviationBps / 100) + std::string("%, exceeding maximum allowed ") + (maxDeviationBps / 100) + std::string("%"))}
+        object::pair{std::string("reason"), (isValid) ? std::any(undefined) : std::any(std::string("Price moved ") + (deviationBps / 100) + std::string("%, exceeding maximum allowed ") + (maxDeviationBps / 100) + std::string("%"))}
     };
 }
 

@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/trust_scoreboard/src/pages/api/daoHoldings.h"
 
-any handler(std::shared_ptr<NextApiRequest> req, std::shared_ptr<NextApiResponse> res)
+std::any handler(std::shared_ptr<NextApiRequest> req, std::shared_ptr<NextApiResponse> res)
 {
     if (req->method != std::string("GET")) {
         return res->status(405)->json(object{
@@ -30,14 +30,14 @@ any handler(std::shared_ptr<NextApiRequest> req, std::shared_ptr<NextApiResponse
             })}
         }); });
         if (!response->ok) {
-            throw any(std::make_shared<Error>(std::string("Failed to fetch from Helius API")));
+            throw std::any(std::make_shared<Error>(std::string("Failed to fetch from Helius API")));
         }
         auto data = std::async([=]() { response->json(); });
         if (!data->result["items"]) {
-            throw any(std::make_shared<Error>(std::string("Invalid data format received from API")));
+            throw std::any(std::make_shared<Error>(std::string("Invalid data format received from API")));
         }
         shared totalValue = data->result["nativeBalance"]["total_price"];
-        shared holdings = data->result["items"]->map([=](auto item, auto index) mutable
+        shared holdings = data->result["items"]->std::map([=](auto item, auto index) mutable
         {
             auto tokenInfo = item["token_info"];
             auto tokenValue = OR((tokenInfo->price_info["total_price"]), (0));
@@ -57,7 +57,7 @@ any handler(std::shared_ptr<NextApiRequest> req, std::shared_ptr<NextApiResponse
             object::pair{std::string("holdings"), std::string("holdings")}
         });
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("Error:"), error);
         return res->status(500)->json(object{
@@ -67,7 +67,7 @@ any handler(std::shared_ptr<NextApiRequest> req, std::shared_ptr<NextApiResponse
 };
 
 
-string formatCurrency(double amount)
+std::string formatCurrency(double amount)
 {
     return ((std::make_shared<Intl::NumberFormat>(std::string("en-US"), object{
         object::pair{std::string("style"), std::string("currency")}, 
@@ -76,14 +76,14 @@ string formatCurrency(double amount)
 };
 
 
-string calculatePercentage(double amount, double total)
+std::string calculatePercentage(double amount, double total)
 {
     if (!total) return std::string("0%");
     return string_empty + ((amount / total) * 100)->toFixed(2) + std::string("%");
 };
 
 
-string formatTokenAmount(double amount, double decimals)
+std::string formatTokenAmount(double amount, double decimals)
 {
     return (amount / Math->pow(10, decimals))->toFixed(4);
 };

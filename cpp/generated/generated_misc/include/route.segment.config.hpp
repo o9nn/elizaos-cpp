@@ -3,6 +3,6 @@
 #include "core.h"
 
 extern double revalidate;
-extern string fetchCache;
-extern string dynamic;
+extern std::string fetchCache;
+extern std::string dynamic;
 #endif

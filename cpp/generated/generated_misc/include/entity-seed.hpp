@@ -4,6 +4,6 @@
 #include "@elizaos/core.h"
 #include "uuid.h"
 
-extern any entityTestAgentSettings;
+extern std::any entityTestAgentSettings;
 extern object testEntities;
 #endif

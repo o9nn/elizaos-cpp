@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-list/src/lib/analytics.h"
 
-void Analytics::trackProjectView(string projectId, string userId)
+void Analytics::trackProjectView(std::string projectId, std::string userId)
 {
     std::async([=]() { prisma["projectView"]["create"](object{
         object::pair{std::string("data"), object{
@@ -13,7 +13,7 @@ void Analytics::trackProjectView(string projectId, string userId)
     }); });
 }
 
-void Analytics::trackRelatedProjectClick(string sourceProjectId, string targetProjectId, string userId)
+void Analytics::trackRelatedProjectClick(std::string sourceProjectId, std::string targetProjectId, std::string userId)
 {
     std::async([=]() { prisma["projectInteraction"]["create"](object{
         object::pair{std::string("data"), object{

@@ -94,15 +94,15 @@ void getFormTemplate(const std::string& projectType) {
                         },
                         {
                             id: "apis",
-                            label: "External APIs (optional)",
+                            label: "External APIs (std::optional)",
                             type: "textarea",
                             placeholder: "OpenAI API, Discord API, etc.",
                             required: false,
-                            helpText: "List any external APIs or services this plugin will use",
+                            helpText: "List std::any external APIs or services this plugin will use",
                             },
                             {
                                 id: "test_scenarios",
-                                label: "Test Scenarios (optional)",
+                                label: "Test Scenarios (std::optional)",
                                 type: "textarea",
                                 placeholder: "User asks for weather, plugin responds with...",
                                 required: false,

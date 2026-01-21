@@ -18,19 +18,19 @@ array<Relationship> fromV2Relationships(array<std::shared_ptr<RelationshipV2>> r
 array<std::shared_ptr<RelationshipV2>> toV2Relationships(array<Relationship> relationships, std::shared_ptr<UUID> agentId);
 
 extern object RELATIONSHIP_STATUSES;
-string tagsToStatus(array<string> tags);
+std::string tagsToStatus(array<string> tags);
 
-array<string> statusToTags(string status);
+array<string> statusToTags(std::string status);
 
 Relationship fromV2RelationshipEnhanced(std::shared_ptr<RelationshipV2> relationshipV2);
 
 std::shared_ptr<RelationshipV2> toV2RelationshipEnhanced(Relationship relationship, std::shared_ptr<UUID> agentId);
 
-Relationship createV1Relationship(std::shared_ptr<UUID> userA, std::shared_ptr<UUID> userB, string status = RELATIONSHIP_STATUSES["UNKNOWN"], std::shared_ptr<UUID> roomId = undefined);
+Relationship createV1Relationship(std::shared_ptr<UUID> userA, std::shared_ptr<UUID> userB, std::string status = RELATIONSHIP_STATUSES["UNKNOWN"], std::shared_ptr<UUID> roomId = undefined);
 
 boolean areRelationshipsEquivalent(Relationship rel1, Relationship rel2);
 
-array<Relationship> filterRelationshipsByStatus(array<Relationship> relationships, string status);
+array<Relationship> filterRelationshipsByStatus(array<Relationship> relationships, std::string status);
 
 array<Relationship> getRelationshipsForUser(array<Relationship> relationships, std::shared_ptr<UUID> userId);
 

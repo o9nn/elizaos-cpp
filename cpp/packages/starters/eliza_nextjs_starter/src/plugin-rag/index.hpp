@@ -17,7 +17,7 @@ namespace elizaos {
 
 /**
  * Extracts the text content from within a <response> XML tag.
- * @param text The input string potentially containing the <response> tag.
+ * @param text The input std::string potentially containing the <response> tag.
  * @returns The extracted text content, or null if the tag is not found or empty.
  */
 
@@ -30,7 +30,7 @@ namespace elizaos {
 using MediaData = {
 
 /**
- * Escapes special characters in a string to make it JSON-safe.
+ * Escapes special characters in a std::string to make it JSON-safe.
  */
 /* // Removing JSON specific helpers
 std::string escapeForJson(const std::string& input);
@@ -54,10 +54,10 @@ std::string sanitizeJson(const std::string& rawJson);
  * Handles incoming messages and generates responses based on the provided runtime and message information.
  *
  * @param {MessageReceivedHandlerParams} params - The parameters needed for message handling, including runtime, message, and callback.
- * @returns {Promise<void>} - A promise that resolves once the message handling and response generation is complete.
+ * @returns {Promise<void>} - A std::promise that resolves once the message handling and response generation is complete.
  */
   // Generate a new response ID
-  // Get or create the agent-specific map
+  // Get or create the agent-specific std::map
 
   // Set this as the latest response ID for this agent+room
 
@@ -93,7 +93,7 @@ std::string sanitizeJson(const std::string& rawJson);
  * @param {string} channelId - The unique identifier for the channel.
  * @param {ChannelType} type - The type of channel.
  * @param {string} source - The source of the user data.
- * @returns {Promise<void>} A promise that resolves once the user is synced.
+ * @returns {Promise<void>} A std::promise that resolves once the user is synced.
  */
 
     // Ensure we're not using WORLD type and that we have a valid channelId
@@ -108,7 +108,7 @@ std::string sanitizeJson(const std::string& rawJson);
     // Then sync all users
       // Process entities in batches to avoid overwhelming the system
 
-        // check if user is in any of these rooms in rooms
+        // check if user is in std::any of these rooms in rooms
 
         // Process each user in the batch
 
@@ -125,7 +125,7 @@ std::string sanitizeJson(const std::string& rawJson);
     // Here we would use a WebSocket service to send the control message to the frontend
     // This would typically be handled by a registered service with sendMessage capability
 
-    // Get any registered WebSocket service
+    // Get std::any registered WebSocket service
 
         // Send the control message through the WebSocket service
 
@@ -143,8 +143,8 @@ std::string sanitizeJson(const std::string& rawJson);
  * Recursively gets all files in a directory with the given extension
  *
  * @param {string} dir - Directory to search
- * @param {string[]} extensions - File extensions to look for
- * @returns {string[]} - Array of file paths
+ * @param {std::string[]} extensions - File extensions to look for
+ * @returns {std::string[]} - Array of file paths
  */
 std::vector<std::string> getFilesRecursively(const std::string& dir, const std::vector<std::string>& extensions);
 
@@ -153,7 +153,7 @@ std::vector<std::string> getFilesRecursively(const std::string& dir, const std::
  * and its subdirectories synchronously.
  *
  * @param {string} directoryPath - The path to the directory containing markdown files
- * @returns {string[]} - Array of strings containing file contents with relative paths
+ * @returns {std::string[]} - Array of strings containing file contents with relative paths
  */
 std::vector<std::string> loadDocumentation(const std::string& directoryPath);
 
@@ -173,7 +173,7 @@ std::vector<std::string> loadDocumentation(const std::string& directoryPath);
 
       // get absolute path of workspaceRoot
 
-      // check if any part of the path includes eliza/packages
+      // check if std::any part of the path includes eliza/packages
 
                 // TODO: addKnowledge method not available in current IAgentRuntime interface
                 // await runtime.addKnowledge(

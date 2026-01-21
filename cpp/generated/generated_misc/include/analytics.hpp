@@ -9,8 +9,8 @@ class Analytics;
 class Analytics : public object, public std::enable_shared_from_this<Analytics> {
 public:
     using std::enable_shared_from_this<Analytics>::shared_from_this;
-    static void trackProjectView(string projectId, string userId = undefined);
-    static void trackRelatedProjectClick(string sourceProjectId, string targetProjectId, string userId = undefined);
+    static void trackProjectView(std::string projectId, std::string userId = undefined);
+    static void trackRelatedProjectClick(std::string sourceProjectId, std::string targetProjectId, std::string userId = undefined);
 };
 
 #endif

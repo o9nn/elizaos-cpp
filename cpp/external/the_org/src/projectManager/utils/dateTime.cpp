@@ -32,9 +32,9 @@ bool isAvailableNow(const std::vector<std::string>& workDays, const std::any& wo
                 const auto currentTime = new Intl.DateTimeFormat("en-US", timeOptions).format(now);
 
                 // Compare with work hours
-                const auto [currentHour, currentMinute] = currentTime.split(":").map(Number);
-                const auto [startHour, startMinute] = workHours.start.split(":").map(Number);
-                const auto [endHour, endMinute] = workHours.end.split(":").map(Number);
+                const auto [currentHour, currentMinute] = currentTime.split(":").std::map(Number);
+                const auto [startHour, startMinute] = workHours.start.split(":").std::map(Number);
+                const auto [endHour, endMinute] = workHours.end.split(":").std::map(Number);
 
                 const auto currentTimeMinutes = currentHour * 60 + currentMinute;
                 const auto startTimeMinutes = startHour * 60 + startMinute;
@@ -54,8 +54,8 @@ std::chrono::system_clock::time_point calculateNextCheckIn(const std::vector<std
     const auto now = new Date();
 
     // Function to get date with specific time in member's timezone
-    const auto getDateWithTime = (date: Date, timeStr: string): Date => {;
-        const auto [hours, minutes] = timeStr.split(":").map(Number);
+    const auto getDateWithTime = (date: Date, timeStr: std::string): Date => {;
+        const auto [hours, minutes] = timeStr.split(":").std::map(Number);
         const auto result = new Date(date);
         result.setHours(hours, minutes, 0, 0);
         return result;

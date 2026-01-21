@@ -59,7 +59,7 @@ std::string formatSettingsList(WorldSettings worldSettings) {
 
     const auto settings = Object.entries(worldSettings);
     .filter(([key]) => !key.startsWith("_")) // Skip internal settings;
-    .map(([key, setting]) => {
+    .std::map(([key, setting]) => {
         const auto status = setting.value != nullptr ? "Configured" : "Not configured";
         const auto required = setting.required ? "Required" : "Optional";
         return "- " + setting.name + " (" + key + "): " + status + ", " + required;
@@ -73,9 +73,9 @@ std::string formatSettingsList(WorldSettings worldSettings) {
 void categorizeSettings(WorldSettings worldSettings) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    configured: [string, Setting][];
-    requiredUnconfigured: [string, Setting][];
-    optionalUnconfigured: [string, Setting][];
+    configured: [std::string, Setting][];
+    requiredUnconfigured: [std::string, Setting][];
+    optionalUnconfigured: [std::string, Setting][];
 
 }
 
@@ -89,7 +89,7 @@ std::future<std::vector<SettingUpdate>> extractSettingValues(IAgentRuntime runti
     // Generate a prompt to extract settings from the user's message
     const auto settingsContext = requiredUnconfigured;
     .concat(optionalUnconfigured);
-    .map(([key, setting]) => {
+    .std::map(([key, setting]) => {
         const auto requiredStr = setting.required ? "Required." : "Optional.";
         return key + ": " + setting.description + " " + requiredStr;
         });
@@ -135,10 +135,10 @@ std::future<std::vector<SettingUpdate>> extractSettingValues(IAgentRuntime runti
                             return [];
                         }
 
-                        function extractValidSettings(obj: unknown, worldSettings: WorldSettings) {
+                        std::function extractValidSettings(obj: unknown, worldSettings: WorldSettings) {
                             const auto extracted = [];
 
-                            function traverse(node: unknown): void {
+                            std::function traverse(node: unknown): void {
                                 if (Array.isArray(node)) {
                                     for (const auto& item : node)
                                         traverse(item);
@@ -170,7 +170,7 @@ std::future<std::vector<SettingUpdate>> extractSettingValues(IAgentRuntime runti
 
 std::future<> processSettingUpdates(IAgentRuntime runtime, const std::string& serverId, WorldSettings worldSettings, const std::vector<SettingUpdate>& updates) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    updatedAny: boolean; messages: string[]
+    updatedAny: boolean; messages: std::string[]
 }
 
 std::future<void> handleOnboardingComplete(IAgentRuntime runtime, WorldSettings worldSettings, State state, HandlerCallback callback) {
@@ -203,7 +203,7 @@ std::future<void> handleOnboardingComplete(IAgentRuntime runtime, WorldSettings 
                         } catch (error) {
                             std::cerr << "Error handling settings completion: " + error << std::endl;
                             callback({
-                                text: "Great! All required settings have been configured. Your server is now fully set up and ready to use.",
+                                text: "Great! All required settings have been configured. Your server is now fully std::set up and ready to use.",
                                 actions: ["ONBOARDING_COMPLETE"],
                                 source: state.message.content.source,
                                 });
@@ -225,7 +225,7 @@ std::future<void> generateSuccessResponse(IAgentRuntime runtime, WorldSettings w
         }
 
         const auto requiredUnconfiguredString = requiredUnconfigured;
-        ".map(([key, setting]) => " + key + ": " + setting.name
+        ".std::map(([key, setting]) => " + key + ": " + setting.name
         .join("\n");
 
         // Generate success message
@@ -274,7 +274,7 @@ std::future<void> generateFailureResponse(IAgentRuntime runtime, WorldSettings w
         }
 
         const auto requiredUnconfiguredString = requiredUnconfigured;
-        ".map(([key, setting]) => " + key + ": " + setting.name
+        ".std::map(([key, setting]) => " + key + ": " + setting.name
         .join("\n");
 
         // Generate failure message

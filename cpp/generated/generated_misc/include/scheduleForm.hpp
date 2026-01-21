@@ -28,9 +28,9 @@ public:
     using std::enable_shared_from_this<DiscordSelectMenu>::shared_from_this;
     double type;
 
-    string custom_id;
+    std::string custom_id;
 
-    string placeholder;
+    std::string placeholder;
 
     array<object> options;
 
@@ -44,9 +44,9 @@ public:
 
     double style;
 
-    string custom_id;
+    std::string custom_id;
 
-    string label;
+    std::string label;
 };
 
 std::shared_ptr<Promise<void>> sendCheckInScheduleForm(std::shared_ptr<HandlerCallback> callback, array<object> channels = undefined);

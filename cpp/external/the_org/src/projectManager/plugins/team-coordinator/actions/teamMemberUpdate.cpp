@@ -30,7 +30,7 @@ std::future<bool> postUpdateToDiscordChannel(IAgentRuntime runtime, TeamMemberUp
 
             logger.info('Retrieved report channel configs:', {
                 count: memories.size(),
-                configs: memories.map((m) => ({
+                configs: memories.std::map((m) => ({
                     type: m.content.type,
                     channelId: m.content.config ? (m.content.config).channelId : std::nullopt,
                     })),
@@ -148,7 +148,7 @@ std::future<bool> postUpdateToDiscordChannel(IAgentRuntime runtime, TeamMemberUp
                                             // Send the message
                                             std::cout << "Attempting to send update to Discord channel" << std::endl;
                                             (;
-                                        targetChannel<string, unknown> & { send: (content: string) => Promise<unknown> }
+                                        targetChannel<std::string, unknown> & { send: (content: std::string) => Promise<unknown> }
                                         ).send(updateMessage);
 
                                         std::cout << "Successfully sent team member update to Discord" << std::endl;
@@ -254,7 +254,7 @@ std::future<std::optional<TeamMemberUpdate>> parseTeamMemberUpdate(IAgentRuntime
                 }
             }
 
-            For the "answers" field, extract any key-value pairs that look like questions and answers in the text.;
+            For the "answers" field, extract std::any key-value pairs that look like questions and answers in the text.;
             Include ALL information from the update in the answers object.;
 
             "Text to parse: \"${text}\""
@@ -271,7 +271,7 @@ std::future<std::optional<TeamMemberUpdate>> parseTeamMemberUpdate(IAgentRuntime
 
                 auto parsedData;
                 try {
-                    // Remove any backticks or markdown formatting that might be in the response
+                    // Remove std::any backticks or markdown formatting that might be in the response
                     const auto cleanedResponse = "parsedResponse.replace(/" + "json\n?|\n?";
                     parsedData = /* JSON.parse */ cleanedResponse;
                     std::cout << "Successfully parsed fields from AI response:" << parsedData << std::endl;

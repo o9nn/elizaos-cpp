@@ -20,20 +20,20 @@ public:
 class CacheManager : public object, public std::enable_shared_from_this<CacheManager> {
 public:
     using std::enable_shared_from_this<CacheManager>::shared_from_this;
-    std::shared_ptr<Map<string, std::shared_ptr<CacheEntry<any>>>> cache = std::make_shared<Map>();
+    std::shared_ptr<Map<std::string, std::shared_ptr<CacheEntry<any>>>> cache = std::make_shared<Map>();
 
     double defaultTTL = 60000;
 
     template <typename T>
-    std::shared_ptr<Promise<any>> get(string key);
+    std::shared_ptr<Promise<any>> get(std::string key);
     template <typename T>
-    std::shared_ptr<Promise<void>> set(string key, T value, double ttl = this->defaultTTL);
-    virtual std::shared_ptr<Promise<void>> delete(string key);
+    std::shared_ptr<Promise<void>> std::set(std::string key, T value, double ttl = this->defaultTTL);
+    virtual std::shared_ptr<Promise<void>> delete(std::string key);
     virtual std::shared_ptr<Promise<void>> clear();
 };
 
 template <typename T>
-std::shared_ptr<Promise<any>> CacheManager::get(string key)
+std::shared_ptr<Promise<any>> CacheManager::get(std::string key)
 {
     auto entry = this->cache->get(key);
     if (!entry) return nullptr;
@@ -45,14 +45,14 @@ std::shared_ptr<Promise<any>> CacheManager::get(string key)
 }
 
 template <typename T>
-std::shared_ptr<Promise<void>> CacheManager::set(string key, T value, double ttl)
+std::shared_ptr<Promise<void>> CacheManager::std::set(std::string key, T value, double ttl)
 {
     auto entry = object{
         object::pair{std::string("value"), std::string("value")}, 
         object::pair{std::string("timestamp"), Date->now()}, 
         object::pair{std::string("expiry"), Date->now() + ttl}
     };
-    this->cache->set(key, entry);
+    this->cache->std::set(key, entry);
     return std::shared_ptr<Promise<void>>();
 }
 

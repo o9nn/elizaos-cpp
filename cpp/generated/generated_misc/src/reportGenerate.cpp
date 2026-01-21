@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/the-org/src/projectManager/plugins/team-coordinator/actions/reportGenerate.h"
 
-std::shared_ptr<Promise<string>> generateTeamReport(std::shared_ptr<IAgentRuntime> runtime, string standupType, string roomId)
+std::shared_ptr<Promise<string>> generateTeamReport(std::shared_ptr<IAgentRuntime> runtime, std::string standupType, std::string roomId)
 {
     try
     {
@@ -20,7 +20,7 @@ std::shared_ptr<Promise<string>> generateTeamReport(std::shared_ptr<IAgentRuntim
             auto checkInType = content["update"]->checkInType;
             return contentType == std::string("team-member-update");
         }
-        )->map([=](auto memory) mutable
+        )->std::map([=](auto memory) mutable
         {
             return (as<object>(memory["content"]))["update"];
         }
@@ -58,11 +58,11 @@ std::shared_ptr<Promise<string>> generateTeamReport(std::shared_ptr<IAgentRuntim
             report += std::string("👤 **") + teamMemberName + std::string("** (ID: ") + teamMemberId + std::string(")\
 \
 ");
-            auto processedUpdates = memberUpdates->map([=](auto update) mutable
+            auto processedUpdates = memberUpdates->std::map([=](auto update) mutable
             {
                 try
                 {
-                    auto answers = (update->answers) ? any(JSON->parse(update->answers)) : any(object{});
+                    auto answers = (update->answers) ? std::any(JSON->parse(update->answers)) : std::any(object{});
                     return object{
                         object::pair{std::string("teamMemberId"), update->teamMemberId}, 
                         object::pair{std::string("teamMemberName"), update->teamMemberName}, 
@@ -72,7 +72,7 @@ std::shared_ptr<Promise<string>> generateTeamReport(std::shared_ptr<IAgentRuntim
                         object::pair{std::string("answers"), std::string("answers")}
                     };
                 }
-                catch (const any& error)
+                catch (const std::any& error)
                 {
                     logger->error(std::string("Error parsing answers JSON:"), error);
                     return update;
@@ -112,14 +112,14 @@ std::shared_ptr<Promise<string>> generateTeamReport(std::shared_ptr<IAgentRuntim
 ");
                     try
                     {
-                        auto answers = (update->answers) ? any(JSON->parse(update->answers)) : any(object{});
+                        auto answers = (update->answers) ? std::any(JSON->parse(update->answers)) : std::any(object{});
                         for (auto& [question, answer] : Object->entries(answers))
                         {
                             report += std::string("▫️ **") + question + std::string("**: ") + answer + std::string("\
 ");
                         }
                     }
-                    catch (const any& error)
+                    catch (const std::any& error)
                     {
                         logger->error(std::string("Error parsing answers JSON for display:"), error);
                         report += std::string("▫️ Error parsing update details\
@@ -127,7 +127,7 @@ std::shared_ptr<Promise<string>> generateTeamReport(std::shared_ptr<IAgentRuntim
                     }
                 }
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 logger->error(std::string("Error generating analysis:"), error);
                 report += std::string("❌ Error generating analysis. Showing raw updates:\
@@ -139,14 +139,14 @@ std::shared_ptr<Promise<string>> generateTeamReport(std::shared_ptr<IAgentRuntim
 ");
                     try
                     {
-                        auto answers = (update->answers) ? any(JSON->parse(update->answers)) : any(object{});
+                        auto answers = (update->answers) ? std::any(JSON->parse(update->answers)) : std::any(object{});
                         for (auto& [question, answer] : Object->entries(answers))
                         {
                             report += std::string("▫️ **") + question + std::string("**: ") + answer + std::string("\
 ");
                         }
                     }
-                    catch (const any& error)
+                    catch (const std::any& error)
                     {
                         logger->error(std::string("Error parsing answers JSON for display:"), error);
                         report += std::string("▫️ Error parsing update details\
@@ -163,10 +163,10 @@ std::shared_ptr<Promise<string>> generateTeamReport(std::shared_ptr<IAgentRuntim
         logger->info(std::string("=== GENERATE TEAM REPORT END ==="));
         return report;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Error generating team report:"), error);
-        throw any(error);
+        throw std::any(error);
     }
 };
 
@@ -188,7 +188,7 @@ std::shared_ptr<Action> generateReport = object{
             logger->info(std::string("=== GENERATE REPORT HANDLER START ==="));
             if (!state) return false;
             if (!callback) {
-                logger->warn(std::string("No callback function provided"));
+                logger->warn(std::string("No callback std::function provided"));
                 return false;
             }
             auto text = as<string>(message->content->text);
@@ -243,7 +243,7 @@ std::shared_ptr<Action> generateReport = object{
                     return false;
                 }
             }
-            catch (const any& aiError)
+            catch (const std::any& aiError)
             {
                 logger->error(std::string("Error using AI to parse input:"), aiError);
                 std::async([=]() { callback(object{
@@ -261,7 +261,7 @@ std::shared_ptr<Action> generateReport = object{
             logger->info(std::string("=== GENERATE REPORT HANDLER END ==="));
             return true;
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             auto err = as<std::shared_ptr<Error>>(error);
             logger->error(std::string("=== GENERATE REPORT HANDLER ERROR ==="));

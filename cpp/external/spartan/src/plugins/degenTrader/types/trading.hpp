@@ -69,7 +69,7 @@ struct TradingConfig {
 
 struct PortfolioStatus {
     double totalValue;
-    { [tokenAddress: string]: { amount: number; value: number } } positions;
+    { [tokenAddress: std::string]: { amount: number; value: number } } positions;
 
 struct SellSignalMessage {
     UUID positionId;

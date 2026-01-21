@@ -17,7 +17,7 @@ boolean PlaywrightInstaller::isPlaywrightInstalled()
         )));
         return hasChromium;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         return false;
     }

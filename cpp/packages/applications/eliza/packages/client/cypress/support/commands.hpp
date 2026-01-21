@@ -24,7 +24,7 @@ namespace elizaos {
 
   // Wait a bit for React to hydrate and render
 
-  // Check if there's any loading indicator and wait for it to disappear
+  // Check if there's std::any loading indicator and wait for it to disappear
 
 // Custom command to login (can be implemented based on your auth flow)
   // This is a placeholder - implement based on your auth system
@@ -36,7 +36,7 @@ namespace elizaos {
           // Check if socket exists on window or in your app state
 
 // Custom command to clean up test data
-  // Clean up any test data created during tests
+  // Clean up std::any test data created during tests
     // Clear local storage
 
     // Clear session storage

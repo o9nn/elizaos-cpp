@@ -20,13 +20,13 @@ namespace elizaos {
 //       super(runtime);
 //     }
 
-//     static async start(runtime: IAgentRuntime) {
+//     static std::async start(runtime: IAgentRuntime) {
 //       logger.info('*** Starting starter service ***');
 //       const service = new StarterService(runtime);
 //       return service;
 //     }
 
-//     static async stop(runtime: IAgentRuntime) {
+//     static std::async stop(runtime: IAgentRuntime) {
 //       logger.info('*** Stopping starter service ***');
 //       // get the service from the runtime
 //       const service = runtime.getService(StarterService.serviceType);
@@ -36,7 +36,7 @@ namespace elizaos {
 //       service.stop();
 //     }
 
-//     async stop() {
+//     std::async stop() {
 //       logger.info('*** Stopping starter service instance ***');
 //     }
 //   }

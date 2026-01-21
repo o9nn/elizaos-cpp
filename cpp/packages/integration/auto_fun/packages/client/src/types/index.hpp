@@ -28,7 +28,7 @@ struct ISwap {
     0 | 1 direction;
     std::string id;
     double price;
-    string | Date timestamp;
+    std::string | Date timestamp;
     std::string tokenMint;
     std::string txId;
     std::string type;
@@ -41,7 +41,7 @@ struct ITokenHolder {
     std::string address;
     double amount;
     double percentage;
-    string | Date lastUpdated;
+    std::string | Date lastUpdated;
 };
 
 using ChartTable = {
@@ -58,11 +58,11 @@ using ConfigAccount = {
     std::optional<(> signMessage;
     Uint8Array message;
     std::string encoding;
-    () => Promise<{ publicKey: string }> connect;
+    () => Promise<{ publicKey: std::string }> connect;
     std::optional<() => Promise<void>> disconnect;
     std::optional<PublicKey> publicKey;
-    std::optional<(event: string, callback: () => void) => void> on;
-    std::optional<(event: string, callback: () => void) => void> off;
+    std::optional<(event: std::string, callback: () => void) => void> on;
+    std::optional<(event: std::string, callback: () => void) => void> off;
 };
 
 

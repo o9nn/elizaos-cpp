@@ -11,7 +11,7 @@ void ProfileSettings() {
         name: "KRIMSON",
         email: "krimson@joyco.studio",
         handle: "@KRIMSON",
-        bio: "Rebel developer building the future of the web.",
+        bio: "Rebel developer building the std::future of the web.",
         });
 
         return (;

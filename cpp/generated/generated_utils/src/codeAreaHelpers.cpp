@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizaos.github.io/src/lib/pipelines/codeAreaHelpers.h"
 
-any extractAreaFromPath(string path)
+std::any extractAreaFromPath(std::string path)
 {
     auto parts = path->split(std::string("/"));
     if (OR((parts->get_length() <= 1), (isRootConfigFile(path)))) {
@@ -16,7 +16,7 @@ any extractAreaFromPath(string path)
 };
 
 
-boolean isRootConfigFile(string path)
+boolean isRootConfigFile(std::string path)
 {
     auto rootConfigPatterns = array<std::shared_ptr<RegExp>>{ (new RegExp(std::string("^package\.json"))), (new RegExp(std::string("^bun\.lock"))), (new RegExp(std::string("^\.gitignore"))), (new RegExp(std::string("^\.env(\.\w+)?"))), (new RegExp(std::string("^tsconfig\.json"))), (new RegExp(std::string("^README\.md"))), (new RegExp(std::string("^LICENSE"))), (new RegExp(std::string("^yarn\.lock"))), (new RegExp(std::string("^pnpm-lock\.yaml"))), (new RegExp(std::string("^\.eslintrc(\.\w+)?"))), (new RegExp(std::string("^\.prettierrc(\.\w+)?"))), (new RegExp(std::string("^vite\.config\.\w+"))), (new RegExp(std::string("^next\.config\.\w+"))), (new RegExp(std::string("^tailwind\.config\.\w+"))) };
     shared filename = OR((path->split(std::string("/"))->pop()), (string_empty));
@@ -28,9 +28,9 @@ boolean isRootConfigFile(string path)
 };
 
 
-std::shared_ptr<Map<string, double>> buildAreaMap(array<object> files)
+std::shared_ptr<Map<std::string, double>> buildAreaMap(array<object> files)
 {
-    shared areaMap = std::make_shared<Map<string, double>>();
+    shared areaMap = std::make_shared<Map<std::string, double>>();
     files->forEach([=](auto file) mutable
     {
         auto filePath = OR((OR((file["path"]), (file["filename"]))), (string_empty));
@@ -38,7 +38,7 @@ std::shared_ptr<Map<string, double>> buildAreaMap(array<object> files)
         auto area = extractAreaFromPath(filePath);
         if (!area) return;
         auto currentCount = OR((areaMap->get(area)), (0));
-        areaMap->set(area, currentCount + 1);
+        areaMap->std::set(area, currentCount + 1);
     }
     );
     return areaMap;

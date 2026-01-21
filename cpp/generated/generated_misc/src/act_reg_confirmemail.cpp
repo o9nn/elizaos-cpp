@@ -1,10 +1,10 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/autonomous-trader/actions/act_reg_confirmemail.h"
 
-any findGeneratedCode(any message, any length)
+std::any findGeneratedCode(std::any message, std::any length)
 {
     auto pattern = std::make_shared<RegExp>(std::string("\b[A-Za-z0-9]{") + length + std::string("}\b"));
     auto match = message["match"](pattern);
-    return (match) ? any(const_(match)[0]) : any(nullptr);
+    return (match) ? std::any(const_(match)[0]) : std::any(nullptr);
 };
 
 
@@ -28,7 +28,7 @@ std::shared_ptr<Action> checkRegistrationCode = object{
         return AND((AND((email), (containsGeneratedCode != nullptr))), (!email->data->verified));
     }
     }, 
-    object::pair{std::string("description"), std::string("Allows a user set their email address")}, 
+    object::pair{std::string("description"), std::string("Allows a user std::set their email address")}, 
     object::pair{std::string("handler"), [=](auto runtime, auto message, auto state, auto _options, auto callback = undefined, auto responses) mutable
     {
         console->log(std::string("VERIFY_REGISTRATION_CODE handler"));

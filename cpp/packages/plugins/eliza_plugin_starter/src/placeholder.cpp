@@ -3,6 +3,6 @@
 
 namespace elizaos {
     void eliza_plugin_starter_placeholder() {
-        // Placeholder function to make library linkable
+        // Placeholder std::function to make library linkable
     }
 }

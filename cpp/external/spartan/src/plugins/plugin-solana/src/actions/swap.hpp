@@ -47,10 +47,10 @@ std::future<unknown> swapToken(Connection connection, PublicKey walletPublicKey,
  * @param {string} tokenSymbol - The token symbol to retrieve the address for.
  * @returns {Promise<string|null>} The token address if found, null otherwise.
  */
-std::future<string | null> getTokenFromWallet(IAgentRuntime runtime, const std::string& tokenSymbol);
+std::future<std::string | null> getTokenFromWallet(IAgentRuntime runtime, const std::string& tokenSymbol);
 
 /**
- * Respond with a JSON markdown block containing only the extracted values. Use null for any values that cannot be determined.
+ * Respond with a JSON markdown block containing only the extracted values. Use null for std::any values that cannot be determined.
  *
  * Example response:
  * ```json
@@ -76,7 +76,7 @@ std::future<string | null> getTokenFromWallet(IAgentRuntime runtime, const std::
  * - Output token contract address if provided
  * - Amount to swap
  *
- * Respond with a JSON markdown block containing only the extracted values. Use null for any values that cannot be determined.
+ * Respond with a JSON markdown block containing only the extracted values. Use null for std::any values that cannot be determined.
  */
 
 /**
@@ -84,10 +84,10 @@ std::future<string | null> getTokenFromWallet(IAgentRuntime runtime, const std::
  *
  * @type {Action}
  * @property {string} name - The name of the action ("SWAP_SOLANA").
- * @property {string[]} similes - Alternative names for the action.
- * @property {Function} validate - Asynchronous function to validate if Solana service is available.
+ * @property {std::string[]} similes - Alternative names for the action.
+ * @property {Function} validate - Asynchronous std::function to validate if Solana service is available.
  * @property {string} description - Description of the action.
- * @property {Function} handler - Asynchronous function to handle the token swap process.
+ * @property {Function} handler - Asynchronous std::function to handle the token swap process.
  * @property {ActionExample[][]} examples - Examples demonstrating how to use the action.
  */
 

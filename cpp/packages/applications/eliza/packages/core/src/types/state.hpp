@@ -21,8 +21,8 @@ namespace elizaos {
  * understanding at a point in time. It includes:
  * - `values`: A key-value store for general state variables, often populated by providers.
  * - `data`: Another key-value store, potentially for more structured or internal data.
- * - `text`: A string representation of the current context, often a summary or concatenated history.
- * The `[key: string]: any;` allows for dynamic properties, though `EnhancedState` offers better typing.
+ * - `text`: A std::string representation of the current context, often a summary or concatenated history.
+ * The `[key: std::string]: std::any;` allows for dynamic properties, though `EnhancedState` offers better typing.
  * This state object is passed to handlers for actions, evaluators, and providers.
  */
 struct State {
@@ -37,7 +37,7 @@ struct State {
 using StateValue = std::variant<std::string, double, bool, StateObject, StateArray>;
 /**
  * Represents a generic object structure within the agent's state, where keys are strings
- * and values can be any `StateValue`. This allows for nested objects within the state.
+ * and values can be std::any `StateValue`. This allows for nested objects within the state.
  * It's a fundamental part of the `EnhancedState` interface.
  */
 struct StateObject {
@@ -55,7 +55,7 @@ using StateArray = std::vector<StateValue>;
  * This interface provides a more structured representation of an agent's conversational state,
  * building upon the base `State` by typing `values` and `data` as `StateObject`.
  * The `text` property typically holds a textual summary or context derived from the state.
- * Additional dynamic properties are still allowed via the index signature `[key: string]: StateValue;`.
+ * Additional dynamic properties are still allowed via the index signature `[key: std::string]: StateValue;`.
  */
 struct EnhancedState {
     StateObject values;

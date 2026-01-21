@@ -79,7 +79,7 @@ void Main(void)
                     expect(result->values->success)->toBe(false);
                     expect(result->values->error)->toBe(std::string("Goal tracking is not available at the moment."));
                 } else {
-                    throw any(std::make_shared<Error>(std::string("Expected result to have values property")));
+                    throw std::any(std::make_shared<Error>(std::string("Expected result to have values property")));
                 }
             }
             );

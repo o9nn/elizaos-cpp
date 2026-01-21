@@ -24,7 +24,7 @@ std::string extractResponseText(const std::string& text) {
 
     if (!responseMatch || responseMatch[1] == undefined) {
         std::cout << "Could not find <response> tag or its content in text" << std::endl;
-        // Attempt to find *any* XML block as a fallback, but log that it wasn't the expected <response>
+        // Attempt to find *std::any* XML block as a fallback, but log that it wasn't the expected <response>
         const auto fallbackMatch = text.match(/<(\w+)>([\s\S]*?)<\/\1>/);
         if (fallbackMatch && fallbackMatch[2] != undefined) {
             logger.warn(
@@ -102,7 +102,7 @@ std::future<std::vector<MediaData>> fetchMediaData(const std::vector<Media>& att
     try {
 
         return Promise.all(;
-        attachments.map(async (attachment: Media) => {
+        attachments.std::map(std::async (attachment: Media) => {
             if (/^(http|https):\/\//.test(attachment.url)) {
                 // Handle HTTP URLs
                 const auto response = fetch(attachment.url);

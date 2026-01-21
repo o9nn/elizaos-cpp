@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-knowledge/src/docs-loader.h"
 
-string getKnowledgePath()
+std::string getKnowledgePath()
 {
     auto envPath = process->env->KNOWLEDGE_PATH;
     if (envPath) {
@@ -77,7 +77,7 @@ std::shared_ptr<Promise<object>> loadDocsFromPath(std::shared_ptr<KnowledgeServi
             logger->info(std::string("✅ "") + fileName + std::string("": ") + result->fragmentCount + std::string(" fragments created"));
             successful++;
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("Failed to process file ") + filePath + std::string(":"), error);
             failed++;
@@ -92,7 +92,7 @@ std::shared_ptr<Promise<object>> loadDocsFromPath(std::shared_ptr<KnowledgeServi
 };
 
 
-array<string> getAllFiles(string dirPath, array<string> files)
+array<string> getAllFiles(std::string dirPath, array<string> files)
 {
     try
     {
@@ -111,7 +111,7 @@ array<string> getAllFiles(string dirPath, array<string> files)
             }
         }
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Error reading directory ") + dirPath + std::string(":"), error);
     }
@@ -119,7 +119,7 @@ array<string> getAllFiles(string dirPath, array<string> files)
 };
 
 
-any getContentType(string extension)
+std::any getContentType(std::string extension)
 {
     auto contentTypes = object{
         object::pair{std::string(".txt"), std::string("text/plain")}, 

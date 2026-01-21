@@ -8,7 +8,7 @@ std::future<std::string> assessMarketCondition(IAgentRuntime runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        // might be best to move this out of this function
+        // might be best to move this out of this std::function
         const auto tradeService = runtime.getService(ServiceTypes.DEGEN_TRADING);
         const auto solData = tradeService.dataService.getTokenMarketData(;
         "So11111111111111111111111111111111111111112" // SOL address;

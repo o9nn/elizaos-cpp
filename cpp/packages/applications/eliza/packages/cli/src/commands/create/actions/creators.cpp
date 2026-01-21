@@ -66,7 +66,7 @@ std::future<void> createAgent(const std::string& agentName, const std::string& t
         try {
             fs.access(agentFilePath);
             throw std::runtime_error(`Agent file ${agentFilePath} already exists`);
-            } catch (error: any) {
+            } catch (error: std::any) {
                 if (error.code != 'ENOENT') {
                     throw;
                 }

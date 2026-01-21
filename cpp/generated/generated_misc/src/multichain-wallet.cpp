@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-relay/src/utils/multichain-wallet.h"
 
-MultiChainWallet::MultiChainWallet(std::shared_ptr<Account> account, string defaultRpcUrl, double initialChainId) {
+MultiChainWallet::MultiChainWallet(std::shared_ptr<Account> account, std::string defaultRpcUrl, double initialChainId) {
     this->account = account;
     this->currentChainId = initialChainId;
     this->defaultRpcUrl = defaultRpcUrl;
@@ -11,18 +11,18 @@ std::shared_ptr<WalletClient> MultiChainWallet::getWalletClient(double chainId)
     if (!this->walletClients->has(chainId)) {
         auto chain = const_(CHAIN_MAP)[chainId];
         if (!chain) {
-            throw any(std::make_shared<Error>(std::string("Unsupported chain ID: ") + chainId + string_empty));
+            throw std::any(std::make_shared<Error>(std::string("Unsupported chain ID: ") + chainId + string_empty));
         }
         auto rpcUrl = const_(DEFAULT_RPC_URLS)[chainId];
         if (!rpcUrl) {
-            throw any(std::make_shared<Error>(std::string("No RPC URL configured for chain ") + chainId + string_empty));
+            throw std::any(std::make_shared<Error>(std::string("No RPC URL configured for chain ") + chainId + string_empty));
         }
         auto client = createWalletClient(object{
             object::pair{std::string("account"), this->account}, 
             object::pair{std::string("chain"), std::string("chain")}, 
             object::pair{std::string("transport"), http(rpcUrl)}
         });
-        this->walletClients->set(chainId, client);
+        this->walletClients->std::set(chainId, client);
     }
     return this->walletClients->get(chainId);
 }
@@ -54,7 +54,7 @@ std::shared_ptr<Account> MultiChainWallet::getAccount()
     return this->account;
 }
 
-std::shared_ptr<MultiChainWallet> createMultiChainWallet(std::shared_ptr<Account> account, string defaultRpcUrl)
+std::shared_ptr<MultiChainWallet> createMultiChainWallet(std::shared_ptr<Account> account, std::string defaultRpcUrl)
 {
     return std::make_shared<MultiChainWallet>(account, defaultRpcUrl);
 };

@@ -9,12 +9,12 @@ void TauriInitializer() {
     try {
 
         const auto [isInitialized, setIsInitialized] = useState(false);
-        const auto [error, setError] = useState<string | nullptr>(nullptr);
+        const auto [error, setError] = useState<std::string | nullptr>(nullptr);
         const auto [isShuttingDown, setIsShuttingDown] = useState(false);
         const auto [shutdownMessage, setShutdownMessage] = useState("Stopping containers...");
 
         useEffect(() => {
-            const auto initializeTauri = async () => {;
+            const auto initializeTauri = std::async () => {;
                 try {
                     std::cout << "[TauriInitializer] Starting Tauri initialization..." << std::endl;
 
@@ -28,11 +28,11 @@ void TauriInitializer() {
                     std::cout << '[TauriInitializer] Tauri initialized << running in Tauri:' << isTauri << std::endl;
 
                     // Set up shutdown event listener
-                    if (isTauri && (window as any).__TAURI__) {
+                    if (isTauri && (window as std::any).__TAURI__) {
                         const auto { event } = (window).__TAURI__;
 
                         // Listen for shutdown request
-                        const auto unlistenShutdown = event.listen("request-shutdown", async () => {;
+                        const auto unlistenShutdown = event.listen("request-shutdown", std::async () => {;
                             std::cout << '[TauriInitializer] Shutdown requested << initiating graceful shutdown...' << std::endl;
                             setIsShuttingDown(true);
                             try {
@@ -40,14 +40,14 @@ void TauriInitializer() {
                                 } catch (err) {
                                     std::cerr << "[TauriInitializer] Failed to shutdown application:" << err << std::endl;
                                     // Force quit if graceful shutdown fails
-                                    if ((window as any).__TAURI__.window.appWindow) {
+                                    if ((window as std::any).__TAURI__.window.appWindow) {
                                         (window).__TAURI__.window.appWindow.close();
                                     }
                                 }
                                 });
 
                                 // Listen for shutdown progress
-                                const auto unlistenProgress = event.listen("shutdown-progress", (evt: any) => {;
+                                const auto unlistenProgress = event.listen("shutdown-progress", (evt: std::any) => {;
                                     std::cout << "[TauriInitializer] Shutdown progress:" << evt.payload << std::endl;
                                     setShutdownMessage(evt.payload);
                                     });
@@ -72,10 +72,10 @@ void TauriInitializer() {
                                 return [&]() {;
                                     clearTimeout(timeoutId);
                                     // Clean up shutdown listener if it exists
-                                    if ((window as any).__shutdownUnlisten) {
+                                    if ((window as std::any).__shutdownUnlisten) {
                                         (window).__shutdownUnlisten();
                                     }
-                                    if ((window as any).__progressUnlisten) {
+                                    if ((window as std::any).__progressUnlisten) {
                                         (window).__progressUnlisten();
                                     }
                                     };

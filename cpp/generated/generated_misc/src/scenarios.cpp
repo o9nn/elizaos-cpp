@@ -284,7 +284,7 @@ std::shared_ptr<TestSuite> dummyServicesScenariosSuite = object{
             }
             );
             assert(solAsset, std::string("SOL should be in portfolio"));
-            assert->equal(solAsset->balance, std::string("5"), std::string("SOL balance string should be "5""));
+            assert->equal(solAsset->balance, std::string("5"), std::string("SOL balance std::string should be "5""));
             console->log(std::string("Successfully tested wallet operations."));
         }
         }
@@ -307,7 +307,7 @@ std::shared_ptr<TestSuite> dummyServicesScenariosSuite = object{
                 std::async([=]() { walletService->transferSol(std::string("dummy-from"), std::string("dummy-to"), 10000000000ll); });
                 assert->fail(std::string("Should throw error for insufficient balance"));
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 assert->match(error["message"], (new RegExp(std::string("Insufficient SOL balanc"))), std::string("Should throw insufficient balance error"));
             }

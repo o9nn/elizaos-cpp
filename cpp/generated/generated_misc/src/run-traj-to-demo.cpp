@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/run/run-traj-to-demo.h"
 
-void saveDemo(any data, string file, string trajPath)
+void saveDemo(std::any data, std::string file, std::string trajPath)
 {
     auto content = yaml->dump(data, object{
         object::pair{std::string("lineWidth"), -1}, 
@@ -14,7 +14,7 @@ void saveDemo(any data, string file, string trajPath)
 };
 
 
-void convertTrajToActionDemo(string trajPath, string outputFile, boolean includeUser)
+void convertTrajToActionDemo(std::string trajPath, std::string outputFile, boolean includeUser)
 {
     auto traj = JSON->parse(fs::readFileSync(trajPath, std::string("utf-8")));
     auto replayConfig = traj["replay_config"];
@@ -49,14 +49,14 @@ void convertTrajToActionDemo(string trajPath, string outputFile, boolean include
 };
 
 
-void trajToDemo(string trajPath, string outputDir, string suffix, boolean overwrite, boolean includeUser)
+void trajToDemo(std::string trajPath, std::string outputDir, std::string suffix, boolean overwrite, boolean includeUser)
 {
     auto trajDir = path->dirname(trajPath);
     auto trajName = path->basename(trajPath, std::string(".traj"));
     auto outputSubdir = path->basename(trajDir) + suffix;
     auto outputFile = path->join(outputDir, outputSubdir, string_empty + trajName + std::string(".demo.yaml"));
     if (AND((fs::existsSync(outputFile)), (!overwrite))) {
-        throw any(std::make_shared<Error>(std::string("Output file already exists: ") + outputFile + std::string(". Use --overwrite to overwrite.")));
+        throw std::any(std::make_shared<Error>(std::string("Output file already exists: ") + outputFile + std::string(". Use --overwrite to overwrite.")));
     }
     auto outputFileDir = path->dirname(outputFile);
     if (!fs::existsSync(outputFileDir)) {
@@ -69,13 +69,13 @@ void trajToDemo(string trajPath, string outputDir, string suffix, boolean overwr
 
 
 std::shared_ptr<AgentLogger> logger = getLogger(std::string("traj2demo"));
-string DEMO_COMMENT = std::string("# This is a demo file generated from trajectory file:\
+std::string DEMO_COMMENT = std::string("# This is a demo file generated from trajectory file:\
 # {traj_path}\
 # You can use this demo file to replay the actions in the trajectory with run_replay.\
 # You can edit the content of the actions in this file to modify the replay behavior.\
 # NOTICE:\
 #         Only the actions of the assistant will be replayed.\
-#         You do not need to modify the observation's contents or any other fields.\
+#         You do not need to modify the observation's contents or std::any other fields.\
 #         You can add or remove actions to modify the replay behavior.");
 
 void Main(void)

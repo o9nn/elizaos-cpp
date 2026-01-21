@@ -15,8 +15,8 @@ namespace elizaos {
 
 
 class FeatureEngineering {
-  async engineerFeatures(
-    data: Record<string, any>[],
+  std::async engineerFeatures(
+    data: Record<std::string, any>[],
     config: FeatureConfig
   ): Promise<EngineeredFeatures> {
     try {

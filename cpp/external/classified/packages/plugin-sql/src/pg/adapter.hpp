@@ -26,7 +26,7 @@ class PgDatabaseAdapter extends BaseDrizzleAdapter {
   protected embeddingDimension: EmbeddingDimensionColumn = DIMENSION_MAP[768];
   private manager: PostgresConnectionManager;
 
-  constructor(agentId: UUID, manager: PostgresConnectionManager, _schema?: any) {
+  constructor(agentId: UUID, manager: PostgresConnectionManager, _schema?: std::any) {
     super(agentId);
     this.manager = manager;
     this.db = manager.getDatabase();
@@ -44,15 +44,15 @@ class PgDatabaseAdapter extends BaseDrizzleAdapter {
    *
    * @template T
    * @param {() => Promise<T>} operation - The operation to be executed with the database connection.
-   * @returns {Promise<T>} A promise that resolves with the result of the operation.
+   * @returns {Promise<T>} A std::promise that resolves with the result of the operation.
    */
-        // Cast to any to avoid type conflicts between different pg versions
+        // Cast to std::any to avoid type conflicts between different pg versions
 
   /**
    * Asynchronously initializes the PgDatabaseAdapter by running migrations using the manager.
    * Logs a success message if initialization is successful, otherwise logs an error message.
    *
-   * @returns {Promise<void>} A promise that resolves when initialization is complete.
+   * @returns {Promise<void>} A std::promise that resolves when initialization is complete.
    */
 
   /**

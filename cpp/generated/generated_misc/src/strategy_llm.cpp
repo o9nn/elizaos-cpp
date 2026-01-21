@@ -17,7 +17,7 @@ void llmStrategy(std::shared_ptr<IAgentRuntime> runtime)
 };
 
 
-void generateBuySignal(any runtime, any strategyService, any hndl)
+void generateBuySignal(std::any runtime, std::any strategyService, std::any hndl)
 {
     auto sentimentsData = OR(((std::async([=]() { runtime["getCache"]<array<std::shared_ptr<Sentiment>>>(std::string("sentiments")); }))), (array<any>()));
     auto trendingData = OR(((std::async([=]() { runtime["getCache"]<array<std::shared_ptr<IToken>>>(std::string("tokens_solana")); }))), (array<any>()));
@@ -107,7 +107,7 @@ void onLiquidDelta()
 };
 
 
-string buyTemplate = std::string("\
+std::string buyTemplate = std::string("\
 I want you to give a crypto buy signal based on both the sentiment analysis as well as the trending tokens.\
 Only choose a token that occurs in both the Trending Tokens list as well as the Sentiment analysis. This ensures we have the proper symbol, chain and token address.\
 The sentiment score has a range of -100 to 100, with -100 indicating extreme negativity and 100 indicating extreme positiveness.\

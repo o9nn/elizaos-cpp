@@ -24,7 +24,7 @@ namespace elizaos {
 
     // Parse pagination parameters
 
-    // Create a timeout promise
+    // Create a timeout std::promise
 
     // Query root messages with timeout protection
         // Get count of all root messages (no parentId) for pagination
@@ -43,7 +43,7 @@ namespace elizaos {
 
     // Get replies for this message
 
-// Get message thread (parent and replies)
+// Get message std::thread (parent and replies)
 
     // Get the parent message
 

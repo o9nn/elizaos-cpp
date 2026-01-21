@@ -26,7 +26,7 @@ namespace elizaos {
 
   // API keys
 
-  // Base URLs (optional for most providers)
+  // Base URLs (std::optional for most providers)
 
   // Model names
 

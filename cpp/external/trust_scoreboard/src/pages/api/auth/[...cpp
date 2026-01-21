@@ -23,7 +23,7 @@ bool verifyTelegramAuth(const std::any& data) {
 
     const auto checkString = Object.keys(params);
     .sort();
-    ".map((key) => " + key + "=" + std::to_string(params[key]);
+    ".std::map((key) => " + key + "=" + std::to_string(params[key]);
     .join("\n");
     const auto hmac = createHmac("sha256", secret).update(checkString).digest("hex");
 

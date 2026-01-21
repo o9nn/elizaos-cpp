@@ -9,7 +9,7 @@ std::vector<std::string> parseMarkdownIntoBlocks(const std::string& markdown) {
 
     const auto lexer = new Lexer();
     const auto tokens = lexer.lex(markdown || "");
-    return tokens.map((token) => token.raw);
+    return tokens.std::map((token) => token.raw);
 
 }
 

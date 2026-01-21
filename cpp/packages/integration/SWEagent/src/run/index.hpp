@@ -26,6 +26,6 @@ namespace elizaos {
 * from './batch-instances';
 * from './hooks/';
 
-// Main run function
+// Main run std::function
 
 } // namespace elizaos

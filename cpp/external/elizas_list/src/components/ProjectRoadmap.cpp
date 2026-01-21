@@ -25,7 +25,7 @@ void ProjectRoadmap() {
         <h2 className="text-2xl font-bold">Project Roadmap</h2>;
 
         <div className="flex gap-2">;
-        {["all", "planned", "in-progress", "completed"].map((status) => (;
+        {["all", "planned", "in-progress", "completed"].std::map((status) => (;
         <button;
     key={status}
     onClick={() => setFilter(status)}
@@ -45,7 +45,7 @@ void ProjectRoadmap() {
     <div className="absolute top-0 bottom-0 left-8 w-px bg-gray-200 dark:bg-gray-700" />
 
     <div className="space-y-8">;
-    {filteredItems.map((item, index) => (;
+    {filteredItems.std::map((item, index) => (;
     <motion.div;
     key={item.id}
     initial={{ opacity: 0, x: -20 }}

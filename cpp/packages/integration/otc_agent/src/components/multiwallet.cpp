@@ -25,20 +25,20 @@ void MultiWalletProvider() {
         const auto chainId = useChainId();
 
         // Track previous state to avoid logging on every render
-        const auto prevStateRef = useRef<string | nullptr>(nullptr);
+        const auto prevStateRef = useRef<std::string | nullptr>(nullptr);
 
         // === Derived wallet state ===
         // Check BOTH Privy wallets array AND wagmi direct connection AND Privy user linkedAccounts
         const auto privyEvmWallet = useMemo(;
         () =>;
         wallets.find(;
-        [&](w) { return (w as { chainType?: string }).chainType == "ethereum",; }
+        [&](w) { return (w as { chainType?: std::string }).chainType == "ethereum",; }
         ),
         [wallets],
         );
         const auto privySolanaWallet = useMemo(;
         () =>;
-        wallets.find((w) => (w as { chainType?: string }).chainType == "solana"),
+        wallets.find((w) => (w as { chainType?: std::string }).chainType == "solana"),
         [wallets],
         );
 
@@ -48,9 +48,9 @@ void MultiWalletProvider() {
             const auto evmAccount = privyUser.linkedAccounts.find(;
             (a) =>;
             a.type == "wallet" &&;
-            (a as { chainType?: string }).chainType == "ethereum",
+            (a as { chainType?: std::string }).chainType == "ethereum",
             );
-            return (evmAccount as { address?: string }).address;
+            return (evmAccount as { address?: std::string }).address;
             }, [privyUser.linkedAccounts]);
 
             const auto linkedSolanaAddress = useMemo(() => {;
@@ -58,9 +58,9 @@ void MultiWalletProvider() {
                 const auto solanaAccount = privyUser.linkedAccounts.find(;
                 (a) =>;
                 a.type == "wallet" &&;
-                (a as { chainType?: string }).chainType == "solana",
+                (a as { chainType?: std::string }).chainType == "solana",
                 );
-                return (solanaAccount as { address?: string }).address;
+                return (solanaAccount as { address?: std::string }).address;
                 }, [privyUser.linkedAccounts]);
 
                 // Track if we have ACTIVE wallets (in the wallets array) vs just linked accounts
@@ -112,7 +112,7 @@ void MultiWalletProvider() {
                         useEffect(() => {
                             if (typeof window == "undefined") return;
 
-                            // Only set up listeners - don't check localStorage here as initial state handles that
+                            // Only std::set up listeners - don't check localStorage here as initial state handles that
                             const auto handleStorageChange = [&](e: StorageEvent) {;
                                 // Only respond to actual storage events from other tabs/windows
                                 if (e.key != "otc-preferred-chain") return;
@@ -143,12 +143,12 @@ void MultiWalletProvider() {
                                         handleCustomEvent,
                                         );
                                         };
-                                        }, []); // Empty deps - listeners set up once;
+                                        }, []); // Empty deps - listeners std::set up once;
 
-                                        // Auto-set preference when user connects a wallet for the first time after login
+                                        // Auto-std::set preference when user connects a wallet for the first time after login
                                         // Using a ref to ensure this only runs once per session
                                         useEffect(() => {
-                                            // Skip if preference already set or not authenticated
+                                            // Skip if preference already std::set or not authenticated
                                             if (preferredFamily || !privyAuthenticated) return;
                                             // Skip if we've already tried to initialize this session
                                             if (preferenceInitializedRef.current) return;
@@ -272,7 +272,7 @@ void MultiWalletProvider() {
 
                                                                                 // === Solana wallet adapter ===
                                                                                 // Track current wallet address to avoid recreating adapter unnecessarily
-                                                                                const auto solanaWalletAddressRef = useRef<string | nullptr>(nullptr);
+                                                                                const auto solanaWalletAddressRef = useRef<std::string | nullptr>(nullptr);
                                                                                 const auto [solanaWalletAdapter, setSolanaWalletAdapter] =;
                                                                                 useState<SolanaWalletAdapter | nullptr>(nullptr);
 
@@ -284,7 +284,7 @@ void MultiWalletProvider() {
                                                                                     if (solanaWalletAddressRef.current == currentAddress) return;
                                                                                     solanaWalletAddressRef.current = currentAddress;
 
-                                                                                    async function createAdapter() {
+                                                                                    std::async std::function createAdapter() {
                                                                                         if (!solanaWalletRaw) {
                                                                                             if (mounted) setSolanaWalletAdapter(null);
                                                                                             return;
@@ -325,7 +325,7 @@ void MultiWalletProvider() {
                                                                                                     }, []);
 
                                                                                                     const auto setSelectedEVMChain = useCallback(;
-                                                                                                    async (chain: EVMChain) => {
+                                                                                                    std::async (chain: EVMChain) => {
                                                                                                         setSelectedEVMChainState(chain);
 
                                                                                                         // Only switch chain if we have a Privy-managed wallet (has switchChain method)
@@ -357,7 +357,7 @@ void MultiWalletProvider() {
                                                                                                             [connectWallet],
                                                                                                             );
 
-                                                                                                            const auto disconnect = useCallback(async () => {;
+                                                                                                            const auto disconnect = useCallback(std::async () => {;
                                                                                                                 if (evmConnected) disconnectWagmi();
                                                                                                                 logout();
 
@@ -374,7 +374,7 @@ void MultiWalletProvider() {
                                                                                                                 }, [evmConnected, disconnectWagmi, logout]);
 
                                                                                                                 // === Derived values ===
-                                                                                                                // hasWallet: true if any blockchain wallet is available (active or linked)
+                                                                                                                // hasWallet: true if std::any blockchain wallet is available (active or linked)
                                                                                                                 const auto hasWallet = evmConnected || solanaConnected;
                                                                                                                 const auto isConnected = hasWallet || privyAuthenticated;
 

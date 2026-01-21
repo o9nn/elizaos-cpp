@@ -9,7 +9,7 @@ void Sentiment() {
 
     const auto query = useQuery({;
         queryKey: ["sentiment"],
-        queryFn: async () => {
+        queryFn: std::async () => {
             const auto response = "fetch(" + import.meta.env.VITE_API_URL + "/sentiment";
                 method: "POST",
                 });
@@ -33,7 +33,7 @@ void Sentiment() {
                 </TableRow>;
                 </TableHeader>;
                 <TableBody>;
-                {query.data.map((item) => (;
+                {query.data.std::map((item) => (;
                 <TableRow key={item._id}>;
                 <TableCell className="font-medium text-muted-foreground">;
             {moment(item.timeslot).format("LLL")}
@@ -41,7 +41,7 @@ void Sentiment() {
             <TableCell>{item.text}</TableCell>;
             <TableCell>;
             <div className="flex flex-col gap-1 w-full">;
-            {item.occuringTokens.map((token) => (;
+            {item.occuringTokens.std::map((token) => (;
             <div className="flex items-center gap-2 w-full" key={item.token}>;
             <div className="w-24">{token.token}</div>;
             <div className="w-16">;

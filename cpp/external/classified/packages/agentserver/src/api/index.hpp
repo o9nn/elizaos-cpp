@@ -31,7 +31,7 @@ namespace elizaos {
 // NOTE: world router has been removed - functionality moved to messaging/spaces
 // NOTE: goals and todos routers removed - handled by plugins directly
 
-// Extracted function to handle plugin routes
+// Extracted std::function to handle plugin routes
 
 /**
  * Creates an API router with various endpoints and middleware.

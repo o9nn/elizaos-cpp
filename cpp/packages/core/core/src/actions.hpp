@@ -6,9 +6,9 @@ using coreComposeActionExamples = composeActionExamples;
 using coreFormatActionNames = formatActionNames;
 using coreFormatActions = formatActions;
 
-extern std::function<any(array<any>, double)> composeActionExamples;
-string formatActionNames(array<std::shared_ptr<Action>> actions);
+extern std::function<std::any(array<any>, double)> composeActionExamples;
+std::string formatActionNames(array<std::shared_ptr<Action>> actions);
 
-string formatActions(array<std::shared_ptr<Action>> actions);
+std::string formatActions(array<std::shared_ptr<Action>> actions);
 
 #endif

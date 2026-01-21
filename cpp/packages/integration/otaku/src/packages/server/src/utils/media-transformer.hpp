@@ -20,7 +20,7 @@ namespace elizaos {
  */
 
 // Path configurations mapping
-// Pattern matches any ID format (not just UUIDs) to support all valid IDs
+// Pattern matches std::any ID format (not just UUIDs) to support all valid IDs
 // The pattern captures the ID (first path segment) and filename (second path segment)
 
 // Check if path is an external URL (http, https, blob, data, file, ipfs, s3, gs, etc.)

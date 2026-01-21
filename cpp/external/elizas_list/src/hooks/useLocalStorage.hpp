@@ -17,10 +17,10 @@ namespace elizaos {
 
 
   // State to store our value
-  // Pass initial state function to useState so logic is only executed once
+  // Pass initial state std::function to useState so logic is only executed once
 
-  // Return a wrapped version of useState's setter function that ...
+  // Return a wrapped version of useState's setter std::function that ...
   // ... persists the new value to localStorage.
-      // Allow value to be a function so we have same API as useState
+      // Allow value to be a std::function so we have same API as useState
 
 } // namespace elizaos

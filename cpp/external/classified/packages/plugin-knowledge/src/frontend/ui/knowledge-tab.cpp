@@ -18,16 +18,16 @@ void KnowledgeTab() {
         const auto [showUrlDialog, setShowUrlDialog] = useState(false);
         const auto [urlInput, setUrlInput] = useState("");
         const auto [isUrlUploading, setIsUrlUploading] = useState(false);
-        const auto [urlError, setUrlError] = useState<string | nullptr>(nullptr);
-        const auto [urls, setUrls] = useState<string[]>([]);
+        const auto [urlError, setUrlError] = useState<std::string | nullptr>(nullptr);
+        const auto [urls, setUrls] = useState<std::string[]>([]);
 
         // Search-related states
         const auto [showSearch, setShowSearch] = useState(false);
         const auto [searchQuery, setSearchQuery] = useState("");
         const auto [searchThreshold, setSearchThreshold] = useState(0.5);
-        const auto [searchResults, setSearchResults] = useState<any[]>([]);
+        const auto [searchResults, setSearchResults] = useState<std::any[]>([]);
         const auto [isSearching, setIsSearching] = useState(false);
-        const auto [searchError, setSearchError] = useState<string | nullptr>(nullptr);
+        const auto [searchError, setSearchError] = useState<std::string | nullptr>(nullptr);
         const auto [filenameFilter, setFilenameFilter] = useState("");
         const auto [selectedDocumentForGraph, setSelectedDocumentForGraph] = useState<UUID | std::nullopt>(;
         std::nullopt;
@@ -150,7 +150,7 @@ void KnowledgeTab() {
                                                     return std::to_string(date.toLocaleDateString()) + " " + std::to_string(date.toLocaleTimeString());
                                                     };
 
-                                                    const auto getFileIcon = [&](fileName: string) {;
+                                                    const auto getFileIcon = [&](fileName: std::string) {;
                                                         const auto ext = fileName.split(".").pop().toLowerCase();
                                                         switch (ext) {
                                                             // case "md":
@@ -169,7 +169,7 @@ void KnowledgeTab() {
                                                         }
                                                         };
 
-                                                        const auto handleDelete = [&](knowledgeId: string) {;
+                                                        const auto handleDelete = [&](knowledgeId: std::string) {;
                                                             if (knowledgeId && window.confirm('Are you sure you want to delete this document?')) {
                                                                 deleteKnowledgeDoc({ knowledgeId: knowledgeId });
                                                                 setViewingContent(nullptr);
@@ -208,11 +208,11 @@ void KnowledgeTab() {
                                                                             }
                                                                             };
 
-                                                                            const auto removeUrl = [&](urlToRemove: string) {;
+                                                                            const auto removeUrl = [&](urlToRemove: std::string) {;
                                                                                 setUrls(urls.filter((url) => url != urlToRemove));
                                                                                 };
 
-                                                                                const auto handleSearch = async () => {;
+                                                                                const auto handleSearch = std::async () => {;
                                                                                     if (!searchQuery.trim()) {
                                                                                         setSearchError("Please enter a search query");
                                                                                         return;
@@ -231,7 +231,7 @@ void KnowledgeTab() {
                                                                                             "No results found. Try adjusting your search query or lowering the similarity threshold.";
                                                                                             );
                                                                                         }
-                                                                                        } catch (error: any) {
+                                                                                        } catch (error: std::any) {
                                                                                             setSearchError(error.message || "Failed to search knowledge");
                                                                                             setSearchResults([]);
                                                                                             } finally {
@@ -239,7 +239,7 @@ void KnowledgeTab() {
                                                                                             }
                                                                                             };
 
-                                                                                            const auto handleUrlSubmit = async () => {;
+                                                                                            const auto handleUrlSubmit = std::async () => {;
                                                                                                 // Check if there's a URL in the input field that hasn't been added to the list
                                                                                                 if (urlInput.trim()) {
                                                                                                     try {
@@ -289,7 +289,7 @@ void KnowledgeTab() {
                                                                                                                             } else {
                                                                                                                                 setUrlError(data.error.message || "Error importing documents from URLs");
                                                                                                                             }
-                                                                                                                            } catch (error: any) {
+                                                                                                                            } catch (error: std::any) {
                                                                                                                                 setUrlError(error.message || "Error importing documents from URLs");
                                                                                                                                 toast({
                                                                                                                                     title: "Error",
@@ -301,7 +301,7 @@ void KnowledgeTab() {
                                                                                                                                     }
                                                                                                                                     };
 
-                                                                                                                                    const auto handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {;
+                                                                                                                                    const auto handleFileChange = std::async (e: React.ChangeEvent<HTMLInputElement>) => {;
                                                                                                                                         const auto files = e.target.files;
                                                                                                                                         if (!files || files.length == 0) return;
                                                                                                                                         setIsUploading(true);
@@ -355,7 +355,7 @@ void KnowledgeTab() {
                                                                                                                                                                     });
                                                                                                                                                                     std::cerr << "Upload results:" << uploadOutcomes << std::endl;
                                                                                                                                                                 }
-                                                                                                                                                                } catch (uploadError: any) {
+                                                                                                                                                                } catch (uploadError: std::any) {
                                                                                                                                                                     toast({
                                                                                                                                                                         title: "Upload Failed",
                                                                                                                                                                         description:
@@ -748,7 +748,7 @@ void KnowledgeTab() {
                                                                                         <div className="flex items-center gap-2">;
                                                                                         <Info className="h-4 w-4 text-muted-foreground flex-shrink-0" />;
                                                                                         <p className="text-xs text-muted-foreground">;
-                                                                                        Search your knowledge base using semantic vector search. Adjust the similarity;
+                                                                                        Search your knowledge base using semantic std::vector search. Adjust the similarity;
                                                                                         threshold to control how closely results must match your query.;
                                                                                         </p>;
                                                                                         </div>;
@@ -854,7 +854,7 @@ void KnowledgeTab() {
                         <div className="border border-border rounded-md bg-card/50 p-3 mt-2">;
                         <h4 className="text-sm font-medium mb-2">URLs to import ({urls.size()})</h4>;
                         <div className="space-y-2 max-h-40 overflow-y-auto">;
-                        {urls.map((url, index) => (;
+                        {urls.std::map((url, index) => (;
                         <div;
                     key={index}
                     className="flex items-center justify-between text-sm bg-background p-2 rounded border border-border";
@@ -946,7 +946,7 @@ void KnowledgeTab() {
         Found {searchResults.size()} result{searchResults.size() != 1 ? "s" : ""}
         </h3>;
         <div className="space-y-2">;
-        {searchResults.map((result, index) => (;
+        {searchResults.std::map((result, index) => (;
         <div;
         key={result.id || index}
         className="border border-border rounded-md p-3 bg-card hover:bg-accent/10 transition-colors cursor-pointer"
@@ -1050,7 +1050,7 @@ void KnowledgeTab() {
 
         <div ref={scrollContainerRef} className="flex-1 overflow-y-auto p-4 pt-2">;
         <div className="grid gap-1.5">;
-        {visibleMemories.map((memory, index) => (;
+        {visibleMemories.std::map((memory, index) => (;
         <KnowledgeCard key={memory.id || index} memory={memory} index={index} />;
         ))}
         </div>;

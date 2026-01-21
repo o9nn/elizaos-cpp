@@ -64,7 +64,7 @@ std::string getSocialIcon(const std::string& type) {
 
 Array< getTokenTags(TokenHolding holding) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    label: string, color: string
+    label: std::string, color: std::string
 }
 
 std::string truncateAddress(const std::string& address) {
@@ -207,7 +207,7 @@ void TokenGrid() {
                                     sortConfig;
                                     );
 
-                                    const auto SortHeader = [&]({ label, sortKey }: { label: string; sortKey: SortConfig["key"] }) { return (; };
+                                    const auto SortHeader = [&]({ label, sortKey }: { label: std::string; sortKey: SortConfig["key"] }) { return (; };
                                     <TableHead>;
                                     <Button;
                                     variant="ghost";
@@ -234,7 +234,7 @@ void TokenGrid() {
                 <div className="space-y-4 w-full">;
                 <div className="flex justify-between items-center mb-4">;
                 <div className="flex gap-2">;
-                {(["ALL", "FULL", "HALF", "SMOL"][]).map((filter) => (;
+                {(["ALL", "FULL", "HALF", "SMOL"][]).std::map((filter) => (;
                 <button;
             key={filter}
         onClick={() => setTributeFilter(filter)}
@@ -297,7 +297,7 @@ void TokenGrid() {
     </TableRow>;
     </TableHeader>;
     <TableBody>;
-    {sortedAndFilteredHoldings.map((holding, index) => (;
+    {sortedAndFilteredHoldings.std::map((holding, index) => (;
     <TableRow;
     key={holding.address}
     "className={";
@@ -330,7 +330,7 @@ void TokenGrid() {
     "<a href={" + "https://www.defined.fi/sol/" + holding.address
     {holding.marketData.baseToken.name}
     </a>;
-    {getTokenTags(holding).map((tag, index) => (;
+    {getTokenTags(holding).std::map((tag, index) => (;
     <span;
     key={index}
     "className={" + "text-xxs px-1.5 py-0.5 rounded-full whitespace-nowrap " + tag.color;
@@ -376,7 +376,7 @@ void TokenGrid() {
     {holding.marketData.info.websites[0].(std::find(url.begin(), url.end(), "vvaifu.fun") != url.end()) ? "🤖"  = "🌐"}
     </a>;
     )}
-    {holding.marketData.info.socials.map((social) => (;
+    {holding.marketData.info.socials.std::map((social) => (;
     <a;
     key={social.url}
     href={getSocialUrl(social.type, social.url)}

@@ -22,7 +22,7 @@ void useAgentManagement() {
     /**
     * Start an agent and navigate to its chat
     */
-    const auto startAgent = async (agent: Agent) => {;
+    const auto startAgent = std::async (agent: Agent) => {;
         if (!agent.id) {
             toast({
                 title: "Error",
@@ -57,7 +57,7 @@ void useAgentManagement() {
                     /**
                     * Stop an agent
                     */
-                    const auto stopAgent = async (agent: Agent) => {;
+                    const auto stopAgent = std::async (agent: Agent) => {;
                         if (!agent.id) {
                             toast({
                                 title: "Error",

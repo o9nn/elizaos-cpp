@@ -2,40 +2,40 @@
 
 std::shared_ptr<TokenQueryParams> parseTokensQuery(std::shared_ptr<RawTokenQuery> raw)
 {
-    auto page = (raw->page) ? any(parseInt(raw->page, 10)) : any(1);
+    auto page = (raw->page) ? std::any(parseInt(raw->page, 10)) : std::any(1);
     if (OR((isNaN(page)), (page < 1))) {
-        throw any(std::make_shared<Error>(std::string("Invalid 'page' parameter: ") + raw->page + string_empty));
+        throw std::any(std::make_shared<Error>(std::string("Invalid 'page' parameter: ") + raw->page + string_empty));
     }
-    auto limit = (raw->limit) ? any(parseInt(raw->limit, 10)) : any(50);
+    auto limit = (raw->limit) ? std::any(parseInt(raw->limit, 10)) : std::any(50);
     if (OR((isNaN(limit)), (limit < 1))) {
-        throw any(std::make_shared<Error>(std::string("Invalid 'limit' parameter: ") + raw->limit + string_empty));
+        throw std::any(std::make_shared<Error>(std::string("Invalid 'limit' parameter: ") + raw->limit + string_empty));
     }
-    any status;
+    std::any status;
     if (raw->status) {
         if (Object->values(TokenStatus)->includes(as<TokenStatus>(raw->status))) {
             *reinterpret_cast<long*>(&status) = static_cast<long>(as<TokenStatus>(raw->status));
         } else {
-            throw any(std::make_shared<Error>(std::string("Invalid 'status' parameter: ") + raw->status + string_empty));
+            throw std::any(std::make_shared<Error>(std::string("Invalid 'status' parameter: ") + raw->status + string_empty));
         }
     }
-    any hideImported;
+    std::any hideImported;
     if (raw->hideImported == std::string("0")) hideImported = 0; else if (raw->hideImported == std::string("1")) hideImported = 1;
-    any creator;
+    std::any creator;
     if (raw->creator) {
         if (parseSolanaAddress(raw->creator)) {
             creator = raw->creator;
         } else {
-            throw any(std::make_shared<Error>(std::string("Invalid Solana address for 'creator': ") + raw->creator + string_empty));
+            throw std::any(std::make_shared<Error>(std::string("Invalid Solana address for 'creator': ") + raw->creator + string_empty));
         }
     }
-    auto search = (AND((raw->search), (raw->search->trim() != string_empty))) ? any(raw->search->trim()) : any(undefined);
+    auto search = (AND((raw->search), (raw->search->trim() != string_empty))) ? std::any(raw->search->trim()) : std::any(undefined);
     auto sortBy = SortBy::CreatedAt;
     if (raw->sortBy) {
         if (Object->values(SortBy)->includes(as<SortBy>(raw->sortBy))) {
             *reinterpret_cast<long*>(&sortBy) = static_cast<long>(as<SortBy>(raw->sortBy));
         } else {
             console->log(std::string("ewa"));
-            throw any(std::make_shared<Error>(std::string("Invalid 'sortBy' parameter: ") + raw->sortBy + string_empty));
+            throw std::any(std::make_shared<Error>(std::string("Invalid 'sortBy' parameter: ") + raw->sortBy + string_empty));
         }
     }
     auto sortOrder = SortOrder::Desc;
@@ -44,7 +44,7 @@ std::shared_ptr<TokenQueryParams> parseTokensQuery(std::shared_ptr<RawTokenQuery
         if (OR((lower == SortOrder::Asc), (lower == SortOrder::Desc))) {
             *reinterpret_cast<long*>(&sortOrder) = static_cast<long>(as<SortOrder>(lower));
         } else {
-            throw any(std::make_shared<Error>(std::string("Invalid 'sortOrder' parameter: ") + raw->sortOrder + string_empty));
+            throw std::any(std::make_shared<Error>(std::string("Invalid 'sortOrder' parameter: ") + raw->sortOrder + string_empty));
         }
     }
     return object{

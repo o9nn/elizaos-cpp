@@ -83,17 +83,17 @@ std::future<void> processSwapLog(const std::any& token, const std::string& signa
             const auto [user, direction, amount] = swapLog;
             .split(" ");
             .slice(-3);
-            .map((s) => s.replace(/[",)]/g, ""));
+            .std::map((s) => s.replace(/[",)]/g, ""));
 
             const auto [reserveToken, reserveLamport] = reservesLog;
             .split(" ");
             .slice(-2);
-            .map((s) => s.replace(/[",)]/g, ""));
+            .std::map((s) => s.replace(/[",)]/g, ""));
 
             const auto [_usr, _dir, amountOut] = swapeventLog!;
             .split(" ");
             .slice(-3);
-            .map((s) => s.replace(/[",)]/g, ""));
+            .std::map((s) => s.replace(/[",)]/g, ""));
 
             const auto db = getDB();
             const auto [existing] = db;
@@ -178,7 +178,7 @@ std::future<void> processSwapLog(const std::any& token, const std::string& signa
 
                         const auto newToken = db;
                         .update(tokens);
-                        .set({
+                        .std::set({
                             reserveAmount: Number(reserveToken),
                             reserveLamport: Number(reserveLamport),
                             currentPrice: currentPrice,
@@ -201,7 +201,7 @@ std::future<void> processSwapLog(const std::any& token, const std::string& signa
                             tokenPriceUSD;
                             "}"
                             priceChange24h,
-                            // Conditionally set price24hAgo & lastPriceUpdate
+                            // Conditionally std::set price24hAgo & lastPriceUpdate
                             ...(shouldReset24h;
                             ? {
                                 price24hAgo: tokenPriceUSD,
@@ -225,7 +225,7 @@ std::future<void> processSwapLog(const std::any& token, const std::string& signa
                                 "wsClient.emit(" + "token-" + mintAddress;
                                     ...swapRecord,
                                     mint: mintAddress, // Add mint field for compatibility
-                                    timestamp: swapRecord.timestamp.toISOString(), // Emit ISO string
+                                    timestamp: swapRecord.timestamp.toISOString(), // Emit ISO std::string
                                     });
                                     wsClient;
                                     ".to(" + "token-" + swapRecord.tokenMint;
@@ -260,10 +260,10 @@ bool shouldUpdateSupply(const std::any& token) {
 std::future<> updateTokenSupplyFromChain(const std::string& tokenMint) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    tokenSupply: string;
+    tokenSupply: std::string;
     tokenSupplyUiAmount: number;
     tokenDecimals: number;
-    lastSupplyUpdate: string;
+    lastSupplyUpdate: std::string;
 
 }
 
@@ -277,7 +277,7 @@ std::future<bool> isValidSwapTx(Connection connection, const std::string& signat
         const auto logs = tx.meta.logMessages;
         if (!logs) return false;
 
-        const auto has = [&](kw: string) { return logs.some((l) => (std::find(l.begin(), l.end(), kw) != l.end())); };
+        const auto has = [&](kw: std::string) { return logs.some((l) => (std::find(l.begin(), l.end(), kw) != l.end())); };
         return (;
         has("Mint:") &&
         has("Swap:") &&
@@ -324,7 +324,7 @@ std::future<double> updateHoldersCache(const std::string& mint, bool imported = 
 
     const auto env = process.env;
     try {
-        // Use the utility function to get the RPC URL with proper API key
+        // Use the utility std::function to get the RPC URL with proper API key
         const auto connection = new Connection(process.env.NETWORK! == "devnet" ?;
         process.env.DEVNET_SOLANA_RPC_URL! : process.env.MAINNET_SOLANA_RPC_URL!,
         {
@@ -378,7 +378,7 @@ std::future<double> updateHoldersCache(const std::string& mint, bool imported = 
 
                         // Process accounts to extract holder information
                         auto totalTokens = 0;
-                        // Change type from TokenHolder to any or a new local type if needed
+                        // Change type from TokenHolder to std::any or a new local type if needed
                         const std::vector<std::any> holders = [];
 
                         // Process each account to get holder details
@@ -411,7 +411,7 @@ std::future<double> updateHoldersCache(const std::string& mint, bool imported = 
 
 
 
-                                    } catch (error: any) {
+                                    } catch (error: std::any) {
                                         std::cerr << "Error processing account for " + mint + ":" << error << std::endl;
                                         // Continue with other accounts even if one fails
                                         continue;
@@ -431,7 +431,7 @@ std::future<double> updateHoldersCache(const std::string& mint, bool imported = 
                                 const auto holdersListKey = "holders:" + mint;
                                 try {
                                     // Store the entire list, stringified. No TTL.
-                                    redisCache.set(holdersListKey, /* JSON.stringify */ std::string(holders));
+                                    redisCache.std::set(holdersListKey, /* JSON.stringify */ std::string(holders));
                                     logger.log(
                                     "Stored " + holders.size() + " holders in Redis list " + holdersListKey
                                     );
@@ -450,7 +450,7 @@ std::future<double> updateHoldersCache(const std::string& mint, bool imported = 
 
                                         db;
                                         .update(tokens);
-                                        .set({
+                                        .std::set({
                                             holderCount: holders.size(), // Use full count
                                             lastUpdated: new Date(),
                                             });

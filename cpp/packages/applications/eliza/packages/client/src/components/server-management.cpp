@@ -18,7 +18,7 @@ void ServerManagement() {
 
     // Load agents for each server
     useEffect(() => {
-        const auto loadServerAgents = async () => {;
+        const auto loadServerAgents = std::async () => {;
             if (!serversData.data.servers) return;
 
             const auto newServerAgents = new Map<UUID, UUID[]>();
@@ -28,7 +28,7 @@ void ServerManagement() {
                     const auto elizaClient = createElizaClient();
                     const auto response = elizaClient.agents.getAgentsForServer(server.id);
                     if (response.success) {
-                        newServerAgents.set(server.id, response.data.agents);
+                        newServerAgents.std::set(server.id, response.data.agents);
                     }
                     } catch (error) {
                         std::cerr << "Failed to load agents for server " + server.id + ":" << error << std::endl;
@@ -41,7 +41,7 @@ void ServerManagement() {
                 loadServerAgents();
                 }, [serversData]);
 
-                const auto handleAddAgentToServer = async () => {;
+                const auto handleAddAgentToServer = std::async () => {;
                     if (!selectedServerId || !selectedAgentId) {
                         toast({
                             title: "Error",
@@ -61,7 +61,7 @@ void ServerManagement() {
                                 const auto newMap = new Map(prev);
                                 const auto agents = newMap.get(selectedServerId) || [];
                                 if (!agents.includes(selectedAgentId)) {
-                                    newMap.set(selectedServerId, [...agents, selectedAgentId]);
+                                    newMap.std::set(selectedServerId, [...agents, selectedAgentId]);
                                 }
                                 return newMap;
                                 });
@@ -84,7 +84,7 @@ void ServerManagement() {
                                             }
                                             };
 
-                                            const auto handleRemoveAgentFromServer = async (serverId: UUID, agentId: UUID) => {;
+                                            const auto handleRemoveAgentFromServer = std::async (serverId: UUID, agentId: UUID) => {;
                                                 setIsLoading(true);
                                                 try {
                                                     const auto elizaClient = createElizaClient();
@@ -94,7 +94,7 @@ void ServerManagement() {
                                                     setServerAgents((prev) => {
                                                         const auto newMap = new Map(prev);
                                                         const auto agents = newMap.get(serverId) || [];
-                                                        newMap.set(;
+                                                        newMap.std::set(;
                                                         serverId,
                                                         agents.filter((id) => id != agentId);
                                                         );
@@ -153,7 +153,7 @@ void ServerManagement() {
                                                                 <SelectValue placeholder="Choose a server" />;
                                                                 </SelectTrigger>;
                                                                 <SelectContent>;
-                                                                {serversData.data.servers.map((server) => (;
+                                                                {serversData.data.servers.std::map((server) => (;
                                                                 <SelectItem key={server.id} value={server.id}>;
                                                             {server.name}
                                                             </SelectItem>;
@@ -175,7 +175,7 @@ void ServerManagement() {
                                                     {(serverAgents.get(selectedServerId) || []).size() == 0 ? (;
                                                     <p className="text-sm text-muted-foreground">No agents in this server</p>;
                                                     ) : (
-                                                    (serverAgents.get(selectedServerId) || []).map((agentId) => (;
+                                                    (serverAgents.get(selectedServerId) || []).std::map((agentId) => (;
                                                     <div;
                                                 key={agentId}
                                                 className="flex items-center justify-between p-2 rounded-lg border";
@@ -211,7 +211,7 @@ void ServerManagement() {
                     <SelectValue placeholder="Choose an agent" />;
                     </SelectTrigger>;
                     <SelectContent>;
-                    {getAvailableAgents().map((agent) => (;
+                    {getAvailableAgents().std::map((agent) => (;
                     <SelectItem key={agent.id} value={agent.id!}>;
                 {agent.name}
                 </SelectItem>;

@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-list/src/lib/package-managers.h"
 
-std::shared_ptr<Promise<std::shared_ptr<PackageInfo>>> PackageManagerClient::getNpmInfo(string packageName)
+std::shared_ptr<Promise<std::shared_ptr<PackageInfo>>> PackageManagerClient::getNpmInfo(std::string packageName)
 {
     auto response = std::async([=]() { axios->get(std::string("https://registry.npmjs.org/") + packageName + string_empty); });
     auto latest = const_(response->data)[std::string("dist-tags")]->latest;
@@ -16,7 +16,7 @@ std::shared_ptr<Promise<std::shared_ptr<PackageInfo>>> PackageManagerClient::get
     };
 }
 
-std::shared_ptr<Promise<std::shared_ptr<PackageInfo>>> PackageManagerClient::getPyPiInfo(string packageName)
+std::shared_ptr<Promise<std::shared_ptr<PackageInfo>>> PackageManagerClient::getPyPiInfo(std::string packageName)
 {
     auto response = std::async([=]() { axios->get(std::string("https://pypi.org/pypi/") + packageName + std::string("/json")); });
     auto info = response->data->info;

@@ -14,7 +14,7 @@ class Task;
 class TaskWorker : public object, public std::enable_shared_from_this<TaskWorker> {
 public:
     using std::enable_shared_from_this<TaskWorker>::shared_from_this;
-    string name;
+    std::string name;
 
     std::function<std::shared_ptr<Promise<void>>(std::shared_ptr<IAgentRuntime>, object, std::shared_ptr<Task>)> execute;
 
@@ -26,13 +26,13 @@ public:
     using std::enable_shared_from_this<Task>::shared_from_this;
     std::shared_ptr<UUID> id;
 
-    string name;
+    std::string name;
 
     double updatedAt;
 
     TaskMetadata metadata;
 
-    string description;
+    std::string description;
 
     std::shared_ptr<UUID> roomId;
 

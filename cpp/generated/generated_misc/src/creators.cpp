@@ -1,17 +1,17 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/commands/create/actions/creators.h"
 
-std::shared_ptr<Promise<void>> createPlugin(string pluginName, string targetDir, boolean isNonInteractive)
+std::shared_ptr<Promise<void>> createPlugin(std::string pluginName, std::string targetDir, boolean isNonInteractive)
 {
     auto nameResult = processPluginName(pluginName);
     if (!nameResult["isValid"]) {
-        throw any(std::make_shared<Error>(OR((nameResult["error"]), (std::string("Invalid plugin name")))));
+        throw std::any(std::make_shared<Error>(OR((nameResult["error"]), (std::string("Invalid plugin name")))));
     }
     auto processedName = nameResult["processedName"];
     auto pluginDirName = (processedName->startsWith(std::string("plugin-"))) ? processedName : std::string("plugin-") + processedName + string_empty;
     auto pluginTargetDir = join(targetDir, pluginDirName);
     auto dirResult = std::async([=]() { validateTargetDirectory(pluginTargetDir); });
     if (!dirResult["isValid"]) {
-        throw any(std::make_shared<Error>(OR((dirResult["error"]), (std::string("Invalid target directory")))));
+        throw std::any(std::make_shared<Error>(OR((dirResult["error"]), (std::string("Invalid target directory")))));
     }
     if (!isNonInteractive) {
         auto confirmCreate = std::async([=]() { clack->confirm(object{
@@ -36,18 +36,18 @@ Next steps:"));
 };
 
 
-std::shared_ptr<Promise<void>> createAgent(string agentName, string targetDir, boolean isNonInteractive)
+std::shared_ptr<Promise<void>> createAgent(std::string agentName, std::string targetDir, boolean isNonInteractive)
 {
     auto agentFilePath = join(targetDir, string_empty + agentName + std::string(".json"));
     try
     {
         std::async([=]() { fs->access(agentFilePath); });
-        throw any(std::make_shared<Error>(std::string("Agent file ") + agentFilePath + std::string(" already exists")));
+        throw std::any(std::make_shared<Error>(std::string("Agent file ") + agentFilePath + std::string(" already exists")));
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         if (error["code"] != std::string("ENOENT")) {
-            throw any(error);
+            throw std::any(error);
         }
     }
     if (!isNonInteractive) {
@@ -78,12 +78,12 @@ To use this agent:"));
 };
 
 
-std::shared_ptr<Promise<void>> createTEEProject(string projectName, string targetDir, string database, string aiModel, string embeddingModel, boolean isNonInteractive)
+std::shared_ptr<Promise<void>> createTEEProject(std::string projectName, std::string targetDir, std::string database, std::string aiModel, std::string embeddingModel, boolean isNonInteractive)
 {
     auto teeTargetDir = join(targetDir, projectName);
     auto dirResult = std::async([=]() { validateTargetDirectory(teeTargetDir); });
     if (!dirResult["isValid"]) {
-        throw any(std::make_shared<Error>(OR((dirResult["error"]), (std::string("Invalid target directory")))));
+        throw std::any(std::make_shared<Error>(OR((dirResult["error"]), (std::string("Invalid target directory")))));
     }
     if (!isNonInteractive) {
         auto confirmCreate = std::async([=]() { clack->confirm(object{
@@ -109,12 +109,12 @@ Next steps:"));
 };
 
 
-std::shared_ptr<Promise<void>> createProject(string projectName, string targetDir, string database, string aiModel, string embeddingModel, boolean isNonInteractive)
+std::shared_ptr<Promise<void>> createProject(std::string projectName, std::string targetDir, std::string database, std::string aiModel, std::string embeddingModel, boolean isNonInteractive)
 {
     auto projectTargetDir = (projectName == std::string(".")) ? targetDir : join(targetDir, projectName);
     auto dirResult = std::async([=]() { validateTargetDirectory(projectTargetDir); });
     if (!dirResult["isValid"]) {
-        throw any(std::make_shared<Error>(OR((dirResult["error"]), (std::string("Invalid target directory")))));
+        throw std::any(std::make_shared<Error>(OR((dirResult["error"]), (std::string("Invalid target directory")))));
     }
     if (!isNonInteractive) {
         auto confirmCreate = std::async([=]() { clack->confirm(object{
@@ -129,7 +129,7 @@ std::shared_ptr<Promise<void>> createProject(string projectName, string targetDi
     std::async([=]() { setupProjectEnvironment(projectTargetDir, database, aiModel, embeddingModel, isNonInteractive); });
     std::async([=]() { installDependencies(projectTargetDir); });
     std::async([=]() { buildProject(projectTargetDir); });
-    auto displayName = (projectName == std::string(".")) ? any(std::string("Project")) : any(std::string("Project "") + projectName + std::string("""));
+    auto displayName = (projectName == std::string(".")) ? std::any(std::string("Project")) : std::any(std::string("Project "") + projectName + std::string("""));
     console->info(std::string("\
 ") + colors->green(std::string("✓")) + std::string(" ") + displayName + std::string(" initialized successfully!"));
     console->info(std::string("\

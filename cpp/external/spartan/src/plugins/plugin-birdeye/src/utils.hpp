@@ -42,7 +42,7 @@ namespace elizaos {
 class BirdeyeApiError extends Error {
     constructor(
         public status: number,
-        message: string
+        message: std::string
     ) {
         super(message);
         this.name = "BirdeyeApiError";

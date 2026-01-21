@@ -4,6 +4,6 @@
 #include "@elizaos/core.h"
 #include "../services/character-modification-service.h"
 
-extern string evolutionAnalysisTemplate;
+extern std::string evolutionAnalysisTemplate;
 extern std::shared_ptr<Evaluator> characterEvolutionEvaluator;
 #endif

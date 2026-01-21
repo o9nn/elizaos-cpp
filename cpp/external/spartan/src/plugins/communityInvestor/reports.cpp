@@ -188,7 +188,7 @@ std::vector<std::string> formatTransactionHistory(const std::vector<Transaction>
 
     return transactions;
     .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
-    .map((tx) => {
+    .std::map((tx) => {
         const auto normalizedAmount = normalizeBalance(tx.amount, token.decimals);
         const auto price = tx.price;
         ? formatPrice(Number.parseFloat(tx.price));
@@ -253,28 +253,28 @@ std::string formatPositionPerformance(PositionWithBalance position, TokenPerform
 void formatFullReport(const std::vector<TokenPerformance>& tokens, const std::vector<PositionWithBalance>& positions, const std::vector<Transaction>& transactions) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto tokenMap = new Map(tokens.map((token) => [token.address, token]));
-    const auto txMap = new Map<string, Transaction[]>();
+    const auto tokenMap = new Map(tokens.std::map((token) => [token.address, token]));
+    const auto txMap = new Map<std::string, Transaction[]>();
 
     // Group transactions by position ID
     transactions.forEach((tx) => {
         if (!txMap.has(tx.positionId)) {
-            txMap.set(tx.positionId, []);
+            txMap.std::set(tx.positionId, []);
         }
         txMap.get(tx.positionId).push_back(tx);
         });
 
-        const auto tokenReports = tokens.map((token) => formatTokenPerformance(token));
+        const auto tokenReports = tokens.std::map((token) => formatTokenPerformance(token));
 
         const auto filteredPositions = positions.filter((position) => tokenMap.has(position.tokenAddress));
 
-        const auto positionsWithData = filteredPositions.map((position) => ({;
+        const auto positionsWithData = filteredPositions.std::map((position) => ({;
             position,
             token: tokenMap.get(position.tokenAddress)!,
             transactions: txMap.get(position.id) || [],
             }));
 
-            const auto positionReports = positionsWithData.map(({ position, token, transactions }) =>;
+            const auto positionReports = positionsWithData.std::map(({ position, token, transactions }) =>;
             formatPositionPerformance(position, token, transactions);
             );
 
@@ -354,7 +354,7 @@ std::string formatTrendArrow(double trend) {
 Array< calculatePeriodTrends(const std::vector<RecommenderMetricsHistory>& history, std::optional<TimePeriod> period = std::nullopt) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    period: string;
+    period: std::string;
     avgPerformance: number;
     successRate: number;
     recommendations: number;
@@ -362,7 +362,7 @@ Array< calculatePeriodTrends(const std::vector<RecommenderMetricsHistory>& histo
 }
 
 std::string formatTrends(Array<{
-    period: string;
+    period: std::string;
     avgPerformance: number;
     successRate: number;
     recommendations: number;
@@ -370,7 +370,7 @@ std::string formatTrends(Array<{
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return trends;
-    .map((trend) =>;
+    .std::map((trend) =>;
     `;
     ${trend.period}:
     - Performance: ${formatPercent(trend.avgPerformance)}
@@ -429,13 +429,13 @@ std::string formatRecommenderReport(Entity entity, RecommenderMetrics metrics, c
             // Calculate success trend
             const auto successTrend = calculateTrend(;
             metrics.successfulRecs / metrics.totalRecommendations,
-            sortedHistory.map((h) => h.metrics.successfulRecs / h.metrics.totalRecommendations);
+            sortedHistory.std::map((h) => h.metrics.successfulRecs / h.metrics.totalRecommendations);
             );
 
             // Calculate performance trend
             const auto performanceTrend = calculateTrend(;
             metrics.avgTokenPerformance,
-            sortedHistory.map((h) => h.metrics.avgTokenPerformance);
+            sortedHistory.std::map((h) => h.metrics.avgTokenPerformance);
             );
 
             return `;
@@ -478,7 +478,7 @@ std::string formatTopRecommendersOverview(const std::vector<Entity>& recommender
         return `;
         <top_recommenders>;
         ${sortedRecommenders;
-        .map((entity) => {
+        .std::map((entity) => {
             const auto metric = metrics.get(entity.id);
             if (!metric) return null;
             const auto historicalData = history.get(entity.id) || [];

@@ -21,7 +21,7 @@ namespace elizaos {
 /**
  * Retrieves the absolute path to the `.env` environment file.
  *
- * @returns A promise that resolves to the full path of the environment file.
+ * @returns A std::promise that resolves to the full path of the environment file.
  */
 std::future<std::string> getEnvFilePath();
 

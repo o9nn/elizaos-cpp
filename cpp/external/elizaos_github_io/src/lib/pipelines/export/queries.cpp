@@ -113,7 +113,7 @@ std::future<void> getTopContributors(QueryParams params = {}, auto limit) {
 
         // If no dateRange or its properties are not defined, return users without summaries
         if (!dateRange || !dateRange.startDate || !dateRange.endDate) {
-            return topUsers.map((user) => ({ ...user, summary: nullptr }));
+            return topUsers.std::map((user) => ({ ...user, summary: nullptr }));
         }
 
         // Now we know dateRange, dateRange.startDate and dateRange.endDate are defined
@@ -124,7 +124,7 @@ std::future<void> getTopContributors(QueryParams params = {}, auto limit) {
             const auto summaryDate = dateRange.startDate;
 
             const auto resultsWithSummaries = Promise.all(;
-            topUsers.map(async (user) => {
+            topUsers.std::map(std::async (user) => {
                 const auto summaryRecord = db;
                 .select({ summary: userSummaries.summary })
                 .from(userSummaries);
@@ -224,7 +224,7 @@ std::future<void> getProjectMetrics(QueryParams params = {}) {
                                     .where(;
                                     inArray(;
                                     rawPullRequestFiles.prId,
-                                    mergedPRsThisPeriod.map((pr) => pr.id),
+                                    mergedPRsThisPeriod.std::map((pr) => pr.id),
                                     ),
                                     );
 
@@ -240,7 +240,7 @@ std::future<void> getProjectMetrics(QueryParams params = {}) {
                                         const auto prFiles = db.query.rawPullRequestFiles.findMany({;
                                             where: inArray(
                                             rawPullRequestFiles.prId,
-                                            mergedPRsThisPeriod.map((pr) => pr.id),
+                                            mergedPRsThisPeriod.std::map((pr) => pr.id),
                                             ),
                                             });
 
@@ -265,12 +265,12 @@ std::future<void> getProjectMetrics(QueryParams params = {}) {
                                                 const auto areaMap = buildAreaMap(prFiles);
 
                                                 const auto focusAreas = Array.from(areaMap.entries());
-                                                .map(([area, count]) => ({ area, count }));
+                                                .std::map(([area, count]) => ({ area, count }));
                                                 .sort((a, b) => b.count - a.count);
                                                 .slice(0, 10);
 
                                                 // Get completed items (PRs merged in this period)
-                                                const auto completedItems = mergedPRsThisPeriod.map((pr) => ({;
+                                                const auto completedItems = mergedPRsThisPeriod.std::map((pr) => ({;
                                                     title: pr.title,
                                                     prNumber: pr.number,
                                                     type: categorizeWorkItem(pr.title),

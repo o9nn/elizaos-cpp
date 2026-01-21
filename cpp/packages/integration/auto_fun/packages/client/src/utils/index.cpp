@@ -23,7 +23,7 @@ std::string toSubscript(double num) {
         return num;
         .toString();
         .split("");
-        .map((digit) => subDigits[digit] || digit);
+        .std::map((digit) => subDigits[digit] || digit);
         .join("");
 
 }

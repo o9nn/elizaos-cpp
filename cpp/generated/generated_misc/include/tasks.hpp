@@ -4,5 +4,5 @@
 #include "@elizaos/core.h"
 #include "./services/updateTracker.h"
 
-extern std::function<std::shared_ptr<Promise<void>>(any, any)> registerTasks;
+extern std::function<std::shared_ptr<Promise<void>>(std::any, std::any)> registerTasks;
 #endif

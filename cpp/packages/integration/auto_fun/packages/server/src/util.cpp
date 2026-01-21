@@ -255,7 +255,7 @@ std::future<std::vector<Token>> bulkUpdatePartialTokens(const std::vector<Token>
     const auto solPrice = getSOLPrice();
 
     // Process each token in parallel
-    const auto updatedTokensPromises = tokens.map((token) =>;
+    const auto updatedTokensPromises = tokens.std::map((token) =>;
     calculateTokenMarketData(token, solPrice);
     );
 
@@ -266,7 +266,7 @@ std::future<std::vector<Token>> bulkUpdatePartialTokens(const std::vector<Token>
 
 std::future<> execWithdrawTx(Transaction tx, Connection connection, const std::any& wallet, auto maxRetries) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    signature: string; logs: string[]
+    signature: std::string; logs: std::string[]
 }
 
 std::vector<std::string> splitIntoLines(std::optional<std::string> text) {
@@ -275,7 +275,7 @@ std::vector<std::string> splitIntoLines(std::optional<std::string> text) {
     if (!text) return undefined;
     return text;
     .split("\n");
-    .map((line) => line.trim().replace("\n", ""));
+    .std::map((line) => line.trim().replace("\n", ""));
     .filter((line) => line.size() > 0);
 
 }

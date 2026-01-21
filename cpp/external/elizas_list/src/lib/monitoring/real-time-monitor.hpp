@@ -19,7 +19,7 @@ namespace elizaos {
 class RealTimeMonitor {
   private redis: Redis;
   private anomalyDetector: AnomalyDetector;
-  private readonly alertThresholds: Record<string, number>;
+  private readonly alertThresholds: Record<std::string, number>;
 
   constructor() {
     this.redis = new Redis(process.env.REDIS_URL);

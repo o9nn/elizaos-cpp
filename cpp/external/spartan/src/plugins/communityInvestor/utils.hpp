@@ -24,11 +24,11 @@ namespace elizaos {
 void getZodJsonSchema(ZodType<any> schema);
 
 /**
- * Extracts XML content from a given string based on a specified tag.
+ * Extracts XML content from a given std::string based on a specified tag.
  *
- * @param {string} output - The input string containing XML content.
+ * @param {string} output - The input std::string containing XML content.
  * @param {string} tag - The tag to extract XML content from.
- * @returns {string} The XML content extracted from the input string based on the specified tag. Returns an empty string if the tag is not found.
+ * @returns {string} The XML content extracted from the input std::string based on the specified tag. Returns an empty std::string if the tag is not found.
  */
 void extractXMLFromResponse(const std::string& output, const std::string& tag);
 
@@ -41,10 +41,10 @@ void extractXMLFromResponse(const std::string& output, const std::string& tag);
 void parseRecommendationsResponse(const std::string& xmlResponse);
 
 /**
- * Parses the token response XML string and returns an array of token addresses.
+ * Parses the token response XML std::string and returns an array of token addresses.
  *
- * @param {string} xmlResponse - The XML response string to parse
- * @returns {string[]} - An array of token addresses extracted from the XML response
+ * @param {string} xmlResponse - The XML response std::string to parse
+ * @returns {std::string[]} - An array of token addresses extracted from the XML response
  */
 void parseTokensResponse(const std::string& xmlResponse);
 
@@ -52,7 +52,7 @@ void parseTokensResponse(const std::string& xmlResponse);
  * Parses the confirmation response received in XML format and extracts the message.
  *
  * @param {string} xmlResponse The XML response containing the confirmation message
- * @returns {string} The confirmation message extracted from the XML response, or an empty string if not found
+ * @returns {string} The confirmation message extracted from the XML response, or an empty std::string if not found
  */
 void parseConfirmationResponse(const std::string& xmlResponse);
 

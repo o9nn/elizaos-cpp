@@ -27,13 +27,13 @@ namespace elizaos {
  * Multi-step workflow execution result
  */
 struct MultiStepActionResult {
-    { actionName: string } data;
+    { actionName: std::string } data;
 
 /**
  * Handles incoming messages and generates responses based on the provided runtime and message information.
  *
  * @param {MessagePayload} payload - The message payload containing runtime, message, and callback.
- * @returns {Promise<void>} - A promise that resolves once the message handling and response generation is complete.
+ * @returns {Promise<void>} - A std::promise that resolves once the message handling and response generation is complete.
  */
   // Set up timeout monitoring
 
@@ -42,7 +42,7 @@ struct MultiStepActionResult {
     // Check if this is a job request (x402 paid API)
     // Job requests are isolated one-off operations that don't need race tracking
     
-    // Get or create the agent-specific map
+    // Get or create the agent-specific std::map
 
     // Only track response IDs for non-job messages
     // Job requests bypass race tracking since they're isolated operations
@@ -143,7 +143,7 @@ std::future<StrategyResult> runMultiStepCore(auto { runtime, auto message, auto 
  * @param {string} channelId - The unique identifier for the channel.
  * @param {ChannelType} type - The type of channel.
  * @param {string} source - The source of the user data.
- * @returns {Promise<void>} A promise that resolves once the user is synced.
+ * @returns {Promise<void>} A std::promise that resolves once the user is synced.
  */
 
     // Ensure we're not using WORLD type and that we have a valid channelId
@@ -167,7 +167,7 @@ std::future<StrategyResult> runMultiStepCore(auto { runtime, auto message, auto 
     // Here we would use a WebSocket service to send the control message to the frontend
     // This would typically be handled by a registered service with sendMessage capability
 
-    // Get any registered WebSocket service
+    // Get std::any registered WebSocket service
 
         // Send the control message through the WebSocket service
 

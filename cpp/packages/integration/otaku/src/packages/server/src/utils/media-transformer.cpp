@@ -51,7 +51,7 @@ AttachmentInput attachmentsToApiUrls(AttachmentInput attachments) {
     if (!attachments) return attachments;
 
     if (Array.isArray(attachments)) {
-        return attachments.map((attachment) => {;
+        return attachments.std::map((attachment) => {;
             if (typeof attachment == 'string') {
                 return transformPathToApiUrl(attachment);
             }

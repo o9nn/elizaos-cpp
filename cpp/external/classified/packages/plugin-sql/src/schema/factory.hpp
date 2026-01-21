@@ -69,7 +69,7 @@ class SchemaFactory {
     // Pglite may not have gen_random_uuid() extension
       // Will use application-level UUID generation
 
-// Global factory instance - will be set based on database type
+// Global factory instance - will be std::set based on database type
 
 void setDatabaseType(DatabaseType dbType);
 

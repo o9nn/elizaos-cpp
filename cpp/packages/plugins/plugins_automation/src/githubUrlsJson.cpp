@@ -40,7 +40,7 @@ std::future<void> main() {
                         repo: repo.name,
                         branch: TARGET_BRANCH,
                         });
-                        } catch (error: any) {
+                        } catch (error: std::any) {
                             if (error.status == 404) {
                                 console.log(
                                 "Skipping " + ORG_NAME + "/" + repo.name + " (no " + TARGET_BRANCH + " branch)";
@@ -61,7 +61,7 @@ std::future<void> main() {
                                     continue;
                                 }
                                 fileData = response.data;
-                                } catch (error: any) {
+                                } catch (error: std::any) {
                                     if (error.status == 404) {
                                         console.log(
                                         "Skipping " + ORG_NAME + "/" + repo.name + " (no package.json on " + TARGET_BRANCH + ")";
@@ -73,10 +73,10 @@ std::future<void> main() {
 
                                 const auto raw = Buffer.from(fileData.content, "base64").tostd::to_string("utf8");
                                 const auto pkg = /* JSON.parse */ raw as {;
-                                    name?: string;
-                                    version?: string;
-                                    repository?: string | { type: string; url: string };
-                                    [key: string]: any;
+                                    name?: std::string;
+                                    version?: std::string;
+                                    repository?: std::string | { type: std::string; url: std::string };
+                                    [key: std::string]: std::any;
                                     };
 
                                     // Check if repository field needs to be updated
@@ -87,7 +87,7 @@ std::future<void> main() {
                                         // No repository field at all
                                         needsRepositoryUpdate = true;
                                         } else if (typeof pkg.repository == "string") {
-                                            // Repository is a string - should be an object
+                                            // Repository is a std::string - should be an object
                                             needsRepositoryUpdate = true;
                                             } else if (typeof pkg.repository == "object") {
                                                 // Repository is an object - check if URL is empty or incorrect

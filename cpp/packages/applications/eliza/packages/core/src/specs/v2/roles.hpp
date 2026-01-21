@@ -21,7 +21,7 @@ namespace elizaos {
 
 /**
  * Interface representing the ownership state of servers.
- * @property {Object.<string, World>} servers - The servers and their corresponding worlds, where the key is the server ID and the value is the World object.
+ * @property {Object.<std::string, World>} servers - The servers and their corresponding worlds, where the key is the server ID and the value is the World object.
  */
 struct ServerOwnershipState {
 };

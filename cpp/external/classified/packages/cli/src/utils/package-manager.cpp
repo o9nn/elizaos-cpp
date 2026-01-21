@@ -71,7 +71,7 @@ std::future<void> removeFromBunLock(const std::string& packageName, const std::s
                             );
                         }
                     }
-                    } catch (error: any) {
+                    } catch (error: std::any) {
                         // Handle unexpected errors (e.g., bunExec itself throwing)
                         std::cout << "Unexpected error removing " + packageName + " from bun.lock: " + error.message << std::endl;
                     }

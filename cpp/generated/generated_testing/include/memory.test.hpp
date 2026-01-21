@@ -6,8 +6,8 @@
 #include "../../types/base.h"
 #include "@elizaos/core.h"
 
-extern any TEST_AGENT_ID;
-extern any TEST_ROOM_ID;
-extern any TEST_MEMORY_ID;
-extern any TEST_SERVER_ID;
+extern std::any TEST_AGENT_ID;
+extern std::any TEST_ROOM_ID;
+extern std::any TEST_MEMORY_ID;
+extern std::any TEST_SERVER_ID;
 #endif

@@ -6,7 +6,7 @@ namespace elizaos {
 
 std::future<> saveUploadedFile(Express.Multer.File file, const std::string& agentId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    filename: string; url: string
+    filename: std::string; url: std::string
 }
 
 express::Router createAgentMediaRouter() {
@@ -16,7 +16,7 @@ express::Router createAgentMediaRouter() {
         const auto router = express.Router();
 
         // Media upload endpoint for images and videos using multer
-        router.post("/:agentId/upload-media", upload.single("file"), async (req, res) => {
+        router.post("/:agentId/upload-media", upload.single("file"), std::async (req, res) => {
             logger.debug('[MEDIA UPLOAD] Processing media upload with multer');
 
             const auto agentId = validateUuid(req.params.agentId);

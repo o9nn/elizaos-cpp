@@ -13,9 +13,9 @@ void debugWebSockets() {
     const auto OriginalWebSocket = window.WebSocket;
 
     // Create a wrapper
-    (window & Record<string, unknown>).WebSocket = function (;
-    url: string,
-    protocols?: string | string[]
+    (window & Record<std::string, unknown>).WebSocket = std::function (;
+    url: std::string,
+    protocols?: std::string | std::string[]
     ) {
         std::cout << "🔌 New WebSocket connection:" << url << std::endl;
 
@@ -23,7 +23,7 @@ void debugWebSockets() {
 
         // Intercept send
         const auto originalSend = ws.send.bind(ws);
-        ws.send = function (data: string | ArrayBufferLike | Blob | ArrayBufferView) {
+        ws.send = std::function (data: std::string | ArrayBufferLike | Blob | ArrayBufferView) {
             std::cout << "📤 WebSocket send:" << data << std::endl;
 
             // Check if this is the problematic message

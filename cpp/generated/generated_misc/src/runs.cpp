@@ -10,9 +10,9 @@ std::shared_ptr<Promise<object>> RunsService::listRuns(std::shared_ptr<UUID> age
 std::shared_ptr<Promise<std::shared_ptr<RunDetail>>> RunsService::getRun(std::shared_ptr<UUID> agentId, std::shared_ptr<UUID> runId, std::shared_ptr<UUID> roomId)
 {
     return this->get<std::shared_ptr<RunDetail>>(std::string("/api/agents/") + agentId + std::string("/runs/") + runId + string_empty, object{
-        object::pair{std::string("params"), (roomId) ? any(object{
+        object::pair{std::string("params"), (roomId) ? std::any(object{
             object::pair{std::string("roomId"), std::string("roomId")}
-        }) : any(undefined)}
+        }) : std::any(undefined)}
     });
 }
 

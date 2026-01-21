@@ -72,7 +72,7 @@ void Main(void)
         it(std::string("should have unique route paths"), [=]() mutable
         {
             if (plugin->routes) {
-                auto paths = plugin->routes->map([=](auto route) mutable
+                auto paths = plugin->routes->std::map([=](auto route) mutable
                 {
                     return route["path"];
                 }

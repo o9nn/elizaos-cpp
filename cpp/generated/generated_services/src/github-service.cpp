@@ -1,8 +1,8 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/discrub-ext/src/services/github-service.h"
 
-string GITHUB_GIST_URL = std::string("https://api.github.com/gists");
-string ANNOUNCEMENT_ENDPOINT = string_empty + GITHUB_GIST_URL + std::string("/912abef788d8f6dc25b3f4e0fa5e6371");
-string DONATION_ENDPOINT = string_empty + GITHUB_GIST_URL + std::string("/2aca7928b4db1ab84eac3720ac8e8559");
+std::string GITHUB_GIST_URL = std::string("https://api.github.com/gists");
+std::string ANNOUNCEMENT_ENDPOINT = string_empty + GITHUB_GIST_URL + std::string("/912abef788d8f6dc25b3f4e0fa5e6371");
+std::string DONATION_ENDPOINT = string_empty + GITHUB_GIST_URL + std::string("/2aca7928b4db1ab84eac3720ac8e8559");
 std::function<std::shared_ptr<Promise<std::shared_ptr<Announcement>>>()> fetchAnnouncementData = [=]() mutable
 {
     return fetch(ANNOUNCEMENT_ENDPOINT, object{

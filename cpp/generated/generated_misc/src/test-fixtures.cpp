@@ -29,7 +29,7 @@ object withTmpEnvFile()
 };
 
 
-object createTestFileWithContent(string envFile, string content, string fileName)
+object createTestFileWithContent(std::string envFile, std::string content, std::string fileName)
 {
     auto tmpDir = path->dirname(envFile);
     auto testPath = path->join(tmpDir, fileName);
@@ -47,7 +47,7 @@ object createTestFileWithContent(string envFile, string content, string fileName
 };
 
 
-void makePythonToolImportable(string filePath, string moduleName)
+void makePythonToolImportable(std::string filePath, std::string moduleName)
 {
     console->log(std::string("Would import Python tool ") + filePath + std::string(" as ") + moduleName + std::string(" (mocked)"));
 };

@@ -5,10 +5,10 @@
 #include "tailwind-merge.h"
 
 template <typename ...Args>
-any cn(Args... inputs_);
+std::any cn(Args... inputs_);
 
 template <typename ...Args>
-any cn(Args... inputs_)
+std::any cn(Args... inputs_)
 {
     array<std::shared_ptr<ClassValue>> inputs = array<std::shared_ptr<ClassValue>>{inputs_...};
     return twMerge(clsx(inputs));

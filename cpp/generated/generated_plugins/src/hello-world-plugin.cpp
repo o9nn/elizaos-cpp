@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/plugin-sql/src/__tests__/fixtures/hello-world-plugin.h"
 
-any helloWorldTable = pgTable(std::string("hello_world"), object{
+std::any helloWorldTable = pgTable(std::string("hello_world"), object{
     object::pair{std::string("id"), uuid(std::string("id"))->defaultRandom()->primaryKey()}, 
     object::pair{std::string("message"), varchar(std::string("message"), object{
         object::pair{std::string("length"), 255}
@@ -10,7 +10,7 @@ any helloWorldTable = pgTable(std::string("hello_world"), object{
     })}, 
     object::pair{std::string("createdAt"), timestamp(std::string("created_at"))->defaultNow()->notNull()}
 });
-any greetingsTable = pgTable(std::string("greetings"), object{
+std::any greetingsTable = pgTable(std::string("greetings"), object{
     object::pair{std::string("id"), uuid(std::string("id"))->defaultRandom()->primaryKey()}, 
     object::pair{std::string("greeting"), varchar(std::string("greeting"), object{
         object::pair{std::string("length"), 100}

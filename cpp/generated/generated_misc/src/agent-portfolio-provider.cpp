@@ -27,7 +27,7 @@ std::shared_ptr<Provider> agentPortfolioProvider = object{
 \
 This is your portfolio: [") + portfolioText + std::string("]");
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             console->error(std::string("Error fetching token data:"), error);
             return std::string("Unable to fetch token information. Please try again later.");

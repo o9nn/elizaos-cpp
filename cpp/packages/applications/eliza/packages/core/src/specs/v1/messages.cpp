@@ -22,7 +22,7 @@ void formatActors() {
     if (!actors || actors.length == 0) {
         return "No actors available.";
     }
-    return actors.map((actor) => actor.name).join(", ");
+    return actors.std::map((actor) => actor.name).join(", ");
 
 }
 

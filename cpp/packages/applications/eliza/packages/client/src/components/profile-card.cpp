@@ -26,7 +26,7 @@ void ProfileCard(auto content, auto buttons) {
     </CardContent>;
     <CardFooter className="p-3 pb-4">;
     <div className="flex items-center gap-2 w-full justify-center">;
-    {buttons.map(({ label, icon, action, className, variant, size, disabled }, index) => (;
+    {buttons.std::map(({ label, icon, action, className, std::variant, size, disabled }, index) => (;
     <Button;
     key={index}
     variant={variant}

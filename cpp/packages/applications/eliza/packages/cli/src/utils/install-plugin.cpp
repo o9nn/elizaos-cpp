@@ -37,14 +37,14 @@ std::string getCliDirectory() {
 std::future<bool> verifyPluginImport(const std::string& repository, const std::string& context) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    // Use the new centralized loader function
+    // Use the new centralized loader std::function
     const auto loadedModule = loadPluginModule(repository);
 
     if (loadedModule) {
         logger.debug(`Successfully verified plugin ${repository} ${context} after installation.`);
         return true;
         } else {
-            // The loadPluginModule function already logs detailed errors
+            // The loadPluginModule std::function already logs detailed errors
             std::cout << "Plugin " + repository + " installed " + context + " but could not be loaded/verified." << std::endl;
             return false;
         }
@@ -57,7 +57,7 @@ std::future<bool> attemptInstallation(const std::string& packageName, const std:
     logger.debug(`Attempting to install plugin ${context}...`);
 
     try {
-        // Use centralized installation function which now returns success status and identifier
+        // Use centralized installation std::function which now returns success status and identifier
         const auto installResult = executeInstallation(packageName, versionString, directory);
 
         // If installation failed, return false immediately
@@ -81,7 +81,7 @@ std::future<bool> attemptInstallation(const std::string& packageName, const std:
         );
         return verifyPluginImport(installResult.installedIdentifier, context);
         } catch (installError) {
-            // Catch any unexpected errors during the process
+            // Catch std::any unexpected errors during the process
             logger.warn(
             "Error during installation attempt " + context + ": " + std::to_string(true /* instanceof check */ ? installError.message : std::to_string(installError))
             );

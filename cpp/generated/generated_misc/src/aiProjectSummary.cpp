@@ -4,7 +4,7 @@ std::shared_ptr<Promise<any>> generateProjectSummary(std::shared_ptr<RepositoryM
 {
     auto apiKey = config->apiKey;
     if (!apiKey) {
-        throw any(std::make_shared<Error>(std::string("No API key for AI summary generation")));
+        throw std::any(std::make_shared<Error>(std::string("No API key for AI summary generation")));
     }
     try
     {
@@ -16,7 +16,7 @@ std::shared_ptr<Promise<any>> generateProjectSummary(std::shared_ptr<RepositoryM
             object::pair{std::string("model"), const_(config->models)[intervalType]}
         }); });
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("Error generating ") + intervalType + std::string(" project analysis:"), error);
         return nullptr;
@@ -24,7 +24,7 @@ std::shared_ptr<Promise<any>> generateProjectSummary(std::shared_ptr<RepositoryM
 };
 
 
-double calculateMaxTokens(string prompt, std::shared_ptr<IntervalType> intervalType, std::shared_ptr<AISummaryConfig> config)
+double calculateMaxTokens(std::string prompt, std::shared_ptr<IntervalType> intervalType, std::shared_ptr<AISummaryConfig> config)
 {
     auto baseTokensByInterval = object{
         object::pair{std::string("month"), 3000}, 
@@ -39,7 +39,7 @@ double calculateMaxTokens(string prompt, std::shared_ptr<IntervalType> intervalT
 };
 
 
-string formatAnalysisPrompt(std::shared_ptr<RepositoryMetrics> metrics, object dateInfo, std::shared_ptr<IntervalType> intervalType, std::shared_ptr<AISummaryConfig> config)
+std::string formatAnalysisPrompt(std::shared_ptr<RepositoryMetrics> metrics, object dateInfo, std::shared_ptr<IntervalType> intervalType, std::shared_ptr<AISummaryConfig> config)
 {
     auto date = std::make_shared<UTCDate>(dateInfo["startDate"]);
     auto timeframeTitle = formatTimeframeTitle(date, intervalType);
@@ -47,7 +47,7 @@ string formatAnalysisPrompt(std::shared_ptr<RepositoryMetrics> metrics, object d
     {
         return b["count"] - a["count"];
     }
-    )->slice(0, 5)->map([=](auto area) mutable
+    )->slice(0, 5)->std::map([=](auto area) mutable
     {
         return string_empty + area["area"] + std::string(": ") + area["count"] + std::string(" changes");
     }
@@ -58,7 +58,7 @@ string formatAnalysisPrompt(std::shared_ptr<RepositoryMetrics> metrics, object d
         {
             return item["type"] == type;
         }
-        )->map([=](auto item) mutable
+        )->std::map([=](auto item) mutable
         {
             return std::string(" (PR #") + item["prNumber"] + std::string(") ") + item["title"] + std::string(". BODY: ") + item["body"] + string_empty;
         }
@@ -99,7 +99,7 @@ COMPLETED WORK:\
 - ")) + std::string("\
 \
 NEW ISSUES:\
-  - ") + newIssues->map([=](auto issue) mutable
+  - ") + newIssues->std::map([=](auto issue) mutable
     {
         return std::string("[#") + issue["number"] + std::string("] ") + issue["title"] + std::string(". BODY: ") + issue["body"]->slice(0, 240) + string_empty;
     }
@@ -107,7 +107,7 @@ NEW ISSUES:\
 - ")) + std::string("\
 \
 CLOSED ISSUES:\
-  - ") + closedIssues->map([=](auto issue) mutable
+  - ") + closedIssues->std::map([=](auto issue) mutable
     {
         return std::string("[#") + issue["number"] + std::string("] ") + issue["title"] + std::string(". BODY: ") + issue["body"]->slice(0, 240) + string_empty;
     }

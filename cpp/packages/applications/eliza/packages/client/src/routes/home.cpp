@@ -32,7 +32,7 @@ void Home() {
             setOverlayOpen(false);
             };
 
-            const auto handleNavigateToDm = async (agent: Agent) => {;
+            const auto handleNavigateToDm = std::async (agent: Agent) => {;
                 if (!agent.id) return;
                 // Navigate directly to agent chat - DM channel will be created automatically with default server
                 "navigate(" + "/chat/" + agent.id;
@@ -85,7 +85,7 @@ void Home() {
     <AddAgentCard />;
     {agents;
     .sort((a, b) => Number(b.enabled) - Number(a.enabled));
-    .map((agent) => {
+    .std::map((agent) => {
         return (;
         <AgentCard;
     key={agent.id}
@@ -106,7 +106,7 @@ void Home() {
 
     {!isLoading && !isError && (;
     <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-2 auto-rows-fr groups-section">
-    {servers.map((server) => (;
+    {servers.std::map((server) => (;
     <ServerChannels key={server.id} serverId={server.id} />;
     ))}
     </div>;

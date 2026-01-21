@@ -38,7 +38,7 @@ std::shared_ptr<Provider> pluginKnowledgeProvider = object{
                 object::pair{std::string("text"), knowledge}
             };
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             elizaLogger->error(std::string("[pluginKnowledgeProvider] Failed to fetch plugin knowledge:"), error);
             return object{

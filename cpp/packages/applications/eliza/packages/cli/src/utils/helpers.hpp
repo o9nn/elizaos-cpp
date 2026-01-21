@@ -22,7 +22,7 @@ namespace elizaos {
 void displayAgent(const std::optional<Agent>& data, auto title);
 
 /**
- * Formats a conversation into a string
+ * Formats a conversation into a std::string
  */
 std::string formatConversation(const std::vector<MessageExample>& conversation);
 

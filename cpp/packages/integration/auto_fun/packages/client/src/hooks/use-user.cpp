@@ -12,7 +12,7 @@ void useUser() {
 
     const auto query = useQuery({;
         queryKey: ["user", publicKey, authQuery.data],
-        queryFn: async () => {
+        queryFn: std::async () => {
             if (!publicKey) {
                 return nullptr;
             }

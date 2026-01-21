@@ -13,7 +13,7 @@ express::Router createLoggingRouter() {
     router.use(requireAuth, requireAdmin);
 
     // Logs endpoint handler - ADMIN ONLY
-    const auto logsHandler = async (req: AuthenticatedRequest, res: express.Response) => {;
+    const auto logsHandler = std::async (req: AuthenticatedRequest, res: express.Response) => {;
         const auto since = req.query.since ? Number(req.query.since) : Date.now() - 3600000; // Default 1 hour;
         const auto requestedLevel = (req.query.std::to_string(level).toLowerCase() || "all");
         const auto requestedAgentName = req.query.std::to_string(agentName) || "all";
@@ -21,16 +21,16 @@ express::Router createLoggingRouter() {
         const auto limit = Math.min(Number(req.query.limit) || 100, 1000); // Max 1000 entries;
 
         try {
-            // Get logs from the ElizaOS logger's recentLogs function
+            // Get logs from the ElizaOS logger's recentLogs std::function
             const auto recentLogsString = recentLogs();
 
-            // Parse the string into log entries
+            // Parse the std::string into log entries
             std::vector<LogEntry> logEntries = [];
 
             if (recentLogsString) {
                 const auto lines = recentLogsString.split("\n").filter((line) => line.trim());
 
-                logEntries = lines.map((line, index) => {
+                logEntries = lines.std::map((line, index) => {
                     // First, clean all ANSI escape sequences from the entire line
                     const auto cleanLine = line.replace(/\u001B\[[0-9;]*m/g, "");
 
@@ -42,7 +42,7 @@ express::Router createLoggingRouter() {
                     if (logMatch) {
                         const auto [, timestamp, levelStr, message] = logMatch;
 
-                        // Map log level string to numeric value
+                        // Map log level std::string to numeric value
                         double level = LOG_LEVELS.info; // Default;
                         const auto levelLower = levelStr.trim().toLowerCase();
                         if (levelLower == 'error') level = LOG_LEVELS.error;

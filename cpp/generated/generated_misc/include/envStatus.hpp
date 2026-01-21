@@ -4,9 +4,9 @@
 #include "@elizaos/core.h"
 #include "../types.h"
 
-string formatEnvVarStatus(std::shared_ptr<EnvVarConfig> config, boolean showValues = false);
+std::string formatEnvVarStatus(std::shared_ptr<EnvVarConfig> config, boolean showValues = false);
 
-string generateEnvStatusMessage(std::shared_ptr<EnvVarMetadata> envVars, boolean showValues = false);
+std::string generateEnvStatusMessage(std::shared_ptr<EnvVarMetadata> envVars, boolean showValues = false);
 
 extern std::shared_ptr<Provider> envStatusProvider;
 #endif

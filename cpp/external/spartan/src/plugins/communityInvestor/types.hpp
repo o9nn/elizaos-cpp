@@ -21,7 +21,7 @@ using UUID = CoreUUID;
 /**
  * Represents a type where certain properties from the original type T are optional.
  * @template T - The original type
- * @template K - The keys of the properties that should be optional
+ * @template K - The keys of the properties that should be std::optional
  * @typedef {Omit<T, K> & Partial<Pick<T, K>>} Optional
  */
 /**
@@ -36,22 +36,22 @@ using UUID = CoreUUID;
 /**
  * Type that extracts variables enclosed in double curly braces from a given string.
  *
- * @template T The input string type
+ * @template T The input std::string type
  * @typedef {T} ExtractVariables
- * @param {T} T The input string to extract variables from
- * @returns {Var} The variables extracted from the input string
+ * @param {T} T The input std::string to extract variables from
+ * @returns {Var} The variables extracted from the input std::string
  */
 
 /**
- * Represents a type that defines template variables for a given string type.
+ * Represents a type that defines template variables for a given std::string type.
  *
- * @template T - The string type for which template variables are defined.
+ * @template T - The std::string type for which template variables are defined.
  * @typedef TemplateVariables
- * @type {Pretty<{ [K in ExtractVariables<T>]: string; }>}
+ * @type {Pretty<{ [K in ExtractVariables<T>]: std::string; }>}
  */
 
 /**
- * Represents a value that can be stored in a SQLite database, which can be a string, number, or null.
+ * Represents a value that can be stored in a SQLite database, which can be a std::string, number, or null.
  */
 using SQLiteValue = std::variant<std::string, double, nullptr>;
 
@@ -93,7 +93,7 @@ using TransactionRow = ToSQLiteRecord<Transaction>;
  * Interface representing the metrics of a recommender.
  * @typedef {{
  *    entityId: UUID,
- *    platform: string,
+ *    platform: std::string,
  *    totalRecommendations: number,
  *    successfulRecs: number,
  *    failedTrades: number,
@@ -140,7 +140,7 @@ struct RecommenderMetricsHistory {
  * @property {string} [name] - The name of the token.
  * @property {string} [symbol] - The symbol of the token.
  * @property {number} [decimals] - The number of decimal places for the token.
- * @property {Object.<string, any>} [metadata] - Additional metadata for the token.
+ * @property {Object.<std::string, any>} [metadata] - Additional metadata for the token.
  * @property {number} [price] - The current price of the token.
  * @property {number} [price24hChange] - The percentage change in price over the last 24 hours.
  * @property {number} [volume] - The trading volume of the token.
@@ -426,7 +426,7 @@ struct RecommendationMetric {
     std::optional<number; // For SELL/criticism, based on price drop avoided> avoidedLossPercent;
     std::optional<boolean; // Flagged based on heuristics> isScamOrRug;
     number; // When this metric was last calculated evaluationTimestamp;
-    std::optional<string; // e.g., "Hit ATH 3 days later", "Rug pulled", "Low liquidity spike"> notes;
+    std::optional<std::string; // e.g., "Hit ATH 3 days later", "Rug pulled", "Low liquidity spike"> notes;
 };
 
 // Represents a single recommendation or criticism made by a user
@@ -435,12 +435,12 @@ struct Recommendation {
     UUID; // Entity ID of the recommender userId;
     UUID; // Original message ID that sparked this recommendation messageId;
     number; // When the recommendation was made (from original message) timestamp;
-    std::optional<string; // e.g., "SOL", "BTC" (if identified as a ticker)> tokenTicker;
-    string; // e.g., "So11111111111111111111111111111111111111112" tokenAddress;
+    std::optional<std::string; // e.g., "SOL", "BTC" (if identified as a ticker)> tokenTicker;
+    std::string; // e.g., "So11111111111111111111111111111111111111112" tokenAddress;
     SupportedChain; // The blockchain the token is on chain;
     'BUY' | 'SELL'; // 'SELL' for criticisms recommendationType;
     'NONE' | 'LOW' | 'MEDIUM' | 'HIGH'; // Sender's conviction level conviction;
-    string; // The exact text snippet that is the recommendation/criticism rawMessageQuote;
+    std::string; // The exact text snippet that is the recommendation/criticism rawMessageQuote;
     std::optional<number; // Price of the token when the recommendation was made> priceAtRecommendation;
     std::optional<RecommendationMetric; // Performance metrics, calculated later by a task> metrics;
     std::optional<boolean; // Has the PROCESS_TRADE_DECISION task run for this?> processedForTradeDecision;
@@ -448,7 +448,7 @@ struct Recommendation {
 
 // Data structure for the component stored on an Entity
 struct UserTrustProfile {
-    string; // Schema version, e.g., "1.0.0" version;
+    std::string; // Schema version, e.g., "1.0.0" version;
     UUID; // Entity ID this profile belongs to userId;
     number; // Weighted average score from -100 to 100 trustScore;
     number; // When trustScore was last calculated lastTrustScoreCalculationTimestamp;
@@ -480,7 +480,7 @@ struct TokenAPIData {
 // Data structure for frontend leaderboard entries
 struct LeaderboardEntry {
     UUID userId;
-    std::optional<string; // Display name for the user> username;
+    std::optional<std::string; // Display name for the user> username;
     double trustScore;
     std::optional<number; // Calculated dynamically> rank;
     Recommendation[]; // Full recommendation history for drill-down recommendations;
@@ -501,7 +501,7 @@ struct MessageReceivedHandlerParams {
     IAgentRuntime runtime;
     Memory message;
     ( callback;
-    string | Record<string, any> response;
+    std::string | Record<std::string, any> response;
     std::optional<std::unordered_map<std::string, std::any>> metadata;
     std::optional<() => void> onComplete;
 };

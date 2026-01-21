@@ -1,10 +1,10 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/plugin-sql/src/__tests__/integration/seed/room-seed.h"
 
-any roomTestAgentId = as<std::shared_ptr<UUID>>(uuidv4());
-any roomTestEntityId = as<std::shared_ptr<UUID>>(uuidv4());
-any roomTestWorldId = as<std::shared_ptr<UUID>>(uuidv4());
-any roomTestRoomId = as<std::shared_ptr<UUID>>(uuidv4());
-any roomTestRoom2Id = as<std::shared_ptr<UUID>>(uuidv4());
+std::any roomTestAgentId = as<std::shared_ptr<UUID>>(uuidv4());
+std::any roomTestEntityId = as<std::shared_ptr<UUID>>(uuidv4());
+std::any roomTestWorldId = as<std::shared_ptr<UUID>>(uuidv4());
+std::any roomTestRoomId = as<std::shared_ptr<UUID>>(uuidv4());
+std::any roomTestRoom2Id = as<std::shared_ptr<UUID>>(uuidv4());
 std::shared_ptr<Agent> roomTestAgent = object{
     object::pair{std::string("id"), roomTestAgentId}, 
     object::pair{std::string("name"), std::string("Room Test Agent")}, 
@@ -70,7 +70,7 @@ array<std::shared_ptr<Room>> roomTestRooms = array<std::shared_ptr<Room>>{ objec
         object::pair{std::string("isPrivate"), true}
     }}
 } };
-std::function<any(any)> createModifiedRoom = [=](auto room) mutable
+std::function<std::any(std::any)> createModifiedRoom = [=](auto room) mutable
 {
     return utils::assign(object{
         , 
@@ -79,7 +79,7 @@ std::function<any(any)> createModifiedRoom = [=](auto room) mutable
             , 
             object::pair{std::string("updated"), true}, 
             object::pair{std::string("timestamp"), Date->now()}
-        }, (as<Record<string, any>>(room->metadata)))}
+        }, (as<Record<std::string, any>>(room->metadata)))}
     }, room);
 };
 

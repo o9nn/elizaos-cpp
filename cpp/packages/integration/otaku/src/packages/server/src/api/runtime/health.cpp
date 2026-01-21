@@ -53,7 +53,7 @@ express::Router createHealthRouter(ElizaOS elizaOS, AgentServer serverInstance) 
                                 // Server stop endpoint (admin only)
                                 router.post("/stop", requireAuth, requireAdmin, (_req: AuthenticatedRequest, res) => {
                                     std::cout << { apiRoute = "/stop" } << "Server stopping..." << std::endl;
-                                    serverInstance.stop(); // Use optional chaining in case server is std::nullopt;
+                                    serverInstance.stop(); // Use std::optional chaining in case server is std::nullopt;
                                     res.json({ message: "Server stopping..." });
                                     });
 

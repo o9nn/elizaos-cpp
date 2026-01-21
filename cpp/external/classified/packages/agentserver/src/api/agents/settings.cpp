@@ -11,7 +11,7 @@ express::Router createAgentSettingsRouter(const std::unordered_map<UUID, IAgentR
         const auto router = express.Router();
 
         // Get agent settings
-        router.get("/:agentId/settings", async (req, res) => {
+        router.get("/:agentId/settings", std::async (req, res) => {
             std::optional<UUID> agentId = nullptr;
             auto runtime: IAgentRuntime | std::nullopt;
 
@@ -77,7 +77,7 @@ express::Router createAgentSettingsRouter(const std::unordered_map<UUID, IAgentR
                                 });
 
                                 // Update agent settings
-                                router.post("/:agentId/settings", async (req, res) => {
+                                router.post("/:agentId/settings", std::async (req, res) => {
                                     std::optional<UUID> agentId = nullptr;
                                     auto runtime: IAgentRuntime | std::nullopt;
 
@@ -148,7 +148,7 @@ express::Router createAgentSettingsRouter(const std::unordered_map<UUID, IAgentR
                                                 });
 
                                                 // Get vision-specific settings
-                                                router.get("/:agentId/settings/vision", async (req, res) => {
+                                                router.get("/:agentId/settings/vision", std::async (req, res) => {
                                                     const auto agentId = validateUuid(req.params.agentId);
                                                     if (!agentId) {
                                                         return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
@@ -183,7 +183,7 @@ express::Router createAgentSettingsRouter(const std::unordered_map<UUID, IAgentR
                                                             });
 
                                                             // Refresh vision service
-                                                            router.post("/:agentId/vision/refresh", async (req, res) => {
+                                                            router.post("/:agentId/vision/refresh", std::async (req, res) => {
                                                                 const auto agentId = validateUuid(req.params.agentId);
                                                                 if (!agentId) {
                                                                     return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");

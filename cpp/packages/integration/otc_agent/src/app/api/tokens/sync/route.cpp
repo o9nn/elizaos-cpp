@@ -77,7 +77,7 @@ std::future<void> syncEvmToken(const std::string& transactionHash, const std::st
             try {
                 // Get transaction receipt to find the block
                 const auto receipt = client.getTransactionReceipt({;
-                    "hash: transactionHash as " + "0x" + string
+                    "hash: transactionHash as " + "0x" + std::string
                     });
                     if (!receipt) {
                         return NextResponse.json(;
@@ -96,7 +96,7 @@ std::future<void> syncEvmToken(const std::string& transactionHash, const std::st
 
                     // Get logs for this specific transaction
                     const auto logs = client.getLogs({;
-                        "address: registrationHelperAddress as " + "0x" + string
+                        "address: registrationHelperAddress as " + "0x" + std::string
                         event: {
                             type: "event",
                             name: "TokenRegistered",
@@ -133,10 +133,10 @@ std::future<void> syncEvmToken(const std::string& transactionHash, const std::st
                                 for (const auto& log : txLogs)
                                     try {
                                         const auto { tokenAddress, registeredBy } = log.args as {;
-                                            tokenId: string;
-                                            tokenAddress: string;
-                                            pool: string;
-                                            registeredBy: string;
+                                            tokenId: std::string;
+                                            tokenAddress: std::string;
+                                            pool: std::string;
+                                            registeredBy: std::string;
                                             };
 
                                             console.log(
@@ -150,17 +150,17 @@ std::future<void> syncEvmToken(const std::string& transactionHash, const std::st
                                             ) => Promise<unknown>;
                                             const auto [symbol, name, decimals] = Promise.all([;
                                             readContract({
-                                                "address: tokenAddress as " + "0x" + string
+                                                "address: tokenAddress as " + "0x" + std::string
                                                 abi: ERC20_ABI,
                                                 functionName: "symbol",
                                                 }),
                                                 readContract({
-                                                    "address: tokenAddress as " + "0x" + string
+                                                    "address: tokenAddress as " + "0x" + std::string
                                                     abi: ERC20_ABI,
                                                     functionName: "name",
                                                     }),
                                                     readContract({
-                                                        "address: tokenAddress as " + "0x" + string
+                                                        "address: tokenAddress as " + "0x" + std::string
                                                         abi: ERC20_ABI,
                                                         functionName: "decimals",
                                                         }),

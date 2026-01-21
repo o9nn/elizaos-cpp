@@ -61,7 +61,7 @@ std::future<Task> applyTaskUpdate(IAgentRuntime runtime, Task task, TaskUpdate u
  * The UPDATE_TODO action allows users to modify an existing task.
  */
 
-    // Simpler validation: Only check if *any* active (non-completed) TODO exists
+    // Simpler validation: Only check if *std::any* active (non-completed) TODO exists
 
       // Get all active todos for this room
 

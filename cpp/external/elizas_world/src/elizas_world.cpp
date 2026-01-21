@@ -41,7 +41,7 @@ bool WorldAgent::canInteractWith(const WorldAgent& other) const {
 }
 
 void WorldAgent::moveTo(const WorldPosition& target, double speed) {
-    // Calculate direction vector
+    // Calculate direction std::vector
     WorldPosition direction(
         target.x - position.x,
         target.y - position.y,
@@ -518,12 +518,12 @@ bool ElizasWorld::loadWorldState(const std::string& filePath) {
 }
 
 std::string ElizasWorld::exportWorldData() const {
-    // Implementation would export to JSON string
+    // Implementation would export to JSON std::string
     return "{}";
 }
 
 bool ElizasWorld::importWorldData(const std::string& data) {
-    // Implementation would import from JSON string
+    // Implementation would import from JSON std::string
     (void)data; // Suppress unused parameter warning
     return true;
 }

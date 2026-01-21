@@ -17,11 +17,11 @@ void blockOldMessages()
                 if (messageText->includes(std::string("admin has opened the terminal"))) {
                     console->error(std::string("🚫 BLOCKED problematic message!"), message);
                     console->trace();
-                    return any();
+                    return std::any();
                 }
             }
         }
-        catch (const any& _e)
+        catch (const std::any& _e)
         {
         }
         return originalSend->apply(shared_from_this(), array<any>{ data });

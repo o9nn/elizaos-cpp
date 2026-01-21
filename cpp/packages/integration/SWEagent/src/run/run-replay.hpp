@@ -43,26 +43,26 @@ struct RunReplayConfig {
  * Run replay - replay an agent trajectory
  */
 class RunReplay {
-  private trajPath: string;
+  private trajPath: std::string;
   // private deployment?: AbstractDeployment;  // Not used currently
-  private outputDir: string;
+  private outputDir: std::string;
   private catchErrors: boolean;
   private requireZeroExitCode: boolean;
   private logger: AgentLogger;
   private trajData: TrajectoryData;
 
   constructor(config: {
-    trajPath: string;
+    trajPath: std::string;
     deployment?: AbstractDeployment;
-    outputDir?: string;
-    updateConfig?: string[];
+    outputDir?: std::string;
+    updateConfig?: std::string[];
     catchErrors?: boolean;
     requireZeroExitCode?: boolean;
   }) {
     this.trajPath = config.trajPath;
     // this.deployment = config.deployment;  // Not used currently
     this.outputDir = config.outputDir || '.';
-    // this._updateConfig = (config as any).updateConfig || [];  // Not implemented yet
+    // this._updateConfig = (config as std::any).updateConfig || [];  // Not implemented yet
     this.catchErrors = config.catchErrors !== false;
     this.requireZeroExitCode = config.requireZeroExitCode || false;
     this.logger = getLogger('run-replay', '🔄');

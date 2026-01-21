@@ -3,8 +3,8 @@
 #include "core.h"
 #include "./use-url-searchparams.h"
 
-typedef any ViewMode;
+typedef std::any ViewMode;
 
 
-extern std::function<any()> useViewMode;
+extern std::function<std::any()> useViewMode;
 #endif

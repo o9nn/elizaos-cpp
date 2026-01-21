@@ -3,6 +3,6 @@
 #include "core.h"
 #include "@elizaos/core.h"
 
-array<std::shared_ptr<Plugin>> resolvePluginDependencies(std::shared_ptr<Map<string, std::shared_ptr<Plugin>>> availablePlugins, boolean isTestMode = false);
+array<std::shared_ptr<Plugin>> resolvePluginDependencies(std::shared_ptr<Map<std::string, std::shared_ptr<Plugin>>> availablePlugins, boolean isTestMode = false);
 
 #endif

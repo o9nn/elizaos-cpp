@@ -60,7 +60,7 @@ std::future<void> removeFromBunLock(const std::string& packageName, const std::s
             stdio: "pipe", // Don't show output for cleanup operation
             });
             logger.debug(`Successfully removed ${packageName} from bun.lock`);
-            } catch (error: any) {
+            } catch (error: std::any) {
                 // If the package isn't in the lockfile, that's fine - we just want to ensure it's not there
                 if (error.message.includes('not found') || error.message.includes('No such package')) {
                     logger.debug(`Package ${packageName} not found in lockfile (expected for cleanup)`);

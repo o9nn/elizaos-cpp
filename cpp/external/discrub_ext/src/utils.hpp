@@ -42,7 +42,7 @@ namespace elizaos {
 /**
  *
  * @param seconds Number of seconds to wait for
- * @param callback Optional function to be used after the specified seconds have passed
+ * @param callback Optional std::function to be used after the specified seconds have passed
  */
   return callback();
 

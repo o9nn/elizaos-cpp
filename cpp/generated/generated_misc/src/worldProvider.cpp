@@ -1,7 +1,7 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-auto/worldProvider.h"
 
-string AUTO_WORLD_SEED = std::string("autonomous_world_singleton");
-string AUTO_ROOM_SEED = std::string("autonomous_room_singleton");
+std::string AUTO_WORLD_SEED = std::string("autonomous_world_singleton");
+std::string AUTO_ROOM_SEED = std::string("autonomous_room_singleton");
 std::shared_ptr<Provider> autonomousWorldProvider = object{
     object::pair{std::string("name"), std::string("AUTONOMOUS_WORLD")}, 
     object::pair{std::string("description"), std::string("Information about the autonomous world and room setup")}, 
@@ -25,21 +25,21 @@ std::shared_ptr<Provider> autonomousWorldProvider = object{
                     object::pair{std::string("text"), std::string("No WORLD_ID configured - autonomous system may not be fully initialized.")}
                 };
             }
-            auto [world, room] = std::async([=]() { Promise->all(std::tuple<any, any>{ runtime->getWorld(worldId), runtime->getRoom(autonomousRoomId) }); });
-            auto worldInfo = (world) ? any(object{
+            auto [world, room] = std::async([=]() { Promise->all(std::tuple<std::any, any>{ runtime->getWorld(worldId), runtime->getRoom(autonomousRoomId) }); });
+            auto worldInfo = (world) ? std::any(object{
                 object::pair{std::string("id"), world->id}, 
                 object::pair{std::string("name"), world->name}, 
                 object::pair{std::string("serverId"), world->serverId}, 
                 object::pair{std::string("agentId"), world->agentId}
-            }) : any(nullptr);
-            auto roomInfo = (room) ? any(object{
+            }) : std::any(nullptr);
+            auto roomInfo = (room) ? std::any(object{
                 object::pair{std::string("id"), room->id}, 
                 object::pair{std::string("name"), room->name}, 
                 object::pair{std::string("type"), room->type}, 
                 object::pair{std::string("worldId"), room->worldId}, 
                 object::pair{std::string("source"), room->source}
-            }) : any(nullptr);
-            auto statusText = (array<string>{ std::string("# Autonomous World Status"), string_empty, std::string("**World ID:** ") + worldId + string_empty, std::string("**World Status:** ") + (world) ? std::string("Found") : std::string("Not Found") + string_empty, (world) ? any(std::string("**World Name:** ") + world->name + string_empty) : any(string_empty), string_empty, std::string("**Autonomous Room ID:** ") + autonomousRoomId + string_empty, std::string("**Room Status:** ") + (room) ? std::string("Found") : std::string("Not Found") + string_empty, (room) ? any(std::string("**Room Name:** ") + room->name + string_empty) : any(string_empty), (room) ? any(std::string("**Room Type:** ") + room->type + string_empty) : any(string_empty), (room) ? any(std::string("**Room World ID:** ") + room->worldId + string_empty) : any(string_empty), string_empty, std::string("**Agent ID:** ") + runtime->agentId + string_empty, std::string("**Character Name:** ") + runtime->character->name + string_empty })->filter(Boolean)->join(std::string("\
+            }) : std::any(nullptr);
+            auto statusText = (array<string>{ std::string("# Autonomous World Status"), string_empty, std::string("**World ID:** ") + worldId + string_empty, std::string("**World Status:** ") + (world) ? std::string("Found") : std::string("Not Found") + string_empty, (world) ? std::any(std::string("**World Name:** ") + world->name + string_empty) : std::any(string_empty), string_empty, std::string("**Autonomous Room ID:** ") + autonomousRoomId + string_empty, std::string("**Room Status:** ") + (room) ? std::string("Found") : std::string("Not Found") + string_empty, (room) ? std::any(std::string("**Room Name:** ") + room->name + string_empty) : std::any(string_empty), (room) ? std::any(std::string("**Room Type:** ") + room->type + string_empty) : std::any(string_empty), (room) ? std::any(std::string("**Room World ID:** ") + room->worldId + string_empty) : std::any(string_empty), string_empty, std::string("**Agent ID:** ") + runtime->agentId + string_empty, std::string("**Character Name:** ") + runtime->character->name + string_empty })->filter(Boolean)->join(std::string("\
 "));
             auto formattedText = addHeader(std::string("# Autonomous World Information"), statusText);
             return object{
@@ -60,7 +60,7 @@ std::shared_ptr<Provider> autonomousWorldProvider = object{
                 object::pair{std::string("text"), formattedText}
             };
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             console->error(std::string("[AutonomousWorldProvider] Error:"), error);
             return object{

@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/discrub-ext/src/enum/tag.h"
 
-std::function<string(Tag)> getTagName = [=](auto type) mutable
+std::function<std::string(Tag)> getTagName = [=](auto type) mutable
 {
     switch (type)
     {

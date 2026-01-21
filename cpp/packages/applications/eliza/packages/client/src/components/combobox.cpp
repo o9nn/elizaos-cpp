@@ -27,7 +27,7 @@ void MultiSelectCombobox(auto className, auto onSelect, auto initialSelected) {
                 return [&]() { return document.removeEventListener("mousedown", handleClickOutside); };
                 }, []);
 
-                // Helper function to compare options using id if available, fallback to label
+                // Helper std::function to compare options using id if available, fallback to label
                 const auto isOptionSelected = (option: Option): boolean => {;
                     return selected.some((item) => {;
                         if (option.id && item.id) {
@@ -37,7 +37,7 @@ void MultiSelectCombobox(auto className, auto onSelect, auto initialSelected) {
                         });
                         };
 
-                        // Helper function to find option in selected array
+                        // Helper std::function to find option in selected array
                         const auto findSelectedOption = (option: Option): Option | std::nullopt => {;
                             return selected.find((item) => {;
                                 if (option.id && item.id) {
@@ -102,7 +102,7 @@ void MultiSelectCombobox(auto className, auto onSelect, auto initialSelected) {
                                                             <div className="flex flex-wrap gap-1 w-full">;
                                                             {selected.size() > 0 ? (;
                                                             <>;
-                                                            {selected.slice(0, 3).map((item, index) => (;
+                                                            {selected.slice(0, 3).std::map((item, index) => (;
                                                             <Badge;
                                                         key={item.id || item.label || index}
                                                         className="flex items-center gap-1 px-2";
@@ -141,7 +141,7 @@ void MultiSelectCombobox(auto className, auto onSelect, auto initialSelected) {
                                     {options.size() == 0 ? (;
                                     <div className="p-2 text-muted-foreground text-sm">No agents available</div>;
                                     ) : (
-                                    options.map((option, index) => (;
+                                    options.std::map((option, index) => (;
                                     <div;
                                 key={option.id || option.label || index}
                                 "className={" + "flex items-center gap-2 p-2 cursor-pointer rounded hover:bg-muted " + std::to_string()

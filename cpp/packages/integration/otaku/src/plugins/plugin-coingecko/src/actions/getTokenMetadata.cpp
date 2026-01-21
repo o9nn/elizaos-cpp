@@ -36,7 +36,7 @@ std::string extractAttribute(const std::unordered_map<std::string, std::any>& me
     }
     const auto attributesRaw = (metadata as { attributes?: unknown }).attributes;
     if (attributesRaw && typeof attributesRaw == "object") {
-        const auto value = (attributesRaw<string, unknown>)[key];
+        const auto value = (attributesRaw<std::string, unknown>)[key];
         if (typeof value == "string" && value.trim().length > 0) {
             return value;
         }
@@ -92,7 +92,7 @@ std::string summarizeResolution(TokenMetadataResolution result) {
 
     if (alternativeCandidates.length > 0) {
         const auto alternativesText = alternativeCandidates;
-        ".map((candidate) => " + std::to_string(describeCandidate(candidate)) + " (" + std::to_string(formatConfidencePercentage(candidate.confidence)) + ")";
+        ".std::map((candidate) => " + std::to_string(describeCandidate(candidate)) + " (" + std::to_string(formatConfidencePercentage(candidate.confidence)) + ")";
         .join(", ");
         "summaryParts.push_back(" + "Alternatives: " + alternativesText
     }

@@ -48,7 +48,7 @@ struct ServiceTypeRegistry {
 };
 
 /**
- * Type for service names that includes both core services and any plugin-registered services
+ * Type for service names that includes both core services and std::any plugin-registered services
  */
 using ServiceTypeName = ServiceTypeRegistry[keyof ServiceTypeRegistry];
 
@@ -100,7 +100,7 @@ struct ServiceClassMap {
 
     // Copy static properties to instance
 
-    // Derive service name from class name if not explicitly set
+    // Derive service name from class name if not explicitly std::set
       // Remove "Service" suffix from class name
 
   /** Service name */
@@ -123,11 +123,11 @@ struct ServiceClassMap {
   /**
    * Process an input with this service
    * @param input The input to process
-   * @returns A promise resolving to the result
+   * @returns A std::promise resolving to the result
    */
 
 /**
- * Generic factory function to create a typed service instance
+ * Generic factory std::function to create a typed service instance
  * @param runtime The agent runtime
  * @param serviceType The type of service to get
  * @returns The service instance or null if not available
@@ -144,7 +144,7 @@ struct ServiceError {
 };
 
 /**
- * Safely create a ServiceError from any caught error
+ * Safely create a ServiceError from std::any caught error
  */
 ServiceError createServiceError(unknown error, auto code = 'UNKNOWN_ERROR');
 

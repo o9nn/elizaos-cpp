@@ -15,16 +15,16 @@ namespace elizaos {
 
 
 class TokenRegistryService {
-  async registerToken(params: {
-    symbol: string;
-    name: string;
-    contractAddress: string;
+  std::async registerToken(params: {
+    symbol: std::string;
+    name: std::string;
+    contractAddress: std::string;
     chain: Chain;
     decimals: number;
-    logoUrl?: string;
-    description?: string;
-    website?: string;
-    twitter?: string;
+    logoUrl?: std::string;
+    description?: std::string;
+    website?: std::string;
+    twitter?: std::string;
   }): Promise<Token> {
     // EVM addresses can be lowercased (case-insensitive)
     // Solana addresses are Base58 encoded and MUST preserve case

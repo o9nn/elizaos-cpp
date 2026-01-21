@@ -11,9 +11,9 @@ class ShellBasicE2ETestSuite;
 class ShellBasicE2ETestSuite : public TestSuite, public std::enable_shared_from_this<ShellBasicE2ETestSuite> {
 public:
     using std::enable_shared_from_this<ShellBasicE2ETestSuite>::shared_from_this;
-    string name = std::string("plugin-shell-basic-e2e");
+    std::string name = std::string("plugin-shell-basic-e2e");
 
-    string description = std::string("Basic end-to-end tests for shell plugin functionality");
+    std::string description = std::string("Basic end-to-end tests for shell plugin functionality");
 
     array<object> tests = array<object>{ object{
         object::pair{std::string("name"), std::string("Should execute simple echo command")}, 
@@ -46,10 +46,10 @@ public:
             }
             ); });
             if (!callbackCalled) {
-                throw any(std::make_shared<Error>(std::string("Callback was not called")));
+                throw std::any(std::make_shared<Error>(std::string("Callback was not called")));
             }
             if (!callbackResponse["text"]["includes"](std::string("Hello from shell plugin"))) {
-                throw any(std::make_shared<Error>(std::string("Unexpected output: ") + callbackResponse["text"] + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("Unexpected output: ") + callbackResponse["text"] + string_empty));
             }
             console->log(std::string("✓ Echo command executed successfully"));
             console->log(std::string("  Output: ") + callbackResponse["text"] + string_empty);
@@ -84,12 +84,12 @@ public:
             }
             ); });
             if (OR((OR((!response), (!response["attachments"]))), (response["attachments"]["length"] == 0))) {
-                throw any(std::make_shared<Error>(std::string("No attachments returned with shell output")));
+                throw std::any(std::make_shared<Error>(std::string("No attachments returned with shell output")));
             }
             auto attachment = const_(response["attachments"])[0];
             auto outputData = JSON->parse(attachment["text"]);
             if (outputData["exitCode"] != 0) {
-                throw any(std::make_shared<Error>(std::string("ls command failed with exit code: ") + outputData["exitCode"] + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("ls command failed with exit code: ") + outputData["exitCode"] + string_empty));
             }
             console->log(std::string("✓ ls command executed successfully"));
             console->log(std::string("  Files found: ") + (outputData["stdout"]["split"](std::string("\
@@ -125,12 +125,12 @@ public:
             }
             ); });
             if (OR((OR((!response), (!response["attachments"]))), (response["attachments"]["length"] == 0))) {
-                throw any(std::make_shared<Error>(std::string("No error information returned")));
+                throw std::any(std::make_shared<Error>(std::string("No error information returned")));
             }
             auto attachment = const_(response["attachments"])[0];
             auto outputData = JSON->parse(attachment["text"]);
             if (outputData["exitCode"] == 0) {
-                throw any(std::make_shared<Error>(std::string("Expected non-zero exit code for invalid command")));
+                throw std::any(std::make_shared<Error>(std::string("Expected non-zero exit code for invalid command")));
             }
             console->log(std::string("✓ Error handling works correctly"));
             console->log(std::string("  Exit code: ") + outputData["exitCode"] + string_empty);
@@ -165,12 +165,12 @@ public:
             }
             ); });
             if (OR((OR((!response), (!response["attachments"]))), (response["attachments"]["length"] == 0))) {
-                throw any(std::make_shared<Error>(std::string("Command extraction failed")));
+                throw std::any(std::make_shared<Error>(std::string("Command extraction failed")));
             }
             auto attachment = const_(response["attachments"])[0];
             auto outputData = JSON->parse(attachment["text"]);
             if (AND((!outputData["command"]["includes"](std::string("ls"))), (!outputData["command"]["includes"](std::string("dir"))))) {
-                throw any(std::make_shared<Error>(std::string("Unexpected command extracted: ") + outputData["command"] + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("Unexpected command extracted: ") + outputData["command"] + string_empty));
             }
             console->log(std::string("✓ Natural language command extraction successful"));
             console->log(std::string("  Extracted command: ") + outputData["command"] + string_empty);
@@ -183,13 +183,13 @@ public:
             console->log(std::string("Testing shell history clearing..."));
             auto shellService = runtime->getService<std::shared_ptr<ShellService>>(std::string("SHELL"));
             if (!shellService) {
-                throw any(std::make_shared<Error>(std::string("Shell service not available")));
+                throw std::any(std::make_shared<Error>(std::string("Shell service not available")));
             }
             std::async([=]() { shellService->executeCommand(std::string("echo test1")); });
             std::async([=]() { shellService->executeCommand(std::string("echo test2")); });
             auto history = shellService->getHistory();
             if (history->length < 2) {
-                throw any(std::make_shared<Error>(std::string("History not properly recorded")));
+                throw std::any(std::make_shared<Error>(std::string("History not properly recorded")));
             }
             auto roomId = createUniqueUuid(runtime, std::string("test-room"));
             auto message = object{
@@ -214,7 +214,7 @@ public:
             ); });
             history = shellService->getHistory();
             if (history->length != 0) {
-                throw any(std::make_shared<Error>(std::string("History was not cleared")));
+                throw std::any(std::make_shared<Error>(std::string("History was not cleared")));
             }
             console->log(std::string("✓ Shell history cleared successfully"));
         }

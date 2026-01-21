@@ -17,7 +17,7 @@ std::future<State> refreshStateAfterAction(IAgentRuntime runtime, Memory message
     // Preserve action results in state
     refreshedState.data.actionResults = actionResults;
 
-    // Merge any custom data from current state that shouldn't be lost
+    // Merge std::any custom data from current state that shouldn't be lost
     if (currentState.data.actionPlan) {
         refreshedState.data.actionPlan = currentState.data.actionPlan;
     }

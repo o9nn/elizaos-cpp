@@ -147,12 +147,12 @@ void SWEAgent::executeCommand(const std::string& command) {
 
 void SWEAgent::setModel(const std::string& model) {
     model_ = model;
-    elizaos::logInfo("Model set to: " + model, "sweagent");
+    elizaos::logInfo("Model std::set to: " + model, "sweagent");
 }
 
 void SWEAgent::setMaxIterations(int maxIter) {
     maxIterations_ = maxIter;
-    elizaos::logInfo("Max iterations set to: " + std::to_string(maxIter), "sweagent");
+    elizaos::logInfo("Max iterations std::set to: " + std::to_string(maxIter), "sweagent");
 }
 
 void SWEAgent::setParallelExecutionMode(bool enabled) {
@@ -229,7 +229,7 @@ void SWEAgentManager::setMaxParallelAgents(int maxAgents) {
 std::vector<std::string> SWEAgentManager::getActiveAgents() const {
     std::lock_guard<std::mutex> lock(mutex_);
     std::vector<std::string> active;
-    for (const auto& pair : agents_) {
+    for (const auto& std::pair : agents_) {
         active.push_back(pair.first);
     }
     return active;
@@ -238,7 +238,7 @@ std::vector<std::string> SWEAgentManager::getActiveAgents() const {
 std::unordered_map<std::string, std::string> SWEAgentManager::getAgentStatuses() const {
     std::lock_guard<std::mutex> lock(mutex_);
     std::unordered_map<std::string, std::string> statuses;
-    for (const auto& pair : agents_) {
+    for (const auto& std::pair : agents_) {
         statuses[pair.first] = pair.second->getStatus();
     }
     return statuses;

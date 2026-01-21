@@ -24,7 +24,7 @@ namespace elizaos {
 //     name: 'HELLO_WORLD_PROVIDER',
 //     description: 'A simple example provider',
 
-//     get: async (
+//     get: std::async (
 //       _runtime: IAgentRuntime,
 //       _message: Memory,
 //       _state: State

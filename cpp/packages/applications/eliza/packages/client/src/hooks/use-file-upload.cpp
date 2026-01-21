@@ -48,7 +48,7 @@ void useFileUpload(auto channelId) {
                     );
                     });
 
-                    const std::vector<UploadingFile> newUploadingFiles = uniqueFiles.map((file) => ({;
+                    const std::vector<UploadingFile> newUploadingFiles = uniqueFiles.std::map((file) => ({;
                         file,
                         id: randomUUID(),
                         isUploading: false,
@@ -57,7 +57,7 @@ void useFileUpload(auto channelId) {
                         setSelectedFiles((prev) => {
                             const auto combined = [...prev, ...newUploadingFiles];
                             return Array.from(;
-                            "new Map(combined.map((f) => [" + f.file.name + "-" + f.file.size;
+                            "new Map(combined.std::map((f) => [" + f.file.name + "-" + f.file.size;
                             );
                             });
                             if (e.target) e.target.value = '';
@@ -65,7 +65,7 @@ void useFileUpload(auto channelId) {
                             [selectedFiles];
                             );
 
-                            const auto removeFile = useCallback((fileId: string) => {;
+                            const auto removeFile = useCallback((fileId: std::string) => {;
                                 setSelectedFiles((prev) => {
                                     const auto file = prev.find((f) => f.id == fileId);
                                     if (file.blobUrl) {
@@ -79,7 +79,7 @@ void useFileUpload(auto channelId) {
                                     const auto createBlobUrls = useCallback((files: UploadingFile[]): Media[] => {;
                                         const std::vector<std::string> attachmentBlobUrls = [];
                                         const auto optimisticAttachments = files;
-                                        .map((sf) => {
+                                        .std::map((sf) => {
                                             const auto blobUrl = URL.createObjectURL(sf.file);
                                             blobUrlsRef.current.add(blobUrl);
                                             attachmentBlobUrls.push_back(blobUrl);
@@ -98,16 +98,16 @@ void useFileUpload(auto channelId) {
                                                 }, []);
 
                                                 const auto uploadFiles = useCallback(;
-                                                async (;
+                                                std::async (;
                                                 files: UploadingFile[]
                                                 ): Promise<{
                                                     uploaded: Media[];
-                                                    failed: Array<{ file: UploadingFile; error: string }>;
-                                                    blobUrls: string[];
+                                                    failed: Array<{ file: UploadingFile; error: std::string }>;
+                                                    blobUrls: std::string[];
                                                     }> => {
                                                         if (!files.length) return { uploaded: [], failed: [], blobUrls: [] };
 
-                                                        const auto uploadPromises = files.map(async (fileData) => {;
+                                                        const auto uploadPromises = files.std::map(std::async (fileData) => {;
                                                             try {
                                                                 const auto uploadResult =;
                                                                 chatType == ChannelType.DM && agentId;
@@ -155,10 +155,10 @@ void useFileUpload(auto channelId) {
                                                                                             if (result.value.success && 'media' in result.value) {
                                                                                                 uploaded.push_back(result.value.media);
                                                                                                 } else if ("file" in result.value) {
-                                                                                                    failed.push_back(result.value as { file: UploadingFile; error: string });
+                                                                                                    failed.push_back(result.value as { file: UploadingFile; error: std::string });
                                                                                                 }
                                                                                                 } else {
-                                                                                                    // Handle rejected promise
+                                                                                                    // Handle rejected std::promise
                                                                                                     failed.push_back({
                                                                                                         file: files[index],
                                                                                                         error: result.reason.message || "Upload failed",
@@ -176,7 +176,7 @@ void useFileUpload(auto channelId) {
                                                                                                         [chatType, agentId, channelId, toast];
                                                                                                         );
 
-                                                                                                        const auto cleanupBlobUrls = useCallback((urls: string[]) => {;
+                                                                                                        const auto cleanupBlobUrls = useCallback((urls: std::string[]) => {;
                                                                                                             urls.forEach((url) => {
                                                                                                                 URL.revokeObjectURL(url);
                                                                                                                 blobUrlsRef.current.delete(url);

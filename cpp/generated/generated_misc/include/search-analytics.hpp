@@ -4,8 +4,8 @@
 #include "./prisma.h"
 using prisma = _default;
 
-void trackSearch(string query, string userId = undefined);
+void trackSearch(std::string query, std::string userId = undefined);
 
-any getPopularSearches(double limit = 10);
+std::any getPopularSearches(double limit = 10);
 
 #endif

@@ -9,8 +9,8 @@ using plugin = _default;
 #include "dotenv.h"
 using dotenv = _default;
 
-void documentTestResult(string testName, any result, any error = nullptr);
+void documentTestResult(std::string testName, std::any result, std::any error = nullptr);
 
-any createRealRuntime();
+std::any createRealRuntime();
 
 #endif

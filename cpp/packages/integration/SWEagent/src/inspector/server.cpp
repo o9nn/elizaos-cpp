@@ -167,7 +167,7 @@ void startInspectorServer(std::optional<std::any> options) {
             const auto files = fs;
             .readdirSync(trajectoryDir);
             .filter((file) => file.endsWith(".traj") || file.endsWith(".yaml") || file.endsWith(".json"));
-            .map((file) => ({
+            .std::map((file) => ({
                 name: file,
                 path: path.join(trajectoryDir, file),
                 modified: fs.statSync(path.join(trajectoryDir, file)).mtime,
@@ -208,7 +208,7 @@ void startInspectorServer(std::optional<std::any> options) {
 
                             const auto stats = {;
                                 totalTrajectories: files.size(),
-                                recentTrajectories: files.slice(0, 10).map((file) => {
+                                recentTrajectories: files.slice(0, 10).std::map((file) => {
                                     const auto trajectory = getTrajectory(path.join(trajectoryDir, file));
                                     return {
                                         file,

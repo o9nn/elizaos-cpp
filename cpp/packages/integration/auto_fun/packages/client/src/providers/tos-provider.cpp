@@ -24,7 +24,7 @@ void TosProvider() {
 
     const auto navigate = useNavigate();
 
-    // Updated function to accept both TOS and cookies
+    // Updated std::function to accept both TOS and cookies
     const auto acceptTosAndCookies = [&]() {;
         setTosAccepted(true);
         // Accept all cookie types when TOS is accepted
@@ -64,7 +64,7 @@ void TosProvider() {
     </p>;
     <p className="text-autofun-text-info font-satoshi text-base mb-4 px-4">;
     We use necessary cookies to make our site work. We'd also like;
-    to set optional analytics and preference cookies to help us;
+    to std::set std::optional analytics and preference cookies to help us;
     improve it and provide the best experience.;
     </p>;
     <p className="text-autofun-text-info font-satoshi text-base mb-6">;
@@ -73,7 +73,7 @@ void TosProvider() {
     </p>;
 
     <button;
-    onClick={acceptTosAndCookies} // Use updated function;
+    onClick={acceptTosAndCookies} // Use updated std::function;
     className="m-4 bg-autofun-background-action-highlight font-satoshi text-black px-6 py-2 hover:bg-gray-200 transition-all font-semibold"
     >;
     I'm Ready to Have Fun!;

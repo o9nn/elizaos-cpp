@@ -15,7 +15,7 @@ namespace elizaos {
 
 
 class Analytics {
-  static async trackProjectView(projectId: string, userId?: string) {
+  static std::async trackProjectView(projectId: std::string, userId?: std::string) {
     await prisma.projectView.create({
       data: {
         projectId,

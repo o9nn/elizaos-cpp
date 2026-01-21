@@ -17,10 +17,10 @@ namespace elizaos {
 
 class SocketManager {
   private socket: Socket | null = null;
-  private userId: string | null = null;
+  private userId: std::string | null = null;
   private activeChannels: Set<string> = new Set();
 
-  connect(userId: string) {
+  connect(userId: std::string) {
     if (this.socket?.connected) {
       console.log('Socket already connected');
       return this.socket;

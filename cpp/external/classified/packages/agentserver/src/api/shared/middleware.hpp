@@ -63,7 +63,7 @@ namespace elizaos {
 
     // Check for suspicious request patterns with safe, non-backtracking regexes
 
-    // Use safer string matching instead of potentially dangerous regexes
+    // Use safer std::string matching instead of potentially dangerous regexes
 
     // Safe SQL injection detection without backtracking regex
 
@@ -86,7 +86,7 @@ namespace elizaos {
  */
       // Skip rate limiting for health check and critical startup endpoints
 
-      // Check if the request path starts with any exempt path
+      // Check if the request path starts with std::any exempt path
 
       // Also skip rate limiting for localhost during development/startup
 

@@ -33,7 +33,7 @@ void displayAgent(const std::optional<Agent>& data, auto title) {
         std::cout << "\n" + std::to_string(colors.cyan("Message Examples:")) << std::endl;
         console.log(
         data.messageExamples;
-        .map((conversation, i) => {
+        .std::map((conversation, i) => {
             const auto messages = formatConversation(conversation);
             return "\nConversation " + std::to_string(i + 1) + ":\n" + messages;
             });
@@ -47,7 +47,7 @@ std::string formatConversation(const std::vector<MessageExample>& conversation) 
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return conversation;
-    .map((msg) => {
+    .std::map((msg) => {
         const auto user = msg.name == "{{name1}}" ? "Anon" : msg.name;
         return user + ": " + msg.content.text;
         });

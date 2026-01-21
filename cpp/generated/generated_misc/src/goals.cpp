@@ -42,7 +42,7 @@ std::shared_ptr<Provider> goalsProvider = object{
 ");
             activeGoals->forEach([=](auto goal) mutable
             {
-                auto tags = (AND((goal->tags), (goal->tags->get_length() > 0))) ? any(std::string(" [") + goal->tags->join(std::string(", ")) + std::string("]")) : any(string_empty);
+                auto tags = (AND((goal->tags), (goal->tags->get_length() > 0))) ? std::any(std::string(" [") + goal->tags->join(std::string(", ")) + std::string("]")) : std::any(string_empty);
                 output += std::string("- ") + goal->name + string_empty + tags + string_empty;
                 if (goal->description) {
                     output += std::string(" - ") + goal->description + string_empty;
@@ -59,7 +59,7 @@ std::shared_ptr<Provider> goalsProvider = object{
 ");
             recentCompleted->forEach([=](auto goal) mutable
             {
-                auto completedDate = (goal->completedAt) ? any(((std::make_shared<Date>(goal->completedAt)))->toLocaleDateString()) : any(std::string("Unknown date"));
+                auto completedDate = (goal->completedAt) ? std::any(((std::make_shared<Date>(goal->completedAt)))->toLocaleDateString()) : std::any(std::string("Unknown date"));
                 output += std::string("- ") + goal->name + std::string(" (completed ") + completedDate + std::string(")\
 ");
             }
@@ -76,12 +76,12 @@ std::shared_ptr<Provider> goalsProvider = object{
         output += std::string("- Completed goals: ") + totalCompleted + std::string("\
 ");
         if (AND((activeGoals->get_length() == 0), (completedGoals->get_length() == 0))) {
-            output = std::string("No goals have been set yet. Consider creating some goals to track progress!");
+            output = std::string("No goals have been std::set yet. Consider creating some goals to track progress!");
         }
         return object{
             object::pair{std::string("text"), output->trim()}, 
             object::pair{std::string("data"), object{
-                object::pair{std::string("activeGoals"), activeGoals->map([=](auto g) mutable
+                object::pair{std::string("activeGoals"), activeGoals->std::map([=](auto g) mutable
                 {
                     return (object{
                         object::pair{std::string("id"), g->id}, 
@@ -90,7 +90,7 @@ std::shared_ptr<Provider> goalsProvider = object{
                     });
                 }
                 )}, 
-                object::pair{std::string("recentCompleted"), recentCompleted->map([=](auto g) mutable
+                object::pair{std::string("recentCompleted"), recentCompleted->std::map([=](auto g) mutable
                 {
                     return (object{
                         object::pair{std::string("id"), g->id}, 

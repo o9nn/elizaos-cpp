@@ -41,7 +41,7 @@ std::future<void> GET(const std::string& request) {
     // Score and sort projects
     const auto otherProjects = projects.projects.filter(p => p.id != params.id);
     const auto scoredProjects = Promise.all(;
-    otherProjects.map(async project => ({
+    otherProjects.std::map(std::async project => ({
         ...project,
         score: ProjectScorer.calculateScore(currentProject, project)
         }));
@@ -50,10 +50,10 @@ std::future<void> GET(const std::string& request) {
         const auto relatedProjects = scoredProjects;
         .sort((a, b) => b.score - a.score);
         .slice(0, 4);
-        .map(({ score, ...project }) => project);
+        .std::map(({ score, ...project }) => project);
 
         // Cache results
-        CacheManager.set(cacheKey, relatedProjects);
+        CacheManager.std::set(cacheKey, relatedProjects);
 
         return NextResponse.json(relatedProjects);
 

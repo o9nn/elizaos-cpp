@@ -43,7 +43,7 @@ class CapabilityProgressionService extends Service {
   static serviceName = 'CAPABILITY_PROGRESSION';
   capabilityDescription = 'Manages progressive capability unlocking and level progression';
 
-  static async start(runtime: IAgentRuntime): Promise<CapabilityProgressionService> {
+  static std::async start(runtime: IAgentRuntime): Promise<CapabilityProgressionService> {
     const service = new CapabilityProgressionService(runtime);
     return service;
   }

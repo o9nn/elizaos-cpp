@@ -19,7 +19,7 @@ class TradeChainService extends Service {
   private isRunning = false;
   private registry: Record<number, any> = {};
 
-  // config (key/string)
+  // config (key/std::string)
 
   /**
    * Registers a trading provider with the service.

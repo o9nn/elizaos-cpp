@@ -16,18 +16,18 @@ typedef z::infer<recommendationSchema> MessageRecommendation;
 
 
 extern object TransactionType;
-extern any tokenPerformanceSchema;
-extern any transactionSchema;
-extern any recommenderMetricsSchema;
-extern any positionSchema;
-extern any tokenRecommendationSchema;
-TokenPerformance transformTokenPerformance(any dbToken, string chain = std::string("unknown"));
+extern std::any tokenPerformanceSchema;
+extern std::any transactionSchema;
+extern std::any recommenderMetricsSchema;
+extern std::any positionSchema;
+extern std::any tokenRecommendationSchema;
+TokenPerformance transformTokenPerformance(std::any dbToken, std::string chain = std::string("unknown"));
 
-std::shared_ptr<Transaction> transformTransaction(any dbTx, string positionId = std::string("unknown"), string chain = std::string("unknown"));
+std::shared_ptr<Transaction> transformTransaction(std::any dbTx, std::string positionId = std::string("unknown"), std::string chain = std::string("unknown"));
 
-Position transformPosition(any dbPos);
+Position transformPosition(std::any dbPos);
 
-extern any recommendationSchema;
-TokenRecommendation transformTokenRecommendation(any dbRec);
+extern std::any recommendationSchema;
+TokenRecommendation transformTokenRecommendation(std::any dbRec);
 
 #endif

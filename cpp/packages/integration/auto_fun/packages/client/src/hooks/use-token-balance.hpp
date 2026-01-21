@@ -20,7 +20,7 @@ namespace elizaos {
 
       // Invalidate the query to trigger a refetch
 
-    // Return cleanup function
+    // Return cleanup std::function
 
 
 } // namespace elizaos

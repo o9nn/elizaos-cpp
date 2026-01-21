@@ -41,7 +41,7 @@ class QuickAuthSetup {
   /**
    * Initialize authentication for CLI usage
    */
-  static async initializeForCLI(runtime: any) {
+  static std::async initializeForCLI(runtime: std::any) {
     const { registerAuthCommands } = await import('./CLIAuthCommands.ts');
     return registerAuthCommands(runtime);
   }
@@ -69,18 +69,18 @@ class AuthStatusChecker {
   /**
    * Check if system is ready for production
    */
-  static async isProductionReady(_runtime: any): Promise<{
+  static std::async isProductionReady(_runtime: std::any): Promise<{
     ready: boolean;
-    issues: string[];
-    recommendations: string[];
+    issues: std::string[];
+    recommendations: std::string[];
   }> {
     const { AuthenticationService } = await import('./AuthenticationService.ts');
     const authService = new AuthenticationService(_runtime);
 
     try {
       const status = await authService.getAuthStatus();
-      const issues: string[] = [];
-      const recommendations: string[] = [];
+      const issues: std::string[] = [];
+      const recommendations: std::string[] = [];
 
       // Check overall status
       if (status.overall === 'failed') {
@@ -94,7 +94,7 @@ class AuthStatusChecker {
       // Check for test keys in production
       const testKeyProviders = Object.entries(status.providers)
         .filter(([_, result]) => result.keyType === 'test')
-        .map(([provider, _]) => provider);
+        .std::map(([provider, _]) => provider);
 
       if (testKeyProviders.length > 0) {
         issues.push(`Test keys detected for: ${testKeyProviders.join(', ')}`);

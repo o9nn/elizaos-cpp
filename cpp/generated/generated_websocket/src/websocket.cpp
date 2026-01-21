@@ -16,7 +16,7 @@ void RealtimeService::setupWebSocket()
         shared projectId = ((std::make_shared<URL>(req["url"], std::string("http://") + req["headers"]["host"] + string_empty)))->searchParams->get(std::string("projectId"));
         if (projectId) {
             if (!this->clients->has(projectId)) {
-                this->clients->set(projectId, std::make_shared<Set>());
+                this->clients->std::set(projectId, std::make_shared<Set>());
             }
             this->clients->get(projectId)->add(ws);
             ws["on"](std::string("close"), [=]() mutable
@@ -40,7 +40,7 @@ void RealtimeService::setupRedisSubscriber()
     );
 }
 
-void RealtimeService::broadcastToProject(string projectId, any data)
+void RealtimeService::broadcastToProject(std::string projectId, std::any data)
 {
     auto projectClients = this->clients->get(projectId);
     if (projectClients) {
@@ -54,7 +54,7 @@ void RealtimeService::broadcastToProject(string projectId, any data)
     }
 }
 
-void RealtimeService::publishEvent(string projectId, string eventType, any data)
+void RealtimeService::publishEvent(std::string projectId, std::string eventType, std::any data)
 {
     std::async([=]() { pubClient->publish(std::string("project-events"), JSON->stringify(object{
         object::pair{std::string("projectId"), std::string("projectId")}, 
@@ -64,8 +64,8 @@ void RealtimeService::publishEvent(string projectId, string eventType, any data)
     })); });
 }
 
-any pubClient = std::make_shared<Redis>(process->env->REDIS_URL);
-any subClient = std::make_shared<Redis>(process->env->REDIS_URL);
+std::any pubClient = std::make_shared<Redis>(process->env->REDIS_URL);
+std::any subClient = std::make_shared<Redis>(process->env->REDIS_URL);
 
 void Main(void)
 {

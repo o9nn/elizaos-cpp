@@ -7,12 +7,12 @@ object mockLogger = object{
     object::pair{std::string("warn"), mock()}, 
     object::pair{std::string("debug"), mock()}
 };
-any mockExeca = mock();
-any mockRunBunCommand = mock();
-any mockExistsSync = mock();
-any mockReadFileSync = mock();
-any mockRm = mock();
-any mockDetectDirectoryType = mock();
+std::any mockExeca = mock();
+std::any mockRunBunCommand = mock();
+std::any mockExistsSync = mock();
+std::any mockReadFileSync = mock();
+std::any mockRm = mock();
+std::any mockDetectDirectoryType = mock();
 
 void Main(void)
 {

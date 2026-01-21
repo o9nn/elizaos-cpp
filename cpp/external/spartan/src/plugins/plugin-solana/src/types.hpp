@@ -49,16 +49,16 @@ struct Item {
  * @property {string} ethereum.usd - Price of Ethereum in USD.
  */
 struct Prices {
-    { usd: string } solana;
+    { usd: std::string } solana;
 
 /**
  * Interface representing a wallet portfolio.
  * @typedef {Object} WalletPortfolio
  * @property {string} totalUsd - The total value in USD.
- * @property {string} [totalSol] - The total value in SOL (optional).
+ * @property {string} [totalSol] - The total value in SOL (std::optional).
  * @property {Array<Item>} items - An array of items in the wallet portfolio.
  * @property {Prices} [prices] - Optional prices of the items.
- * @property {number} [lastUpdated] - Timestamp of when the portfolio was last updated (optional).
+ * @property {number} [lastUpdated] - Timestamp of when the portfolio was last updated (std::optional).
  */
 struct WalletPortfolio {
     std::string totalUsd;

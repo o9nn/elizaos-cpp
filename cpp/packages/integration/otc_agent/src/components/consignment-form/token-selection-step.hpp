@@ -37,7 +37,7 @@ void setTokenCache(const std::string& walletAddress, const std::string& chain, c
 void clearTokenCache(std::optional<std::string> walletAddress, std::optional<std::string> chain);
 
 struct TokenSelectionProps {
-    { tokenId: string } formData;
+    { tokenId: std::string } formData;
 
 std::string formatBalance(const std::string& balance, double decimals);
 

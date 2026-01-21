@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/project-starter/src/__tests__/config.test.h"
 
-any initPlugin = plugin->init;
+std::any initPlugin = plugin->init;
 
 void Main(void)
 {
@@ -45,7 +45,7 @@ void Main(void)
                 {
                     std::async([=]() { initPlugin(validConfig, createMockRuntime()); });
                 }
-                catch (const any& e)
+                catch (const std::any& e)
                 {
                     error = as<std::shared_ptr<Error>>(e);
                 }
@@ -62,7 +62,7 @@ void Main(void)
                 {
                     std::async([=]() { initPlugin(emptyConfig, createMockRuntime()); });
                 }
-                catch (const any& e)
+                catch (const std::any& e)
                 {
                     error = as<std::shared_ptr<Error>>(e);
                 }
@@ -82,7 +82,7 @@ void Main(void)
                 {
                     std::async([=]() { initPlugin(configWithExtra, createMockRuntime()); });
                 }
-                catch (const any& e)
+                catch (const std::any& e)
                 {
                     error = as<std::shared_ptr<Error>>(e);
                 }
@@ -101,7 +101,7 @@ void Main(void)
                 {
                     std::async([=]() { initPlugin(invalidConfig, createMockRuntime()); });
                 }
-                catch (const any& e)
+                catch (const std::any& e)
                 {
                     error = as<std::shared_ptr<Error>>(e);
                 }
@@ -109,7 +109,7 @@ void Main(void)
             }
         }
         );
-        it(std::string("should set environment variables from valid config"), [=]() mutable
+        it(std::string("should std::set environment variables from valid config"), [=]() mutable
         {
             auto testConfig = object{
                 object::pair{std::string("EXAMPLE_PLUGIN_VARIABLE"), std::string("test-value")}
@@ -142,7 +142,7 @@ void Main(void)
                 object::pair{std::string("path"), array<string>{ std::string("EXAMPLE_PLUGIN_VARIABLE") }}
             } });
             auto schema = z->object(object{
-                object::pair{std::string("EXAMPLE_PLUGIN_VARIABLE"), z->string()->min(1)}
+                object::pair{std::string("EXAMPLE_PLUGIN_VARIABLE"), z->std::string()->min(1)}
             });
             auto originalParseAsync = schema->parseAsync;
             schema->parseAsync = mock()->mockRejectedValue(mockZodError);
@@ -151,7 +151,7 @@ void Main(void)
                 std::async([=]() { schema->parseAsync(object{}); });
                 expect(true)->toBe(false);
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 expect(error)->toBe(mockZodError);
             }
@@ -162,7 +162,7 @@ void Main(void)
         {
             auto genericError = std::make_shared<Error>(std::string("Something went wrong"));
             auto schema = z->object(object{
-                object::pair{std::string("EXAMPLE_PLUGIN_VARIABLE"), z->string()->min(1)}
+                object::pair{std::string("EXAMPLE_PLUGIN_VARIABLE"), z->std::string()->min(1)}
             });
             auto originalParseAsync = schema->parseAsync;
             schema->parseAsync = mock()->mockRejectedValue(genericError);
@@ -171,7 +171,7 @@ void Main(void)
                 std::async([=]() { schema->parseAsync(object{}); });
                 expect(true)->toBe(false);
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 expect(error)->toBe(genericError);
             }

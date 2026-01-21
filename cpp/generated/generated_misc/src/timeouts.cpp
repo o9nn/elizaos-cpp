@@ -10,8 +10,8 @@ double BRIDGE_MAX_POLL_ATTEMPTS = BRIDGE_CONFIRMATION_TIMEOUT / BRIDGE_POLL_INTE
 
 void Main(void)
 {
-    std::string("0x") + string + string_empty , operationType;
-    string = std::string("transaction") , timeout;
+    std::string("0x") + std::string + string_empty , operationType;
+    std::string = std::string("transaction") , timeout;
     number = TX_CONFIRMATION_TIMEOUT;
     Promise < Void() > object{
         object::pair{std::string("logger"), std::string("logger")}, 
@@ -24,7 +24,7 @@ void Main(void)
         object::pair{string_empty, ->status != std::string("success")}
     };
     {
-        throw any(std::make_shared<Error>(string_empty + (operationType->charAt(0)->toUpperCase() + operationType->slice(1)) + std::string(" transaction reverted on-chain. ") + std::string("The ") + operationType + std::string(" failed - likely due to insufficient balance, slippage, or price impact.")));
+        throw std::any(std::make_shared<Error>(string_empty + (operationType->charAt(0)->toUpperCase() + operationType->slice(1)) + std::string(" transaction reverted on-chain. ") + std::string("The ") + operationType + std::string(" failed - likely due to insufficient balance, slippage, or price impact.")));
     }
     logger->info(std::string("[Transaction Confirmation] ") + operationType + std::string(" confirmed successfully in block ") + receipt->blockNumber + string_empty);
 }

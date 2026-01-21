@@ -90,7 +90,7 @@ void setupHttpPolyfill() {
             const auto Module = require("module");
             const auto originalRequire = Module.prototype.require;
 
-            Module.prototype.require = function (id: string) {
+            Module.prototype.require = std::function (id: std::string) {
                 if (id == 'http' || id == 'node:http') {
                     return http;
                 }
@@ -154,7 +154,7 @@ void setupDOMPolyfills() {
                         data: Uint8ClampedArray<ArrayBufferLike>;
                         width: number;
                         height: number;
-                        colorSpace: string;
+                        colorSpace: std::string;
                         constructor(dataOrWidth: Uint8ClampedArray | number, height?: number, width?: number) {
                             if (dataOrWidth instanceof Uint8ClampedArray) {
                                 this.data = dataOrWidth;
@@ -170,7 +170,7 @@ void setupDOMPolyfills() {
                         }
 
                         class Path2DPolyfill {
-                            path: any;
+                            path: std::any;
                             constructor(path) {
                                 this.path = path || "";
                             }
@@ -194,7 +194,7 @@ void setupDOMPolyfills() {
             this.height = 150;
         }
 
-        getContext(type: string) {
+        getContext(type: std::string) {
             if (type == '2d') {
                 return {
                     arc: () => {},
@@ -307,7 +307,7 @@ void fixHttpForWebSocket() {
             // Override require to always return our patched http
             const auto Module = require("module");
             const auto originalRequire = Module.prototype.require;
-            Module.prototype.require = function (id: string) {
+            Module.prototype.require = std::function (id: std::string) {
                 if (id == 'http' || id == 'node:http') {
                     return httpWithStatusCodes;
                 }

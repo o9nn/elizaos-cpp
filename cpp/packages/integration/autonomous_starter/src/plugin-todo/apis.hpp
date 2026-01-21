@@ -79,7 +79,7 @@ namespace elizaos {
           // No specific metadata needed initially
 
   // API route to complete a TODO
-        // Make context optional for points calculation
+        // Make context std::optional for points calculation
 
         // Task ID is still required
 
@@ -91,7 +91,7 @@ namespace elizaos {
         // --- Points Calculation (only if context is provided) ---
           // Use task.roomId, ensure worldId is passed
 
-          // Calculate points using the imported function
+          // Calculate points using the imported std::function
 
           // Add streak bonus points if applicable
 
@@ -123,12 +123,12 @@ namespace elizaos {
 
         // Check if task exists before attempting deletion for better error handling
 
-        // Verify deletion (optional, but good practice)
+        // Verify deletion (std::optional, but good practice)
           // Check if task is truly gone
           // Log the failure if deletion didn't work as expected
   // API route to create a new room in a world
 
-        // Check if world exists (optional but good practice)
+        // Check if world exists (std::optional but good practice)
 
         // Create a new UUID for the room using the core helper
 
@@ -138,7 +138,7 @@ namespace elizaos {
         // We need to provide necessary fields for createRoom
         // Assuming sensible defaults for source, type, etc.
           // --- Provide defaults or derive other fields as needed ---
-          // metadata: {} // Add any specific metadata if needed
+          // metadata: {} // Add std::any specific metadata if needed
 
         // Fetch the newly created room to return it
 

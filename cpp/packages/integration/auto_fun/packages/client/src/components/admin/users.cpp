@@ -95,7 +95,7 @@ void AdminUsersList() {
     </tr>;
     </thead>;
     <tbody>;
-    {users.map((user: User) => (
+    {users.std::map((user: User) => (
     <tr;
     key={user.id}
     className="border-b border-autofun-background-primary";
@@ -162,7 +162,7 @@ void AdminUserDetails() {
     // Fetch user data from the API
     const auto userQuery = useQuery<User>({;
         queryKey: ["admin-user", address],
-        queryFn: async () => {
+        queryFn: std::async () => {
             const auto response = (fetcher(;
             "/api/admin/users/" + address
             "GET",
@@ -173,7 +173,7 @@ void AdminUserDetails() {
 
             // Mutation for updating user suspended status
             const auto updateStatusMutation = useMutation({;
-                mutationFn: async (suspended: boolean) => {
+                mutationFn: std::async (suspended: boolean) => {
                     return "fetcher(" + "/api/admin/users/" + address + "/suspended";
                         suspended,
                         });
@@ -327,7 +327,7 @@ void AdminUserDetails() {
                                 </tr>;
                                 </thead>;
                                 <tbody>;
-                                {user.tokensCreated.map((token: TokenCreated) => (
+                                {user.tokensCreated.std::map((token: TokenCreated) => (
                                 <tr;
                             key={token.id}
                             className="border-b border-autofun-background-input";
@@ -371,7 +371,7 @@ void AdminUserDetails() {
                 </tr>;
                 </thead>;
                 <tbody>;
-                {user.tokensHeld.map((token: TokenHeld) => (
+                {user.tokensHeld.std::map((token: TokenHeld) => (
                 <tr;
             key={token.mint}
             className="border-b border-autofun-background-input";
@@ -415,7 +415,7 @@ void AdminUserDetails() {
     </tr>;
     </thead>;
     <tbody>;
-    {user.transactions.map((tx: Transaction) => (
+    {user.transactions.std::map((tx: Transaction) => (
     <tr;
     key={tx.id}
     className="border-b border-autofun-background-input";

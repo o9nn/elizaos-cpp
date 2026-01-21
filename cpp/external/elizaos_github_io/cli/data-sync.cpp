@@ -41,7 +41,7 @@ void getDirSize(const std::string& dir) {
 
 void getDetailedDirInfo(const std::string& baseDir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    path: string; files: number; size: number
+    path: std::string; files: number; size: number
 }
 
 double getFileSize(const std::string& filePath) {
@@ -154,7 +154,7 @@ double deleteDataFiles(const std::string& directory, ReturnType<typeof createLog
 
 }
 
-Map<string, createDirInfoMap(const std::vector<std::any>& infoArray) {
+Map<std::string, createDirInfoMap(const std::vector<std::any>& infoArray) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     files: number; size: number
 }

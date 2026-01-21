@@ -8,11 +8,11 @@
 #include "./trader.h"
 #include "./wallet.h"
 
-typedef any BirdeyeApiParams;
+typedef std::any BirdeyeApiParams;
 
 typedef BirdeyeApiResponseWrapper<any> BirdeyeApiResponse;
 
-typedef any TimeInterval;
+typedef std::any TimeInterval;
 
 template <typename T>
 class BirdeyeApiResponseWrapper;
@@ -30,7 +30,7 @@ public:
 class TokenTradeData : public object, public std::enable_shared_from_this<TokenTradeData> {
 public:
     using std::enable_shared_from_this<TokenTradeData>::shared_from_this;
-    string address;
+    std::string address;
 
     double holder;
 
@@ -38,7 +38,7 @@ public:
 
     double last_trade_unix_time;
 
-    string last_trade_human_time;
+    std::string last_trade_human_time;
 
     double price;
 
@@ -78,37 +78,37 @@ public:
 
     double unique_wallet_history_30m;
 
-    any unique_wallet_30m_change_percent;
+    std::any unique_wallet_30m_change_percent;
 
     double unique_wallet_1h;
 
     double unique_wallet_history_1h;
 
-    any unique_wallet_1h_change_percent;
+    std::any unique_wallet_1h_change_percent;
 
     double unique_wallet_2h;
 
     double unique_wallet_history_2h;
 
-    any unique_wallet_2h_change_percent;
+    std::any unique_wallet_2h_change_percent;
 
     double unique_wallet_4h;
 
     double unique_wallet_history_4h;
 
-    any unique_wallet_4h_change_percent;
+    std::any unique_wallet_4h_change_percent;
 
     double unique_wallet_8h;
 
     double unique_wallet_history_8h;
 
-    any unique_wallet_8h_change_percent;
+    std::any unique_wallet_8h_change_percent;
 
     double unique_wallet_24h;
 
     double unique_wallet_history_24h;
 
-    any unique_wallet_24h_change_percent;
+    std::any unique_wallet_24h_change_percent;
 
     double trade_30m;
 

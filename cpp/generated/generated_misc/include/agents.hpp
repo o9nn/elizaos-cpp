@@ -19,7 +19,7 @@ public:
     virtual std::shared_ptr<Promise<object>> stopAgent(std::shared_ptr<UUID> agentId);
     virtual std::shared_ptr<Promise<object>> getWorlds();
     virtual std::shared_ptr<Promise<object>> addAgentToWorld(std::shared_ptr<UUID> agentId, std::shared_ptr<UUID> worldId);
-    virtual std::shared_ptr<Promise<std::shared_ptr<AgentWorldSettings>>> updateAgentWorldSettings(std::shared_ptr<UUID> agentId, std::shared_ptr<UUID> worldId, Record<string, any> settings);
+    virtual std::shared_ptr<Promise<std::shared_ptr<AgentWorldSettings>>> updateAgentWorldSettings(std::shared_ptr<UUID> agentId, std::shared_ptr<UUID> worldId, Record<std::string, any> settings);
     virtual std::shared_ptr<Promise<object>> getAgentPanels(std::shared_ptr<UUID> agentId);
     virtual std::shared_ptr<Promise<array<std::shared_ptr<AgentLog>>>> getAgentLogs(std::shared_ptr<UUID> agentId, std::shared_ptr<AgentLogsParams> params = undefined);
     virtual std::shared_ptr<Promise<object>> deleteAgentLog(std::shared_ptr<UUID> agentId, std::shared_ptr<UUID> logId);

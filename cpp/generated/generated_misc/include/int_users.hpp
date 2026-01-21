@@ -3,6 +3,6 @@
 #include "core.h"
 #include "@elizaos/core.h"
 
-void interface_list_users(any runtime);
+void interface_list_users(std::any runtime);
 
 #endif

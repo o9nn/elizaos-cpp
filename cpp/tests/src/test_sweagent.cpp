@@ -148,9 +148,9 @@ TEST_F(SWEAgentTest, GenerateCode) {
     CodeContext context;
     context.language = "cpp";
 
-    std::string code = agent_->generateCode("Create a function to validate email addresses", context);
+    std::string code = agent_->generateCode("Create a std::function to validate email addresses", context);
 
-    // May return empty string if no model connected
+    // May return empty std::string if no model connected
     EXPECT_TRUE(true);
 }
 

@@ -8,21 +8,21 @@ class LocalEnvironmentUpdateParams;
 class SystemEnvironment : public object, public std::enable_shared_from_this<SystemEnvironment> {
 public:
     using std::enable_shared_from_this<SystemEnvironment>::shared_from_this;
-    string nodeVersion;
+    std::string nodeVersion;
 
-    string platform;
+    std::string platform;
 
-    any environment;
+    std::any environment;
 
     object features;
 
-    Record<string, any> configuration;
+    Record<std::string, any> configuration;
 };
 
 class LocalEnvironmentUpdateParams : public object, public std::enable_shared_from_this<LocalEnvironmentUpdateParams> {
 public:
     using std::enable_shared_from_this<LocalEnvironmentUpdateParams>::shared_from_this;
-    Record<string, string> variables;
+    Record<std::string, string> variables;
 
     boolean merge;
 };

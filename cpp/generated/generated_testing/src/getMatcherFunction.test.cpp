@@ -7,7 +7,7 @@ std::function<std::shared_ptr<MatcherFunction>(std::shared_ptr<TagPattern>)> moc
 {
     createMatcherCallCount++;
     if (shouldThrowError) {
-        throw any(std::make_shared<Error>(std::string("Simulated matcher creation error")));
+        throw std::any(std::make_shared<Error>(std::string("Simulated matcher creation error")));
     }
     return originalCreateMatcher(tagPattern);
 };

@@ -26,12 +26,12 @@ bool isGithubIssueUrl(const std::string& dataPath) {
 
 void parseGhIssueUrl(const std::string& issueUrl) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    owner: string; repo: string; issueNumber: string
+    owner: std::string; repo: std::string; issueNumber: std::string
 }
 
 void parseGhRepoUrl(const std::string& repoUrl) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    owner: string; repo: string
+    owner: std::string; repo: std::string
 }
 
 std::future<std::any> getGhIssueData(const std::string& issueUrl, std::string token = "") {

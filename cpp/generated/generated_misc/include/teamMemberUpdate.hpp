@@ -16,9 +16,9 @@ public:
 class ReportChannelConfig : public object, public std::enable_shared_from_this<ReportChannelConfig> {
 public:
     using std::enable_shared_from_this<ReportChannelConfig>::shared_from_this;
-    string serverId;
+    std::string serverId;
 
-    string channelId;
+    std::string channelId;
 };
 
 std::shared_ptr<Promise<boolean>> postUpdateToDiscordChannel(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<TeamMemberUpdate> update);

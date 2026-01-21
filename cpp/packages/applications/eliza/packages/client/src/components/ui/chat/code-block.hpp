@@ -20,7 +20,7 @@ struct CodeBlockCodeProps {
     std::string code;
     std::optional<std::string> language;
     std::optional<std::string> className;
-    std::optional<std::string> variant;
+    std::optional<std::string> std::variant;
 };
 
 

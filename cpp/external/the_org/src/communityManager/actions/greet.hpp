@@ -22,7 +22,7 @@ namespace elizaos {
  * Action to greet new users in the configured channel
  * @typedef {Object} Action
  * @property {string} name - The name of the action
- * @property {string[]} similes - Array of similar actions
+ * @property {std::string[]} similes - Array of similar actions
  * @property {string} description - Description of the action
  * @property {Function} validate - Function to validate the action
  * @property {Function} handler - Function to handle the action

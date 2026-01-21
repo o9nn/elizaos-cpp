@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/server/src/upload.h"
 
-string generateSecureFilename(string originalName)
+std::string generateSecureFilename(std::string originalName)
 {
     auto uniqueSuffix = string_empty + Date->now() + std::string("-") + Math->round(Math->random() * 1000000000) + string_empty;
     auto sanitizedName = sanitizeFilename(originalName);
@@ -20,8 +20,8 @@ boolean validateMediaFile(std::shared_ptr<Express::Multer::File> file)
 };
 
 
-any storage = multer->memoryStorage();
-std::function<any()> agentAudioUpload = [=]() mutable
+std::any storage = multer->memoryStorage();
+std::function<std::any()> agentAudioUpload = [=]() mutable
 {
     return multer(object{
         object::pair{std::string("storage"), std::string("storage")}, 
@@ -40,7 +40,7 @@ std::function<any()> agentAudioUpload = [=]() mutable
         }
     });
 };
-std::function<any()> agentMediaUpload = [=]() mutable
+std::function<std::any()> agentMediaUpload = [=]() mutable
 {
     return multer(object{
         object::pair{std::string("storage"), std::string("storage")}, 
@@ -59,7 +59,7 @@ std::function<any()> agentMediaUpload = [=]() mutable
         }
     });
 };
-std::function<any()> channelUpload = [=]() mutable
+std::function<std::any()> channelUpload = [=]() mutable
 {
     return multer(object{
         object::pair{std::string("storage"), std::string("storage")}, 
@@ -78,7 +78,7 @@ std::function<any()> channelUpload = [=]() mutable
         }
     });
 };
-std::function<any()> genericUpload = [=]() mutable
+std::function<std::any()> genericUpload = [=]() mutable
 {
     return multer(object{
         object::pair{std::string("storage"), std::string("storage")}, 
@@ -88,7 +88,7 @@ std::function<any()> genericUpload = [=]() mutable
         }}
     });
 };
-std::function<any()> upload = genericUpload;
+std::function<std::any()> upload = genericUpload;
 
 void Main(void)
 {

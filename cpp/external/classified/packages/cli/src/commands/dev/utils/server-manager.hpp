@@ -115,7 +115,7 @@ std::optional<Subprocess> getCurrentProcess();
 // Export functional interface for backwards compatibility
 
 /**
- * Create a new server manager instance (factory function)
+ * Create a new server manager instance (factory std::function)
  * @deprecated Use createServerManager() instead
  */
 ServerProcess DevServerManager();

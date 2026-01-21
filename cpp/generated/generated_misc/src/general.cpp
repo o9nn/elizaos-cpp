@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/rules/general.h"
 
-object validateAgainstRules(string code, std::shared_ptr<CodingGuidelines> guidelines)
+object validateAgainstRules(std::string code, std::shared_ptr<CodingGuidelines> guidelines)
 {
     auto violations = array<string>();
     if (guidelines->language == std::string("python")) {
@@ -12,8 +12,8 @@ object validateAgainstRules(string code, std::shared_ptr<CodingGuidelines> guide
         }
     }
     if (guidelines->language == std::string("typescript")) {
-        if (code->match((new RegExp(std::string(":\s*any(?:\s|$|,|\)"))))) {
-            violations->push(std::string("Avoid using any type, use explicit types instead"));
+        if (code->match((new RegExp(std::string(":\s*std::any(?:\s|$|,|\)"))))) {
+            violations->push(std::string("Avoid using std::any type, use explicit types instead"));
         }
     }
     return object{
@@ -63,7 +63,7 @@ array<std::shared_ptr<CodingRule>> TYPESCRIPT_CODING_RULES = array<std::shared_p
 }, object{
     object::pair{std::string("id"), std::string("explicit-types")}, 
     object::pair{std::string("category"), std::string("style")}, 
-    object::pair{std::string("rule"), std::string("Use explicit type annotations for function parameters and return types")}, 
+    object::pair{std::string("rule"), std::string("Use explicit type annotations for std::function parameters and return types")}, 
     object::pair{std::string("enforcement"), std::string("required")}
 }, object{
     object::pair{std::string("id"), std::string("node-fs-promises")}, 

@@ -24,12 +24,12 @@ struct UniqueWallet {
 };
 
 class CSVService {
-  private csvPath: string;
+  private csvPath: std::string;
   private walletEntries: WalletEntry[] = [];
   private uniqueWallets: UniqueWallet[] = [];
   private isLoaded: boolean = false;
 
-  constructor(csvFileName: string = "wallets.csv") {
+  constructor(csvFileName: std::string = "wallets.csv") {
     this.csvPath = path.join(process.cwd(), "data", csvFileName);
   }
 

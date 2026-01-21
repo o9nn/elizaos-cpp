@@ -71,7 +71,7 @@ std::future<std::variant<std::vector<uint8_t>, AudioProcessingResult>> convertTo
                         // Handle Node Readable Stream
                         resultBuffer = new Promise<Buffer>((resolve, reject) => {
                             const std::vector<std::vector<uint8_t>> chunks = [];
-                            speechResponse.on("data", (chunk: any) =>
+                            speechResponse.on("data", (chunk: std::any) =>
                             chunks.push_back(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk))
                             );
                             speechResponse.on("end", () => resolve(Buffer.concat(chunks)));

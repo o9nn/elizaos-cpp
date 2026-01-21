@@ -1,11 +1,11 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/environment/hooks/status.h"
 
-SetStatusEnvironmentHook::SetStatusEnvironmentHook(string id, StatusCallback callable) : EnvHook() {
+SetStatusEnvironmentHook::SetStatusEnvironmentHook(std::string id, StatusCallback callable) : EnvHook() {
     this->id = id;
     this->callable = callable;
 }
 
-void SetStatusEnvironmentHook::update(string message)
+void SetStatusEnvironmentHook::update(std::string message)
 {
     this->callable(this->id, message);
 }

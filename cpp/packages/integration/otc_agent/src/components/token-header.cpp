@@ -17,7 +17,7 @@ void TokenHeader() {
         return "$" + std::to_string(mc.toFixed(2));
         };
 
-        const auto formatAddress = [&](address: string) {;
+        const auto formatAddress = [&](address: std::string) {;
             if (!address) return "";
             return std::to_string(address.slice(0, 6)) + "..." + std::to_string(address.slice(-4));
             };

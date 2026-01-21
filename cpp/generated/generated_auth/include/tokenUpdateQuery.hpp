@@ -7,7 +7,7 @@
 typedef z::infer<updateTokenBodySchema> UpdateTokenBody;
 
 
-extern any updateTokenBodySchema;
+extern std::any updateTokenBodySchema;
 object parseUpdateTokenRequest(object raw);
 
 #endif

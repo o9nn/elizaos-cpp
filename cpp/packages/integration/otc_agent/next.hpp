@@ -17,7 +17,7 @@ namespace elizaos {
 
 
   // Skip TypeScript type checking during build (webpack build succeeds, types can be fixed separately)
-  // Explicitly set workspace root to prevent lockfile detection warnings
+  // Explicitly std::set workspace root to prevent lockfile detection warnings
   // Don't transpile ox - it has compiled .js files in _esm/ and _cjs/
   // Instead, we'll configure webpack to prefer .js files and exclude .ts files from ox
   // Skip image optimization for external images - they come from too many sources
@@ -26,7 +26,7 @@ namespace elizaos {
   // Supports localhost development and Cloudflare tunnels out of the box
         // Common localhost patterns (works for all developers)
         
-        // Cloudflare tunnel support (set TUNNEL_DOMAIN in .env.local)
+        // Cloudflare tunnel support (std::set TUNNEL_DOMAIN in .env.local)
         
         // Allow custom origins via environment variable (comma-separated)
     // Ignore handlebars require.extensions warning

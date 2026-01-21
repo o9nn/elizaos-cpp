@@ -4,7 +4,7 @@ std::shared_ptr<Promise<std::shared_ptr<TaskCompletion>>> extractTaskCompletion(
 {
     try
     {
-        auto tasksText = availableTasks->map([=](auto task) mutable
+        auto tasksText = availableTasks->std::map([=](auto task) mutable
         {
             return std::string("ID: ") + task->id + std::string("\
 Name: ") + task->name + std::string("\
@@ -41,13 +41,13 @@ Tags: ") + (OR((task->tags->join(std::string(", "))), (std::string("none")))) + 
             };
         }
         auto finalResult = object{
-            object::pair{std::string("taskId"), (parsedResult->taskId == std::string("null")) ? any(string_empty) : any(String(OR((parsedResult->taskId), (string_empty))))}, 
-            object::pair{std::string("taskName"), (parsedResult->taskName == std::string("null")) ? any(string_empty) : any(String(OR((parsedResult->taskName), (string_empty))))}, 
+            object::pair{std::string("taskId"), (parsedResult->taskId == std::string("null")) ? std::any(string_empty) : std::any(String(OR((parsedResult->taskId), (string_empty))))}, 
+            object::pair{std::string("taskName"), (parsedResult->taskName == std::string("null")) ? std::any(string_empty) : std::any(String(OR((parsedResult->taskName), (string_empty))))}, 
             object::pair{std::string("isFound"), String(parsedResult->isFound) == std::string("true")}
         };
         return finalResult;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Error extracting task completion information:"), error);
         return object{
@@ -59,7 +59,7 @@ Tags: ") + (OR((task->tags->join(std::string(", "))), (std::string("none")))) + 
 };
 
 
-string extractCompletionTemplate = std::string("\
+std::string extractCompletionTemplate = std::string("\
 # Task: Extract Task Completion Information\
 \
 ## User Message\
@@ -138,7 +138,7 @@ std::shared_ptr<Action> completeTodoAction = object{
             if (availableTasks->get_length() == 0) {
                 if (callback) {
                     std::async([=]() { callback(object{
-                        object::pair{std::string("text"), std::string("You don't have any incomplete tasks to mark as done. Would you like to create a new task?")}, 
+                        object::pair{std::string("text"), std::string("You don't have std::any incomplete tasks to mark as done. Would you like to create a new task?")}, 
                         object::pair{std::string("actions"), array<string>{ std::string("COMPLETE_TODO_NO_TASKS") }}, 
                         object::pair{std::string("source"), message->content->source}
                     }); });
@@ -155,17 +155,17 @@ std::shared_ptr<Action> completeTodoAction = object{
                     }}
                 };
             }
-            shared taskCompletion = (options["taskId"]) ? any(object{
+            shared taskCompletion = (options["taskId"]) ? std::any(object{
                 object::pair{std::string("taskId"), options["taskId"]}, 
                 object::pair{std::string("taskName"), options["taskName"]}, 
                 object::pair{std::string("isFound"), true}
-            }) : any(std::async([=]() { extractTaskCompletion(runtime, message, availableTasks, state); }));
+            }) : std::any(std::async([=]() { extractTaskCompletion(runtime, message, availableTasks, state); }));
             if (!taskCompletion["isFound"]) {
                 if (callback) {
                     std::async([=]() { callback(object{
                         object::pair{std::string("text"), std::string("I couldn't determine which task you're marking as completed. Could you be more specific? Here are your current tasks:\
 \
-") + availableTasks->map([=](auto task) mutable
+") + availableTasks->std::map([=](auto task) mutable
                         {
                             return std::string("- ") + task->name + string_empty;
                         }
@@ -224,7 +224,7 @@ std::shared_ptr<Action> completeTodoAction = object{
             if (task->type == std::string("daily")) {
                 responseText = std::string("✅ Daily task completed: "") + task->name + std::string(""");
             } else if (task->type == std::string("one-off")) {
-                auto completedOnTime = (task->dueDate) ? any(std::make_shared<Date>() <= task->dueDate) : any(true);
+                auto completedOnTime = (task->dueDate) ? std::any(std::make_shared<Date>() <= task->dueDate) : std::any(true);
                 auto timeStatus = (completedOnTime) ? std::string("on time") : std::string("late");
                 auto priority = OR((task->priority), (4));
                 responseText = std::string("✅ Task completed: "") + task->name + std::string("" (Priority ") + priority + std::string(", ") + timeStatus + std::string(")");
@@ -259,7 +259,7 @@ This is a significant accomplishment.");
                 }}
             };
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("Error in completeTodo handler:"), error);
             if (callback) {
@@ -273,7 +273,7 @@ This is a significant accomplishment.");
                 object::pair{std::string("success"), false}, 
                 object::pair{std::string("data"), object{
                     object::pair{std::string("actionName"), std::string("COMPLETE_TODO")}, 
-                    object::pair{std::string("error"), (is<Error>(error)) ? any(error->message) : any(std::string("Unknown error"))}
+                    object::pair{std::string("error"), (is<Error>(error)) ? std::any(error->message) : std::any(std::string("Unknown error"))}
                 }}, 
                 object::pair{std::string("values"), object{
                     object::pair{std::string("success"), false}

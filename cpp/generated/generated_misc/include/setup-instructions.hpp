@@ -8,12 +8,12 @@ using path = _default;
 
 std::shared_ptr<PlatformInstructions> getBunInstallInstructions();
 
-void displayBasicSteps(string cdPath);
+void displayBasicSteps(std::string cdPath);
 
 void displayPrerequisites();
 
 void displayBunInstructions();
 
-void displayNextSteps(string targetDir);
+void displayNextSteps(std::string targetDir);
 
 #endif

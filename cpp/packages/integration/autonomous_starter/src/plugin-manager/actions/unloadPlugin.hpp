@@ -18,10 +18,10 @@ namespace elizaos {
 
 
 
-    // Check if there are any plugins that can be unloaded
+    // Check if there are std::any plugins that can be unloaded
 
-    // We can't unload original plugins, so check if there are any non-original loaded plugins
-    // For now, we'll assume any plugin can potentially be unloaded (the service will check)
+    // We can't unload original plugins, so check if there are std::any non-original loaded plugins
+    // For now, we'll assume std::any plugin can potentially be unloaded (the service will check)
 
       // Extract plugin name from message
 

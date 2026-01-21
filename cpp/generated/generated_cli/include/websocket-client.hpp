@@ -9,12 +9,12 @@ class WebSocketClient : public object, public std::enable_shared_from_this<WebSo
 public:
     using std::enable_shared_from_this<WebSocketClient>::shared_from_this;
     WebSocketClient();
-    virtual std::shared_ptr<Promise<void>> emit(string room, string event, any data);
-    virtual std::shared_ptr<Promise<void>> emitToClient(string clientId, string event, any data);
-    virtual any to(string room);
+    virtual std::shared_ptr<Promise<void>> emit(std::string room, std::string event, std::any data);
+    virtual std::shared_ptr<Promise<void>> emitToClient(std::string clientId, std::string event, std::any data);
+    virtual std::any to(std::string room);
 };
 
-extern any wsClient;
+extern std::any wsClient;
 std::shared_ptr<WebSocketClient> getWebSocketClient();
 
 #endif

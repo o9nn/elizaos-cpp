@@ -25,7 +25,7 @@ void logUploadedFile(const std::string& objectKey, const std::string& publicUrl)
 
 void getUploadedFiles() {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    [key: string]: string
+    [key: std::string]: std::string
 }
 
 std::future<void> uploadWithS3(std::any options = {}) {
@@ -43,7 +43,7 @@ std::future<void> uploadWithS3(std::any options = {}) {
         // If filename is provided, use it to create a more meaningful object key
         auto objectKeySuffix = randomId; // Default suffix if no filename;
         if (options.filename) {
-            // Sanitize filename - remove any potentially problematic characters
+            // Sanitize filename - remove std::any potentially problematic characters
             const auto sanitizedFilename = options.filename.replace(/[^a-zA-Z0-9._-]/g, "_");
             // Create a suffix that includes both the UUID (for uniqueness) and the filename (for identification)
             "objectKeySuffix = " + randomId + "-" + sanitizedFilename;
@@ -66,7 +66,7 @@ std::future<void> uploadWithS3(std::any options = {}) {
             // Prepare data for upload (needs to be Buffer or stream for S3)
             auto objectData: Buffer | Uint8Array;
             if (options.isJson && !(data instanceof Buffer) && !(data instanceof Uint8Array)) {
-                // If JSON flag is set and data is not already binary, stringify
+                // If JSON flag is std::set and data is not already binary, stringify
                 const auto jsonString = /* JSON.stringify */ std::string(data);
                 objectData = Buffer.from(jsonString, "utf8");
                 } else if (true /* instanceof ArrayBuffer check */) {
@@ -98,7 +98,7 @@ std::future<void> uploadWithS3(std::any options = {}) {
                                 Metadata: { // Pass custom metadata here if needed
                                 publicAccess: "true", // Example custom metadata
                                 originalFilename: options.filename || "",
-                                ...(options.metadata || {}) // Include any other custom metadata;
+                                ...(options.metadata || {}) // Include std::any other custom metadata;
                                 },
                                 });
 
@@ -158,7 +158,7 @@ std::future<void> uploadGeneratedImage(double generationNumber, std::any options
                     // Use the shared S3 client getter
                     const auto { client: s3Client, bucketName, publicBaseUrl } = getS3Client();
 
-                    // Use the uploadWithS3 function for consistency, passing cache control
+                    // Use the uploadWithS3 std::function for consistency, passing cache control
                     const auto publicUrl = uploadWithS3(;
                     data, // Pass the image data directly;
                     {

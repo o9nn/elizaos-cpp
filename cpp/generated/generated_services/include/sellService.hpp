@@ -32,9 +32,9 @@ public:
     SellService(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<WalletService> walletService, std::shared_ptr<DataService> dataService, std::shared_ptr<AnalyticsService> analyticsService, std::shared_ptr<TradeMemoryService> tradeMemoryService);
     virtual std::shared_ptr<Promise<void>> initialize();
     virtual std::shared_ptr<Promise<void>> stop();
-    virtual std::shared_ptr<Promise<void>> handleSellSignal(any params);
-    virtual std::shared_ptr<Promise<void>> updateExpectedOutAmount(any signal);
-    virtual std::shared_ptr<Promise<object>> executeSell(any signal);
+    virtual std::shared_ptr<Promise<void>> handleSellSignal(std::any params);
+    virtual std::shared_ptr<Promise<void>> updateExpectedOutAmount(std::any signal);
+    virtual std::shared_ptr<Promise<object>> executeSell(std::any signal);
     SellService(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<WalletService> walletService, std::shared_ptr<DataService> dataService, std::shared_ptr<AnalyticsService> analyticsService);
 };
 

@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-defillama/src/utils/action-helpers.h"
 
-any sanitizeChainName(any value)
+std::any sanitizeChainName(std::any value)
 {
     if (!value) {
         return undefined;
@@ -9,11 +9,11 @@ any sanitizeChainName(any value)
     if (!trimmed) {
         return undefined;
     }
-    return (CHAIN_NAME_PATTERN->test(trimmed)) ? any(trimmed) : any(undefined);
+    return (CHAIN_NAME_PATTERN->test(trimmed)) ? std::any(trimmed) : std::any(undefined);
 };
 
 
-any sanitizeFilterSegment(any value)
+std::any sanitizeFilterSegment(std::any value)
 {
     if (!value) {
         return undefined;
@@ -22,7 +22,7 @@ any sanitizeFilterSegment(any value)
     if (!trimmed) {
         return undefined;
     }
-    return (FILTER_PATTERN->test(trimmed)) ? any(trimmed) : any(undefined);
+    return (FILTER_PATTERN->test(trimmed)) ? std::any(trimmed) : std::any(undefined);
 };
 
 

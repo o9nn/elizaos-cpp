@@ -26,7 +26,7 @@ namespace elizaos {
  // For handling multipart uploads
  // Import utils functions
 
-// Create multer configuration function that uses runtime settings
+// Create multer configuration std::function that uses runtime settings
 
 // Add this type declaration to fix Express.Multer.File error
 struct MulterFile {

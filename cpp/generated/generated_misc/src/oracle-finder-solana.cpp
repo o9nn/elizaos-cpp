@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/otc-agent/src/utils/oracle-finder-solana.h"
 
-std::shared_ptr<Promise<any>> findSolanaOracle(string tokenMint)
+std::shared_ptr<Promise<any>> findSolanaOracle(std::string tokenMint)
 {
     auto pythFeed = std::async([=]() { findPythFeed(tokenMint); });
     if (pythFeed) {
@@ -18,7 +18,7 @@ std::shared_ptr<Promise<any>> findSolanaOracle(string tokenMint)
 };
 
 
-std::shared_ptr<Promise<any>> findPythFeed(string tokenMint)
+std::shared_ptr<Promise<any>> findPythFeed(std::string tokenMint)
 {
     auto response = std::async([=]() { fetch(std::string("https://hermes.pyth.network/api/latest_price_feeds?ids[]=") + tokenMint + string_empty); });
     if (!response->ok) {
@@ -38,7 +38,7 @@ std::shared_ptr<Promise<any>> findPythFeed(string tokenMint)
 };
 
 
-std::shared_ptr<Promise<any>> findJupiterPool(string tokenMint)
+std::shared_ptr<Promise<any>> findJupiterPool(std::string tokenMint)
 {
     auto response = std::async([=]() { fetch(std::string("https://quote-api.jup.ag/v6/quote?inputMint=") + tokenMint + std::string("&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=1000000")); });
     if (!response->ok) {
@@ -58,7 +58,7 @@ std::shared_ptr<Promise<any>> findJupiterPool(string tokenMint)
 };
 
 
-std::shared_ptr<Promise<any>> findRaydiumPool(string tokenMint)
+std::shared_ptr<Promise<any>> findRaydiumPool(std::string tokenMint)
 {
     auto response = std::async([=]() { fetch(std::string("https://api.raydium.io/v2/main/pairs")); });
     if (!response->ok) {
@@ -160,15 +160,15 @@ object validateSolanaOracle(std::shared_ptr<SolanaOracleInfo> oracle)
 };
 
 
-string formatOracleInfo(std::shared_ptr<SolanaOracleInfo> oracle)
+std::string formatOracleInfo(std::shared_ptr<SolanaOracleInfo> oracle)
 {
-    auto tvl = (oracle->liquidity) ? any(std::string(" - TVL: $") + oracle->liquidity->toLocaleString() + string_empty) : any(string_empty);
+    auto tvl = (oracle->liquidity) ? std::any(std::string(" - TVL: $") + oracle->liquidity->toLocaleString() + string_empty) : std::any(string_empty);
     static switch_type __switch5759_6128 = {
-        { any(std::string("pyth")), 1 },
-        { any(std::string("jupiter")), 2 },
-        { any(std::string("raydium")), 3 },
-        { any(std::string("orca")), 4 },
-        { any(std::string("pumpswap")), 5 }
+        { std::any(std::string("pyth")), 1 },
+        { std::any(std::string("jupiter")), 2 },
+        { std::any(std::string("raydium")), 3 },
+        { std::any(std::string("orca")), 4 },
+        { std::any(std::string("pumpswap")), 5 }
     };
     switch (__switch5759_6128[oracle->type])
     {
@@ -202,8 +202,8 @@ object getSolanaRegistrationCost()
 };
 
 
-string PYTH_PROGRAM_ID = std::string("FsJ3A3u2vn5cTVofAjvy6y5kwABJAqYWpe4975bi2epH");
-string JUPITER_PROGRAM_ID = std::string("JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4");
+std::string PYTH_PROGRAM_ID = std::string("FsJ3A3u2vn5cTVofAjvy6y5kwABJAqYWpe4975bi2epH");
+std::string JUPITER_PROGRAM_ID = std::string("JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4");
 
 void Main(void)
 {

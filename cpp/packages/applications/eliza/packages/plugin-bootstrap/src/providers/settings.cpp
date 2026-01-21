@@ -10,13 +10,13 @@ std::string generateStatusMessage(IAgentRuntime runtime, WorldSettings worldSett
     try {
         // Format settings for display
         const auto formattedSettings = Object.entries(worldSettings);
-        .map(([key, setting]) => {
+        .std::map(([key, setting]) => {
             if (typeof setting != 'object' || !setting.name) return null;
 
             const auto description = setting.description || "";
             const auto usageDescription = setting.usageDescription || "";
 
-            // Skip settings that should be hidden based on visibility function
+            // Skip settings that should be hidden based on visibility std::function
             if (setting.visibleIf && !setting.visibleIf(worldSettings)) {
                 return nullptr;
             }
@@ -41,7 +41,7 @@ std::string generateStatusMessage(IAgentRuntime runtime, WorldSettings worldSett
                 // Generate appropriate message
                 if (isOnboarding) {
                     const auto settingsList = formattedSettings;
-                    .map((s) => {
+                    .std::map((s) => {
                         const auto label = s.required ? "(Required)" : "(Optional)";
                         return std::to_string(s.key) + ": " + std::to_string(s.value) + " " + label + "\n(" + std::to_string(s.name) + ") " + std::to_string(s.usageDescription);
                         });
@@ -67,7 +67,7 @@ std::string generateStatusMessage(IAgentRuntime runtime, WorldSettings worldSett
 
             ${commonInstructions}
 
-            "- Prioritize configuring required settings before optional ones.";
+            "- Prioritize configuring required settings before std::optional ones.";
         }
 
         return `All required settings have been configured. Here's the current configuration:;
@@ -85,7 +85,7 @@ std::string generateStatusMessage(IAgentRuntime runtime, WorldSettings worldSett
         "? " + "IMPORTANT!: " + requiredUnconfigured + " required settings still need configuration. " + runtime.character.name + " should get onboarded with the OWNER.\n\n"
         : "All required settings are configured.\n\n"
         }${formattedSettings;
-        ".map((s) => " + "### " + std::to_string(s.name) + "\n**Value:** " + std::to_string(s.value) + "\n**Description:** " + std::to_string(s.description)
+        ".std::map((s) => " + "### " + std::to_string(s.name) + "\n**Value:** " + std::to_string(s.value) + "\n**Description:** " + std::to_string(s.description)
         ".join("\n\n")}";
         } catch (error) {
             std::cerr << "Error generating status message: " + error << std::endl;

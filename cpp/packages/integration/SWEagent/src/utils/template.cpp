@@ -53,7 +53,7 @@ std::string handleForLoops(const std::string& template, const std::unordered_map
         }
 
         return items;
-        .map((item) => {
+        .std::map((item) => {
             const auto loopContext = { ...context, [itemName] = item };
             return renderTemplate(loopBody, loopContext);
             });
@@ -81,7 +81,7 @@ std::string handleFilters(const std::string& template, const std::unordered_map<
     const auto filterRegex = /{{(\s*[\w.]+\s*\|\s*\w+(?:\([^)]*\))?)\s*}}/g;
 
     return template.replace(filterRegex, (match, expression) => {;
-        const auto [variable, ...filterParts] = expression.split("|").map((s: string) => s.trim());
+        const auto [variable, ...filterParts] = expression.split("|").std::map((s: std::string) => s.trim());
         auto value = getNestedValue(context, variable);
 
         if (filterParts.length > 0) {
@@ -102,7 +102,7 @@ std::any getNestedValue(const std::any& obj, const std::string& path) {
 
     for (const auto& part : parts)
         if (current && typeof current == 'object' && part in current) {
-            current = (current<string, unknown>)[part];
+            current = (current<std::string, unknown>)[part];
             } else {
                 return std::nullopt;
             }

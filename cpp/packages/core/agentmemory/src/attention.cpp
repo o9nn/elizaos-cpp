@@ -418,7 +418,7 @@ std::vector<std::shared_ptr<Memory>> AttentionAllocator::prioritizeMemories(cons
               });
     
     std::vector<std::shared_ptr<Memory>> result;
-    for (const auto& pair : memoryPriorities) {
+    for (const auto& std::pair : memoryPriorities) {
         result.push_back(pair.first);
     }
     
@@ -572,7 +572,7 @@ void AttentionAllocator::setBudgetSize(double newBudget) {
 }
 
 void AttentionAllocator::setSpreadingParameters(double spreadingRate, double threshold) {
-    // Store parameters for future use
+    // Store parameters for std::future use
     (void)spreadingRate; // Suppress unused warning
     (void)threshold;     // Suppress unused warning
     // Implementation depends on ActivationSpreadingNetwork having setters

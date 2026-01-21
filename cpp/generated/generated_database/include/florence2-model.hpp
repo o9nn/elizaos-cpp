@@ -21,9 +21,9 @@ public:
     virtual std::shared_ptr<Promise<std::shared_ptr<Florence2Result>>> mockAnalyze(std::shared_ptr<ScreenTile> tile);
     virtual std::shared_ptr<Promise<array<object>>> detectUIElements(std::shared_ptr<Buffer> imageBuffer);
     virtual std::shared_ptr<Promise<std::shared_ptr<Florence2Result>>> mockAnalyzeBuffer(std::shared_ptr<Buffer> _imageBuffer);
-    virtual string mapToUIElementType(string label);
+    virtual std::string mapToUIElementType(std::string label);
     virtual std::shared_ptr<Promise<object>> generateSceneGraph(array<std::shared_ptr<ScreenTile>> tiles);
-    virtual any inferSpatialRelation(std::shared_ptr<BoundingBox> box1, std::shared_ptr<BoundingBox> box2);
+    virtual std::any inferSpatialRelation(std::shared_ptr<BoundingBox> box1, std::shared_ptr<BoundingBox> box2);
     virtual boolean contains(std::shared_ptr<BoundingBox> box1, std::shared_ptr<BoundingBox> box2);
     virtual boolean overlaps(std::shared_ptr<BoundingBox> box1, std::shared_ptr<BoundingBox> box2);
     virtual boolean isInitialized();

@@ -6,7 +6,7 @@
 #include "../types/api/search.h"
 #include "../utils.h"
 
-extern string SYMBOL_SEARCH_MODE;
-extern any tokenSearchSymbolAction;
-extern std::function<string(string, double, array<std::shared_ptr<TokenResult>>)> formatTokenSummary;
+extern std::string SYMBOL_SEARCH_MODE;
+extern std::any tokenSearchSymbolAction;
+extern std::function<std::string(std::string, double, array<std::shared_ptr<TokenResult>>)> formatTokenSummary;
 #endif

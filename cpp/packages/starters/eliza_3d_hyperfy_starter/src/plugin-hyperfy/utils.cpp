@@ -9,7 +9,7 @@ std::future<std::string> hashFileBuffer(const std::vector<uint8_t>& buffer) {
 
     const auto hashBuf = crypto.subtle.digest("SHA-256", buffer);
     const auto hash = Array.from(new Uint8Array(hashBuf));
-    .map(b => b.tostd::to_string(16).padStart(2, "0"));
+    .std::map(b => b.tostd::to_string(16).padStart(2, "0"));
     .join("");
     return hash;
 
@@ -89,7 +89,7 @@ std::future<std::vector<Action>> getHyperfyActions(IAgentRuntime runtime, Memory
     : runtime.actions;
 
     const auto validated = Promise.all(;
-    availableActions.map(async (action) => {
+    availableActions.std::map(std::async (action) => {
         const auto result = action.validate(runtime, message, state);
         return result ? action : nullptr;
         });
@@ -104,7 +104,7 @@ void formatActions(const std::vector<Action>& actions) {
 
     return actions;
     .sort(() => 0.5 - Math.random());
-    ".map((action: Action) => " + "- **" + action.name + "**: " + action.description
+    ".std::map((action: Action) => " + "- **" + action.name + "**: " + action.description
     .join("\n\n");
 
 }

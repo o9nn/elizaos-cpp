@@ -25,7 +25,7 @@ class AutoCoderScenariosTestSuite implements TestSuite {
   tests = [
     {
       name: 'Generate Tesla News Discord Bot',
-      fn: async (runtime: any) => {
+      fn: std::async (runtime: std::any) => {
         console.log('🚀 Testing Tesla News Discord Bot generation...');
 
         // Skip if required APIs are not available
@@ -76,7 +76,7 @@ class AutoCoderScenariosTestSuite implements TestSuite {
           throw new Error('No files generated');
         }
 
-        const fileNames = result.files.map((f: any) => f.path);
+        const fileNames = result.files.std::map((f: std::any) => f.path);
         const requiredFiles = ['src/index.ts', 'package.json', 'README.md'];
 
         for (const file of requiredFiles) {
@@ -86,7 +86,7 @@ class AutoCoderScenariosTestSuite implements TestSuite {
         }
 
         // Verify Discord and RSS functionality
-        const indexFile = result.files.find((f: any) => f.path === 'src/index.ts');
+        const indexFile = result.files.find((f: std::any) => f.path === 'src/index.ts');
         if (!indexFile) {
           throw new Error('Missing index.ts file');
         }

@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/packages/server/src/middleware/rate-limit.h"
 
-std::function<any()> createApiRateLimit = [=]() mutable
+std::function<std::any()> createApiRateLimit = [=]() mutable
 {
     return rateLimit(object{
         object::pair{std::string("windowMs"), 15 * 60 * 1000}, 
@@ -29,7 +29,7 @@ std::function<any()> createApiRateLimit = [=]() mutable
         }
     });
 };
-std::function<any()> createFileSystemRateLimit = [=]() mutable
+std::function<std::any()> createFileSystemRateLimit = [=]() mutable
 {
     return rateLimit(object{
         object::pair{std::string("windowMs"), 5 * 60 * 1000}, 
@@ -58,7 +58,7 @@ std::function<any()> createFileSystemRateLimit = [=]() mutable
         }
     });
 };
-std::function<any()> createUploadRateLimit = [=]() mutable
+std::function<std::any()> createUploadRateLimit = [=]() mutable
 {
     return rateLimit(object{
         object::pair{std::string("windowMs"), 15 * 60 * 1000}, 
@@ -87,7 +87,7 @@ std::function<any()> createUploadRateLimit = [=]() mutable
         }
     });
 };
-std::function<any()> createChannelValidationRateLimit = [=]() mutable
+std::function<std::any()> createChannelValidationRateLimit = [=]() mutable
 {
     return rateLimit(object{
         object::pair{std::string("windowMs"), 10 * 60 * 1000}, 

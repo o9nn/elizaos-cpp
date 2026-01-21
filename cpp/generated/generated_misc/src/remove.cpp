@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/commands/plugins/actions/remove.h"
 
-std::shared_ptr<Promise<void>> removePlugin(string plugin)
+std::shared_ptr<Promise<void>> removePlugin(std::string plugin)
 {
     auto cwd = process->cwd();
     auto directoryInfo = detectDirectoryType(cwd);
@@ -28,7 +28,7 @@ Check installed plugins using: elizaos plugins installed-plugins"));
             object::pair{std::string("stdio"), std::string("inherit")}
         }); });
     }
-    catch (const any& execError)
+    catch (const std::any& execError)
     {
         logger->error(std::string("Failed to run 'bun remove ") + packageNameToRemove + std::string("': ") + (is<Error>(execError)) ? execError->message : String(execError) + string_empty);
         if (AND((AND((AND((AND((execError), (type_of(execError) == std::string("object")))), (in(std::string("stderr"), execError)))), (type_of(execError["stderr"]) == std::string("string")))), (execError["stderr"]["includes"](std::string("not found"))))) {
@@ -54,7 +54,7 @@ Check installed plugins using: elizaos plugins installed-plugins"));
                 object::pair{std::string("force"), true}
             });
         }
-        catch (const any& rmError)
+        catch (const std::any& rmError)
         {
             logger->error(std::string("Failed to remove directory ") + pluginDir + std::string(": ") + (is<Error>(rmError)) ? rmError->message : String(rmError) + string_empty);
         }
@@ -68,7 +68,7 @@ Check installed plugins using: elizaos plugins installed-plugins"));
                     object::pair{std::string("force"), true}
                 });
             }
-            catch (const any& rmError)
+            catch (const std::any& rmError)
             {
                 logger->error(std::string("Failed to remove directory ") + nonPrefixedDir + std::string(": ") + (is<Error>(rmError)) ? rmError->message : String(rmError) + string_empty);
             }

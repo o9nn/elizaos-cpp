@@ -16,7 +16,7 @@ namespace elizaos {
 
 /**
  * Global test setup for CLI package
- * This file runs before all tests to set up mocks and globals
+ * This file runs before all tests to std::set up mocks and globals
  */
 
 // Mock the entire @elizaos/server package

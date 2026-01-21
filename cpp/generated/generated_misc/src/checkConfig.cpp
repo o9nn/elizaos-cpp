@@ -45,7 +45,7 @@ void Main(void)
                     object::pair{std::string("max"), decodedAutofunConfig->tokenDecimalsConfig->range->max}
                 });
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("Error decoding config account data:"), error);
             }
@@ -68,7 +68,7 @@ void Main(void)
                 console->log(std::string("Emergency Authority:"), decodedVaultConfig->emergencyAuthority->toString());
                 console->log(std::string("Manager Authority:"), decodedVaultConfig->managerAuthority->toString());
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("Error decoding vault config account data:"), error);
             }

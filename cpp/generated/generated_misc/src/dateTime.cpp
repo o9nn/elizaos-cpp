@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/the-org/src/projectManager/utils/dateTime.h"
 
-boolean isAvailableNow(array<string> workDays, object workHours, string timeZone)
+boolean isAvailableNow(array<string> workDays, object workHours, std::string timeZone)
 {
     try
     {
@@ -20,15 +20,15 @@ boolean isAvailableNow(array<string> workDays, object workHours, string timeZone
             object::pair{std::string("hour12"), false}
         };
         auto currentTime = ((std::make_shared<Intl::DateTimeFormat>(std::string("en-US"), timeOptions)))->format(now);
-        auto [currentHour, currentMinute] = currentTime->split(std::string(":"))->map(Number);
-        auto [startHour, startMinute] = workHours["start"]->split(std::string(":"))->map(Number);
-        auto [endHour, endMinute] = workHours["end"]->split(std::string(":"))->map(Number);
+        auto [currentHour, currentMinute] = currentTime->split(std::string(":"))->std::map(Number);
+        auto [startHour, startMinute] = workHours["start"]->split(std::string(":"))->std::map(Number);
+        auto [endHour, endMinute] = workHours["end"]->split(std::string(":"))->std::map(Number);
         auto currentTimeMinutes = currentHour * 60 + currentMinute;
         auto startTimeMinutes = startHour * 60 + startMinute;
         auto endTimeMinutes = endHour * 60 + endMinute;
         return AND((currentTimeMinutes >= startTimeMinutes), (currentTimeMinutes <= endTimeMinutes));
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("Error checking availability:"), error);
         return false;
@@ -36,12 +36,12 @@ boolean isAvailableNow(array<string> workDays, object workHours, string timeZone
 };
 
 
-std::shared_ptr<Date> calculateNextCheckIn(array<string> workDays, object workHours, string timeZone, double frequencyHours)
+std::shared_ptr<Date> calculateNextCheckIn(array<string> workDays, object workHours, std::string timeZone, double frequencyHours)
 {
     auto now = std::make_shared<Date>();
     auto getDateWithTime = [=](auto date, auto timeStr) mutable
     {
-        auto [hours, minutes] = timeStr->split(std::string(":"))->map(Number);
+        auto [hours, minutes] = timeStr->split(std::string(":"))->std::map(Number);
         auto result = std::make_shared<Date>(date);
         result->setHours(hours, minutes, 0, 0);
         return result;
@@ -79,7 +79,7 @@ std::shared_ptr<Date> calculateNextCheckIn(array<string> workDays, object workHo
 };
 
 
-string formatDate(std::shared_ptr<Date> date, string timeZone)
+std::string formatDate(std::shared_ptr<Date> date, std::string timeZone)
 {
     auto options = object{
         object::pair{std::string("weekday"), std::string("long")}, 

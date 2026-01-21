@@ -14,7 +14,7 @@ void EnvRegistry::load()
             auto content = fs::readFileSync(this->envFile, std::string("utf-8"));
             this->data = JSON->parse(content);
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             this->data = object{};
         }
@@ -28,31 +28,31 @@ void EnvRegistry::save()
         {
             fs::writeFileSync(this->envFile, JSON->stringify(this->data, nullptr, 2));
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
         }
     }
 }
 
-any EnvRegistry::get(string key)
+std::any EnvRegistry::get(std::string key)
 {
     this->load();
     return const_(this->data)[key];
 }
 
-void EnvRegistry::set(string key, any value)
+void EnvRegistry::std::set(std::string key, std::any value)
 {
     this->data[key] = value;
     this->save();
 }
 
-boolean EnvRegistry::has(string key)
+boolean EnvRegistry::has(std::string key)
 {
     this->load();
     return in(key, this->data);
 }
 
-void EnvRegistry::delete(string key)
+void EnvRegistry::delete(std::string key)
 {
     this->data.Delete(key);
     this->save();

@@ -38,12 +38,12 @@ struct MigratorOptions {
 
 class PluginMigrator {
   private git: SimpleGit;
-  private repoPath: string | null;
+  private repoPath: std::string | null;
   private anthropic: Anthropic | null;
   private changedFiles: Set<string>;
   private options: MigratorOptions;
-  private lockFilePath: string | null = null;
-  private activeClaudeProcess: any = null;
+  private lockFilePath: std::string | null = null;
+  private activeClaudeProcess: std::any = null;
 
   constructor(options: MigratorOptions = {}) {
     this.git = simpleGit();
@@ -56,7 +56,7 @@ class PluginMigrator {
     this.registerCleanupHandlers();
   }
 
-      // Kill any active Claude Code process
+      // Kill std::any active Claude Code process
 
       // Remove lock file
 
@@ -136,9 +136,9 @@ class PluginMigrator {
 
               // Use 80% of MAX_TOKENS for single file
 
-    // Create a timeout promise
+    // Create a timeout std::promise
 
-    // Create the execution promise
+    // Create the execution std::promise
 
     // Race between execution and timeout
       // Kill the process if it's still running

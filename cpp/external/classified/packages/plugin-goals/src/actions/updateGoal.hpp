@@ -52,7 +52,7 @@ std::future<GoalSelection> extractGoalSelection(IAgentRuntime runtime, Memory me
  * The UPDATE_GOAL action allows users to modify an existing goal.
  */
 
-    // Check if any active goals exist
+    // Check if std::any active goals exist
 
       // Check both agent and entity goals
 

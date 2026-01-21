@@ -3,7 +3,7 @@
 ComponentService::ComponentService(std::shared_ptr<IAgentRuntime> runtime_) : runtime(runtime_)  {
 }
 
-std::shared_ptr<Promise<any>> ComponentService::getComponent(std::shared_ptr<UUID> entityId, string componentType)
+std::shared_ptr<Promise<any>> ComponentService::getComponent(std::shared_ptr<UUID> entityId, std::string componentType)
 {
     try
     {
@@ -11,7 +11,7 @@ std::shared_ptr<Promise<any>> ComponentService::getComponent(std::shared_ptr<UUI
         if (!component) return nullptr;
         return this->normalizeComponent(component);
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("[ComponentService] Error getting component:"), error);
         return nullptr;
@@ -25,7 +25,7 @@ std::shared_ptr<Promise<boolean>> ComponentService::createComponent(object param
         auto result = std::async([=]() { this->runtime->createComponent(as<any>(params)); });
         return !!result;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("[ComponentService] Error creating component:"), error);
         return false;
@@ -39,7 +39,7 @@ std::shared_ptr<Promise<boolean>> ComponentService::updateComponent(object param
         std::async([=]() { this->runtime->updateComponent(as<any>(params)); });
         return true;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("[ComponentService] Error updating component:"), error);
         return false;
@@ -75,7 +75,7 @@ std::shared_ptr<Component> ComponentService::normalizeComponent(std::shared_ptr<
     return component;
 }
 
-void ComponentService::normalizeBooleans(any obj)
+void ComponentService::normalizeBooleans(std::any obj)
 {
     if (OR((!obj), (type_of(obj) != std::string("object")))) return;
     for (auto& key : keys_(obj))

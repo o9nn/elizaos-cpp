@@ -50,7 +50,7 @@ struct SolanaDeployment {
     std::string desk;
     std::optional<std::string> deskOwner;
     std::string usdcMint;
-    std::optional<Record<string, {> registeredTokens;
+    std::optional<Record<std::string, {> registeredTokens;
     std::string mint;
     std::string registry;
     std::string treasury;

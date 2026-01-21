@@ -20,7 +20,7 @@ std::shared_ptr<Promise<array<std::shared_ptr<Plugin>>>> loadPluginDependencies(
                         dependencyPlugins->push(pluginProject->pluginModule);
                     }
                 }
-                catch (const any& error)
+                catch (const std::any& error)
                 {
                     logger->error(std::string("Failed to load or build dependency ") + dependency + std::string(":"), error);
                 }

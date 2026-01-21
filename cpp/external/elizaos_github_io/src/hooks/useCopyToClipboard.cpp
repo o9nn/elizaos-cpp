@@ -29,7 +29,7 @@ std::tuple<bool, std::function<std::future<bool>(std::string)>> useCopyToClipboa
 
     const auto [copied, setCopied] = useState<boolean>(false);
 
-    const auto copyToClipboard = useCallback(async (text: string) => {;
+    const auto copyToClipboard = useCallback(std::async (text: std::string) => {;
         auto success = false;
         if (navigator.clipboard) {
             try {

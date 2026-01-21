@@ -8,9 +8,9 @@ using corePostCreationTemplate = postCreationTemplate;
 using coreBooleanFooter = booleanFooter;
 using coreImageDescriptionTemplate = imageDescriptionTemplate;
 
-extern string shouldRespondTemplate;
-extern string messageHandlerTemplate;
-extern string postCreationTemplate;
-extern string booleanFooter;
-extern string imageDescriptionTemplate;
+extern std::string shouldRespondTemplate;
+extern std::string messageHandlerTemplate;
+extern std::string postCreationTemplate;
+extern std::string booleanFooter;
+extern std::string imageDescriptionTemplate;
 #endif

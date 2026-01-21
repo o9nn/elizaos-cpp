@@ -26,7 +26,7 @@ public:
     void load();
     void save();
     std::any get(const std::string& key);
-    void set(const std::string& key, const std::any& value);
+    void std::set(const std::string& key, const std::any& value);
     bool has(const std::string& key);
     void delete(const std::string& key);
     void clear();

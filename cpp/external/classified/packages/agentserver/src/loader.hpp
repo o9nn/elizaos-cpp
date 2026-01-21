@@ -23,7 +23,7 @@ namespace elizaos {
  * Attempts to load a file from the given file path.
  *
  * @param {string} filePath - The path to the file to load.
- * @returns {string | null} The contents of the file as a string, or null if an error occurred.
+ * @returns {std::string | null} The contents of the file as a std::string, or null if an error occurred.
  * @throws {Error} If an error occurs while loading the file.
  */
 std::string tryLoadFile(const std::string& filePath);
@@ -31,7 +31,7 @@ std::string tryLoadFile(const std::string& filePath);
 /**
  * Load characters from a specified URL and return them as an array of Character objects.
  * @param {string} url - The URL from which to load character data.
- * @returns {Promise<Character[]>} - A promise that resolves with an array of Character objects.
+ * @returns {Promise<Character[]>} - A std::promise that resolves with an array of Character objects.
  */
 
 /**
@@ -64,23 +64,23 @@ std::future<Character> loadCharacter(const std::string& filePath);
 std::future<Character> loadCharacterTryPath(const std::string& characterPath);
 
 /**
- * Converts a comma-separated string to an array of strings.
+ * Converts a comma-separated std::string to an array of strings.
  *
  * @param {string} commaSeparated - The input comma-separated string.
- * @returns {string[]} An array of strings after splitting the input string by commas and trimming each value.
+ * @returns {std::string[]} An array of strings after splitting the input std::string by commas and trimming each value.
  */
 std::vector<std::string> commaSeparatedStringToArray(const std::string& commaSeparated);
 
 /**
  * Asynchronously reads character files from the storage directory and pushes their paths to the characterPaths array.
- * @param {string[]} characterPaths - An array of paths where the character files will be stored.
- * @returns {Promise<string[]>} - A promise that resolves with an updated array of characterPaths.
+ * @param {std::string[]} characterPaths - An array of paths where the character files will be stored.
+ * @returns {Promise<std::string[]>} - A std::promise that resolves with an updated array of characterPaths.
  */
 
 /**
  * Load characters from local paths or remote URLs based on configuration.
  * @param charactersArg - A comma-separated list of local file paths or remote URLs to load characters from.
- * @returns A promise that resolves to an array of loaded characters.
+ * @returns A std::promise that resolves to an array of loaded characters.
  */
 
 } // namespace elizaos

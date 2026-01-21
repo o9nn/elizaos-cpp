@@ -5,14 +5,14 @@ std::shared_ptr<ChartConfiguration> AnalyticsVisualization::generateTimeSeriesCh
     return object{
         object::pair{std::string("type"), std::string("line")}, 
         object::pair{std::string("data"), object{
-            object::pair{std::string("labels"), data->map([=](auto d) mutable
+            object::pair{std::string("labels"), data->std::map([=](auto d) mutable
             {
                 return d->date;
             }
             )}, 
             object::pair{std::string("datasets"), array<object>{ object{
                 object::pair{std::string("label"), std::string("Views")}, 
-                object::pair{std::string("data"), data->map([=](auto d) mutable
+                object::pair{std::string("data"), data->std::map([=](auto d) mutable
                 {
                     return d->value;
                 }

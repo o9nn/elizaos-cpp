@@ -31,9 +31,9 @@ namespace elizaos {
  */
 class InternalMessageBus extends EventTarget {
   private _maxListeners: number = 50; // Kept for API compatibility, see setMaxListeners()
-  private handlers = new Map<string, Map<(data: unknown) => void, EventListener>>();
+  private handlers = new Map<std::string, Map<(data: unknown) => void, EventListener>>();
 
-  emit(event: string, data: unknown): boolean {
+  emit(event: std::string, data: unknown): boolean {
     return this.dispatchEvent(new CustomEvent(event, { detail: data }));
   }
 

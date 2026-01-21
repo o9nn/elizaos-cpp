@@ -5,5 +5,5 @@
 #include "../knowledge.h"
 #include "../types.h"
 
-extern std::function<any(double)> createTestUUID;
+extern std::function<std::any(double)> createTestUUID;
 #endif

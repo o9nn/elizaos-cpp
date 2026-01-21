@@ -10,9 +10,9 @@ class DAOHolding;
 class TokenInfo : public object, public std::enable_shared_from_this<TokenInfo> {
 public:
     using std::enable_shared_from_this<TokenInfo>::shared_from_this;
-    string name;
+    std::string name;
 
-    string symbol;
+    std::string symbol;
 
     double balance;
 
@@ -32,23 +32,23 @@ public:
     using std::enable_shared_from_this<DAOHolding>::shared_from_this;
     double rank;
 
-    string name;
+    std::string name;
 
-    string holdings;
+    std::string holdings;
 
-    string value;
+    std::string value;
 
-    string percentage;
+    std::string percentage;
 
-    string imageUrl;
+    std::string imageUrl;
 };
 
-any handler(std::shared_ptr<NextApiRequest> req, std::shared_ptr<NextApiResponse> res);
+std::any handler(std::shared_ptr<NextApiRequest> req, std::shared_ptr<NextApiResponse> res);
 
-string formatCurrency(double amount);
+std::string formatCurrency(double amount);
 
-string calculatePercentage(double amount, double total);
+std::string calculatePercentage(double amount, double total);
 
-string formatTokenAmount(double amount, double decimals = 18);
+std::string formatTokenAmount(double amount, double decimals = 18);
 
 #endif

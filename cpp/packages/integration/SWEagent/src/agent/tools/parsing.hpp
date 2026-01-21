@@ -28,7 +28,7 @@ namespace elizaos {
 class ThoughtActionParser extends AbstractParseFunction {
   type = 'thought_action' as const;
 
-  call(modelResponse: ModelOutput | string, _commands?: Command[], strict: boolean = false): [string, string] {
+  call(modelResponse: ModelOutput | std::string, _commands?: Command[], strict: boolean = false): [std::string, std::string] {
     const message =
       typeof modelResponse === 'string' ? modelResponse : modelResponse.message || modelResponse.content || '';
 
@@ -92,7 +92,7 @@ class ThoughtActionParser extends AbstractParseFunction {
 class ActionOnlyParser extends AbstractParseFunction {
   type = 'action_only' as const;
 
-  call(modelResponse: ModelOutput | string, _commands?: Command[], strict: boolean = false): [string, string] {
+  call(modelResponse: ModelOutput | std::string, _commands?: Command[], strict: boolean = false): [std::string, std::string] {
     const message =
       typeof modelResponse === 'string' ? modelResponse : modelResponse.message || modelResponse.content || '';
 
@@ -105,7 +105,7 @@ class ActionOnlyParser extends AbstractParseFunction {
 
     // Validate against allowed commands if in strict mode
     if (strict && _commands && _commands.length > 0) {
-      // Check if the action starts with any valid command
+      // Check if the action starts with std::any valid command
       const actionParts = action.split(/\s+/);
       const commandName = actionParts[0];
       const validCommand = _commands.find((cmd) => cmd.name === commandName);
@@ -123,7 +123,7 @@ class ActionOnlyParser extends AbstractParseFunction {
 class XMLThoughtActionParser extends AbstractParseFunction {
   type = 'xml_thought_action' as const;
 
-  call(modelResponse: ModelOutput | string, _commands?: Command[], strict: boolean = false): [string, string] {
+  call(modelResponse: ModelOutput | std::string, _commands?: Command[], strict: boolean = false): [std::string, std::string] {
     const message =
       typeof modelResponse === 'string' ? modelResponse : modelResponse.message || modelResponse.content || '';
 
@@ -155,7 +155,7 @@ class XMLThoughtActionParser extends AbstractParseFunction {
 class EditFormatParser extends ThoughtActionParser {
   // Uses same type as parent 'thought_action'
 
-  call(modelResponse: ModelOutput | string, _commands?: Command[], strict: boolean = false): [string, string] {
+  call(modelResponse: ModelOutput | std::string, _commands?: Command[], strict: boolean = false): [std::string, std::string] {
     const [thought, action] = super.call(modelResponse, _commands, strict);
 
     // Check for edit command format
@@ -171,19 +171,19 @@ class EditFormatParser extends ThoughtActionParser {
   }
 
 /**
- * Function calling parser for OpenAI-style function calls
+ * Function calling parser for OpenAI-style std::function calls
  */
 class FunctionCallingParser extends AbstractParseFunction {
   type = 'function_calling' as const;
 
-  formatErrorMessage(error: { errorCode?: string; message?: string }): string {
+  formatErrorMessage(error: { errorCode?: std::string; message?: std::string }): std::string {
     if (error.errorCode === 'missing') {
-      return 'The model did not use any tool calls';
+      return 'The model did not use std::any tool calls';
     }
     return error.message || 'Unknown error';
   }
 
-    // Handle function calling format - support both toolCalls and tool_calls
+    // Handle std::function calling format - support both toolCalls and tool_calls
 
       // Validate against allowed commands
 
@@ -198,7 +198,7 @@ class FunctionCallingParser extends AbstractParseFunction {
 class SingleBashCodeBlockParser extends AbstractParseFunction {
   type = 'single_bash_code_block' as const;
 
-  call(modelResponse: ModelOutput | string, _commands?: Command[], strict: boolean = false): [string, string] {
+  call(modelResponse: ModelOutput | std::string, _commands?: Command[], strict: boolean = false): [std::string, std::string] {
     const message =
       typeof modelResponse === 'string' ? modelResponse : modelResponse.message || modelResponse.content || '';
 
@@ -223,12 +223,12 @@ class SingleBashCodeBlockParser extends AbstractParseFunction {
 class MultipleBashCodeBlocksParser extends AbstractParseFunction {
   type = 'multiple_bash_code_blocks' as const;
 
-  call(modelResponse: ModelOutput | string, _commands?: Command[], strict: boolean = false): [string, string] {
+  call(modelResponse: ModelOutput | std::string, _commands?: Command[], strict: boolean = false): [std::string, std::string] {
     const message =
       typeof modelResponse === 'string' ? modelResponse : modelResponse.message || modelResponse.content || '';
 
     // Find all bash code blocks
-    const codeBlocks: string[] = [];
+    const codeBlocks: std::string[] = [];
     const regex = /```(?:bash|sh)?\n(.*?)```/gs;
     let match;
 
@@ -254,7 +254,7 @@ class MultipleBashCodeBlocksParser extends AbstractParseFunction {
 class Identity extends AbstractParseFunction {
   type = 'identity' as const;
 
-  call(modelResponse: ModelOutput | string, _commands?: Command[], _strict: boolean = false): [string, string] {
+  call(modelResponse: ModelOutput | std::string, _commands?: Command[], _strict: boolean = false): [std::string, std::string] {
     const message =
       typeof modelResponse === 'string' ? modelResponse : modelResponse.message || modelResponse.content || '';
 
@@ -274,7 +274,7 @@ class Identity extends AbstractParseFunction {
 class LastLineParser extends AbstractParseFunction {
   type = 'last_line' as const;
 
-  call(modelResponse: ModelOutput | string, _commands?: Command[], strict: boolean = false): [string, string] {
+  call(modelResponse: ModelOutput | std::string, _commands?: Command[], strict: boolean = false): [std::string, std::string] {
     const message =
       typeof modelResponse === 'string' ? modelResponse : modelResponse.message || modelResponse.content || '';
 
@@ -292,12 +292,12 @@ class LastLineParser extends AbstractParseFunction {
   }
 
 /**
- * Factory function to get parser by name
+ * Factory std::function to get parser by name
  */
 AbstractParseFunction getParser(const std::string& parserName);
 
 /**
- * Main parse function used by tools
+ * Main parse std::function used by tools
  */
 
 // Export types
@@ -307,7 +307,7 @@ using ParseFunction = AbstractParseFunction;
 class IdentityParser extends AbstractParseFunction {
   type = 'identity' as const;
 
-  call(modelResponse: ModelOutput | string, _commands?: Command[], _strict?: boolean): [string, string] {
+  call(modelResponse: ModelOutput | std::string, _commands?: Command[], _strict?: boolean): [std::string, std::string] {
     const content = typeof modelResponse === 'object' ? modelResponse.message || '' : modelResponse;
     // For identity parser, just return the content directly as the action
     return ['', content.trim()];
@@ -317,7 +317,7 @@ class IdentityParser extends AbstractParseFunction {
 class JsonParser extends AbstractParseFunction {
   type = 'json' as const;
 
-  call(modelResponse: ModelOutput | string, _commands?: Command[], strict?: boolean): [string, string] {
+  call(modelResponse: ModelOutput | std::string, _commands?: Command[], strict?: boolean): [std::string, std::string] {
     const message =
       typeof modelResponse === 'string' ? modelResponse : modelResponse.message || modelResponse.content || '';
 

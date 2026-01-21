@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/helius/providers/helius.h"
 
-HeliusWebSocket::HeliusWebSocket(string apiKey_, std::shared_ptr<IAgentRuntime> runtime_) : apiKey(apiKey_), runtime(runtime_)  {
+HeliusWebSocket::HeliusWebSocket(std::string apiKey_, std::shared_ptr<IAgentRuntime> runtime_) : apiKey(apiKey_), runtime(runtime_)  {
 }
 
 std::shared_ptr<Promise<void>> HeliusWebSocket::connect()
@@ -24,7 +24,7 @@ std::shared_ptr<Promise<void>> HeliusWebSocket::connect()
                     auto message = JSON->parse(data["toString"]());
                     console->log(std::string("Received message:"), message);
                 }
-                catch (const any& e)
+                catch (const std::any& e)
                 {
                     console->error(std::string("Failed to parse WebSocket message:"), e);
                 }
@@ -42,7 +42,7 @@ std::shared_ptr<Promise<void>> HeliusWebSocket::connect()
             }
             );
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             reject(error);
         }
@@ -50,10 +50,10 @@ std::shared_ptr<Promise<void>> HeliusWebSocket::connect()
     );
 }
 
-std::shared_ptr<Promise<any>> HeliusWebSocket::subscribeToWallet(string walletAddress)
+std::shared_ptr<Promise<any>> HeliusWebSocket::subscribeToWallet(std::string walletAddress)
 {
     if (OR((!this->ws), (this->ws["readyState"] != WebSocket->OPEN))) {
-        throw any(std::make_shared<Error>(std::string("WebSocket not connected")));
+        throw std::any(std::make_shared<Error>(std::string("WebSocket not connected")));
     }
     shared request = object{
         object::pair{std::string("jsonrpc"), std::string("2.0")}, 
@@ -86,10 +86,10 @@ std::shared_ptr<Promise<any>> HeliusWebSocket::subscribeToWallet(string walletAd
                         return;
                     }
                     auto subscriptionId = response["result"];
-                    this->subscriptions->set(walletAddress, subscriptionId);
+                    this->subscriptions->std::set(walletAddress, subscriptionId);
                     resolve(subscriptionId);
                 }
-                catch (const any& e)
+                catch (const std::any& e)
                 {
                     reject(e);
                 }
@@ -101,7 +101,7 @@ std::shared_ptr<Promise<any>> HeliusWebSocket::subscribeToWallet(string walletAd
     );
 }
 
-std::shared_ptr<Promise<boolean>> HeliusWebSocket::unsubscribeFromWallet(string walletAddress)
+std::shared_ptr<Promise<boolean>> HeliusWebSocket::unsubscribeFromWallet(std::string walletAddress)
 {
     auto subscriptionId = this->subscriptions->get(walletAddress);
     if (!subscriptionId) {
@@ -212,10 +212,10 @@ Current Helius token information:\
                 object::pair{std::string("text"), std::string("text")}
             };
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             console->error(std::string("Error in Helius provider:"), error);
-            throw any(error);
+            throw std::any(error);
         }
     }
     }

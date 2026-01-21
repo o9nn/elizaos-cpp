@@ -14,8 +14,8 @@ public:
 
     PredictiveAnalytics();
     virtual void initialize();
-    virtual std::shared_ptr<Promise<object>> predictProjectSuccess(string projectId);
-    virtual std::shared_ptr<Promise<object>> predictUserEngagement(string userId);
+    virtual std::shared_ptr<Promise<object>> predictProjectSuccess(std::string projectId);
+    virtual std::shared_ptr<Promise<object>> predictUserEngagement(std::string userId);
 };
 
 #endif

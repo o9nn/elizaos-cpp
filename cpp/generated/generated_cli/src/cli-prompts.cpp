@@ -1,18 +1,18 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/utils/cli-prompts.h"
 
-std::shared_ptr<Promise<string>> promptWithNav(string label, string initial, std::function<any(string)> validate)
+std::shared_ptr<Promise<string>> promptWithNav(std::string label, std::string initial, std::function<std::any(std::string)> validate)
 {
-    auto msg = string_empty + label + string_empty + (initial) ? any(std::string(" (current: ") + initial + std::string(")")) : any(string_empty) + string_empty;
+    auto msg = string_empty + label + string_empty + (initial) ? std::any(std::string(" (current: ") + initial + std::string(")")) : std::any(string_empty) + string_empty;
     auto input = std::async([=]() { clack->text(object{
         object::pair{std::string("message"), msg}, 
         object::pair{std::string("placeholder"), initial}, 
         object::pair{std::string("defaultValue"), initial}, 
-        object::pair{std::string("validate"), (validate) ? any([=](auto val) mutable
+        object::pair{std::string("validate"), (validate) ? std::any([=](auto val) mutable
         {
             auto result = validate(val);
-            return (type_of(result) == std::string("string")) ? any(result) : any(undefined);
+            return (type_of(result) == std::string("string")) ? std::any(result) : std::any(undefined);
         }
-        ) : any(undefined)}
+        ) : std::any(undefined)}
     }); });
     if (clack->isCancel(input)) {
         clack->cancel(std::string("Operation cancelled."));
@@ -31,7 +31,7 @@ std::shared_ptr<Promise<string>> promptWithNav(string label, string initial, std
 };
 
 
-std::shared_ptr<Promise<array<string>>> promptForMultipleItems(string fieldName, array<string> initial)
+std::shared_ptr<Promise<array<string>>> promptForMultipleItems(std::string fieldName, array<string> initial)
 {
     auto items = array<string>{ initial };
     logger->info(std::string("\
@@ -61,7 +61,7 @@ Press Enter to keep existing values, or start typing new ones:"));
 };
 
 
-std::shared_ptr<Promise<boolean>> confirmAction(string message)
+std::shared_ptr<Promise<boolean>> confirmAction(std::string message)
 {
     auto response = std::async([=]() { clack->confirm(object{
         object::pair{std::string("message"), std::string("message")}, 
@@ -75,8 +75,8 @@ std::shared_ptr<Promise<boolean>> confirmAction(string message)
 };
 
 
-string NAV_BACK = std::string("__back__");
-string NAV_NEXT = std::string("__next__");
+std::string NAV_BACK = std::string("__back__");
+std::string NAV_NEXT = std::string("__next__");
 
 void Main(void)
 {

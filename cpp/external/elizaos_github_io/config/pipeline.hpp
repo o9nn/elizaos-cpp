@@ -103,10 +103,10 @@ namespace elizaos {
       // Multiplier for comment length
       // Modest reward for detailed comments
 
-      // Reduction factor for subsequent comments in the same thread
+      // Reduction factor for subsequent comments in the same std::thread
       // Prevents gaming via comment flooding (30% reduction per comment)
 
-      // Maximum comments per thread that count for scoring
+      // Maximum comments per std::thread that count for scoring
       // Hard cap to prevent excessive commenting
 
     // Code change scoring (applied to PRs)
@@ -149,7 +149,7 @@ namespace elizaos {
         // 1.7x weight for database expertise
         // 1.6x weight for API expertise
 
-  // AI Summary generation (optional)
+  // AI Summary generation (std::optional)
 
 
 } // namespace elizaos

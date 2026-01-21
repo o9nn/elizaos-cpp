@@ -187,7 +187,7 @@ struct DefiTradesTokenInfo {
     number | null nearestPrice;
     double changeAmount;
     double uiChangeAmount;
-    std::optional<any | null> feeInfo;
+    std::optional<std::any | null> feeInfo;
 };
 
 struct DefiTradesTokenResponse {
@@ -204,7 +204,7 @@ struct DefiTradesTokenResponse {
     std::optional<std::string> txType;
     std::optional<std::string> owner;
     std::optional<std::string> side;
-    std::optional<string | null> alias;
+    std::optional<std::string | null> alias;
     std::optional<double> pricePair;
     std::optional<DefiTradesTokenInfo> from;
     std::optional<DefiTradesTokenInfo> to;

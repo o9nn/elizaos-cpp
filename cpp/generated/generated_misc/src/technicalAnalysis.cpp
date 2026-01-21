@@ -1,10 +1,10 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/degenTrader/services/calculation/technicalAnalysis.h"
 
-any TechnicalAnalysisService::calculateTechnicalSignals(any marketData)
+std::any TechnicalAnalysisService::calculateTechnicalSignals(std::any marketData)
 {
     auto rsi = this->analyticsService->calculateRSI(marketData["priceHistory"], 14);
     auto macd = this->analyticsService->calculateMACD(marketData["priceHistory"]);
-    auto volatility = (marketData["priceHistory"]["length"] > 1) ? any(Math->abs(const_(marketData["priceHistory"])[marketData["priceHistory"]["length"] - 1] - const_(marketData["priceHistory"])[marketData["priceHistory"]["length"] - 2]) / const_(marketData["priceHistory"])[marketData["priceHistory"]["length"] - 2]) : any(0);
+    auto volatility = (marketData["priceHistory"]["length"] > 1) ? std::any(Math->abs(const_(marketData["priceHistory"])[marketData["priceHistory"]["length"] - 1] - const_(marketData["priceHistory"])[marketData["priceHistory"]["length"] - 2]) / const_(marketData["priceHistory"])[marketData["priceHistory"]["length"] - 2]) : std::any(0);
     auto volumeTrend = (marketData["volume24h"] > marketData["marketCap"] * 0.1) ? std::string("increasing") : std::string("stable");
     auto unusualActivity = marketData["volume24h"] > marketData["marketCap"] * 0.2;
     return object{

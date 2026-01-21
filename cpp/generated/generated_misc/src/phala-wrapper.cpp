@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/commands/tee/phala-wrapper.h"
 
-any phalaCliCommand = ((std::make_shared<Command>(std::string("phala"))))->description(std::string("Official Phala Cloud CLI - Manage TEE deployments on Phala Cloud"))->allowUnknownOption()->helpOption(false)->action([=](auto _, auto command) mutable
+std::any phalaCliCommand = ((std::make_shared<Command>(std::string("phala"))))->description(std::string("Official Phala Cloud CLI - Manage TEE deployments on Phala Cloud"))->allowUnknownOption()->helpOption(false)->action([=](auto _, auto command) mutable
 {
     shared args = command["args"];
     try
@@ -35,7 +35,7 @@ any phalaCliCommand = ((std::make_shared<Command>(std::string("phala"))))->descr
         }
         );
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         elizaLogger->error(std::string("Error running Phala CLI:"), error);
         elizaLogger->error(std::string("\

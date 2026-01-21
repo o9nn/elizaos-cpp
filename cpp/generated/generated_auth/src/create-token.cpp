@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/server/src/prompts/create-token.h"
 
-any createTokenPrompt(any validatedData)
+std::any createTokenPrompt(std::any validatedData)
 {
     auto userInstructions = string_empty;
     if (AND((validatedData), (validatedData["prompt"]))) {
@@ -43,7 +43,7 @@ any createTokenPrompt(any validatedData)
                 )["slice"](0, 5);
             }
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             console->error(std::string("Error fetching trending topics:"), error);
         }
@@ -51,7 +51,7 @@ any createTokenPrompt(any validatedData)
     auto trendingTopicsPrompt = string_empty;
     if (trendingTopics->get_length() > 0) {
         trendingTopicsPrompt = std::string("\
-        Here are some current trending topics for inspiration (optional):\
+        Here are some current trending topics for inspiration (std::optional):\
         - ") + trendingTopics->join(std::string("\
         - ")) + std::string("\
       ");
@@ -73,7 +73,7 @@ any createTokenPrompt(any validatedData)
         ") + const_(exampleFormats)[Math->floor(Math->random() * exampleFormats->get_length())] + std::string("\
         ```\
         \
-        Only provide the JSON object. Do not include any other text, explanation, or formatting.");
+        Only provide the JSON object. Do not include std::any other text, explanation, or formatting.");
     return content;
 };
 

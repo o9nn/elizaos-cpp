@@ -16,19 +16,19 @@ namespace elizaos {
 struct GitHubUser {
     double id;
     std::string login;
-    string | null name;
+    std::string | null name;
     std::string avatar_url;
     std::string html_url;
 };
 
 struct AuthContextType {
     GitHubUser | null user;
-    string | null token;
+    std::string | null token;
     bool isLoading;
-    string | null error;
+    std::string | null error;
     () => void signin;
     () => void signout;
-    (code: string, state: string) => Promise<void> handleAuthCallback;
+    (code: std::string, state: std::string) => Promise<void> handleAuthCallback;
 };
 
 struct AuthProviderProps {

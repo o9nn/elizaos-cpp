@@ -16,11 +16,11 @@ class PlatformAuthUtils;
 class PlatformAuthConfig : public object, public std::enable_shared_from_this<PlatformAuthConfig> {
 public:
     using std::enable_shared_from_this<PlatformAuthConfig>::shared_from_this;
-    string platformId;
+    std::string platformId;
 
-    any clientType;
+    std::any clientType;
 
-    any distributionMode;
+    std::any distributionMode;
 
     boolean allowTestKeys;
 };
@@ -28,13 +28,13 @@ public:
 class ClientSession : public object, public std::enable_shared_from_this<ClientSession> {
 public:
     using std::enable_shared_from_this<ClientSession>::shared_from_this;
-    string sessionId;
+    std::string sessionId;
 
-    any clientType;
+    std::any clientType;
 
-    string platformId;
+    std::string platformId;
 
-    any authStatus;
+    std::any authStatus;
 
     std::shared_ptr<Date> lastActivity;
 
@@ -44,11 +44,11 @@ public:
 class KeyDistributionRequest : public object, public std::enable_shared_from_this<KeyDistributionRequest> {
 public:
     using std::enable_shared_from_this<KeyDistributionRequest>::shared_from_this;
-    string sessionId;
+    std::string sessionId;
 
-    string provider;
+    std::string provider;
 
-    any keyType;
+    std::any keyType;
 
     array<string> clientCapabilities;
 };
@@ -58,15 +58,15 @@ public:
     using std::enable_shared_from_this<KeyDistributionResponse>::shared_from_this;
     boolean success;
 
-    string apiKey;
+    std::string apiKey;
 
-    any keyType;
+    std::any keyType;
 
     array<string> capabilities;
 
     std::shared_ptr<Date> expiresAt;
 
-    string error;
+    std::string error;
 };
 
 class PlatformIntegrationService : public object, public std::enable_shared_from_this<PlatformIntegrationService> {
@@ -76,21 +76,21 @@ public:
 
     std::shared_ptr<AuthenticationService> authService;
 
-    std::shared_ptr<Map<string, std::shared_ptr<ClientSession>>> activeSessions = std::make_shared<Map<string, std::shared_ptr<ClientSession>>>();
+    std::shared_ptr<Map<std::string, std::shared_ptr<ClientSession>>> activeSessions = std::make_shared<Map<std::string, std::shared_ptr<ClientSession>>>();
 
     array<object> keyDistributionLog = array<object>();
 
     PlatformIntegrationService(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<PlatformAuthConfig> config);
     template <typename P1>
-    std::shared_ptr<Promise<std::shared_ptr<ClientSession>>> registerSession(string sessionId, P1 clientType, string platformId);
+    std::shared_ptr<Promise<std::shared_ptr<ClientSession>>> registerSession(std::string sessionId, P1 clientType, std::string platformId);
     virtual std::shared_ptr<Promise<std::shared_ptr<KeyDistributionResponse>>> distributeKey(std::shared_ptr<KeyDistributionRequest> request);
-    virtual std::shared_ptr<Promise<object>> validateDistributedKey(string sessionId, string provider, string apiKey);
-    virtual std::shared_ptr<Promise<object>> invalidateSession(string sessionId);
-    virtual std::shared_ptr<Promise<object>> getSessionStatus(string sessionId);
+    virtual std::shared_ptr<Promise<object>> validateDistributedKey(std::string sessionId, std::string provider, std::string apiKey);
+    virtual std::shared_ptr<Promise<object>> invalidateSession(std::string sessionId);
+    virtual std::shared_ptr<Promise<object>> getSessionStatus(std::string sessionId);
     virtual object getAnalytics();
     virtual double cleanupExpiredSessions();
-    virtual std::shared_ptr<Promise<std::shared_ptr<KeyDistributionResponse>>> distributeTestKey(string provider, string clientType);
-    virtual std::shared_ptr<Promise<std::shared_ptr<KeyDistributionResponse>>> distributeProductionKey(string provider, std::shared_ptr<ClientSession> session);
+    virtual std::shared_ptr<Promise<std::shared_ptr<KeyDistributionResponse>>> distributeTestKey(std::string provider, std::string clientType);
+    virtual std::shared_ptr<Promise<std::shared_ptr<KeyDistributionResponse>>> distributeProductionKey(std::string provider, std::shared_ptr<ClientSession> session);
 };
 
 class PlatformIntegrationFactory : public object, public std::enable_shared_from_this<PlatformIntegrationFactory> {
@@ -104,15 +104,15 @@ public:
 class PlatformAuthUtils : public object, public std::enable_shared_from_this<PlatformAuthUtils> {
 public:
     using std::enable_shared_from_this<PlatformAuthUtils>::shared_from_this;
-    static string generateSessionId();
-    static boolean isValidSessionId(string sessionId);
+    static std::string generateSessionId();
+    static boolean isValidSessionId(std::string sessionId);
     template <typename P0>
     static array<string> getClientCapabilities(P0 clientType);
     static boolean isProviderCompatible(array<string> providerCapabilities, array<string> clientCapabilities);
 };
 
 template <typename P1>
-std::shared_ptr<Promise<std::shared_ptr<ClientSession>>> PlatformIntegrationService::registerSession(string sessionId, P1 clientType, string platformId)
+std::shared_ptr<Promise<std::shared_ptr<ClientSession>>> PlatformIntegrationService::registerSession(std::string sessionId, P1 clientType, std::string platformId)
 {
     logger->debug(std::string("Registering session ") + sessionId + std::string(" for ") + clientType + std::string(" client"));
     auto session = object{
@@ -123,12 +123,12 @@ std::shared_ptr<Promise<std::shared_ptr<ClientSession>>> PlatformIntegrationServ
         object::pair{std::string("lastActivity"), std::make_shared<Date>()}, 
         object::pair{std::string("validatedKeys"), array<any>()}
     };
-    this->activeSessions->set(sessionId, session);
+    this->activeSessions->std::set(sessionId, session);
     try
     {
         session->authStatus = std::async([=]() { this->authService->getAuthStatus(); });
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->warn(std::string("Failed to get initial auth status for session ") + sessionId + std::string(":"), error);
     }
@@ -139,9 +139,9 @@ template <typename P0>
 array<string> PlatformAuthUtils::getClientCapabilities(P0 clientType)
 {
     static switch_type __switch12683_13063 = {
-        { any(std::string("cli")), 1 },
-        { any(std::string("gui")), 2 },
-        { any(std::string("agent")), 3 }
+        { std::any(std::string("cli")), 1 },
+        { std::any(std::string("gui")), 2 },
+        { std::any(std::string("agent")), 3 }
     };
     switch (__switch12683_13063[clientType])
     {

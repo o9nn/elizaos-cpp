@@ -8,10 +8,10 @@ std::function<std::shared_ptr<Promise<any>>()> fetchHighestRankedUsers = [=]() m
         auto response = std::async([=]() { get(std::string("/user/highestRankedUsers")); });
         return response->data;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("Error fetching highest ranked users:"), error);
-        throw any(error);
+        throw std::any(error);
     }
 };
 std::function<object()> useDashboard = [=]() mutable
@@ -35,7 +35,7 @@ std::function<object()> useDashboard = [=]() mutable
                         object::pair{std::string("partners"), std::string("partners")}
                     });
                 }
-                catch (const any& err)
+                catch (const std::any& err)
                 {
                     setError((is<Error>(err)) ? err : std::make_shared<Error>(std::string("Failed to fetch dashboard data")));
                 }

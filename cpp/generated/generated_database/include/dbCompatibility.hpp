@@ -8,32 +8,32 @@ class DatabaseCompatibilityService;
 class DatabaseCompatibilityService : public object, public std::enable_shared_from_this<DatabaseCompatibilityService> {
 public:
     using std::enable_shared_from_this<DatabaseCompatibilityService>::shared_from_this;
-    any databaseType = std::string("unknown");
+    std::any databaseType = std::string("unknown");
 
     DatabaseCompatibilityService();
     virtual void detectDatabaseType();
     template <typename RET>
-    RET formatUuid(string uuid);
+    RET formatUuid(std::string uuid);
     template <typename RET>
     RET formatBoolean(boolean value);
-    virtual boolean parseBoolean(any value);
+    virtual boolean parseBoolean(std::any value);
     template <typename P0>
-    string formatDate(P0 date);
-    virtual any parseDate(any value);
+    std::string formatDate(P0 date);
+    virtual std::any parseDate(std::any value);
     template <typename RET>
-    RET formatJson(any obj);
-    virtual any parseJson(any value);
+    RET formatJson(std::any obj);
+    virtual std::any parseJson(std::any value);
     template <typename RET>
     RET formatArray(array<string> arr);
-    virtual array<string> parseArray(any value);
-    virtual string buildCaseInsensitiveSearch(string column, string value);
+    virtual array<string> parseArray(std::any value);
+    virtual std::string buildCaseInsensitiveSearch(std::string column, std::string value);
     template <typename RET>
     RET getDatabaseType();
 };
 
 extern std::shared_ptr<DatabaseCompatibilityService> dbCompat;
 template <typename RET>
-RET DatabaseCompatibilityService::formatUuid(string uuid)
+RET DatabaseCompatibilityService::formatUuid(std::string uuid)
 {
     if (this->databaseType == std::string("postgres")) {
         return uuid;
@@ -51,7 +51,7 @@ RET DatabaseCompatibilityService::formatBoolean(boolean value)
 }
 
 template <typename P0>
-string DatabaseCompatibilityService::formatDate(P0 date)
+std::string DatabaseCompatibilityService::formatDate(P0 date)
 {
     if (type_of(date) == std::string("string")) {
         date = std::make_shared<Date>(date);
@@ -63,7 +63,7 @@ string DatabaseCompatibilityService::formatDate(P0 date)
 }
 
 template <typename RET>
-RET DatabaseCompatibilityService::formatJson(any obj)
+RET DatabaseCompatibilityService::formatJson(std::any obj)
 {
     if (this->databaseType == std::string("sqlite")) {
         return JSON->stringify(obj);

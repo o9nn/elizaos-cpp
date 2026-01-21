@@ -28,7 +28,7 @@ class RunShell {
   private env: SWEEnv;
   private agent: AbstractAgent;
   private problemStatement: ProblemStatement | ProblemStatementConfig;
-  private outputDir: string;
+  private outputDir: std::string;
   private hooks: AbstractAgentHook[];
   private logger: AgentLogger;
   private rl: readline.Interface;
@@ -37,7 +37,7 @@ class RunShell {
     env: SWEEnv;
     agent: AbstractAgent;
     problemStatement: ProblemStatement | ProblemStatementConfig;
-    outputDir?: string;
+    outputDir?: std::string;
     hooks?: AbstractAgentHook[];
   }) {
     this.env = config.env;

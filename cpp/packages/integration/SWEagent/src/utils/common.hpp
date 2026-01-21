@@ -25,7 +25,7 @@ namespace elizaos {
 std::string formatDuration(double seconds);
 
 /**
- * Truncate string to specified length
+ * Truncate std::string to specified length
  */
 std::string truncateString(const std::string& str, double maxLength);
 
@@ -43,15 +43,15 @@ struct RetryOptions {
 };
 
 /**
- * Retry an async operation
+ * Retry an std::async operation
  */
 
 /**
- * Debounce a function
+ * Debounce a std::function
  */
 
 /**
- * Throttle a function
+ * Throttle a std::function
  */
 
 

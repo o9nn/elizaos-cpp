@@ -16,7 +16,7 @@ namespace elizaos {
 
 
 
-void Dialog(auto className, auto children, auto variant);
+void Dialog(auto className, auto children, auto std::variant);
 
 void DialogTitle();
 

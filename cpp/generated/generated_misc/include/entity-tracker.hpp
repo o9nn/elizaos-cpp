@@ -17,25 +17,25 @@ public:
 
     double CLEANUP_THRESHOLD = 60000;
 
-    EntityTracker(string worldId);
-    virtual std::shared_ptr<Promise<array<std::shared_ptr<TrackedEntity>>>> updateEntities(array<std::shared_ptr<DetectedObject>> detectedObjects, array<std::shared_ptr<PersonInfo>> people, std::shared_ptr<Map<string, string>> faceProfiles = undefined, std::shared_ptr<IAgentRuntime> runtime = undefined);
-    virtual std::shared_ptr<Promise<std::shared_ptr<TrackedEntity>>> trackPerson(std::shared_ptr<PersonInfo> person, any faceProfileId, double timestamp);
+    EntityTracker(std::string worldId);
+    virtual std::shared_ptr<Promise<array<std::shared_ptr<TrackedEntity>>>> updateEntities(array<std::shared_ptr<DetectedObject>> detectedObjects, array<std::shared_ptr<PersonInfo>> people, std::shared_ptr<Map<std::string, string>> faceProfiles = undefined, std::shared_ptr<IAgentRuntime> runtime = undefined);
+    virtual std::shared_ptr<Promise<std::shared_ptr<TrackedEntity>>> trackPerson(std::shared_ptr<PersonInfo> person, std::any faceProfileId, double timestamp);
     virtual std::shared_ptr<Promise<std::shared_ptr<TrackedEntity>>> trackObject(std::shared_ptr<DetectedObject> obj, double timestamp);
     template <typename P1>
-    any findMatchingEntity(std::shared_ptr<BoundingBox> boundingBox, P1 entityType, string faceProfileId = undefined);
+    std::any findMatchingEntity(std::shared_ptr<BoundingBox> boundingBox, P1 entityType, std::string faceProfileId = undefined);
     virtual double calculateDistance(std::shared_ptr<BoundingBox> box1, std::shared_ptr<BoundingBox> box2);
     virtual void updateWorldState(std::shared_ptr<Set<string>> seenEntityIds, double timestamp);
     virtual std::shared_ptr<Promise<void>> syncWithRuntime(std::shared_ptr<IAgentRuntime> runtime, array<std::shared_ptr<TrackedEntity>> frameEntities);
     virtual std::shared_ptr<WorldState> getWorldState();
     virtual array<std::shared_ptr<TrackedEntity>> getActiveEntities();
-    virtual any getEntity(string entityId);
+    virtual std::any getEntity(std::string entityId);
     virtual array<object> getRecentlyLeft();
-    virtual boolean assignNameToEntity(string entityId, string name);
+    virtual boolean assignNameToEntity(std::string entityId, std::string name);
     virtual object getStatistics();
 };
 
 template <typename P1>
-any EntityTracker::findMatchingEntity(std::shared_ptr<BoundingBox> boundingBox, P1 entityType, string faceProfileId)
+std::any EntityTracker::findMatchingEntity(std::shared_ptr<BoundingBox> boundingBox, P1 entityType, std::string faceProfileId)
 {
     auto currentTime = Date->now();
     auto bestMatch = nullptr;

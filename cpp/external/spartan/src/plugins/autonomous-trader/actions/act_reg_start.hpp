@@ -45,9 +45,9 @@ std::future<void> sendVerifyEmail(auto address, auto regCode);
 
     // using the service to get this/components might be good way
 
-        // any overlap?
+        // std::any overlap?
 
-        // set this entities email
+        // std::set this entities email
       // update spartanData
       std::future<void> updateSpartanData(auto agentEntityId, auto spartanData);
       // if we need to update it
@@ -58,10 +58,10 @@ std::future<void> sendVerifyEmail(auto address, auto regCode);
       // do we have an email component already
         // if so we should confirm
 
-        // set wizard state
-        // set form state
+        // std::set wizard state
+        // std::set form state
         // yes/no
-        // set form state
+        // std::set form state
 /*
 */
 } // namespace elizaos

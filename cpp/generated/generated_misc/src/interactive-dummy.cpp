@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/tests/test-commands/interactive-dummy.h"
 
-string InteractiveDummyCommand::PROMPT = std::string("(dummy) ");
+std::string InteractiveDummyCommand::PROMPT = std::string("(dummy) ");
 
 InteractiveDummyCommand::InteractiveDummyCommand() {
     this->rl = readline::createInterface(object{
@@ -15,7 +15,7 @@ void InteractiveDummyCommand::start()
     console->log(std::string("Started interactive dummy command"));
 }
 
-void InteractiveDummyCommand::send(string input)
+void InteractiveDummyCommand::send(std::string input)
 {
     console->log(std::string("Received input: ") + input + string_empty);
     setTimeout([=]() mutable
@@ -38,8 +38,8 @@ void InteractiveDummyCommand::run()
     {
         auto [cmd, args] = line->trim()->split(std::string(" "));
         static switch_type __switch937_1251 = {
-            { any(std::string("stop")), 1 },
-            { any(std::string("send")), 2 }
+            { std::any(std::string("stop")), 1 },
+            { std::any(std::string("send")), 2 }
         };
         switch (__switch937_1251[cmd])
         {

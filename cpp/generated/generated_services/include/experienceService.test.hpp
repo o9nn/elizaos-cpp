@@ -6,5 +6,5 @@
 #include "../types.js.h"
 #include "@elizaos/core.h"
 
-extern any mockRuntime;
+extern std::any mockRuntime;
 #endif

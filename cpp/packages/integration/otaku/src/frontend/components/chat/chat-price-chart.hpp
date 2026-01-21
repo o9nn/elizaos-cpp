@@ -30,7 +30,7 @@ using ChartType = std::variant<'price', 'marketcap'>;
 
 struct PriceChartData {
     std::string token_identifier;
-    string | null token_symbol;
+    std::string | null token_symbol;
     std::string chain;
     std::string timeframe;
     number | null current_price;

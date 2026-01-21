@@ -11,7 +11,7 @@ express::Router createAgentWorldsRouter(ElizaOS elizaOS) {
         const auto router = express.Router();
 
         // Get all worlds
-        router.get("/worlds", async (_req, res) => {
+        router.get("/worlds", std::async (_req, res) => {
             try {
                 const auto runtime = elizaOS.getAgents()[0];
 
@@ -35,8 +35,8 @@ express::Router createAgentWorldsRouter(ElizaOS elizaOS) {
                 }
                 });
 
-                // Helper function to create a world
-                const auto createWorldHelper = async (;
+                // Helper std::function to create a world
+                const auto createWorldHelper = std::async (;
                 runtime: IAgentRuntime,
                 req: express.Request,
                 res: express.Response
@@ -77,7 +77,7 @@ express::Router createAgentWorldsRouter(ElizaOS elizaOS) {
                             };
 
                             // Create new world for specific agent
-                            router.post("/:agentId/worlds", async (req, res) => {
+                            router.post("/:agentId/worlds", std::async (req, res) => {
                                 const auto agentId = validateUuid(req.params.agentId);
                                 if (!agentId) {
                                     return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
@@ -92,7 +92,7 @@ express::Router createAgentWorldsRouter(ElizaOS elizaOS) {
                                 });
 
                                 // Update world properties
-                                router.patch("/:agentId/worlds/:worldId", async (req, res) => {
+                                router.patch("/:agentId/worlds/:worldId", std::async (req, res) => {
                                     const auto agentId = validateUuid(req.params.agentId);
                                     const auto worldId = validateUuid(req.params.worldId);
 

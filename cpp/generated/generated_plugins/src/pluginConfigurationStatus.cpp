@@ -49,7 +49,7 @@ std::shared_ptr<Provider> pluginConfigurationStatusProvider = object{
                                     {
                                         return !(*const_(currentConfig))[varInfo->name];
                                     }
-                                    )->map([=](auto varInfo) mutable
+                                    )->std::map([=](auto varInfo) mutable
                                     {
                                         return varInfo->name;
                                     }
@@ -60,7 +60,7 @@ std::shared_ptr<Provider> pluginConfigurationStatusProvider = object{
                                         object::pair{std::string("requiredVars"), result["requiredVars"]->get_length()}, 
                                         object::pair{std::string("missingVars"), missingVars->get_length()}, 
                                         object::pair{std::string("configured"), missingVars->get_length() == 0}, 
-                                        object::pair{std::string("variables"), result["requiredVars"]->map([=](auto v) mutable
+                                        object::pair{std::string("variables"), result["requiredVars"]->std::map([=](auto v) mutable
                                         {
                                             return (object{
                                                 object::pair{std::string("name"), v->name}, 
@@ -90,7 +90,7 @@ std::shared_ptr<Provider> pluginConfigurationStatusProvider = object{
                                     statusData["configuredPlugins"]++;
                                 }
                             }
-                            catch (const any& error)
+                            catch (const std::any& error)
                             {
                                 logger->warn(std::string("[pluginConfigurationStatus] Failed to check configuration for plugin ") + plugin["name"] + std::string(":"), error);
                                 statusData["plugins"]["push"](object{
@@ -106,7 +106,7 @@ std::shared_ptr<Provider> pluginConfigurationStatusProvider = object{
                         }
                     }
                 }
-                catch (const any& error)
+                catch (const std::any& error)
                 {
                     logger->error(std::string("[pluginConfigurationStatus] Failed to get plugins:"), error);
                 }
@@ -114,7 +114,7 @@ std::shared_ptr<Provider> pluginConfigurationStatusProvider = object{
             try
             {
                 auto activeDialogs = interactionService->getActiveDialogs();
-                statusData["activeDialogs"] = activeDialogs->map([=](auto dialog) mutable
+                statusData["activeDialogs"] = activeDialogs->std::map([=](auto dialog) mutable
                 {
                     return (object{
                         object::pair{std::string("id"), dialog->id}, 
@@ -130,7 +130,7 @@ std::shared_ptr<Provider> pluginConfigurationStatusProvider = object{
                 }
                 );
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 logger->warn(std::string("[pluginConfigurationStatus] Failed to get active dialogs:"), error);
             }
@@ -186,13 +186,13 @@ Active configuration dialogs:\
                 }}
             };
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("[pluginConfigurationStatus] Error getting plugin configuration status:"), error);
             return object{
                 object::pair{std::string("text"), std::string("Error retrieving plugin configuration status.")}, 
                 object::pair{std::string("data"), object{
-                    object::pair{std::string("error"), (is<Error>(error)) ? any(error->message) : any(std::string("Unknown error"))}
+                    object::pair{std::string("error"), (is<Error>(error)) ? std::any(error->message) : std::any(std::string("Unknown error"))}
                 }}, 
                 object::pair{std::string("values"), object{
                     object::pair{std::string("configurationServicesAvailable"), false}, 

@@ -17,7 +17,7 @@ std::future<CoinMarketCapConfig> validateCoinMarketCapConfig(IAgentRuntime runti
                 } catch (error) {
                     if (error instanceof z.ZodError) {
                         const auto errorMessages = error.errors;
-                        ".map((err) => " + std::to_string(err.path.join(".")) + ": " + err.message
+                        ".std::map((err) => " + std::to_string(err.path.join(".")) + ": " + err.message
                         .join("\n");
                         throw new Error(
                         "CoinMarketCap configuration validation failed:\n" + errorMessages

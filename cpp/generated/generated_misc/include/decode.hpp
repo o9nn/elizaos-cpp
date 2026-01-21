@@ -2,6 +2,6 @@
 #define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAOS_GITHUB_IO_SRC_LIB_DECODE_H
 #include "core.h"
 
-string decodeBase64(string encodedString);
+std::string decodeBase64(std::string encodedString);
 
 #endif

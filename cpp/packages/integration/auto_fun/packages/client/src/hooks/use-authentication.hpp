@@ -16,7 +16,7 @@ namespace elizaos {
 
 
 
-// Helper function to send auth token in headers
+// Helper std::function to send auth token in headers
 
   return fetch(url, newOptions);
 

@@ -29,7 +29,7 @@ std::shared_ptr<Action> checkTransactionConfirmationAction = as<std::shared_ptr<
             auto apiKey = runtime->getSetting(std::string("ETHERSCAN_API_KEY"));
             return AND((type_of(apiKey) == std::string("string")), (apiKey->indexOf(std::string("YourApiKeyToken")) != 0));
         }
-        catch (const any& err)
+        catch (const std::any& err)
         {
             logger->warn(std::string("[CHECK_TRANSACTION_CONFIRMATION] Validation failed:"), (as<std::shared_ptr<Error>>(err))->message);
             return false;
@@ -94,11 +94,11 @@ Example: `0x1234567890abcdef...`");
             };
             auto etherscanService = as<std::shared_ptr<EtherscanService>>(runtime->getService(EtherscanService::serviceType));
             if (!etherscanService) {
-                throw any(std::make_shared<Error>(std::string("Etherscan service not found. Please ensure the Etherscan plugin is properly initialized.")));
+                throw std::any(std::make_shared<Error>(std::string("Etherscan service not found. Please ensure the Etherscan plugin is properly initialized.")));
             }
             auto receipt = std::async([=]() { etherscanService->getTransactionReceipt(txHash, chain); });
             auto statusText = (receipt->success) ? std::string("✅ SUCCESS") : std::string("❌ FAILED");
-            auto chainName = (chain) ? any(chain->charAt(0)->toUpperCase() + chain->slice(1)) : any(std::string("Ethereum"));
+            auto chainName = (chain) ? std::any(chain->charAt(0)->toUpperCase() + chain->slice(1)) : std::any(std::string("Ethereum"));
             auto blockNumberDec = parseInt(receipt->blockNumber, 16);
             auto gasUsedDec = parseInt(receipt->gasUsed, 16);
             auto gasUsedGwei = (gasUsedDec / 1000000000)->toFixed(4);
@@ -164,7 +164,7 @@ Example: `0x1234567890abcdef...`");
             }
             return result;
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             auto msg = (is<Error>(error)) ? error->message : String(error);
             logger->error(std::string("[CHECK_TRANSACTION_CONFIRMATION] Action failed: ") + msg + string_empty);

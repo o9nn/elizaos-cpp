@@ -14,7 +14,7 @@ namespace elizaos {
 
 
 struct ExamplePromptsProps {
-    (prompt: string) => void onPromptSelect;
+    (prompt: std::string) => void onPromptSelect;
 };
 
 void ExamplePrompts(ExamplePromptsProps { onPromptSelect });

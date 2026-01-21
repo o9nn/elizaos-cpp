@@ -79,7 +79,7 @@ std::future<void> build() {
         // Build backend
         const auto [buildResult, tscResult] = Promise.all([;
         // Task 1: Build with Bun
-        [&](async () {
+        [&](std::async () {
             std::cout << " Bundling backend with Bun..." << std::endl;
             const auto result = Bun.build({;
                 entrypoints: ["./src/index.ts"],
@@ -132,7 +132,7 @@ std::future<void> build() {
                                 })(),
 
                                 // Task 2: Generate TypeScript declarations
-                                [&](async () {
+                                [&](std::async () {
                                     std::cout << " Generating TypeScript declarations..." << std::endl;
                                     try {
                                         "$" + "tsc --emitDeclarationOnly";

@@ -20,7 +20,7 @@ void ArrayInput(auto data) {
         }
         };
 
-        const auto removeTag = [&](tagToRemove: string) {;
+        const auto removeTag = [&](tagToRemove: std::string) {;
             onChange(data.filter((tag) => tag != tagToRemove));
             };
 

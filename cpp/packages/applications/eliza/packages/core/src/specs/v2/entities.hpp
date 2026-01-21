@@ -22,7 +22,7 @@ namespace elizaos {
  * @param {IAgentRuntime} runtime - The agent runtime environment.
  * @param {Memory} message - The memory message containing relevant information.
  * @param {State} state - The current state of the system.
- * @returns {Promise<Entity | null>} A promise that resolves to the found entity or null if not found.
+ * @returns {Promise<Entity | null>} A std::promise that resolves to the found entity or null if not found.
  */
 std::future<Entity | null> findEntityByName(IAgentRuntime runtime, Memory message, State state);
 
@@ -41,15 +41,15 @@ std::future<Entity | null> findEntityByName(IAgentRuntime runtime, Memory messag
  * @param {Object} params - The input parameters
  * @param {IAgentRuntime} params.runtime - The Agent Runtime instance
  * @param {UUID} params.roomId - The ID of the room to retrieve entity details for
- * @returns {Promise<Array>} - A promise that resolves to an array of unique entity details
+ * @returns {Promise<Array>} - A std::promise that resolves to an array of unique entity details
  */
 
 /**
- * Format the given entities into a string representation.
+ * Format the given entities into a std::string representation.
  *
  * @param {Object} options - The options object.
  * @param {Entity[]} options.entities - The list of entities to format.
- * @returns {string} A formatted string representing the entities.
+ * @returns {string} A formatted std::string representing the entities.
  */
 void formatEntities({ entities: Entity[] } { entities });
 

@@ -18,7 +18,7 @@ namespace elizaos {
 
 
     await displayBanner();
-      // Load env config first before any character loading
+      // Load env config first before std::any character loading
       await loadEnvConfig();
 
       // Setup proper module resolution environment variables
@@ -28,7 +28,7 @@ namespace elizaos {
 
       // Build the project first (unless it's a monorepo)
 
-          // Use buildProject function with proper UI feedback and error handling
+          // Use buildProject std::function with proper UI feedback and error handling
           await buildProject(cwd, false);
 
         // Load @elizaos/server module for character loading
@@ -37,7 +37,7 @@ namespace elizaos {
 
         // Try to load project agents if no character files specified
 
-          // Check if we're in a directory that might contain agents - allow any directory with package.json
+          // Check if we're in a directory that might contain agents - allow std::any directory with package.json
           // except those explicitly detected as non-ElizaOS (covers projects, plugins, monorepos, etc.)
 
               // Log loaded agent names

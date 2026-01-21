@@ -8,5 +8,5 @@
 using colors = _default;
 
 extern object originalConsoleLog;
-extern any consoleSpy;
+extern std::any consoleSpy;
 #endif

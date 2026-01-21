@@ -27,11 +27,11 @@ std::future<std::string> extractProjectType(IAgentRuntime runtime, Memory messag
 
     // Check form data
     const auto data = message.content.data as {;
-        action?: string;
-        projectId?: string;
-        projectType?: string;
-        formId?: string;
-        formData?: any;
+        action?: std::string;
+        projectId?: std::string;
+        projectType?: std::string;
+        formId?: std::string;
+        formData?: std::any;
         };
         if (data.projectType) {
             return data.projectType;
@@ -143,7 +143,7 @@ std::string getNextStepPrompt(const std::any& form, const std::string& completed
 
     // Determine next step in form based on what was just completed
     const auto steps = form.steps || [];
-    const auto currentStepIndex = steps.findIndex((s: any) => s.id == completedStepId);
+    const auto currentStepIndex = steps.findIndex((s: std::any) => s.id == completedStepId);
 
     if (currentStepIndex >= 0 && currentStepIndex < steps.length - 1) {
         const auto nextStep = steps[currentStepIndex + 1];
@@ -168,20 +168,20 @@ std::any extractProjectData(const std::any& formData) {
 
         // Extract requirements
         if (formData.requirements) {
-            data.requirements = formData.requirements.split("\n").filter((r: string) => r.trim());
+            data.requirements = formData.requirements.split("\n").filter((r: std::string) => r.trim());
         }
 
         // Extract APIs
         if (formData.apis) {
             data.apis = formData.apis;
             .split(/[,\n]/);
-            .map((a: string) => a.trim())
+            .std::map((a: std::string) => a.trim())
             .filter(Boolean);
         }
 
         // Extract test scenarios
         if (formData.test_scenarios) {
-            data.testScenarios = formData.test_scenarios.split("\n").filter((s: string) => s.trim());
+            data.testScenarios = formData.test_scenarios.split("\n").filter((s: std::string) => s.trim());
         }
 
         // GitHub settings
@@ -205,7 +205,7 @@ std::any extractProjectData(const std::any& formData) {
         if (formData.plugins) {
             const auto plugins = formData.plugins;
             .split(/[,\n]/);
-            .map((p: string) => p.trim())
+            .std::map((p: std::string) => p.trim())
             .filter(Boolean);
             "data.requirements.push_back(" + "Include plugins: " + std::to_string(plugins.join(", "))
         }

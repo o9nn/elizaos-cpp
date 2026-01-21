@@ -21,7 +21,7 @@ void HoldersTable() {
 
     const auto query = useQuery({;
         queryKey: ["token", token.mint, "holders"],
-        queryFn: async () => {
+        queryFn: std::async () => {
             const auto holders = getHolders({ address: token.mint });
 
             return holders.holders;
@@ -65,7 +65,7 @@ void HoldersTable() {
         </TableHeader>;
         <TableBody>;
         {data.size() > 0;
-        ? data.map((holder) => {
+        ? data.std::map((holder) => {
             const auto formattedAmount: number =;
             (Number(holder.balance) ? Number(holder.balance) : 0) /
             10 ** (token.tokenDecimals || 6);

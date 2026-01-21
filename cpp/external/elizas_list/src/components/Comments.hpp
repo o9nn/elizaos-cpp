@@ -22,6 +22,6 @@ struct Comment {
     std::string image;
 };
 
-void Comments({ projectId: string } { projectId });
+void Comments({ projectId: std::string } { projectId });
 
 } // namespace elizaos

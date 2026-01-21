@@ -14,7 +14,7 @@ void SwapsTable() {
 
     const auto query = useQuery({;
         queryKey,
-        queryFn: async () => {
+        queryFn: std::async () => {
             const auto data = getSwaps({ address: token.mint });
             return data;
             },
@@ -25,7 +25,7 @@ void SwapsTable() {
             const auto showMoreTrades =;
             token.status == "locked" || token.status == "migrated";
 
-            const auto dataExtractor = [&](swap: any) {;
+            const auto dataExtractor = [&](swap: std::any) {;
                 if (isCodex) return swap;
                 const auto account = swap.user || "NA";
                 const auto swapType = swap.direction == 0 ? "Buy" : "Sell";
@@ -97,7 +97,7 @@ void SwapsTable() {
         </TableHeader>;
         <TableBody>;
         {(items || []).size() > 0;
-        ? ((items || []).size() > 100 ? items.splice(0, 50) : items).map(
+        ? ((items || []).size() > 100 ? items.splice(0, 50) : items).std::map(
         [&](swap, _) {
             const auto {;
                 account,

@@ -25,7 +25,7 @@ namespace elizaos {
 BigNumber toBN(const std::variant<std::string, double, BigNumber>& value);
 
 /**
- * Formats a BigNumber to a human readable string
+ * Formats a BigNumber to a human readable std::string
  */
 std::string formatBN(BigNumber value, auto decimals);
 

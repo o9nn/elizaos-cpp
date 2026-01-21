@@ -9,14 +9,14 @@
 extern std::shared_ptr<Action> generateCodeAction;
 std::shared_ptr<Promise<string>> extractProjectType(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<Memory> message, std::shared_ptr<State> _state = undefined);
 
-array<string> extractRequirements(string text);
+array<string> extractRequirements(std::string text);
 
-array<string> extractAPIs(string text);
+array<string> extractAPIs(std::string text);
 
-any extractProjectName(string text);
+std::any extractProjectName(std::string text);
 
-string getNextStepPrompt(any form, string completedStepId);
+std::string getNextStepPrompt(std::any form, std::string completedStepId);
 
-any extractProjectData(any formData);
+std::any extractProjectData(std::any formData);
 
 #endif

@@ -26,7 +26,7 @@ Message::Message(object opts) {
     this->flags = opts["flags"];
     this->referenced_message = opts["referenced_message"];
     this->interaction = opts["interaction"];
-    this->thread = opts["thread"];
+    this->std::thread = opts["thread"];
     this->components = opts["components"];
     this->sticker_items = opts["sticker_items"];
     this->stickers = opts["stickers"];

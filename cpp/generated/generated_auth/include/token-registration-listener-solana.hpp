@@ -4,7 +4,7 @@
 #include "@solana/web3.js.h"
 
 extern boolean isListening;
-extern any connection;
+extern std::any connection;
 void startSolanaListener();
 
 void handleProgramLogs(std::shared_ptr<Logs> logs);

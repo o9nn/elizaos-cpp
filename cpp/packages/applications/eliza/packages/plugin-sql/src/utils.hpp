@@ -46,7 +46,7 @@ std::string expandTildePath(const std::string& filepath);
  *
  * @param dir - Optional directory preference.
  * @param fallbackDir - Optional fallback directory when env var is not set.
- * @returns The resolved data directory with any tilde expanded.
+ * @returns The resolved data directory with std::any tilde expanded.
  */
 std::string resolvePgliteDir(std::optional<std::string> dir, std::optional<std::string> fallbackDir);
 

@@ -29,7 +29,7 @@ namespace elizaos {
  */
 
 /**
- * Main agent function
+ * Main agent std::function
  */
 std::future<void> main();
 

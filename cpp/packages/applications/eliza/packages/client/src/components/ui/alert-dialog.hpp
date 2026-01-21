@@ -33,7 +33,7 @@ namespace elizaos {
 
     // Try to close with ESC
 
-        // Simulate async operation
+        // Simulate std::async operation
 
     // Open the dialog
 

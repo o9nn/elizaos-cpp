@@ -76,7 +76,7 @@ public:
     /**
      * Upload session logs with defensive error handling
      * @param logData - The session log data to upload
-     * @param options - Upload options (optional)
+     * @param options - Upload options (std::optional)
      * @return true if successful, false if failed but gracefully handled
      */
     bool uploadLogs(const SessionLogData& logData, 

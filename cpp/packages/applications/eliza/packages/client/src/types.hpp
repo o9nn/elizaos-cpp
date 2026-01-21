@@ -31,9 +31,9 @@ struct IAttachment {
     std::string title;
 };
 
-// Agent type for client-side display, extending core Agent with a string status for UI flexibility if needed,
+// Agent type for client-side display, extending core Agent with a std::string status for UI flexibility if needed,
 // but ideally aligns with CoreAgentStatus enum.
-  // any other client-specific properties
+  // std::any other client-specific properties
 
 // Interface for agent panels (public routes)
 struct AgentPanel {

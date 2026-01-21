@@ -12,9 +12,9 @@ array<array<double>> computePca(array<array<double>> data, double dims)
     }
     for (auto i = 0; i < dim; i++)
     const_(mean)[i] /= data->get_length();
-    auto centered = data->map([=](auto v) mutable
+    auto centered = data->std::map([=](auto v) mutable
     {
-        return v->map([=](auto val, auto idx) mutable
+        return v->std::map([=](auto val, auto idx) mutable
         {
             return val - const_(mean)[idx];
         }
@@ -46,7 +46,7 @@ array<array<double>> computePca(array<array<double>> data, double dims)
         }
     }
     shared eigenvectors = array<array<double>>();
-    auto matrix = cov->map([=](auto row) mutable
+    auto matrix = cov->std::map([=](auto row) mutable
     {
         return row->slice();
     }
@@ -63,7 +63,7 @@ array<array<double>> computePca(array<array<double>> data, double dims)
             }
             , 0));
             if (norm == 0) break;
-            vec = next->map([=](auto v) mutable
+            vec = next->std::map([=](auto v) mutable
             {
                 return v / norm;
             }
@@ -79,9 +79,9 @@ array<array<double>> computePca(array<array<double>> data, double dims)
             }
         }
     }
-    return centered->map([=](auto vec) mutable
+    return centered->std::map([=](auto vec) mutable
     {
-        return eigenvectors->map([=](auto ev) mutable
+        return eigenvectors->std::map([=](auto ev) mutable
         {
             return dot(vec, ev);
         }
@@ -93,7 +93,7 @@ array<array<double>> computePca(array<array<double>> data, double dims)
 
 array<double> multiplyMatrixVector(array<array<double>> mat, array<double> vec)
 {
-    return mat->map([=](auto row) mutable
+    return mat->std::map([=](auto row) mutable
     {
         return row->reduce([=](auto sum, auto val, auto i) mutable
         {

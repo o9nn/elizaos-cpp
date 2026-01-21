@@ -6,5 +6,5 @@
 #include "@elizaos/core.h"
 #include "../../utils/emoji-handler.h"
 
-extern any phalaCliCommand;
+extern std::any phalaCliCommand;
 #endif

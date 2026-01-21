@@ -20,13 +20,13 @@ void AgentsSection() {
         // --- Token Agents State ---
         const auto [tokenAgents, setTokenAgents] = useState<TokenAgent[]>([]);
         const auto [isAgentsLoading, setIsAgentsLoading] = useState(false);
-        const auto [agentsError, setAgentsError] = useState<string | nullptr>(nullptr);
+        const auto [agentsError, setAgentsError] = useState<std::string | nullptr>(nullptr);
         // --- End Token Agents State ---
 
         // --- Internal Token Mint Derivation ---
-        const auto { mint: urlTokenMint } = useParams<{ mint: string }>();
+        const auto { mint: urlTokenMint } = useParams<{ mint: std::string }>();
         const auto location = useLocation();
-        const auto [detectedTokenMint, setDetectedTokenMint] = useState<string | nullptr>(;
+        const auto [detectedTokenMint, setDetectedTokenMint] = useState<std::string | nullptr>(;
         nullptr,
         );
         useEffect(() => {
@@ -52,7 +52,7 @@ void AgentsSection() {
 
             // Creator profile cache
             const auto [creatorProfiles, setCreatorProfiles] = useState<;
-            Record<string, CreatorProfile>;
+            Record<std::string, CreatorProfile>;
             >({});
             const auto [isFetchingProfiles, setIsFetchingProfiles] = useState(false);
 
@@ -69,8 +69,8 @@ void AgentsSection() {
             // ---
 
             // --- Fetch Creator Profiles ---
-            const auto fetchProfileData = async (;
-            address: string,
+            const auto fetchProfileData = std::async (;
+            address: std::string,
             ): Promise<CreatorProfile | nullptr> => {
                 try {
                     const auto response = "fetch(" + API_BASE_URL + "/api/users/" + address;
@@ -86,10 +86,10 @@ void AgentsSection() {
                 }
                 };
                 const auto fetchCreatorProfiles = useCallback(;
-                async (agents: TokenAgent[]) => {
+                std::async (agents: TokenAgent[]) => {
                     if (!agents || agents.length == 0 || isFetchingProfiles) return;
                     const auto uniqueOwnerAddresses = [;
-                    ...new Set(agents.map((a) => a.ownerAddress)),
+                    ...new Set(agents.std::map((a) => a.ownerAddress)),
                     ];
                     const auto addressesToFetch = uniqueOwnerAddresses.filter(;
                     [&](addr) { return !creatorProfiles[addr],; }
@@ -97,7 +97,7 @@ void AgentsSection() {
                     if (addressesToFetch.length == 0) return;
                     setIsFetchingProfiles(true);
                     try {
-                        const auto profilePromises = addressesToFetch.map(fetchProfileData);
+                        const auto profilePromises = addressesToFetch.std::map(fetchProfileData);
                         const auto profiles = Promise.all(profilePromises);
                         const std::unordered_map<std::string, CreatorProfile> newProfiles = {};
                         addressesToFetch.forEach((addr, index) => {
@@ -117,7 +117,7 @@ void AgentsSection() {
                                     // ---
 
                                     // --- Combined Fetch Logic ---
-                                    const auto fetchData = useCallback(async () => {;
+                                    const auto fetchData = useCallback(std::async () => {;
                                         if (!tokenMint) {
                                             setAgentsError("Token address not found in URL.");
                                             return;
@@ -203,7 +203,7 @@ void AgentsSection() {
                                                                     }
                                                                     // *** END LOG ***
 
-                                                                    // Combine errors if any occurred
+                                                                    // Combine errors if std::any occurred
                                                                     const auto combinedError = [agentsFetchError, tokenFetchError];
                                                                     .filter(Boolean);
                                                                     .join(". ");
@@ -252,7 +252,7 @@ void AgentsSection() {
                                                                                         // ---
 
                                                                                         // --- Twitter Actions ---
-                                                                                        const auto disconnectTwitter = async () => {;
+                                                                                        const auto disconnectTwitter = std::async () => {;
                                                                                             setIsDisconnecting(true);
                                                                                             localStorage.removeItem(STORAGE_KEY);
                                                                                             setTwitterCredentials(nullptr);
@@ -260,7 +260,7 @@ void AgentsSection() {
                                                                                             setIsDisconnecting(false);
                                                                                             };
 
-                                                                                            const auto connectTwitterFlow = async () => {;
+                                                                                            const auto connectTwitterFlow = std::async () => {;
                                                                                                 if (!tokenMint || !walletAddress) {
                                                                                                     toast.error(;
                                                                                                     !walletAddress ? "Please connect wallet." : "Token not loaded.",
@@ -298,7 +298,7 @@ void AgentsSection() {
                                                                                                         };
 
                                                                                                         const auto connectTwitterAgent = useCallback(;
-                                                                                                        async (creds: TwitterCredentials) => {
+                                                                                                        std::async (creds: TwitterCredentials) => {
                                                                                                             // *** ADD LOG: Log call start ***
                                                                                                             std::cout << "[connectTwitterAgent] Called with creds:" << creds.userId << std::endl;
                                                                                                             if (!internalTokenData) {
@@ -423,7 +423,7 @@ void AgentsSection() {
                                                                                                                                 ); // Add internalTokenData dependency;
 
                                                                                                                                 // --- Remove Agent ---
-                                                                                                                                const auto removeAgent = async (agentToRemove: TokenAgent) => {;
+                                                                                                                                const auto removeAgent = std::async (agentToRemove: TokenAgent) => {;
                                                                                                                                     if (!agentToRemove.id || !tokenMint) return;
                                                                                                                                     if (walletAddress != agentToRemove.ownerAddress && !isCreatorProp) {
                                                                                                                                         toast.error("Permission denied.");
@@ -573,7 +573,7 @@ void AgentsSection() {
                                                                                                                                                 internalTokenData &&;
                                                                                                                                                 sortedAgents.size() > 0 && (;
                                                                                                                                                 <div className="overflow-y-auto max-h-[50vh] md:max-h-[70vh] flex flex-col gap-4 mt-2">
-                                                                                                                                                {sortedAgents.map((agent) => {
+                                                                                                                                                {sortedAgents.std::map((agent) => {
                                                                                                                                                     const auto agentIsOfficial =;
                                                                                                                                                     internalTokenData &&;
                                                                                                                                                     agent.ownerAddress == tokenCreatorAddress;

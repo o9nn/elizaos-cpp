@@ -34,7 +34,7 @@ array<string> getInstallCommand(boolean isGlobal)
 };
 
 
-std::shared_ptr<Promise<void>> removeFromBunLock(string packageName, string directory)
+std::shared_ptr<Promise<void>> removeFromBunLock(std::string packageName, std::string directory)
 {
     auto lockFilePath = path->join(directory, std::string("bun.lock"));
     if (!existsSync(lockFilePath)) {
@@ -49,7 +49,7 @@ std::shared_ptr<Promise<void>> removeFromBunLock(string packageName, string dire
         }); });
         logger->debug(std::string("Successfully removed ") + packageName + std::string(" from bun.lock"));
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         if (OR((error["message"]["includes"](std::string("not found"))), (error["message"]["includes"](std::string("No such package"))))) {
             logger->debug(std::string("Package ") + packageName + std::string(" not found in lockfile (expected for cleanup)"));
@@ -60,10 +60,10 @@ std::shared_ptr<Promise<void>> removeFromBunLock(string packageName, string dire
 };
 
 
-std::shared_ptr<Promise<object>> executeInstallation(string packageName, string versionOrTag, string directory)
+std::shared_ptr<Promise<object>> executeInstallation(std::string packageName, std::string versionOrTag, std::string directory)
 {
     auto installCommand = getInstallCommand(false);
-    auto finalSpecifier = (packageName->startsWith(std::string("github:"))) ? string_empty + packageName + string_empty + (versionOrTag) ? any(std::string("#") + versionOrTag + string_empty) : any(string_empty) + string_empty : (versionOrTag) ? string_empty + packageName + std::string("@") + versionOrTag + string_empty : packageName;
+    auto finalSpecifier = (packageName->startsWith(std::string("github:"))) ? string_empty + packageName + string_empty + (versionOrTag) ? std::any(std::string("#") + versionOrTag + string_empty) : std::any(string_empty) + string_empty : (versionOrTag) ? string_empty + packageName + std::string("@") + versionOrTag + string_empty : packageName;
     try
     {
         auto args = array<string>{ installCommand, finalSpecifier };
@@ -81,7 +81,7 @@ std::shared_ptr<Promise<object>> executeInstallation(string packageName, string 
             object::pair{std::string("installedIdentifier"), std::string("installedIdentifier")}
         };
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         if (OR((error["code"] == std::string("ENOENT")), (error["message"]["includes"](std::string("bun: command not found"))))) {
             logger->warn(std::string("Installation failed - bun command not found. ") + displayBunInstallationTipCompact() + string_empty);
@@ -96,7 +96,7 @@ std::shared_ptr<Promise<object>> executeInstallation(string packageName, string 
 };
 
 
-string buildGitHubSpecifier(string githubSpec, string versionOrTag)
+std::string buildGitHubSpecifier(std::string githubSpec, std::string versionOrTag)
 {
     if (!versionOrTag) {
         return githubSpec;
@@ -106,7 +106,7 @@ string buildGitHubSpecifier(string githubSpec, string versionOrTag)
 };
 
 
-std::shared_ptr<Promise<object>> executeInstallationWithFallback(string packageName, string versionOrTag, string directory, string githubFallback)
+std::shared_ptr<Promise<object>> executeInstallationWithFallback(std::string packageName, std::string versionOrTag, std::string directory, std::string githubFallback)
 {
     auto result = std::async([=]() { executeInstallation(packageName, versionOrTag, directory); });
     if (OR((result["success"]), (!githubFallback))) {
@@ -114,7 +114,7 @@ std::shared_ptr<Promise<object>> executeInstallationWithFallback(string packageN
     }
     logger->debug(std::string("npm installation failed, attempting GitHub fallback: ") + githubFallback + string_empty);
     std::async([=]() { removeFromBunLock(packageName, directory); });
-    auto githubSpecifier = std::string("github:") + githubFallback + string_empty + (versionOrTag) ? any(std::string("#") + versionOrTag + string_empty) : any(string_empty) + string_empty;
+    auto githubSpecifier = std::string("github:") + githubFallback + string_empty + (versionOrTag) ? std::any(std::string("#") + versionOrTag + string_empty) : std::any(string_empty) + string_empty;
     return std::async([=]() { executeInstallation(githubSpecifier, string_empty, directory); });
 };
 

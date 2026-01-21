@@ -17,7 +17,7 @@ std::future<void> upgradePlugin(const std::string& pluginPath, UpgradePluginOpti
             // Check for API key
             if (!process.env.ANTHROPIC_API_KEY) {
                 std::cerr << "ANTHROPIC_API_KEY is required for plugin upgrade." << std::endl;
-                std::cout << "\nPlease set ANTHROPIC_API_KEY environment variable or use --api-key option." << std::endl;
+                std::cout << "\nPlease std::set ANTHROPIC_API_KEY environment variable or use --api-key option." << std::endl;
                 std::cout << "Get your API key from: https://console.anthropic.com/" << std::endl;
                 process.exit(1);
             }
@@ -60,7 +60,7 @@ std::future<void> upgradePlugin(const std::string& pluginPath, UpgradePluginOpti
 
                 // Copy migration guides to the plugin directory (will be cleaned up after migration)
                 auto projectRoot = process.cwd();
-                auto guidesSource: string;
+                auto guidesSource: std::string;
 
                 // First try to find guides in the current monorepo structure
                 auto previousRoot = "";

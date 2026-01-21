@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/environment/repo.h"
 
-array<string> getGitResetCommands(string baseCommit)
+array<string> getGitResetCommands(std::string baseCommit)
 {
     return array<string>{ std::string("git fetch"), std::string("git status"), std::string("git restore ."), std::string("git reset --hard"), std::string("git checkout ") + baseCommit + string_empty, std::string("git clean -fdq") };
 };
@@ -35,17 +35,17 @@ LocalRepo::LocalRepo(LocalRepoConfig config) {
 void LocalRepo::checkValidRepo()
 {
     if (!fs::existsSync(this->path)) {
-        throw any(std::make_shared<Error>(std::string("Could not find git repository at path=") + this->path + string_empty));
+        throw std::any(std::make_shared<Error>(std::string("Could not find git repository at path=") + this->path + string_empty));
     }
     auto gitPath = path->join(this->path, std::string(".git"));
     if (!fs::existsSync(gitPath)) {
-        throw any(std::make_shared<Error>(string_empty + this->path + std::string(" is not a git repository")));
+        throw std::any(std::make_shared<Error>(string_empty + this->path + std::string(" is not a git repository")));
     }
     auto status = execSync(std::string("git status --porcelain"), object{
         object::pair{std::string("cwd"), this->path}
     })->toString();
     if (AND((status->trim()), (!process->env->PYTEST_CURRENT_TEST))) {
-        throw any(std::make_shared<Error>(std::string("Local git repository ") + this->path + std::string(" is dirty. Please commit or stash changes.")));
+        throw std::any(std::make_shared<Error>(std::string("Local git repository ") + this->path + std::string(" is dirty. Please commit or stash changes.")));
     }
 }
 
@@ -63,7 +63,7 @@ std::shared_ptr<Promise<void>> LocalRepo::copy(std::shared_ptr<AbstractDeploymen
     })); });
     if (result->exitCode != 0) {
         auto msg = std::string("Failed to change permissions on copied repository (exit code: ") + result->exitCode + std::string(", stdout: ") + result->stdout + std::string(", stderr: ") + result->stderr + std::string(")");
-        throw any(std::make_shared<Error>(msg));
+        throw std::any(std::make_shared<Error>(msg));
     }
     return std::shared_ptr<Promise<void>>();
 }
@@ -85,7 +85,7 @@ GithubRepo::GithubRepo(GithubRepoConfig config) {
     this->repoName = string_empty + parsed["owner"] + std::string("__") + parsed["repo"] + string_empty;
 }
 
-string GithubRepo::getUrlWithToken(string token)
+std::string GithubRepo::getUrlWithToken(std::string token)
 {
     if (!token) {
         return this->githubUrl;
@@ -122,28 +122,28 @@ array<string> GithubRepo::getResetCommands()
 }
 
 std::shared_ptr<AgentLogger> logger = getLogger(std::string("repo"));
-any PreExistingRepoConfigSchema = z->object(object{
-    object::pair{std::string("repoName"), z->string()->describe(std::string("The repo name (must be at root of deployment)"))}, 
-    object::pair{std::string("baseCommit"), z->string()->default(std::string("HEAD"))}, 
+std::any PreExistingRepoConfigSchema = z->object(object{
+    object::pair{std::string("repoName"), z->std::string()->describe(std::string("The repo name (must be at root of deployment)"))}, 
+    object::pair{std::string("baseCommit"), z->std::string()->default(std::string("HEAD"))}, 
     object::pair{std::string("type"), z->literal(std::string("preexisting"))}, 
     object::pair{std::string("reset"), z->boolean()->default(true)}
 });
-any LocalRepoConfigSchema = z->object(object{
-    object::pair{std::string("path"), z->string()->transform([=](auto p) mutable
+std::any LocalRepoConfigSchema = z->object(object{
+    object::pair{std::string("path"), z->std::string()->transform([=](auto p) mutable
     {
         return path->resolve(p);
     }
     )}, 
-    object::pair{std::string("baseCommit"), z->string()->default(std::string("HEAD"))}, 
+    object::pair{std::string("baseCommit"), z->std::string()->default(std::string("HEAD"))}, 
     object::pair{std::string("type"), z->literal(std::string("local"))}
 });
-any GithubRepoConfigSchema = z->object(object{
-    object::pair{std::string("githubUrl"), z->string()}, 
-    object::pair{std::string("baseCommit"), z->string()->default(std::string("HEAD"))}, 
+std::any GithubRepoConfigSchema = z->object(object{
+    object::pair{std::string("githubUrl"), z->std::string()}, 
+    object::pair{std::string("baseCommit"), z->std::string()->default(std::string("HEAD"))}, 
     object::pair{std::string("cloneTimeout"), z->number()->default(500)}, 
     object::pair{std::string("type"), z->literal(std::string("github"))}
 });
-any RepoConfigSchema = z->discriminatedUnion(std::string("type"), array<any>{ PreExistingRepoConfigSchema, LocalRepoConfigSchema, GithubRepoConfigSchema });
+std::any RepoConfigSchema = z->discriminatedUnion(std::string("type"), array<any>{ PreExistingRepoConfigSchema, LocalRepoConfigSchema, GithubRepoConfigSchema });
 
 void Main(void)
 {

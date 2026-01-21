@@ -68,6 +68,6 @@ struct TokenQueryParams {
 
 std::string parseSolanaAddress(unknown raw, auto name = "address");
 
-Pagination parsePaginationQuery(Record<string query, auto string | undefined>, auto { defaultLimit = 50, auto maxLimit = 50, auto maxPage = 1000 } = {});
+Pagination parsePaginationQuery(Record<std::string query, auto std::string | undefined>, auto { defaultLimit = 50, auto maxLimit = 50, auto maxPage = 1000 } = {});
 
 } // namespace elizaos

@@ -13,13 +13,13 @@ public:
     using std::enable_shared_from_this<Partner>::shared_from_this;
     double trustScore;
 
-    string avatarUrl;
+    std::string avatarUrl;
 
     double rank;
 
-    string id;
+    std::string id;
 
-    string name;
+    std::string name;
 };
 
 class DashboardData : public object, public std::enable_shared_from_this<DashboardData> {

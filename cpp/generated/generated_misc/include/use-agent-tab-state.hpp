@@ -6,16 +6,16 @@
 #include "@/lib/logger.h"
 using clientLogger = _default;
 
-typedef any TabValue;
+typedef std::any TabValue;
 
 class AgentTabStates;
 
-extern string AGENT_TAB_STATE_KEY;
+extern std::string AGENT_TAB_STATE_KEY;
 class AgentTabStates : public object, public std::enable_shared_from_this<AgentTabStates> {
 public:
     using std::enable_shared_from_this<AgentTabStates>::shared_from_this;
 };
 
-any useAgentTabState(any agentId);
+std::any useAgentTabState(std::any agentId);
 
 #endif

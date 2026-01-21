@@ -40,19 +40,19 @@ void Main(void)
         );
         describe(std::string("formatFlake8Output"), [=]() mutable
         {
-            it(std::string("should return empty string when no new errors"), [=]() mutable
+            it(std::string("should return empty std::string when no new errors"), [=]() mutable
             {
                 auto result = formatFlake8Output(std::string("a:12:41: e"), std::string("a:12:41: e"), std::tuple<double, double>{ 50, 51 }, 10, false);
                 expect(result)->toBe(string_empty);
             }
             );
-            it(std::string("should return empty string when error outside replacement window"), [=]() mutable
+            it(std::string("should return empty std::string when error outside replacement window"), [=]() mutable
             {
                 auto result = formatFlake8Output(std::string("a:12:41: e"), std::string("a:13:41: e"), std::tuple<double, double>{ 1, 2 }, 1, false);
                 expect(result)->toBe(string_empty);
             }
             );
-            it(std::string("should return empty string without line numbers"), [=]() mutable
+            it(std::string("should return empty std::string without line numbers"), [=]() mutable
             {
                 auto result = formatFlake8Output(std::string("a:12:41: e"), std::string("a:13:41: e"), std::tuple<double, double>{ 1, 2 }, 1, false);
                 expect(result)->toBe(string_empty);

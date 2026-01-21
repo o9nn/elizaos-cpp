@@ -9,27 +9,27 @@ public:
     using std::enable_shared_from_this<Attachment>::shared_from_this;
     std::shared_ptr<Snowflake> id;
 
-    string filename;
+    std::string filename;
 
-    string description;
+    std::string description;
 
-    string content_type;
+    std::string content_type;
 
     double size;
 
-    string url;
+    std::string url;
 
-    string proxy_url;
+    std::string proxy_url;
 
-    any height;
+    std::any height;
 
-    any width;
+    std::any width;
 
     boolean ephemeral;
 
     double duration_secs;
 
-    string waveform;
+    std::string waveform;
 
     double flags;
 

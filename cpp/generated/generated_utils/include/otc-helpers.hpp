@@ -2,32 +2,32 @@
 #define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_SRC_LIB_OTC-HELPERS_H
 #include "core.h"
 
-typedef any RawOfferData;
+typedef std::any RawOfferData;
 
 class ParsedOffer;
 
 class ParsedOffer : public object, public std::enable_shared_from_this<ParsedOffer> {
 public:
     using std::enable_shared_from_this<ParsedOffer>::shared_from_this;
-    any consignmentId;
+    std::any consignmentId;
 
-    string tokenId;
+    std::string tokenId;
 
-    string beneficiary;
+    std::string beneficiary;
 
-    any tokenAmount;
+    std::any tokenAmount;
 
-    any discountBps;
+    std::any discountBps;
 
-    any createdAt;
+    std::any createdAt;
 
-    any unlockTime;
+    std::any unlockTime;
 
-    any priceUsdPerToken;
+    std::any priceUsdPerToken;
 
-    any maxPriceDeviation;
+    std::any maxPriceDeviation;
 
-    any ethUsdPrice;
+    std::any ethUsdPrice;
 
     double currency;
 
@@ -39,9 +39,9 @@ public:
 
     boolean cancelled;
 
-    string payer;
+    std::string payer;
 
-    any amountPaid;
+    std::any amountPaid;
 };
 
 template <typename P0>

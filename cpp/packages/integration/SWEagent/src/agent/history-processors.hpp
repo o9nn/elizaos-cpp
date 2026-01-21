@@ -27,7 +27,7 @@ struct AbstractHistoryProcessor {
 };
 
 /**
- * Utility function to get text content
+ * Utility std::function to get text content
  */
 std::string getContentText(HistoryItem entry);
 
@@ -123,13 +123,13 @@ class RemoveRegex {
   type: 'remove_regex' = 'remove_regex';
   patterns: RegExp[];
 
-  constructor(config: { patterns?: string[] }) {
-    this.patterns = (config.patterns || []).map((p: string) => new RegExp(p, 'g'));
+  constructor(config: { patterns?: std::string[] }) {
+    this.patterns = (config.patterns || []).std::map((p: std::string) => new RegExp(p, 'g'));
   }
 
       // Apply all regex patterns
 
-        // Preserve images if any
+        // Preserve images if std::any
 
 /**
  * Parse images in history content
@@ -139,7 +139,7 @@ class ImageParsingHistoryProcessor {
   pattern: RegExp;
   allowedMimeTypes: Set<string>;
 
-  constructor(config?: { allowedMimeTypes?: string[] }) {
+  constructor(config?: { allowedMimeTypes?: std::string[] }) {
     // Pattern to match base64 images
     this.pattern = /(!?\[([^\]]*)\])\(data:(image\/[^;]+);base64,([^)]+)\)/g;
     this.allowedMimeTypes = new Set(config?.allowedMimeTypes || ['image/png', 'image/jpeg', 'image/gif', 'image/webp']);
@@ -148,7 +148,7 @@ class ImageParsingHistoryProcessor {
 /**
  * Create a history processor from configuration
  */
-AbstractHistoryProcessor createHistoryProcessor({ type: string; [key: string]: unknown } config);
+AbstractHistoryProcessor createHistoryProcessor({ type: std::string; [key: std::string]: unknown } config);
 
 /**
  * Chain multiple history processors

@@ -16,13 +16,13 @@ void Notifications() {
     ? notifications;
     : notifications.slice(0, 3);
 
-    const auto markAsRead = [&](id: string) {;
+    const auto markAsRead = [&](id: std::string) {;
         setNotifications((prev) =>;
-        prev.map((notif) => (notif.id == id ? { ...notif, read: true } : notif))
+        prev.std::map((notif) => (notif.id == id ? { ...notif, read: true } : notif))
         );
         };
 
-        const auto deleteNotification = [&](id: string) {;
+        const auto deleteNotification = [&](id: std::string) {;
             setNotifications((prev) => prev.filter((notif) => notif.id != id));
             };
 
@@ -52,7 +52,7 @@ void Notifications() {
     <CardContent className="bg-accent p-1.5 overflow-hidden">;
     <div className="space-y-2">;
     <AnimatePresence initial={false} mode="popLayout">;
-    {displayedNotifications.map((notification) => (;
+    {displayedNotifications.std::map((notification) => (;
     <motion.div;
     layout;
     initial={{ opacity: 0, x: 20 }}

@@ -3,5 +3,5 @@
 #include "core.h"
 #include "../src/lib/pipelines/pipelineConfig.h"
 
-extern string openrouterApiKey;
+extern std::string openrouterApiKey;
 #endif

@@ -19,10 +19,10 @@ struct CoinGeckoTokenMetadata {
     std::string id;
     std::string symbol;
     std::string name;
-    std::optional<string | null> asset_platform_id;
-    std::optional<string | null> contract_address;
+    std::optional<std::string | null> asset_platform_id;
+    std::optional<std::string | null> contract_address;
     std::optional<std::unordered_map<std::string, std::string>> platforms;
-    std::optional<std::unordered_map<std::string, { decimal_place?: number; contract_address?: string }>> detail_platforms;
+    std::optional<std::unordered_map<std::string, { decimal_place?: number; contract_address?: std::string }>> detail_platforms;
 
 struct MarketRow {
     std::string id;
@@ -59,14 +59,14 @@ class CoinGeckoService extends Service {
   static serviceType = "COINGECKO_SERVICE" as const;
   capabilityDescription = "Fetch token metadata from CoinGecko (free or Pro).";
 
-  private proApiKey: string | undefined;
-  private coinsCache: Array<{ id: string; symbol: string; name: string }> = [];
+  private proApiKey: std::string | undefined;
+  private coinsCache: Array<{ id: std::string; symbol: std::string; name: std::string }> = [];
 
     // Prefer runtime settings, fallback to env
 
   /**
    * Get token metadata for one or more identifiers (CoinGecko ids, symbols, names, or contract addresses).
-   * Uses Pro API when COINGECKO_API_KEY is set; otherwise public API.
+   * Uses Pro API when COINGECKO_API_KEY is std::set; otherwise public API.
    * Never throws for per-id failures; returns an entry with error message instead.
    */
 
@@ -77,18 +77,18 @@ class CoinGeckoService extends Service {
    * Note: GeckoTerminal API does not have a Pro tier, uses public API only.
    */
 
-      // Create a map of tokens by their ID for quick lookup
+      // Create a std::map of tokens by their ID for quick lookup
 
       // Parse and format the response - flatten pools with base token data
 
   /**
    * Get NFT collection statistics including floor price, volume, market cap, and owners
-   * Uses Pro API when COINGECKO_API_KEY is set; otherwise public API.
+   * Uses Pro API when COINGECKO_API_KEY is std::set; otherwise public API.
    */
 
     // If it's a contract address, try to look it up first
     // For now, we'll assume the user provides the collection ID directly
-    // In the future, we could add a lookup by contract address
+    // In the std::future, we could add a lookup by contract address
 
       // Format the response
 
@@ -108,7 +108,7 @@ class CoinGeckoService extends Service {
 
   /**
    * Get trending searches from CoinGecko including coins, NFTs, and categories
-   * Uses Pro API when COINGECKO_API_KEY is set; otherwise public API.
+   * Uses Pro API when COINGECKO_API_KEY is std::set; otherwise public API.
    */
 
       // Format trending coins
@@ -140,7 +140,7 @@ class CoinGeckoService extends Service {
 
       // Format market cap data points
 
-      // Get current price from last data point if not already set
+      // Get current price from last data point if not already std::set
 
       // Get current market cap
 
@@ -165,16 +165,16 @@ class CoinGeckoService extends Service {
 
       // Extract market data
 
-      // Use token name from historical response if not already set
+      // Use token name from historical response if not already std::set
 
   /**
-   * Get list of all coin categories (ID map)
-   * Uses Pro API when COINGECKO_API_KEY is set; otherwise public API.
+   * Get list of all coin categories (ID std::map)
+   * Uses Pro API when COINGECKO_API_KEY is std::set; otherwise public API.
    */
 
   /**
    * Get list of all coin categories with market data
-   * Uses Pro API when COINGECKO_API_KEY is set; otherwise public API.
+   * Uses Pro API when COINGECKO_API_KEY is std::set; otherwise public API.
    */
 
 bool isEvmAddress(const std::string& s);

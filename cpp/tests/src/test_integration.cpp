@@ -235,7 +235,7 @@ TEST_F(IntegrationTest, AgentLoopHealthStatus) {
 }
 
 TEST_F(IntegrationTest, AgentLoopBasicOperations) {
-    // Create a simple step function
+    // Create a simple step std::function
     std::atomic<int> stepCount{0};
     auto stepFunc = [&stepCount](std::shared_ptr<void>) -> std::shared_ptr<void> {
         stepCount++;

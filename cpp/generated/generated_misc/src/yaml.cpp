@@ -28,11 +28,11 @@ object parseMultilineString(array<string> lines, double startIndex, double expec
 };
 
 
-Record<string, any> parseKeyValue(string str)
+Record<std::string, any> parseKeyValue(std::string str)
 {
     auto result = object{};
     auto pairs = str->split(std::string(", "));
-    for (auto& pair : pairs)
+    for (auto& std::pair : pairs)
     {
         if (pair->includes(std::string(": "))) {
             auto [key, value] = pair->split(std::string(": "));

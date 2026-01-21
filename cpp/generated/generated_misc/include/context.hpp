@@ -13,7 +13,7 @@ class CreateContributorSummaryContextOptions;
 class SummarizerPipelineContext : public RepoPipelineContext, public std::enable_shared_from_this<SummarizerPipelineContext> {
 public:
     using std::enable_shared_from_this<SummarizerPipelineContext>::shared_from_this;
-    string outputDir;
+    std::string outputDir;
 
     std::shared_ptr<AISummaryConfig> aiSummaryConfig;
 
@@ -29,13 +29,13 @@ public:
 class CreateContributorSummaryContextOptions : public object, public std::enable_shared_from_this<CreateContributorSummaryContextOptions> {
 public:
     using std::enable_shared_from_this<CreateContributorSummaryContextOptions>::shared_from_this;
-    string repoId;
+    std::string repoId;
 
     std::shared_ptr<PipelineConfig> config;
 
     std::shared_ptr<Logger> logger;
 
-    string outputDir;
+    std::string outputDir;
 
     std::shared_ptr<AISummaryConfig> aiSummaryConfig;
 

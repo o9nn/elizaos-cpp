@@ -3,7 +3,7 @@
 #include "core.h"
 #include "@/types/project.h"
 
-extern std::function<array<any>(array<any>, any)> sortProjects;
-extern std::function<string()> generateProjectId;
-extern std::function<array<string>(any)> validateProject;
+extern std::function<array<any>(array<any>, std::any)> sortProjects;
+extern std::function<std::string()> generateProjectId;
+extern std::function<array<string>(std::any)> validateProject;
 #endif

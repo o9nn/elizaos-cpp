@@ -21,14 +21,14 @@ namespace elizaos {
 // ============================================================================
 
 /**
- * Tool call structure for LLM function calling
+ * Tool call structure for LLM std::function calling
  */
 struct ToolCall {
     std::optional<std::string> id;
     std::optional<'function'> type;
-    { function;
+    { std::function;
     std::string name;
-    string | Record<string, unknown> arguments;
+    std::string | Record<std::string, unknown> arguments;
 };
 
 /**
@@ -69,11 +69,11 @@ struct StepOutput {
     std::string observation;
     double executionTime;
     bool done;
-    std::optional<number | string | null> exitStatus;
-    std::optional<string | null> submission;
+    std::optional<number | std::string | null> exitStatus;
+    std::optional<std::string | null> submission;
     std::unordered_map<std::string, std::string> state;
     std::optional<ToolCall[] | null> toolCalls;
-    std::optional<string[] | null> toolCallIds;
+    std::optional<std::string[] | null> toolCallIds;
     std::optional<ThinkingBlock[] | null> thinkingBlocks;
     std::unordered_map<std::string, unknown> extraInfo;
 };
@@ -108,10 +108,10 @@ using Trajectory = std::vector<TrajectoryStep>;
  */
 struct BaseHistoryItem {
     std::string role;
-    string | Array<{ type: string; text?: string; [key: string]: unknown }> content;
+    std::string | Array<{ type: std::string; text?: std::string; [key: std::string]: unknown }> content;
 
 /**
- * Extended history item with optional fields
+ * Extended history item with std::optional fields
  */
 
 /**
@@ -124,8 +124,8 @@ using History = std::vector<HistoryItem>;
  */
 struct AgentInfo {
     std::optional<std::unordered_map<std::string, double>> modelStats;
-    std::optional<string | null> exitStatus;
-    std::optional<string | null> submission;
+    std::optional<std::string | null> exitStatus;
+    std::optional<std::string | null> submission;
     std::optional<std::unordered_map<std::string, unknown>> review;
     std::optional<std::string> editedFiles30;
     std::optional<std::string> editedFiles50;
@@ -157,17 +157,17 @@ struct ModelResponse {
     std::optional<std::vector<ToolCall>> toolCalls;
     std::optional<std::vector<ToolCall>> tool_calls;
     std::optional<std::string> role;
-    std::optional<string | Array<{ type: string; text?: string; [key: string]: unknown }>> content;
+    std::optional<std::string | Array<{ type: std::string; text?: std::string; [key: std::string]: unknown }>> content;
 
 /**
  * Environment variable configuration
  */
-using EnvVariables = std::variant<Record<string, string, double, boolean>>;
+using EnvVariables = std::variant<Record<std::string, std::string, double, boolean>>;
 
 /**
  * Registry variables configuration
  */
-using RegistryVariables = std::variant<Record<string, string, double, boolean>>;
+using RegistryVariables = std::variant<Record<std::string, std::string, double, boolean>>;
 
 /**
  * Parsed command arguments
@@ -214,14 +214,14 @@ struct SpinnerTask {
  * Instance statistics
  */
 struct InstanceStats {
-    string | null exitStatus;
+    std::string | null exitStatus;
     std::optional<std::string> result;
     std::optional<double> cost;
     std::optional<double> apiCalls;
 };
 
 /**
- * Command property for function calling tools
+ * Command property for std::function calling tools
  */
 struct CommandProperty {
     std::string type;
@@ -263,7 +263,7 @@ using FileData = std::variant<std::unordered_map<std::string, unknown>, std::str
  */
 struct GithubIssue {
     std::string title;
-    string | null body;
+    std::string | null body;
     double number;
     std::string state;
     std::string created_at;
@@ -293,7 +293,7 @@ using TemplateContext = std::variant<Record<
 /**
  * Serializable data structure
  */
-using SerializableData = std::variant<, std::string, double, bool, nullptr, std::nullopt, std::vector<SerializableData>, { [key: string]: SerializableData }>;
+using SerializableData = std::variant<, std::string, double, bool, nullptr, std::nullopt, std::vector<SerializableData>, { [key: std::string]: SerializableData }>;
 
 /**
  * Command line argument value

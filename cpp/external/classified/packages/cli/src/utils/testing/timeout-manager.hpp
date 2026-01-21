@@ -16,8 +16,8 @@ namespace elizaos {
 
 class TestTimeoutManager {
   private static instance: TestTimeoutManager;
-  private timeouts: Map<string, NodeJS.Timeout> = new Map();
-  private testStartTimes: Map<string, number> = new Map();
+  private timeouts: Map<std::string, NodeJS.Timeout> = new Map();
+  private testStartTimes: Map<std::string, number> = new Map();
 
   static getInstance(): TestTimeoutManager {
     if (!TestTimeoutManager.instance) {

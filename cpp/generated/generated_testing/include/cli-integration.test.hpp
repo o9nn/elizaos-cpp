@@ -13,9 +13,9 @@ class TestEnvironment;
 class TestEnvironment : public object, public std::enable_shared_from_this<TestEnvironment> {
 public:
     using std::enable_shared_from_this<TestEnvironment>::shared_from_this;
-    string tempDir;
+    std::string tempDir;
 
-    string envFile;
+    std::string envFile;
 
     std::shared_ptr<NodeJS::ProcessEnv> originalEnv;
 };
@@ -24,6 +24,6 @@ std::shared_ptr<Promise<std::shared_ptr<TestEnvironment>>> createTestEnvironment
 
 std::shared_ptr<Promise<void>> cleanupTestEnvironment(std::shared_ptr<TestEnvironment> env);
 
-string execCLICommand(string command, std::shared_ptr<TestEnvironment> env);
+std::string execCLICommand(std::string command, std::shared_ptr<TestEnvironment> env);
 
 #endif

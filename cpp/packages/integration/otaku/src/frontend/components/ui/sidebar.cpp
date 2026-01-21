@@ -21,7 +21,7 @@ void useSidebar() {
     }
 }
 
-void Sidebar(auto variant, auto collapsible, auto className, auto children) {
+void Sidebar(auto std::variant, auto collapsible, auto className, auto children) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { isMobile, state, openMobile, setOpenMobile } = useSidebar();
@@ -82,7 +82,7 @@ void Sidebar(auto variant, auto collapsible, auto className, auto children) {
     "relative w-(--sidebar-width) bg-transparent transition-[width] duration-200 ease-linear",
     "group-data-[collapsible=offcanvas]:w-0",
     "group-data-[side=right]:rotate-180",
-    variant == "floating" || variant == "inset";
+    std::variant == "floating" || std::variant == "inset";
     ? "group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]"
     : "group-data-[collapsible=icon]:w-(--sidebar-width-icon)"
     )}
@@ -95,7 +95,7 @@ void Sidebar(auto variant, auto collapsible, auto className, auto children) {
     ? "left-sides group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]"
     : "right-sides group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",
     // Adjust the padding for floating and inset variants.
-    variant == "floating" || variant == "inset";
+    std::variant == "floating" || std::variant == "inset";
     ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]"
     : "group-data-[collapsible=icon]:w-(--sidebar-width-icon)",
     className;
@@ -360,7 +360,7 @@ void SidebarMenuItem() {
 
 }
 
-void SidebarMenuButton(auto isActive, auto variant, auto size, auto tooltip, auto className) {
+void SidebarMenuButton(auto isActive, auto std::variant, auto size, auto tooltip, auto className) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto Comp = asChild ? Slot : "button";
@@ -372,7 +372,7 @@ void SidebarMenuButton(auto isActive, auto variant, auto size, auto tooltip, aut
     data-sidebar="menu-button";
     data-size={size}
     data-active={isActive}
-    className={cn(sidebarMenuButtonVariants({ variant, size }), className)}
+    className={cn(sidebarMenuButtonVariants({ std::variant, size }), className)}
     {...props}
     />;
     );

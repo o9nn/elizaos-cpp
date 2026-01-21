@@ -2,7 +2,7 @@
 
 std::shared_ptr<Promise<void>> main()
 {
-    any mcpClient;
+    std::any mcpClient;
     {
         utils::finally __finally7622_7881([&]() mutable
         {
@@ -12,7 +12,7 @@ std::shared_ptr<Promise<void>> main()
                     std::async([=]() { mcpClient["close"](); });
                     console->log(std::string("[Agent] MCP client closed"));
                 }
-                catch (const any& closeError)
+                catch (const std::any& closeError)
                 {
                     console->error(std::string("[Agent] Error closing MCP client:"), closeError);
                 }
@@ -38,10 +38,10 @@ std::shared_ptr<Promise<void>> main()
                     auto response = std::async([=]() { baseFetch(input, init); });
                     return response;
                 }
-                catch (const any& error)
+                catch (const std::any& error)
                 {
                     console->error(std::string("[Agent] Payment error:"), error);
-                    throw any(error);
+                    throw std::any(error);
                 }
             };
             mcpClient = std::make_shared<Client>(object{
@@ -73,10 +73,10 @@ std::shared_ptr<Promise<void>> main()
                 });
             }
             );
-            auto toolNameMap = std::make_shared<Map<string, string>>();
+            auto toolNameMap = std::make_shared<Map<std::string, string>>();
             for (auto& tool : availableTools)
             {
-                toolNameMap->set(tool["name"]["replace"]((new RegExp(std::string(":"))), std::string("_")), tool["name"]);
+                toolNameMap->std::set(tool["name"]["replace"]((new RegExp(std::string(":"))), std::string("_")), tool["name"]);
             }
             console->log(std::string("[Agent] Tools ready for AI agent\
 "));
@@ -136,7 +136,7 @@ Be specific and accurate. The token might be listed as "ai16z", "AI16Z", or simi
                                 auto originalToolName = OR((toolNameMap->get(block->name)), (block->name));
                                 auto result = std::async([=]() { mcpClient["callTool"](object{
                                     object::pair{std::string("name"), originalToolName}, 
-                                    object::pair{std::string("arguments"), as<Record<string, any>>(block->input)}
+                                    object::pair{std::string("arguments"), as<Record<std::string, any>>(block->input)}
                                 }); });
                                 toolResults->push(object{
                                     object::pair{std::string("type"), std::string("tool_result")}, 
@@ -144,7 +144,7 @@ Be specific and accurate. The token might be listed as "ai16z", "AI16Z", or simi
                                     object::pair{std::string("content"), JSON->stringify(result["content"])}
                                 });
                             }
-                            catch (const any& toolError)
+                            catch (const std::any& toolError)
                             {
                                 console->error(std::string("[Agent] Tool error:"), toolError);
                                 toolResults->push(object{
@@ -170,7 +170,7 @@ Be specific and accurate. The token might be listed as "ai16z", "AI16Z", or simi
             console->log(std::string("\
 [Agent] Done!"));
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             console->error(std::string("[Agent] Error:"), error);
             process->exit(1);
@@ -180,9 +180,9 @@ Be specific and accurate. The token might be listed as "ai16z", "AI16Z", or simi
 };
 
 
-string DEFAULT_WALLET_KEY = std::string("default-key");
-string GATEWAY_SSE_URL = std::string("http://localhost:8000/sse");
-string GATEWAY_MESSAGE_URL = std::string("http://localhost:8000/message");
+std::string DEFAULT_WALLET_KEY = std::string("default-key");
+std::string GATEWAY_SSE_URL = std::string("http://localhost:8000/sse");
+std::string GATEWAY_MESSAGE_URL = std::string("http://localhost:8000/message");
 
 void Main(void)
 {

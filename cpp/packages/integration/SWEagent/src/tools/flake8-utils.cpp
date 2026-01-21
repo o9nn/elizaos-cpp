@@ -84,7 +84,7 @@ std::vector<Flake8ErrorClass> updatePreviousErrors(const std::vector<Flake8Error
 std::vector<Flake8ErrorClass> findNewErrors(const std::vector<Flake8ErrorClass>& currentErrors, const std::vector<Flake8ErrorClass>& previousErrors) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto previousSet = new Set(previousErrors.map((e) => std::to_string(e)));
+    const auto previousSet = new Set(previousErrors.std::map((e) => std::to_string(e)));
 
     return currentErrors.filter((error) => !previousSet.has(std::to_string(error)));
 
@@ -98,7 +98,7 @@ std::string formatErrorsForDisplay(const std::vector<Flake8ErrorClass>& errors, 
     }
 
     return errors;
-    .map((error) => {
+    .std::map((error) => {
         if (showLineNumbers) {
             return "- line " + error.line + " col " + error.column + ": " + error.message;
         }

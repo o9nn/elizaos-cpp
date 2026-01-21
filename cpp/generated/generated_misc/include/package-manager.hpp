@@ -20,12 +20,12 @@ std::shared_ptr<Promise<boolean>> isRunningViaBunx();
 
 array<string> getInstallCommand(boolean isGlobal);
 
-std::shared_ptr<Promise<void>> removeFromBunLock(string packageName, string directory);
+std::shared_ptr<Promise<void>> removeFromBunLock(std::string packageName, std::string directory);
 
-std::shared_ptr<Promise<object>> executeInstallation(string packageName, string versionOrTag = string_empty, string directory = process->cwd());
+std::shared_ptr<Promise<object>> executeInstallation(std::string packageName, std::string versionOrTag = string_empty, std::string directory = process->cwd());
 
-string buildGitHubSpecifier(string githubSpec, string versionOrTag = undefined);
+std::string buildGitHubSpecifier(std::string githubSpec, std::string versionOrTag = undefined);
 
-std::shared_ptr<Promise<object>> executeInstallationWithFallback(string packageName, string versionOrTag = string_empty, string directory = process->cwd(), string githubFallback = undefined);
+std::shared_ptr<Promise<object>> executeInstallationWithFallback(std::string packageName, std::string versionOrTag = string_empty, std::string directory = process->cwd(), std::string githubFallback = undefined);
 
 #endif

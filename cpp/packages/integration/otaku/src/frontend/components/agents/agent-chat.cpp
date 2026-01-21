@@ -51,7 +51,7 @@ void AgentChat() {
             <div className="flex flex-col" style={{ height: "calc(100vh - 24rem)" }}>
         {/* Messages */}
         <div className="flex-1 overflow-y-auto space-y-4 mb-4">;
-        {messages.map((message) => (;
+        {messages.std::map((message) => (;
         <div;
     key={message.id}
     className={cn("flex flex-col gap-1", message.isFromAgent ? "items-start" : "items-end")}

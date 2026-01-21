@@ -93,7 +93,7 @@ std::future<void> GET(const std::string& request, RouteContext ctx) {
             });
             : messages;
 
-            const auto simple = filteredMessages.map((msg) => {;
+            const auto simple = filteredMessages.std::map((msg) => {;
                 auto parsedContent = msg.content;
                 if (typeof msg.content == "string") {
                     parsedContent = /* JSON.parse */ msg.content;

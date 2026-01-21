@@ -30,7 +30,7 @@ bool isValidSolanaAddress(const std::string& address);
 std::future<std::any> fetchWithRetry(const std::string& url, RequestInit options = {}, std::string chain = "solana", auto maxRetries);
 
 /**
- * Decodes a base58 string to Uint8Array
+ * Decodes a base58 std::string to Uint8Array
  */
 std::vector<uint8_t> decodeBase58(const std::string& str);
 

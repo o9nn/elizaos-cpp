@@ -101,7 +101,7 @@ void Main(void)
             console->log(std::string("\
 🔍 Step 4: Verifying project phases..."));
             shared phases = array<string>{ std::string("planning"), std::string("generating"), std::string("testing") };
-            auto completedPhases = statusHistory->map([=](auto s) mutable
+            auto completedPhases = statusHistory->std::map([=](auto s) mutable
             {
                 return s["status"];
             }
@@ -232,7 +232,7 @@ void Main(void)
                     expect(const_(result["errors"])[0])->toContain(std::string("API_KEY"));
                     return std::shared_ptr<Promise<void>>();
                 }
-                throw any(std::make_shared<Error>(std::string("Unexpected failure: ") + result["errors"]["join"](std::string(", ")) + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("Unexpected failure: ") + result["errors"]["join"](std::string(", ")) + string_empty));
             }
             auto prdPath = path->join(result["projectPath"], std::string("PRD.json"));
             auto prd = JSON->parse(std::async([=]() { fs::readFile(prdPath, std::string("utf-8")); }));
@@ -271,7 +271,7 @@ void Main(void)
                     object::pair{std::string("force"), true}
                 }); });
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("Failed to clean up test directory:"), error);
             }

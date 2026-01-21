@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/commands/test/actions/run-all-tests.h"
 
-std::shared_ptr<Promise<void>> runAllTests(any testPath, std::shared_ptr<TestCommandOptions> options)
+std::shared_ptr<Promise<void>> runAllTests(std::any testPath, std::shared_ptr<TestCommandOptions> options)
 {
     auto projectInfo = getProjectType(testPath);
     if (!options->skipBuild) {

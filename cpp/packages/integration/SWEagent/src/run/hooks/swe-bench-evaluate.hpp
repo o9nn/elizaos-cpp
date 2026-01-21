@@ -20,7 +20,7 @@ namespace elizaos {
 
 /**
  * SweBench evaluation hook.
- * Will be automatically added to `run_batch` if `SWEBenchInstances.evaluate` is set to true
+ * Will be automatically added to `run_batch` if `SWEBenchInstances.evaluate` is std::set to true
  */
 
 /**

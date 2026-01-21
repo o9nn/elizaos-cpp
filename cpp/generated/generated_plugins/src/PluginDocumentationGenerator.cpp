@@ -4,7 +4,7 @@ PluginDocumentationGenerator::PluginDocumentationGenerator(std::shared_ptr<AISer
     this->fullDocumentationGenerator = std::make_shared<FullDocumentationGenerator>(configuration);
 }
 
-std::shared_ptr<Promise<void>> PluginDocumentationGenerator::generate(array<std::shared_ptr<ASTQueueItem>> existingDocs, string branchName, array<std::shared_ptr<TodoItem>> todoItems, array<std::shared_ptr<EnvUsage>> envUsages)
+std::shared_ptr<Promise<void>> PluginDocumentationGenerator::generate(array<std::shared_ptr<ASTQueueItem>> existingDocs, std::string branchName, array<std::shared_ptr<TodoItem>> todoItems, array<std::shared_ptr<EnvUsage>> envUsages)
 {
     auto packageJsonPath = path->join(this->configuration->get_absolutePath(), std::string("package.json"));
     auto packageJson = JSON->parse(fs->readFileSync(packageJsonPath, std::string("utf-8")));
@@ -27,7 +27,7 @@ std::shared_ptr<Promise<void>> PluginDocumentationGenerator::generate(array<std:
     return std::shared_ptr<Promise<void>>();
 }
 
-string PluginDocumentationGenerator::generateMarkdownContent(std::shared_ptr<PluginDocumentation> docs, any packageJson)
+std::string PluginDocumentationGenerator::generateMarkdownContent(std::shared_ptr<PluginDocumentation> docs, std::any packageJson)
 {
     return std::string("# ") + packageJson["name"] + std::string(" Documentation\
 \

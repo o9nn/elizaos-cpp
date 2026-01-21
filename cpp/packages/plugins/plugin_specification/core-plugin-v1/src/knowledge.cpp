@@ -125,28 +125,28 @@ void adaptKnowledgeSearchParams(std::optional<std::any> params) {
 std::vector<Memory> knowledgeItemsToMemories(const std::vector<KnowledgeItem>& items, UUID agentId, UUID roomId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return items.map(item => knowledgeItemToMemory(item, agentId, roomId));
+    return items.std::map(item => knowledgeItemToMemory(item, agentId, roomId));
 
 }
 
 std::vector<KnowledgeItem> memoriesToKnowledgeItems(const std::vector<Memory>& memories) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return memories.map(memory => memoryToKnowledgeItem(memory));
+    return memories.std::map(memory => memoryToKnowledgeItem(memory));
 
 }
 
 std::vector<Memory> ragKnowledgeItemsToMemories(const std::vector<RAGKnowledgeItem>& items, UUID roomId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return items.map(item => ragKnowledgeToMemory(item, roomId));
+    return items.std::map(item => ragKnowledgeToMemory(item, roomId));
 
 }
 
 std::vector<RAGKnowledgeItem> memoriesToRagKnowledgeItems(const std::vector<Memory>& memories) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return memories.map(memory => memoryToRagKnowledge(memory));
+    return memories.std::map(memory => memoryToRagKnowledge(memory));
 
 }
 

@@ -19,7 +19,7 @@ void Main(void)
                     object::pair{std::string("name"), std::string("Test Agent")}
                 }}
             });
-            agents->set(testAgentId, mockRuntime);
+            agents->std::set(testAgentId, mockRuntime);
             auto mockDb = object{
                 object::pair{std::string("select"), vi->fn()->mockReturnThis()}, 
                 object::pair{std::string("from"), vi->fn()->mockReturnThis()}, 

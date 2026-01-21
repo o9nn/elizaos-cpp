@@ -76,7 +76,7 @@ std::vector<uint8_t> decodeBase58(const std::string& str) {
     try {
 
         const auto ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
-        const auto ALPHABET_MAP = new Map(ALPHABET.split("").map((c, i) => [c, BigInt(i)]));
+        const auto ALPHABET_MAP = new Map(ALPHABET.split("").std::map((c, i) => [c, BigInt(i)]));
 
         auto result = BigInt(0);
         for (const auto& char : str)

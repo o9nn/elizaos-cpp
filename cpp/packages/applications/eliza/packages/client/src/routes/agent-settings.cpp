@@ -7,7 +7,7 @@ namespace elizaos {
 void AgentSettingsRoute() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto { agentId } = useParams<{ agentId: string }>();
+    const auto { agentId } = useParams<{ agentId: std::string }>();
     const auto navigate = useNavigate();
     const auto { data: agentData, isLoading } = useAgent(agentId);
 

@@ -32,7 +32,7 @@ namespace elizaos {
 std::future<bool> editEnvVars(EditEnvOptions options, auto fromMainMenu);
 
 /**
- * Helper function to add a new environment variable
+ * Helper std::function to add a new environment variable
  * @param envPath Path to the .env file
  * @param envVars Current environment variables
  * @param yes Whether to auto-confirm prompts

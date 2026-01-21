@@ -8,13 +8,13 @@ class CaptchaInfo;
 class CaptchaInfo : public object, public std::enable_shared_from_this<CaptchaInfo> {
 public:
     using std::enable_shared_from_this<CaptchaInfo>::shared_from_this;
-    any type;
+    std::any type;
 
-    any siteKey;
+    std::any siteKey;
 };
 
 std::shared_ptr<Promise<std::shared_ptr<CaptchaInfo>>> detectCaptchaType(std::shared_ptr<Page> page);
 
-std::shared_ptr<Promise<void>> injectCaptchaSolution(std::shared_ptr<Page> page, string captchaType, string solution);
+std::shared_ptr<Promise<void>> injectCaptchaSolution(std::shared_ptr<Page> page, std::string captchaType, std::string solution);
 
 #endif

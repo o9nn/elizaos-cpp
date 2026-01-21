@@ -10,7 +10,7 @@ std::shared_ptr<Promise<std::shared_ptr<Keypair>>> getWallet()
 {
     auto privateKeyStr = process->env->SOLANA_MAINNET_PRIVATE_KEY;
     if (!privateKeyStr) {
-        throw any(std::make_shared<Error>(std::string("SOLANA_MAINNET_PRIVATE_KEY not set in environment")));
+        throw std::any(std::make_shared<Error>(std::string("SOLANA_MAINNET_PRIVATE_KEY not std::set in environment")));
     }
     auto secretKey = bs58->decode(privateKeyStr);
     return Keypair->fromSecretKey(secretKey);
@@ -29,7 +29,7 @@ std::shared_ptr<Promise<std::shared_ptr<anchor::Program>>> getProgram(std::share
 };
 
 
-std::shared_ptr<Promise<void>> createTreasury(string tokenMintStr)
+std::shared_ptr<Promise<void>> createTreasury(std::string tokenMintStr)
 {
     console->log(std::string("=== CREATE DESK TOKEN TREASURY ===\
 "));
@@ -60,7 +60,7 @@ Creating ATA for desk..."));
 };
 
 
-std::shared_ptr<Promise<void>> registerToken(string tokenMintStr, double priceUsd)
+std::shared_ptr<Promise<void>> registerToken(std::string tokenMintStr, double priceUsd)
 {
     console->log(std::string("=== REGISTER TOKEN ON DESK ===\
 "));
@@ -102,7 +102,7 @@ Registering token..."));
 };
 
 
-std::shared_ptr<Promise<void>> setPrice(string tokenMintStr, double priceUsd)
+std::shared_ptr<Promise<void>> setPrice(std::string tokenMintStr, double priceUsd)
 {
     console->log(std::string("=== SET TOKEN PRICE ===\
 "));
@@ -188,7 +188,7 @@ Usage:\
 \
 Commands:\
   create-treasury <TOKEN_MINT>           Create desk token treasury (ATA)\
-  register-token <TOKEN_MINT> [PRICE]    Register token on desk with optional price\
+  register-token <TOKEN_MINT> [PRICE]    Register token on desk with std::optional price\
   set-price <TOKEN_MINT> <PRICE_USD>     Set manual token price\
   status                                 Show desk status\
 \
@@ -216,10 +216,10 @@ std::shared_ptr<Promise<void>> main()
         process->exit(0);
     }
     static switch_type __switch10595_11515 = {
-        { any(std::string("create-treasury")), 1 },
-        { any(std::string("register-token")), 2 },
-        { any(std::string("set-price")), 3 },
-        { any(std::string("status")), 4 }
+        { std::any(std::string("create-treasury")), 1 },
+        { std::any(std::string("register-token")), 2 },
+        { std::any(std::string("set-price")), 3 },
+        { std::any(std::string("status")), 4 }
     };
     switch (__switch10595_11515[command])
     {
@@ -237,7 +237,7 @@ std::shared_ptr<Promise<void>> main()
             printUsage();
             process->exit(1);
         }
-        std::async([=]() { registerToken(const_(args)[1], (const_(args)[2]) ? any(parseFloat(const_(args)[2])) : any(undefined)); });
+        std::async([=]() { registerToken(const_(args)[1], (const_(args)[2]) ? std::any(parseFloat(const_(args)[2])) : std::any(undefined)); });
         break;
     case 3:
         if (OR((!const_(args)[1]), (!const_(args)[2]))) {
@@ -259,9 +259,9 @@ std::shared_ptr<Promise<void>> main()
 };
 
 
-string SOLANA_RPC = OR((process->env->SOLANA_MAINNET_RPC), (std::string("https://api.mainnet-beta.solana.com")));
-any PROGRAM_ID = std::make_shared<PublicKey>(OR((process->env->NEXT_PUBLIC_SOLANA_PROGRAM_ID), (std::string("6qn8ELVXd957oRjLaomCpKpcVZshUjNvSzw1nc7QVyXc"))));
-any DESK = std::make_shared<PublicKey>(OR((OR((process->env->NEXT_PUBLIC_SOLANA_DESK_MAINNET), (process->env->NEXT_PUBLIC_SOLANA_DESK))), (std::string("G89QsVcKN1MZe6d8eKyzv93u7TEeXSsXbsDsBPbuTMUU"))));
+std::string SOLANA_RPC = OR((process->env->SOLANA_MAINNET_RPC), (std::string("https://api.mainnet-beta.solana.com")));
+std::any PROGRAM_ID = std::make_shared<PublicKey>(OR((process->env->NEXT_PUBLIC_SOLANA_PROGRAM_ID), (std::string("6qn8ELVXd957oRjLaomCpKpcVZshUjNvSzw1nc7QVyXc"))));
+std::any DESK = std::make_shared<PublicKey>(OR((OR((process->env->NEXT_PUBLIC_SOLANA_DESK_MAINNET), (process->env->NEXT_PUBLIC_SOLANA_DESK))), (std::string("G89QsVcKN1MZe6d8eKyzv93u7TEeXSsXbsDsBPbuTMUU"))));
 double POOL_TYPE_NONE = 0;
 std::shared_ptr<Buffer> EMPTY_PYTH_FEED = Buffer::alloc(32, 0);
 

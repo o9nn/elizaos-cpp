@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-gamification/src/utils/contentQuality.h"
 
-double calculateEntropy(string text)
+double calculateEntropy(std::string text)
 {
     auto len = text->get_length();
     if (len == 0) return 0;
@@ -19,7 +19,7 @@ double calculateEntropy(string text)
 };
 
 
-object checkRepeatedChars(string text)
+object checkRepeatedChars(std::string text)
 {
     auto matches = OR((text->match(CONSECUTIVE_CHAR_REGEX)), (array<any>()));
     auto repeatedLength = matches->reduce([=](auto sum, auto m) mutable
@@ -44,7 +44,7 @@ object checkRepeatedChars(string text)
 };
 
 
-object checkRepeatedWords(string text)
+object checkRepeatedWords(std::string text)
 {
     auto words = OR((text->toLowerCase()->match((new RegExp(std::string("\b[a-z]+\b/"))))), (array<any>()));
     if (words->length < 3) return object{
@@ -67,7 +67,7 @@ object checkRepeatedWords(string text)
 };
 
 
-object checkKeyboardMash(string text)
+object checkKeyboardMash(std::string text)
 {
     auto matchedLength = 0;
     auto cleanText = text->replace((new RegExp(std::string("\s"))), string_empty)->toLowerCase();
@@ -80,7 +80,7 @@ object checkKeyboardMash(string text)
         }
         , 0);
     }
-    auto ratio = (cleanText->get_length() > 0) ? any(matchedLength / cleanText->get_length()) : any(0);
+    auto ratio = (cleanText->get_length() > 0) ? std::any(matchedLength / cleanText->get_length()) : std::any(0);
     return object{
         object::pair{std::string("valid"), ratio < CONTENT_QUALITY_CONFIG["KEYBOARD_MASH_THRESHOLD"]}, 
         object::pair{std::string("matchRatio"), ratio}
@@ -88,7 +88,7 @@ object checkKeyboardMash(string text)
 };
 
 
-object checkEmojiSpam(string text)
+object checkEmojiSpam(std::string text)
 {
     auto emojis = OR((text->match(EMOJI_REGEX)), (array<any>()));
     auto emojiLength = emojis->length * 2;
@@ -100,7 +100,7 @@ object checkEmojiSpam(string text)
 };
 
 
-object checkUrlSpam(string text)
+object checkUrlSpam(std::string text)
 {
     auto urls = OR((text->match(URL_REGEX)), (array<any>()));
     auto urlLength = urls->reduce([=](auto sum, auto url) mutable
@@ -116,7 +116,7 @@ object checkUrlSpam(string text)
 };
 
 
-object checkSpecialCharSpam(string text)
+object checkSpecialCharSpam(std::string text)
 {
     auto specialChars = OR((text->match(SPECIAL_CHAR_REGEX)), (array<any>()));
     auto ratio = specialChars->length / Math->max(text->get_length(), 1);
@@ -127,7 +127,7 @@ object checkSpecialCharSpam(string text)
 };
 
 
-boolean checkSpamPhrases(string text)
+boolean checkSpamPhrases(std::string text)
 {
     auto trimmed = text->trim();
     for (auto& pattern : SPAM_PHRASES)
@@ -140,7 +140,7 @@ boolean checkSpamPhrases(string text)
 };
 
 
-std::shared_ptr<ContentQualityResult> checkContentQuality(string text)
+std::shared_ptr<ContentQualityResult> checkContentQuality(std::string text)
 {
     if (OR((!text), (type_of(text) != std::string("string")))) {
         return object{
@@ -215,13 +215,13 @@ std::shared_ptr<ContentQualityResult> checkContentQuality(string text)
     }
     return object{
         object::pair{std::string("isValid"), std::string("isValid")}, 
-        object::pair{std::string("reason"), (reasons->get_length() > 0) ? any(reasons->join(std::string(", "))) : any(undefined)}, 
+        object::pair{std::string("reason"), (reasons->get_length() > 0) ? std::any(reasons->join(std::string(", "))) : std::any(undefined)}, 
         object::pair{std::string("score"), std::string("score")}
     };
 };
 
 
-boolean quickSpamCheck(string text)
+boolean quickSpamCheck(std::string text)
 {
     if (OR((!text), (type_of(text) != std::string("string")))) return false;
     auto trimmed = text->trim();

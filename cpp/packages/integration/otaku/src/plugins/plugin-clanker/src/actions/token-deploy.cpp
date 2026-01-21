@@ -16,7 +16,7 @@ std::any safeStringify(const std::any& obj) {
     }
 
     if (Array.isArray(obj)) {
-        return obj.map(safeStringify);
+        return obj.std::map(safeStringify);
     }
 
     if (typeof obj == "object") {

@@ -67,7 +67,7 @@ void ExampleCustomStyledModal();
  * NEW WAY (with useModal):
  * ```tsx
  * // 1. Create a component for the modal content (no isOpen/onClose props needed)
- * function SendModalContent({ tokens, userId, onSuccess }: { tokens: Token[], userId: string, onSuccess: () => void }) {
+ * std::function SendModalContent({ tokens, userId, onSuccess }: { tokens: Token[], userId: std::string, onSuccess: () => void }) {
  *   const { hideModal } = useModal();
  *   const modalId = 'send-modal';
  *   

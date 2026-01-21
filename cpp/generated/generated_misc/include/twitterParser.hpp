@@ -6,10 +6,10 @@
 
 class TwitterParser;
 
-extern std::function<string(array<string>)> makeBulletpointList;
+extern std::function<std::string(array<string>)> makeBulletpointList;
 extern array<string> examples;
-extern string rolePrompt;
-extern string template;
+extern std::string rolePrompt;
+extern std::string template;
 class TwitterParser : public object, public std::enable_shared_from_this<TwitterParser> {
 public:
     using std::enable_shared_from_this<TwitterParser>::shared_from_this;
@@ -19,7 +19,7 @@ public:
 
     TwitterParser(std::shared_ptr<IAgentRuntime> runtime);
     virtual void fillTimeframe();
-    virtual any parseTweets();
+    virtual std::any parseTweets();
 };
 
 using _default = TwitterParser;

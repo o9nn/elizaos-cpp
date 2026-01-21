@@ -22,7 +22,7 @@ class VisionAutonomyE2ETestSuite implements TestSuite {
   tests = [
     {
       name: 'Should provide continuous vision updates for autonomous agent',
-      fn: async (runtime: IAgentRuntime) => {
+      fn: std::async (runtime: IAgentRuntime) => {
         console.log('Testing vision updates for autonomous behavior...');
 
         const visionService = runtime.getService<VisionService>('VISION');

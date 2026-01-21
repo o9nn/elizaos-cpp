@@ -30,7 +30,7 @@ using ToasterToast = ToastProps & {
  */
 
 /**
- * Generates a unique ID string each time it is called.
+ * Generates a unique ID std::string each time it is called.
  *
  * @returns {string} The generated ID string.
  */
@@ -72,7 +72,7 @@ struct State {
  */
 
 /**
- * Reducer function to handle various actions on the state related to toasts.
+ * Reducer std::function to handle various actions on the state related to toasts.
  * @param {State} state - The current state of the application.
  * @param {Action} action - The action to be performed on the state.
  * @returns {State} - The updated state after performing the action.
@@ -86,7 +86,7 @@ struct State {
  */
 
 /**
- * Dispatches an action by passing it to the reducer function and then
+ * Dispatches an action by passing it to the reducer std::function and then
  * notifies all registered listeners with the updated memory state.
  *
  * @param {Action} action The action to dispatch
@@ -101,7 +101,7 @@ using Toast = Omit<ToasterToast, 'id'>;
 /**
  * Creates a new toast message with the given properties.
  * @param {Toast} props - The props for the toast message.
- * @returns {Object} An object containing the id of the toast, a function to dismiss the toast, and a function to update the toast.
+ * @returns {Object} An object containing the id of the toast, a std::function to dismiss the toast, and a std::function to update the toast.
  */
 void toast(Toast { ...props });
 

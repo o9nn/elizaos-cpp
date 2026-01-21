@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void normalizeParams(const std::variant<Record<string, string, undefined>>& q) {
+void normalizeParams(const std::variant<Record<std::string, std::string, undefined>>& q) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto {;
@@ -17,7 +17,7 @@ void normalizeParams(const std::variant<Record<string, string, undefined>>& q) {
         sortBy,
         sortOrder,
         } = q;
-        const std::variant<Record<string, string, number>> p = {};
+        const std::variant<Record<std::string, std::string, number>> p = {};
 
         if (parseInt(page || "") > 1) p.page = Number(page);
         if (parseInt(limit || "") != 50) p.limit = Number(limit);
@@ -33,7 +33,7 @@ void normalizeParams(const std::variant<Record<string, string, undefined>>& q) {
 
 }
 
-void makeCacheKey(const std::variant<Record<string, string, number>>& params) {
+void makeCacheKey(const std::variant<Record<std::string, std::string, number>>& params) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto json = /* JSON.stringify */ std::string(params);

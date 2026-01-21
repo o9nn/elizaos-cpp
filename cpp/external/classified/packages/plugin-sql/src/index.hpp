@@ -58,7 +58,7 @@ IDatabaseAdapter createDatabaseAdapter(std::optional<std::any> config, UUID agen
  * @typedef {Object} Plugin
  * @property {string} name - The name of the plugin
  * @property {string} description - The description of the plugin
- * @property {Function} init - The initialization function for the plugin
+ * @property {Function} init - The initialization std::function for the plugin
  * @param {any} _ - Input parameter
  * @param {IAgentRuntime} runtime - The runtime environment for the agent
  */

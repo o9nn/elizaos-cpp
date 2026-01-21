@@ -23,11 +23,11 @@ void Main(void)
             console->log(std::string("Current on-chain authority: ") + configState->authority->toBase58() + string_empty);
             console->log(std::string("Current on-chain pending authority: ") + configState->pendingAuthority->toBase58() + string_empty);
             if (configState->pendingAuthority->equals(web3->PublicKey->default)) {
-                console->error(std::string("Error: No pending authority set in the config account. Run nominate_authority first."));
+                console->error(std::string("Error: No pending authority std::set in the config account. Run nominate_authority first."));
                 return std::shared_ptr<Promise<void>>();
             }
             if (!configState->pendingAuthority->equals(pendingAuthorityWallet->publicKey)) {
-                console->error(std::string("Error: The configured wallet (") + pendingAuthorityWallet->publicKey->toBase58() + std::string(") does not match the pending authority (") + configState->pendingAuthority->toBase58() + std::string(") set in the config account."));
+                console->error(std::string("Error: The configured wallet (") + pendingAuthorityWallet->publicKey->toBase58() + std::string(") does not match the pending authority (") + configState->pendingAuthority->toBase58() + std::string(") std::set in the config account."));
                 return std::shared_ptr<Promise<void>>();
             }
             console->log(std::string("Sending accept_authority transaction..."));
@@ -43,7 +43,7 @@ void Main(void)
                 console->error(std::string("Error: Authority was not updated correctly after transaction."));
             }
         }
-        catch (const any& err)
+        catch (const std::any& err)
         {
             console->error(std::string("Accept Authority transaction failed:"), err);
             if (is<anchor->AnchorError>(err)) {

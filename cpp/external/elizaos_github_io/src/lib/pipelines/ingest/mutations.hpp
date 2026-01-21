@@ -22,7 +22,7 @@ std::future<void> updateRepositoryLastFetched(const std::string& repoId, const s
 /**
  * Ensure users exist in the database
  */
-std::future<void> ensureUsersExist(Map<string userData, std::optional<string }>> { avatarUrl, std::optional<std::vector<std::string>> botUsers);
+std::future<void> ensureUsersExist(Map<std::string userData, std::optional<std::string }>> { avatarUrl, std::optional<std::vector<std::string>> botUsers);
 
 /**
  * Ensure labels exist in the database

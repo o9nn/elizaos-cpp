@@ -17,7 +17,7 @@ namespace elizaos {
 
 
 
-void Badge(auto variant);
+void Badge(auto std::variant);
 
 
 } // namespace elizaos

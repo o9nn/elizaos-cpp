@@ -29,7 +29,7 @@ namespace elizaos {
  * Error thrown when a session is not found
  */
 class SessionNotFoundError extends SessionError {
-  constructor(sessionId: string, details?: any) {
+  constructor(sessionId: std::string, details?: std::any) {
     super('SESSION_NOT_FOUND', `Session with ID '${sessionId}' not found`, 404, details);
   }
 
@@ -37,7 +37,7 @@ class SessionNotFoundError extends SessionError {
  * Error thrown when a session has expired
  */
 class SessionExpiredError extends SessionError {
-  constructor(sessionId: string, expiredAt?: Date, details?: any) {
+  constructor(sessionId: std::string, expiredAt?: Date, details?: std::any) {
     const message = expiredAt
       ? `Session '${sessionId}' expired at ${expiredAt.toISOString()}`
       : `Session '${sessionId}' has expired`;
@@ -49,7 +49,7 @@ class SessionExpiredError extends SessionError {
  * Error thrown when session creation fails
  */
 class SessionCreationError extends SessionError {
-  constructor(reason: string, details?: any) {
+  constructor(reason: std::string, details?: std::any) {
     super('SESSION_CREATION_FAILED', `Failed to create session: ${reason}`, 500, details);
   }
 
@@ -57,7 +57,7 @@ class SessionCreationError extends SessionError {
  * Error thrown when an agent is not found
  */
 class AgentNotFoundError extends SessionError {
-  constructor(agentId: string, details?: any) {
+  constructor(agentId: std::string, details?: std::any) {
     super('AGENT_NOT_FOUND', `Agent with ID '${agentId}' not found`, 404, details);
   }
 
@@ -65,10 +65,10 @@ class AgentNotFoundError extends SessionError {
  * Error thrown when input validation fails
  */
 class ValidationError extends SessionError {
-  public readonly field?: string;
-  public readonly value?: any;
+  public readonly field?: std::string;
+  public readonly value?: std::any;
 
-  constructor(message: string, field?: string, value?: any, details?: any) {
+  constructor(message: std::string, field?: std::string, value?: std::any, details?: std::any) {
     super('VALIDATION_ERROR', message, 400, details);
     this.field = field;
     this.value = value;
@@ -78,7 +78,7 @@ class ValidationError extends SessionError {
  * Error thrown when a UUID is invalid
  */
 class InvalidUuidError extends ValidationError {
-  constructor(field: string, value: string) {
+  constructor(field: std::string, value: std::string) {
     super(`Invalid UUID format for field '${field}'`, field, value, {
       providedValue: value,
       expectedFormat: 'UUID v4',
@@ -89,7 +89,7 @@ class InvalidUuidError extends ValidationError {
  * Error thrown when required fields are missing
  */
 class MissingFieldsError extends ValidationError {
-  constructor(fields: string[]) {
+  constructor(fields: std::string[]) {
     super(`Missing required fields: ${fields.join(', ')}`, undefined, undefined, {
       missingFields: fields,
     });
@@ -99,7 +99,7 @@ class MissingFieldsError extends ValidationError {
  * Error thrown when content validation fails
  */
 class InvalidContentError extends ValidationError {
-  constructor(reason: string, content?: any) {
+  constructor(reason: std::string, content?: std::any) {
     super(`Invalid content: ${reason}`, 'content', content, { reason });
   }
 
@@ -107,7 +107,7 @@ class InvalidContentError extends ValidationError {
  * Error thrown when metadata validation fails
  */
 class InvalidMetadataError extends ValidationError {
-  constructor(reason: string, metadata?: any) {
+  constructor(reason: std::string, metadata?: std::any) {
     super(`Invalid metadata: ${reason}`, 'metadata', metadata, {
       reason,
       providedMetadata: metadata,
@@ -118,7 +118,7 @@ class InvalidMetadataError extends ValidationError {
  * Error thrown when pagination parameters are invalid
  */
 class InvalidPaginationError extends ValidationError {
-  constructor(parameter: string, value: any, reason: string) {
+  constructor(parameter: std::string, value: std::any, reason: std::string) {
     super(`Invalid pagination parameter '${parameter}': ${reason}`, parameter, value, {
       parameter,
       value,
@@ -130,7 +130,7 @@ class InvalidPaginationError extends ValidationError {
  * Error thrown when timeout configuration is invalid
  */
 class InvalidTimeoutConfigError extends ValidationError {
-  constructor(reason: string, config?: any) {
+  constructor(reason: std::string, config?: std::any) {
     super(`Invalid timeout configuration: ${reason}`, 'timeoutConfig', config, {
       reason,
       providedConfig: config,
@@ -141,7 +141,7 @@ class InvalidTimeoutConfigError extends ValidationError {
  * Error thrown when a session cannot be renewed
  */
 class SessionRenewalError extends SessionError {
-  constructor(sessionId: string, reason: string, details?: any) {
+  constructor(sessionId: std::string, reason: std::string, details?: std::any) {
     super('SESSION_RENEWAL_FAILED', `Cannot renew session '${sessionId}': ${reason}`, 400, details);
   }
 
@@ -149,7 +149,7 @@ class SessionRenewalError extends SessionError {
  * Error thrown when session deletion fails
  */
 class SessionDeletionError extends SessionError {
-  constructor(sessionId: string, reason: string, details?: any) {
+  constructor(sessionId: std::string, reason: std::string, details?: std::any) {
     super(
       'SESSION_DELETION_FAILED',
       `Failed to delete session '${sessionId}': ${reason}`,
@@ -162,7 +162,7 @@ class SessionDeletionError extends SessionError {
  * Error thrown when message sending fails
  */
 class MessageSendError extends SessionError {
-  constructor(sessionId: string, reason: string, details?: any) {
+  constructor(sessionId: std::string, reason: std::string, details?: std::any) {
     super(
       'MESSAGE_SEND_FAILED',
       `Failed to send message in session '${sessionId}': ${reason}`,
@@ -175,7 +175,7 @@ class MessageSendError extends SessionError {
  * Error thrown when message retrieval fails
  */
 class MessageRetrievalError extends SessionError {
-  constructor(sessionId: string, reason: string, details?: any) {
+  constructor(sessionId: std::string, reason: std::string, details?: std::any) {
     super(
       'MESSAGE_RETRIEVAL_FAILED',
       `Failed to retrieve messages for session '${sessionId}': ${reason}`,
@@ -188,7 +188,7 @@ class MessageRetrievalError extends SessionError {
  * Error thrown when database operations fail
  */
 class DatabaseError extends SessionError {
-  constructor(operation: string, reason: string, details?: any) {
+  constructor(operation: std::string, reason: std::string, details?: std::any) {
     super('DATABASE_ERROR', `Database operation '${operation}' failed: ${reason}`, 500, details);
   }
 
@@ -196,7 +196,7 @@ class DatabaseError extends SessionError {
  * Error thrown when session limit is exceeded
  */
 class SessionLimitExceededError extends SessionError {
-  constructor(limit: number, current: number, details?: any) {
+  constructor(limit: number, current: number, details?: std::any) {
     super(
       'SESSION_LIMIT_EXCEEDED',
       `Session limit exceeded. Maximum: ${limit}, Current: ${current}`,
@@ -211,7 +211,7 @@ class SessionLimitExceededError extends SessionError {
 class RateLimitError extends SessionError {
   public readonly retryAfter?: number;
 
-  constructor(message: string, retryAfter?: number, details?: any) {
+  constructor(message: std::string, retryAfter?: number, details?: std::any) {
     super('RATE_LIMIT_EXCEEDED', message, 429, details);
     this.retryAfter = retryAfter;
   }

@@ -10,26 +10,26 @@ class FileToTest;
 class FileToTest : public object, public std::enable_shared_from_this<FileToTest> {
 public:
     using std::enable_shared_from_this<FileToTest>::shared_from_this;
-    string sourcePath;
+    std::string sourcePath;
 
-    string testPath;
+    std::string testPath;
 
-    any category;
+    std::any category;
 };
 
-std::shared_ptr<Promise<array<string>>> findAllSourceFiles(string dir, array<string> files = array<string>());
+std::shared_ptr<Promise<array<string>>> findAllSourceFiles(std::string dir, array<string> files = array<string>());
 
 template <typename RET>
-RET categorizeFile(string filePath);
+RET categorizeFile(std::string filePath);
 
-string getTestPath(string sourcePath, string category);
+std::string getTestPath(std::string sourcePath, std::string category);
 
-std::shared_ptr<Promise<string>> generateTestContent(string sourcePath);
+std::shared_ptr<Promise<string>> generateTestContent(std::string sourcePath);
 
 void main();
 
 template <typename RET>
-RET categorizeFile(string filePath)
+RET categorizeFile(std::string filePath)
 {
     if (filePath->includes(std::string("/commands/"))) return std::string("commands");
     if (filePath->includes(std::string("/utils/"))) return std::string("utils");

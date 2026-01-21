@@ -14,13 +14,13 @@ void useCreateToken() {
         const auto { signTransaction } = useWallet();
 
         const auto createToken = useCallback(;
-        async ({
+        std::async ({
             tokenMetadata,
             metadataUrl,
             mintKeypair,
             }: {
                 tokenMetadata: TokenMetadata;
-                metadataUrl: string;
+                metadataUrl: std::string;
                 mintKeypair: Keypair;
                 }) => {
                     if (!window.solana.isPhantom) {
@@ -48,13 +48,13 @@ void useCreateToken() {
                         );
 
                         const auto createTokenAsync = useCallback(;
-                        async ({
+                        std::async ({
                             tokenMetadata,
                             metadataUrl,
                             mintKeypair,
                             }: {
                                 tokenMetadata: TokenMetadata;
-                                metadataUrl: string;
+                                metadataUrl: std::string;
                                 mintKeypair: Keypair;
                                 }) => {
                                     if (!window.solana.isPhantom) {

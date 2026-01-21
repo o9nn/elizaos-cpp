@@ -26,14 +26,14 @@ namespace elizaos {
 std::string formatPrice(double price);
 
 /**
- * Formats a number as a percentage string with two decimal places.
+ * Formats a number as a percentage std::string with two decimal places.
  * @param {number} value - The number to be formatted as a percentage.
  * @returns {string} The formatted percentage string.
  */
 std::string formatPercent(double value);
 
 /**
- * Formats a given number into a string representation using the "en-US" number format.
+ * Formats a given number into a std::string representation using the "en-US" number format.
  *
  * @param {number} value - The number to be formatted.
  * @returns {string} The formatted number as a string.
@@ -41,16 +41,16 @@ std::string formatPercent(double value);
 std::string formatNumber(double value);
 
 /**
- * Formats a given date string or Date object into a locale-specific string representation.
+ * Formats a given date std::string or Date object into a locale-specific std::string representation.
  *
- * @param {string | Date} dateString - The date string to be formatted or a Date object.
+ * @param {std::string | Date} dateString - The date std::string to be formatted or a Date object.
  * @returns {string} The formatted date string.
  */
 std::string formatDate(const std::variant<std::string, std::chrono::system_clock::time_point>& dateString);
 
 /**
  * Function to normalize the balance based on the decimals provided.
- * @param {string | bigint} balanceStr - The balance to normalize, can be a string or bigint.
+ * @param {std::string | bigint} balanceStr - The balance to normalize, can be a std::string or bigint.
  * @param {number} decimals - The number of decimal places to normalize to.
  * @returns {number} The normalized balance as a number.
  */
@@ -89,7 +89,7 @@ std::string formatTokenPerformance(TokenPerformance token);
  * Formats transaction history data into an array of strings for display.
  * @param {Transaction[]} transactions - The list of transactions to format.
  * @param {TokenPerformance} token - The token performance data used for formatting.
- * @returns {string[]} - An array of formatted strings representing each transaction.
+ * @returns {std::string[]} - An array of formatted strings representing each transaction.
  */
 std::vector<std::string> formatTransactionHistory(const std::vector<Transaction>& transactions, TokenPerformance token);
 
@@ -112,10 +112,10 @@ std::string formatPositionPerformance(PositionWithBalance position, TokenPerform
  * @returns {{
  *   tokenReports: Object[],
  *   positionReports: Object[],
- *   totalCurrentValue: string,
- *   totalRealizedPnL: string,
- *   totalUnrealizedPnL: string,
- *   totalPnL: string,
+ *   totalCurrentValue: std::string,
+ *   totalRealizedPnL: std::string,
+ *   totalUnrealizedPnL: std::string,
+ *   totalPnL: std::string,
  *   positionsWithBalance: Object[],
  * }} Formatted full report containing token reports, position reports, total values, and positions with balance.
  */
@@ -131,7 +131,7 @@ void formatFullReport(const std::vector<TokenPerformance>& tokens, const std::ve
 std::string formatScore(double score);
 
 /**
- * Formats a numeric value into a percentage string with one decimal place.
+ * Formats a numeric value into a percentage std::string with one decimal place.
  *
  * @param {number} value - The numeric value to be formatted as a percentage.
  * @returns {string} The formatted percentage string.
@@ -153,7 +153,7 @@ using RecommenderNumericMetrics = NumericKeys<RecommenderMetrics>;
  * @param {RecommenderMetrics} current - The current metrics values.
  * @param {Metric} metric - The specific metric to calculate trend for.
  * @param {RecommenderMetricsHistory[]} history - Array of historical metrics data.
- * @returns {{ trend: number; description: string }} - Object containing trend value and description.
+ * @returns {{ trend: number; description: std::string }} - Object containing trend value and description.
  */
 
 /**
@@ -192,7 +192,7 @@ using TimePeriod = {
  * @param {RecommenderMetricsHistory[]} history - The history of recommended metrics.
  * @param {TimePeriod} period - The time period for which trends should be calculated. If not provided, monthly trends are calculated.
  * @returns {Array<{
- * 	period: string;
+ * 	period: std::string;
  * 	avgPerformance: number;
  * 	successRate: number;
  * 	recommendations: number;
@@ -203,10 +203,10 @@ using TimePeriod = {
   // For daily and weekly periods
 
 /**
- * Formats an array of trends into a string representation.
+ * Formats an array of trends into a std::string representation.
  *
- * @param {Array<{ period: string; avgPerformance: number; successRate: number; recommendations: number; }>} trends The array of trends to format.
- * @returns {string} The formatted trends as a string with each trend separated by two new lines.
+ * @param {Array<{ period: std::string; avgPerformance: number; successRate: number; recommendations: number; }>} trends The array of trends to format.
+ * @returns {string} The formatted trends as a std::string with each trend separated by two new lines.
  */
 
 /**
@@ -231,8 +231,8 @@ std::string formatRecommenderReport(Entity entity, RecommenderMetrics metrics, c
  * Formats the top recommenders overview based on the provided data.
  *
  * @param {Entity[]} recommenders - The list of recommenders to be formatted
- * @param {Map<string, RecommenderMetrics>} metrics - The map of recommender metrics
- * @param {Map<string, RecommenderMetricsHistory[]>} history - The map of historical metrics data
+ * @param {Map<std::string, RecommenderMetrics>} metrics - The std::map of recommender metrics
+ * @param {Map<std::string, RecommenderMetricsHistory[]>} history - The std::map of historical metrics data
  * @returns {string} The formatted top recommenders overview in XML format
  */
 std::string formatTopRecommendersOverview(const std::vector<Entity>& recommenders, const std::unordered_map<std::string, RecommenderMetrics>& metrics, const std::unordered_map<std::string, std::vector<RecommenderMetricsHistory>>& history);

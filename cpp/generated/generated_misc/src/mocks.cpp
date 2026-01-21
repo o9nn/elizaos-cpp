@@ -557,7 +557,7 @@ std::shared_ptr<IAgentRuntime> createMockAgentRuntime(Partial<std::shared_ptr<IA
 };
 
 
-any createMockDatabaseAdapter(any overrides)
+std::any createMockDatabaseAdapter(std::any overrides)
 {
     auto baseAdapter = utils::assign(object{
         object::pair{std::string("db"), object{
@@ -1091,7 +1091,7 @@ std::shared_ptr<NextFunction> createMockNext()
 };
 
 
-any createMockSocketIO()
+std::any createMockSocketIO()
 {
     return object{
         object::pair{std::string("on"), jest->fn()}, 
@@ -1115,7 +1115,7 @@ any createMockSocketIO()
 };
 
 
-any createMockHttpServer()
+std::any createMockHttpServer()
 {
     return object{
         object::pair{std::string("listen"), jest->fn([=](auto _port, auto callback = nullptr) mutable

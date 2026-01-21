@@ -12,39 +12,39 @@ class Birdeye;
 class TransactionHistory : public object, public std::enable_shared_from_this<TransactionHistory> {
 public:
     using std::enable_shared_from_this<TransactionHistory>::shared_from_this;
-    string txHash;
+    std::string txHash;
 
     std::shared_ptr<Date> blockTime;
 
-    any data;
+    std::any data;
 };
 
 class Portfolio : public object, public std::enable_shared_from_this<Portfolio> {
 public:
     using std::enable_shared_from_this<Portfolio>::shared_from_this;
-    string key;
+    std::string key;
 
-    any data;
+    std::any data;
 };
 
 class SentimentContent : public Content, public std::enable_shared_from_this<SentimentContent> {
 public:
     using std::enable_shared_from_this<SentimentContent>::shared_from_this;
-    string text;
+    std::string text;
 
-    string source;
+    std::string source;
 
     object metadata;
 };
 
-extern string rolePrompt;
-extern string template;
-string makeBulletpointList(array<string> array);
+extern std::string rolePrompt;
+extern std::string template;
+std::string makeBulletpointList(array<string> array);
 
 class Birdeye : public object, public std::enable_shared_from_this<Birdeye> {
 public:
     using std::enable_shared_from_this<Birdeye>::shared_from_this;
-    string apiKey;
+    std::string apiKey;
 
     std::shared_ptr<UUID> sentimentRoomId;
 
@@ -53,13 +53,13 @@ public:
     std::shared_ptr<IAgentRuntime> runtime;
 
     Birdeye(std::shared_ptr<IAgentRuntime> runtime);
-    virtual any syncWalletHistory();
+    virtual std::any syncWalletHistory();
     virtual void syncWalletPortfolio();
-    virtual any syncWallet();
+    virtual std::any syncWallet();
     template <typename P0>
     std::shared_ptr<Promise<boolean>> syncTrendingTokens(P0 chain);
     virtual void fillTimeframe();
-    virtual any parseTweets();
+    virtual std::any parseTweets();
 };
 
 using _default = Birdeye;
@@ -77,7 +77,7 @@ std::shared_ptr<Promise<boolean>> Birdeye::syncTrendingTokens(P0 chain)
             }}
         };
         auto cachedTokens = std::async([=]() { this->runtime->getCache<array<std::shared_ptr<IToken>>>(std::string("tokens_") + chain + string_empty); });
-        auto tokens = (cachedTokens) ? any(cachedTokens) : any(array<any>());
+        auto tokens = (cachedTokens) ? std::any(cachedTokens) : std::any(array<any>());
         for (auto batch = 0; batch < 5; batch++)
         {
             auto currentOffset = batch * 20;
@@ -128,10 +128,10 @@ std::shared_ptr<Promise<boolean>> Birdeye::syncTrendingTokens(P0 chain)
         logger->debug(std::string("Updated ") + chain + std::string(" tokens cache with ") + tokens->get_length() + std::string(" tokens"));
         return true;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Failed to sync trending tokens"), error);
-        throw any(error);
+        throw std::any(error);
     }
 }
 

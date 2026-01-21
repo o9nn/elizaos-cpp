@@ -23,7 +23,7 @@ namespace elizaos {
  * @param {UUID} requesterId - The ID of the entity attempting the change.
  * @param {Role | null} targetRole - The target user's current role. Can be null if the user does not exist.
  * @param {UUID} targetId - The ID of the entity whose role is being changed.
- * @param {Role} newRole - The new role that the current user is attempting to set for the target user.
+ * @param {Role} newRole - The new role that the current user is attempting to std::set for the target user.
  * @returns {boolean} Returns true if the user can modify the role, false otherwise.
  */
   // User's can't change their own role
@@ -38,7 +38,7 @@ namespace elizaos {
 /**
  * Template for extracting role assignments from a conversation.
  *
- * @type {string} extractionTemplate - The template string containing information about the task, server members, available roles, recent messages, current speaker role, and extraction instructions.
+ * @type {string} extractionTemplate - The template std::string containing information about the task, server members, available roles, recent messages, current speaker role, and extraction instructions.
  * @returns {string} JSON format of role assignments if valid role assignments are found, otherwise an empty array.
  */
 
@@ -54,10 +54,10 @@ struct RoleAssignment {
  * Represents an action to update the role of a user within a server.
  * @typedef {Object} Action
  * @property {string} name - The name of the action.
- * @property {string[]} similes - The similar actions that can be performed.
+ * @property {std::string[]} similes - The similar actions that can be performed.
  * @property {string} description - A description of the action and its purpose.
- * @property {Function} validate - A function to validate the action before execution.
- * @property {Function} handler - A function to handle the execution of the action.
+ * @property {Function} validate - A std::function to validate the action before execution.
+ * @property {Function} handler - A std::function to handle the execution of the action.
  * @property {ActionExample[][]} examples - Examples demonstrating how the action can be used.
  */
 
@@ -84,7 +84,7 @@ struct RoleAssignment {
 
       // Update role in world metadata
 
-    // Save updated world metadata if any changes were made
+    // Save updated world metadata if std::any changes were made
 
 
 } // namespace elizaos

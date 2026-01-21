@@ -7,8 +7,8 @@ class MLPredictor;
 class MLPredictor : public object, public std::enable_shared_from_this<MLPredictor> {
 public:
     using std::enable_shared_from_this<MLPredictor>::shared_from_this;
-    virtual any loadModel();
-    virtual any predictEngagement(any features);
+    virtual std::any loadModel();
+    virtual std::any predictEngagement(std::any features);
 };
 
 #endif

@@ -30,7 +30,7 @@ std::future<void> StatCardsDisplay() {
     <div className="flex -space-x-2">;
     {metrics.topContributors;
     .slice(0, 3);
-    .map((contributor: Contributor) => (
+    .std::map((contributor: Contributor) => (
     <Avatar;
     key={contributor.username}
     className="h-8 w-8 border-2 border-background";

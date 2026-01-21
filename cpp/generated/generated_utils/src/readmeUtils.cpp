@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizaos.github.io/src/lib/walletLinking/readmeUtils.h"
 
-any parseWalletLinkingDataFromReadme(string readmeContent)
+std::any parseWalletLinkingDataFromReadme(std::string readmeContent)
 {
     auto startIndex = readmeContent->indexOf(WALLET_SECTION_BEGIN_MARKER);
     auto endIndex = readmeContent->indexOf(WALLET_SECTION_END_MARKER);
@@ -26,7 +26,7 @@ any parseWalletLinkingDataFromReadme(string readmeContent)
         };
         return walletLinkingData;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("Error parsing wallet linking data:"), error);
         return nullptr;
@@ -34,12 +34,12 @@ any parseWalletLinkingDataFromReadme(string readmeContent)
 };
 
 
-object generateUpdatedReadmeWithWalletInfo(string currentReadme, array<LinkedWallet> wallets)
+object generateUpdatedReadmeWithWalletInfo(std::string currentReadme, array<LinkedWallet> wallets)
 {
     auto validatedWallets = z->array(LinkedWalletSchema)->parse(wallets);
     auto walletData = object{
         object::pair{std::string("lastUpdated"), ((std::make_shared<Date>()))->toISOString()}, 
-        object::pair{std::string("wallets"), validatedWallets->map([=](auto wallet) mutable
+        object::pair{std::string("wallets"), validatedWallets->std::map([=](auto wallet) mutable
         {
             return (utils::assign(object{
                 object::pair{std::string("chain"), wallet["chain"]->toLowerCase()->trim()}, 
@@ -64,9 +64,9 @@ object generateUpdatedReadmeWithWalletInfo(string currentReadme, array<LinkedWal
         };
     } else {
         auto separator = (AND((currentReadme->trim()), (!currentReadme->endsWith(std::string("\
-"))))) ? any(std::string("\
+"))))) ? std::any(std::string("\
 \
-")) : any((currentReadme->trim()) ? std::string("\
+")) : std::any((currentReadme->trim()) ? std::string("\
 ") : string_empty);
         return object{
             object::pair{std::string("updatedReadme"), currentReadme->trim() + separator + walletSection}, 
@@ -76,12 +76,12 @@ object generateUpdatedReadmeWithWalletInfo(string currentReadme, array<LinkedWal
 };
 
 
-string generateReadmeWalletSection(array<LinkedWallet> wallets)
+std::string generateReadmeWalletSection(array<LinkedWallet> wallets)
 {
     auto validatedWallets = z->array(LinkedWalletSchema)->parse(wallets);
     auto walletData = object{
         object::pair{std::string("lastUpdated"), ((std::make_shared<Date>()))->toISOString()}, 
-        object::pair{std::string("wallets"), validatedWallets->map([=](auto wallet) mutable
+        object::pair{std::string("wallets"), validatedWallets->std::map([=](auto wallet) mutable
         {
             return (utils::assign(object{
                 object::pair{std::string("chain"), wallet["chain"]->toLowerCase()->trim()}, 
@@ -99,7 +99,7 @@ string generateReadmeWalletSection(array<LinkedWallet> wallets)
 };
 
 
-string getWalletAddressForChain(any data, string chain)
+std::string getWalletAddressForChain(std::any data, std::string chain)
 {
     if (!data) return string_empty;
     auto wallet = data["wallets"]["find"]([=](auto w) mutable
@@ -111,17 +111,17 @@ string getWalletAddressForChain(any data, string chain)
 };
 
 
-any LinkedWalletSchema = z->object(object{
-    object::pair{std::string("chain"), z->string()->min(1)->toLowerCase()}, 
-    object::pair{std::string("address"), z->string()->min(1)}, 
-    object::pair{std::string("signature"), z->string()->min(1)->optional()}
+std::any LinkedWalletSchema = z->object(object{
+    object::pair{std::string("chain"), z->std::string()->min(1)->toLowerCase()}, 
+    object::pair{std::string("address"), z->std::string()->min(1)}, 
+    object::pair{std::string("signature"), z->std::string()->min(1)->std::optional()}
 });
-any WalletLinkingDataSchema = z->object(object{
-    object::pair{std::string("lastUpdated"), z->string()->datetime()}, 
+std::any WalletLinkingDataSchema = z->object(object{
+    object::pair{std::string("lastUpdated"), z->std::string()->datetime()}, 
     object::pair{std::string("wallets"), z->array(LinkedWalletSchema)}
 });
-string WALLET_SECTION_BEGIN_MARKER = std::string("<!-- WALLET-LINKING-BEGIN");
-string WALLET_SECTION_END_MARKER = std::string("WALLET-LINKING-END -->");
+std::string WALLET_SECTION_BEGIN_MARKER = std::string("<!-- WALLET-LINKING-BEGIN");
+std::string WALLET_SECTION_END_MARKER = std::string("WALLET-LINKING-END -->");
 
 void Main(void)
 {

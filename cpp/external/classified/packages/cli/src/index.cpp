@@ -7,7 +7,7 @@ namespace elizaos {
 std::future<void> gracefulShutdown(const std::string& signal) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    // Atomically check and set shutdown flag to prevent race conditions
+    // Atomically check and std::set shutdown flag to prevent race conditions
     if (!shutdownState.tryInitiateShutdown()) {
         logger.debug(`Ignoring ${signal} - shutdown already in progress`);
         return;

@@ -37,7 +37,7 @@ void printPatchMessage(const std::string& patchOutputFile);
 class SaveApplyPatchHook extends AbstractRunHook {
   private applyPatchLocally: boolean;
   private showSuccessMessage: boolean;
-  private outputDir?: string;
+  private outputDir?: std::string;
   private env?: SWEEnv;
   private problemStatement?: ProblemStatementConfig;
 

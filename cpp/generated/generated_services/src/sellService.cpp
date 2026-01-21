@@ -19,7 +19,7 @@ std::shared_ptr<Promise<void>> SellService::stop()
     return std::shared_ptr<Promise<void>>();
 }
 
-std::shared_ptr<Promise<void>> SellService::handleSellSignal(any params)
+std::shared_ptr<Promise<void>> SellService::handleSellSignal(std::any params)
 {
     auto TRADER_SELL_KUMA = this->runtime->getSetting(std::string("TRADER_SELL_KUMA"));
     if (TRADER_SELL_KUMA) {
@@ -45,7 +45,7 @@ std::shared_ptr<Promise<void>> SellService::handleSellSignal(any params)
     return std::shared_ptr<Promise<void>>();
 }
 
-std::shared_ptr<Promise<void>> SellService::updateExpectedOutAmount(any signal)
+std::shared_ptr<Promise<void>> SellService::updateExpectedOutAmount(std::any signal)
 {
     if (!signal->amount) return std::shared_ptr<Promise<void>>();
     try
@@ -56,7 +56,7 @@ std::shared_ptr<Promise<void>> SellService::updateExpectedOutAmount(any signal)
             signal->expectedOutAmount = quoteData["outAmount"];
         }
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->warn(std::string("Failed to get expected out amount for sell"), object{
             object::pair{std::string("error"), (is<Error>(error)) ? error->message : String(error)}
@@ -64,12 +64,12 @@ std::shared_ptr<Promise<void>> SellService::updateExpectedOutAmount(any signal)
     }
 }
 
-std::shared_ptr<Promise<object>> SellService::executeSell(any signal)
+std::shared_ptr<Promise<object>> SellService::executeSell(std::any signal)
 {
     try
     {
         if (!signal) {
-            throw any(std::make_shared<Error>(std::string("No signal data in sell task")));
+            throw std::any(std::make_shared<Error>(std::string("No signal data in sell task")));
         }
         auto tokenBalance = std::async([=]() { getTokenBalance(this->runtime, signal->tokenAddress); });
         if (!tokenBalance) {
@@ -130,7 +130,7 @@ std::shared_ptr<Promise<object>> SellService::executeSell(any signal)
             }
         }
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Error executing sell task:"), error);
         return object{

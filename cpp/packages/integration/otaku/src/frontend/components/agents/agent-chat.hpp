@@ -27,7 +27,7 @@ struct AgentChatProps {
     RebelRanking agent;
 };
 
-// Helper function to generate agent responses based on agent name
+// Helper std::function to generate agent responses based on agent name
 std::string getAgentResponse(const std::string& agentName, const std::string& userMessage);
 
 } // namespace elizaos

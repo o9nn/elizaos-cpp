@@ -37,7 +37,7 @@ std::future<ValidationResult> validateFile(const std::string& filePath) {
 std::future<std::vector<ValidationResult>> validateFiles(const std::vector<std::string>& filePaths) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return Promise.all(filePaths.map(validateFile));
+    return Promise.all(filePaths.std::map(validateFile));
 
 }
 

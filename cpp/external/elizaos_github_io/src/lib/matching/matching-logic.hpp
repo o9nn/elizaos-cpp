@@ -18,18 +18,18 @@ namespace elizaos {
 
 
 /**
- * Escapes special characters in a string for use in a regular expression.
+ * Escapes special characters in a std::string for use in a regular expression.
  *
- * @param str The string to escape.
+ * @param str The std::string to escape.
  * @returns The escaped string.
  */
 std::string escapeRegExp(const std::string& str);
 
 /**
- * Performs simple string matching.
+ * Performs simple std::string matching.
  *
- * @param pattern The string pattern to search for.
- * @param content The content string to search within.
+ * @param pattern The std::string pattern to search for.
+ * @param content The content std::string to search within.
  * @param options Matching options.
  * @returns True if the pattern is found in the content according to options, false otherwise.
  */
@@ -39,7 +39,7 @@ bool matchString(const std::string& pattern, const std::string& content, Pattern
  * Performs regular expression matching.
  *
  * @param pattern The regex pattern string.
- * @param content The content string to test against the regex.
+ * @param content The content std::string to test against the regex.
  * @param options Matching options (caseSensitive, wordBoundary).
  * @returns True if the content matches the regex according to options, false otherwise.
  */
@@ -49,7 +49,7 @@ bool matchRegex(const std::string& pattern, const std::string& content, PatternO
  * Performs glob pattern matching (typically for file paths).
  *
  * @param pattern The glob pattern string.
- * @param content The content string (usually a file path) to match against the glob.
+ * @param content The content std::string (usually a file path) to match against the glob.
  * @param options Matching options (caseSensitive). Word boundary is ignored.
  * @returns True if the content matches the glob pattern according to options, false otherwise.
  */

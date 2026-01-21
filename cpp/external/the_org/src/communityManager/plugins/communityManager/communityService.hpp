@@ -32,11 +32,11 @@ class CommunityManagerService extends Service {
 
       // Try to match by name if not found by ID
 
-    // Fallback: pick any text-based channel
+    // Fallback: pick std::any text-based channel
 
     std::string extractString(unknown value);
 
-        //Replace any plain member ID with a proper Discord mention format, but skip ones already formatted
+        //Replace std::any plain member ID with a proper Discord mention format, but skip ones already formatted
 
         // Create memory of the initial message
 

@@ -25,7 +25,7 @@ std::future<std::optional<Plugin>> loadAndPreparePlugin(const std::string& plugi
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto version = getCliInstallTag();
-    auto pluginModule: any;
+    auto pluginModule: std::any;
     const auto context = detectPluginContext(pluginName);
 
     if (context.isLocalDevelopment) {

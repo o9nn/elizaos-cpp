@@ -88,7 +88,7 @@ enum MediaType {
 
         // Convert back to UI amount for the error message
       // Fall back to checking the blockchain directly if database check fails
-    // Allow by default if there's an error in the function, but can be changed to false in production
+    // Allow by default if there's an error in the std::function, but can be changed to false in production
 
 /**
  * Fallback method to check token balance directly on the blockchain
@@ -96,7 +96,7 @@ enum MediaType {
  */
     // Connect to Solana
 
-    // Convert string addresses to PublicKey objects
+    // Convert std::string addresses to PublicKey objects
 
     // Fetch token accounts with a simple RPC call
 
@@ -152,13 +152,13 @@ std::future<double> getDailyGenerationCount(const std::any& db, const std::strin
 
     // Store in database
 
-// Add the generatePreGeneratedTokens function
+// Add the generatePreGeneratedTokens std::function
 std::future<void> generatePreGeneratedTokens();
 
-// Add the checkAndReplenishTokens function
+// Add the checkAndReplenishTokens std::function
 std::future<void> checkAndReplenishTokens(std::optional<double> threshold);
 
-// Helper function to generate an enhanced prompt using the token metadata
+// Helper std::function to generate an enhanced prompt using the token metadata
 std::future<std::string> generateEnhancedPrompt(const std::string& userPrompt, std::optional<std::any> tokenMetadata, MediaType mediaType = MediaType.IMAGE);
 
 // Function to generate additional images for a token

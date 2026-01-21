@@ -40,10 +40,10 @@ std::optional<Content> extractReplyContent(Memory response, const std::vector<st
  *
  * @typedef {Object} replyAction
  * @property {string} name - The name of the action ("REPLY").
- * @property {string[]} similes - An array of similes for the action.
+ * @property {std::string[]} similes - An array of similes for the action.
  * @property {string} description - A description of the action and its usage.
- * @property {Function} validate - An asynchronous function for validating the action runtime.
- * @property {Function} handler - An asynchronous function for handling the action logic.
+ * @property {Function} validate - An asynchronous std::function for validating the action runtime.
+ * @property {Function} handler - An asynchronous std::function for handling the action logic.
  * @property {ActionExample[][]} examples - An array of example scenarios for the action.
  */
 

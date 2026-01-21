@@ -54,10 +54,10 @@ namespace elizaos {
  * Represents an action that allows selecting an option for a pending task that has multiple options.
  * @type {Action}
  * @property {string} name - The name of the action
- * @property {string[]} similes - Similar words or phrases for the action
+ * @property {std::string[]} similes - Similar words or phrases for the action
  * @property {string} description - A brief description of the action
- * @property {Function} validate - Asynchronous function to validate the action
- * @property {Function} handler - Asynchronous function to handle the action
+ * @property {Function} validate - Asynchronous std::function to validate the action
+ * @property {Function} handler - Asynchronous std::function to handle the action
  * @property {ActionExample[][]} examples - Examples demonstrating the usage of the action
  */
 
@@ -70,7 +70,7 @@ namespace elizaos {
     // --- Role Check Modification ---
     // Check if ANY of the pending tasks are TODO confirmations
 
-    // If it IS a TODO confirmation, allow any user (skip role check)
+    // If it IS a TODO confirmation, allow std::any user (skip role check)
     // --- End Role Check Modification ---
 
     // If we passed the checks (task exists, role is ok or skipped), validation passes
@@ -91,7 +91,7 @@ namespace elizaos {
 
         // Find the actual task object using the full ID
 
-          // Should not happen if targetTaskFullId is set, but check anyway
+          // Should not happen if targetTaskFullId is std::set, but check anyway
 
         // --- Update Task for Specific Handler Worker ---
 

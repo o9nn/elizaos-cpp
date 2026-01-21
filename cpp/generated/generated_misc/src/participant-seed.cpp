@@ -1,9 +1,9 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/plugin-sql/src/__tests__/integration/seed/participant-seed.h"
 
-any participantTestAgentId = as<std::shared_ptr<UUID>>(uuidv4());
-any participantTestEntityId = as<std::shared_ptr<UUID>>(uuidv4());
-any participantTestRoomId = as<std::shared_ptr<UUID>>(uuidv4());
-any participantTestWorldId = as<std::shared_ptr<UUID>>(uuidv4());
+std::any participantTestAgentId = as<std::shared_ptr<UUID>>(uuidv4());
+std::any participantTestEntityId = as<std::shared_ptr<UUID>>(uuidv4());
+std::any participantTestRoomId = as<std::shared_ptr<UUID>>(uuidv4());
+std::any participantTestWorldId = as<std::shared_ptr<UUID>>(uuidv4());
 std::shared_ptr<Agent> participantTestAgent = object{
     object::pair{std::string("id"), participantTestAgentId}, 
     object::pair{std::string("name"), std::string("Participant Test Agent")}, 

@@ -4,7 +4,7 @@
 #include "axios.h"
 using axios = _default;
 
-extern string baseURL;
-extern any axiosInstance;
-extern std::function<any(any, object)> get;
+extern std::string baseURL;
+extern std::any axiosInstance;
+extern std::function<std::any(std::any, object)> get;
 #endif

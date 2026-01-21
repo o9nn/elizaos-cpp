@@ -99,7 +99,7 @@ void Main(void)
         );
         describe(std::string("getEnvironment"), [=]() mutable
         {
-            shared mockEnvironment = as<Record<string, string>>(object{
+            shared mockEnvironment = as<Record<std::string, string>>(object{
                 object::pair{std::string("NODE_ENV"), std::string("development")}, 
                 object::pair{std::string("VERSION"), std::string("1.0.0")}
             });
@@ -161,7 +161,7 @@ void Main(void)
             );
             it(std::string("should handle response with partial data"), [=]() mutable
             {
-                auto partialData = as<Record<string, string>>(object{
+                auto partialData = as<Record<std::string, string>>(object{
                     object::pair{std::string("NODE_ENV"), std::string("production")}
                 });
                 mockGet["mockResolvedValue"](partialData);
@@ -296,7 +296,7 @@ void Main(void)
                         object::pair{std::string("TEST"), std::string("true")}
                     }}
                 });
-                auto [environment, updateResult] = std::async([=]() { Promise->all(std::tuple<std::shared_ptr<Promise<std::shared_ptr<Record<string, string>>>>, std::shared_ptr<Promise<object>>>{ environmentPromise, updatePromise }); });
+                auto [environment, updateResult] = std::async([=]() { Promise->all(std::tuple<std::shared_ptr<Promise<std::shared_ptr<Record<std::string, string>>>>, std::shared_ptr<Promise<object>>>{ environmentPromise, updatePromise }); });
                 expect(environment)->toEqual(object{
                     object::pair{std::string("environment"), std::string("test")}, 
                     object::pair{std::string("version"), std::string("1.0.0")}
@@ -321,7 +321,7 @@ void Main(void)
                         object::pair{std::string("TEST"), std::string("true")}
                     }}
                 });
-                auto results = std::async([=]() { Promise->allSettled(array<std::shared_ptr<Promise<std::shared_ptr<Record<string, string>>>>>{ environmentPromise, updatePromise }); });
+                auto results = std::async([=]() { Promise->allSettled(array<std::shared_ptr<Promise<std::shared_ptr<Record<std::string, string>>>>>{ environmentPromise, updatePromise }); });
                 expect(const_(results)[0]->status)->toBe(std::string("fulfilled"));
                 expect(const_(results)[1]->status)->toBe(std::string("rejected"));
                 expect((as<std::shared_ptr<PromiseRejectedResult>>(const_(results)[1]))->reason->message)->toBe(std::string("Update failed"));
@@ -378,7 +378,7 @@ void Main(void)
         {
             it(std::string("should handle environment with special characters"), [=]() mutable
             {
-                auto specialEnvironment = as<Record<string, string>>(object{
+                auto specialEnvironment = as<Record<std::string, string>>(object{
                     object::pair{std::string("ENV"), std::string("test-env-123")}, 
                     object::pair{std::string("VERSION"), std::string("1.0.0-beta.1")}, 
                     object::pair{std::string("FEATURE_FLAG"), std::string("feature-with-dashes")}
@@ -475,7 +475,7 @@ void Main(void)
                     object::pair{std::string("environment"), std::string("test")}
                 });
                 mockPost["mockRejectedValueOnce"](std::make_shared<Error>(std::string("Update failed")));
-                auto operations = array<std::shared_ptr<Promise<std::shared_ptr<Record<string, string>>>>>{ systemService->getEnvironment(), systemService->updateLocalEnvironment(object{
+                auto operations = array<std::shared_ptr<Promise<std::shared_ptr<Record<std::string, string>>>>>{ systemService->getEnvironment(), systemService->updateLocalEnvironment(object{
                     object::pair{std::string("variables"), object{
                         object::pair{std::string("TEST"), std::string("true")}
                     }}

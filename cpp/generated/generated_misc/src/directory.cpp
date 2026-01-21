@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/commands/plugins/utils/directory.h"
 
-std::function<std::shared_ptr<Record<string, string>>(string)> getDependenciesFromDirectory = [=](auto cwd) mutable
+std::function<std::shared_ptr<Record<std::string, string>>(std::string)> getDependenciesFromDirectory = [=](auto cwd) mutable
 {
     auto directoryInfo = detectDirectoryType(cwd);
     if (!directoryInfo->hasPackageJson) {
@@ -16,7 +16,7 @@ std::function<std::shared_ptr<Record<string, string>>(string)> getDependenciesFr
         return utils::assign(object{
         }, dependencies, devDependencies);
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         if (is<SyntaxError>(error)) {
             logger->warn(std::string("Could not parse package.json: ") + error->message + string_empty);

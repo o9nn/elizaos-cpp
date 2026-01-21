@@ -65,7 +65,7 @@ public:
 
       // Emit the event
 
-      // Wait a bit for async event handling
+      // Wait a bit for std::async event handling
 
       // Unload and test event removal
 

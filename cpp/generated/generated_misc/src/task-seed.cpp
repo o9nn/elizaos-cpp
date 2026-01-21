@@ -1,9 +1,9 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/plugin-sql/src/__tests__/integration/seed/task-seed.h"
 
-any taskTestAgentId = as<std::shared_ptr<UUID>>(uuidv4());
-any taskTestRoomId = as<std::shared_ptr<UUID>>(uuidv4());
-any taskTestWorldId = as<std::shared_ptr<UUID>>(uuidv4());
-any taskTestEntityId = as<std::shared_ptr<UUID>>(uuidv4());
+std::any taskTestAgentId = as<std::shared_ptr<UUID>>(uuidv4());
+std::any taskTestRoomId = as<std::shared_ptr<UUID>>(uuidv4());
+std::any taskTestWorldId = as<std::shared_ptr<UUID>>(uuidv4());
+std::any taskTestEntityId = as<std::shared_ptr<UUID>>(uuidv4());
 array<std::shared_ptr<Task>> taskTestTasks = array<std::shared_ptr<Task>>{ object{
     object::pair{std::string("id"), as<std::shared_ptr<UUID>>(uuidv4())}, 
     object::pair{std::string("name"), std::string("Test Task 1")}, 

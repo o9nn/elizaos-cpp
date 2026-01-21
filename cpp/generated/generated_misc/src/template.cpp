@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/plugin-coinmarketcap/src/actions/getPrice/template.h"
 
-string getPriceTemplate = std::string("Respond with a JSON object containing BOTH symbol and currency. Currency must default to "USD" if not specified.\
+std::string getPriceTemplate = std::string("Respond with a JSON object containing BOTH symbol and currency. Currency must default to "USD" if not specified.\
 \
 Here are the cryptocurrency symbol mappings:\
 - bitcoin/btc -> BTC\

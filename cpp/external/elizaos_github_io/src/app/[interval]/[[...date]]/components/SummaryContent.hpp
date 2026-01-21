@@ -13,6 +13,6 @@ namespace elizaos {
 
 
 
-void SummaryContentSkeleton(std::optional<{ className: string }> { className });
+void SummaryContentSkeleton(std::optional<{ className: std::string }> { className });
 
 } // namespace elizaos

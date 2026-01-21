@@ -33,7 +33,7 @@ namespace elizaos {
   // In Node.js environment, connect directly to the backend server
 
 /**
- * Helper function to construct API URLs
+ * Helper std::function to construct API URLs
  * @param path - API path (e.g., '/api/setup/status')
  * @returns Full URL for the API endpoint
  */

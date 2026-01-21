@@ -1,8 +1,8 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/otc-agent/tests/wallet-setup/basic.setup.h"
 
-string SEED_PHRASE = OR((process->env->SEED_PHRASE), (std::string("test test test test test test test test test test test junk")));
-string PASSWORD = OR((process->env->WALLET_PASSWORD), (std::string("Tester@1234")));
-any setupWallet = defineWalletSetup(PASSWORD, [=](auto context, auto walletPage) mutable
+std::string SEED_PHRASE = OR((process->env->SEED_PHRASE), (std::string("test test test test test test test test test test test junk")));
+std::string PASSWORD = OR((process->env->WALLET_PASSWORD), (std::string("Tester@1234")));
+std::any setupWallet = defineWalletSetup(PASSWORD, [=](auto context, auto walletPage) mutable
 {
     std::async([=]() { walletPage["waitForLoadState"](std::string("domcontentloaded")); });
     auto metamask = std::make_shared<MetaMask>(context, walletPage, PASSWORD);
@@ -18,7 +18,7 @@ any setupWallet = defineWalletSetup(PASSWORD, [=](auto context, auto walletPage)
             object::pair{std::string("symbol"), std::string("ETH")}
         }); });
     }
-    catch (const any& e)
+    catch (const std::any& e)
     {
         console->log(std::string("Network may already be added, continuing..."), e);
     }
@@ -26,14 +26,14 @@ any setupWallet = defineWalletSetup(PASSWORD, [=](auto context, auto walletPage)
     {
         std::async([=]() { metamask->switchNetwork(std::string("Anvil Localnet")); });
     }
-    catch (const any& e)
+    catch (const std::any& e)
     {
         console->log(std::string("Could not switch network, continuing..."), e);
     }
 }
 );
-string walletPassword = PASSWORD;
-string seedPhrase = SEED_PHRASE;
+std::string walletPassword = PASSWORD;
+std::string seedPhrase = SEED_PHRASE;
 
 void Main(void)
 {

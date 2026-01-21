@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/plugin-birdeye/src/actions/test-all-endpoints.h"
 
-any testAllEndpointsAction = as<std::shared_ptr<Action>>(object{
+std::any testAllEndpointsAction = as<std::shared_ptr<Action>>(object{
     object::pair{std::string("name"), std::string("BIRDEYE_TEST_ALL_ENDPOINTS")}, 
     object::pair{std::string("similes"), array<any>()}, 
     object::pair{std::string("description"), std::string("Test all Birdeye endpoints with sample data")}, 
@@ -269,7 +269,7 @@ any testAllEndpointsAction = as<std::shared_ptr<Action>>(object{
             });
             return true;
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             console->error(std::string("Error in testAllEndpointsAction:"), error["message"]);
             callback(object{

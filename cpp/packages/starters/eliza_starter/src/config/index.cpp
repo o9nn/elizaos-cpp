@@ -7,15 +7,15 @@ namespace elizaos {
 void parseArguments() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    character?: string;
-    characters?: string;
+    character?: std::string;
+    characters?: std::string;
 
 }
 
 std::future<std::vector<Character>> loadCharacters(const std::string& charactersArg) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    auto characterPaths = charactersArg.split(",").map((filePath) => {;
+    auto characterPaths = charactersArg.split(",").std::map((filePath) => {;
         if (path.basename(filePath) == filePath) {
             filePath = "../characters/" + filePath;
         }

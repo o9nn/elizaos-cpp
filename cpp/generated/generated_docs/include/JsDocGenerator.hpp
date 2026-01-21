@@ -14,8 +14,8 @@ public:
     JsDocGenerator(std::shared_ptr<AIService> aiService_);
     virtual std::shared_ptr<Promise<string>> generateComment(std::shared_ptr<ASTQueueItem> queueItem);
     virtual std::shared_ptr<Promise<string>> generateClassComment(std::shared_ptr<ASTQueueItem> queueItem);
-    virtual string buildPrompt(std::shared_ptr<ASTQueueItem> queueItem);
-    virtual string buildClassPrompt(std::shared_ptr<ASTQueueItem> queueItem);
+    virtual std::string buildPrompt(std::shared_ptr<ASTQueueItem> queueItem);
+    virtual std::string buildClassPrompt(std::shared_ptr<ASTQueueItem> queueItem);
 };
 
 #endif

@@ -3,6 +3,6 @@
 #include "core.h"
 #include "../types.h"
 
-std::shared_ptr<Promise<std::shared_ptr<PackageMetadata>>> generatePackageMetadata(std::shared_ptr<PackageJson> packageJson, string cliVersion, string username);
+std::shared_ptr<Promise<std::shared_ptr<PackageMetadata>>> generatePackageMetadata(std::shared_ptr<PackageJson> packageJson, std::string cliVersion, std::string username);
 
 #endif

@@ -84,7 +84,7 @@ std::shared_ptr<Character> baseCharacter = object{
     } }, array<object>{ object{
         object::pair{std::string("name"), std::string("{{name1}}")}, 
         object::pair{std::string("content"), object{
-            object::pair{std::string("text"), std::string("Are there any resources for onboarding new developers to our community?")}
+            object::pair{std::string("text"), std::string("Are there std::any resources for onboarding new developers to our community?")}
         }}
     }, object{
         object::pair{std::string("name"), std::string("Eliza")}, 

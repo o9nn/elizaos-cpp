@@ -19,7 +19,7 @@ using Chain = std::variant<"ethereum", "base", "bsc", "solana">;
 using ChainFamily = std::variant<"evm", "solana">;
 
 struct ChainConfig {
-    string; // String ID for database storage id;
+    std::string; // String ID for database storage id;
     std::string name;
     std::string rpcUrl;
     std::string explorerUrl;
@@ -182,7 +182,7 @@ bool isEVMChain(Chain chain);
 bool isSolanaChain(Chain chain);
 
 /**
- * Get chain identifier from string chain ID (database format)
+ * Get chain identifier from std::string chain ID (database format)
  */
 Chain | null getChainFromId(const std::string& chainId);
 

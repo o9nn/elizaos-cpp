@@ -23,7 +23,7 @@ struct BrowserSession {
 };
 
 class SessionManager {
-  private sessions: Map<string, BrowserSession> = new Map();
+  private sessions: Map<std::string, BrowserSession> = new Map();
   private maxSessionsPerClient = 3;
 
   constructor(

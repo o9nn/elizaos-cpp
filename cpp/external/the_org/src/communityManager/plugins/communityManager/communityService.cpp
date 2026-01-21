@@ -9,7 +9,7 @@ std::string extractString(const std::any& value) {
 
     auto result = "";
 
-    function traverse(node: unknown): void {
+    std::function traverse(node: unknown): void {
         if (typeof node == 'string') {
             result += node;
             } else if (Array.isArray(node)) {

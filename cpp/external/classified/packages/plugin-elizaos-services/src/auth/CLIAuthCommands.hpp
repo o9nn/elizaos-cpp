@@ -21,7 +21,7 @@ struct CLICommand {
     std::string name;
     std::string description;
     std::optional<std::vector<CLIOption>> options;
-    (args: any, runtime?: IAgentRuntime) => Promise<void> handler;
+    (args: std::any, runtime?: IAgentRuntime) => Promise<void> handler;
 };
 
 struct CLIOption {
@@ -76,7 +76,7 @@ class CLIAuthCommands {
    */
 
 /**
- * Export CLI command registration function
+ * Export CLI command registration std::function
  */
 std::vector<CLICommand> registerAuthCommands(IAgentRuntime runtime);
 

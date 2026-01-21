@@ -40,8 +40,8 @@ std::function<object()> useThreadSlice = [=]() mutable
     auto unarchiveThread = template <typename RET>
     [=](auto threadId) mutable
     {
-        auto thread = std::async([=]() { dispatch(unarchiveThreadAction(threadId)); });
-        return thread;
+        auto std::thread = std::async([=]() { dispatch(unarchiveThreadAction(threadId)); });
+        return std::thread;
     };
     auto liftThreadRestrictions = [=](auto channelId, auto noPermissionThreadIds) mutable
     {

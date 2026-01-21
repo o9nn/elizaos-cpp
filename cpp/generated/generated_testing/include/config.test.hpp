@@ -7,5 +7,5 @@ using plugin = _default;
 #include "zod.h"
 #include "./utils/core-test-utils.h"
 
-extern any initPlugin;
+extern std::any initPlugin;
 #endif

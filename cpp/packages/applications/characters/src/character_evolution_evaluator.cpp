@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-self-modification/src/evaluators/character-evolution-evaluator.h"
 
-string evolutionAnalysisTemplate = std::string("Analyze the recent conversation and determine if the agent's character should evolve based on what was learned.\
+std::string evolutionAnalysisTemplate = std::string("Analyze the recent conversation and determine if the agent's character should evolve based on what was learned.\
 \
 Current character state:\
 {{characterState}}\
@@ -46,7 +46,7 @@ std::shared_ptr<Evaluator> characterEvolutionEvaluator = object{
                 object::pair{std::string("state"), object{
                     object::pair{std::string("values"), object{
                         object::pair{std::string("characterState"), JSON->stringify(runtime->character)}, 
-                        object::pair{std::string("recentMessages"), recentMessages->map([=](auto m) mutable
+                        object::pair{std::string("recentMessages"), recentMessages->std::map([=](auto m) mutable
                         {
                             return string_empty + m["entityId"] + std::string(": ") + m["content"]->text + string_empty;
                         }
@@ -77,7 +77,7 @@ std::shared_ptr<Evaluator> characterEvolutionEvaluator = object{
                 }); });
             }
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("Error in character evolution evaluator:"), error);
         }

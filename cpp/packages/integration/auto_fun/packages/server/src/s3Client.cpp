@@ -12,7 +12,7 @@ std::future<void> ensureMinioBucketExists(S3Client client, const std::string& bu
             std::cout << "[MinIO Check] Checking if bucket "" + bucketName + "" exists..." << std::endl;
             client.send(new HeadBucketCommand({ Bucket: bucketName }));
             std::cout << "[MinIO Check] Bucket "" + bucketName + "" already exists." << std::endl;
-            } catch (error: any) {
+            } catch (error: std::any) {
                 // Check if the error is because the bucket doesn't exist
                 // Error handling might differ slightly based on SDK version/MinIO version
                 // Common indicators: NotFound, NoSuchBucket, status code 404
@@ -40,7 +40,7 @@ std::future<void> ensureMinioBucketExists(S3Client client, const std::string& bu
 
 std::future<> getS3Client() {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    client: S3Client, bucketName: string, publicBaseUrl: string
+    client: S3Client, bucketName: std::string, publicBaseUrl: std::string
 }
 
 } // namespace elizaos

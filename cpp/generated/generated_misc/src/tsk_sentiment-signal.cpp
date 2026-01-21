@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/degenIntel/tasks/tsk_sentiment-signal.h"
 
-void setupSentimentGenerator(any runtime)
+void setupSentimentGenerator(std::any runtime)
 {
     worldId = runtime["agentId"];
     auto tasks = std::async([=]() { runtime["getTasks"](object{
@@ -24,7 +24,7 @@ void setupSentimentGenerator(any runtime)
                 console->log(std::string("PLUGIN_TRADER_SENTIMENT"));
                 runtime["emitEvent"](std::string("PLUGIN_TRADER_SENTIMENT"), object{});
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 logger->error(std::string("Failed to sync sentiment"), error);
             }

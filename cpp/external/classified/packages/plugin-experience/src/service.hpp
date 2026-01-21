@@ -21,10 +21,10 @@ namespace elizaos {
 class ExperienceService extends Service {
   static override serviceType: ServiceTypeName = ExperienceServiceType.EXPERIENCE;
   override capabilityDescription =
-    'Manages agent experiences, learning from successes and failures to improve future decisions';
+    'Manages agent experiences, learning from successes and failures to improve std::future decisions';
 
   private experiences: Map<UUID, Experience> = new Map();
-  private experiencesByDomain: Map<string, Set<UUID>> = new Map();
+  private experiencesByDomain: Map<std::string, Set<UUID>> = new Map();
   private experiencesByType: Map<ExperienceType, Set<UUID>> = new Map();
   private maxExperiences = 10000; // Configurable limit - reverted to default
   private decayManager: ConfidenceDecayManager;
@@ -53,7 +53,7 @@ class ExperienceService extends Service {
 
     // Emit event
 
-    // If query string provided, use semantic search
+    // If query std::string provided, use semantic search
 
       // Apply additional filters to semantic search results
       // Apply additional filters to semantic results

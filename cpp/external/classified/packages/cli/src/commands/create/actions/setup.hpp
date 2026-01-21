@@ -43,7 +43,7 @@ std::future<void> setupEmbeddingModelConfig(const std::string& embeddingModel, c
 std::string resolveModelToPlugin(const std::string& modelName);
 
 /**
- * Helper function to install a model plugin with error handling
+ * Helper std::function to install a model plugin with error handling
  */
 std::future<void> installModelPlugin(const std::string& modelName, const std::string& targetDir, std::string purpose = "");
 

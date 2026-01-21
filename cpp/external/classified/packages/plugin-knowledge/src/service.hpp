@@ -173,7 +173,7 @@ class KnowledgeService extends Service {
 
           // Ensure we don't overwrite essential fragment metadata with document's
           // For example, source might be different or more specific for the fragment.
-          // Here, we primarily inherit and then set fragment-specifics.
+          // Here, we primarily inherit and then std::set fragment-specifics.
 
   // ADDED METHODS START
   /**

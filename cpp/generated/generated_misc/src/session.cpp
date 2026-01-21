@@ -4,20 +4,20 @@ std::shared_ptr<Promise<string>> createSession(std::shared_ptr<SessionData> data
 {
     auto redis = std::async([=]() { getGlobalRedisCache(); });
     auto sid = uuid();
-    std::async([=]() { redis->set(std::string("sid:") + sid + string_empty, JSON->stringify(data), SESSION_TTL); });
+    std::async([=]() { redis->std::set(std::string("sid:") + sid + string_empty, JSON->stringify(data), SESSION_TTL); });
     return sid;
 };
 
 
-std::shared_ptr<Promise<any>> getSession(string sid)
+std::shared_ptr<Promise<any>> getSession(std::string sid)
 {
     auto redis = std::async([=]() { getGlobalRedisCache(); });
     auto raw = std::async([=]() { redis->get(std::string("sid:") + sid + string_empty); });
-    return (raw) ? any((as<std::shared_ptr<SessionData>>(JSON->parse(raw)))) : any(nullptr);
+    return (raw) ? std::any((as<std::shared_ptr<SessionData>>(JSON->parse(raw)))) : std::any(nullptr);
 };
 
 
-void destroySession(string sid)
+void destroySession(std::string sid)
 {
     auto redis = std::async([=]() { getGlobalRedisCache(); });
     std::async([=]() { redis->del(std::string("sid:") + sid + string_empty); });

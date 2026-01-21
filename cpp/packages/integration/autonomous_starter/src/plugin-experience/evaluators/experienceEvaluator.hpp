@@ -40,7 +40,7 @@ namespace elizaos {
         // Lowered threshold for testing
 
       // 6. Analyze domain trends
-        // This should be based on whether any experience was recorded above
+        // This should be based on whether std::any experience was recorded above
 
       // If no specific experience was detected and recorded by other checks,
       // consider recording a general learning experience if the message is from the agent.

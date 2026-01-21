@@ -53,8 +53,8 @@ std::vector<std::string> findChanges(const std::unordered_map<std::string, std::
  * In development, throws an error if the component renders excessively.
  *
  * @param componentName - Unique identifier for the component
- * @param props - Component props (optional, for debugging)
- * @param state - Component state snapshot (optional, for debugging)
+ * @param props - Component props (std::optional, for debugging)
+ * @param state - Component state snapshot (std::optional, for debugging)
  *
  * @example
  * ```tsx

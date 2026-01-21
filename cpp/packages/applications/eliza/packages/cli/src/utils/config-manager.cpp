@@ -77,7 +77,7 @@ std::future<> checkPluginRequirements(const std::string& pluginName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     valid: boolean;
-    message: string;
+    message: std::string;
 
 }
 

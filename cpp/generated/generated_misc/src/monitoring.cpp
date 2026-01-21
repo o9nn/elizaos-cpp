@@ -13,8 +13,8 @@ std::shared_ptr<Promise<object>> startMonitoringBatch(double batchSize)
             return t["mint"];
         }
         );
-        std::async([=]() { redisCache->set(std::string("lockedList"), JSON->stringify(mints)); });
-        std::async([=]() { redisCache->set(std::string("lockedCursor"), std::string("0")); });
+        std::async([=]() { redisCache->std::set(std::string("lockedList"), JSON->stringify(mints)); });
+        std::async([=]() { redisCache->std::set(std::string("lockedCursor"), std::string("0")); });
         return object{
             object::pair{std::string("processed"), 0}, 
             object::pair{std::string("total"), mints["length"]}
@@ -38,14 +38,14 @@ std::shared_ptr<Promise<object>> startMonitoringBatch(double batchSize)
             auto ext = std::async([=]() { ExternalToken::create(mint, redisCache); });
             logger["info"](std::string("Monitoring: Successfully registered webhook for ") + mint + std::string("."));
         }
-        catch (const any& err)
+        catch (const std::any& err)
         {
             logger["error"](std::string("Monitoring: Failed to register webhook for ") + mint + std::string(":"), err);
         }
     }
     cursor += batch->get_length();
     logger["info"](std::string("Monitoring: Batch processed. Updating cursor to ") + cursor + std::string("."));
-    std::async([=]() { redisCache->set(std::string("lockedCursor"), cursor->toString()); });
+    std::async([=]() { redisCache->std::set(std::string("lockedCursor"), cursor->toString()); });
     return object{
         object::pair{std::string("processed"), batch->get_length()}, 
         object::pair{std::string("total"), std::string("total")}

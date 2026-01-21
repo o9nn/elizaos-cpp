@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/client/src/hooks/use-sidebar-state.h"
 
-any useSidebarState()
+std::any useSidebarState()
 {
     auto [isVisible, setIsVisible] = useState<boolean>(false);
     useEffect([=]() mutable
@@ -13,7 +13,7 @@ any useSidebarState()
                 setIsVisible(parsedState);
             }
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             clientLogger->error(std::string("Error reading sidebar state from localStorage:"), error);
             setIsVisible(false);
@@ -27,7 +27,7 @@ any useSidebarState()
         {
             localStorage->setItem(SIDEBAR_STATE_KEY, JSON->stringify(visible));
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             clientLogger->error(std::string("Error saving sidebar state to localStorage:"), error);
         }
@@ -46,7 +46,7 @@ any useSidebarState()
 };
 
 
-string SIDEBAR_STATE_KEY = std::string("eliza-agent-sidebar-visible");
+std::string SIDEBAR_STATE_KEY = std::string("eliza-agent-sidebar-visible");
 
 void Main(void)
 {

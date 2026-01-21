@@ -48,10 +48,10 @@ void Main(void)
                 object::pair{std::string("getSetting"), mock([=](auto key) mutable
                 {
                     static switch_type __switch1404_1880 = {
-                        { any(std::string("TODO_REMINDER_CHECK_INTERVAL")), 1 },
-                        { any(std::string("TODO_MIN_REMINDER_INTERVAL")), 2 },
-                        { any(std::string("TODO_UPCOMING_THRESHOLD")), 3 },
-                        { any(std::string("TODO_DAILY_REMINDER_HOURS")), 4 }
+                        { std::any(std::string("TODO_REMINDER_CHECK_INTERVAL")), 1 },
+                        { std::any(std::string("TODO_MIN_REMINDER_INTERVAL")), 2 },
+                        { std::any(std::string("TODO_UPCOMING_THRESHOLD")), 3 },
+                        { std::any(std::string("TODO_DAILY_REMINDER_HOURS")), 4 }
                     };
                     switch (__switch1404_1880[key])
                     {
@@ -103,10 +103,10 @@ void Main(void)
                 object::pair{std::string("getSetting"), mock([=](auto key) mutable
                 {
                     static switch_type __switch2994_3470 = {
-                        { any(std::string("TODO_REMINDER_CHECK_INTERVAL")), 1 },
-                        { any(std::string("TODO_MIN_REMINDER_INTERVAL")), 2 },
-                        { any(std::string("TODO_UPCOMING_THRESHOLD")), 3 },
-                        { any(std::string("TODO_DAILY_REMINDER_HOURS")), 4 }
+                        { std::any(std::string("TODO_REMINDER_CHECK_INTERVAL")), 1 },
+                        { std::any(std::string("TODO_MIN_REMINDER_INTERVAL")), 2 },
+                        { std::any(std::string("TODO_UPCOMING_THRESHOLD")), 3 },
+                        { std::any(std::string("TODO_DAILY_REMINDER_HOURS")), 4 }
                     };
                     switch (__switch2994_3470[key])
                     {

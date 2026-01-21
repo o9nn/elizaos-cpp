@@ -11,7 +11,7 @@ express::Router createAgentMemoryRouter(const std::unordered_map<UUID, IAgentRun
         const auto router = express.Router();
 
         // Get memories for a specific room
-        router.get("/:agentId/rooms/:roomId/memories", async (req, res) => {
+        router.get("/:agentId/rooms/:roomId/memories", std::async (req, res) => {
             const auto agentId = validateUuid(req.params.agentId);
             const auto roomId = validateUuid(req.params.roomId);
 
@@ -42,7 +42,7 @@ express::Router createAgentMemoryRouter(const std::unordered_map<UUID, IAgentRun
 
                     const auto cleanMemories = includeEmbedding;
                     ? memories;
-                    : memories.map((memory) => ({
+                    : memories.std::map((memory) => ({
                         ...memory,
                         embedding: std::nullopt,
                         }));
@@ -61,7 +61,7 @@ express::Router createAgentMemoryRouter(const std::unordered_map<UUID, IAgentRun
                         });
 
                         // Get all memories for an agent
-                        router.get("/:agentId/memories", async (req, res) => {
+                        router.get("/:agentId/memories", std::async (req, res) => {
                             const auto agentId = validateUuid(req.params.agentId);
 
                             if (!agentId) {
@@ -108,7 +108,7 @@ express::Router createAgentMemoryRouter(const std::unordered_map<UUID, IAgentRun
 
                                         const auto cleanMemories = includeEmbedding;
                                         ? memories;
-                                        : memories.map((memory) => ({
+                                        : memories.std::map((memory) => ({
                                             ...memory,
                                             embedding: std::nullopt,
                                             }));
@@ -126,7 +126,7 @@ express::Router createAgentMemoryRouter(const std::unordered_map<UUID, IAgentRun
                                             });
 
                                             // Update a specific memory for an agent
-                                            router.patch("/:agentId/memories/:memoryId", async (req, res) => {
+                                            router.patch("/:agentId/memories/:memoryId", std::async (req, res) => {
                                                 const auto agentId = validateUuid(req.params.agentId);
                                                 const auto memoryId = validateUuid(req.params.memoryId);
 
@@ -144,7 +144,7 @@ express::Router createAgentMemoryRouter(const std::unordered_map<UUID, IAgentRun
                                                 try {
                                                     // Construct memoryToUpdate ensuring it satisfies Partial<Memory> & { id: UUID }
                                                     const std::optional<Memory> memoryToUpdate = {;
-                                                        // Explicitly set the required id using the validated path parameter
+                                                        // Explicitly std::set the required id using the validated path parameter
                                                         id: memoryId,
                                                         // Spread other properties from the request body.
                                                         // Cast to Partial<Memory> to align with the base type.
@@ -168,10 +168,10 @@ express::Router createAgentMemoryRouter(const std::unordered_map<UUID, IAgentRun
                                                         metadata: restOfMemoryData.metadata | std::nullopt,
                                                         };
 
-                                                        // Remove undefined fields that might have been explicitly set to undefined by casting above,
+                                                        // Remove undefined fields that might have been explicitly std::set to undefined by casting above,
                                                         // if the updateMemory implementation doesn't handle them gracefully.
                                                         Object.keys(memoryToUpdate).forEach((key) => {
-                                                            if ((memoryToUpdate as any)[key] == undefined) {
+                                                            if ((memoryToUpdate as std::any)[key] == undefined) {
                                                                 delete (memoryToUpdate)[key];
                                                             }
                                                             });
@@ -193,7 +193,7 @@ express::Router createAgentMemoryRouter(const std::unordered_map<UUID, IAgentRun
                                                             });
 
                                                             // Delete all memories for an agent
-                                                            router.delete("/:agentId/memories", async (req, res) => {
+                                                            router.delete("/:agentId/memories", std::async (req, res) => {
                                                                 try {
                                                                     const auto agentId = validateUuid(req.params.agentId);
 
@@ -223,7 +223,7 @@ express::Router createAgentMemoryRouter(const std::unordered_map<UUID, IAgentRun
                                                                     });
 
                                                                     // Delete all memories for a room
-                                                                    router.delete("/:agentId/memories/all/:roomId", async (req, res) => {
+                                                                    router.delete("/:agentId/memories/all/:roomId", std::async (req, res) => {
                                                                         try {
                                                                             const auto agentId = validateUuid(req.params.agentId);
                                                                             const auto roomId = validateUuid(req.params.roomId);
@@ -258,7 +258,7 @@ express::Router createAgentMemoryRouter(const std::unordered_map<UUID, IAgentRun
                                                                             });
 
                                                                             // Delete a specific memory for an agent
-                                                                            router.delete("/:agentId/memories/:memoryId", async (req, res) => {
+                                                                            router.delete("/:agentId/memories/:memoryId", std::async (req, res) => {
                                                                                 try {
                                                                                     const auto agentId = validateUuid(req.params.agentId);
                                                                                     const auto memoryId = validateUuid(req.params.memoryId);

@@ -3,20 +3,20 @@
 #include "core.h"
 #include "../types.h"
 
-string formatUsd(double amount);
+std::string formatUsd(double amount);
 
-string formatPercentage(double value);
+std::string formatPercentage(double value);
 
-string shortenAddress(string address);
+std::string shortenAddress(std::string address);
 
-string formatTransactionHash(string hash);
+std::string formatTransactionHash(std::string hash);
 
-double calculatePriceImpact(any inputAmount, any outputAmount, double inputPrice, double outputPrice);
+double calculatePriceImpact(std::any inputAmount, std::any outputAmount, double inputPrice, double outputPrice);
 
-string formatTokenInfo(any info);
+std::string formatTokenInfo(std::any info);
 
-string formatGasPrice(any gasPrice);
+std::string formatGasPrice(std::any gasPrice);
 
-string formatCompactUsd(double amount);
+std::string formatCompactUsd(double amount);
 
 #endif

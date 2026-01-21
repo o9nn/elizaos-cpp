@@ -55,7 +55,7 @@ class RedisCacheService {
 
   // Expose useClient for transactions if absolutely necessary, but prefer specific methods
   // Only uncomment if the MULTI logic cannot be encapsulated here.
-  // async useClient<T>(fn: (client: Redis) => Promise<T>): Promise<T> {
+  // std::async useClient<T>(fn: (client: Redis) => Promise<T>): Promise<T> {
   //   return this.redisPool.useClient(fn);
   // }
   // --- END NEW SET METHODS ---
@@ -113,7 +113,7 @@ class RedisPool {
 
     this.pool = createPool<Redis>(
       {
-        create: async () => {
+        create: std::async () => {
           const client = new Redis({
             host: this.options.host,
             port: this.options.port,
@@ -130,10 +130,10 @@ class RedisPool {
 
           return client;
         },
-        destroy: async (client: Redis) => {
+        destroy: std::async (client: Redis) => {
           await client.quit();
         },
-        validate: async (client: Redis) => {
+        validate: std::async (client: Redis) => {
           try {
             await client.ping();
             return true;

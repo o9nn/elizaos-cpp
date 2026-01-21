@@ -4,10 +4,10 @@
 #include "algoliasearch.h"
 using algoliasearch = _default;
 
-extern any client;
-extern any index;
-void indexProject(any project);
+extern std::any client;
+extern std::any index;
+void indexProject(std::any project);
 
-void removeProject(string projectId);
+void removeProject(std::string projectId);
 
 #endif

@@ -4,7 +4,7 @@ std::shared_ptr<Promise<std::shared_ptr<GoalSelection>>> extractGoalSelection(st
 {
     try
     {
-        auto goalsText = availableGoals->map([=](auto goal) mutable
+        auto goalsText = availableGoals->std::map([=](auto goal) mutable
         {
             return std::string("ID: ") + goal->id + std::string("\
 Name: ") + goal->name + std::string("\
@@ -37,13 +37,13 @@ Tags: ") + (OR((goal->tags->join(std::string(", "))), (std::string("none")))) + 
             };
         }
         auto finalResult = object{
-            object::pair{std::string("goalId"), (parsedResult->goalId == std::string("null")) ? any(string_empty) : any(String(OR((parsedResult->goalId), (string_empty))))}, 
-            object::pair{std::string("goalName"), (parsedResult->goalName == std::string("null")) ? any(string_empty) : any(String(OR((parsedResult->goalName), (string_empty))))}, 
+            object::pair{std::string("goalId"), (parsedResult->goalId == std::string("null")) ? std::any(string_empty) : std::any(String(OR((parsedResult->goalId), (string_empty))))}, 
+            object::pair{std::string("goalName"), (parsedResult->goalName == std::string("null")) ? std::any(string_empty) : std::any(String(OR((parsedResult->goalName), (string_empty))))}, 
             object::pair{std::string("isFound"), String(parsedResult->isFound) == std::string("true")}
         };
         return finalResult;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Error extracting goal selection information:"), error);
         return object{
@@ -98,7 +98,7 @@ std::shared_ptr<Promise<any>> extractGoalUpdate(std::shared_ptr<IAgentRuntime> r
         }
         return finalUpdate;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Error extracting goal update information:"), error);
         return nullptr;
@@ -106,7 +106,7 @@ std::shared_ptr<Promise<any>> extractGoalUpdate(std::shared_ptr<IAgentRuntime> r
 };
 
 
-string extractGoalTemplate = std::string("\
+std::string extractGoalTemplate = std::string("\
 # Task: Extract Goal Selection Information\
 \
 ## User Message\
@@ -141,7 +141,7 @@ If no matching goal was found:\
   <isFound>false</isFound>\
 </response>\
 ");
-string extractUpdateTemplate = std::string("\
+std::string extractUpdateTemplate = std::string("\
 # Task: Extract Goal Update Information\
 \
 ## User Message\
@@ -176,10 +176,10 @@ std::shared_ptr<Action> updateGoalAction = object{
         {
             auto dataService = as<std::shared_ptr<GoalService>>(runtime->getService(std::string("goals")));
             auto agentGoalCount = std::async([=]() { dataService->countGoals(std::string("agent"), runtime->agentId, false); });
-            auto entityGoalCount = (message->entityId) ? any(std::async([=]() { dataService->countGoals(std::string("entity"), as<std::shared_ptr<UUID>>(message->entityId), false); })) : any(0);
+            auto entityGoalCount = (message->entityId) ? std::any(std::async([=]() { dataService->countGoals(std::string("entity"), as<std::shared_ptr<UUID>>(message->entityId), false); })) : std::any(0);
             return agentGoalCount + entityGoalCount > 0;
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("Error validating UPDATE_GOAL action:"), error);
             return false;
@@ -248,7 +248,7 @@ std::shared_ptr<Action> updateGoalAction = object{
                     std::async([=]() { callback(object{
                         object::pair{std::string("text"), std::string("I couldn't determine which goal you want to update. Could you be more specific? Here are the current goals:\
 \
-") + availableGoals->map([=](auto goal) mutable
+") + availableGoals->std::map([=](auto goal) mutable
                         {
                             return std::string("- ") + goal->name + std::string(" (") + goal->ownerType + std::string(" goal)");
                         }
@@ -262,7 +262,7 @@ std::shared_ptr<Action> updateGoalAction = object{
                     object::pair{std::string("data"), object{
                         object::pair{std::string("actionName"), std::string("UPDATE_GOAL")}, 
                         object::pair{std::string("error"), std::string("Goal not found")}, 
-                        object::pair{std::string("availableGoals"), availableGoals->map([=](auto g) mutable
+                        object::pair{std::string("availableGoals"), availableGoals->std::map([=](auto g) mutable
                         {
                             return (object{
                                 object::pair{std::string("id"), g->id}, 
@@ -362,7 +362,7 @@ std::shared_ptr<Action> updateGoalAction = object{
                 object::pair{std::string("success"), true}
             };
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("Error in updateGoal handler:"), error);
             if (callback) {

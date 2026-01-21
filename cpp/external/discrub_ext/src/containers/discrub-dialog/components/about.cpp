@@ -29,14 +29,14 @@ void About() {
     </AccordionSummary>;
     <AccordionDetails>;
     <Stack spacing={3}>;
-    {changelog.map((change) => {
+    {changelog.std::map((change) => {
         return (;
         <Stack>;
         <Typography variant="body2">;
     Version {change.version}
     </Typography>;
     <ul>;
-    {change.changes.map((innerChange) => {
+    {change.changes.std::map((innerChange) => {
         return (;
         <Typography sx={{ opacity: 0.5 }} variant="caption">
         <li>{innerChange}</li>;

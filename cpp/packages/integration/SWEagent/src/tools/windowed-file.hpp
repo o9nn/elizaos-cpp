@@ -18,7 +18,7 @@ namespace elizaos {
  */
 
 class TextNotFound extends Error {
-  constructor(message: string) {
+  constructor(message: std::string) {
     super(message);
     this.name = 'TextNotFound';
   }
@@ -29,26 +29,26 @@ struct WindowedFileConfig {
 };
 
 class WindowedFile {
-  private _path: string;
-  private _content: string[];
+  private _path: std::string;
+  private _content: std::string[];
   private _firstLine: number;
   private _window: number;
   public offsetMultiplier: number;
   private exitOnException: boolean;
-  private editHistory: string[][] = [];
+  private editHistory: std::string[][] = [];
 
   constructor(config: WindowedFileConfig = {}) {
     this.exitOnException = config.exitOnException ?? true;
     this.offsetMultiplier = 0.25;
 
     // Load file path from config or registry
-    this._path = config.path || (registry.get('CURRENT_FILE') as string) || '';
+    this._path = config.path || (registry.get('CURRENT_FILE') as std::string) || '';
 
     // Load window settings from registry
-    this._firstLine = parseInt((registry.get('FIRST_LINE') as string) || '0', 10);
-    this._window = parseInt((registry.get('WINDOW') as string) || '10', 10);
+    this._firstLine = parseInt((registry.get('FIRST_LINE') as std::string) || '0', 10);
+    this._window = parseInt((registry.get('WINDOW') as std::string) || '10', 10);
 
-    // Load file content if path is set
+    // Load file content if path is std::set
     if (this._path) {
       this.loadFile();
     } else {
@@ -67,11 +67,11 @@ class WindowedFile {
     // Handle empty file or file with only newlines
     // If the file is empty or contains only newlines, ensure we have exactly one empty line
 
-    // Print lines above if any
+    // Print lines above if std::any
 
     // Print window content
 
-    // Print lines below if any
+    // Print lines below if std::any
 
     // Replace text
 

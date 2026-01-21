@@ -149,6 +149,6 @@ struct UnifiedMemoryOptions {
  */
 using DbConnection = std::any;
 
-// Allowable vector dimensions
+// Allowable std::vector dimensions
 
 } // namespace elizaos

@@ -22,10 +22,10 @@ void setupCLI() {
         });
 
         program;
-        .command("set <key> <value>");
+        .command("std::set <key> <value>");
         .description("Set a value in the registry");
         .action((key, value) => {
-            registry.set(key, value);
+            registry.std::set(key, value);
             std::cout << "Set " + key + " = " + value << std::endl;
             });
 

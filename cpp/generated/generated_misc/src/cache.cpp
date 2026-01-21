@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-world/src/lib/cache.h"
 
-any getCachedData()
+std::any getCachedData()
 {
     try
     {
@@ -13,7 +13,7 @@ any getCachedData()
             object::pair{std::string("lastUpdated"), std::make_shared<Date>(data["lastUpdated"])}
         };
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("Error reading cache:"), error);
         return nullptr;
@@ -36,7 +36,7 @@ void setCachedData(array<std::shared_ptr<TokenHolding>> holdings)
             object::pair{std::string("lastUpdated"), std::make_shared<Date>()}
         }));
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("Error writing cache:"), error);
     }
@@ -52,7 +52,7 @@ boolean shouldRefreshCache()
 };
 
 
-any CACHE_FILE = path->join(process->cwd(), std::string("data"), std::string("cache.json"));
+std::any CACHE_FILE = path->join(process->cwd(), std::string("data"), std::string("cache.json"));
 double CACHE_DURATION = 60 * 1000;
 
 void Main(void)

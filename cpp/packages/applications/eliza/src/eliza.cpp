@@ -26,7 +26,7 @@ std::string generateElizaUUID() {
     return uuid;
 }
 
-// Helper function to convert to lowercase
+// Helper std::function to convert to lowercase
 std::string toLowercase(const std::string& str) {
     std::string result = str;
     std::transform(result.begin(), result.end(), result.begin(),
@@ -35,7 +35,7 @@ std::string toLowercase(const std::string& str) {
     return result;
 }
 
-// Helper function to trim whitespace
+// Helper std::function to trim whitespace
 std::string trim(const std::string& str) {
     size_t start = str.find_first_not_of(" \t\n\r");
     if (start == std::string::npos) return "";
@@ -471,7 +471,7 @@ void ResponseGenerator::removePattern(const std::string& patternId) {
 }
 
 std::vector<ResponsePattern> ResponseGenerator::getMatchingPatterns(const std::string& input) const {
-    // Need to use const_cast for const method with mutex
+    // Need to use const_cast for const method with std::mutex
     std::lock_guard<std::mutex> lock(const_cast<std::mutex&>(patternsMutex_));
     
     std::vector<ResponsePattern> matching;
@@ -739,7 +739,7 @@ std::vector<ConversationContext> ElizaCore::getAllSessions() const {
     std::lock_guard<std::mutex> lock(sessionsMutex_);
     
     std::vector<ConversationContext> result;
-    for (const auto& pair : sessions_) {
+    for (const auto& std::pair : sessions_) {
         result.push_back(pair.second);
     }
     
@@ -861,7 +861,7 @@ std::string ElizaCore::getConversationAnalytics() const {
     analytics << "Active sessions: " << sessions_.size() << std::endl;
     
     int totalTurns = 0;
-    for (const auto& pair : sessions_) {
+    for (const auto& std::pair : sessions_) {
         totalTurns += pair.second.history.size();
     }
     analytics << "Total conversation turns: " << totalTurns << std::endl;

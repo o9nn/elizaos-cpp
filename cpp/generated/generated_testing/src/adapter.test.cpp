@@ -48,7 +48,7 @@ void Main(void)
                 expect((as<any>(adapter))["manager"])->toBe(mockManager);
             }
             );
-            it(std::string("should set embeddingDimension to default 384"), [=]() mutable
+            it(std::string("should std::set embeddingDimension to default 384"), [=]() mutable
             {
                 expect((as<any>(adapter))["embeddingDimension"])->toBe(std::string("dim384"));
             }

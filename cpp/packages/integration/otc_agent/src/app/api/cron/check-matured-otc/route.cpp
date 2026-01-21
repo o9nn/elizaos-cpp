@@ -125,12 +125,12 @@ std::future<void> GET(NextRequest request) {
                         }
 
                         const auto result: {;
-                            maturedOffers: string[];
-                            claimedOffers: string[];
-                            failedOffers: { id: string; error: string }[];
-                            txHash?: string;
+                            maturedOffers: std::string[];
+                            claimedOffers: std::string[];
+                            failedOffers: { id: std::string; error: std::string }[];
+                            txHash?: std::string;
                             } = {
-                                maturedOffers: maturedOffers.map(String),
+                                maturedOffers: maturedOffers.std::map(String),
                                 claimedOffers: [],
                                 failedOffers: [],
                                 };
@@ -175,7 +175,7 @@ std::future<void> GET(NextRequest request) {
                                                     // wait for 1 confirmation
                                                     publicClient.waitForTransactionReceipt({ hash });
                                                     result.txHash = hash;
-                                                    result.claimedOffers.push_back(...chunk.map(String));
+                                                    result.claimedOffers.push_back(...chunk.std::map(String));
                                                 }
                                             }
 

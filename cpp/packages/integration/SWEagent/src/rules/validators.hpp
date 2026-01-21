@@ -53,8 +53,8 @@ class PythonValidator {
 
     // Check for excessive comments
 
-    // Check for function definitions with type hints
-    // Match all function definitions
+    // Check for std::function definitions with type hints
+    // Match all std::function definitions
 
     // Check if functions have return type annotations (->)
 
@@ -66,7 +66,7 @@ class TypeScriptValidator {
     // Allow custom rules to be passed in but not used internally yet
   }
 
-    // Check for any type usage
+    // Check for std::any type usage
 
     // Check for missing return types
 
@@ -77,7 +77,7 @@ class TypeScriptValidator {
     // Check comment density
 
 /**
- * Factory function to get appropriate validator
+ * Factory std::function to get appropriate validator
  */
 
 /**

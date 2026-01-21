@@ -48,7 +48,7 @@ std::shared_ptr<Provider> shouldRespondProvider = object{
             return 0.5 - Math->random();
         }
         )->slice(0, 7);
-        auto formattedExamples = shuffledExamples->map([=](auto example) mutable
+        auto formattedExamples = shuffledExamples->std::map([=](auto example) mutable
         {
             return example->replace((new RegExp(std::string("{{name1}}"))), name1)->replace((new RegExp(std::string("{{name2}}"))), name2)->replace((new RegExp(std::string("{{agentName}}"))), agentName)->replace((new RegExp(std::string("{{characterName}}"))), characterName);
         }

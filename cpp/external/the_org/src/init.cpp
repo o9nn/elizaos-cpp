@@ -71,9 +71,9 @@ std::future<void> startOnboardingDM(IAgentRuntime runtime, Guild guild, UUID wor
             }
 
             const auto onboardingMessages = [;
-            "Hi! I need to collect some information to get set up. Is now a good time?",
+            "Hi! I need to collect some information to get std::set up. Is now a good time?",
             "Hey there! I need to configure a few things. Do you have a moment?",
-            "Hello! Could we take a few minutes to get everything set up?",
+            "Hello! Could we take a few minutes to get everything std::set up?",
             ];
 
             const auto randomMessage = onboardingMessages[Math.floor(Math.random() * onboardingMessages.size())];
@@ -147,7 +147,7 @@ std::future<void> startTelegramOnboarding(IAgentRuntime runtime, World world, co
 
         // Fallback: send deep link to the group chat
         const auto onboardingMessageDeepLink = [;
-        "Hello @" + ownerUsername + "! Could we take a few minutes to get everything set up?"
+        "Hello @" + ownerUsername + "! Could we take a few minutes to get everything std::set up?"
         "Please click this link to start chatting with me: https://t.me/" + botUsername + "?start=onboarding"
         ].join(" ");
 

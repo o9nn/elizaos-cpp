@@ -7,8 +7,8 @@ namespace elizaos {
 std::vector<TagPattern> matchPatterns(const std::vector<TagPattern>& patterns, MatchContent content) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    // Return early if no patterns or empty content string
-    // Note: Some content types might be valid even with empty string content,
+    // Return early if no patterns or empty content std::string
+    // Note: Some content types might be valid even with empty std::string content,
     // but patterns usually require some text to match. Adjust if needed.
     if (patterns.length == 0 || !content.content) {
         return [];

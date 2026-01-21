@@ -4,5 +4,5 @@
 #include "@playwright/test.h"
 
 extern double OTC_DESK_PORT;
-extern string BASE_URL;
+extern std::string BASE_URL;
 #endif

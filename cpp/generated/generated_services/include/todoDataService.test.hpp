@@ -30,7 +30,7 @@ public:
 
     ReturnType<mock> values;
 
-    ReturnType<mock> set;
+    ReturnType<mock> std::set;
 
     ReturnType<mock> then;
 

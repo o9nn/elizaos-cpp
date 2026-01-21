@@ -16,7 +16,7 @@ namespace elizaos {
 
 
 
-using DateProps = { longDateTime: string; shortDateTime: string };
+using DateProps = { longDateTime: std::string; shortDateTime: std::string };
 
 
 } // namespace elizaos

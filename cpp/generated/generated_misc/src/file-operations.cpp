@@ -10,18 +10,18 @@ std::shared_ptr<Promise<string>> getGlobalEnvPath()
 std::shared_ptr<Promise<any>> getLocalEnvPath()
 {
     auto localEnvPath = path->join(process->cwd(), std::string(".env"));
-    return (existsSync(localEnvPath)) ? any(localEnvPath) : any(nullptr);
+    return (existsSync(localEnvPath)) ? std::any(localEnvPath) : std::any(nullptr);
 };
 
 
-std::shared_ptr<Promise<EnvVars>> parseEnvFile(string filePath)
+std::shared_ptr<Promise<EnvVars>> parseEnvFile(std::string filePath)
 {
     auto service = createEnvFileService(filePath);
     return service->read();
 };
 
 
-std::shared_ptr<Promise<void>> writeEnvFile(string filePath, EnvVars envVars)
+std::shared_ptr<Promise<void>> writeEnvFile(std::string filePath, EnvVars envVars)
 {
     auto service = createEnvFileService(filePath);
     std::async([=]() { service->write(envVars, object{
@@ -32,7 +32,7 @@ std::shared_ptr<Promise<void>> writeEnvFile(string filePath, EnvVars envVars)
 };
 
 
-std::shared_ptr<Promise<boolean>> resetEnvFile(string filePath)
+std::shared_ptr<Promise<boolean>> resetEnvFile(std::string filePath)
 {
     try
     {
@@ -56,7 +56,7 @@ std::shared_ptr<Promise<boolean>> resetEnvFile(string filePath)
         }); });
         return true;
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("Error resetting environment file: ") + (is<Error>(error)) ? error->message : String(error) + string_empty);
         return false;

@@ -17,7 +17,7 @@ void MiniappProvider() {
         if (typeof window == "undefined" || initStartedRef.current) return;
         initStartedRef.current = true;
 
-        const auto initMiniapp = async () => {;
+        const auto initMiniapp = std::async () => {;
             try {
                 const auto context = miniappSdk.context;
 

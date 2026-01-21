@@ -75,7 +75,7 @@ void Main(void)
         );
         describe(std::string("Bug 2: Runtime Error Fix"), [=]() mutable
         {
-            it(std::string("should handle non-string actions gracefully"), [=]() mutable
+            it(std::string("should handle non-std::string actions gracefully"), [=]() mutable
             {
                 auto responseContent = object{
                     object::pair{std::string("text"), std::string("Hello world")}, 
@@ -86,7 +86,7 @@ void Main(void)
                 expect(result["simple"])->toBe(false);
             }
             );
-            it(std::string("should handle mixed string/non-string actions with IGNORE"), [=]() mutable
+            it(std::string("should handle mixed string/non-std::string actions with IGNORE"), [=]() mutable
             {
                 auto responseContent = object{
                     object::pair{std::string("text"), std::string("Hello world")}, 
@@ -144,7 +144,7 @@ void Main(void)
                 expect(result["simple"])->toBe(false);
             }
             );
-            it(std::string("should handle all non-string actions"), [=]() mutable
+            it(std::string("should handle all non-std::string actions"), [=]() mutable
             {
                 auto responseContent = object{
                     object::pair{std::string("text"), std::string("Hello world")}, 

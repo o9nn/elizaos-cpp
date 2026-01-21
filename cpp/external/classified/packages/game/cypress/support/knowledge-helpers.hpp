@@ -51,9 +51,9 @@ struct UploadResponse {
 
 class KnowledgeTestHelper {
   private baseUrl = 'http://localhost:7777/knowledge';
-  private agentId: string;
+  private agentId: std::string;
 
-  constructor(agentId: string = '00000000-0000-0000-0000-000000000001') {
+  constructor(agentId: std::string = '00000000-0000-0000-0000-000000000001') {
     this.agentId = agentId;
   }
 
@@ -99,7 +99,7 @@ class KnowledgeTestHelper {
    */
       // Try to get documents, but continue if it fails
 
-              // Convert to promise for proper error handling
+              // Convert to std::promise for proper error handling
 
             // Error handler for getDocuments
 

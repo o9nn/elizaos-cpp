@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-experience/utils/experienceFormatter.h"
 
-string formatExperienceForDisplay(std::shared_ptr<Experience> experience)
+std::string formatExperienceForDisplay(std::shared_ptr<Experience> experience)
 {
     auto typeEmoji = getTypeEmoji(experience->type);
     auto timestamp = ((std::make_shared<Date>(experience->createdAt)))->toLocaleString();
@@ -14,19 +14,19 @@ Tags: ") + experience->tags->join(std::string(", ")) + string_empty;
 };
 
 
-string formatExperienceSummary(std::shared_ptr<Experience> experience)
+std::string formatExperienceSummary(std::shared_ptr<Experience> experience)
 {
     auto typeEmoji = getTypeEmoji(experience->type);
     return string_empty + typeEmoji + std::string(" ") + experience->learning + std::string(" (") + Math->round(experience->confidence * 100) + std::string("% confidence)");
 };
 
 
-string formatExperienceList(array<std::shared_ptr<Experience>> experiences)
+std::string formatExperienceList(array<std::shared_ptr<Experience>> experiences)
 {
     if (experiences->get_length() == 0) {
         return std::string("No experiences found.");
     }
-    return experiences->map([=](auto exp, auto index) mutable
+    return experiences->std::map([=](auto exp, auto index) mutable
     {
         return string_empty + (index + 1) + std::string(". ") + formatExperienceSummary(exp) + string_empty;
     }
@@ -35,7 +35,7 @@ string formatExperienceList(array<std::shared_ptr<Experience>> experiences)
 };
 
 
-string formatPatternSummary(object pattern)
+std::string formatPatternSummary(object pattern)
 {
     auto significanceEmoji = OR((const_(object{
         object::pair{std::string("high"), std::string("🔴")}, 
@@ -46,14 +46,14 @@ string formatPatternSummary(object pattern)
 };
 
 
-std::shared_ptr<Map<string, array<std::shared_ptr<Experience>>>> groupExperiencesByDomain(array<std::shared_ptr<Experience>> experiences)
+std::shared_ptr<Map<std::string, array<std::shared_ptr<Experience>>>> groupExperiencesByDomain(array<std::shared_ptr<Experience>> experiences)
 {
-    shared groups = std::make_shared<Map<string, array<std::shared_ptr<Experience>>>>();
+    shared groups = std::make_shared<Map<std::string, array<std::shared_ptr<Experience>>>>();
     experiences->forEach([=](auto exp) mutable
     {
         auto group = OR((groups->get(exp->domain)), (array<any>()));
         group->push(exp);
-        groups->set(exp->domain, group);
+        groups->std::set(exp->domain, group);
     }
     );
     return groups;
@@ -66,7 +66,7 @@ object getExperienceStats(array<std::shared_ptr<Experience>> experiences)
         object::pair{std::string("total"), experiences->get_length()}, 
         object::pair{std::string("byType"), as<Record<ExperienceType, double>>(object{})}, 
         object::pair{std::string("byOutcome"), as<Record<OutcomeType, double>>(object{})}, 
-        object::pair{std::string("byDomain"), as<Record<string, double>>(object{})}, 
+        object::pair{std::string("byDomain"), as<Record<std::string, double>>(object{})}, 
         object::pair{std::string("averageConfidence"), 0}, 
         object::pair{std::string("averageImportance"), 0}, 
         object::pair{std::string("successRate"), 0}
@@ -90,7 +90,7 @@ object getExperienceStats(array<std::shared_ptr<Experience>> experiences)
         )->get_length();
     }
     );
-    auto domains = array<any>{ std::make_shared<Set>(experiences->map([=](auto e) mutable
+    auto domains = array<any>{ std::make_shared<Set>(experiences->std::map([=](auto e) mutable
     {
         return e->domain;
     }
@@ -119,12 +119,12 @@ object getExperienceStats(array<std::shared_ptr<Experience>> experiences)
     auto positiveCount = OR(((*const_(stats["byOutcome"]))[OutcomeType::POSITIVE]), (0));
     auto negativeCount = OR(((*const_(stats["byOutcome"]))[OutcomeType::NEGATIVE]), (0));
     auto totalAttempts = positiveCount + negativeCount;
-    stats["successRate"] = (totalAttempts > 0) ? any(positiveCount / totalAttempts) : any(0);
+    stats["successRate"] = (totalAttempts > 0) ? std::any(positiveCount / totalAttempts) : std::any(0);
     return stats;
 };
 
 
-string getTypeEmoji(ExperienceType type)
+std::string getTypeEmoji(ExperienceType type)
 {
     auto emojiMap = object{
         object::pair{ExperienceType::SUCCESS, std::string("✅")}, 
@@ -140,7 +140,7 @@ string getTypeEmoji(ExperienceType type)
 };
 
 
-string formatExperienceForRAG(std::shared_ptr<Experience> experience)
+std::string formatExperienceForRAG(std::shared_ptr<Experience> experience)
 {
     auto parts = array<string>{ std::string("Experience Type: ") + experience->type + string_empty, std::string("Outcome: ") + experience->outcome + string_empty, std::string("Domain: ") + experience->domain + string_empty, std::string("Action: ") + experience->action + string_empty, std::string("Context: ") + experience->context + string_empty, std::string("Result: ") + experience->result + string_empty, std::string("Learning: ") + experience->learning + string_empty, std::string("Confidence: ") + experience->confidence + string_empty, std::string("Importance: ") + experience->importance + string_empty, std::string("Tags: ") + experience->tags->join(std::string(", ")) + string_empty };
     if (experience->previousBelief) {

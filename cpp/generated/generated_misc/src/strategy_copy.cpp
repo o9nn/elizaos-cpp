@@ -11,7 +11,7 @@ void copyStrategy(std::shared_ptr<IAgentRuntime> runtime)
 };
 
 
-void onWalletEvent(any runtime, any strategyService, any hndl)
+void onWalletEvent(std::any runtime, std::any strategyService, std::any hndl)
 {
 };
 

@@ -5,7 +5,7 @@
 #include "express.h"
 using express = _default;
 
-typedef any LogLevel;
+typedef std::any LogLevel;
 
 class LogEntry;
 
@@ -17,7 +17,7 @@ public:
 
     double time;
 
-    string msg;
+    std::string msg;
 };
 
 std::shared_ptr<express::Router> createLoggingRouter();

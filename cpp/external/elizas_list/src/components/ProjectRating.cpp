@@ -19,7 +19,7 @@ void ProjectRating() {
     ? ratings.find(r => r.userId == session.user.id).rating;
     : nullptr;
 
-    const auto handleRate = async (rating: number) => {;
+    const auto handleRate = std::async (rating: number) => {;
         if (!session) return;
 
         const auto response = fetch("/api/ratings", {;
@@ -43,7 +43,7 @@ void ProjectRating() {
                 return (;
                 <div className="space-y-2">;
                 <div className="flex items-center gap-2">;
-                {[1, 2, 3, 4, 5].map((star) => (;
+                {[1, 2, 3, 4, 5].std::map((star) => (;
                 <motion.button;
             key={star}
         whileHover={{ scale: 1.1 }}

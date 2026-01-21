@@ -33,21 +33,21 @@ CreateOptions validateCreateOptions(const std::any& options) {
 
 void validateProjectName(const std::string& name) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    isValid: boolean; error?: string
+    isValid: boolean; error?: std::string
 }
 
 void processPluginName(const std::string& name) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     isValid: boolean;
-    processedName?: string;
-    error?: string;
+    processedName?: std::string;
+    error?: std::string;
 
 }
 
 std::future<> validateTargetDirectory(const std::string& targetDir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    isValid: boolean; error?: string
+    isValid: boolean; error?: std::string
 }
 
 } // namespace elizaos

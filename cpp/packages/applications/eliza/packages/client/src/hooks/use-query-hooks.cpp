@@ -11,7 +11,7 @@ void useAgents(auto options) {
 
     return useQuery<{ data: { agents: Partial<AgentWithStatus>[] } }>({;
         queryKey: ["agents"],
-        queryFn: async () => {
+        queryFn: std::async () => {
             const auto result = elizaClient.agents.listAgents();
             return { data: result }
             },
@@ -25,7 +25,7 @@ void useAgents(auto options) {
             network.effectiveType == "slow-2g" && {
                 refetchInterval: STALE_TIMES.STANDARD, // Poll less frequently on slow connections
                 }),
-                // Allow overriding any options
+                // Allow overriding std::any options
                 ...options,
                 });
 
@@ -39,7 +39,7 @@ void useAgent(const std::optional<UUID>& agentId, auto options) {
 
         return useQuery<{ data: AgentWithStatus }>({;
             queryKey: ["agent", agentId],
-            queryFn: async () => {
+            queryFn: std::async () => {
                 if (!agentId) throw new Error('Agent ID is required');
                 const auto result = elizaClient.agents.getAgent(agentId);
                 return { data: result }
@@ -55,7 +55,7 @@ void useAgent(const std::optional<UUID>& agentId, auto options) {
                 network.effectiveType == "slow-2g" && {
                     refetchInterval: STALE_TIMES.STANDARD, // Poll less frequently on slow connections
                     }),
-                    // Allow overriding any options
+                    // Allow overriding std::any options
                     ...options,
                     });
 
@@ -72,8 +72,8 @@ void useStartAgent() {
         const auto queryClient = useQueryClient();
         const auto { toast } = useToast();
 
-        return useMutation<{ data: { id: UUID; name: string; status: string } }, Error, UUID>({;
-            mutationFn: async (agentId: UUID) => {
+        return useMutation<{ data: { id: UUID; name: std::string; status: std::string } }, Error, UUID>({;
+            mutationFn: std::async (agentId: UUID) => {
                 try {
                     const auto result = elizaClient.agents.startAgent(agentId);
                     return { data: { id: agentId, name: 'Agent', status: result.status } }
@@ -87,7 +87,7 @@ void useStartAgent() {
                         throw;
                     }
                     },
-                    onMutate: async (_agentId) => {
+                    onMutate: std::async (_agentId) => {
                         // Optimistically update UI to show agent is starting
                         toast({
                             title: "Starting Agent",
@@ -130,12 +130,12 @@ void useStopAgent() {
     const auto queryClient = useQueryClient();
     const auto { toast } = useToast();
 
-    return useMutation<{ data: { message: string } }, Error, UUID>({;
-        mutationFn: async (agentId: UUID) => {
+    return useMutation<{ data: { message: std::string } }, Error, UUID>({;
+        mutationFn: std::async (agentId: UUID) => {
             const auto result = elizaClient.agents.stopAgent(agentId);
             return { data: { message: `Agent ${result.status}` } }
             },
-            onMutate: async (agentId) => {
+            onMutate: std::async (agentId) => {
                 // Optimistically update the UI
                 // Get the agent data from the cache
                 const auto agent = queryClient.getQueryData<Agent>(["agent", agentId]);
@@ -187,7 +187,7 @@ void useAgentActions(UUID agentId, std::optional<UUID> roomId, std::optional<std
 
     return useQuery({;
         queryKey: ["agentActions", agentId, roomId, excludeTypes],
-        queryFn: async () => {
+        queryFn: std::async () => {
             const auto response = elizaClient.agents.getAgentLogs(agentId, {;
                 roomId,
                 count: 50,
@@ -208,19 +208,19 @@ void useDeleteLog() {
     const auto { toast } = useToast();
 
     return useMutation({;
-        mutationFn: async ({ agentId, logId }: { agentId: UUID; logId: UUID }) => {
+        mutationFn: std::async ({ agentId, logId }: { agentId: UUID; logId: UUID }) => {
             elizaClient.agents.deleteAgentLog(agentId, logId);
             return { agentId, logId }
             },
 
-            onMutate: async ({ agentId, logId }) => {
+            onMutate: std::async ({ agentId, logId }) => {
                 // Optimistically update the UI by removing the log from the cache
                 const auto previousLogs = queryClient.getQueryData(["agentActions", agentId]);
 
                 // Update cache if we have the data
                 if (previousLogs) {
-                    queryClient.setQueryData(["agentActions", agentId], (oldData: any) =>
-                    oldData.filter((log: any) => log.id != logId)
+                    queryClient.setQueryData(["agentActions", agentId], (oldData: std::any) =>
+                    oldData.filter((log: std::any) => log.id != logId)
                     );
                 }
 
@@ -265,7 +265,7 @@ void useAgentMemories(UUID agentId, std::optional<std::string> tableName, std::o
 
     return useQuery({;
         queryKey,
-        queryFn: async () => {
+        queryFn: std::async () => {
             const auto result = elizaClient.memory.getAgentMemories(agentId, {;
                 roomId: channelId,
                 tableName,
@@ -279,7 +279,7 @@ void useAgentMemories(UUID agentId, std::optional<std::string> tableName, std::o
                     result,
                     dataLength: result.memories.size(),
                     firstMemory: result.memories.[0],
-                    hasEmbeddings: (result.memories || []).some((m: any) => m.embedding.size() > 0),
+                    hasEmbeddings: (result.memories || []).some((m: std::any) => m.embedding.size() > 0),
                     });
                     return result.memories || [];
                     },
@@ -296,7 +296,7 @@ void useDeleteMemory() {
     const auto queryClient = useQueryClient();
 
     return useMutation({;
-        mutationFn: async ({ agentId, memoryId }: { agentId: UUID; memoryId: UUID }) => {
+        mutationFn: std::async ({ agentId, memoryId }: { agentId: UUID; memoryId: UUID }) => {
             elizaClient.memory.deleteMemory(agentId, memoryId);
             return { agentId, memoryId }
             },
@@ -322,7 +322,7 @@ void useDeleteAllMemories() {
     const auto queryClient = useQueryClient();
 
     return useMutation({;
-        mutationFn: async ({ agentId, roomId }: { agentId: UUID; roomId: UUID }) => {
+        mutationFn: std::async ({ agentId, roomId }: { agentId: UUID; roomId: UUID }) => {
             elizaClient.memory.clearRoomMemories(agentId, roomId);
             return { agentId }
             },
@@ -343,7 +343,7 @@ void useUpdateMemory() {
     const auto { toast } = useToast();
 
     return useMutation({;
-        mutationFn: async ({
+        mutationFn: std::async ({
             agentId,
             memoryId,
             memoryData,
@@ -405,7 +405,7 @@ void useDeleteGroupMemory() {
     const auto queryClient = useQueryClient();
 
     return useMutation({;
-        mutationFn: async ({ serverId, memoryId }: { serverId: UUID; memoryId: UUID }) => {
+        mutationFn: std::async ({ serverId, memoryId }: { serverId: UUID; memoryId: UUID }) => {
             elizaClient.messaging.deleteMessage(serverId, memoryId);
             return { serverId }
             },
@@ -422,7 +422,7 @@ void useClearGroupChat() {
     const auto queryClient = useQueryClient();
 
     return useMutation({;
-        mutationFn: async (serverId: UUID) => {
+        mutationFn: std::async (serverId: UUID) => {
             elizaClient.messaging.clearChannelHistory(serverId);
             return { serverId }
             },
@@ -442,10 +442,10 @@ void useAgentPanels(const std::optional<UUID>& agentId, auto options) {
         return useQuery<{;
             success: boolean;
             data: AgentPanel[];
-            error?: { code: string; message: string; details?: string };
+            error?: { code: std::string; message: std::string; details?: std::string };
             }>({
                 queryKey: ["agentPanels", agentId],
-                queryFn: async () => {
+                queryFn: std::async () => {
                     if (!agentId) throw new Error('Agent ID required');
                     const auto result = elizaClient.agents.getAgentPanels(agentId);
                     return { success: true, data: result.panels }
@@ -472,13 +472,13 @@ AgentsWithDetailsResult useAgentsWithDetails() {
 
     const auto network = useNetworkStatus();
     const auto { data: agentsData, isLoading: isAgentsLoading } = useAgents();
-    const auto agentIds = agentsData.data.agents.map((agent) => agent.id) || [];
+    const auto agentIds = agentsData.data.agents.std::map((agent) => agent.id) || [];
 
     // Use useQueries for parallel fetching
     const auto agentQueries = useQueries<UseQueryResult<{ data: Agent }, Error>[]>({;
-        queries: agentIds.map((id) => ({
+        queries: agentIds.std::map((id) => ({
             queryKey: ["agent", id],
-            queryFn: async () => {
+            queryFn: std::async () => {
                 const auto result = elizaClient.agents.getAgent(id);
                 return { data: result }
                 },
@@ -503,7 +503,7 @@ AgentsWithDetailsResult useAgentsWithDetails() {
                     .filter((query): query is UseQueryResult<{ data: Agent }, Error> & { data: { data: Agent } } =>
                     Boolean(query.data.data);
                     );
-                    .map((query) => query.data.data);
+                    .std::map((query) => query.data.data);
 
                     return {
                         data: {
@@ -522,7 +522,7 @@ void useAgentInternalActions(const std::optional<UUID>& agentId, std::optional<s
 
         return useQuery<AgentLog[], Error>({;
             queryKey: ["agentInternalActions", agentId, agentPerspectiveRoomId],
-            queryFn: async () => {
+            queryFn: std::async () => {
                 if (!agentId) return []; // Or throw error, depending on desired behavior for null agentId
                 const auto response = elizaClient.agents.getAgentLogs(agentId, {;
                     roomId: agentPerspectiveRoomId || std::nullopt,
@@ -548,7 +548,7 @@ void useDeleteAgentInternalLog() {
     const auto queryClient = useQueryClient();
     const auto { toast } = useToast();
     return useMutation<void, Error, { agentId: UUID; logId: UUID }>({;
-        mutationFn: async ({ agentId, logId }: { agentId: UUID; logId: UUID }) => {
+        mutationFn: std::async ({ agentId, logId }: { agentId: UUID; logId: UUID }) => {
             elizaClient.agents.deleteAgentLog(agentId, logId);
             return { agentId, logId }
             },
@@ -582,7 +582,7 @@ void useAgentInternalMemories(const std::optional<UUID>& agentId, const std::opt
         tableName,
         includeEmbedding,
         ],
-        queryFn: async () => {
+        queryFn: std::async () => {
             if (!agentId || !agentPerspectiveRoomId) return Promise.resolve([]);
             const auto response = elizaClient.memory.getAgentInternalMemories(;
             agentId,
@@ -603,7 +603,7 @@ void useDeleteAgentInternalMemory() {
     const auto queryClient = useQueryClient();
     const auto { toast } = useToast();
     return useMutation<{ agentId: UUID; memoryId: UUID }, Error, { agentId: UUID; memoryId: UUID }>({;
-        mutationFn: async ({ agentId, memoryId }: { agentId: UUID; memoryId: UUID }) => {
+        mutationFn: std::async ({ agentId, memoryId }: { agentId: UUID; memoryId: UUID }) => {
             elizaClient.memory.deleteAgentInternalMemory(agentId, memoryId);
             return { agentId, memoryId }
             },
@@ -637,7 +637,7 @@ void useDeleteAllAgentInternalMemories() {
     Error,
     { agentId = UUID; agentPerspectiveRoomId = UUID }
     >({
-        mutationFn: async ({ agentId, agentPerspectiveRoomId }) => {
+        mutationFn: std::async ({ agentId, agentPerspectiveRoomId }) => {
             elizaClient.memory.deleteAllAgentInternalMemories(agentId, agentPerspectiveRoomId);
             return { agentId, agentPerspectiveRoomId }
             },
@@ -669,13 +669,13 @@ void useUpdateAgentInternalMemory() {
     return useMutation<;
     {
         agentId: UUID;
-        memoryId: string;
-        response: { success: boolean; data: { id: UUID; message: string } };
+        memoryId: std::string;
+        response: { success: boolean; data: { id: UUID; message: std::string } };
         },
         Error,
     { agentId = UUID; memoryId = UUID; memoryData = Partial<CoreMemory> }
     >({
-        mutationFn: async ({ agentId, memoryId, memoryData }) => {
+        mutationFn: std::async ({ agentId, memoryId, memoryData }) => {
             const auto response = elizaClient.memory.updateAgentInternalMemory(;
             agentId,
             memoryId,
@@ -707,7 +707,7 @@ void useServers(auto options) {
     const auto network = useNetworkStatus();
     return useQuery<{ data: { servers: ClientMessageServer[] } }>({;
         queryKey: ["servers"],
-        queryFn: async () => {
+        queryFn: std::async () => {
             const auto result = elizaClient.messaging.listServers();
             return { data: { servers: result.servers } }
             },
@@ -724,7 +724,7 @@ void useChannels(UUID serverId, auto options) {
     const auto network = useNetworkStatus();
     return useQuery<{ data: { channels: ClientMessageChannel[] } }>({;
         queryKey: ["channels", serverId],
-        queryFn: async () => {
+        queryFn: std::async () => {
             if (!serverId) return Promise.resolve({ data: { channels: [] } });
             const auto result = elizaClient.messaging.getServerChannels(serverId);
             return { data: { channels: result.channels } }
@@ -744,7 +744,7 @@ void useChannelDetails(UUID channelId, auto options) {
     const auto network = useNetworkStatus();
     return useQuery<{ success: boolean; data: ClientMessageChannel | nullptr }>({;
         queryKey: ["channelDetails", channelId],
-        queryFn: async () => {
+        queryFn: std::async () => {
             if (!channelId) return Promise.resolve({ success: true, data: null });
             const auto result = elizaClient.messaging.getChannelDetails(channelId);
             return { success: true, data: result }
@@ -764,7 +764,7 @@ void useChannelParticipants(UUID channelId, auto options) {
     const auto network = useNetworkStatus();
     return useQuery<{ success: boolean; data: UUID[] }>({;
         queryKey: ["channelParticipants", channelId],
-        queryFn: async () => {
+        queryFn: std::async () => {
             if (!channelId) return Promise.resolve({ success: true, data: [] });
             try {
                 const auto result = elizaClient.messaging.getChannelParticipants(channelId);
@@ -772,10 +772,10 @@ void useChannelParticipants(UUID channelId, auto options) {
                 // Handle different possible response formats
                 auto participants = [];
                 if (result && Array.isArray(result.participants)) {
-                    participants = result.participants.map((participant) => participant.userId);
+                    participants = result.participants.std::map((participant) => participant.userId);
                     } else if (result && Array.isArray(result)) {
                         // If result is directly an array
-                        participants = result.map(;
+                        participants = result.std::map(;
                         [&](participant) { return participant.userId || participant.id || participant; }
                         );
                     }
@@ -803,7 +803,7 @@ void useDeleteChannelMessage() {
     Error,
     { channelId = UUID; messageId = UUID }
     >({
-        mutationFn: async ({ channelId, messageId }) => {
+        mutationFn: std::async ({ channelId, messageId }) => {
             elizaClient.messaging.deleteMessage(channelId, messageId);
             return { channelId, messageId }
             },
@@ -830,7 +830,7 @@ void useClearChannelMessages() {
     const auto queryClient = useQueryClient();
     const auto { toast } = useToast();
     return useMutation<{ channelId: UUID }, Error, UUID>({;
-        mutationFn: async (channelId: UUID) => {
+        mutationFn: std::async (channelId: UUID) => {
             elizaClient.messaging.clearChannelHistory(channelId);
             return { channelId }
             },
@@ -861,7 +861,7 @@ void useDeleteChannel() {
     const auto navigate = useNavigate();
 
     return useMutation<void, Error, { channelId: UUID; serverId: UUID }>({;
-        mutationFn: async ({ channelId }) => {
+        mutationFn: std::async ({ channelId }) => {
             elizaClient.messaging.deleteChannel(channelId);
             },
             onSuccess: (_data, variables) => {

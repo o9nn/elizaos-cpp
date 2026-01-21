@@ -33,7 +33,7 @@ void Main(void)
                 );
                 expect(test)->toBeDefined();
                 if (!test) {
-                    throw any(std::make_shared<Error>(std::string("Test "Test Conflict Resolution" not found")));
+                    throw std::any(std::make_shared<Error>(std::string("Test "Test Conflict Resolution" not found")));
                 }
                 std::async([=]() { test["fn"](mockRuntime); });
                 expect(mockScenarioService["createWorld"])->toHaveBeenCalledWith(std::string("Conflict Test"), std::string("Test Owner"));
@@ -51,7 +51,7 @@ void Main(void)
                 );
                 expect(test)->toBeDefined();
                 if (!test) {
-                    throw any(std::make_shared<Error>(std::string("Test "Test New User Onboarding" not found")));
+                    throw std::any(std::make_shared<Error>(std::string("Test "Test New User Onboarding" not found")));
                 }
                 std::async([=]() { test["fn"](mockRuntime); });
                 expect(mockScenarioService["createRoom"])->toHaveBeenCalledWith(std::string("world-id"), std::string("welcome"));
@@ -68,7 +68,7 @@ void Main(void)
                 );
                 expect(test)->toBeDefined();
                 if (!test) {
-                    throw any(std::make_shared<Error>(std::string("Test "Test Moderation Actions" not found")));
+                    throw std::any(std::make_shared<Error>(std::string("Test "Test Moderation Actions" not found")));
                 }
                 std::async([=]() { test["fn"](mockRuntime); });
                 expect(mockScenarioService["createWorld"])->toHaveBeenCalledWith(std::string("Moderation Test"), std::string("Test Owner"));
@@ -85,7 +85,7 @@ void Main(void)
                 );
                 expect(test)->toBeDefined();
                 if (!test) {
-                    throw any(std::make_shared<Error>(std::string("Test "Test Community Engagement" not found")));
+                    throw std::any(std::make_shared<Error>(std::string("Test "Test Community Engagement" not found")));
                 }
                 std::async([=]() { test["fn"](mockRuntime); });
                 expect(mockScenarioService["sendMessage"])->toHaveBeenCalledWith(mockRuntime, std::string("world-id"), std::string("room-id"), std::string("Let's plan the next community event"));

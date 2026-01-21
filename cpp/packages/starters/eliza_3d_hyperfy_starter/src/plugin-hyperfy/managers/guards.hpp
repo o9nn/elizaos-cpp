@@ -16,7 +16,7 @@ namespace elizaos {
 
 
 /**
- * Guards any async task and tracks if something is running.
+ * Guards std::any std::async task and tracks if something is running.
  * Used to prevent behavior execution during active message processing.
  */
 

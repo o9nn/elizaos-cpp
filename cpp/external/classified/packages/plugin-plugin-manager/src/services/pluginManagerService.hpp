@@ -51,7 +51,7 @@ void resetRegistryCache();
 
 // Registry functions
 
-// Real plugin installation function using npm/git
+// Real plugin installation std::function using npm/git
 
   // Ensure target directory exists
 
@@ -87,7 +87,7 @@ class PluginManagerService extends Service implements PluginRegistry {
   override capabilityDescription =
     'Manages dynamic loading and unloading of plugins at runtime, including registry installation';
 
-  public plugins: Map<string, PluginState> = new Map();
+  public plugins: Map<std::string, PluginState> = new Map();
   private pluginManagerConfig: PluginManagerConfig;
   private originalPlugins: ElizaPlugin[] = [];
   private originalActions: Set<string> = new Set();
@@ -96,10 +96,10 @@ class PluginManagerService extends Service implements PluginRegistry {
   private originalServices: Set<string> = new Set();
 
   // Add registry installation state management
-  private installedPlugins: Map<string, DynamicPluginInfo> = new Map();
+  private installedPlugins: Map<std::string, DynamicPluginInfo> = new Map();
 
   // Component tracking
-  private componentRegistry: Map<string, ComponentRegistration[]> = new Map();
+  private componentRegistry: Map<std::string, ComponentRegistration[]> = new Map();
 
   // Protected plugins that cannot be registered, loaded, or unloaded by external code
   // These match the actual plugin names as defined in their respective index.ts files
@@ -209,7 +209,7 @@ class PluginManagerService extends Service implements PluginRegistry {
 
   // Helper method to get component registrations
 
-    // Clean up any resources
+    // Clean up std::any resources
 
   /**
    * Checks if a plugin name is protected and cannot be modified
@@ -244,7 +244,7 @@ class PluginManagerService extends Service implements PluginRegistry {
 
     // Ensure plugin directory exists
 
-    // Install using real installation function
+    // Install using real installation std::function
     await installPlugin(pluginName, pluginDir, version, onProgress);
 
     // Parse plugin metadata

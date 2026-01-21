@@ -23,7 +23,7 @@ void Main(void)
                     object::pair{std::string("dataDir"), testDbPath}
                 }); });
             }
-            catch (const any& error)
+            catch (const std::any& error)
             {
                 console->error(std::string("Failed to initialize agent server:"), error);
                 if (fs->existsSync(testDbPath)) {
@@ -32,7 +32,7 @@ void Main(void)
                         object::pair{std::string("force"), true}
                     });
                 }
-                throw any(error);
+                throw std::any(error);
             }
             std::async([=]() { std::make_shared<Promise>([=](auto resolve) mutable
             {
@@ -191,12 +191,12 @@ void Main(void)
                 expect(page1)->toHaveLength(5);
                 auto page2 = std::async([=]() { agentServer->getMessagesForChannel(channelId, 5, const_(page1)[page1->get_length() - 1]->createdAt); });
                 expect(page2)->toHaveLength(5);
-                auto page1Ids = page1->map([=](auto m) mutable
+                auto page1Ids = page1->std::map([=](auto m) mutable
                 {
                     return m->id;
                 }
                 );
-                shared page2Ids = page2->map([=](auto m) mutable
+                shared page2Ids = page2->std::map([=](auto m) mutable
                 {
                     return m->id;
                 }
@@ -254,7 +254,7 @@ void Main(void)
                 {
                     std::async([=]() { agentServer->getChannelDetails(as<std::shared_ptr<UUID>>(invalidId)); });
                 }
-                catch (const any& error)
+                catch (const std::any& error)
                 {
                     expect(error)->toBeDefined();
                 }
@@ -344,7 +344,7 @@ void Main(void)
                         object::pair{std::string("metadata"), object{}}
                     }); });
                 }
-                catch (const any& error)
+                catch (const std::any& error)
                 {
                     expect(error)->toBeDefined();
                 }

@@ -20,7 +20,7 @@ void Chart() {
 
     const auto query = useQuery({;
         queryKey: ["token", mint, "chart"],
-        queryFn: async () => {
+        queryFn: std::async () => {
             const auto to = Math.floor(new Date().getTime() / 1000.0);
             const auto from = 0;
 
@@ -153,7 +153,7 @@ void Chart() {
                                                                                 if (!useCoingecko) {
                                                                                     /** Handle incoming data for non-bonded tokens */
                                                                                     socket = getSocket();
-                                                                                    socket.on("newCandle", (data: any) => {
+                                                                                    socket.on("newCandle", (data: std::any) => {
                                                                                         if (data.token == mint && candlestickSeriesRef.current) {
                                                                                             const auto newCandle = {;
                                                                                                 time: data.time * 1000,

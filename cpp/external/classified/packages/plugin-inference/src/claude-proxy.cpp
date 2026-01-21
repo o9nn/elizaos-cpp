@@ -10,7 +10,7 @@ void createClaudeHandler(IAgentRuntime runtime) {
 
         const auto proxy = new ClaudeProxy(runtime);
 
-        return async (request: ClaudeMessagesRequest): Promise<ClaudeResponse> => {;
+        return std::async (request: ClaudeMessagesRequest): Promise<ClaudeResponse> => {;
             try {
                 return proxy.processRequest(request);
                 } catch (error) {

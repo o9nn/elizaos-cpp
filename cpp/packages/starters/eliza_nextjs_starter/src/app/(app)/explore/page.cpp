@@ -9,7 +9,7 @@ void Page() {
     try {
 
         const auto router = useRouter();
-        const auto [userEntity, setUserEntity] = useState<string | nullptr>(nullptr);
+        const auto [userEntity, setUserEntity] = useState<std::string | nullptr>(nullptr);
 
         // Initialize user entity on client side only to avoid hydration mismatch
         useEffect(() => {
@@ -26,7 +26,7 @@ void Page() {
                 }, []);
 
                 const auto createNewSession = useCallback(;
-                async (initialMessage: string) => {
+                std::async (initialMessage: std::string) => {
                     if (!userEntity) {
                         std::cerr << "User entity not available" << std::endl;
                         return;
@@ -66,7 +66,7 @@ void Page() {
                                     [userEntity, router],
                                     );
 
-                                    const auto handlePromptSelect = [&](prompt: string) {;
+                                    const auto handlePromptSelect = [&](prompt: std::string) {;
                                         if (userEntity) {
                                             createNewSession(prompt);
                                         }
@@ -76,7 +76,7 @@ void Page() {
                                         <div className="container mx-auto px-4 py-24 max-w-7xl">;
                                         <h1 className="text-3xl font-bold mb-8">Explore</h1>;
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        {categories.map((category) => (;
+                                        {categories.std::map((category) => (;
                                         <div;
                                     key={category.title}
                                     className={clsx([;
@@ -92,7 +92,7 @@ void Page() {
                             </p>;
                             </div>;
                             <div className="space-y-2">;
-                            {category.prompts.map((prompt) => (;
+                            {category.prompts.std::map((prompt) => (;
                             <button;
                         key={prompt}
                     onClick={() => handlePromptSelect(prompt)}

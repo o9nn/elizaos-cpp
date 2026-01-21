@@ -5,7 +5,7 @@
 using tokenMetadataService = _default;
 
 extern array<string> args;
-extern string command;
+extern std::string command;
 void main();
 
 void startContinuousService();

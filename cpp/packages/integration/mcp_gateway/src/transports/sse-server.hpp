@@ -39,10 +39,10 @@ struct Session {
 
 class SSEServerTransport {
   private httpServer: HTTPServer;
-  private sessions = new Map<string, Session>();
+  private sessions = new Map<std::string, Session>();
   private options: Required<SSEServerOptions>;
   private mcpServer?: Server;
-  private messageHandlers = new Map<string, (response: JSONRPCResponse) => void>();
+  private messageHandlers = new Map<std::string, (response: JSONRPCResponse) => void>();
   private logger: Console;
 
   constructor(options: SSEServerOptions, logger: Console = console) {
@@ -87,7 +87,7 @@ class SSEServerTransport {
     // Inject headers into request params for payment middleware
 
     // For now, allow the request to proceed - payment will be checked by the gateway
-    // In the future, we could check here and return 402 immediately
+    // In the std::future, we could check here and return 402 immediately
 
     // Inject headers into message for payment middleware access
 

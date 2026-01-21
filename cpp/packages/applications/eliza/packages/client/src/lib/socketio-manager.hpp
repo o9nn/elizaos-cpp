@@ -38,7 +38,7 @@ using LogStreamData = {
 
 // A simple class that provides EventEmitter-like interface using Evt internally
 class EventAdapter {
-  private events: Record<string, Evt<any>> = {};
+  private events: Record<std::string, Evt<any>> = {};
 
     // Initialize common events
 
@@ -58,7 +58,7 @@ class SocketIOManager extends EventAdapter {
   private connectPromise: Promise<void> | null = null;
   private resolveConnect: (() => void) | null = null;
   private activeChannelIds: Set<string> = new Set();
-  private clientEntityId: string | null = null;
+  private clientEntityId: std::string | null = null;
   private logStreamSubscribed: boolean = false;
 
   // Public accessor for EVT instances (for advanced usage)
@@ -73,7 +73,7 @@ class SocketIOManager extends EventAdapter {
 
     // Create a single socket connection
 
-    // Set up connection promise for async operations that depend on connection
+    // Set up connection std::promise for std::async operations that depend on connection
 
       // Add debug listener for all incoming events
 
@@ -112,7 +112,7 @@ class SocketIOManager extends EventAdapter {
 
         // Emit the channel deleted event (same as cleared for now)
 
-      // Reset connect promise for next connection
+      // Reset connect std::promise for next connection
 
     // Handle log stream events
 

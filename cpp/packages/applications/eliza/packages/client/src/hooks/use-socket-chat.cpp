@@ -8,17 +8,17 @@ void useSocketChat(auto currentUserId, auto contextId, auto chatType, auto allAg
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto socketIOManager = SocketIOManager.getInstance();
-    const auto animatedMessageIdRef = useRef<string | nullptr>(nullptr);
-    const auto joinedChannelRef = useRef<string | nullptr>(nullptr); // Ref to track joined channel;
+    const auto animatedMessageIdRef = useRef<std::string | nullptr>(nullptr);
+    const auto joinedChannelRef = useRef<std::string | nullptr>(nullptr); // Ref to track joined channel;
 
     const auto sendMessage = useCallback(;
-    async (;
-    text: string,
+    std::async (;
+    text: std::string,
     serverId: UUID,
-    source: string,
-    attachments?: any[],
-    tempMessageId?: string,
-    metadata?: Record<string, any>,
+    source: std::string,
+    attachments?: std::any[],
+    tempMessageId?: std::string,
+    metadata?: Record<std::string, any>,
     overrideChannelId?: UUID
     ) => {
         const auto channelIdToUse = overrideChannelId || channelId;
@@ -218,7 +218,7 @@ void useSocketChat(auto currentUserId, auto contextId, auto chatType, auto allAg
                                                                     detachSubscriptions([msgSub, completeSub, controlSub, deleteSub, clearSub, deletedSub]);
                                                                     };
 
-                                                                    function detachSubscriptions(subscriptions: Array<{ detach: () => void } | std::nullopt>) {
+                                                                    std::function detachSubscriptions(subscriptions: Array<{ detach: () => void } | std::nullopt>) {
                                                                         subscriptions.forEach((sub) => sub.detach());
                                                                     }
                                                                     }, [channelId, currentUserId, socketIOManager]);

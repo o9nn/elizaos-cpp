@@ -10,7 +10,7 @@ void TimeDisplay() {
 
         const auto { data, isLoading, error, refetch } = useQuery<TimeResponse>({;
             queryKey: ["currentTime"],
-            queryFn: async () => {
+            queryFn: std::async () => {
                 const auto response = "fetch(" + apiBase + "/api/time";
                 if (!response.ok) {
                     throw std::runtime_error('Failed to fetch time');

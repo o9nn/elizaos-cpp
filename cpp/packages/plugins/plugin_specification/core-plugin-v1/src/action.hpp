@@ -54,8 +54,8 @@ ValidatorV2 toV2Validator(Validator validator);
 /**
  * Converts v2 Action to v1 compatible Action
  * Main differences:
- * - V1 requires similes array, V2 has optional similes
- * - V1 has optional suppressInitialMessage, V2 doesn't
+ * - V1 requires similes array, V2 has std::optional similes
+ * - V1 has std::optional suppressInitialMessage, V2 doesn't
  * - Handler/Validator signatures differ slightly
  */
 Action fromV2Action(ActionV2 actionV2);

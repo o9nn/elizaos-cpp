@@ -16,20 +16,20 @@ public:
     using std::enable_shared_from_this<VoiceManager>::shared_from_this;
     std::shared_ptr<IAgentRuntime> runtime;
 
-    std::shared_ptr<Map<string, object>> userStates = std::make_shared<Map>();
+    std::shared_ptr<Map<std::string, object>> userStates = std::make_shared<Map>();
 
     boolean processingVoice = false;
 
-    any transcriptionTimeout = nullptr;
+    std::any transcriptionTimeout = nullptr;
 
     VoiceManager(std::shared_ptr<IAgentRuntime> runtime);
     virtual void start();
-    virtual void handleUserBuffer(any playerId, any buffer);
+    virtual void handleUserBuffer(std::any playerId, std::any buffer);
     virtual void debouncedProcessTranscription(std::shared_ptr<UUID> playerId);
     virtual void processTranscription(std::shared_ptr<UUID> playerId);
-    virtual any handleMessage(string message, std::shared_ptr<UUID> playerId);
-    virtual void playAudio(any audioBuffer);
-    virtual any getService();
+    virtual std::any handleMessage(std::string message, std::shared_ptr<UUID> playerId);
+    virtual void playAudio(std::any audioBuffer);
+    virtual std::any getService();
 };
 
 #endif

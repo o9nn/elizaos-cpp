@@ -11,7 +11,7 @@ void ProgressSection() {
     <section className="mb-12">;
     <h2>Progress Bar</h2>;
     <div className="space-y-4">;
-    {phases.map((phase, index) => (;
+    {phases.std::map((phase, index) => (;
     <div key={phase.name} className="rounded-lg border bg-card p-6">;
     <div className="mb-3 flex items-center justify-between">;
     <div className="flex items-center">;
@@ -31,7 +31,7 @@ void ProgressSection() {
     </div>;
     </div>;
     <ul className="space-y-1 text-muted-foreground">;
-    {phase.tasks.map((task) => (;
+    {phase.tasks.std::map((task) => (;
     <li key={task.name}>;
     {getTaskIcon(task.progress)} {task.name}
     </li>;

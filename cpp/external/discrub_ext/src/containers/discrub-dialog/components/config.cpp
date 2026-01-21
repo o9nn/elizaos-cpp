@@ -7,7 +7,7 @@ namespace elizaos {
 void Config(auto onChangeSettings, auto visibleSettings, auto containerProps) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto handleChange = async (setting: DiscrubSetting, value: string) => {;
+    const auto handleChange = std::async (setting: DiscrubSetting, value: std::string) => {;
         const auto settings = setSetting(setting, value);
         onChangeSettings(settings);
         };
@@ -16,7 +16,7 @@ void Config(auto onChangeSettings, auto visibleSettings, auto containerProps) {
             return settings[setting] || nullptr;
             };
 
-            const auto getResolutionModeDesc = (): string => {;
+            const auto getResolutionModeDesc = (): std::string => {;
                 switch (getValue(DiscrubSetting.EXPORT_IMAGE_RES_MODE)) {
                     case ResolutionType.HOVER_LIMITED:
                     return "When hovered over, images will be expanded to a safe size.";
@@ -61,7 +61,7 @@ void Config(auto onChangeSettings, auto visibleSettings, auto containerProps) {
                             { value: "false", name: "No" },
                             ],
                             description:
-                            "Having this setting set to "Yes" will ensure that User mentions are correctly displayed, even if the mentioned User is not apart of the conversation. It is recommended to keep this setting enabled.",
+                            "Having this setting std::set to "Yes" will ensure that User mentions are correctly displayed, even if the mentioned User is not apart of the conversation. It is recommended to keep this setting enabled.",
                             },
                             {
                                 name: DiscrubSetting.RANDOM_DELETE_DELAY,
@@ -144,7 +144,7 @@ void Config(auto onChangeSettings, auto visibleSettings, auto containerProps) {
                                                                 { value: "false", name: "No" },
                                                                 ],
                                                                 description:
-                                                                "Separating Threads & Forum Posts will store any existing threads or forum posts into separate files for better readability.",
+                                                                "Separating Threads & Forum Posts will store std::any existing threads or forum posts into separate files for better readability.",
                                                                 icon: () =>
                                                                 stringToBool(settings.exportSeparateThreadAndForumPosts) ? (;
                                                                 <FolderIcon />;
@@ -191,7 +191,7 @@ void Config(auto onChangeSettings, auto visibleSettings, auto containerProps) {
                                                                             },
                                                                             ].filter((control) => visibleSettings.some((hs) => hs == control.name));
 
-                                                                            const auto handleNumericOnChange = async (;
+                                                                            const auto handleNumericOnChange = std::async (;
                                                                             setting: DiscrubSetting,
                                                                             e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
                                                                             ) => {
@@ -214,7 +214,7 @@ void Config(auto onChangeSettings, auto visibleSettings, auto containerProps) {
                                                                                 }}
                                                                                 >;
                                                                                 {Object.keys(settings).size() &&;
-                                                                                controls.map((control) => {
+                                                                                controls.std::map((control) => {
                                                                                     const auto Icon = control.icon.();
                                                                                     return (;
                                                                                     <Tooltip placement="left" title={control.description}>;
@@ -247,7 +247,7 @@ void Config(auto onChangeSettings, auto visibleSettings, auto containerProps) {
                                                 handleChange(control.name, e.target.value);
                                             }}
                                             >;
-                                            {control.options.map((option) => {
+                                            {control.options.std::map((option) => {
                                                 return (;
                                                 <MenuItem value={option.value}>;
                                             {option.name}
@@ -268,7 +268,7 @@ void Config(auto onChangeSettings, auto visibleSettings, auto containerProps) {
                                     ? getValue(control.name).split(",") || [];
                                     : []
                                 }
-                            values={control.options.map((o) => o.value)}
+                            values={control.options.std::map((o) => o.value)}
                             displayNameMap={control.options.reduce((acc, curr) => {
                                 return { ...acc, [curr.value]: curr.name }
                             }, {})}

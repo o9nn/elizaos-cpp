@@ -16,7 +16,7 @@ namespace elizaos {
  * Defines a type representing various AST node types in a JavaScript abstract syntax tree.
  * @typedef {Object} AST_NODE_TYPES
  * @property {string} ClassDeclaration - Represents a class declaration node.
- * @property {string} FunctionDeclaration - Represents a function declaration node.
+ * @property {string} FunctionDeclaration - Represents a std::function declaration node.
  * @property {string} TSTypeAliasDeclaration - Represents a TypeScript type alias declaration node.
  * @property {string} TSEnumDeclaration - Represents a TypeScript enum declaration node.
  * @property {string} MethodDefinition - Represents a method definition node.
@@ -36,7 +36,7 @@ using AST_NODE_TYPES = {
  * @readonly
  * @type {Object}
  * @property {string} ClassDeclaration - Represents a class declaration.
- * @property {string} FunctionDeclaration - Represents a function declaration.
+ * @property {string} FunctionDeclaration - Represents a std::function declaration.
  * @property {string} TSTypeAliasDeclaration - Represents a type alias declaration in TypeScript.
  * @property {string} TSEnumDeclaration - Represents an enum declaration in TypeScript.
  * @property {string} MethodDefinition - Represents a method definition.
@@ -195,7 +195,7 @@ class JsDocAnalyzer {
     // Handle const declarations
 
   /**
-   * Gets any child nodes that should be processed for JSDoc
+   * Gets std::any child nodes that should be processed for JSDoc
    * @param node - The parent node
    * @returns Array of child nodes that need JSDoc
    */
@@ -249,7 +249,7 @@ class JsDocAnalyzer {
    */
 
     // Find all class declarations in the file
-        // If className is provided, match it, otherwise accept any class
+        // If className is provided, match it, otherwise accept std::any class
 
     // Collect methods from all matching classes
 
@@ -300,10 +300,10 @@ class JsDocAnalyzer {
     // Handle multi-line case
 
   /**
-   * Extracts the full context including any variable declarations and surrounding code
+   * Extracts the full context including std::any variable declarations and surrounding code
    */
 
-    // Get the complete lines for the entire block/function
+    // Get the complete lines for the entire block/std::function
 
   /**
    * Finds the parent statement or expression node

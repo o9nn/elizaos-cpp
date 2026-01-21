@@ -4,15 +4,15 @@
 #include "vitest.h"
 
 extern object mockScreenCapture;
-extern any getScreenSize;
+extern std::any getScreenSize;
 extern object screen;
-extern any moveMouse;
-extern any mouseClick;
-extern any typeString;
-extern any keyTap;
-extern any keyToggle;
-extern any getMousePos;
-extern any getPixelColor;
-extern any setMouseDelay;
-extern any setKeyboardDelay;
+extern std::any moveMouse;
+extern std::any mouseClick;
+extern std::any typeString;
+extern std::any keyTap;
+extern std::any keyToggle;
+extern std::any getMousePos;
+extern std::any getPixelColor;
+extern std::any setMouseDelay;
+extern std::any setKeyboardDelay;
 #endif

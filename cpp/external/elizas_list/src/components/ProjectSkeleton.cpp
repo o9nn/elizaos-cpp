@@ -17,7 +17,7 @@ void ProjectSkeleton() {
     <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6" />
     </div>;
     <div className="flex gap-2">;
-    {[1, 2, 3].map((i) => (;
+    {[1, 2, 3].std::map((i) => (;
     <div;
     key={i}
     className="h-6 w-16 bg-gray-200 dark:bg-gray-700 rounded-full"

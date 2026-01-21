@@ -20,12 +20,12 @@ void searchDir(const std::string& searchTerm, std::string dir = "./") {
             // Use grep to search files (excluding hidden files)
             const auto grepCmd = "find \"" + absDir + "\" -type f ! -path "*/.*" -exec grep -nIH -- \"" + searchTerm + "\" {} + 2>/dev/nullptr | cut -d: -f1 | sort | uniq -c";
 
-            auto matches: string;
+            auto matches: std::string;
             try {
                 matches = execSync(grepCmd, { encoding: "utf-8", stdio: ["pipe", "pipe", "ignore"] });
                 } catch (error: unknown) {
                     // grep returns non-zero when no matches found
-                    const auto execError = error as { status?: number; stdout?: string };
+                    const auto execError = error as { status?: number; stdout?: std::string };
                     if (execError.status == 1 || !execError.stdout) {
                         std::cout << "No matches found for \"" + searchTerm + "\" in " + absDir << std::endl;
                         return;

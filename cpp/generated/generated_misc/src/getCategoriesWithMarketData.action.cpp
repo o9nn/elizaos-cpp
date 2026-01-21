@@ -27,13 +27,13 @@ std::shared_ptr<Action> getCategoriesWithMarketDataAction = object{
         {
             auto svc = as<any>(runtime->getService(CoinGeckoService::serviceType));
             if (!svc) {
-                throw any(std::make_shared<Error>(std::string("CoinGeckoService not available")));
+                throw std::any(std::make_shared<Error>(std::string("CoinGeckoService not available")));
             }
             auto composedState = std::async([=]() { runtime->composeState(message, array<string>{ std::string("ACTION_STATE") }, true); });
             auto params = OR((composedState->data->actionParams), (object{}));
             auto validOrders = as<std::shared_ptr<const>>(array<std::shared_ptr<const>>{ std::string("market_cap_desc"), std::string("market_cap_asc"), std::string("name_desc"), std::string("name_asc"), std::string("market_cap_change_24h_desc"), std::string("market_cap_change_24h_asc") });
             auto orderRaw = OR((params["order"]["trim"]()["toLowerCase"]()), (std::string("market_cap_desc")));
-            auto order = (validOrders->includes(as<OrderType>(orderRaw))) ? any((as<OrderType>(orderRaw))) : any(std::string("market_cap_desc"));
+            auto order = (validOrders->includes(as<OrderType>(orderRaw))) ? std::any((as<OrderType>(orderRaw))) : std::any(std::string("market_cap_desc"));
             logger->info(std::string("[GET_CATEGORIES_WITH_MARKET_DATA] Fetching categories with order: ") + order + string_empty);
             auto inputParams = object{
                 object::pair{std::string("order"), std::string("order")}
@@ -44,7 +44,7 @@ std::shared_ptr<Action> getCategoriesWithMarketDataAction = object{
                 std::async([=]() { callback(object{
                     object::pair{std::string("text"), std::string("text")}, 
                     object::pair{std::string("actions"), array<string>{ std::string("GET_CATEGORIES_WITH_MARKET_DATA") }}, 
-                    object::pair{std::string("content"), as<Record<string, any>>(categoriesData)}, 
+                    object::pair{std::string("content"), as<Record<std::string, any>>(categoriesData)}, 
                     object::pair{std::string("source"), message->content->source}
                 }); });
             }
@@ -56,7 +56,7 @@ std::shared_ptr<Action> getCategoriesWithMarketDataAction = object{
                 object::pair{std::string("input"), inputParams}
             });
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             auto msg = (is<Error>(error)) ? error->message : String(error);
             logger->error(std::string("[GET_CATEGORIES_WITH_MARKET_DATA] Action failed: ") + msg + string_empty);

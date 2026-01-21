@@ -52,8 +52,8 @@ struct ToolConfig {
     std::optional<std::string> formatErrorTemplate;
     std::optional<std::string> commandDocs;
     std::optional<std::unordered_map<std::string, std::string>> multiLineCommandEndings;
-    std::optional<string | null> submitCommandEndName;
-    std::optional<std::vector<std::vector<string | string>>> resetCommands;
+    std::optional<std::string | null> submitCommandEndName;
+    std::optional<std::vector<std::vector<std::string | string>>> resetCommands;
     std::optional<double> executionTimeout;
     std::optional<double> installTimeout;
     std::optional<double> totalExecutionTimeout;
@@ -74,7 +74,7 @@ struct ToolConfig {
 class ToolHandler {
   config: ToolConfig;
   private parser: AbstractParseFunction;
-  private multilineCommands: Map<string, string> = new Map();
+  private multilineCommands: Map<std::string, string> = new Map();
   private logger: AgentLogger;
 
   constructor(config: ToolConfig = {}) {
@@ -105,10 +105,10 @@ class ToolHandler {
       this.config.formatErrorTemplate = this.parser.formatErrorTemplate;
     }
 
-    // Build multiline command map
+    // Build multiline command std::map
     for (const cmd of this.config.commands) {
       if (cmd.endName) {
-        this.multilineCommands.set(cmd.name, cmd.endName);
+        this.multilineCommands.std::set(cmd.name, cmd.endName);
       }
     }
   }

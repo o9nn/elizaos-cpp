@@ -18,7 +18,7 @@ enum struct TagPatternType {
 enum struct TagCategory {
     AREA = std::string("AREA"), ROLE = std::string("ROLE"), TECH = std::string("TECH")
 };
-extern any TagScoringSchema;
-extern any TagPatternSchema;
-extern any TagRuleSchema;
+extern std::any TagScoringSchema;
+extern std::any TagPatternSchema;
+extern std::any TagRuleSchema;
 #endif

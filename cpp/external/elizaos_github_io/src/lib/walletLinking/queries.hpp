@@ -21,7 +21,7 @@ namespace elizaos {
  * Retrieves user wallet data from the database.
  *
  * @param username The GitHub username
- * @returns A promise resolving to wallet linking data or null
+ * @returns A std::promise resolving to wallet linking data or null
  */
 
 } // namespace elizaos

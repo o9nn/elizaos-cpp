@@ -42,7 +42,7 @@ IAgentRuntime createMockAgentRuntime(std::optional<std::optional<IAgentRuntime>>
                 registerService: jest.fn(() => Promise.resolve()),
                 registerDatabaseAdapter: jest.fn(),
                 setSetting: jest.fn(),
-                getSetting: jest.fn((key: string) => overrides.character.settings.[key]),
+                getSetting: jest.fn((key: std::string) => overrides.character.settings.[key]),
                 getConversationLength: jest.fn(() => 10),
                 processActions: jest.fn(() => Promise.resolve()),
                 evaluate: jest.fn(() => Promise.resolve([][])),
@@ -306,8 +306,8 @@ std::string createMockRequest(std::optional<std::optional<std::string>> override
         url: "/test",
         path: "/test",
         ip: "127.0.0.1",
-        get: jest.fn((_header: string) => ""),
-        header: jest.fn((_header: string) => ""),
+        get: jest.fn((_header: std::string) => ""),
+        header: jest.fn((_header: std::string) => ""),
         accepts: jest.fn(),
         acceptsCharsets: jest.fn(),
         acceptsEncodings: jest.fn(),
@@ -336,7 +336,7 @@ std::string createMockResponse() {
         cookie: jest.fn().mockReturnThis(),
         clearCookie: jest.fn().mockReturnThis(),
         attachment: jest.fn().mockReturnThis(),
-        sendFile: jest.fn((_path: string, options?: any, callback?: any) => {
+        sendFile: jest.fn((_path: std::string, options?: std::any, callback?: std::any) => {
             if (typeof options == 'function') {
                 callback = options;
             }

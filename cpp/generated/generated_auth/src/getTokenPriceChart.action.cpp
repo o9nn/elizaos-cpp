@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-coingecko/src/actions/getTokenPriceChart.action.h"
 
-string formatMarketCap(double value)
+std::string formatMarketCap(double value)
 {
     if (value >= 1000000000) return string_empty + (value / 1000000000)->toFixed(2) + std::string("B");
     if (value >= 1000000) return string_empty + (value / 1000000)->toFixed(2) + std::string("M");
@@ -46,7 +46,7 @@ std::shared_ptr<Action> getTokenPriceChartAction = object{
         {
             auto svc = as<any>(runtime->getService(CoinGeckoService::serviceType));
             if (!svc) {
-                throw any(std::make_shared<Error>(std::string("CoinGeckoService not available")));
+                throw std::any(std::make_shared<Error>(std::string("CoinGeckoService not available")));
             }
             auto composedState = std::async([=]() { runtime->composeState(message, array<string>{ std::string("ACTION_STATE") }, true); });
             auto params = OR((composedState->data->actionParams), (object{}));
@@ -143,13 +143,13 @@ std::shared_ptr<Action> getTokenPriceChartAction = object{
             }
             auto summary = std::string("Price chart data for ") + (OR((chartData["token_symbol"]), (tokenRaw))) + std::string(" over ") + timeframe + std::string(":\
 - Current Price: $") + (OR((chartData["current_price"]["toFixed"](6)), (std::string("N/A")))) + std::string("\
-- Price Change: ") + (priceChange) ? any(string_empty + (priceChange["value"] >= 0) ? std::string("+") : string_empty + std::string("$") + priceChange["value"]->toFixed(6) + std::string(" (") + (priceChange["percentage"] >= 0) ? std::string("+") : string_empty + string_empty + priceChange["percentage"]->toFixed(2) + std::string("%)")) : any(std::string("N/A")) + std::string("\
-- Current Market Cap: ") + (chartData["current_market_cap"]) ? any(std::string("$") + formatMarketCap(chartData["current_market_cap"]) + string_empty) : any(std::string("N/A")) + std::string("\
-- Market Cap Change: ") + (marketCapChange) ? any(string_empty + (marketCapChange["value"] >= 0) ? std::string("+") : string_empty + std::string("$") + formatMarketCap(Math->abs(marketCapChange["value"])) + std::string(" (") + (marketCapChange["percentage"] >= 0) ? std::string("+") : string_empty + string_empty + marketCapChange["percentage"]->toFixed(2) + std::string("%)")) : any(std::string("N/A")) + std::string("\
+- Price Change: ") + (priceChange) ? std::any(string_empty + (priceChange["value"] >= 0) ? std::string("+") : string_empty + std::string("$") + priceChange["value"]->toFixed(6) + std::string(" (") + (priceChange["percentage"] >= 0) ? std::string("+") : string_empty + string_empty + priceChange["percentage"]->toFixed(2) + std::string("%)")) : std::any(std::string("N/A")) + std::string("\
+- Current Market Cap: ") + (chartData["current_market_cap"]) ? std::any(std::string("$") + formatMarketCap(chartData["current_market_cap"]) + string_empty) : std::any(std::string("N/A")) + std::string("\
+- Market Cap Change: ") + (marketCapChange) ? std::any(string_empty + (marketCapChange["value"] >= 0) ? std::string("+") : string_empty + std::string("$") + formatMarketCap(Math->abs(marketCapChange["value"])) + std::string(" (") + (marketCapChange["percentage"] >= 0) ? std::string("+") : string_empty + string_empty + marketCapChange["percentage"]->toFixed(2) + std::string("%)")) : std::any(std::string("N/A")) + std::string("\
 - Data Points: ") + chartData["data_points"]["length"] + std::string(" price points\
 - Timeframe: ") + chartData["timeframe"] + std::string("\
 \
-Please analyze this price chart data and provide insights about the token's price movement, market cap trends, and any notable patterns you observe.");
+Please analyze this price chart data and provide insights about the token's price movement, market cap trends, and std::any notable patterns you observe.");
             auto text = summary;
             if (callback) {
                 std::async([=]() { callback(object{
@@ -179,7 +179,7 @@ Please analyze this price chart data and provide insights about the token's pric
                 object::pair{std::string("input"), inputParams}
             });
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             auto msg = (is<Error>(error)) ? error->message : String(error);
             logger->error(std::string("[GET_TOKEN_PRICE_CHART] Action failed: ") + msg + string_empty);

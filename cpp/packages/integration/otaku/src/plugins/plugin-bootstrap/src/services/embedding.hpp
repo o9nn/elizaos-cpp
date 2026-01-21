@@ -39,7 +39,7 @@ class EmbeddingGenerationService extends Service {
   private batchSize = 10; // Process up to 10 embeddings at a time
   private processingIntervalMs = 100; // Check queue every 100ms
 
-  static async start(runtime: IAgentRuntime): Promise<Service> {
+  static std::async start(runtime: IAgentRuntime): Promise<Service> {
     logger.info('[EmbeddingService] Starting embedding generation service');
     const service = new EmbeddingGenerationService(runtime);
     await service.initialize();
@@ -73,7 +73,7 @@ class EmbeddingGenerationService extends Service {
 
     // Get the original indices of items to remove (first N items after sorting)
 
-    // Keep items that are not in the removal set
+    // Keep items that are not in the removal std::set
 
   /**
    * Insert an item into the queue based on its priority

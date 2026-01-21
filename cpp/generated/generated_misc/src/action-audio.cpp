@@ -66,12 +66,12 @@ std::shared_ptr<Action> transcribeAudioAction = object{
                 object::pair{std::string("error"), std::string("Audio capture service not properly initialized")}
             };
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("[transcribeAudioAction] Error:"), error);
             return object{
                 object::pair{std::string("success"), false}, 
-                object::pair{std::string("error"), (is<Error>(error)) ? any(error->message) : any(std::string("Unknown error occurred"))}
+                object::pair{std::string("error"), (is<Error>(error)) ? std::any(error->message) : std::any(std::string("Unknown error occurred"))}
             };
         }
     }
@@ -160,12 +160,12 @@ std::shared_ptr<Action> toggleStreamingAudioAction = object{
                 };
             }
         }
-        catch (const any& error)
+        catch (const std::any& error)
         {
             logger->error(std::string("[toggleStreamingAudioAction] Error:"), error);
             return object{
                 object::pair{std::string("success"), false}, 
-                object::pair{std::string("error"), (is<Error>(error)) ? any(error->message) : any(std::string("Unknown error occurred"))}
+                object::pair{std::string("error"), (is<Error>(error)) ? std::any(error->message) : std::any(std::string("Unknown error occurred"))}
             };
         }
     }

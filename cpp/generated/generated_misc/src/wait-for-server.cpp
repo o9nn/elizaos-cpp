@@ -1,13 +1,13 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/game/cypress/support/wait-for-server.h"
 
-std::function<any(double)> waitForElizaServer = [=](auto maxRetries = 36) mutable
+std::function<std::any(double)> waitForElizaServer = [=](auto maxRetries = 36) mutable
 {
     cy->log(std::string("🔄 Waiting for ElizaOS AgentServer to be ready..."));
     shared waitForServer = [=](auto retries = maxRetries) mutable
     {
         if (retries <= 0) {
             cy->log(std::string("❌ Server failed to respond after maximum retries"));
-            throw any(std::make_shared<Error>(std::string("Server failed to respond after ") + (maxRetries * 5) + std::string(" seconds")));
+            throw std::any(std::make_shared<Error>(std::string("Server failed to respond after ") + (maxRetries * 5) + std::string(" seconds")));
         }
         return cy->request(object{
             object::pair{std::string("method"), std::string("GET")}, 
@@ -35,9 +35,9 @@ std::function<any(double)> waitForElizaServer = [=](auto maxRetries = 36) mutabl
     };
     return waitForServer();
 };
-std::function<any(double)> waitForElizaServerOptional = [=](auto maxRetries = 36) mutable
+std::function<std::any(double)> waitForElizaServerOptional = [=](auto maxRetries = 36) mutable
 {
-    cy->log(std::string("🔄 Waiting for ElizaOS AgentServer (optional)..."));
+    cy->log(std::string("🔄 Waiting for ElizaOS AgentServer (std::optional)..."));
     shared waitForServer = [=](auto retries = maxRetries) mutable
     {
         if (retries <= 0) {

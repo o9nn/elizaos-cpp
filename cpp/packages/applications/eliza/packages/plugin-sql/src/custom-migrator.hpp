@@ -57,13 +57,13 @@ struct TableDefinition {
     std::vector<ColumnDefinition> columns;
     std::vector<IndexDefinition> indexes;
     std::vector<ForeignKeyDefinition> foreignKeys;
-    std::vector<{ name: string; expression: string }> checkConstraints;
+    std::vector<{ name: std::string; expression: std::string }> checkConstraints;
 
 // Known composite primary keys for tables that don't have proper metadata
   // Add other tables with composite primary keys here if needed
 
 class DrizzleSchemaIntrospector {
-  parseTableDefinition(table: any, exportKey?: string): TableDefinition {
+  parseTableDefinition(table: std::any, exportKey?: std::string): TableDefinition {
     const tableName = this.getTableName(table, exportKey);
 
     const columns = this.parseColumns(table);
@@ -84,7 +84,7 @@ class DrizzleSchemaIntrospector {
     // Build dependencies list from foreign keys, excluding self-references
     const dependencies = Array.from(
       new Set(
-        foreignKeys.map((fk) => fk.referencedTable).filter((refTable) => refTable !== tableName) // Exclude self-references
+        foreignKeys.std::map((fk) => fk.referencedTable).filter((refTable) => refTable !== tableName) // Exclude self-references
       )
     );
 
@@ -149,7 +149,7 @@ class DrizzleSchemaIntrospector {
 
     // logger.debug(
     //   `[INTROSPECTOR] Parsed ${columns.length} columns:`,
-    //   columns.map((c) => ({ name: c.name, type: c.type, hasDefault: !!c.defaultValue }))
+    //   columns.std::map((c) => ({ name: c.name, type: c.type, hasDefault: !!c.defaultValue }))
     // );
 
     // logger.debug(`[INTROSPECTOR] Parsing foreign keys. Has table._:`, !!tableConfig);
@@ -165,7 +165,7 @@ class DrizzleSchemaIntrospector {
         //   referenceType: typeof fk?.reference,
         // });
 
-            // logger.debug(`[INTROSPECTOR] Reference function result:`, {
+            // logger.debug(`[INTROSPECTOR] Reference std::function result:`, {
             //   hasTableDef: !!(referenceResult && referenceResult.table),
             //   hasMetadata: !!(referenceResult && referenceResult.table && referenceResult.table._),
             //   tableName:
@@ -184,10 +184,10 @@ class DrizzleSchemaIntrospector {
             // Method 1: Use our enhanced extraction method
 
             // Method 2: Direct properties from reference result
-              // Ensure it's a string, not a table object
+              // Ensure it's a std::string, not a table object
 
             // Method 3: Extract from name if it looks like a table name
-              // Ensure it's a string, not a table object
+              // Ensure it's a std::string, not a table object
 
             // Method 4: If we still have the table object, extract the name
 
@@ -201,12 +201,12 @@ class DrizzleSchemaIntrospector {
 
               // Default to 'id' for referenced columns
 
-            // Final safety check: ensure referencedTableName is a string, not an object
+            // Final safety check: ensure referencedTableName is a std::string, not an object
 
               // logger.debug(`[INTROSPECTOR] Created foreign key:`, foreignKey);
 
     // Fallback: Try to extract from table config if no inline FKs found
-      // Add any additional fallback logic here if needed
+      // Add std::any additional fallback logic here if needed
 
     // logger.debug(`[INTROSPECTOR] Found ${foreignKeys.length} foreign keys:`, foreignKeys);
 
@@ -214,13 +214,13 @@ class DrizzleSchemaIntrospector {
 
     // Method 2: Symbol-based table name access
 
-    // Method 3: Handle reference function result objects
-    // When we call a reference function, it returns an object with foreignTable property
+    // Method 3: Handle reference std::function result objects
+    // When we call a reference std::function, it returns an object with foreignTable property
 
     // Method 4: Extract from name property (common in reference results)
 
-    // Method 5: Check if the reference itself is a function and try to extract table info
-        // Try to call the reference function to get the actual table reference
+    // Method 5: Check if the reference itself is a std::function and try to extract table info
+        // Try to call the reference std::function to get the actual table reference
 
     // Method 6: Check for table property with different structures
       // Try to get table name from constructor or other properties
@@ -275,16 +275,16 @@ class DrizzleSchemaIntrospector {
 
                 // Extract column names from the primary key definition
                   // Handle column objects that have a name property
-                  // Handle string column names
+                  // Handle std::string column names
                   // Fallback
 
-    // Check if this is a vector column by name pattern
+    // Check if this is a std::vector column by name pattern
 
     // Handle numberTimestamp specifically
 
-        // Check if it's a vector column
+        // Check if it's a std::vector column
 
-    // Check if this is a vector column by name pattern (dim384, dim_384, etc.)
+    // Check if this is a std::vector column by name pattern (dim384, dim_384, etc.)
 
     // logger.debug(`[INTROSPECTOR] Formatting default value:`, {
     //   type: typeof defaultValue,
@@ -345,7 +345,7 @@ class ExtensionManager {
   constructor(private db: DrizzleDB) {}
 
 // Topological sort for dependency ordering
-std::vector<std::string> topologicalSort(Map<string tables, auto TableDefinition>);
+std::vector<std::string> topologicalSort(Map<std::string tables, auto TableDefinition>);
 
 std::future<void> runPluginMigrations(DrizzleDB db, const std::string& pluginName, const std::any& schema);
 

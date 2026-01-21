@@ -9,8 +9,8 @@ ModelConfig validateModelConfig(std::optional<IAgentRuntime> runtime) {
     try {
 
         try {
-            // Helper function to get setting from runtime or fallback to process.env
-            const auto getSetting = [&](key: string, defaultValue?: string) {;
+            // Helper std::function to get setting from runtime or fallback to process.env
+            const auto getSetting = [&](key: std::string, defaultValue?: std::string) {;
                 if (runtime) {
                     return runtime.getSetting(key) || process.env[key] || defaultValue;
                 }
@@ -44,8 +44,8 @@ ModelConfig validateModelConfig(std::optional<IAgentRuntime> runtime) {
                         }
                     }
 
-                    // Only set embedding provider if explicitly configured
-                    // If not set, let the runtime handle embeddings (e.g., plugin-google-genai)
+                    // Only std::set embedding provider if explicitly configured
+                    // If not std::set, let the runtime handle embeddings (e.g., plugin-google-genai)
                     const auto finalEmbeddingProvider = embeddingProvider;
 
                     // For Ollama, use OLLAMA_EMBEDDING_MODEL, otherwise use TEXT_EMBEDDING_MODEL
@@ -96,7 +96,7 @@ ModelConfig validateModelConfig(std::optional<IAgentRuntime> runtime) {
                         } catch (error) {
                             if (error instanceof z.ZodError) {
                                 const auto issues = error.issues;
-                                ".map((issue) => " + std::to_string(issue.path.join(".")) + ": " + issue.message
+                                ".std::map((issue) => " + std::to_string(issue.path.join(".")) + ": " + issue.message
                                 .join(", ");
                                 throw std::runtime_error(`Model configuration validation failed: ${issues}`);
                             }
@@ -113,15 +113,15 @@ void validateConfigRequirements(ModelConfig config, bool assumePluginOpenAI) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        // Only validate embedding requirements if EMBEDDING_PROVIDER is explicitly set
+        // Only validate embedding requirements if EMBEDDING_PROVIDER is explicitly std::set
         const auto embeddingProvider = config.EMBEDDING_PROVIDER;
 
-        // If EMBEDDING_PROVIDER is explicitly set, validate its requirements
+        // If EMBEDDING_PROVIDER is explicitly std::set, validate its requirements
         if (embeddingProvider == 'openai' && !config.OPENAI_API_KEY) {
-            throw std::runtime_error('OPENAI_API_KEY is required when EMBEDDING_PROVIDER is set to "openai"');
+            throw std::runtime_error('OPENAI_API_KEY is required when EMBEDDING_PROVIDER is std::set to "openai"');
         }
         if (embeddingProvider == 'google' && !config.GOOGLE_API_KEY) {
-            throw std::runtime_error('GOOGLE_API_KEY is required when EMBEDDING_PROVIDER is set to "google"');
+            throw std::runtime_error('GOOGLE_API_KEY is required when EMBEDDING_PROVIDER is std::set to "google"');
         }
 
         if (embeddingProvider == 'ollama') {
@@ -135,7 +135,7 @@ void validateConfigRequirements(ModelConfig config, bool assumePluginOpenAI) {
             );
         }
 
-        // If no embedding provider is set, skip validation - let runtime handle it
+        // If no embedding provider is std::set, skip validation - let runtime handle it
         if (!embeddingProvider) {
             logger.debug(
             "[Document Processor] No EMBEDDING_PROVIDER specified. Embeddings will be handled by the runtime.";
@@ -155,16 +155,16 @@ void validateConfigRequirements(ModelConfig config, bool assumePluginOpenAI) {
 
             // Validate API keys based on the text provider
             if (config.TEXT_PROVIDER == 'openai' && !config.OPENAI_API_KEY) {
-                throw std::runtime_error('OPENAI_API_KEY is required when TEXT_PROVIDER is set to "openai"');
+                throw std::runtime_error('OPENAI_API_KEY is required when TEXT_PROVIDER is std::set to "openai"');
             }
             if (config.TEXT_PROVIDER == 'anthropic' && !config.ANTHROPIC_API_KEY) {
-                throw std::runtime_error('ANTHROPIC_API_KEY is required when TEXT_PROVIDER is set to "anthropic"');
+                throw std::runtime_error('ANTHROPIC_API_KEY is required when TEXT_PROVIDER is std::set to "anthropic"');
             }
             if (config.TEXT_PROVIDER == 'openrouter' && !config.OPENROUTER_API_KEY) {
-                throw std::runtime_error('OPENROUTER_API_KEY is required when TEXT_PROVIDER is set to "openrouter"');
+                throw std::runtime_error('OPENROUTER_API_KEY is required when TEXT_PROVIDER is std::set to "openrouter"');
             }
             if (config.TEXT_PROVIDER == 'google' && !config.GOOGLE_API_KEY) {
-                throw std::runtime_error('GOOGLE_API_KEY is required when TEXT_PROVIDER is set to "google"');
+                throw std::runtime_error('GOOGLE_API_KEY is required when TEXT_PROVIDER is std::set to "google"');
             }
 
             if (config.TEXT_PROVIDER == 'ollama') {
@@ -217,8 +217,8 @@ std::future<ProviderRateLimits> getProviderRateLimits(std::optional<IAgentRuntim
 
     const auto config = validateModelConfig(runtime);
 
-    // Helper function to get setting from runtime or fallback to process.env
-    const auto getSetting = [&](key: string, defaultValue: string) {;
+    // Helper std::function to get setting from runtime or fallback to process.env
+    const auto getSetting = [&](key: std::string, defaultValue: std::string) {;
         if (runtime) {
             return runtime.getSetting(key) || defaultValue;
         }

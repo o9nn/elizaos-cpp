@@ -8,11 +8,11 @@ class ChatStreamData;
 class Citation : public object, public std::enable_shared_from_this<Citation> {
 public:
     using std::enable_shared_from_this<Citation>::shared_from_this;
-    string url;
+    std::string url;
 
-    string content;
+    std::string content;
 
-    string title;
+    std::string title;
 };
 
 class ChatStreamData : public object, public std::enable_shared_from_this<ChatStreamData> {

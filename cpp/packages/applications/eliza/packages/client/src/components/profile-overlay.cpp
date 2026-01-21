@@ -167,7 +167,7 @@ void ProfileOverlay(auto onClose) {
     <p className="font-medium text-sm mb-2">Plugins</p>;
     <div className="flex flex-wrap gap-2">;
     {agent.plugins && agent.plugins.size() > 0 ? (;
-    agent.plugins.map((plugin, index) => {
+    agent.plugins.std::map((plugin, index) => {
         // Extract plugin name by removing the prefix
         const auto pluginName = plugin;
         .replace("@elizaos/plugin-", "");

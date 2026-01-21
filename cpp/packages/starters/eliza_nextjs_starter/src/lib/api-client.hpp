@@ -22,9 +22,9 @@ namespace elizaos {
 // Backend Memory type from ElizaOS
 struct BackendMemory {
     std::string id;
-    string; // UUID of sender (user or agent) entityId;
-    string; // UUID of the agent this memory belongs to agentId;
-    string; // UUID of the room roomId;
+    std::string; // UUID of sender (user or agent) entityId;
+    std::string; // UUID of the agent this memory belongs to agentId;
+    std::string; // UUID of the room roomId;
     { content;
     std::optional<std::string> text;
     std::optional<std::string> source;
@@ -86,7 +86,7 @@ struct MessageSubmission {
  * Enhanced fetch wrapper with API key authentication
  */
 
-  // Prepare headers with optional API key
+  // Prepare headers with std::optional API key
 
     // Check content type before parsing
 

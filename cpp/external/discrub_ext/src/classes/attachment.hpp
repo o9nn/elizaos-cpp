@@ -14,32 +14,32 @@ namespace elizaos {
 // https://discord.com/developers/docs/resources/channel#attachment-object
 class Attachment {
   id: Snowflake;
-  filename: string;
-  description?: string;
-  content_type?: string;
+  filename: std::string;
+  description?: std::string;
+  content_type?: std::string;
   size: number;
-  url: string;
-  proxy_url: string;
+  url: std::string;
+  proxy_url: std::string;
   height?: number | Maybe;
   width?: number | Maybe;
   ephemeral?: boolean;
   duration_secs?: number;
-  waveform?: string;
+  waveform?: std::string;
   flags?: number;
 
   constructor(opts: {
     id: Snowflake;
-    filename: string;
-    description?: string;
-    content_type?: string;
+    filename: std::string;
+    description?: std::string;
+    content_type?: std::string;
     size: number;
-    url: string;
-    proxy_url: string;
+    url: std::string;
+    proxy_url: std::string;
     height?: number | Maybe;
     width?: number | Maybe;
     ephemeral?: boolean;
     duration_secs?: number;
-    waveform?: string;
+    waveform?: std::string;
     flags?: number;
   }) {
     this.id = opts.id;

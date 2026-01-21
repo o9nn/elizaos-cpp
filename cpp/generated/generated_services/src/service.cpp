@@ -1,7 +1,7 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/communityInvestor/tests/service.h"
 
-any testUserIdGlobalForService = asUUID(uuidv4());
-std::function<any(any, any, any)> createFullMockComponentForSvcTest = [=](auto userId, auto profileData, auto runtime) mutable
+std::any testUserIdGlobalForService = asUUID(uuidv4());
+std::function<std::any(std::any, std::any, std::any)> createFullMockComponentForSvcTest = [=](auto userId, auto profileData, auto runtime) mutable
 {
     return (object{
         object::pair{std::string("id"), asUUID(uuidv4())}, 
@@ -15,7 +15,7 @@ std::function<any(any, any, any)> createFullMockComponentForSvcTest = [=](auto u
         object::pair{std::string("data"), profileData}
     });
 };
-std::function<any(string, double, any, any, any, double, any)> createMockRecForSvcTest = [=](auto id, auto timestamp, P2 type, auto conviction, auto userIdToSet, auto priceAtRec = undefined, auto metric = undefined) mutable
+std::function<std::any(std::string, double, std::any, std::any, std::any, double, std::any)> createMockRecForSvcTest = [=](auto id, auto timestamp, P2 type, auto conviction, auto userIdToSet, auto priceAtRec = undefined, auto metric = undefined) mutable
 {
     return (object{
         object::pair{std::string("id"), asUUID(uuidv4())}, 
@@ -58,10 +58,10 @@ array<std::shared_ptr<TestCase>> calculateUserTrustScoreTestCases = array<std::s
                     return true;
                 };
                 std::async([=]() { service->calculateUserTrustScore(testUserIdGlobalForService, runtime); });
-                if (!createdComp) throw any(std::make_shared<Error>(std::string("createComponent was not called or did not set createdComp")));
+                if (!createdComp) throw std::any(std::make_shared<Error>(std::string("createComponent was not called or did not std::set createdComp")));
                 auto data = as<std::shared_ptr<UserTrustProfile>>(createdComp["data"]);
                 if (OR((data->trustScore != 0), (data->recommendations->length != 0))) {
-                    throw any(std::make_shared<Error>(std::string("New user score expected 0, got ") + data->trustScore + string_empty));
+                    throw std::any(std::make_shared<Error>(std::string("New user score expected 0, got ") + data->trustScore + string_empty));
                 }
                 logger->info(std::string("Service.calculateUserTrustScore: New user score 0 - Passed"));
             }
@@ -142,9 +142,9 @@ array<std::shared_ptr<TestCase>> calculateUserTrustScoreTestCases = array<std::s
                     });
                 };
                 std::async([=]() { service->calculateUserTrustScore(testUserIdGlobalForService, runtime); });
-                if (!updatedComp) throw any(std::make_shared<Error>(std::string("updateComponent not called")));
+                if (!updatedComp) throw std::any(std::make_shared<Error>(std::string("updateComponent not called")));
                 auto updatedData = as<std::shared_ptr<UserTrustProfile>>(updatedComp["data"]);
-                if (Math->abs(updatedData->trustScore - 20) > 0.01) throw any(std::make_shared<Error>(std::string("Expected score ~20.0, got ") + updatedData->trustScore + string_empty));
+                if (Math->abs(updatedData->trustScore - 20) > 0.01) throw std::any(std::make_shared<Error>(std::string("Expected score ~20.0, got ") + updatedData->trustScore + string_empty));
                 logger->info(std::string("Service.calculateUserTrustScore: Single positive BUY - Passed"));
             }
             catch (...)
@@ -210,9 +210,9 @@ array<std::shared_ptr<TestCase>> calculateUserTrustScoreTestCases = array<std::s
                     }));
                 };
                 std::async([=]() { service->calculateUserTrustScore(testUserIdGlobalForService, runtime); });
-                if (!updatedComp) throw any(std::make_shared<Error>(std::string("updateComponent not called")));
+                if (!updatedComp) throw std::any(std::make_shared<Error>(std::string("updateComponent not called")));
                 auto updatedData = as<std::shared_ptr<UserTrustProfile>>(updatedComp["data"]);
-                if (Math->abs(updatedData->trustScore - 100) > 0.01) throw any(std::make_shared<Error>(std::string("Expected score clamped at 100, got ") + updatedData->trustScore + string_empty));
+                if (Math->abs(updatedData->trustScore - 100) > 0.01) throw std::any(std::make_shared<Error>(std::string("Expected score clamped at 100, got ") + updatedData->trustScore + string_empty));
                 logger->info(std::string("Service.calculateUserTrustScore: Clamping at +100 - Passed"));
             }
             catch (...)
@@ -286,11 +286,11 @@ array<std::shared_ptr<TestCase>> calculateUserTrustScoreTestCases = array<std::s
                     });
                 };
                 std::async([=]() { service->calculateUserTrustScore(testUserIdGlobalForService, runtime); });
-                if (!updatedComp) throw any(std::make_shared<Error>(std::string("updateComponent not called")));
-                if (!getTokenAPIDataCalled) throw any(std::make_shared<Error>(std::string("getTokenAPIData was not called for metric re-evaluation")));
-                if (!evaluatePerformanceCalled) throw any(std::make_shared<Error>(std::string("evaluateRecommendationPerformance was not called for metric re-evaluation")));
+                if (!updatedComp) throw std::any(std::make_shared<Error>(std::string("updateComponent not called")));
+                if (!getTokenAPIDataCalled) throw std::any(std::make_shared<Error>(std::string("getTokenAPIData was not called for metric re-evaluation")));
+                if (!evaluatePerformanceCalled) throw std::any(std::make_shared<Error>(std::string("evaluateRecommendationPerformance was not called for metric re-evaluation")));
                 auto updatedData = as<std::shared_ptr<UserTrustProfile>>(updatedComp["data"]);
-                if (Math->abs(updatedData->trustScore - 20) > 0.01) throw any(std::make_shared<Error>(std::string("Expected score ~20.0 after re-eval, got ") + updatedData->trustScore + string_empty));
+                if (Math->abs(updatedData->trustScore - 20) > 0.01) throw std::any(std::make_shared<Error>(std::string("Expected score ~20.0 after re-eval, got ") + updatedData->trustScore + string_empty));
                 logger->info(std::string("Service.calculateUserTrustScore: Undefined metrics re-evaluation - Passed"));
             }
             catch (...)
@@ -308,7 +308,7 @@ array<std::shared_ptr<TestCase>> resolveTickerTestCases = array<std::shared_ptr<
         auto service = std::make_shared<CommunityInvestorService>(runtime);
         auto result = std::async([=]() { service->resolveTicker(std::string("$SOL"), SupportedChain->SOLANA, array<any>()); });
         if (OR((result["address"] != std::string("So11111111111111111111111111111111111111112")), (result["ticker"] != std::string("SOL")))) {
-            throw any(std::make_shared<Error>(std::string("Unexpected result for $SOL: ") + JSON->stringify(result) + string_empty));
+            throw std::any(std::make_shared<Error>(std::string("Unexpected result for $SOL: ") + JSON->stringify(result) + string_empty));
         }
         logger->info(std::string("Service.resolveTicker: Known SOL - Passed"));
     }
@@ -360,7 +360,7 @@ array<std::shared_ptr<TestCase>> resolveTickerTestCases = array<std::shared_ptr<
                 };
                 auto result = std::async([=]() { service->resolveTicker(std::string("$NEWCOINSOL"), SupportedChain->SOLANA, array<any>()); });
                 if (OR((result["address"] != std::string("DEX_FOUND_ADDR_SOL")), (result["ticker"] != std::string("NEWCOINSOL")))) {
-                    throw any(std::make_shared<Error>(std::string("Unexpected result from DexScreener for SOL: ") + JSON->stringify(result) + string_empty));
+                    throw std::any(std::make_shared<Error>(std::string("Unexpected result from DexScreener for SOL: ") + JSON->stringify(result) + string_empty));
                 }
                 logger->info(std::string("Service.resolveTicker: DexScreener SOL find - Passed"));
             }
@@ -387,7 +387,7 @@ array<std::shared_ptr<TestCase>> resolveTickerTestCases = array<std::shared_ptr<
         }) };
         auto result = std::async([=]() { service->resolveTicker(std::string("$CTXTOKEN"), SupportedChain->SOLANA, contextMessages); });
         if (OR((result["address"] != testSolanaAddressInContext), (result["ticker"] != std::string("CTXTOKEN")))) {
-            throw any(std::make_shared<Error>(std::string("Context resolution failed for $CTXTOKEN: expected ") + testSolanaAddressInContext + std::string(", got ") + JSON->stringify(result) + string_empty));
+            throw std::any(std::make_shared<Error>(std::string("Context resolution failed for $CTXTOKEN: expected ") + testSolanaAddressInContext + std::string(", got ") + JSON->stringify(result) + string_empty));
         }
         logger->info(std::string("Service.resolveTicker: Context message SOL - Passed"));
     }
@@ -415,7 +415,7 @@ array<std::shared_ptr<TestCase>> resolveTickerTestCases = array<std::shared_ptr<
                     }
                 };
                 auto result = std::async([=]() { service->resolveTicker(std::string("$NONEXISTENT"), SupportedChain->SOLANA, array<any>()); });
-                if (result != nullptr) throw any(std::make_shared<Error>(std::string("Expected null for unresolvable ticker, got ") + JSON->stringify(result) + string_empty));
+                if (result != nullptr) throw std::any(std::make_shared<Error>(std::string("Expected null for unresolvable ticker, got ") + JSON->stringify(result) + string_empty));
                 logger->info(std::string("Service.resolveTicker: Unresolvable returns null - Passed"));
             }
             catch (...)
@@ -501,7 +501,7 @@ array<std::shared_ptr<TestCase>> getTokenAPIDataTestCases = array<std::shared_pt
                 };
                 auto data = std::async([=]() { service->getTokenAPIData(tokenAddress, SupportedChain->SOLANA); });
                 if (OR((OR((OR((!data), (data["name"] != std::string("BirdEyeCoin")))), (data["currentPrice"] != 15))), (data["liquidity"] != 50000))) {
-                    throw any(std::make_shared<Error>(std::string("getTokenAPIData failed for SOL: ") + JSON->stringify(data) + string_empty));
+                    throw std::any(std::make_shared<Error>(std::string("getTokenAPIData failed for SOL: ") + JSON->stringify(data) + string_empty));
                 }
                 logger->info(std::string("Service.getTokenAPIData: SOL token data success - Passed"));
             }
@@ -540,22 +540,22 @@ array<std::shared_ptr<TestCase>> getTokenAPIDataTestCases = array<std::shared_pt
                 (as<any>(service))["birdeyeClient"] = object{
                     object::pair{std::string("fetchTokenOverview"), [=]() mutable
                     {
-                        throw any(std::make_shared<Error>(std::string("Birdeye API Error")));
+                        throw std::any(std::make_shared<Error>(std::string("Birdeye API Error")));
                     }
                     }, 
                     object::pair{std::string("fetchPrice"), [=]() mutable
                     {
-                        throw any(std::make_shared<Error>(std::string("Birdeye API Error")));
+                        throw std::any(std::make_shared<Error>(std::string("Birdeye API Error")));
                     }
                     }, 
                     object::pair{std::string("fetchTokenTradeData"), [=]() mutable
                     {
-                        throw any(std::make_shared<Error>(std::string("Birdeye API Error")));
+                        throw std::any(std::make_shared<Error>(std::string("Birdeye API Error")));
                     }
                     }, 
                     object::pair{std::string("fetchTokenSecurity"), [=]() mutable
                     {
-                        throw any(std::make_shared<Error>(std::string("Birdeye API Error")));
+                        throw std::any(std::make_shared<Error>(std::string("Birdeye API Error")));
                     }
                     }
                 };
@@ -575,7 +575,7 @@ array<std::shared_ptr<TestCase>> getTokenAPIDataTestCases = array<std::shared_pt
                 };
                 auto data = std::async([=]() { service->getTokenAPIData(std::string("FAILSOLADDR"), SupportedChain->SOLANA); });
                 if (data != nullptr) {
-                    throw any(std::make_shared<Error>(std::string("Expected null when all SOL APIs fail and Dexscreener finds no pair")));
+                    throw std::any(std::make_shared<Error>(std::string("Expected null when all SOL APIs fail and Dexscreener finds no pair")));
                 }
                 logger->info(std::string("Service.getTokenAPIData: SOL API failure correctly returns null - Passed"));
             }
@@ -620,13 +620,13 @@ array<std::shared_ptr<TestCase>> getTokenAPIDataTestCases = array<std::shared_pt
         (as<any>(service))["birdeyeClient"] = object{
             object::pair{std::string("fetchTokenOverview"), [=]() mutable
             {
-                throw any(std::make_shared<Error>(std::string("Birdeye should not be called for ETH")));
+                throw std::any(std::make_shared<Error>(std::string("Birdeye should not be called for ETH")));
             }
             }
         };
         auto data = std::async([=]() { service->getTokenAPIData(std::string("TESTETHADDR"), SupportedChain->ETHEREUM); });
         if (OR((OR((!data), (data["name"] != std::string("EthCoin")))), (data["currentPrice"] != 2000))) {
-            throw any(std::make_shared<Error>(std::string("getTokenAPIData failed for ETH: ") + JSON->stringify(data) + string_empty));
+            throw std::any(std::make_shared<Error>(std::string("getTokenAPIData failed for ETH: ") + JSON->stringify(data) + string_empty));
         }
         logger->info(std::string("Service.getTokenAPIData: ETH token data success - Passed"));
     }
@@ -664,7 +664,7 @@ array<std::shared_ptr<TestCase>> getTokenAPIDataTestCases = array<std::shared_pt
         };
         auto data = std::async([=]() { service->getTokenAPIData(std::string("TESTBASEADDR"), SupportedChain->BASE); });
         if (OR((OR((!data), (data["name"] != std::string("BaseCoin")))), (data["currentPrice"] != 100))) {
-            throw any(std::make_shared<Error>(std::string("getTokenAPIData failed for BASE: ") + JSON->stringify(data) + string_empty));
+            throw std::any(std::make_shared<Error>(std::string("getTokenAPIData failed for BASE: ") + JSON->stringify(data) + string_empty));
         }
         logger->info(std::string("Service.getTokenAPIData: BASE token data success - Passed"));
     }
@@ -689,7 +689,7 @@ array<std::shared_ptr<TestCase>> isLikelyScamOrRugTestCases = array<std::shared_
             object::pair{std::string("marketCap"), 100000}
         };
         auto result = std::async([=]() { service->isLikelyScamOrRug(tokenData, recTimestamp - 2000); });
-        if (!result) throw any(std::make_shared<Error>(std::string("Severe price drop not flagged as scam/rug")));
+        if (!result) throw std::any(std::make_shared<Error>(std::string("Severe price drop not flagged as scam/rug")));
         logger->info(std::string("Service.isLikelyScamOrRug: Severe price drop - Passed"));
     }
     }
@@ -705,7 +705,7 @@ array<std::shared_ptr<TestCase>> isLikelyScamOrRugTestCases = array<std::shared_
             object::pair{std::string("symbol"), std::string("SCM")}
         };
         auto result = std::async([=]() { service->isLikelyScamOrRug(tokenData, Date->now()); });
-        if (!result) throw any(std::make_shared<Error>(std::string("Known scam not flagged.")));
+        if (!result) throw std::any(std::make_shared<Error>(std::string("Known scam not flagged.")));
         logger->info(std::string("Service.isLikelyScamOrRug: Known scam field - Passed"));
     }
     }
@@ -722,7 +722,7 @@ array<std::shared_ptr<TestCase>> isLikelyScamOrRugTestCases = array<std::shared_
             object::pair{std::string("symbol"), std::string("LLQ")}
         };
         auto result = std::async([=]() { service->isLikelyScamOrRug(tokenData, Date->now()); });
-        if (!result) throw any(std::make_shared<Error>(std::string("Critical liquidity not flagged.")));
+        if (!result) throw std::any(std::make_shared<Error>(std::string("Critical liquidity not flagged.")));
         logger->info(std::string("Service.isLikelyScamOrRug: Critical liquidity - Passed"));
     }
     }
@@ -739,7 +739,7 @@ array<std::shared_ptr<TestCase>> isLikelyScamOrRugTestCases = array<std::shared_
             object::pair{std::string("symbol"), std::string("LRT")}
         };
         auto result = std::async([=]() { service->isLikelyScamOrRug(tokenData, Date->now()); });
-        if (!result) throw any(std::make_shared<Error>(std::string("Very low liquidity ratio not flagged as scam/rug")));
+        if (!result) throw std::any(std::make_shared<Error>(std::string("Very low liquidity ratio not flagged as scam/rug")));
         logger->info(std::string("Service.isLikelyScamOrRug: Very low liquidity ratio - Passed"));
     }
     }
@@ -763,7 +763,7 @@ array<std::shared_ptr<TestCase>> isLikelyScamOrRugTestCases = array<std::shared_
             object::pair{std::string("symbol"), std::string("HLT")}
         };
         auto result = std::async([=]() { service->isLikelyScamOrRug(tokenData, Date->now() - 2000); });
-        if (result) throw any(std::make_shared<Error>(std::string("Healthy token incorrectly flagged as scam/rug")));
+        if (result) throw std::any(std::make_shared<Error>(std::string("Healthy token incorrectly flagged as scam/rug")));
         logger->info(std::string("Service.isLikelyScamOrRug: Healthy token - Passed"));
     }
     }
@@ -813,8 +813,8 @@ array<std::shared_ptr<TestCase>> evaluatePerfTestCases = array<std::shared_ptr<T
                     , 
                     object::pair{std::string("recommendationType"), std::string("BUY")}
                 }, baseRec)), tokenData); });
-                if (Math->abs((OR((metrics->potentialProfitPercent), (0))) - 50) > 0.01) throw any(std::make_shared<Error>(std::string("BUY profit mismatch")));
-                if (metrics->isScamOrRug) throw any(std::make_shared<Error>(std::string("Incorrectly flagged as scam")));
+                if (Math->abs((OR((metrics->potentialProfitPercent), (0))) - 50) > 0.01) throw std::any(std::make_shared<Error>(std::string("BUY profit mismatch")));
+                if (metrics->isScamOrRug) throw std::any(std::make_shared<Error>(std::string("Incorrectly flagged as scam")));
                 logger->info(std::string("Service.evaluatePerf: BUY profit - Passed"));
             }
             catch (...)
@@ -869,8 +869,8 @@ array<std::shared_ptr<TestCase>> evaluatePerfTestCases = array<std::shared_ptr<T
                     , 
                     object::pair{std::string("recommendationType"), std::string("BUY")}
                 }, baseRec)), tokenData); });
-                if (metrics->potentialProfitPercent != -99) throw any(std::make_shared<Error>(std::string("BUY scam profit mismatch, expected -99")));
-                if (!metrics->isScamOrRug) throw any(std::make_shared<Error>(std::string("Not flagged as scam when it should be")));
+                if (metrics->potentialProfitPercent != -99) throw std::any(std::make_shared<Error>(std::string("BUY scam profit mismatch, expected -99")));
+                if (!metrics->isScamOrRug) throw std::any(std::make_shared<Error>(std::string("Not flagged as scam when it should be")));
                 logger->info(std::string("Service.evaluatePerf: BUY rec rugged - Passed"));
             }
             catch (...)
@@ -925,7 +925,7 @@ array<std::shared_ptr<TestCase>> evaluatePerfTestCases = array<std::shared_ptr<T
                     , 
                     object::pair{std::string("recommendationType"), std::string("SELL")}
                 }, baseRec)), tokenData); });
-                if (Math->abs((OR((metrics->avoidedLossPercent), (0))) - 80) > 0.01) throw any(std::make_shared<Error>(std::string("SELL avoided loss mismatch. Expected 80%")));
+                if (Math->abs((OR((metrics->avoidedLossPercent), (0))) - 80) > 0.01) throw std::any(std::make_shared<Error>(std::string("SELL avoided loss mismatch. Expected 80%")));
                 logger->info(std::string("Service.evaluatePerf: SELL avoided loss - Passed"));
             }
             catch (...)
@@ -980,7 +980,7 @@ array<std::shared_ptr<TestCase>> evaluatePerfTestCases = array<std::shared_ptr<T
                     , 
                     object::pair{std::string("recommendationType"), std::string("SELL")}
                 }, baseRec)), tokenData); });
-                if (Math->abs((OR((metrics->avoidedLossPercent), (0))) - -100) > 0.01) throw any(std::make_shared<Error>(std::string("SELL missed gain mismatch. Expected -100%")));
+                if (Math->abs((OR((metrics->avoidedLossPercent), (0))) - -100) > 0.01) throw std::any(std::make_shared<Error>(std::string("SELL missed gain mismatch. Expected -100%")));
                 logger->info(std::string("Service.evaluatePerf: SELL missed gain - Passed"));
             }
             catch (...)
@@ -1028,8 +1028,8 @@ array<std::shared_ptr<TestCase>> evaluatePerfTestCases = array<std::shared_ptr<T
                     , 
                     object::pair{std::string("recommendationType"), std::string("SELL")}
                 }, baseRec)), tokenData); });
-                if (metrics->avoidedLossPercent != 99) throw any(std::make_shared<Error>(std::string("SELL scam avoidedLossPercent mismatch, expected 99")));
-                if (!metrics->isScamOrRug) throw any(std::make_shared<Error>(std::string("Not flagged as scam for SELL when it should be")));
+                if (metrics->avoidedLossPercent != 99) throw std::any(std::make_shared<Error>(std::string("SELL scam avoidedLossPercent mismatch, expected 99")));
+                if (!metrics->isScamOrRug) throw std::any(std::make_shared<Error>(std::string("Not flagged as scam for SELL when it should be")));
                 logger->info(std::string("Service.evaluatePerf: SELL rec rugged, correct ID - Passed"));
             }
             catch (...)
@@ -1114,10 +1114,10 @@ array<std::shared_ptr<TestCase>> getLeaderboardDataTestCases = array<std::shared
             return nullptr;
         };
         auto leaderboard = std::async([=]() { service->getLeaderboardData(runtime); });
-        if (leaderboard->get_length() != 3) throw any(std::make_shared<Error>(std::string("Expected 3 leaderboard entries, got ") + leaderboard->get_length() + string_empty));
-        if (OR((OR((const_(leaderboard)[0]->userId != user2Id), (const_(leaderboard)[0]->rank != 1))), (const_(leaderboard)[0]->trustScore != 90))) throw any(std::make_shared<Error>(std::string("Leaderboard error for rank 1: ") + JSON->stringify(const_(leaderboard)[0]) + string_empty));
-        if (OR((OR((const_(leaderboard)[1]->userId != user3Id), (const_(leaderboard)[1]->rank != 2))), (const_(leaderboard)[1]->trustScore != 80))) throw any(std::make_shared<Error>(std::string("Leaderboard error for rank 2: ") + JSON->stringify(const_(leaderboard)[1]) + string_empty));
-        if (OR((OR((const_(leaderboard)[2]->userId != user1Id), (const_(leaderboard)[2]->rank != 3))), (const_(leaderboard)[2]->trustScore != 75))) throw any(std::make_shared<Error>(std::string("Leaderboard error for rank 3: ") + JSON->stringify(const_(leaderboard)[2]) + string_empty));
+        if (leaderboard->get_length() != 3) throw std::any(std::make_shared<Error>(std::string("Expected 3 leaderboard entries, got ") + leaderboard->get_length() + string_empty));
+        if (OR((OR((const_(leaderboard)[0]->userId != user2Id), (const_(leaderboard)[0]->rank != 1))), (const_(leaderboard)[0]->trustScore != 90))) throw std::any(std::make_shared<Error>(std::string("Leaderboard error for rank 1: ") + JSON->stringify(const_(leaderboard)[0]) + string_empty));
+        if (OR((OR((const_(leaderboard)[1]->userId != user3Id), (const_(leaderboard)[1]->rank != 2))), (const_(leaderboard)[1]->trustScore != 80))) throw std::any(std::make_shared<Error>(std::string("Leaderboard error for rank 2: ") + JSON->stringify(const_(leaderboard)[1]) + string_empty));
+        if (OR((OR((const_(leaderboard)[2]->userId != user1Id), (const_(leaderboard)[2]->rank != 3))), (const_(leaderboard)[2]->trustScore != 75))) throw std::any(std::make_shared<Error>(std::string("Leaderboard error for rank 3: ") + JSON->stringify(const_(leaderboard)[2]) + string_empty));
         logger->info(std::string("Service.getLeaderboardData: Sorted entries - Passed"));
     }
     }
@@ -1131,7 +1131,7 @@ array<std::shared_ptr<TestCase>> getLeaderboardDataTestCases = array<std::shared
             return array<any>();
         };
         auto leaderboard = std::async([=]() { service->getLeaderboardData(runtime); });
-        if (leaderboard->get_length() != 0) throw any(std::make_shared<Error>(std::string("Expected 0 leaderboard entries for no agents")));
+        if (leaderboard->get_length() != 0) throw std::any(std::make_shared<Error>(std::string("Expected 0 leaderboard entries for no agents")));
         logger->info(std::string("Service.getLeaderboardData: Empty agents list - Passed"));
     }
     }
@@ -1162,7 +1162,7 @@ array<std::shared_ptr<TestCase>> getLeaderboardDataTestCases = array<std::shared
             });
         };
         auto leaderboard = std::async([=]() { service->getLeaderboardData(runtime); });
-        if (leaderboard->get_length() != 0) throw any(std::make_shared<Error>(std::string("Expected 0 leaderboard entries when no profiles found")));
+        if (leaderboard->get_length() != 0) throw std::any(std::make_shared<Error>(std::string("Expected 0 leaderboard entries when no profiles found")));
         logger->info(std::string("Service.getLeaderboardData: No profiles found - Passed"));
     }
     }

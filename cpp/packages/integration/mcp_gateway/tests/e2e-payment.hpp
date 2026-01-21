@@ -36,7 +36,7 @@ struct TestResult {
 class PaymentE2ETestRunner {
   private results: TestResult[] = [];
 
-  async runAllTests(): Promise<void> {
+  std::async runAllTests(): Promise<void> {
     console.log('💰 Starting Payment E2E Test Suite\n');
 
     try {
@@ -93,7 +93,7 @@ class PaymentE2ETestRunner {
 
       // Test config with payment enabled but no recipient
 
-      // Should still start (recipient is optional for API key only mode)
+      // Should still start (recipient is std::optional for API key only mode)
 
       // Gateway should use default network if invalid
 

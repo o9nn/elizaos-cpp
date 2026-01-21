@@ -1,11 +1,11 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/packages/api-client/src/services/sessions.h"
 
-any validateRequiredParam(any value, string paramName)
+std::any validateRequiredParam(std::any value, std::string paramName)
 {
     if (OR((!value), (value->trim() == string_empty))) {
-        throw any(std::make_shared<Error>(string_empty + paramName + std::string(" is required and cannot be empty")));
+        throw std::any(std::make_shared<Error>(string_empty + paramName + std::string(" is required and cannot be empty")));
     }
-    return any();
+    return std::any();
 };
 
 
@@ -19,20 +19,20 @@ std::shared_ptr<Promise<std::shared_ptr<CreateSessionResponse>>> SessionsService
     return this->post<std::shared_ptr<CreateSessionResponse>>(std::string("/api/messaging/sessions"), params);
 }
 
-std::shared_ptr<Promise<std::shared_ptr<SessionInfoResponse>>> SessionsService::getSession(string sessionId)
+std::shared_ptr<Promise<std::shared_ptr<SessionInfoResponse>>> SessionsService::getSession(std::string sessionId)
 {
     validateRequiredParam(sessionId, std::string("sessionId"));
     return this->get<std::shared_ptr<SessionInfoResponse>>(std::string("/api/messaging/sessions/") + sessionId + string_empty);
 }
 
-std::shared_ptr<Promise<std::shared_ptr<MessageResponse>>> SessionsService::sendMessage(string sessionId, std::shared_ptr<SendMessageParams> params)
+std::shared_ptr<Promise<std::shared_ptr<MessageResponse>>> SessionsService::sendMessage(std::string sessionId, std::shared_ptr<SendMessageParams> params)
 {
     validateRequiredParam(sessionId, std::string("sessionId"));
     validateRequiredParam(params->content, std::string("content"));
     return this->post<std::shared_ptr<MessageResponse>>(std::string("/api/messaging/sessions/") + sessionId + std::string("/messages"), params);
 }
 
-std::shared_ptr<Promise<std::shared_ptr<GetMessagesResponse>>> SessionsService::getMessages(string sessionId, std::shared_ptr<GetMessagesParams> params)
+std::shared_ptr<Promise<std::shared_ptr<GetMessagesResponse>>> SessionsService::getMessages(std::string sessionId, std::shared_ptr<GetMessagesParams> params)
 {
     validateRequiredParam(sessionId, std::string("sessionId"));
     auto queryParams = object{};
@@ -52,7 +52,7 @@ std::shared_ptr<Promise<std::shared_ptr<GetMessagesResponse>>> SessionsService::
     });
 }
 
-std::shared_ptr<Promise<object>> SessionsService::deleteSession(string sessionId)
+std::shared_ptr<Promise<object>> SessionsService::deleteSession(std::string sessionId)
 {
     validateRequiredParam(sessionId, std::string("sessionId"));
     return this->delete<object>(std::string("/api/messaging/sessions/") + sessionId + string_empty);

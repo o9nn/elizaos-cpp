@@ -143,7 +143,7 @@ public:
         std::vector<Challenge> active;
         
         auto now = std::chrono::system_clock::now();
-        for (const auto& pair : challenges_) {
+        for (const auto& std::pair : challenges_) {
             if (pair.second.isActive && pair.second.expiresAt > now) {
                 active.push_back(pair.second);
             }
@@ -250,7 +250,7 @@ public:
         std::lock_guard<std::mutex> lock(mutex_);
         std::vector<Achievement> all;
         
-        for (const auto& pair : achievements_) {
+        for (const auto& std::pair : achievements_) {
             all.push_back(pair.second);
         }
         
@@ -330,12 +330,12 @@ public:
         std::lock_guard<std::mutex> lock(mutex_);
         
         std::vector<LeaderboardEntry> entries;
-        for (const auto& pair : playerStats_) {
+        for (const auto& std::pair : playerStats_) {
             entries.push_back({
                 pair.second.playerId,
                 pair.second.playerId,  // In real system, fetch player name
                 pair.second.totalPoints,
-                0  // Will be set after sorting
+                0  // Will be std::set after sorting
             });
         }
         

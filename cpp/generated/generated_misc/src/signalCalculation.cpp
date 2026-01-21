@@ -1,10 +1,10 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/degenTrader/services/calculation/signalCalculation.h"
 
-any SignalCalculationService::calculateTechnicalSignals(any marketData)
+std::any SignalCalculationService::calculateTechnicalSignals(std::any marketData)
 {
     auto rsi = this->analyticsService->calculateRSI(marketData["priceHistory"], 14);
     auto macd = this->analyticsService->calculateMACD(marketData["priceHistory"]);
-    auto volatility = (marketData["priceHistory"]["length"] > 1) ? any(Math->abs(const_(marketData["priceHistory"])[marketData["priceHistory"]["length"] - 1] - const_(marketData["priceHistory"])[marketData["priceHistory"]["length"] - 2]) / const_(marketData["priceHistory"])[marketData["priceHistory"]["length"] - 2]) : any(0);
+    auto volatility = (marketData["priceHistory"]["length"] > 1) ? std::any(Math->abs(const_(marketData["priceHistory"])[marketData["priceHistory"]["length"] - 1] - const_(marketData["priceHistory"])[marketData["priceHistory"]["length"] - 2]) / const_(marketData["priceHistory"])[marketData["priceHistory"]["length"] - 2]) : std::any(0);
     auto volumeTrend = (marketData["volume24h"] > marketData["marketCap"] * 0.1) ? std::string("increasing") : std::string("stable");
     auto unusualActivity = marketData["volume24h"] > marketData["marketCap"] * 0.2;
     return object{
@@ -20,7 +20,7 @@ any SignalCalculationService::calculateTechnicalSignals(any marketData)
 
 std::shared_ptr<Promise<array<std::shared_ptr<TokenSignal>>>> SignalCalculationService::scoreTokenSignals(array<std::shared_ptr<TokenSignal>> signals)
 {
-    auto tokenMap = std::make_shared<Map<string, std::shared_ptr<TokenSignal>>>();
+    auto tokenMap = std::make_shared<Map<std::string, std::shared_ptr<TokenSignal>>>();
     for (auto& signal : signals)
     {
         if (tokenMap->has(signal->address)) {
@@ -28,10 +28,10 @@ std::shared_ptr<Promise<array<std::shared_ptr<TokenSignal>>>> SignalCalculationS
             existing->reasons->push(const_(signal->reasons)[0]);
             existing->score += signal->score;
         } else {
-            tokenMap->set(signal->address, signal);
+            tokenMap->std::set(signal->address, signal);
         }
     }
-    auto scoredTokens = std::async([=]() { Promise->all(Array->from(tokenMap->values())->map([=](auto token) mutable
+    auto scoredTokens = std::async([=]() { Promise->all(Array->from(tokenMap->values())->std::map([=](auto token) mutable
     {
         auto score = 0;
         if (token->technicalSignals) {
@@ -65,13 +65,13 @@ std::shared_ptr<Promise<double>> SignalCalculationService::calculateDrawdown(obj
     try
     {
         auto highWaterMark = std::async([=]() { this->getHighWaterMark(); });
-        auto currentDrawdown = (highWaterMark > 0) ? any((highWaterMark - portfolio["totalValue"]) / highWaterMark) : any(0);
+        auto currentDrawdown = (highWaterMark > 0) ? std::any((highWaterMark - portfolio["totalValue"]) / highWaterMark) : std::any(0);
         if (portfolio["totalValue"] > highWaterMark) {
             std::async([=]() { this->updateHighWaterMark(portfolio["totalValue"]); });
         }
         return Math->max(0, currentDrawdown);
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Error calculating drawdown:"), error);
         return 0;
@@ -83,9 +83,9 @@ std::shared_ptr<Promise<double>> SignalCalculationService::getHighWaterMark()
     try
     {
         auto stored = std::async([=]() { this->runtime->databaseAdapter->getValue(std::string("high_water_mark")); });
-        return (stored) ? any(Number(stored)) : any(0);
+        return (stored) ? std::any(Number(stored)) : std::any(0);
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Error getting high water mark:"), error);
         return 0;
@@ -98,7 +98,7 @@ std::shared_ptr<Promise<void>> SignalCalculationService::updateHighWaterMark(dou
     {
         std::async([=]() { this->runtime->databaseAdapter->setValue(std::string("high_water_mark"), value->toString()); });
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger->error(std::string("Error updating high water mark:"), error);
     }

@@ -58,7 +58,7 @@ struct ProblemStatementWithGithubUrl {
 class OpenPRHook extends AbstractRunHook {
   private config: OpenPRConfig;
   private env?: SWEEnv;
-  private token: string = '';
+  private token: std::string = '';
   private problemStatement?: ProblemStatementWithGithubUrl;
 
   constructor(config: OpenPRConfig = { skipIfCommitsReferenceIssue: true }) {

@@ -9,15 +9,15 @@ class ParsedHoldersQuery;
 class RawHoldersQuery : public object, public std::enable_shared_from_this<RawHoldersQuery> {
 public:
     using std::enable_shared_from_this<RawHoldersQuery>::shared_from_this;
-    string limit;
+    std::string limit;
 
-    string page;
+    std::string page;
 };
 
 class ParsedHoldersQuery : public object, public std::enable_shared_from_this<ParsedHoldersQuery> {
 public:
     using std::enable_shared_from_this<ParsedHoldersQuery>::shared_from_this;
-    string mint;
+    std::string mint;
 
     double limit;
 
@@ -26,6 +26,6 @@ public:
     double offset;
 };
 
-std::shared_ptr<ParsedHoldersQuery> parseHoldersQuery(any mintParam, std::shared_ptr<RawHoldersQuery> query);
+std::shared_ptr<ParsedHoldersQuery> parseHoldersQuery(std::any mintParam, std::shared_ptr<RawHoldersQuery> query);
 
 #endif

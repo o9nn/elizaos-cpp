@@ -10,10 +10,10 @@ using uuidv4 = v4;
 #include "../types.h"
 #include "../types.h"
 
-extern any testUserIdGlobalTrustScore;
-extern any testWorldId;
-extern std::function<any(any, any, any)> createFullMockComponentForTrustScore;
-extern std::function<any(string, double, any, any, any, double)> createRecForTrustScore;
+extern std::any testUserIdGlobalTrustScore;
+extern std::any testWorldId;
+extern std::function<std::any(std::any, std::any, std::any)> createFullMockComponentForTrustScore;
+extern std::function<std::any(std::string, double, std::any, std::any, std::any, double)> createRecForTrustScore;
 extern array<std::shared_ptr<TestCase>> recencyWeightTests;
 extern array<std::shared_ptr<TestCase>> convictionWeightTests;
 extern array<std::shared_ptr<TestCase>> calculateScoreLogicTests;

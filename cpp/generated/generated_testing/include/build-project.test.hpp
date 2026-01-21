@@ -5,10 +5,10 @@
 #include "../../../src/utils/build-project.h"
 
 extern object mockLogger;
-extern any mockExeca;
-extern any mockRunBunCommand;
-extern any mockExistsSync;
-extern any mockReadFileSync;
-extern any mockRm;
-extern any mockDetectDirectoryType;
+extern std::any mockExeca;
+extern std::any mockRunBunCommand;
+extern std::any mockExistsSync;
+extern std::any mockReadFileSync;
+extern std::any mockRm;
+extern std::any mockDetectDirectoryType;
 #endif

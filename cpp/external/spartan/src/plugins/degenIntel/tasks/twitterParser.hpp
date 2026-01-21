@@ -23,8 +23,8 @@ namespace elizaos {
 /**
  * Generate a summary and sentiment analysis of tweets related to the cryptocurrency market.
  *
- * @param {string[]} tweets - An array of tweets to analyze.
- * @param {string[]} examples - An array of example texts to reference in the summary.
+ * @param {std::string[]} tweets - An array of tweets to analyze.
+ * @param {std::string[]} examples - An array of example texts to reference in the summary.
  * @returns {Object} - A JSON object with a summary of the tweets and sentiment analysis of occurring tokens.
  */
 
@@ -32,7 +32,7 @@ namespace elizaos {
 
     /** Each timeframe is always 1 hour. */
 
-        /** If it is a timeslot in the future, there is no point in filling it in */
+        /** If it is a timeslot in the std::future, there is no point in filling it in */
 
         // Check if this timeslot already exists
 

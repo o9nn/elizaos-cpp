@@ -75,7 +75,7 @@ struct MessageInfo {
     std::optional<Date> edited;
     std::optional<Date> deleted;
     std::optional<bool> pinned;
-    std::optional<{> thread;
+    std::optional<{> std::thread;
     UUID id;
     double messageCount;
     std::vector<UUID> participants;
@@ -87,7 +87,7 @@ struct MessageSendOptions {
     std::optional<bool> ephemeral;
     std::optional<bool> silent;
     std::optional<Date> scheduled;
-    std::optional<UUID> thread;
+    std::optional<UUID> std::thread;
     std::optional<std::string> nonce;
 };
 

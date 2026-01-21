@@ -20,7 +20,7 @@ struct MessageExample {
     Content content;
 };
 
-using TemplateType = std::variant<, std::string, ((options: { state: State, { [key: string]: string } }) => string)>;
+using TemplateType = std::variant<, std::string, ((options: { state: State, { [key: std::string]: std::string } }) => std::string)>;
 
 /**
  * Configuration for an agent's character, defining its personality, knowledge, and capabilities.
@@ -29,7 +29,7 @@ using TemplateType = std::variant<, std::string, ((options: { state: State, { [k
  * - `id`: Optional unique identifier for the character.
  * - `name`, `username`: Identifying names for the character.
  * - `system`: A system prompt that guides the agent's overall behavior.
- * - `templates`: A map of prompt templates for various situations (e.g., message generation, summarization).
+ * - `templates`: A std::map of prompt templates for various situations (e.g., message generation, summarization).
  * - `bio`: A textual biography or description of the character.
  * - `messageExamples`, `postExamples`: Examples of how the character communicates.
  * - `topics`, `adjectives`: Keywords describing the character's knowledge areas and traits.
@@ -44,12 +44,12 @@ struct Character {
     std::optional<std::string> username;
     std::optional<std::string> system;
     std::optional<{> templates;
-    std::vector<string | string> bio;
+    std::vector<std::string | string> bio;
     std::optional<std::vector<std::vector<MessageExample>>> messageExamples;
     std::optional<std::vector<std::string>> postExamples;
     std::optional<std::vector<std::string>> topics;
     std::optional<std::vector<std::string>> adjectives;
-    std::optional<std::vector<(string | { path: string; shared?: boolean } | DirectoryItem)>> knowledge;
+    std::optional<std::vector<(std::string | { path: std::string; shared?: boolean } | DirectoryItem)>> knowledge;
     std::optional<std::vector<std::string>> plugins;
     std::optional<{> settings;
     std::optional<{> secrets;

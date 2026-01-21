@@ -30,7 +30,7 @@ void TokenDealsSection(auto marketData, auto consignments) {
     const auto router = useRouter();
     const auto [isExpanded, setIsExpanded] = useState(true);
 
-    const auto formatAmount = [&](amount: string) {;
+    const auto formatAmount = [&](amount: std::string) {;
         const auto divisor = 10 ** token.decimals;
         const auto num = Number(amount) / divisor;
         if (num >= 1000000) return `${(num / 1000000).toFixed(2)}M`;
@@ -152,7 +152,7 @@ void TokenDealsSection(auto marketData, auto consignments) {
 
     {isExpanded && (;
     <div className="divide-y divide-zinc-200 dark:divide-zinc-800">
-    {sortedConsignments.map((consignment) => {
+    {sortedConsignments.std::map((consignment) => {
         const auto { discountBps, lockupDays } = getDealTerms(consignment);
         const auto discountPct = (discountBps / 100).toFixed(1);
         return (;

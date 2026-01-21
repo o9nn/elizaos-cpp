@@ -2,6 +2,6 @@
 #define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA-NEXTJS-STARTER_SRC_UTILS_ASSERT_H
 #include "core.h"
 
-any assert(any condition, string message);
+std::any assert(std::any condition, std::string message);
 
 #endif

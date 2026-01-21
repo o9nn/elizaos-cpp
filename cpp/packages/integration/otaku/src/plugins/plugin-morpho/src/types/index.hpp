@@ -371,10 +371,10 @@ struct RewardsClaimParams {
 struct RewardsClaimResult {
     std::string transactionHash;
     BigNumber totalClaimed;
-    std::vector<{ token: string; amount: BigNumber }> claimedTokens;
+    std::vector<{ token: std::string; amount: BigNumber }> claimedTokens;
 
 struct UserRewards {
-    std::vector<{ token: string; amount: BigNumber }> claimable;
+    std::vector<{ token: std::string; amount: BigNumber }> claimable;
 
 /**
  * Liquidation Types
@@ -497,10 +497,10 @@ struct UserPosition {
     { amounts;
     std::string collateralTokens;
     std::string loanTokens;
-    string | null collateralUsd;
-    string | null loanUsd;
+    std::string | null collateralUsd;
+    std::string | null loanUsd;
     std::string suppliedTokens;
-    string | null suppliedUsd;
+    std::string | null suppliedUsd;
     std::string withdrawableTokens;
     { shares;
     std::string borrowShares;
@@ -508,8 +508,8 @@ struct UserPosition {
     { prices;
     number | null collateralUsd;
     number | null loanUsd;
-    string | null liquidationLoanPerCollateral;
-    string | null currentLoanPerCollateral;
+    std::string | null liquidationLoanPerCollateral;
+    std::string | null currentLoanPerCollateral;
     { risk;
     double lltvPct;
     number | null ltvPct;
@@ -520,7 +520,7 @@ struct UserPosition {
     `0x${string}` user;
     { supply;
     bool hasSupplied;
-    string | null earnedInterest;
+    std::string | null earnedInterest;
     number | null currentApy;
     bool hasPosition;
 };
@@ -528,10 +528,10 @@ struct UserPosition {
 using UserVaultPosition = {
   vault: {
     address: `0x${string}`;
-    name: string;
+    name: std::string;
     asset: {
       address: `0x${string}`;
-      symbol: string;
+      symbol: std::string;
       decimals: number;
     };
     state: {
@@ -541,16 +541,16 @@ using UserVaultPosition = {
       yearlyApy: number | null;
     };
   };
-  shares: string;
-  assets: string;
+  shares: std::string;
+  assets: std::string;
 };
 
 using MorphoVaultData = {
   address: `0x${string}`;
-  name: string;
+  name: std::string;
   asset: {
     address: `0x${string}`;
-    symbol: string;
+    symbol: std::string;
     decimals: number;
   };
   // Totals
@@ -569,7 +569,7 @@ using MorphoVaultData = {
 
   // Optional: per-allocation info (array of markets)
   allocations?: Array<{
-    marketId: string;
+    marketId: std::string;
     supplyAssetsTokens: BigNumber;
     supplyAssetsUsd?: BigNumber | null;
     supplyCapTokens?: BigNumber | null;

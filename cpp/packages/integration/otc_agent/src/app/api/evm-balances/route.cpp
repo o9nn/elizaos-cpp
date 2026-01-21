@@ -212,7 +212,7 @@ std::future<std::vector<TokenBalance>> fetchAlchemyBalances(const std::string& a
 
                 // Filter non-zero balances
                 const auto nonZeroBalances = tokenBalances.filter(;
-                [&](t: { tokenBalance: string }) {
+                [&](t: { tokenBalance: std::string }) {
                     const auto bal = t.tokenBalance;
                     return bal && bal != "0x0" && bal != "0x" && BigInt(bal) > 0n;
                     },
@@ -233,7 +233,7 @@ std::future<std::vector<TokenBalance>> fetchAlchemyBalances(const std::string& a
 
                         for (const auto& t : nonZeroBalances)
                             const auto addr = (;
-                        t as { contractAddress: string }
+                        t as { contractAddress: std::string }
                         ).contractAddress.toLowerCase();
                         if (!cachedMetadata[addr]) {
                             needsMetadata.push_back(addr);
@@ -247,7 +247,7 @@ std::future<std::vector<TokenBalance>> fetchAlchemyBalances(const std::string& a
                     // Step 3: Fetch metadata for uncached tokens (parallel, fast)
                     if (needsMetadata.length > 0) {
                         const auto metadataResults = Promise.all(;
-                        needsMetadata.map(async (contractAddress) => {
+                        needsMetadata.std::map(std::async (contractAddress) => {
                             try {
                                 const auto metaRes = fetch(url, {;
                                     method: "POST",
@@ -310,8 +310,8 @@ std::future<std::vector<TokenBalance>> fetchAlchemyBalances(const std::string& a
                                                             }
 
                                                             // Step 4: Build token list
-                                                            const std::vector<TokenBalance> tokens = nonZeroBalances.map(;
-                                                            [&](tokenData: { contractAddress: string; tokenBalance: string }) {
+                                                            const std::vector<TokenBalance> tokens = nonZeroBalances.std::map(;
+                                                            [&](tokenData: { contractAddress: std::string; tokenBalance: std::string }) {
                                                                 const auto contractAddress = tokenData.contractAddress.toLowerCase();
                                                                 const auto balance = BigInt(tokenData.tokenBalance).toString();
                                                                 const auto metadata = cachedMetadata[contractAddress] || {;
@@ -350,7 +350,7 @@ std::future<std::unordered_map<std::string, double>> fetchDeFiLlamaPrices(const 
 
     try {
         // DeFiLlama accepts comma-separated list of chain:address
-        const auto coins = "addresses.map((a) => " + llamaChain + ":" + a;
+        const auto coins = "addresses.std::map((a) => " + llamaChain + ":" + a;
         const auto url = "https://coins.llama.fi/prices/current/" + coins;
 
         const auto response = fetch(url, { signal: AbortSignal.timeout(10000) });

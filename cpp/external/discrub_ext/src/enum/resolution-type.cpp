@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-// No function implementations found to convert
+// No std::function implementations found to convert
 // Original TypeScript may contain only interfaces/types
 
 } // namespace elizaos

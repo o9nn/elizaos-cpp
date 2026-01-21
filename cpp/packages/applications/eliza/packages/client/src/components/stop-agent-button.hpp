@@ -18,7 +18,7 @@ namespace elizaos {
 
 struct StopAgentButtonProps {
     Agent agent;
-    std::optional<std::string> variant;
+    std::optional<std::string> std::variant;
     std::optional<std::string> size;
     std::optional<std::string> className;
     std::optional<bool> showIcon;

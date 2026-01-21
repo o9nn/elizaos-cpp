@@ -24,7 +24,7 @@ namespace elizaos {
  * Supports DOCX, plain text, and provides a fallback for unknown types.
  * PDF should be handled by `convertPdfToTextFromBuffer`.
  */
-std::future<std::string> extractTextFromFileBuffer(const std::vector<uint8_t>& fileBuffer, const std::string& contentType, string // For logging and context originalFilename);
+std::future<std::string> extractTextFromFileBuffer(const std::vector<uint8_t>& fileBuffer, const std::string& contentType, std::string // For logging and context originalFilename);
 
 /**
  * Converts a PDF file buffer to text content.
@@ -94,7 +94,7 @@ std::string generateContentBasedId(const std::string& content, const std::string
  * Extracts the first N lines from text content for ID generation
  * @param content The full text content
  * @param maxLines Maximum number of lines to extract
- * @returns The extracted lines as a single string
+ * @returns The extracted lines as a single std::string
  */
 std::string extractFirstLines(const std::string& content, double maxLines = 10);
 

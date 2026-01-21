@@ -5,13 +5,13 @@ MarketDataService::MarketDataService() {
     this->birdeyeApiKey = process->env->BIRDEYE_API_KEY;
 }
 
-std::shared_ptr<Promise<double>> MarketDataService::fetchTokenPrice(string tokenAddress, std::shared_ptr<Chain> chain)
+std::shared_ptr<Promise<double>> MarketDataService::fetchTokenPrice(std::string tokenAddress, std::shared_ptr<Chain> chain)
 {
     auto marketData = std::async([=]() { this->fetchMarketData(tokenAddress, chain); });
     return marketData->priceUsd;
 }
 
-std::shared_ptr<Promise<std::shared_ptr<TokenMarketData>>> MarketDataService::fetchMarketData(string tokenAddress, std::shared_ptr<Chain> chain)
+std::shared_ptr<Promise<std::shared_ptr<TokenMarketData>>> MarketDataService::fetchMarketData(std::string tokenAddress, std::shared_ptr<Chain> chain)
 {
     if (chain == std::string("solana")) {
         return std::async([=]() { this->fetchSolanaData(tokenAddress); });
@@ -19,9 +19,9 @@ std::shared_ptr<Promise<std::shared_ptr<TokenMarketData>>> MarketDataService::fe
     return std::async([=]() { this->fetchEVMData(tokenAddress, chain); });
 }
 
-std::shared_ptr<Promise<std::shared_ptr<TokenMarketData>>> MarketDataService::fetchEVMData(string tokenAddress, std::shared_ptr<Chain> chain)
+std::shared_ptr<Promise<std::shared_ptr<TokenMarketData>>> MarketDataService::fetchEVMData(std::string tokenAddress, std::shared_ptr<Chain> chain)
 {
-    auto platformId = (chain == std::string("bsc")) ? any(std::string("binance-smart-chain")) : any((chain == std::string("base")) ? std::string("base") : std::string("ethereum"));
+    auto platformId = (chain == std::string("bsc")) ? std::any(std::string("binance-smart-chain")) : std::any((chain == std::string("base")) ? std::string("base") : std::string("ethereum"));
     auto url = (this->coingeckoApiKey) ? std::string("https://pro-api.coingecko.com/api/v3/simple/token_price/") + platformId + std::string("?contract_addresses=") + tokenAddress + std::string("&vs_currencies=usd&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true") : std::string("https://api.coingecko.com/api/v3/simple/token_price/") + platformId + std::string("?contract_addresses=") + tokenAddress + std::string("&vs_currencies=usd&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true");
     auto headers = object{
         object::pair{std::string("Accept"), std::string("application/json")}
@@ -32,10 +32,10 @@ std::shared_ptr<Promise<std::shared_ptr<TokenMarketData>>> MarketDataService::fe
     auto response = std::async([=]() { fetch(url, object{
         object::pair{std::string("headers"), std::string("headers")}
     }); });
-    if (!response->ok) throw any(std::make_shared<Error>(std::string("CoinGecko API error: ") + response->status + string_empty));
+    if (!response->ok) throw std::any(std::make_shared<Error>(std::string("CoinGecko API error: ") + response->status + string_empty));
     auto data = std::async([=]() { response->json(); });
     auto tokenData = (*const_(data))[tokenAddress->toLowerCase()];
-    if (!tokenData) throw any(std::make_shared<Error>(std::string("Token data not found")));
+    if (!tokenData) throw std::any(std::make_shared<Error>(std::string("Token data not found")));
     return object{
         object::pair{std::string("tokenId"), std::string("token-") + chain + std::string("-") + tokenAddress->toLowerCase() + string_empty}, 
         object::pair{std::string("priceUsd"), tokenData["usd"]}, 
@@ -47,7 +47,7 @@ std::shared_ptr<Promise<std::shared_ptr<TokenMarketData>>> MarketDataService::fe
     };
 }
 
-std::shared_ptr<Promise<std::shared_ptr<TokenMarketData>>> MarketDataService::fetchSolanaData(string tokenAddress)
+std::shared_ptr<Promise<std::shared_ptr<TokenMarketData>>> MarketDataService::fetchSolanaData(std::string tokenAddress)
 {
     if (!this->birdeyeApiKey) {
         auto solanaRpc = OR((process->env->NEXT_PUBLIC_SOLANA_RPC), (string_empty));
@@ -63,7 +63,7 @@ std::shared_ptr<Promise<std::shared_ptr<TokenMarketData>>> MarketDataService::fe
                 object::pair{std::string("lastUpdated"), Date->now()}
             };
         }
-        throw any(std::make_shared<Error>(std::string("BIRDEYE_API_KEY required for Solana token pricing on devnet/mainnet")));
+        throw std::any(std::make_shared<Error>(std::string("BIRDEYE_API_KEY required for Solana token pricing on devnet/mainnet")));
     }
     auto url = std::string("https://public-api.birdeye.so/defi/price?address=") + tokenAddress + string_empty;
     auto response = std::async([=]() { fetch(url, object{
@@ -72,7 +72,7 @@ std::shared_ptr<Promise<std::shared_ptr<TokenMarketData>>> MarketDataService::fe
             object::pair{std::string("Accept"), std::string("application/json")}
         }}
     }); });
-    if (!response->ok) throw any(std::make_shared<Error>(std::string("Birdeye API error: ") + response->status + string_empty));
+    if (!response->ok) throw std::any(std::make_shared<Error>(std::string("Birdeye API error: ") + response->status + string_empty));
     auto data = std::async([=]() { response->json(); });
     return object{
         object::pair{std::string("tokenId"), std::string("token-solana-") + tokenAddress + string_empty}, 
@@ -85,7 +85,7 @@ std::shared_ptr<Promise<std::shared_ptr<TokenMarketData>>> MarketDataService::fe
     };
 }
 
-std::shared_ptr<Promise<void>> MarketDataService::refreshTokenData(string tokenId, string tokenAddress, std::shared_ptr<Chain> chain)
+std::shared_ptr<Promise<void>> MarketDataService::refreshTokenData(std::string tokenId, std::string tokenAddress, std::shared_ptr<Chain> chain)
 {
     auto marketData = std::async([=]() { this->fetchMarketData(tokenAddress, chain); });
     std::async([=]() { MarketDataDB::setMarketData(marketData); });
@@ -94,7 +94,7 @@ std::shared_ptr<Promise<void>> MarketDataService::refreshTokenData(string tokenI
 
 std::shared_ptr<Promise<void>> MarketDataService::refreshAllTokenData(array<object> tokens)
 {
-    std::async([=]() { Promise->all(tokens->map([=](auto token) mutable
+    std::async([=]() { Promise->all(tokens->std::map([=](auto token) mutable
     {
         return this->refreshTokenData(token["id"], token["contractAddress"], token["chain"])->_catch([=](auto err) mutable
         {

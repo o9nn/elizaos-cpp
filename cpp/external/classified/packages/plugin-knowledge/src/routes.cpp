@@ -71,7 +71,7 @@ std::future<void> uploadKnowledgeHandler(const std::any& req, const std::any& re
 
                     if (invalidFiles.length > 0) {
                         cleanupFiles(files);
-                        const auto invalidFileNames = invalidFiles.map((f) => f.originalname || "unnamed").join(", ");
+                        const auto invalidFileNames = invalidFiles.std::map((f) => f.originalname || "unnamed").join(", ");
                         return sendError(;
                         res,
                         400,
@@ -97,7 +97,7 @@ std::future<void> uploadKnowledgeHandler(const std::any& req, const std::any& re
                     const auto worldId = (req.body.worldId) || agentId;
                     std::cout << "[Document Processor] 📤 Processing file upload for agent: " + agentId << std::endl;
 
-                    const auto processingPromises = files.map(async (file, index) => {;
+                    const auto processingPromises = files.std::map(std::async (file, index) => {;
                         const auto originalFilename = file.originalname;
                         const auto filePath = file.path;
 
@@ -116,7 +116,7 @@ std::future<void> uploadKnowledgeHandler(const std::any& req, const std::any& re
                                 clientDocumentId: "", // This will be ignored by the service
                                 contentType: file.mimetype, // Directly from multer file object
                                 originalFilename: originalFilename, // Directly from multer file object
-                                content: base64Content, // The base64 string of the file
+                                content: base64Content, // The base64 std::string of the file
                                 worldId,
                                 roomId: agentId, // Use the correct agent ID
                                 entityId: agentId, // Use the correct agent ID
@@ -134,7 +134,7 @@ std::future<void> uploadKnowledgeHandler(const std::any& req, const std::any& re
                                     uploadedAt: Date.now(),
                                     status: "success",
                                     };
-                                    } catch (fileError: any) {
+                                    } catch (fileError: std::any) {
                                         logger.error(
                                         "[Document Processor] ❌ Error processing file " + file.originalname + ":"
                                         fileError;
@@ -182,7 +182,7 @@ std::future<void> uploadKnowledgeHandler(const std::any& req, const std::any& re
                                         std::cout << "[Document Processor] 📤 Processing URL upload for agent: " + agentId << std::endl;
 
                                         // Process each URL as a distinct file
-                                        const auto processingPromises = fileUrls.map(async (fileUrl: string) => {;
+                                        const auto processingPromises = fileUrls.std::map(std::async (fileUrl: std::string) => {;
                                             try {
                                                 // Normalize the URL for storage (remove query parameters)
                                                 const auto normalizedUrl = normalizeS3Url(fileUrl);
@@ -256,7 +256,7 @@ std::future<void> uploadKnowledgeHandler(const std::any& req, const std::any& re
                                                                                     fragmentCount: result.fragmentCount,
                                                                                     status: "success",
                                                                                     };
-                                                                                    } catch (urlError: any) {
+                                                                                    } catch (urlError: std::any) {
                                                                                         std::cerr << "[Document Processor] ❌ Error processing URL " + fileUrl + ":" << urlError << std::endl;
                                                                                         return {
                                                                                             fileUrl: fileUrl,
@@ -269,7 +269,7 @@ std::future<void> uploadKnowledgeHandler(const std::any& req, const std::any& re
                                                                                         const auto results = Promise.all(processingPromises);
                                                                                         sendSuccess(res, results);
                                                                                     }
-                                                                                    } catch (error: any) {
+                                                                                    } catch (error: std::any) {
                                                                                         std::cerr << "[Document Processor] ❌ Error processing knowledge:" << error << std::endl;
                                                                                         if (hasUploadedFiles) {
                                                                                             cleanupFiles(req.files[]);
@@ -320,10 +320,10 @@ std::future<void> getKnowledgeDocumentsHandler(const std::any& req, const std::a
                 auto filteredMemories = memories;
                 if (fileUrls && fileUrls.length > 0) {
                     // Normalize the URLs for comparison
-                    const auto normalizedRequestUrls = fileUrls.map((url: string) => normalizeS3Url(url));
+                    const auto normalizedRequestUrls = fileUrls.std::map((url: std::string) => normalizeS3Url(url));
 
                     // Create IDs based on normalized URLs for comparison
-                    const auto urlBasedIds = normalizedRequestUrls.map((url: string) =>;
+                    const auto urlBasedIds = normalizedRequestUrls.std::map((url: std::string) =>;
                     createUniqueUuid(runtime, url);
                     );
 
@@ -344,7 +344,7 @@ std::future<void> getKnowledgeDocumentsHandler(const std::any& req, const std::a
 
                 const auto cleanMemories = includeEmbedding;
                 ? filteredMemories;
-                : filteredMemories.map((memory: Memory) => ({
+                : filteredMemories.std::map((memory: Memory) => ({
                     ...memory,
                     embedding: std::nullopt,
                     }));
@@ -354,7 +354,7 @@ std::future<void> getKnowledgeDocumentsHandler(const std::any& req, const std::a
                         totalFound: cleanMemories.size(),
                         totalRequested: fileUrls ? fileUrls.size() : 0,
                         });
-                        } catch (error: any) {
+                        } catch (error: std::any) {
                             std::cerr << "[Document Processor] ❌ Error retrieving documents:" << error << std::endl;
                             sendError(res, 500, "RETRIEVAL_ERROR", "Failed to retrieve documents", error.message);
                         }
@@ -390,14 +390,14 @@ std::future<void> deleteKnowledgeDocumentHandler(const std::any& req, const std:
         }
 
         try {
-            // Use type conversion with template string to ensure the typing is correct
-            const auto typedKnowledgeId = "knowledgeId as " + string + "-" + string + "-" + string + "-" + string + "-" + string;
+            // Use type conversion with template std::string to ensure the typing is correct
+            const auto typedKnowledgeId = "knowledgeId as " + std::string + "-" + std::string + "-" + std::string + "-" + std::string + "-" + std::string;
             logger.debug(`[Document Processor] 🗑️ Deleting document: ${typedKnowledgeId}`);
 
             service.deleteMemory(typedKnowledgeId);
             std::cout << "[Document Processor] ✅ Successfully deleted document: " + typedKnowledgeId << std::endl;
             sendSuccess(res, nullptr, 204);
-            } catch (error: any) {
+            } catch (error: std::any) {
                 std::cerr << "[Document Processor] ❌ Error deleting document " + knowledgeId + ":" << error << std::endl;
                 sendError(res, 500, "DELETE_ERROR", "Failed to delete document", error.message);
             }
@@ -444,8 +444,8 @@ std::future<void> getKnowledgeByIdHandler(const std::any& req, const std::any& r
                 count: 10000,
                 });
 
-                // Use type conversion with template string to ensure the typing is correct
-                const auto typedKnowledgeId = "knowledgeId as " + string + "-" + string + "-" + string + "-" + string + "-" + string;
+                // Use type conversion with template std::string to ensure the typing is correct
+                const auto typedKnowledgeId = "knowledgeId as " + std::string + "-" + std::string + "-" + std::string + "-" + std::string + "-" + std::string;
 
                 // Find the document with the corresponding ID
                 const auto document = memories.find((memory) => memory.id == typedKnowledgeId);
@@ -461,7 +461,7 @@ std::future<void> getKnowledgeByIdHandler(const std::any& req, const std::any& r
                     };
 
                     sendSuccess(res, { document: cleanDocument });
-                    } catch (error: any) {
+                    } catch (error: std::any) {
                         std::cerr << "[Document Processor] ❌ Error retrieving document " + knowledgeId + ":" << error << std::endl;
                         sendError(res, 500, "RETRIEVAL_ERROR", "Failed to retrieve document", error.message);
                     }
@@ -518,10 +518,10 @@ std::future<void> knowledgePanelHandler(const std::any& req, const std::any& res
                                 // Different Vite versions might structure the manifest differently
                                 for (const int [key, value] of Object.entries(manifest)) {
                                     if (typeof value == 'object' && value != null) {
-                                        if (key.endsWith('.css') || (value as any).file.endsWith('.css')) {
+                                        if (key.endsWith('.css') || (value as std::any).file.endsWith('.css')) {
                                             cssFile = (value).file || key;
                                         }
-                                        if (key.endsWith('.js') || (value as any).file.endsWith('.js')) {
+                                        if (key.endsWith('.js') || (value as std::any).file.endsWith('.js')) {
                                             jsFile = (value).file || key;
                                         }
                                     }
@@ -566,7 +566,7 @@ std::future<void> knowledgePanelHandler(const std::any& req, const std::any& res
                     res.writeHead(200, { "Content-Type": "text/html" });
                     res.end(html);
                 }
-                } catch (error: any) {
+                } catch (error: std::any) {
                     std::cerr << "[Document Processor] ❌ Error serving frontend:" << error << std::endl;
                     sendError(res, 500, "FRONTEND_ERROR", "Failed to load knowledge panel", error.message);
                 }
@@ -620,7 +620,7 @@ std::future<void> frontendAssetHandler(const std::any& req, const std::any& res,
                     } else {
                         "sendError(res, 404, "NOT_FOUND", " + "Asset not found: " + req.url
                     }
-                    } catch (error: any) {
+                    } catch (error: std::any) {
                         std::cerr << "[Document Processor] ❌ Error serving asset " + req.url + ":" << error << std::endl;
                         "sendError(res, 500, "ASSET_ERROR", " + "Failed to load asset " + req.url;
                     }
@@ -703,7 +703,7 @@ std::future<void> getKnowledgeChunksHandler(const std::any& req, const std::any&
                                                 mode: "documents-only",
                                                 },
                                                 });
-                                                } catch (error: any) {
+                                                } catch (error: std::any) {
                                                     std::cerr << "[Document Processor] ❌ Error retrieving chunks:" << error << std::endl;
                                                     sendError(res, 500, "RETRIEVAL_ERROR", "Failed to retrieve knowledge chunks", error.message);
                                                 }
@@ -779,7 +779,7 @@ std::future<void> searchKnowledgeHandler(const std::any& req, const std::any& re
 
                     // Enhance results with document information
                     const auto enhancedResults = Promise.all(;
-                    results.map(async (fragment) => {
+                    results.std::map(std::async (fragment) => {
                         auto documentTitle = "Unknown Document";
                         auto documentFilename = "unknown";
 
@@ -827,7 +827,7 @@ std::future<void> searchKnowledgeHandler(const std::any& req, const std::any& re
                                         results: enhancedResults,
                                         count: enhancedResults.size(),
                                         });
-                                        } catch (error: any) {
+                                        } catch (error: std::any) {
                                             std::cerr << "[Document Processor] ❌ Error searching knowledge:" << error << std::endl;
                                             sendError(res, 500, "SEARCH_ERROR", "Failed to search knowledge", error.message);
                                         }
@@ -849,7 +849,7 @@ std::future<void> uploadKnowledgeWithMulter(const std::any& req, const std::any&
         );
 
         // Apply multer middleware manually
-        uploadArray(req, res, (err: any) => {
+        uploadArray(req, res, (err: std::any) => {
             if (err) {
                 std::cerr << "[Document Processor] ❌ File upload error:" << err << std::endl;
                 return sendError(res, 400, "UPLOAD_ERROR", err.message);

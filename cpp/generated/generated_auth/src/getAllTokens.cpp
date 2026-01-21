@@ -44,7 +44,7 @@ std::shared_ptr<Promise<double>> findSlotAtOrBeforeTime(std::shared_ptr<Connecti
 };
 
 
-any processSlot(double slot, std::shared_ptr<Connection> connection)
+std::any processSlot(double slot, std::shared_ptr<Connection> connection)
 {
     try
     {
@@ -69,7 +69,7 @@ any processSlot(double slot, std::shared_ptr<Connection> connection)
             }
         }
     }
-    catch (const any& err)
+    catch (const std::any& err)
     {
         logger["error"](std::string("Error processing slot ") + slot + std::string(":"), err);
     }
@@ -113,7 +113,7 @@ std::shared_ptr<Promise<void>> processMissedEvents(std::shared_ptr<Connection> c
         std::async([=]() { setLastProcessedSlot(currentSlot); });
         logger["log"](std::string("✅ Updated lastProcessedSlot → ") + currentSlot + string_empty);
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger["error"](std::string("Error processing missed events:"), error);
     }

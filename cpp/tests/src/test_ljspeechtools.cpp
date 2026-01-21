@@ -232,8 +232,8 @@ TEST_F(LJSpeechToolsTest, SpeechSynthesizerVoicesTest) {
 
 TEST_F(LJSpeechToolsTest, DatasetPreparatorCreateTest) {
     auto metadata = DatasetPreparator::createDataset(
-        input_dir_.string(),
-        output_dir_.string(),
+        input_dir_.std::string(),
+        output_dir_.std::string(),
         true,
         true
     );
@@ -287,7 +287,7 @@ TEST_F(LJSpeechToolsTest, DatasetPreparatorValidateTest) {
     metadata_file << "wavs/test2.wav|This is test 2|this is test 2\n";
     metadata_file.close();
     
-    EXPECT_TRUE(DatasetPreparator::validateDataset(output_dir_.string()));
+    EXPECT_TRUE(DatasetPreparator::validateDataset(output_dir_.std::string()));
 }
 
 TEST_F(LJSpeechToolsTest, DatasetPreparatorNormalizeTest) {
@@ -304,8 +304,8 @@ TEST_F(LJSpeechToolsTest, LJSpeechToolsIntegrationTest) {
     
     // Test pipeline
     EXPECT_TRUE(tools.runPipeline(
-        input_dir_.string(),
-        output_dir_.string(),
+        input_dir_.std::string(),
+        output_dir_.std::string(),
         true
     ));
     
@@ -314,7 +314,7 @@ TEST_F(LJSpeechToolsTest, LJSpeechToolsIntegrationTest) {
     EXPECT_TRUE(fs::exists(metadata_file));
     
     // Validate the dataset
-    EXPECT_TRUE(DatasetPreparator::validateDataset(output_dir_.string()));
+    EXPECT_TRUE(DatasetPreparator::validateDataset(output_dir_.std::string()));
 }
 
 TEST_F(LJSpeechToolsTest, LJSpeechToolsGettersTest) {

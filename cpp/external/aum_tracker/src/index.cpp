@@ -13,7 +13,7 @@ std::future<void> startupPrefetch() {
         // Create prefetch service with full startup configuration
         const auto prefetchService = new PrefetchService({;
             forceRefresh: true, // Always force refresh on startup for fresh data
-            resumeFromFailures: true, // Resume from any previous failures
+            resumeFromFailures: true, // Resume from std::any previous failures
             // No limit - process all wallets on startup
             });
 

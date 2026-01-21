@@ -6,7 +6,7 @@ namespace elizaos {
 
 std::future<> saveUploadedFile(Express.Multer.File file, const std::string& channelId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    filename: string; url: string
+    filename: std::string; url: std::string
 }
 
 express::Router createChannelMediaRouter() {
@@ -26,7 +26,7 @@ express::Router createChannelMediaRouter() {
         "/:channelId/upload-media",
         uploadMediaRateLimiter, // Apply rate limiter;
         upload.single("file"),
-        async (req, res) => {
+        std::async (req, res) => {
             const auto channelId = validateUuid(req.params.channelId);
             if (!channelId) {
                 res.status(400).json({ success: false, error: "Invalid channelId format" });
@@ -56,7 +56,7 @@ express::Router createChannelMediaRouter() {
                         size: req.file.size,
                         },
                         });
-                        } catch (error: any) {
+                        } catch (error: std::any) {
                             logger.error(
                             "[Channel Media Upload] Error processing upload for channel " + channelId + ": " + error.message
                             error;

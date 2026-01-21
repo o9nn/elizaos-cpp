@@ -16,7 +16,7 @@ class PairOverviewMultiResponse;
 class PairTradesParams : public object, public std::enable_shared_from_this<PairTradesParams> {
 public:
     using std::enable_shared_from_this<PairTradesParams>::shared_from_this;
-    string pair;
+    std::string std::pair;
 
     double limit;
 
@@ -34,7 +34,7 @@ public:
 class OHLCVPairParams : public object, public std::enable_shared_from_this<OHLCVPairParams> {
 public:
     using std::enable_shared_from_this<OHLCVPairParams>::shared_from_this;
-    string address;
+    std::string address;
 
     TimeInterval type;
 
@@ -54,7 +54,7 @@ public:
 class PairOverviewMultiParams : public object, public std::enable_shared_from_this<PairOverviewMultiParams> {
 public:
     using std::enable_shared_from_this<PairOverviewMultiParams>::shared_from_this;
-    string list_address;
+    std::string list_address;
 
     double before_time;
 };
@@ -62,33 +62,33 @@ public:
 class PairOverviewSingleParams : public object, public std::enable_shared_from_this<PairOverviewSingleParams> {
 public:
     using std::enable_shared_from_this<PairOverviewSingleParams>::shared_from_this;
-    string address;
+    std::string address;
 };
 
 class PairOverviewData : public object, public std::enable_shared_from_this<PairOverviewData> {
 public:
     using std::enable_shared_from_this<PairOverviewData>::shared_from_this;
-    string address;
+    std::string address;
 
-    string name;
+    std::string name;
 
     object base;
 
     object quote;
 
-    string created_at;
+    std::string created_at;
 
-    string source;
+    std::string source;
 
     double liquidity;
 
-    any liquidity_change_percentage_24h;
+    std::any liquidity_change_percentage_24h;
 
     double price;
 
     double volume_24h;
 
-    any volume_24h_change_percentage_24h;
+    std::any volume_24h_change_percentage_24h;
 
     double trade_24h;
 
@@ -96,7 +96,7 @@ public:
 
     double unique_wallet_24h;
 
-    any unique_wallet_24h_change_percent;
+    std::any unique_wallet_24h_change_percent;
 
     double trade_30m;
 

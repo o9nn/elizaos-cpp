@@ -1,15 +1,15 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/tools/src/image-tools/view-image.h"
 
-any getMimeType(string filename)
+std::any getMimeType(std::string filename)
 {
     auto ext = path->extname(filename)->toLowerCase();
     static switch_type __switch497_790 = {
-        { any(std::string(".png")), 1 },
-        { any(std::string(".jpg")), 2 },
-        { any(std::string(".jpeg")), 3 },
-        { any(std::string(".webp")), 4 },
-        { any(std::string(".gif")), 5 },
-        { any(std::string(".svg")), 6 }
+        { std::any(std::string(".png")), 1 },
+        { std::any(std::string(".jpg")), 2 },
+        { std::any(std::string(".jpeg")), 3 },
+        { std::any(std::string(".webp")), 4 },
+        { std::any(std::string(".gif")), 5 },
+        { std::any(std::string(".svg")), 6 }
     };
     switch (__switch497_790[ext])
     {
@@ -30,7 +30,7 @@ any getMimeType(string filename)
 };
 
 
-void viewImage(string imagePath)
+void viewImage(std::string imagePath)
 {
     if (!fs::existsSync(imagePath)) {
         console->error(std::string("Error: File '") + imagePath + std::string("' does not exist"));
@@ -52,7 +52,7 @@ void viewImage(string imagePath)
         auto base64 = imageBuffer->toString(std::string("base64"));
         console->log(std::string("![") + path->basename(imagePath) + std::string("](data:") + mimeType + std::string(";base64,") + base64 + std::string(")"));
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("Error processing image: ") + error + string_empty);
         process->exit(1);

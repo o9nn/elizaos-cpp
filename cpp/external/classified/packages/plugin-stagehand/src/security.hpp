@@ -71,7 +71,7 @@ class InputSanitizer {
   /**
    * Sanitize text input to prevent XSS and injection attacks
    */
-  static sanitizeText(input: string): string {
+  static sanitizeText(input: std::string): std::string {
     return input
       .replace(/[<>]/g, '') // Remove HTML tags
       .replace(/javascript:/gi, '') // Remove javascript: protocol
@@ -92,7 +92,7 @@ class InputSanitizer {
 /**
  * Security middleware for actions
  */
-void validateSecureAction(string | null url, UrlValidator validator);
+void validateSecureAction(std::string | null url, UrlValidator validator);
 
 /**
  * Create a default URL validator instance
@@ -110,7 +110,7 @@ struct RateLimitConfig {
  * Simple rate limiter
  */
 class RateLimiter {
-  private actionCounts: Map<string, { count: number; resetTime: number }> = new Map();
+  private actionCounts: Map<std::string, { count: number; resetTime: number }> = new Map();
 
   /**
    * Check if an action is allowed

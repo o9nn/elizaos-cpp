@@ -4,7 +4,7 @@ CausalInference::CausalInference() {
     this->dag = std::make_shared<DAG>();
 }
 
-std::shared_ptr<Promise<std::shared_ptr<CausalAnalysisResult>>> CausalInference::analyzeCausalRelationships(array<Record<string, any>> data, array<string> variables, array<string> treatments, array<string> outcomes)
+std::shared_ptr<Promise<std::shared_ptr<CausalAnalysisResult>>> CausalInference::analyzeCausalRelationships(array<Record<std::string, any>> data, array<string> variables, array<string> treatments, array<string> outcomes)
 {
     try
     {
@@ -18,14 +18,14 @@ std::shared_ptr<Promise<std::shared_ptr<CausalAnalysisResult>>> CausalInference:
             object::pair{std::string("recommendations"), this->generateRecommendations(causalEffects)}
         };
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         logger["error"](std::string("Error in causal analysis:"), error);
-        throw any(error);
+        throw std::any(error);
     }
 }
 
-std::shared_ptr<Promise<void>> CausalInference::buildDAG(array<Record<string, any>> data, array<string> variables)
+std::shared_ptr<Promise<void>> CausalInference::buildDAG(array<Record<std::string, any>> data, array<string> variables)
 {
     auto correlationMatrix = this->calculateCorrelationMatrix(data, variables);
     auto pcResult = std::async([=]() { this->runPCAlgorithm(correlationMatrix, variables); });
@@ -37,7 +37,7 @@ std::shared_ptr<Promise<void>> CausalInference::buildDAG(array<Record<string, an
     return std::shared_ptr<Promise<void>>();
 }
 
-std::shared_ptr<Promise<array<std::shared_ptr<CausalEffect>>>> CausalInference::estimateCausalEffects(array<Record<string, any>> data, array<string> treatments, array<string> outcomes)
+std::shared_ptr<Promise<array<std::shared_ptr<CausalEffect>>>> CausalInference::estimateCausalEffects(array<Record<std::string, any>> data, array<string> treatments, array<string> outcomes)
 {
     auto effects = array<std::shared_ptr<CausalEffect>>();
     for (auto& treatment : treatments)
@@ -58,7 +58,7 @@ std::shared_ptr<Promise<array<std::shared_ptr<CausalEffect>>>> CausalInference::
     return effects;
 }
 
-std::shared_ptr<Promise<object>> CausalInference::doubleMLEstimation(array<Record<string, any>> data, string treatment, string outcome)
+std::shared_ptr<Promise<object>> CausalInference::doubleMLEstimation(array<Record<std::string, any>> data, std::string treatment, std::string outcome)
 {
     auto result = std::async([=]() { R->executeScript(std::string("double_ml.R"), object{
         object::pair{std::string("data"), std::string("data")}, 
@@ -67,13 +67,13 @@ std::shared_ptr<Promise<object>> CausalInference::doubleMLEstimation(array<Recor
     }); });
     return object{
         object::pair{std::string("ate"), result->ate}, 
-        object::pair{std::string("confidence"), std::tuple<any, any>{ result->ci_lower, result->ci_upper }}
+        object::pair{std::string("confidence"), std::tuple<std::any, any>{ result->ci_lower, result->ci_upper }}
     };
 }
 
-std::shared_ptr<Promise<std::shared_ptr<SensitivityAnalysis>>> CausalInference::performSensitivityAnalysis(array<Record<string, any>> data, array<std::shared_ptr<CausalEffect>> effects)
+std::shared_ptr<Promise<std::shared_ptr<SensitivityAnalysis>>> CausalInference::performSensitivityAnalysis(array<Record<std::string, any>> data, array<std::shared_ptr<CausalEffect>> effects)
 {
-    auto [unmeasuredConfounding, selectionBias, measurementError] = std::async([=]() { Promise->all(std::tuple<any, any, any>{ this->analyzeUnmeasuredConfounding(data, effects), this->analyzeSelectionBias(data, effects), this->analyzeMeasurementError(data, effects) }); });
+    auto [unmeasuredConfounding, selectionBias, measurementError] = std::async([=]() { Promise->all(std::tuple<std::any, std::any, any>{ this->analyzeUnmeasuredConfounding(data, effects), this->analyzeSelectionBias(data, effects), this->analyzeMeasurementError(data, effects) }); });
     return object{
         object::pair{std::string("unmeasuredConfounding"), std::string("unmeasuredConfounding")}, 
         object::pair{std::string("selectionBias"), std::string("selectionBias")}, 

@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-stagehand/src/__tests__/capsolver.test.h"
 
-std::function<object(any)> createMockResponse = [=](auto data) mutable
+std::function<object(std::any)> createMockResponse = [=](auto data) mutable
 {
     return (object{
         object::pair{std::string("data"), std::string("data")}, 
@@ -65,7 +65,7 @@ void Main(void)
                 expect(postSpy)->toHaveBeenCalledWith(std::string("https://api.capsolver.com/createTask"), object{
                     object::pair{std::string("clientKey"), mockApiKey}, 
                     object::pair{std::string("task"), std::string("task")}
-                }, expect->any(Object));
+                }, expect->std::any(Object));
             }
             );
             it(std::string("should throw error when API returns error"), [=]() mutable
@@ -101,7 +101,7 @@ void Main(void)
                 expect(axios->post)->toHaveBeenCalledWith(std::string("https://api.capsolver.com/getTaskResult"), object{
                     object::pair{std::string("clientKey"), mockApiKey}, 
                     object::pair{std::string("taskId"), std::string("task-123")}
-                }, expect->any(Object));
+                }, expect->std::any(Object));
             }
             );
             it(std::string("should poll until task is ready"), [=]() mutable
@@ -184,7 +184,7 @@ void Main(void)
                         object::pair{std::string("proxyLogin"), std::string("username")}, 
                         object::pair{std::string("proxyPassword"), std::string("password")}
                     })}
-                }), expect->any(Object));
+                }), expect->std::any(Object));
             }
             );
         }
@@ -226,7 +226,7 @@ void Main(void)
                     object::pair{std::string("task"), expect->objectContaining(object{
                         object::pair{std::string("isInvisible"), true}
                     })}
-                }), expect->any(Object));
+                }), expect->std::any(Object));
             }
             );
         }
@@ -269,7 +269,7 @@ void Main(void)
                         object::pair{std::string("pageAction"), std::string("login")}, 
                         object::pair{std::string("minScore"), 0.7}
                     })}
-                }), expect->any(Object));
+                }), expect->std::any(Object));
             }
             );
         }
@@ -313,7 +313,7 @@ void Main(void)
                         object::pair{std::string("proxyLogin"), std::string("username")}, 
                         object::pair{std::string("proxyPassword"), std::string("password")}
                     })}
-                }), expect->any(Object));
+                }), expect->std::any(Object));
             }
             );
         }
@@ -328,7 +328,7 @@ void Main(void)
                     object::pair{std::string("websiteURL"), std::string("https://example.com")}, 
                     object::pair{std::string("websiteKey"), std::string("test-key")}
                 }))->rejects->toThrow(std::string("Network error")); });
-                expect(logger->error)->toHaveBeenCalledWith(std::string("Error creating CapSolver task:"), expect->any(Error));
+                expect(logger->error)->toHaveBeenCalledWith(std::string("Error creating CapSolver task:"), expect->std::any(Error));
             }
             );
             it(std::string("should handle invalid proxy format"), [=]() mutable
@@ -479,19 +479,19 @@ void Main(void)
         it(std::string("should inject Turnstile solution"), [=]() mutable
         {
             std::async([=]() { injectCaptchaSolution(mockPage, std::string("turnstile"), std::string("test-token")); });
-            expect(mockPage["evaluate"])->toHaveBeenCalledWith(expect->any(Function), std::string("test-token"));
+            expect(mockPage["evaluate"])->toHaveBeenCalledWith(expect->std::any(Function), std::string("test-token"));
         }
         );
         it(std::string("should inject reCAPTCHA solution"), [=]() mutable
         {
             std::async([=]() { injectCaptchaSolution(mockPage, std::string("recaptcha-v2"), std::string("test-token")); });
-            expect(mockPage["evaluate"])->toHaveBeenCalledWith(expect->any(Function), std::string("test-token"));
+            expect(mockPage["evaluate"])->toHaveBeenCalledWith(expect->std::any(Function), std::string("test-token"));
         }
         );
         it(std::string("should inject hCaptcha solution"), [=]() mutable
         {
             std::async([=]() { injectCaptchaSolution(mockPage, std::string("hcaptcha"), std::string("test-token")); });
-            expect(mockPage["evaluate"])->toHaveBeenCalledWith(expect->any(Function), std::string("test-token"));
+            expect(mockPage["evaluate"])->toHaveBeenCalledWith(expect->std::any(Function), std::string("test-token"));
         }
         );
     }

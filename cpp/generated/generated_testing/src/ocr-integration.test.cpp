@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-robot/tests/ocr-integration.test.h"
 
-std::shared_ptr<Buffer> generateTextImage(string text, double width, double height, double fontSize)
+std::shared_ptr<Buffer> generateTextImage(std::string text, double width, double height, double fontSize)
 {
     auto canvas = createCanvas(width, height);
     auto ctx = canvas->getContext(std::string("2d"));
@@ -15,7 +15,7 @@ std::shared_ptr<Buffer> generateTextImage(string text, double width, double heig
 };
 
 
-std::shared_ptr<Buffer> generateMultiLineTextImage(string text, double width, double height, double fontSize)
+std::shared_ptr<Buffer> generateMultiLineTextImage(std::string text, double width, double height, double fontSize)
 {
     auto canvas = createCanvas(width, height);
     shared ctx = canvas->getContext(std::string("2d"));
@@ -241,14 +241,14 @@ Price: $29.99");
             );
             it(std::string("should handle multiple image processing requests"), [=]() mutable
             {
-                auto images = Array(10)->fill(0)->map([=](auto _, auto i) mutable
+                auto images = Array(10)->fill(0)->std::map([=](auto _, auto i) mutable
                 {
                     return generateTextImage(std::string("Test ") + i + string_empty, 300, 100);
                 }
                 );
                 auto startTime = Date->now();
                 shared downscaleImage = (as<any>(robotService))["downscaleImage"]["bind"](robotService);
-                auto results = images->map([=](auto img) mutable
+                auto results = images->std::map([=](auto img) mutable
                 {
                     return downscaleImage(img, 1024);
                 }

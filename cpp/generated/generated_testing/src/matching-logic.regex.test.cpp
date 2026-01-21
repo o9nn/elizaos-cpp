@@ -4,7 +4,7 @@ void Main(void)
 {
     describe(std::string("matchRegex"), [=]() mutable
     {
-        shared content = std::string("this is a test string 123");
+        shared content = std::string("this is a test std::string 123");
         test(std::string("should match when regex pattern matches content"), [=]() mutable
         {
             expect(matchRegex(std::string("t[aeiou]st"), content, object{}))->toBe(true);

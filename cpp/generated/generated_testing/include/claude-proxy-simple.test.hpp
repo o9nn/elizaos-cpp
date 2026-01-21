@@ -10,9 +10,9 @@ class MockRuntime;
 class MockRuntime : public object, public std::enable_shared_from_this<MockRuntime> {
 public:
     using std::enable_shared_from_this<MockRuntime>::shared_from_this;
-    std::function<any(string)> getSetting;
+    std::function<std::any(std::string)> getSetting;
 
-    std::function<std::shared_ptr<Promise<string>>(string, any)> useModel;
+    std::function<std::shared_ptr<Promise<string>>(std::string, std::any)> useModel;
 };
 
 #endif

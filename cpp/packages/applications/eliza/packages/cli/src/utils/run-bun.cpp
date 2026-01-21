@@ -24,7 +24,7 @@ std::future<void> runBunCommand(const std::vector<std::string>& args, const std:
 
         try {
             execa("bun", finalArgs, { cwd, stdio: "inherit" });
-            } catch (error: any) {
+            } catch (error: std::any) {
                 if (error.code == 'ENOENT' || error.message.includes('bun: command not found')) {
                     throw std::runtime_error(`Bun command not found. ${displayBunInstallationTipCompact()}`);
                 }

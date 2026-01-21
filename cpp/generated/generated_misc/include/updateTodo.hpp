@@ -9,9 +9,9 @@ class TaskUpdate;
 class TaskSelection : public object, public std::enable_shared_from_this<TaskSelection> {
 public:
     using std::enable_shared_from_this<TaskSelection>::shared_from_this;
-    string taskId;
+    std::string taskId;
 
-    string taskName;
+    std::string taskName;
 
     boolean isFound;
 };
@@ -19,21 +19,21 @@ public:
 class TaskUpdate : public object, public std::enable_shared_from_this<TaskUpdate> {
 public:
     using std::enable_shared_from_this<TaskUpdate>::shared_from_this;
-    string name;
+    std::string name;
 
-    string description;
+    std::string description;
 
-    any priority;
+    std::any priority;
 
     boolean urgent;
 
-    any dueDate;
+    std::any dueDate;
 
-    any recurring;
+    std::any recurring;
 };
 
-extern string extractTaskTemplate;
-extern string extractUpdateTemplate;
+extern std::string extractTaskTemplate;
+extern std::string extractUpdateTemplate;
 std::shared_ptr<Promise<std::shared_ptr<TaskSelection>>> extractTaskSelection(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<Memory> message, array<std::shared_ptr<Task>> availableTasks);
 
 std::shared_ptr<Promise<any>> extractTaskUpdate(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<Memory> message, std::shared_ptr<Task> task);

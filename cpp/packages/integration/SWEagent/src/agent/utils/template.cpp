@@ -25,7 +25,7 @@ std::string renderAdvancedTemplate(const std::string& template, const std::unord
         }
 
         return array;
-        .map((item, index) => {
+        .std::map((item, index) => {
             const auto loopContext = {;
                 ...context,
                 [itemVar]: item,

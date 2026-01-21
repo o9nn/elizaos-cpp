@@ -26,7 +26,7 @@ std::optional<ProviderConfig> getAvailableProvider(IAgentRuntime runtime, ModelT
             }
 
             // Verify the model is actually configured
-            const auto models = config.models<string, any>;
+            const auto models = config.models<std::string, any>;
             if (!models[modelType]) {
                 logger.debug(`Provider ${config.name} missing model configuration for ${modelType}`);
                 continue;

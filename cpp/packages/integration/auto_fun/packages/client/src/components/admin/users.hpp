@@ -17,7 +17,7 @@ namespace elizaos {
 struct User {
     std::string id;
     std::string address;
-    string | null name;
+    std::string | null name;
     std::string createdAt;
     std::optional<std::string> lastActive;
     double points;
@@ -54,6 +54,6 @@ struct Transaction {
 
 void AdminUsersList();
 
-void AdminUserDetails({ address: string } { address });
+void AdminUserDetails({ address: std::string } { address });
 
 } // namespace elizaos

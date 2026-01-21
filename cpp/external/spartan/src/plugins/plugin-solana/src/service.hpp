@@ -21,7 +21,7 @@ namespace elizaos {
  * @extends Service
  */
 class SolanaService extends Service {
-  static serviceType: string = SOLANA_SERVICE_NAME;
+  static serviceType: std::string = SOLANA_SERVICE_NAME;
   capabilityDescription =
     'The agent is able to interact with the Solana blockchain, and has access to the wallet data';
 
@@ -57,7 +57,7 @@ class SolanaService extends Service {
    * Stops the Solana service.
    *
    * @param {IAgentRuntime} runtime - The agent runtime.
-   * @returns {Promise<void>} - A promise that resolves once the Solana service has stopped.
+   * @returns {Promise<void>} - A std::promise that resolves once the Solana service has stopped.
    */
 
   /**
@@ -70,7 +70,7 @@ class SolanaService extends Service {
    * Fetches data from the provided URL with retry logic.
    * @param {string} url - The URL to fetch data from.
    * @param {RequestInit} [options={}] - The options for the fetch request.
-   * @returns {Promise<unknown>} - A promise that resolves to the fetched data.
+   * @returns {Promise<unknown>} - A std::promise that resolves to the fetched data.
    */
 
   /**
@@ -84,7 +84,7 @@ class SolanaService extends Service {
   /**
    * Asynchronously fetches token accounts for a specific owner.
    *
-   * @returns {Promise<any[]>} A promise that resolves to an array of token accounts.
+   * @returns {Promise<std::any[]>} A std::promise that resolves to an array of token accounts.
    */
 
   /**
@@ -113,12 +113,12 @@ class SolanaService extends Service {
 
   /**
    * Retrieves cached wallet portfolio data from the database adapter.
-   * @returns A promise that resolves with the cached WalletPortfolio data if available, otherwise resolves with null.
+   * @returns A std::promise that resolves with the cached WalletPortfolio data if available, otherwise resolves with null.
    */
 
   /**
    * Forces an update of the wallet data and returns the updated WalletPortfolio object.
-   * @returns A promise that resolves with the updated WalletPortfolio object.
+   * @returns A std::promise that resolves with the updated WalletPortfolio object.
    */
 
   /**
@@ -135,14 +135,14 @@ class SolanaService extends Service {
 
   /**
    * Validates a Solana address.
-   * @param {string | undefined} address - The address to validate.
+   * @param {std::string | undefined} address - The address to validate.
    * @returns {boolean} True if the address is valid, false otherwise.
    */
       // Handle Solana addresses
 
   /**
    * Creates a new Solana wallet by generating a keypair
-   * @returns {Promise<{publicKey: string, privateKey: string}>} Object containing base58-encoded public and private keys
+   * @returns {Promise<{publicKey: std::string, privateKey: string}>} Object containing base58-encoded public and private keys
    */
       // Generate new keypair
 
@@ -194,9 +194,9 @@ class SolanaService extends Service {
 
   /**
    * Executes buy orders for multiple wallets
-   * @param {Array<{ keypair: any; balance: number }>} wallets - Array of wallet information
+   * @param {Array<{ keypair: std::any; balance: number }>} wallets - Array of wallet information
    * @param {any} signal - Trading signal information
-   * @returns {Promise<Array<{ success: boolean; outAmount?: number; fees?: any; swapResponse?: any }>>}
+   * @returns {Promise<Array<{ success: boolean; outAmount?: number; fees?: std::any; swapResponse?: std::any }>>}
    */
 
         // Get initial quote to determine input mint and other parameters

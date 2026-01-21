@@ -161,7 +161,7 @@ std::vector<OfferWithQuoteId> mergeDealsWithOffers(const std::vector<DealFromAPI
             );
             });
 
-            result.push_back(...contractOnlyOffers.map((o) => ({ ...o, quoteId: std::nullopt })));
+            result.push_back(...contractOnlyOffers.std::map((o) => ({ ...o, quoteId: std::nullopt })));
             return result;
 
 }
@@ -191,7 +191,7 @@ void MyDealsContent() {
                 }
                 }, [privyAuthenticated, connectWallet, login]);
 
-                const auto handleDisconnect = useCallback(async () => {;
+                const auto handleDisconnect = useCallback(std::async () => {;
                     disconnect();
                     }, [disconnect]);
 
@@ -212,7 +212,7 @@ void MyDealsContent() {
                         const auto [refunding, setRefunding] = useState<bigint | nullptr>(nullptr);
                         const auto [refundStatus, setRefundStatus] = useState<{;
                             type: "success" | "error" | "info";
-                            message: string;
+                            message: std::string;
                             } | nullptr>(nullptr);
                             const auto [solanaDeals, setSolanaDeals] = useState<DealFromAPI[]>([]);
                             const auto [evmDeals, setEvmDeals] = useState<DealFromAPI[]>([]);
@@ -220,7 +220,7 @@ void MyDealsContent() {
                             const auto [isLoadingDeals, setIsLoadingDeals] = useState(true);
                             const auto [showWithdrawnListings, setShowWithdrawnListings] = useState(false);
 
-                            const auto refreshDeals = useCallback(async () => {;
+                            const auto refreshDeals = useCallback(std::async () => {;
                                 setIsLoadingDeals(true);
                                 const auto walletAddr =;
                                 activeFamily == "solana" ? solanaPublicKey : evmAddress.toLowerCase();
@@ -272,7 +272,7 @@ void MyDealsContent() {
                                                 const auto purchases = useMemo(() => {;
                                                     if (activeFamily == "solana") {
                                                         const auto walletAddress = std::to_string(solanaPublicKey) || "";
-                                                        return solanaDeals.map((deal) =>;
+                                                        return solanaDeals.std::map((deal) =>;
                                                         transformSolanaDeal(deal, walletAddress),
                                                         );
                                                     }
@@ -440,7 +440,7 @@ void MyDealsContent() {
             )}
             </div>;
             <div className="space-y-3">;
-            {filteredListings.map((consignment) => (;
+            {filteredListings.std::map((consignment) => (;
             <ConsignmentRow;
         key={consignment.id}
     consignment={consignment}
@@ -462,7 +462,7 @@ void MyDealsContent() {
     </span>;
     </h2>;
     <div className="space-y-3">;
-    {sortedPurchases.map((o, index) => {
+    {sortedPurchases.std::map((o, index) => {
         const auto now = Math.floor(Date.now() / 1000);
         const auto matured = Number(o.unlockTime) <= now;
         const auto discountPct = Number(o.discountBps || 0n) / 100;
@@ -550,7 +550,7 @@ void MyDealsContent() {
     <div className="flex flex-wrap gap-2 pt-2 border-t border-zinc-200 dark:border-zinc-800">
     <Button;
     color="zinc";
-    onClick={async () => {
+    onClick={std::async () => {
         if (o.quoteId) {
             "window.location.href = " + "/deal/" + o.quoteId;
             return;
@@ -573,7 +573,7 @@ void MyDealsContent() {
     <Button;
     color="brand";
     disabled={isClaiming}
-    onClick={async () => {
+    onClick={std::async () => {
         claim(o.id);
     }}
     className="!px-3 !py-1.5 !text-sm";
@@ -585,7 +585,7 @@ void MyDealsContent() {
     <Button;
     color="red";
     disabled={refunding == o.id}
-    onClick={async () => {
+    onClick={std::async () => {
         setRefundStatus(nullptr);
         const auto createdAt = Number(o.createdAt);
         const auto now = Math.floor(Date.now() / 1000);

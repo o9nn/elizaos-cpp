@@ -16,9 +16,9 @@ namespace elizaos {
 
 class ApiError extends Error {
   constructor(
-    public code: string,
-    message: string,
-    public details?: string,
+    public code: std::string,
+    message: std::string,
+    public details?: std::string,
     public status?: number
   ) {
     super(message);

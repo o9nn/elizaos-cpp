@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/client/src/hooks/use-pause.h"
 
-any usePause()
+std::any usePause()
 {
     auto [paused, setPause] = useState<boolean>(false);
     return object{

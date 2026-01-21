@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-list/src/lib/rateLimit.h"
 
-std::shared_ptr<Promise<boolean>> RateLimiter::checkLimit(string key, double limit, double window)
+std::shared_ptr<Promise<boolean>> RateLimiter::checkLimit(std::string key, double limit, double window)
 {
     auto current = std::async([=]() { rateLimitRedis->incr(key); });
     if (current == 1) {
@@ -9,13 +9,13 @@ std::shared_ptr<Promise<boolean>> RateLimiter::checkLimit(string key, double lim
     return current <= limit;
 }
 
-std::shared_ptr<Promise<double>> RateLimiter::getRemainingLimit(string key)
+std::shared_ptr<Promise<double>> RateLimiter::getRemainingLimit(std::string key)
 {
     auto current = std::async([=]() { rateLimitRedis->get(key); });
     return 100 - (parseInt(OR((current), (std::string("0")))));
 }
 
-any rateLimitRedis = std::make_shared<Redis>(OR((process->env->REDIS_URL), (std::string("redis://localhost:6379"))));
+std::any rateLimitRedis = std::make_shared<Redis>(OR((process->env->REDIS_URL), (std::string("redis://localhost:6379"))));
 
 void Main(void)
 {

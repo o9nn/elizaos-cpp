@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/trust_scoreboard/src/pages/api/user/getProfile.h"
 
-any handler(std::shared_ptr<NextApiRequest> req, std::shared_ptr<NextApiResponse> res)
+std::any handler(std::shared_ptr<NextApiRequest> req, std::shared_ptr<NextApiResponse> res)
 {
     auto session = std::async([=]() { getServerSession(req, res, authOptions); });
     if (OR((OR((!session), (!session->user))), (!session->user->connections))) {
@@ -48,7 +48,7 @@ any handler(std::shared_ptr<NextApiRequest> req, std::shared_ptr<NextApiResponse
         auto profileData = std::async([=]() { response->json(); });
         return res->status(200)->json(profileData);
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("Error fetching profile:"), error);
         return res->status(500)->json(object{

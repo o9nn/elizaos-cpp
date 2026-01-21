@@ -27,7 +27,7 @@ public:
     BuyService(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<WalletService> walletService, std::shared_ptr<DataService> dataService, std::shared_ptr<AnalyticsService> analyticsService, std::shared_ptr<TradeMemoryService> tradeMemoryService);
     virtual std::shared_ptr<Promise<void>> initialize();
     virtual std::shared_ptr<Promise<void>> stop();
-    virtual std::shared_ptr<Promise<void>> handleBuySignal(any params);
+    virtual std::shared_ptr<Promise<void>> handleBuySignal(std::any params);
     virtual std::shared_ptr<Promise<void>> updateExpectedOutAmount(std::shared_ptr<BuySignalMessage> signal);
     virtual std::shared_ptr<Promise<object>> executeBuy(std::shared_ptr<BuySignalMessage> signal);
     BuyService(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<WalletService> walletService, std::shared_ptr<DataService> dataService, std::shared_ptr<AnalyticsService> analyticsService);

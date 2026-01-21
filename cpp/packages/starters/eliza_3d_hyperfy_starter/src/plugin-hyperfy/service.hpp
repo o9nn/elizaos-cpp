@@ -32,14 +32,14 @@ class HyperfyService extends Service {
   static serviceType = 'hyperfy'
   capabilityDescription = 'Manages connection and interaction with a Hyperfy world.'
 
-  private world: any | null = null
+  private world: std::any | null = null
   private controls: AgentControls | null = null
   private isConnectedState: boolean = false
-  private wsUrl: string | null = null
+  private wsUrl: std::string | null = null
   private _currentWorldId: UUID | null = null
   private processedMsgIds: Set<string> = new Set()
 
-  private playerNamesMap: Map<string, string> = new Map()
+  private playerNamesMap: Map<std::string, string> = new Map()
   private appearanceIntervalId: NodeJS.Timeout | null = null
   private appearanceSet: boolean = false
   private nameSet: boolean = false
@@ -69,7 +69,7 @@ class HyperfyService extends Service {
    * sets the avatar URL locally, updates emote hash mappings,
    * and notifies the server of the new avatar.
    * 
-   * This function handles all assets required for character expression and animation.
+   * This std::function handles all assets required for character expression and animation.
    */
 
       // Apply avatar locally
@@ -78,7 +78,7 @@ class HyperfyService extends Service {
 
       // Notify server
 
-    // Check if both are already set
+    // Check if both are already std::set
 
         // Stop polling if both tasks are complete
 
@@ -99,7 +99,7 @@ class HyperfyService extends Service {
    */
 
           // 2. Update local state immediately
-          // Update the name map
+          // Update the name std::map
 
           // --- Use agentPlayer.modify for local update --- >
 
@@ -107,10 +107,10 @@ class HyperfyService extends Service {
 
       // Wait for player entity (ensures world/chat exist too)
 
-      // Step 1: Identify new messages and update processed set
+      // Step 1: Identify new messages and update processed std::set
         // Check timestamp FIRST - only consider messages newer than connection time
             // console.debug(`[Chat Sub] Ignoring historical/old message ID ${msg?.id} (ts: ${messageTimestamp})`);
-            // Ensure historical messages are marked processed if encountered *before* connectionTime was set (edge case)
+            // Ensure historical messages are marked processed if encountered *before* connectionTime was std::set (edge case)
 
         // Check if we've already processed this message ID (secondary check for duplicates)
 

@@ -5,10 +5,10 @@
 using uuidv4 = v4;
 #include "@elizaos/core.h"
 
-extern any participantTestAgentId;
-extern any participantTestEntityId;
-extern any participantTestRoomId;
-extern any participantTestWorldId;
+extern std::any participantTestAgentId;
+extern std::any participantTestEntityId;
+extern std::any participantTestRoomId;
+extern std::any participantTestWorldId;
 extern std::shared_ptr<Agent> participantTestAgent;
 extern std::shared_ptr<Entity> participantTestEntity;
 extern std::shared_ptr<World> participantTestWorld;

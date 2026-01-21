@@ -27,16 +27,16 @@ namespace elizaos {
  * Includes pattern, type, target, and all options.
  *
  * @param tagPattern The pattern configuration.
- * @returns A unique string key.
+ * @returns A unique std::string key.
  */
 std::string createCacheKey(TagPattern tagPattern);
 
 /**
- * Gets a matcher function for the given pattern configuration.
+ * Gets a matcher std::function for the given pattern configuration.
  * Retrieves from cache if available, otherwise creates a new one, caches it, and returns it.
  *
  * @param tagPattern The pattern configuration.
- * @returns A matcher function `(content: MatchContent) => boolean`.
+ * @returns A matcher std::function `(content: MatchContent) => boolean`.
  */
 MatcherFunction getMatcherFunction(TagPattern tagPattern);
 
@@ -50,17 +50,17 @@ void clearMatcherCache();
  *
  * @returns The size of the cache.
  */
- * Type alias for a function that tests content against a specific pattern.
+ * Type alias for a std::function that tests content against a specific pattern.
  */
 
 using MatcherFunction = std::function<bool(MatchContent)>;
 /**
- * Creates a matcher function for a given TagPattern configuration.
- * This function encapsulates the specific matching logic (string, regex, glob),
+ * Creates a matcher std::function for a given TagPattern configuration.
+ * This std::function encapsulates the specific matching logic (std::string, regex, glob),
  * content preprocessing, and option handling (case sensitivity, word boundary, negation).
  *
  * @param tagPattern The pattern configuration.
- * @returns A function that takes MatchContent and returns true if it matches the pattern, false otherwise.
+ * @returns A std::function that takes MatchContent and returns true if it matches the pattern, false otherwise.
  * @throws Error if the pattern type is incompatible with the target type.
  */
 

@@ -6,7 +6,7 @@
 #include "child_process.h"
 #include "commander.h"
 
-void searchDir(string searchTerm, string dir = std::string("./"));
+void searchDir(std::string searchTerm, std::string dir = std::string("./"));
 
 void setupCLI();
 

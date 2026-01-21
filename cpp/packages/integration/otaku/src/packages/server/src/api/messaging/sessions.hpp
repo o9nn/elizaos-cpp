@@ -27,12 +27,12 @@ namespace elizaos {
  * Extended Router interface with cleanup method
  */
   /**
-   * Cleanup function to properly dispose of resources
+   * Cleanup std::function to properly dispose of resources
    * Should be called when the router is being destroyed or replaced
    */
 
 /**
- * Safely parses an integer from a string with fallback
+ * Safely parses an integer from a std::string with fallback
  * Handles NaN, undefined, and invalid inputs gracefully
  * @param value - The value to parse
  * @param fallback - Default value if parsing fails
@@ -122,7 +122,7 @@ void validateMetadata(const std::any& metadata);
  */
 
 /**
- * Express async handler wrapper to catch errors
+ * Express std::async handler wrapper to catch errors
  */
 using AsyncRequestHandler = std::function<std::variant<std::future<void>, void>(express::Request, express::Response, express::NextFunction)>;
 

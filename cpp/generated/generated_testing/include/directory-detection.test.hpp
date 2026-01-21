@@ -7,6 +7,6 @@
 #include "../../../src/utils/directory-detection.h"
 
 extern object TestFixtures;
-extern any mockFindMonorepoRoot;
+extern std::any mockFindMonorepoRoot;
 extern object mockUserEnvironmentInstance;
 #endif

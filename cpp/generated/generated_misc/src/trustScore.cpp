@@ -1,8 +1,8 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/communityInvestor/tests/trustScore.h"
 
-any testUserIdGlobalTrustScore = asUUID(uuidv4());
-any testWorldId = asUUID(uuidv4());
-std::function<any(any, any, any)> createFullMockComponentForTrustScore = [=](auto userId, auto profileData, auto runtime) mutable
+std::any testUserIdGlobalTrustScore = asUUID(uuidv4());
+std::any testWorldId = asUUID(uuidv4());
+std::function<std::any(std::any, std::any, std::any)> createFullMockComponentForTrustScore = [=](auto userId, auto profileData, auto runtime) mutable
 {
     return (object{
         object::pair{std::string("id"), asUUID(uuidv4())}, 
@@ -16,7 +16,7 @@ std::function<any(any, any, any)> createFullMockComponentForTrustScore = [=](aut
         object::pair{std::string("data"), profileData}
     });
 };
-std::function<any(string, double, any, any, any, double)> createRecForTrustScore = [=](auto id, auto timestamp, P2 type, auto conviction, auto metric, auto priceAtRec = undefined) mutable
+std::function<std::any(std::string, double, std::any, std::any, std::any, double)> createRecForTrustScore = [=](auto id, auto timestamp, P2 type, auto conviction, auto metric, auto priceAtRec = undefined) mutable
 {
     return (object{
         object::pair{std::string("id"), asUUID(uuidv4())}, 
@@ -40,7 +40,7 @@ array<std::shared_ptr<TestCase>> recencyWeightTests = array<std::shared_ptr<Test
         auto service = std::make_shared<CommunityInvestorService>(runtime);
         auto weight = service->getRecencyWeight(Date->now());
         if (Math->abs(weight - 1) > 0.015) {
-            throw any(std::make_shared<Error>(std::string("Recency Weight: Expected ~1.0, got ") + weight + string_empty));
+            throw std::any(std::make_shared<Error>(std::string("Recency Weight: Expected ~1.0, got ") + weight + string_empty));
         }
         logger->info(std::string("TrustScore.Recency: 1.0 - Passed"));
     }
@@ -54,7 +54,7 @@ array<std::shared_ptr<TestCase>> recencyWeightTests = array<std::shared_ptr<Test
         auto sixMonthsInMillis = recencyMonths * 30.44 * 24 * 60 * 60 * 1000;
         auto weight = service->getRecencyWeight(Date->now() - sixMonthsInMillis - 1000);
         if (Math->abs(weight - 0.1) > 0.01) {
-            throw any(std::make_shared<Error>(std::string("Recency Weight: Expected ~0.1, got ") + weight + string_empty));
+            throw std::any(std::make_shared<Error>(std::string("Recency Weight: Expected ~0.1, got ") + weight + string_empty));
         }
         logger->info(std::string("TrustScore.Recency: 0.1 older - Passed"));
     }
@@ -65,10 +65,10 @@ array<std::shared_ptr<TestCase>> convictionWeightTests = array<std::shared_ptr<T
     object::pair{std::string("fn"), [=](auto runtime) mutable
     {
         auto service = std::make_shared<CommunityInvestorService>(runtime);
-        if (service->getConvictionWeight(Conviction->NONE) != 0.25) throw any(std::make_shared<Error>(std::string("NONE weight mismatch")));
-        if (service->getConvictionWeight(Conviction->LOW) != 0.5) throw any(std::make_shared<Error>(std::string("LOW weight mismatch")));
-        if (service->getConvictionWeight(Conviction->MEDIUM) != 1) throw any(std::make_shared<Error>(std::string("MEDIUM mismatch")));
-        if (service->getConvictionWeight(Conviction->HIGH) != 1.5) throw any(std::make_shared<Error>(std::string("HIGH mismatch")));
+        if (service->getConvictionWeight(Conviction->NONE) != 0.25) throw std::any(std::make_shared<Error>(std::string("NONE weight mismatch")));
+        if (service->getConvictionWeight(Conviction->LOW) != 0.5) throw std::any(std::make_shared<Error>(std::string("LOW weight mismatch")));
+        if (service->getConvictionWeight(Conviction->MEDIUM) != 1) throw std::any(std::make_shared<Error>(std::string("MEDIUM mismatch")));
+        if (service->getConvictionWeight(Conviction->HIGH) != 1.5) throw std::any(std::make_shared<Error>(std::string("HIGH mismatch")));
         logger->info(std::string("TrustScore.Conviction: Weights - Passed"));
     }
     }
@@ -99,9 +99,9 @@ array<std::shared_ptr<TestCase>> calculateScoreLogicTests = array<std::shared_pt
                     return true;
                 };
                 std::async([=]() { service->calculateUserTrustScore(testUserIdGlobalTrustScore, runtime, testWorldId); });
-                if (!createdCompData) throw any(std::make_shared<Error>(std::string("createComponent was not effectively called")));
+                if (!createdCompData) throw std::any(std::make_shared<Error>(std::string("createComponent was not effectively called")));
                 if (OR((createdCompData["trustScore"] != 0), ((OR((createdCompData["recommendations"]), (array<any>())))["length"] != 0))) {
-                    throw any(std::make_shared<Error>(std::string("New user score expected 0, got ") + createdCompData["trustScore"] + string_empty));
+                    throw std::any(std::make_shared<Error>(std::string("New user score expected 0, got ") + createdCompData["trustScore"] + string_empty));
                 }
                 logger->info(std::string("TrustScore.Calc: New user - Passed"));
             }
@@ -175,10 +175,10 @@ array<std::shared_ptr<TestCase>> calculateScoreLogicTests = array<std::shared_pt
                     return false;
                 };
                 std::async([=]() { service->calculateUserTrustScore(testUserIdGlobalTrustScore, runtime, testWorldId); });
-                if (!updatedCompData) throw any(std::make_shared<Error>(std::string("updateComponent was not effectively called")));
+                if (!updatedCompData) throw std::any(std::make_shared<Error>(std::string("updateComponent was not effectively called")));
                 auto expectedFinalScore = Math->max(-100, Math->min(100, basePerformance));
                 if (Math->abs(updatedCompData["trustScore"] - expectedFinalScore) > 0.01) {
-                    throw any(std::make_shared<Error>(std::string("Expected score ") + expectedFinalScore->toFixed(2) + std::string(", got ") + updatedCompData["trustScore"]["toFixed"](2) + string_empty));
+                    throw std::any(std::make_shared<Error>(std::string("Expected score ") + expectedFinalScore->toFixed(2) + std::string(", got ") + updatedCompData["trustScore"]["toFixed"](2) + string_empty));
                 }
                 logger->info(std::string("TrustScore.Calc: Single good BUY - Passed"));
             }
@@ -244,9 +244,9 @@ array<std::shared_ptr<TestCase>> calculateScoreLogicTests = array<std::shared_pt
                     return true;
                 };
                 std::async([=]() { service->calculateUserTrustScore(testUserIdGlobalTrustScore, runtime, testWorldId); });
-                if (!updatedCompData) throw any(std::make_shared<Error>(std::string("updateComponent was not effectively called for scam BUY")));
+                if (!updatedCompData) throw std::any(std::make_shared<Error>(std::string("updateComponent was not effectively called for scam BUY")));
                 if (Math->abs(updatedCompData["trustScore"] - -100) > 0.01) {
-                    throw any(std::make_shared<Error>(std::string("Expected score ~-100 for scam BUY, got ") + updatedCompData["trustScore"]["toFixed"](2) + string_empty));
+                    throw std::any(std::make_shared<Error>(std::string("Expected score ~-100 for scam BUY, got ") + updatedCompData["trustScore"]["toFixed"](2) + string_empty));
                 }
                 logger->info(std::string("TrustScore.Calc: Single scam BUY - Passed"));
             }
@@ -311,9 +311,9 @@ array<std::shared_ptr<TestCase>> calculateScoreLogicTests = array<std::shared_pt
                     return false;
                 };
                 std::async([=]() { service->calculateUserTrustScore(testUserIdGlobalTrustScore, runtime, testWorldId); });
-                if (!updatedCompData) throw any(std::make_shared<Error>(std::string("updateComponent was not effectively called")));
+                if (!updatedCompData) throw std::any(std::make_shared<Error>(std::string("updateComponent was not effectively called")));
                 if (Math->abs(updatedCompData["trustScore"] - 100) > 0.01) {
-                    throw any(std::make_shared<Error>(std::string("Expected score clamped at 100, got ") + updatedCompData["trustScore"]["toFixed"](2) + string_empty));
+                    throw std::any(std::make_shared<Error>(std::string("Expected score clamped at 100, got ") + updatedCompData["trustScore"]["toFixed"](2) + string_empty));
                 }
                 logger->info(std::string("TrustScore.Calc: Clamping at +100 - Passed"));
             }
@@ -378,9 +378,9 @@ array<std::shared_ptr<TestCase>> calculateScoreLogicTests = array<std::shared_pt
                     return false;
                 };
                 std::async([=]() { service->calculateUserTrustScore(testUserIdGlobalTrustScore, runtime, testWorldId); });
-                if (!updatedCompData) throw any(std::make_shared<Error>(std::string("updateComponent was not effectively called")));
+                if (!updatedCompData) throw std::any(std::make_shared<Error>(std::string("updateComponent was not effectively called")));
                 if (Math->abs(updatedCompData["trustScore"] - -100) > 0.01) {
-                    throw any(std::make_shared<Error>(std::string("Expected score clamped at -100, got ") + updatedCompData["trustScore"]["toFixed"](2) + string_empty));
+                    throw std::any(std::make_shared<Error>(std::string("Expected score clamped at -100, got ") + updatedCompData["trustScore"]["toFixed"](2) + string_empty));
                 }
                 logger->info(std::string("TrustScore.Calc: Clamping at -100 - Passed"));
             }
@@ -457,10 +457,10 @@ array<std::shared_ptr<TestCase>> calculateScoreLogicTests = array<std::shared_pt
                     return false;
                 };
                 std::async([=]() { service->calculateUserTrustScore(testUserIdGlobalTrustScore, runtime, testWorldId); });
-                if (!updatedCompData) throw any(std::make_shared<Error>(std::string("updateComponent was not effectively called")));
-                if (getTokenAPIDataCalledCount == 0) throw any(std::make_shared<Error>(std::string("getTokenAPIData was NOT called for re-eval")));
+                if (!updatedCompData) throw std::any(std::make_shared<Error>(std::string("updateComponent was not effectively called")));
+                if (getTokenAPIDataCalledCount == 0) throw std::any(std::make_shared<Error>(std::string("getTokenAPIData was NOT called for re-eval")));
                 if (Math->abs((OR((const_(updatedCompData["recommendations"])[0]["metrics"]["potentialProfitPercent"]), (0))) - 20) > 0.01) {
-                    throw any(std::make_shared<Error>(std::string("Metric not re-evaluated correctly to 20%")));
+                    throw std::any(std::make_shared<Error>(std::string("Metric not re-evaluated correctly to 20%")));
                 }
                 logger->info(std::string("TrustScore.Calc: Metric re-evaluation due to interval - Passed"));
             }
@@ -520,10 +520,10 @@ array<std::shared_ptr<TestCase>> calculateScoreLogicTests = array<std::shared_pt
                     return as<std::shared_ptr<TokenAPIData>>(object{});
                 };
                 std::async([=]() { service->calculateUserTrustScore(testUserIdGlobalTrustScore, runtime, testWorldId); });
-                if (!updatedCompData) throw any(std::make_shared<Error>(std::string("updateComponent was not effectively called (freshMetrics)")));
-                if (getTokenAPIDataCalledCount > 0) throw any(std::make_shared<Error>(std::string("getTokenAPIData WAS called for fresh metric, but should not have been.")));
+                if (!updatedCompData) throw std::any(std::make_shared<Error>(std::string("updateComponent was not effectively called (freshMetrics)")));
+                if (getTokenAPIDataCalledCount > 0) throw std::any(std::make_shared<Error>(std::string("getTokenAPIData WAS called for fresh metric, but should not have been.")));
                 if (Math->abs((OR((const_(updatedCompData["recommendations"])[0]["metrics"]["potentialProfitPercent"]), (0))) - 15) > 0.01) {
-                    throw any(std::make_shared<Error>(std::string("Existing fresh metric was incorrectly changed")));
+                    throw std::any(std::make_shared<Error>(std::string("Existing fresh metric was incorrectly changed")));
                 }
                 logger->info(std::string("TrustScore.Calc: Fresh metric NOT re-evaluated - Passed"));
             }

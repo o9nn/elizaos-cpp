@@ -1,9 +1,9 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/tests/unit/utils/handle-error.test.h"
 
-std::function<any(double)> originalmockExit = process->exit;
-any mockExit = mock([=](auto code) mutable
+std::function<std::any(double)> originalmockExit = process->exit;
+std::any mockExit = mock([=](auto code) mutable
 {
-    throw any(std::make_shared<Error>(std::string("process.exit called with code ") + code + string_empty));
+    throw std::any(std::make_shared<Error>(std::string("process.exit called with code ") + code + string_empty));
 }
 );
 
@@ -42,7 +42,7 @@ void Main(void)
             )->toThrow(std::string("process.exit called with code 1"));
         }
         );
-        it(std::string("should handle string errors"), [=]() mutable
+        it(std::string("should handle std::string errors"), [=]() mutable
         {
             shared error = std::string("String error message");
             expect([=]() mutable

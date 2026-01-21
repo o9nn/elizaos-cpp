@@ -410,12 +410,12 @@ void Main(void)
                 expect(firstBatch)->toHaveLength(5);
                 auto secondBatch = std::async([=]() { agentServer->getMessagesForChannel(channelId, 5, const_(firstBatch)[firstBatch->get_length() - 1]->createdAt); });
                 expect(secondBatch)->toHaveLength(5);
-                auto firstIds = firstBatch->map([=](auto m) mutable
+                auto firstIds = firstBatch->std::map([=](auto m) mutable
                 {
                     return m->id;
                 }
                 );
-                shared secondIds = secondBatch->map([=](auto m) mutable
+                shared secondIds = secondBatch->std::map([=](auto m) mutable
                 {
                     return m->id;
                 }

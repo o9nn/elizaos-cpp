@@ -70,7 +70,7 @@ void Main(void)
             console->log(std::string("Transaction sent successfully!"));
             console->log(std::string("Signature:"), txSignature);
         }
-        catch (const any& err)
+        catch (const std::any& err)
         {
             console->error(std::string("Transaction failed:"), err);
         }

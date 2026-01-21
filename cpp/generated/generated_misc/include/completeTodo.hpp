@@ -9,14 +9,14 @@ class TaskCompletion;
 class TaskCompletion : public object, public std::enable_shared_from_this<TaskCompletion> {
 public:
     using std::enable_shared_from_this<TaskCompletion>::shared_from_this;
-    string taskId;
+    std::string taskId;
 
-    string taskName;
+    std::string taskName;
 
     boolean isFound;
 };
 
-extern string extractCompletionTemplate;
+extern std::string extractCompletionTemplate;
 std::shared_ptr<Promise<std::shared_ptr<TaskCompletion>>> extractTaskCompletion(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<Memory> message, array<std::shared_ptr<TodoData>> availableTasks, std::shared_ptr<State> state);
 
 extern std::shared_ptr<Action> completeTodoAction;

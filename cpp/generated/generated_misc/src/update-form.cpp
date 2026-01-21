@@ -23,7 +23,7 @@ std::shared_ptr<Action> updateFormAction = object{
     {
         auto formsService = runtime->getService<std::shared_ptr<FormsService>>(std::string("forms"));
         if (!formsService) {
-            throw any(std::make_shared<Error>(std::string("Forms service not available")));
+            throw std::any(std::make_shared<Error>(std::string("Forms service not available")));
         }
         auto activeForms = std::async([=]() { formsService->listForms(std::string("active")); });
         if (activeForms->length == 0) {
@@ -36,7 +36,7 @@ std::shared_ptr<Action> updateFormAction = object{
                 object::pair{std::string("message"), std::string("No active forms")}
             };
         }
-        any targetForm;
+        std::any targetForm;
         shared specifiedFormId = OR((OR((options["formId"]), (state->data->activeFormId))), (state->values->activeFormId));
         if (specifiedFormId) {
             targetForm = activeForms->find([=](auto f) mutable
@@ -97,7 +97,7 @@ Remaining required fields in current step:");
                     remainingRequired->forEach([=](auto field) mutable
                     {
                         responseText += std::string("\
-- ") + field["label"] + string_empty + (field["description"]) ? any(std::string(": ") + field["description"] + string_empty) : any(string_empty) + string_empty;
+- ") + field["label"] + string_empty + (field["description"]) ? std::any(std::string(": ") + field["description"] + string_empty) : std::any(string_empty) + string_empty;
                     }
                     );
                 }
@@ -156,7 +156,7 @@ Remaining required fields in current step:");
     }, object{
         object::pair{std::string("name"), std::string("assistant")}, 
         object::pair{std::string("content"), object{
-            object::pair{std::string("text"), std::string("Perfect! I've recorded your email as john.smith@example.com. The last field is optional - would you like to include a message?")}, 
+            object::pair{std::string("text"), std::string("Perfect! I've recorded your email as john.smith@example.com. The last field is std::optional - would you like to include a message?")}, 
             object::pair{std::string("actions"), array<string>{ std::string("UPDATE_FORM") }}
         }}
     } } }}

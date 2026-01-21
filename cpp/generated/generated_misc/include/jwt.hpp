@@ -9,15 +9,15 @@ using jwt = _default;
 class AuthTokenPayload;
 class AuthenticatedRequest;
 
-extern string JWT_SECRET;
+extern std::string JWT_SECRET;
 class AuthTokenPayload : public object, public std::enable_shared_from_this<AuthTokenPayload> {
 public:
     using std::enable_shared_from_this<AuthTokenPayload>::shared_from_this;
-    string userId;
+    std::string userId;
 
-    string email;
+    std::string email;
 
-    string username;
+    std::string username;
 
     boolean isAdmin;
 
@@ -29,25 +29,25 @@ public:
 class AuthenticatedRequest : public Request, public std::enable_shared_from_this<AuthenticatedRequest> {
 public:
     using std::enable_shared_from_this<AuthenticatedRequest>::shared_from_this;
-    string userId;
+    std::string userId;
 
-    string userEmail;
+    std::string userEmail;
 
-    string username;
+    std::string username;
 
     boolean isAdmin;
 
     boolean isServerAuthenticated;
 };
 
-string generateAuthToken(string userId, string email, string username, boolean isAdmin = undefined);
+std::string generateAuthToken(std::string userId, std::string email, std::string username, boolean isAdmin = undefined);
 
-any requireAuth(std::shared_ptr<AuthenticatedRequest> req, std::shared_ptr<Response> res, std::shared_ptr<NextFunction> next);
+std::any requireAuth(std::shared_ptr<AuthenticatedRequest> req, std::shared_ptr<Response> res, std::shared_ptr<NextFunction> next);
 
-any optionalAuth(std::shared_ptr<AuthenticatedRequest> req, std::shared_ptr<NextFunction> next);
+std::any optionalAuth(std::shared_ptr<AuthenticatedRequest> req, std::shared_ptr<NextFunction> next);
 
-any requireAuthOrApiKey(std::shared_ptr<AuthenticatedRequest> req, std::shared_ptr<Response> res, std::shared_ptr<NextFunction> next);
+std::any requireAuthOrApiKey(std::shared_ptr<AuthenticatedRequest> req, std::shared_ptr<Response> res, std::shared_ptr<NextFunction> next);
 
-any requireAdmin(std::shared_ptr<AuthenticatedRequest> req, std::shared_ptr<Response> res, std::shared_ptr<NextFunction> next);
+std::any requireAdmin(std::shared_ptr<AuthenticatedRequest> req, std::shared_ptr<Response> res, std::shared_ptr<NextFunction> next);
 
 #endif

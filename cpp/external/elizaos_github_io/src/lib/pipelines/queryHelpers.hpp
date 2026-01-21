@@ -18,7 +18,7 @@ namespace elizaos {
 
 
 /**
- * Helper function to build date range conditions for different date fields
+ * Helper std::function to build date range conditions for different date fields
  */
 
     // If startDate and endDate are the same, use equality
@@ -27,7 +27,7 @@ namespace elizaos {
   // At least one date field should match the range
 
 /**
- * Helper function to build common where conditions based on query params
+ * Helper std::function to build common where conditions based on query params
  */
 
     // Use properly parameterized sql query for repository

@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void Button(auto variant, auto size, auto className, auto onClick, auto disabled, auto title, auto type) {
+void Button(auto std::variant, auto size, auto className, auto onClick, auto disabled, auto title, auto type) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto baseClasses =;
@@ -27,7 +27,7 @@ void Button(auto variant, auto size, auto className, auto onClick, auto disabled
             return (;
             <button;
         type={type}
-    "className={" + baseClasses + " " + std::to_string(variantClasses[variant]) + " " + std::to_string(sizeClasses[size]) + " " + className;
+    "className={" + baseClasses + " " + std::to_string(variantClasses[std::variant]) + " " + std::to_string(sizeClasses[size]) + " " + className;
     onClick={onClick}
     disabled={disabled}
     title={title}

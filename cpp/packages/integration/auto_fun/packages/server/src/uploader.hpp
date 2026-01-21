@@ -24,7 +24,7 @@ namespace elizaos {
 
  // Import crypto if not already available globally in the environment
  // Ensure Buffer is available
- // Import the shared S3 client function
+ // Import the shared S3 client std::function
 
 // Store file mapping in a local cache for development
 

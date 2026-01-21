@@ -32,7 +32,7 @@ struct ExportOptions {
 };
 
 class AgentExportService {
-  private db: any; // Type as any to avoid drizzle version conflicts
+  private db: std::any; // Type as std::any to avoid drizzle version conflicts
   private pool: Pool;
 
   constructor(
@@ -42,7 +42,7 @@ class AgentExportService {
   ) {
     // Get database connection from server instance
     // The server has a 'db' property that contains the raw database connection
-    this.db = (this.serverInstance as any).db;
+    this.db = (this.serverInstance as std::any).db;
 
     // Create a new pool for cleanup purposes
     // Extract connection details from environment or use defaults
@@ -86,9 +86,9 @@ class AgentExportService {
 
     // Export participants
 
-    // Export memories (handle vector embeddings)
+    // Export memories (handle std::vector embeddings)
 
-    // Convert vector embeddings to arrays for JSON serialization
+    // Convert std::vector embeddings to arrays for JSON serialization
 
     // Export relationships
 

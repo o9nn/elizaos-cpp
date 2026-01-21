@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-experience/tests/integration.test.h"
 
-string detectDomain(string text)
+std::string detectDomain(std::string text)
 {
     auto domains = object{
         object::pair{std::string("shell"), array<string>{ std::string("command"), std::string("terminal"), std::string("bash"), std::string("shell"), std::string("execute"), std::string("script") }}, 
@@ -24,7 +24,7 @@ string detectDomain(string text)
 };
 
 
-std::function<any()> tuuid = [=]() mutable
+std::function<std::any()> tuuid = [=]() mutable
 {
     return as<std::shared_ptr<UUID>>(uuidv4());
 };
@@ -38,14 +38,14 @@ std::shared_ptr<Provider> mockRecentProvider = object{
     object::pair{std::string("description"), std::string("Mock recent experiences provider")}, 
     object::pair{std::string("get"), vi->fn()}
 };
-any mockRuntime = as<std::shared_ptr<IAgentRuntime>>(as<any>(object{
+std::any mockRuntime = as<std::shared_ptr<IAgentRuntime>>(as<any>(object{
     object::pair{std::string("agentId"), tuuid()}, 
     object::pair{std::string("getService"), vi->fn()}, 
     object::pair{std::string("useModel"), vi->fn()}, 
     object::pair{std::string("emitEvent"), vi->fn()}, 
     object::pair{std::string("providers"), array<any>{ mockRAGProvider, mockRecentProvider }}
 }));
-std::function<any(string, any)> createMockMessage = [=](auto text, auto entityId = undefined) mutable
+std::function<std::any(std::string, std::any)> createMockMessage = [=](auto text, auto entityId = undefined) mutable
 {
     return (object{
         object::pair{std::string("id"), tuuid()}, 
@@ -59,7 +59,7 @@ std::function<any(string, any)> createMockMessage = [=](auto text, auto entityId
         object::pair{std::string("embedding"), array<any>()}
     });
 };
-std::function<any(any)> createMockState = [=](auto overrides = object{}) mutable
+std::function<std::any(std::any)> createMockState = [=](auto overrides = object{}) mutable
 {
     return (utils::assign(object{
         object::pair{std::string("values"), OR((overrides->values), (object{}))}, 
@@ -135,7 +135,7 @@ void Main(void)
             );
             it(std::string("should have all required providers"), [=]() mutable
             {
-                auto providerNames = OR((experiencePlugin->providers->map([=](auto p) mutable
+                auto providerNames = OR((experiencePlugin->providers->std::map([=](auto p) mutable
                 {
                     return p["name"];
                 }
@@ -146,7 +146,7 @@ void Main(void)
             );
             it(std::string("should have experience evaluator"), [=]() mutable
             {
-                auto evaluatorNames = OR((experiencePlugin->evaluators->map([=](auto e) mutable
+                auto evaluatorNames = OR((experiencePlugin->evaluators->std::map([=](auto e) mutable
                 {
                     return e["name"];
                 }
@@ -244,7 +244,7 @@ void Main(void)
                 auto apiExperiences = std::async([=]() { experienceService->queryExperiences(object{
                     object::pair{std::string("domain"), std::string("network")}
                 }); });
-                auto outcomes = std::make_shared<Set>(apiExperiences->map([=](auto e) mutable
+                auto outcomes = std::make_shared<Set>(apiExperiences->std::map([=](auto e) mutable
                 {
                     return e->outcome;
                 }

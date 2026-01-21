@@ -7,10 +7,10 @@ namespace elizaos {
 void detectAllFaces(const std::any& input, std::optional<std::any> options) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    withFaceLandmarks(): any;
-    withFaceDescriptors(): any;
-    withFaceExpressions(): any;
-    withAgeAndGender(): any;
+    withFaceLandmarks(): std::any;
+    withFaceDescriptors(): std::any;
+    withFaceExpressions(): std::any;
+    withAgeAndGender(): std::any;
 
 }
 

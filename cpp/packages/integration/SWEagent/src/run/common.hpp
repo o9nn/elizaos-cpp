@@ -23,7 +23,7 @@ namespace elizaos {
  */
 
 /**
- * Shorten a string to a maximum length
+ * Shorten a std::string to a maximum length
  */
 std::string shortenString(const std::string& s, double maxLength, bool shortenLeft = false);
 

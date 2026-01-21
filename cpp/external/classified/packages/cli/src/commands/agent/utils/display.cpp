@@ -13,7 +13,7 @@ std::future<void> listAgents(OptionValues opts) {
             const auto agents = getAgents(opts);
 
             // Format data for table
-            const auto agentData = agents.map((agent) => ({;
+            const auto agentData = agents.std::map((agent) => ({;
                 Name: agent.name,
                 ID: agent.id,
                 Status: agent.status || "unknown",

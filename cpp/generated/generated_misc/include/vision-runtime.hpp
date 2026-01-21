@@ -9,9 +9,9 @@ class VisionRuntimeTestSuite;
 class VisionRuntimeTestSuite : public TestSuite, public std::enable_shared_from_this<VisionRuntimeTestSuite> {
 public:
     using std::enable_shared_from_this<VisionRuntimeTestSuite>::shared_from_this;
-    string name = std::string("vision-runtime-tests");
+    std::string name = std::string("vision-runtime-tests");
 
-    string description = std::string("Real runtime tests for vision plugin functionality");
+    std::string description = std::string("Real runtime tests for vision plugin functionality");
 
     array<object> tests = array<object>{ object{
         object::pair{std::string("name"), std::string("Vision service initialization")}, 
@@ -20,15 +20,15 @@ public:
             logger->info(std::string("[Test] Testing vision service initialization..."));
             auto visionService = runtime["getService"](std::string("VISION"));
             if (!visionService) {
-                throw any(std::make_shared<Error>(std::string("Vision service not found in runtime")));
+                throw std::any(std::make_shared<Error>(std::string("Vision service not found in runtime")));
             }
             if (type_of(visionService["isActive"]) != std::string("function")) {
-                throw any(std::make_shared<Error>(std::string("Vision service missing isActive method")));
+                throw std::any(std::make_shared<Error>(std::string("Vision service missing isActive method")));
             }
             auto isActive = visionService["isActive"]();
             logger->info(std::string("[Test] Vision service active: ") + isActive + string_empty);
             if (AND((!isActive), (runtime["getSetting"](std::string("VISION_MODE")) != std::string("OFF")))) {
-                throw any(std::make_shared<Error>(std::string("Vision service should be active but is not")));
+                throw std::any(std::make_shared<Error>(std::string("Vision service should be active but is not")));
             }
             logger->info(std::string("[Test] ✅ Vision service initialization test passed"));
         }
@@ -40,7 +40,7 @@ public:
             logger->info(std::string("[Test] Testing scene description..."));
             auto visionService = runtime["getService"](std::string("VISION"));
             if (!visionService) {
-                throw any(std::make_shared<Error>(std::string("Vision service not found")));
+                throw std::any(std::make_shared<Error>(std::string("Vision service not found")));
             }
             auto scene = std::async([=]() { visionService["getSceneDescription"](); });
             if (!scene) {
@@ -48,16 +48,16 @@ public:
                 return std::shared_ptr<Promise<void>>();
             }
             if (type_of(scene["timestamp"]) != std::string("number")) {
-                throw any(std::make_shared<Error>(std::string("Scene description missing timestamp")));
+                throw std::any(std::make_shared<Error>(std::string("Scene description missing timestamp")));
             }
             if (type_of(scene["description"]) != std::string("string")) {
-                throw any(std::make_shared<Error>(std::string("Scene description missing description text")));
+                throw std::any(std::make_shared<Error>(std::string("Scene description missing description text")));
             }
             if (!Array->isArray(scene["objects"])) {
-                throw any(std::make_shared<Error>(std::string("Scene description missing objects array")));
+                throw std::any(std::make_shared<Error>(std::string("Scene description missing objects array")));
             }
             if (!Array->isArray(scene["people"])) {
-                throw any(std::make_shared<Error>(std::string("Scene description missing people array")));
+                throw std::any(std::make_shared<Error>(std::string("Scene description missing people array")));
             }
             logger->info(std::string("[Test] Scene: ") + scene["description"]["substring"](0, 100) + std::string("..."));
             logger->info(std::string("[Test] Objects: ") + scene["objects"]["length"] + std::string(", People: ") + scene["people"]["length"] + string_empty);
@@ -71,7 +71,7 @@ public:
             logger->info(std::string("[Test] Testing vision mode switching..."));
             auto visionService = runtime["getService"](std::string("VISION"));
             if (!visionService) {
-                throw any(std::make_shared<Error>(std::string("Vision service not found")));
+                throw std::any(std::make_shared<Error>(std::string("Vision service not found")));
             }
             auto originalMode = visionService["getVisionMode"]();
             logger->info(std::string("[Test] Original mode: ") + originalMode + string_empty);
@@ -82,7 +82,7 @@ public:
                 std::async([=]() { visionService["setVisionMode"](mode); });
                 auto currentMode = visionService["getVisionMode"]();
                 if (currentMode != mode) {
-                    throw any(std::make_shared<Error>(std::string("Failed to switch to mode ") + mode + std::string(", current mode is ") + currentMode + string_empty));
+                    throw std::any(std::make_shared<Error>(std::string("Failed to switch to mode ") + mode + std::string(", current mode is ") + currentMode + string_empty));
                 }
             }
             std::async([=]() { visionService["setVisionMode"](originalMode); });
@@ -100,7 +100,7 @@ public:
             }
             );
             if (!action) {
-                throw any(std::make_shared<Error>(std::string("DESCRIBE_SCENE action not found")));
+                throw std::any(std::make_shared<Error>(std::string("DESCRIBE_SCENE action not found")));
             }
             auto message = object{
                 object::pair{std::string("id"), std::string("test-msg-") + Date->now() + string_empty}, 
@@ -114,7 +114,7 @@ public:
             };
             auto isValid = std::async([=]() { action["validate"](runtime, message); });
             if (!isValid) {
-                throw any(std::make_shared<Error>(std::string("DESCRIBE_SCENE action validation failed")));
+                throw std::any(std::make_shared<Error>(std::string("DESCRIBE_SCENE action validation failed")));
             }
             shared responseReceived = false;
             auto callback = [=](auto response) mutable
@@ -127,7 +127,7 @@ public:
             };
             std::async([=]() { action["handler"](runtime, message, object{}, object{}, callback); });
             if (!responseReceived) {
-                throw any(std::make_shared<Error>(std::string("DESCRIBE_SCENE action did not produce a response")));
+                throw std::any(std::make_shared<Error>(std::string("DESCRIBE_SCENE action did not produce a response")));
             }
             logger->info(std::string("[Test] ✅ DESCRIBE_SCENE action test passed"));
         }
@@ -143,7 +143,7 @@ public:
             }
             );
             if (!provider) {
-                throw any(std::make_shared<Error>(std::string("Vision provider not found")));
+                throw std::any(std::make_shared<Error>(std::string("Vision provider not found")));
             }
             auto message = object{
                 object::pair{std::string("id"), std::string("test-msg-") + Date->now() + string_empty}, 
@@ -162,7 +162,7 @@ public:
             };
             auto result = std::async([=]() { provider["get"](runtime, message, state); });
             if (OR((!result), (type_of(result) != std::string("object")))) {
-                throw any(std::make_shared<Error>(std::string("Vision provider returned invalid result")));
+                throw std::any(std::make_shared<Error>(std::string("Vision provider returned invalid result")));
             }
             if (AND((result["text"]), (result["text"]["includes"](std::string("I can see"))))) {
                 logger->info(std::string("[Test] Provider text: ") + result["text"]["substring"](0, 100) + std::string("..."));
@@ -177,7 +177,7 @@ public:
             logger->info(std::string("[Test] Testing Florence-2 model..."));
             auto visionService = runtime["getService"](std::string("VISION"));
             if (!visionService) {
-                throw any(std::make_shared<Error>(std::string("Vision service not found")));
+                throw std::any(std::make_shared<Error>(std::string("Vision service not found")));
             }
             auto florence2Enabled = OR((runtime["getSetting"](std::string("FLORENCE2_ENABLED")) == std::string("true")), (runtime["getSetting"](std::string("VISION_FLORENCE2_ENABLED")) == std::string("true")));
             if (!florence2Enabled) {
@@ -203,7 +203,7 @@ public:
             logger->info(std::string("[Test] Testing OCR service..."));
             auto visionService = runtime["getService"](std::string("VISION"));
             if (!visionService) {
-                throw any(std::make_shared<Error>(std::string("Vision service not found")));
+                throw std::any(std::make_shared<Error>(std::string("Vision service not found")));
             }
             auto ocrEnabled = OR((runtime["getSetting"](std::string("OCR_ENABLED")) == std::string("true")), (runtime["getSetting"](std::string("VISION_OCR_ENABLED")) == std::string("true")));
             if (!ocrEnabled) {
@@ -231,18 +231,18 @@ public:
             logger->info(std::string("[Test] Testing entity tracking..."));
             auto visionService = runtime["getService"](std::string("VISION"));
             if (!visionService) {
-                throw any(std::make_shared<Error>(std::string("Vision service not found")));
+                throw std::any(std::make_shared<Error>(std::string("Vision service not found")));
             }
             auto entityTracker = visionService["getEntityTracker"]();
             if (!entityTracker) {
-                throw any(std::make_shared<Error>(std::string("Entity tracker not found")));
+                throw std::any(std::make_shared<Error>(std::string("Entity tracker not found")));
             }
             auto entities = entityTracker["getActiveEntities"]();
             logger->info(std::string("[Test] Active entities: ") + entities["length"] + string_empty);
             for (auto& entity : entities)
             {
                 if (OR((OR((!entity["id"]), (!entity["type"]))), (!entity["lastSeen"]))) {
-                    throw any(std::make_shared<Error>(std::string("Entity missing required fields")));
+                    throw std::any(std::make_shared<Error>(std::string("Entity missing required fields")));
                 }
                 logger->info(std::string("[Test] Entity ") + entity["id"] + std::string(": type=") + entity["type"] + std::string(", tracked=") + entity["trackingDuration"] + std::string("ms"));
             }

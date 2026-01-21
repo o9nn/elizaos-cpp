@@ -8,12 +8,12 @@
 #include "./types.ts.h"
 #include "./utils.ts.h"
 
-string getKnowledgePath();
+std::string getKnowledgePath();
 
 std::shared_ptr<Promise<object>> loadDocsFromPath(std::shared_ptr<KnowledgeService> service, std::shared_ptr<UUID> agentId, std::shared_ptr<UUID> worldId = undefined);
 
-array<string> getAllFiles(string dirPath, array<string> files = array<string>());
+array<string> getAllFiles(std::string dirPath, array<string> files = array<string>());
 
-any getContentType(string extension);
+std::any getContentType(std::string extension);
 
 #endif

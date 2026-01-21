@@ -2,6 +2,6 @@
 #define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-PERSONALITY_SRC_UTILS_JSON-PARSER_H
 #include "core.h"
 
-any extractJsonFromResponse(string response);
+std::any extractJsonFromResponse(std::string response);
 
 #endif

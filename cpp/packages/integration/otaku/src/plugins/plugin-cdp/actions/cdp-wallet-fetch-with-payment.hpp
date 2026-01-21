@@ -51,15 +51,15 @@ namespace elizaos {
  */
 
 /**
- * Helper function to create standardized error results and invoke callback
+ * Helper std::function to create standardized error results and invoke callback
  */
 
 /**
- * Helper function to determine status indicator and prefix based on response status
+ * Helper std::function to determine status indicator and prefix based on response status
  */
 
 /**
- * Helper function to format and truncate response data
+ * Helper std::function to format and truncate response data
  */
 std::string formatResponseData(const std::any& responseData, double maxLength = 500);
 
@@ -91,7 +91,7 @@ std::string formatResponseData(const std::any& responseData, double maxLength = 
       // Convert maxPayment from USDC to base units (USDC has 6 decimals)
 
       // Wrap fetch with payment capability
-      // Cast to any to bypass type incompatibility - walletClient is a valid SignerWallet
+      // Cast to std::any to bypass type incompatibility - walletClient is a valid SignerWallet
 
       // Prepare fetch options
 

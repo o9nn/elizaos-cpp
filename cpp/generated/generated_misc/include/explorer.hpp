@@ -6,10 +6,10 @@
 using base58 = _default;
 
 template <typename P1>
-any getExplorerUrl(string endpoint, P1 viewTypeOrItemAddress, string itemType = std::string("address"));
+std::any getExplorerUrl(std::string endpoint, P1 viewTypeOrItemAddress, std::string itemType = std::string("address"));
 
 template <typename P1>
-any getExplorerUrl(string endpoint, P1 viewTypeOrItemAddress, string itemType)
+std::any getExplorerUrl(std::string endpoint, P1 viewTypeOrItemAddress, std::string itemType)
 {
     auto getClusterUrlParam = [=]() mutable
     {
@@ -19,7 +19,7 @@ any getExplorerUrl(string endpoint, P1 viewTypeOrItemAddress, string itemType)
         } else if (endpoint == std::string("https://api.devnet.solana.com")) {
             cluster = std::string("devnet");
         }
-        return (cluster) ? any(std::string("?cluster=") + cluster + string_empty) : any(string_empty);
+        return (cluster) ? std::any(std::string("?cluster=") + cluster + string_empty) : std::any(string_empty);
     };
     return std::string("https://explorer.solana.com/") + itemType + std::string("/") + viewTypeOrItemAddress + string_empty + getClusterUrlParam() + string_empty;
 };

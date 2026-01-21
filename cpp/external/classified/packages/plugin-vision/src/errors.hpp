@@ -16,11 +16,11 @@ namespace elizaos {
 
 // Base error class for all vision-related errors
 class VisionError extends Error {
-  public readonly code: string;
-  public readonly context?: Record<string, any>;
+  public readonly code: std::string;
+  public readonly context?: Record<std::string, any>;
   public readonly recoverable: boolean;
 
-  constructor(message: string, code: string, recoverable = false, context?: Record<string, any>) {
+  constructor(message: std::string, code: std::string, recoverable = false, context?: Record<std::string, any>) {
     super(message);
     this.name = 'VisionError';
     this.code = code;
@@ -33,44 +33,44 @@ class VisionError extends Error {
 
 // Specific error types
 class CameraError extends VisionError {
-  constructor(message: string, context?: Record<string, any>) {
+  constructor(message: std::string, context?: Record<std::string, any>) {
     super(message, 'CAMERA_ERROR', true, context);
     this.name = 'CameraError';
   }
 
 class ScreenCaptureError extends VisionError {
-  constructor(message: string, context?: Record<string, any>) {
+  constructor(message: std::string, context?: Record<std::string, any>) {
     super(message, 'SCREEN_CAPTURE_ERROR', true, context);
     this.name = 'ScreenCaptureError';
   }
 
 class ModelInitializationError extends VisionError {
-  constructor(message: string, modelName: string, context?: Record<string, any>) {
+  constructor(message: std::string, modelName: std::string, context?: Record<std::string, any>) {
     super(message, 'MODEL_INIT_ERROR', false, { ...context, modelName });
     this.name = 'ModelInitializationError';
   }
 
 class ProcessingError extends VisionError {
-  constructor(message: string, context?: Record<string, any>) {
+  constructor(message: std::string, context?: Record<std::string, any>) {
     super(message, 'PROCESSING_ERROR', true, context);
     this.name = 'ProcessingError';
   }
 
 class ConfigurationError extends VisionError {
-  constructor(message: string, context?: Record<string, any>) {
+  constructor(message: std::string, context?: Record<std::string, any>) {
     super(message, 'CONFIG_ERROR', false, context);
     this.name = 'ConfigurationError';
   }
 
 class APIError extends VisionError {
   public readonly statusCode?: number;
-  public readonly endpoint?: string;
+  public readonly endpoint?: std::string;
 
   constructor(
-    message: string,
+    message: std::string,
     statusCode?: number,
-    endpoint?: string,
-    context?: Record<string, any>
+    endpoint?: std::string,
+    context?: Record<std::string, any>
   ) {
     super(message, 'API_ERROR', true, { ...context, statusCode, endpoint });
     this.name = 'APIError';
@@ -83,8 +83,8 @@ struct RecoveryStrategy {
 };
 
 class ErrorRecoveryManager {
-  private strategies: Map<string, RecoveryStrategy> = new Map();
-  private errorCounts: Map<string, number> = new Map();
+  private strategies: Map<std::string, RecoveryStrategy> = new Map();
+  private errorCounts: Map<std::string, number> = new Map();
   private readonly maxRetries = 3;
 
   constructor() {
@@ -114,14 +114,14 @@ class CircuitBreaker {
   constructor(
     private readonly threshold = 5,
     private readonly timeout = 60000, // 1 minute
-    private readonly name: string
+    private readonly name: std::string
   ) {}
 
 // Global error handler
 class VisionErrorHandler {
   private static instance: VisionErrorHandler;
   private recoveryManager: ErrorRecoveryManager;
-  private circuitBreakers: Map<string, CircuitBreaker> = new Map();
+  private circuitBreakers: Map<std::string, CircuitBreaker> = new Map();
 
   private constructor() {
     this.recoveryManager = new ErrorRecoveryManager();

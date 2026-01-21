@@ -35,7 +35,7 @@ void parseNegotiationRequest(const std::string& text); {
 
   // Payment currency
 
-std::future<string | null> extractTokenContext(const std::string& text);
+std::future<std::string | null> extractTokenContext(const std::string& text);
 
 std::future<OTCConsignment | null> findSuitableConsignment(const std::string& tokenId, const std::string& tokenAmount, double discountBps, double lockupDays);
 

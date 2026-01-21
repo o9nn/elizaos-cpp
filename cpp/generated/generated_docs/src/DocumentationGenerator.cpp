@@ -30,7 +30,7 @@ std::shared_ptr<Promise<object>> DocumentationGenerator::generate(double pullNum
         );
     } else {
         auto typeScriptFiles = this->directoryTraversal->traverse();
-        fileChanges = typeScriptFiles->map([=](auto file) mutable
+        fileChanges = typeScriptFiles->std::map([=](auto file) mutable
         {
             return (object{
                 object::pair{std::string("filename"), this->configuration->toRelativePath(file)}, 
@@ -43,14 +43,14 @@ std::shared_ptr<Promise<object>> DocumentationGenerator::generate(double pullNum
     {
         if (fileChange->status == std::string("deleted")) continue;
         auto filePath = this->configuration->toAbsolutePath(fileChange->filename);
-        this->fileOffsets->set(filePath, 0);
+        this->fileOffsets->std::set(filePath, 0);
         if (AND((fileChange->status == std::string("added")), (in(std::string("contents_url"), fileChange)))) {
             console->log(std::string("Getting file content from GitHub API"));
             auto fileContent = std::async([=]() { this->getFileContent(fileChange->contents_url); });
-            this->fileContents->set(filePath, fileContent);
+            this->fileContents->std::set(filePath, fileContent);
         } else {
             auto fileContent = fs->readFileSync(filePath, std::string("utf-8"));
-            this->fileContents->set(filePath, fileContent);
+            this->fileContents->std::set(filePath, fileContent);
         }
         auto ast = this->typeScriptParser->parse(filePath);
         if (OR((!ast), (!ast["body"]))) {
@@ -105,7 +105,7 @@ std::shared_ptr<Promise<object>> DocumentationGenerator::generate(double pullNum
     };
 }
 
-void DocumentationGenerator::processNode(std::shared_ptr<TSESTree::Node> node, string filePath, std::shared_ptr<TSESTree::Program> ast)
+void DocumentationGenerator::processNode(std::shared_ptr<TSESTree::Node> node, std::string filePath, std::shared_ptr<TSESTree::Program> ast)
 {
     if (!this->jsDocAnalyzer->shouldHaveJSDoc(node)) return;
     auto jsDocComment = this->jsDocAnalyzer->getJSDocComment(node, OR((ast->comments), (array<any>())));
@@ -130,7 +130,7 @@ void DocumentationGenerator::processNode(std::shared_ptr<TSESTree::Node> node, s
     }
 }
 
-std::shared_ptr<Promise<void>> DocumentationGenerator::updateFileWithJSDoc(string filePath, string jsDoc, double insertLine)
+std::shared_ptr<Promise<void>> DocumentationGenerator::updateFileWithJSDoc(std::string filePath, std::string jsDoc, double insertLine)
 {
     auto content = OR((this->fileContents->get(filePath)), (string_empty));
     auto lines = content->split(std::string("\
@@ -147,23 +147,23 @@ std::shared_ptr<Promise<void>> DocumentationGenerator::updateFileWithJSDoc(strin
         if (validatedJSDoc != jsDoc) {
             lines[adjustedLine - 1] = validatedJSDoc;
             auto newLines = (OR((validatedJSDoc->match((new RegExp(std::string("\n"))))), (array<any>())))->length + 1;
-            this->fileOffsets->set(filePath, currentOffset + newLines);
+            this->fileOffsets->std::set(filePath, currentOffset + newLines);
         } else {
             auto newLines = (OR((jsDoc->match((new RegExp(std::string("\n"))))), (array<any>())))->length + 1;
-            this->fileOffsets->set(filePath, currentOffset + newLines);
+            this->fileOffsets->std::set(filePath, currentOffset + newLines);
         }
-        this->fileContents->set(filePath, lines->join(std::string("\
+        this->fileContents->std::set(filePath, lines->join(std::string("\
 ")));
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("Error validating JSDoc in ") + filePath + std::string(":"), error);
-        throw any(error);
+        throw std::any(error);
     }
     return std::shared_ptr<Promise<void>>();
 }
 
-string DocumentationGenerator::getNodeCode(string filePath, std::shared_ptr<TSESTree::Node> node)
+std::string DocumentationGenerator::getNodeCode(std::string filePath, std::shared_ptr<TSESTree::Node> node)
 {
     auto fileContent = fs->readFileSync(filePath, std::string("utf-8"));
     auto lines = fileContent->split(std::string("\
@@ -174,7 +174,7 @@ string DocumentationGenerator::getNodeCode(string filePath, std::shared_ptr<TSES
 "));
 }
 
-std::shared_ptr<Promise<string>> DocumentationGenerator::getFileContent(string contentsUrl)
+std::shared_ptr<Promise<string>> DocumentationGenerator::getFileContent(std::string contentsUrl)
 {
     try
     {
@@ -182,7 +182,7 @@ std::shared_ptr<Promise<string>> DocumentationGenerator::getFileContent(string c
         auto data = std::async([=]() { response->json(); });
         return Buffer::from(data["content"], std::string("base64"))->toString(std::string("utf-8"));
     }
-    catch (const any& _error)
+    catch (const std::any& _error)
     {
         console->error(std::string("Error fetching file content from GitHub API, ensure the PR has been merged"));
         return string_empty;
@@ -192,7 +192,7 @@ std::shared_ptr<Promise<string>> DocumentationGenerator::getFileContent(string c
 std::shared_ptr<Promise<object>> DocumentationGenerator::generatePRContent(double pullNumber)
 {
     auto modifiedFiles = Array->from(this->fileContents->keys());
-    auto filesContext = modifiedFiles->map([=](auto file) mutable
+    auto filesContext = modifiedFiles->std::map([=](auto file) mutable
     {
         return std::string("- ") + file + string_empty;
     }
@@ -209,7 +209,7 @@ std::shared_ptr<Promise<object>> DocumentationGenerator::generatePRContent(doubl
     - ") + modifiedFiles->get_length() + std::string(" files were modified\
     - Files modified:\
 ") + filesContext + std::string("\
-    - This is ") + (pullNumber) ? any(std::string("related to PR #") + pullNumber + string_empty) : any(std::string("a full repository documentation update")) + std::string("\
+    - This is ") + (pullNumber) ? std::any(std::string("related to PR #") + pullNumber + string_empty) : std::any(std::string("a full repository documentation update")) + std::string("\
     - This is an automated PR for adding JSDoc documentation\
 \
     The title should be concise and follow conventional commit format.\
@@ -225,32 +225,32 @@ std::shared_ptr<Promise<object>> DocumentationGenerator::generatePRContent(doubl
         auto jsonStart = response->indexOf(std::string("{"));
         auto jsonEnd = response->lastIndexOf(std::string("}")) + 1;
         if (OR((jsonStart == -1), (jsonEnd == -1))) {
-            throw any(std::make_shared<Error>(std::string("No valid JSON object found in response")));
+            throw std::any(std::make_shared<Error>(std::string("No valid JSON object found in response")));
         }
         auto jsonStr = response->slice(jsonStart, jsonEnd)->replace((new RegExp(std::string("```json"))), string_empty)->replace((new RegExp(std::string("```"))), string_empty)->trim();
         auto content = JSON->parse(jsonStr);
         if (OR((OR((OR((!content["title"]), (!content["body"]))), (type_of(content["title"]) != std::string("string")))), (type_of(content["body"]) != std::string("string")))) {
-            throw any(std::make_shared<Error>(std::string("Invalid JSON structure")));
+            throw std::any(std::make_shared<Error>(std::string("Invalid JSON structure")));
         }
         return object{
             object::pair{std::string("title"), content["title"]}, 
             object::pair{std::string("body"), content["body"]}
         };
     }
-    catch (const any& error)
+    catch (const std::any& error)
     {
         console->error(std::string("Error parsing AI response for PR content:"), error);
         console->error(std::string("Raw response:"), response);
         return object{
-            object::pair{std::string("title"), std::string("docs: Add JSDoc documentation") + (pullNumber) ? any(std::string(" for PR #") + pullNumber + string_empty) : any(string_empty) + string_empty}, 
+            object::pair{std::string("title"), std::string("docs: Add JSDoc documentation") + (pullNumber) ? std::any(std::string(" for PR #") + pullNumber + string_empty) : std::any(string_empty) + string_empty}, 
             object::pair{std::string("body"), this->generateDefaultPRBody()}
         };
     }
 }
 
-string DocumentationGenerator::generateDefaultPRBody()
+std::string DocumentationGenerator::generateDefaultPRBody()
 {
-    auto changes = Array->from(this->fileContents->keys())->map([=](auto filePath) mutable
+    auto changes = Array->from(this->fileContents->keys())->std::map([=](auto filePath) mutable
     {
         return std::string("- Added JSDoc documentation to `") + filePath + std::string("`");
     }

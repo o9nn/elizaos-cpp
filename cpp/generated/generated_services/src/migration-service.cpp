@@ -15,7 +15,7 @@ void DatabaseMigrationService::discoverAndRegisterPluginSchemas(array<std::share
     for (auto& plugin : plugins)
     {
         if (plugin->schema) {
-            this->registeredSchemas->set(plugin->name, plugin->schema);
+            this->registeredSchemas->std::set(plugin->name, plugin->schema);
             logger->info(std::string("Registered schema for plugin: ") + plugin->name + string_empty);
         }
     }
@@ -25,7 +25,7 @@ void DatabaseMigrationService::discoverAndRegisterPluginSchemas(array<std::share
 std::shared_ptr<Promise<void>> DatabaseMigrationService::runAllPluginMigrations()
 {
     if (!this->db) {
-        throw any(std::make_shared<Error>(std::string("Database not initialized in DatabaseMigrationService")));
+        throw std::any(std::make_shared<Error>(std::string("Database not initialized in DatabaseMigrationService")));
     }
     logger->info(std::string("Running migrations for ") + this->registeredSchemas->size + std::string(" plugins..."));
     for (auto& [pluginName, schema] : this->registeredSchemas)

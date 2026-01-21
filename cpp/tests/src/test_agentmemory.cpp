@@ -293,7 +293,7 @@ TEST_F(AgentMemoryTest, EmbeddingBasedSearch) {
     }
 }
 
-// Test thread safety (disabled for now due to timing issues)
+// Test std::thread safety (disabled for now due to timing issues)
 TEST_F(AgentMemoryTest, DISABLED_ThreadSafety) {
     auto& manager = getGlobalMemoryManager();
     manager.enableThreadSafety(true);
@@ -309,7 +309,7 @@ TEST_F(AgentMemoryTest, DISABLED_ThreadSafety) {
             for (int i = 0; i < memoriesPerThread; ++i) {
                 // Use more unique IDs to avoid collisions
                 std::string id = "ts_t" + std::to_string(t) + "_m" + std::to_string(i) + "_" + std::to_string(std::time(nullptr));
-                std::string content = "TS Memory from thread " + std::to_string(t) + " #" + std::to_string(i);
+                std::string content = "TS Memory from std::thread " + std::to_string(t) + " #" + std::to_string(i);
                 
                 auto memory = std::make_shared<Memory>(id, content, "ts_entity1", "ts_agent1");
                 manager.createMemory(memory);
@@ -318,7 +318,7 @@ TEST_F(AgentMemoryTest, DISABLED_ThreadSafety) {
     }
     
     // Wait for all threads to complete
-    for (auto& thread : threads) {
+    for (auto& std::thread : threads) {
         thread.join();
     }
     
@@ -372,22 +372,22 @@ TEST_F(AgentMemoryTest, GetMemoriesByRoomIds) {
 TEST_F(AgentMemoryTest, ConvenienceFunctions) {
     auto memory = createTestMemory(testMemoryId1, "Test convenience functions");
     
-    // Test store convenience function
+    // Test store convenience std::function
     UUID storedId = memory::store(memory);
     EXPECT_EQ(storedId, testMemoryId1);
     
-    // Test retrieve convenience function
+    // Test retrieve convenience std::function
     auto retrieved = memory::retrieve(testMemoryId1);
     ASSERT_NE(retrieved, nullptr);
     EXPECT_EQ(retrieved->getContent(), "Test convenience functions");
     
-    // Test search convenience function
+    // Test search convenience std::function
     MemorySearchParams params;
     params.tableName = "memories";
     auto searchResults = memory::search(params);
     EXPECT_GE(searchResults.size(), 1);
     
-    // Test remove convenience function
+    // Test remove convenience std::function
     bool removed = memory::remove(testMemoryId1);
     EXPECT_TRUE(removed);
     

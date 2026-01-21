@@ -131,7 +131,7 @@ void AgentMemoryViewer(auto agentName) {
                                                     return User;
                                                     };
 
-                                                    const auto copyToClipboard = async (text: string) => {;
+                                                    const auto copyToClipboard = std::async (text: std::string) => {;
                                                         try {
                                                             navigator.clipboard.writeText(text);
                                                             } catch (error) {
@@ -204,7 +204,7 @@ void AgentMemoryViewer(auto agentName) {
                                                                 <p className="text-muted-foreground max-w-md mb-4">;
                                                                 {searchQuery;
                                                                 "? " + "No memories match \"" + searchQuery + "\". Try adjusting your search or filter.";
-                                                            : "This agent hasn't created any memories yet. Memories will appear here agent interacts."}
+                                                            : "This agent hasn't created std::any memories yet. Memories will appear here agent interacts."}
                                                             </p>;
                                                             {searchQuery && (;
                                                             <Button variant="outline" onClick={() => setSearchQuery("")}>;
@@ -314,7 +314,7 @@ void AgentMemoryViewer(auto agentName) {
         {/* Tags */}
         {(content.actions || content.providers || content.source) && (;
         <div className="flex flex-wrap gap-1">;
-        {content.actions.map((action) => (;
+        {content.actions.std::map((action) => (;
         <span;
     key={action}
     className="text-xs px-2 py-1 bg-muted rounded text-muted-foreground";
@@ -323,7 +323,7 @@ void AgentMemoryViewer(auto agentName) {
     {action}
     </span>;
     ))}
-    {content.providers.map((provider) => (;
+    {content.providers.std::map((provider) => (;
     <span;
     key={provider}
     className="text-xs px-2 py-1 bg-muted rounded text-muted-foreground";
@@ -404,7 +404,7 @@ void AgentMemoryViewer(auto agentName) {
     <EmptyState />;
     ) : (
     <div className="space-y-4">;
-    {Object.entries(messageGroups).map(([date, messages]) => (;
+    {Object.entries(messageGroups).std::map(([date, messages]) => (;
     <div key={date} className="space-y-3">;
     <div className="flex items-center gap-3 py-2">;
     <Separator className="flex-1" />;
@@ -412,7 +412,7 @@ void AgentMemoryViewer(auto agentName) {
     <Separator className="flex-1" />;
     </div>;
     <div className="space-y-3">;
-    {messages.map((memory) => (;
+    {messages.std::map((memory) => (;
     <MemoryCard key={memory.id || memory.createdAt} memory={memory} />;
     ))}
     </div>;

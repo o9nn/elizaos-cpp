@@ -18,7 +18,7 @@ class StagehandProcessManager {
   private process: ChildProcess | null = null;
   private isRunning = false;
   private serverPort: number;
-  private binaryPath: string | null = null;
+  private binaryPath: std::string | null = null;
 
   constructor(serverPort: number = 3456) {
     this.serverPort = serverPort;

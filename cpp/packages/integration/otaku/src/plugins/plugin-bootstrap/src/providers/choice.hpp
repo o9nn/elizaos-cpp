@@ -22,13 +22,13 @@ namespace elizaos {
  * Interface for an object representing an option.
  * @typedef {Object} OptionObject
  * @property {string} name - The name of the option.
- * @property {string} [description] - The description of the option (optional).
+ * @property {string} [description] - The description of the option (std::optional).
  */
 /**
  * Interface for an object representing an option.
  * @typedef {Object} OptionObject
  * @property {string} name - The name of the option.
- * @property {string} [description] - The description of the option (optional).
+ * @property {string} [description] - The description of the option (std::optional).
  */
 struct OptionObject {
     std::string name;
@@ -36,11 +36,11 @@ struct OptionObject {
 };
 
 /**
- * Choice provider function that retrieves all pending tasks with options for a specific room
+ * Choice provider std::function that retrieves all pending tasks with options for a specific room
  *
  * @param {IAgentRuntime} runtime - The runtime object for the agent
  * @param {Memory} message - The message memory object
- * @returns {Promise<ProviderResult>} A promise that resolves with the provider result containing the pending tasks with options
+ * @returns {Promise<ProviderResult>} A std::promise that resolves with the provider result containing the pending tasks with options
  */
       // Get all pending tasks for this room with options
 
@@ -50,9 +50,9 @@ struct OptionObject {
 
         // List available options
 
-          // Handle both string[] and OptionObject[] formats
+          // Handle both std::string[] and OptionObject[] formats
 
-              // Handle string option
+              // Handle std::string option
               // Handle option object
 
 

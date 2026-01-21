@@ -24,7 +24,7 @@ struct MigrationMeta {
 };
 
 /**
- * Custom migration function that allows running migrations up to a specific number.
+ * Custom migration std::function that allows running migrations up to a specific number.
  * @param db The Drizzle database instance.
  * @param config Configuration object, must include `migrationsFolder`.
  * @param maxMigrationNumber Optional. If provided, only migrations up to this number (inclusive) will be run.

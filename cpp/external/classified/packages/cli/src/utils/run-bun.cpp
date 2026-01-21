@@ -33,7 +33,7 @@ std::future<void> runBunCommand(const std::vector<std::string>& args, const std:
                 "Bun command failed with exit code " + result.exitCode + ": " + std::to_string(result.stderr || result.stdout)
                 );
             }
-            } catch (error: any) {
+            } catch (error: std::any) {
                 if (error.code == 'ENOENT' || error.message.includes('bun: command not found')) {
                     throw std::runtime_error(`Bun command not found. ${displayBunInstallationTipCompact()}`);
                 }

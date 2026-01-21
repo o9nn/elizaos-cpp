@@ -43,7 +43,7 @@ struct AgentPanel {
     React.ComponentType<any> component;
     std::optional<std::string> icon;
     std::optional<bool> public;
-    std::optional<string; // Optional short label for mobile> shortLabel;
+    std::optional<std::string; // Optional short label for mobile> shortLabel;
 };
 
 struct PanelProps {

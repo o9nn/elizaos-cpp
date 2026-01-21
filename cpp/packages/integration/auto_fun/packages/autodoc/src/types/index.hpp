@@ -43,7 +43,7 @@ struct ASTQueueItem {
  * @typedef {Object} Repository
  * @property {string} owner - The owner of the repository.
  * @property {string} name - The name of the repository.
- * @property {number} [pullNumber] - The pull number of the repository (optional).
+ * @property {number} [pullNumber] - The pull number of the repository (std::optional).
  */
 struct Repository {
     std::string owner;
@@ -191,10 +191,10 @@ struct PluginDocumentation {
  * Interface for defining metadata for an action.
  * @interface
  * @property {string} name - The name of the action.
- * @property {string[]} similes - An array of similes related to the action.
+ * @property {std::string[]} similes - An array of similes related to the action.
  * @property {string} validate - The validation method for the action.
  * @property {string} handler - The handler method for the action.
- * @property {string[]} examples - An array of example scenarios for the action.
+ * @property {std::string[]} examples - An array of example scenarios for the action.
  * @property {string} description - A brief description of the action.
  */
 struct ActionMetadata {

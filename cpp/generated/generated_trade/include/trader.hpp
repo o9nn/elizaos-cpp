@@ -10,11 +10,11 @@ class TraderTransactionsSeekResponse;
 class GainersLosersParams : public object, public std::enable_shared_from_this<GainersLosersParams> {
 public:
     using std::enable_shared_from_this<GainersLosersParams>::shared_from_this;
-    any type;
+    std::any type;
 
-    string sort_by;
+    std::string sort_by;
 
-    any sort_type;
+    std::any sort_type;
 
     double offset;
 
@@ -32,13 +32,13 @@ public:
 class TraderTransactionsSeekParams : public object, public std::enable_shared_from_this<TraderTransactionsSeekParams> {
 public:
     using std::enable_shared_from_this<TraderTransactionsSeekParams>::shared_from_this;
-    string address;
+    std::string address;
 
     double offset;
 
     double limit;
 
-    any tx_type;
+    std::any tx_type;
 
     double before_time;
 

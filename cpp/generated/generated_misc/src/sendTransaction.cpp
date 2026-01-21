@@ -14,7 +14,7 @@ std::shared_ptr<Promise<string>> sendTransaction(std::shared_ptr<Connection> con
     auto computeUnits = OR((simulation->value->unitsConsumed), (200000));
     auto safeComputeUnits = Math->ceil(Math->max(computeUnits * 1.3, computeUnits + 100000));
     auto recentPrioritizationFees = std::async([=]() { connection->getRecentPrioritizationFees(); });
-    shared prioritizationFee = const_(recentPrioritizationFees->map([=](auto fee) mutable
+    shared prioritizationFee = const_(recentPrioritizationFees->std::map([=](auto fee) mutable
     {
         return fee["prioritizationFee"];
     }
@@ -50,7 +50,7 @@ std::shared_ptr<Promise<string>> sendTransaction(std::shared_ptr<Connection> con
                 elizaLogger->log(std::string("Transaction confirmed: ") + signature + string_empty);
                 return signature;
             } else {
-                throw any(std::make_shared<Error>(std::string("Transaction failed: ") + const_(statuses->value)[0]->err->toString() + string_empty));
+                throw std::any(std::make_shared<Error>(std::string("Transaction failed: ") + const_(statuses->value)[0]->err->toString() + string_empty));
             }
         }
         auto elapsedTime = Date->now() - transactionStartTime;
@@ -63,7 +63,7 @@ std::shared_ptr<Promise<string>> sendTransaction(std::shared_ptr<Connection> con
             ); });
         }
     }
-    throw any(std::make_shared<Error>(std::string("Transaction timeout")));
+    throw std::any(std::make_shared<Error>(std::string("Transaction timeout")));
 };
 
 

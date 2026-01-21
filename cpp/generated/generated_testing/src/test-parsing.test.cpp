@@ -189,7 +189,7 @@ os.listdir()\
         );
         describe(std::string("FunctionCallingParser"), [=]() mutable
         {
-            it(std::string("should parse function calls successfully"), [=]() mutable
+            it(std::string("should parse std::function calls successfully"), [=]() mutable
             {
                 auto parser = std::make_shared<FunctionCallingParser>();
                 auto command = object{
@@ -304,7 +304,7 @@ os.listdir()\
                 auto parser = std::make_shared<FunctionCallingParser>();
                 auto error = std::make_shared<FunctionCallingFormatError>(std::string("test"), std::string("missing"));
                 auto message = parser->formatErrorMessage(error);
-                expect(message)->toContain(std::string("did not use any tool calls"));
+                expect(message)->toContain(std::string("did not use std::any tool calls"));
             }
             );
         }

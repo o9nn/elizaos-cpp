@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-list/src/utils/projectUtils.h"
 
-std::function<array<any>(array<any>, any)> sortProjects = [=](auto projects, P1 sortBy) mutable
+std::function<array<any>(array<any>, std::any)> sortProjects = [=](auto projects, P1 sortBy) mutable
 {
     return (array<any>{ projects })->sort([=](auto a, auto b) mutable
     {
@@ -11,11 +11,11 @@ std::function<array<any>(array<any>, any)> sortProjects = [=](auto projects, P1 
     }
     );
 };
-std::function<string()> generateProjectId = [=]() mutable
+std::function<std::string()> generateProjectId = [=]() mutable
 {
     return std::string("proj_") + Date->now() + std::string("_") + Math->random()->toString(36)->substr(2, 9) + string_empty;
 };
-std::function<array<string>(any)> validateProject = [=](auto project) mutable
+std::function<array<string>(std::any)> validateProject = [=](auto project) mutable
 {
     auto errors = array<string>();
     if (!project->name->trim()) errors->push(std::string("Project name is required"));

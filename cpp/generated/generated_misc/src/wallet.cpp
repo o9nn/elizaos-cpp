@@ -36,7 +36,7 @@ Your trades for ") + portfolio["wallet"] + std::string(" (value: $") + portfolio
                 }
             }
         }
-        catch (const any& e)
+        catch (const std::any& e)
         {
             console->error(std::string("e"), e);
         }

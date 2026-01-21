@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/run/progress.h"
 
-RunBatchProgressManager::RunBatchProgressManager(double _numInstances, string yamlReportPath) {
+RunBatchProgressManager::RunBatchProgressManager(double _numInstances, std::string yamlReportPath) {
     this->yamlReportPath = yamlReportPath;
 }
 
@@ -38,7 +38,7 @@ void RunBatchProgressManager::updateExitStatusTable()
     }
 }
 
-string RunBatchProgressManager::shortenStr(string s, double maxLen, boolean shortenLeft)
+std::string RunBatchProgressManager::shortenStr(std::string s, double maxLen, boolean shortenLeft)
 {
     if (!shortenLeft) {
         if (s->get_length() > maxLen) {
@@ -52,23 +52,23 @@ string RunBatchProgressManager::shortenStr(string s, double maxLen, boolean shor
     return s->padEnd(maxLen);
 }
 
-void RunBatchProgressManager::updateInstanceStatus(string instanceId, string message)
+void RunBatchProgressManager::updateInstanceStatus(std::string instanceId, std::string message)
 {
     console->log(std::string("[") + instanceId + std::string("] ") + message + string_empty);
 }
 
-void RunBatchProgressManager::onInstanceStart(string instanceId)
+void RunBatchProgressManager::onInstanceStart(std::string instanceId)
 {
-    this->spinnerTasks->set(instanceId, object{
+    this->spinnerTasks->std::set(instanceId, object{
         object::pair{std::string("status"), std::string("Task initialized")}, 
         object::pair{std::string("startTime"), Date->now()}
     });
 }
 
-void RunBatchProgressManager::onInstanceEnd(string instanceId, any exitStatus)
+void RunBatchProgressManager::onInstanceEnd(std::string instanceId, std::any exitStatus)
 {
     if (!this->instancesByExitStatus->has(exitStatus)) {
-        this->instancesByExitStatus->set(exitStatus, array<any>());
+        this->instancesByExitStatus->std::set(exitStatus, array<any>());
     }
     this->instancesByExitStatus->get(exitStatus)->push(instanceId);
     this->spinnerTasks->delete(instanceId);
@@ -78,7 +78,7 @@ void RunBatchProgressManager::onInstanceEnd(string instanceId, any exitStatus)
     }
 }
 
-void RunBatchProgressManager::onUncaughtException(string instanceId, std::shared_ptr<Error> exception)
+void RunBatchProgressManager::onUncaughtException(std::string instanceId, std::shared_ptr<Error> std::exception)
 {
     this->onInstanceEnd(instanceId, std::string("Uncaught ") + exception->constructor->name + string_empty);
 }
@@ -101,7 +101,7 @@ void RunBatchProgressManager::printReport()
     }
 }
 
-Record<string, any> RunBatchProgressManager::getOverviewData()
+Record<std::string, any> RunBatchProgressManager::getOverviewData()
 {
     auto instancesByStatus = object{};
     for (auto& [status, instances] : this->instancesByExitStatus->entries())
@@ -114,7 +114,7 @@ Record<string, any> RunBatchProgressManager::getOverviewData()
     };
 }
 
-void RunBatchProgressManager::saveOverviewDataYaml(string filePath)
+void RunBatchProgressManager::saveOverviewDataYaml(std::string filePath)
 {
     auto data = this->getOverviewData();
     fs::writeFileSync(filePath, yaml->dump(data, object{

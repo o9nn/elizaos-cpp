@@ -4,7 +4,7 @@
 
 namespace elizaos {
 
-void StatBadge(auto labelEnd, auto value, auto variant, auto className) {
+void StatBadge(auto labelEnd, auto value, auto std::variant, auto className) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;

@@ -21,7 +21,7 @@ using CharacterModification = z.infer<typeof CharacterModificationSchema>;
 
 /**
  * Service for safely managing character file modifications
- * Handles backup, validation, and atomic updates of character files
+ * Handles backup, validation, and std::atomic updates of character files
  */
 class CharacterFileManager extends Service {
   static serviceType = PersonalityServiceType.CHARACTER_MANAGEMENT;
@@ -29,10 +29,10 @@ class CharacterFileManager extends Service {
   capabilityDescription = 'Manages safe character file modifications with backup and validation';
 
   protected runtime: IAgentRuntime;
-  private characterFilePath: string | null = null;
-  private backupDir: string;
+  private characterFilePath: std::string | null = null;
+  private backupDir: std::string;
   private maxBackups = 10;
-  private validationRules: Map<string, (value: any) => boolean> = new Map();
+  private validationRules: Map<std::string, (value: std::any) => boolean> = new Map();
 
   constructor(runtime: IAgentRuntime) {
     super(runtime);

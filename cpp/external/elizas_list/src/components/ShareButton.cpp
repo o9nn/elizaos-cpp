@@ -9,7 +9,7 @@ void ShareButton() {
 
     const auto [shared, setShared] = useState(false);
 
-    const auto handleShare = async () => {;
+    const auto handleShare = std::async () => {;
         const auto shareData = {;
             "title: " + "Check out " + project.name + " on ELIZAS LIST"
             "text: " + "I found this awesome project on ELIZAS LIST: " + project.name

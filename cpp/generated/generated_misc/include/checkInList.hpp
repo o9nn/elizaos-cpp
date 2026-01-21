@@ -6,7 +6,7 @@
 
 std::shared_ptr<Promise<array<std::shared_ptr<CheckInSchedule>>>> fetchCheckInSchedules(std::shared_ptr<IAgentRuntime> runtime);
 
-string formatSchedule(std::shared_ptr<CheckInSchedule> schedule);
+std::string formatSchedule(std::shared_ptr<CheckInSchedule> schedule);
 
 extern std::shared_ptr<Action> listCheckInSchedules;
 #endif

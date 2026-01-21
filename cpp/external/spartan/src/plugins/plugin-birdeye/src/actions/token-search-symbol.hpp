@@ -20,7 +20,7 @@ namespace elizaos {
 
 
 // "strict" requires a $ prefix and will match $SOL, $ai16z, $BTC, etc.
-// "loose" will match $SOL, SOL, SOLANA, etc. and does not require a $ prefix but may interpret any other acronyms as symbols to search for
+// "loose" will match $SOL, SOL, SOLANA, etc. and does not require a $ prefix but may interpret std::any other acronyms as symbols to search for
 
             // get all symbols from the message that match (i.e. $SOL, $ETH, $BTC, etc.). If you want to match more loosely, use "loose" instead of "strict" and it will match $SOL, SOL, SOLANA, etc.
 

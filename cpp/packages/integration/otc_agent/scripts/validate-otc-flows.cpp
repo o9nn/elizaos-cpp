@@ -130,7 +130,7 @@ std::future<void> validateEVM() {
                                                             functionName: "consignments",
                                                             args: [1n],
                                                             }) as [;
-                                                            "0x" + string
+                                                            "0x" + std::string
                                                             number, number, number, number, bigint, bigint, number, boolean, bigint;
                                                             ];
 
@@ -167,7 +167,7 @@ std::future<void> validateEVM() {
                                                                             functionName: "offers",
                                                                             args: [BigInt(numOffers)],
                                                                             }) as [;
-                                                                            "bigint, " + "0x" + string
+                                                                            "bigint, " + "0x" + std::string
                                                                             bigint, bigint, number, boolean, boolean, boolean, boolean, Address, bigint;
                                                                             ];
 
@@ -196,7 +196,7 @@ std::future<void> validateEVM() {
                                                                                 const auto privateKey = process.env.MAINNET_PRIVATE_KEY;
                                                                                 if (privateKey) {
                                                                                     try {
-                                                                                        const auto account = "privateKeyToAccount(privateKey as " + "0x" + string;
+                                                                                        const auto account = "privateKeyToAccount(privateKey as " + "0x" + std::string;
                                                                                         delay(500);
                                                                                         const auto balance = publicClient.getBalance({ address: account.address });
                                                                                         delay(500);
@@ -224,7 +224,7 @@ std::future<void> validateEVM() {
                                                                                                     log("WARNING", "Could not check wallet (rate limited)");
                                                                                                 }
                                                                                                 } else {
-                                                                                                    log("WARNING", "MAINNET_PRIVATE_KEY not set - cannot execute transactions");
+                                                                                                    log("WARNING", "MAINNET_PRIVATE_KEY not std::set - cannot execute transactions");
                                                                                                 }
 
                                                                                                 // 6. Test price feed
@@ -466,7 +466,7 @@ std::future<void> executeRealTransactions() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!EXECUTE_TX) {
-        log("INFO", "Transaction execution skipped (set EXECUTE_TX=true to enable)");
+        log("INFO", "Transaction execution skipped (std::set EXECUTE_TX=true to enable)");
         return;
     }
 
@@ -484,7 +484,7 @@ std::future<void> executeRealTransactions() {
         transport: http(BASE_RPC),
         });
 
-        const auto account = "privateKeyToAccount(privateKey as " + "0x" + string;
+        const auto account = "privateKeyToAccount(privateKey as " + "0x" + std::string;
         const auto walletClient = createWalletClient({;
             account,
             chain: base,
@@ -512,7 +512,7 @@ std::future<void> executeRealTransactions() {
                     functionName: "consignments",
                     args: [1n],
                     }) as [;
-                    "0x" + string
+                    "0x" + std::string
                     number, number, number, number, bigint, bigint, number, boolean, bigint;
                     ];
 

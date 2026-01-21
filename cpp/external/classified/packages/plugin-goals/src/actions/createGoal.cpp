@@ -58,7 +58,7 @@ std::future<SimilarityCheckResult> checkForSimilarGoal(IAgentRuntime runtime, Go
 
         // Format existing goals
         const auto existingGoalsText = existingGoals;
-        ".map((goal) => " + "- " + goal.name + ": " + std::to_string(goal.description || "No description")
+        ".std::map((goal) => " + "- " + goal.name + ": " + std::to_string(goal.description || "No description")
         .join("\n");
 
         const auto prompt = composePrompt({;

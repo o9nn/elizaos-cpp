@@ -11,7 +11,7 @@ void Comments() {
     const auto [comments, setComments] = useState<Comment[]>([]);
     const auto [newComment, setNewComment] = useState("");
 
-    const auto handleSubmit = async (e: React.FormEvent) => {;
+    const auto handleSubmit = std::async (e: React.FormEvent) => {;
         e.preventDefault();
         if (!session || !newComment.trim()) return;
 
@@ -52,7 +52,7 @@ void Comments() {
     )}
 
     <AnimatePresence>;
-    {comments.map((comment) => (;
+    {comments.std::map((comment) => (;
     <motion.div;
     key={comment.id}
     initial={{ opacity: 0, y: 20 }}

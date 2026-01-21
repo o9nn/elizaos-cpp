@@ -1,6 +1,6 @@
 #include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/run/inspector-cli.h"
 
-TrajectoryInspector::TrajectoryInspector(string trajPath, string dataPath) {
+TrajectoryInspector::TrajectoryInspector(std::string trajPath, std::string dataPath) {
     auto content = fs::readFileSync(trajPath, std::string("utf-8"));
     if (OR((trajPath->endsWith(std::string(".yaml"))), (trajPath->endsWith(std::string(".yml"))))) {
         this->trajData = as<std::shared_ptr<TrajectoryData>>(yaml->load(content));
@@ -100,16 +100,16 @@ std::shared_ptr<Promise<void>> TrajectoryInspector::run()
             return;
         }
         static switch_type __switch3929_4918 = {
-            { any(std::string("q")), 1 },
-            { any(std::string("escape")), 2 },
-            { any(std::string("l")), 3 },
-            { any(std::string("right")), 4 },
-            { any(std::string("h")), 5 },
-            { any(std::string("left")), 6 },
-            { any(std::string("0")), 7 },
-            { any(std::string("$")), 8 },
-            { any(std::string("v")), 9 },
-            { any(std::string("i")), 10 }
+            { std::any(std::string("q")), 1 },
+            { std::any(std::string("escape")), 2 },
+            { std::any(std::string("l")), 3 },
+            { std::any(std::string("right")), 4 },
+            { std::any(std::string("h")), 5 },
+            { std::any(std::string("left")), 6 },
+            { std::any(std::string("0")), 7 },
+            { std::any(std::string("$")), 8 },
+            { std::any(std::string("v")), 9 },
+            { std::any(std::string("i")), 10 }
         };
         switch (__switch3929_4918[key["name"]])
         {
@@ -161,7 +161,7 @@ std::shared_ptr<Promise<void>> TrajectoryInspector::run()
     return std::shared_ptr<Promise<void>>();
 }
 
-array<string> findTrajFiles(string dir)
+array<string> findTrajFiles(std::string dir)
 {
     shared results = array<string>();
     auto walk = [=](auto directory) mutable
@@ -188,15 +188,15 @@ array<string> findTrajFiles(string dir)
 };
 
 
-std::shared_ptr<Promise<void>> inspectorCli(string trajectoryPath, string dataPath)
+std::shared_ptr<Promise<void>> inspectorCli(std::string trajectoryPath, std::string dataPath)
 {
     auto trajPath = path->resolve(trajectoryPath);
     if (!fs::existsSync(trajPath)) {
-        throw any(std::make_shared<Error>(std::string("Path does not exist: ") + trajPath + string_empty));
+        throw std::any(std::make_shared<Error>(std::string("Path does not exist: ") + trajPath + string_empty));
     }
     auto trajFiles = findTrajFiles(trajPath);
     if (trajFiles->get_length() == 0) {
-        throw any(std::make_shared<Error>(std::string("No trajectory files found")));
+        throw std::any(std::make_shared<Error>(std::string("No trajectory files found")));
     }
     if (trajFiles->get_length() == 1) {
         auto inspector = std::make_shared<TrajectoryInspector>(const_(trajFiles)[0], dataPath);

@@ -77,7 +77,7 @@ std::future<std::vector<UserScoreWithMetrics>> getUserDailyScores(const std::str
     .all();
 
     // Parse the metrics JSON for each result
-    return results.map((row) => {;
+    return results.std::map((row) => {;
         const auto data = /* JSON.parse */ row.metrics;
         const auto metrics = UserScoreMetricsSchema.safeParse(data);
         if (!metrics.success) {

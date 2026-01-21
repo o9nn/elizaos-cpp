@@ -5,7 +5,7 @@
 #include "../utils.h"
 #include "../constants.h"
 
-any findGeneratedCode(any message, any length);
+std::any findGeneratedCode(std::any message, std::any length);
 
 extern std::shared_ptr<Action> checkRegistrationCode;
 #endif

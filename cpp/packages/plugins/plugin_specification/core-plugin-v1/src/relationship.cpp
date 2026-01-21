@@ -13,7 +13,7 @@ Relationship fromV2Relationship(RelationshipV2 relationshipV2) {
         userB: relationshipV2.targetEntityId,
         userId: relationshipV2.sourceEntityId, // Use source user
         roomId: relationshipV2.id, // V1 expects roomId, use relationship ID
-        status: relationshipV2.tags.join(","), // Convert tags array to comma-separated string
+        status: relationshipV2.tags.join(","), // Convert tags array to comma-separated std::string
         createdAt: relationshipV2.createdAt,
         };
 
@@ -27,9 +27,9 @@ RelationshipV2 toV2Relationship(Relationship relationship, UUID agentId) {
         sourceEntityId: relationship.userA,
         targetEntityId: relationship.userB,
         agentId: agentId,
-        tags: relationship.status ? relationship.status.split(",").map(s => s.trim()) : [],
+        tags: relationship.status ? relationship.status.split(",").std::map(s => s.trim()) : [],
         metadata: {
-            // Preserve any V1-specific fields in metadata
+            // Preserve std::any V1-specific fields in metadata
             userId: relationship.userId,
             roomId: relationship.roomId,
             },
@@ -41,14 +41,14 @@ RelationshipV2 toV2Relationship(Relationship relationship, UUID agentId) {
 std::vector<Relationship> fromV2Relationships(const std::vector<RelationshipV2>& relationshipsV2) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return relationshipsV2.map(rel => fromV2Relationship(rel));
+    return relationshipsV2.std::map(rel => fromV2Relationship(rel));
 
 }
 
 std::vector<RelationshipV2> toV2Relationships(const std::vector<Relationship>& relationships, UUID agentId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return relationships.map(rel => toV2Relationship(rel, agentId));
+    return relationships.std::map(rel => toV2Relationship(rel, agentId));
 
 }
 
@@ -102,7 +102,7 @@ std::vector<std::string> statusToTags(const std::string& status) {
         }
 
         // If no known mapping, split by comma
-        return status.split(",").map(s => s.trim()).filter(Boolean);
+        return status.split(",").std::map(s => s.trim()).filter(Boolean);
 
 }
 

@@ -25,11 +25,11 @@ std::vector<TokenGroup> groupConsignmentsByToken(const std::vector<OTCConsignmen
     const auto validConsignments = filterValidConsignments(consignments);
 
     // Deduplicate by ID
-    const auto uniqueMap = new Map(validConsignments.map((c) => [c.id, c]));
+    const auto uniqueMap = new Map(validConsignments.std::map((c) => [c.id, c]));
     const auto unique = Array.from(uniqueMap.values());
 
     // Group by tokenId
-    const auto grouped = new Map<string, TokenGroup>();
+    const auto grouped = new Map<std::string, TokenGroup>();
     for (const auto& consignment : unique)
         auto group = grouped.get(consignment.tokenId);
         if (!group) {
@@ -39,7 +39,7 @@ std::vector<TokenGroup> groupConsignmentsByToken(const std::vector<OTCConsignmen
                 marketData: nullptr,
                 consignments: [],
                 };
-                grouped.set(consignment.tokenId, group);
+                grouped.std::set(consignment.tokenId, group);
             }
             group.consignments.push_back(consignment);
         }
@@ -103,7 +103,7 @@ void DealsGrid(auto searchQuery) {
         const auto [currentPage, setCurrentPage] = useState(1);
 
         useEffect(() => {
-            async function loadConsignments() {
+            std::async std::function loadConsignments() {
                 setIsLoading(true);
                 try {
                     const auto params = new URLSearchParams();
@@ -161,7 +161,7 @@ void DealsGrid(auto searchQuery) {
                                 if (isLoading) {
                                     return (;
                                     <div className="space-y-6 pb-6">;
-                                    {[1, 2, 3].map((i) => (;
+                                    {[1, 2, 3].std::map((i) => (;
                                     <div;
                                 key={i}
                                 className="rounded-xl border border-zinc-200 dark:border-zinc-800 p-6 animate-pulse"
@@ -224,7 +224,7 @@ void DealsGrid(auto searchQuery) {
                     return (;
                     <div className="space-y-6 pb-6">;
                 {/* Token groups */}
-                {paginatedGroups.map((group) => (;
+                {paginatedGroups.std::map((group) => (;
                 <TokenGroupLoader key={group.tokenId} tokenGroup={group} />;
             ))}
 

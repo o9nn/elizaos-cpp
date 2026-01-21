@@ -5,5 +5,5 @@
 using express = _default;
 #include "@elizaos/core.h"
 
-extern std::function<std::function<void(any, any, any)>()> securityMiddleware;
+extern std::function<std::function<void(std::any, std::any, std::any)>()> securityMiddleware;
 #endif

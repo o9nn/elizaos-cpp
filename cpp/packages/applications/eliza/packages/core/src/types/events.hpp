@@ -127,7 +127,7 @@ struct EventPayloadMap {
 };
 
 /**
- * Event handler function type
+ * Event handler std::function type
  */
 
 /**

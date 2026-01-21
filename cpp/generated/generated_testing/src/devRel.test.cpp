@@ -34,7 +34,7 @@ void Main(void)
                 );
                 expect(test)->toBeDefined();
                 if (!test) {
-                    throw any(std::make_shared<Error>(std::string("Test "Test Documentation Query" not found")));
+                    throw std::any(std::make_shared<Error>(std::string("Test "Test Documentation Query" not found")));
                 }
                 std::async([=]() { test["fn"](mockRuntime); });
                 expect(mockScenarioService["createWorld"])->toHaveBeenCalledWith(std::string("Doc Test"), std::string("Test Developer"));
@@ -51,7 +51,7 @@ void Main(void)
                 );
                 expect(test)->toBeDefined();
                 if (!test) {
-                    throw any(std::make_shared<Error>(std::string("Test "Test Plugin Integration" not found")));
+                    throw std::any(std::make_shared<Error>(std::string("Test "Test Plugin Integration" not found")));
                 }
                 std::async([=]() { test["fn"](mockRuntime); });
                 expect(mockScenarioService["createWorld"])->toHaveBeenCalledWith(std::string("Plugin Test"), std::string("Test Developer"));
@@ -107,7 +107,7 @@ Refer to documentation: https://docs.elizaos.com")}
                         );
                         expect(test)->toBeDefined();
                         if (!test) {
-                            throw any(std::make_shared<Error>(std::string("Test "Test Source Code Knowledge" not found")));
+                            throw std::any(std::make_shared<Error>(std::string("Test "Test Source Code Knowledge" not found")));
                         }
                         mockScenarioService["sendMessage"]["mockImplementationOnce"]([=](auto _, auto __, auto ___, auto msg) mutable
                         {
