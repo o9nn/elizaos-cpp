@@ -1,13 +1,15 @@
 # Stage 3 - Application-specific - Core Eliza Conversational AI
 add_library(elizaos-eliza STATIC
     src/eliza.cpp
+    src/eliza_paths.cpp
 )
 
 target_include_directories(elizaos-eliza PUBLIC
     ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-target_link_libraries(elizaos-eliza 
+target_link_libraries(elizaos-eliza
     elizaos-core
     elizaos-agentmemory
     elizaos-agentlogger
