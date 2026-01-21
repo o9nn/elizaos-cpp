@@ -5,18 +5,20 @@
 namespace elizaos {
 
 WorkflowUtils createWorkflowUtils() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
+    WorkflowConfig config;
+    
+    config.sessionLogsEndpoint = getEnvVar("SESSION_LOGS_ENDPOINT");
+    
+    auto enableLogging = getEnvVar("ENABLE_SESSION_LOGGING");
+    config.enableSessionLogging = !enableLogging.has_value() || enableLogging.value() != "false";
+    
+    auto failOnError = getEnvVar("FAIL_ON_SESSION_LOG_ERROR");
+    config.failOnSessionLogError = failOnError.has_value() && failOnError.value() == "true";
+    
+    config.retryCount = parseIntEnv("SESSION_LOG_RETRY_COUNT", 3);
+    config.timeoutMs = parseIntEnv("SESSION_LOG_TIMEOUT_MS", 10000);
 
-    const WorkflowConfig config = {;
-        sessionLogsEndpoint: process.env.SESSION_LOGS_ENDPOINT || std::nullopt,
-        enableSessionLogging: process.env.ENABLE_SESSION_LOGGING != "false",
-        failOnSessionLogError: process.env.FAIL_ON_SESSION_LOG_ERROR == "true",
-        retryCount: parseInt(process.env.SESSION_LOG_RETRY_COUNT || "3", 10),
-        timeoutMs: parseInt(process.env.SESSION_LOG_TIMEOUT_MS || "10000", 10)
-        };
-
-        return new WorkflowUtils(config);
-
+    return WorkflowUtils(config);
 }
 
 } // namespace elizaos

@@ -1,10 +1,12 @@
+#pragma once
+
+#include <any>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
 
@@ -14,32 +16,56 @@ namespace elizaos {
 // Types for the registry API
 using RawRegistry = std::unordered_map<std::string, std::string>; // <npmName> → "github:owner/repo"
 
-struct VersionInfo {
-    std::optional<{> git;
+/**
+ * Git repository information
+ */
+struct GitInfo {
     std::string repo;
-    std::optional<{> v0;
-    string | null version;
-    string | null branch;
-    std::optional<{> v1;
-    string | null version;
-    string | null branch;
-    std::optional<{> npm;
-    string | null repo;
-    std::optional<string | null> v0;
-    std::optional<string | null> v1;
-    { supports;
-    bool v0;
-    bool v1;
+    std::optional<std::string> version;
+    std::optional<std::string> branch;
 };
 
+/**
+ * NPM package information
+ */
+struct NpmInfo {
+    std::optional<std::string> repo;
+    std::optional<std::string> v0;
+    std::optional<std::string> v1;
+};
+
+/**
+ * Version support flags
+ */
+struct VersionSupport {
+    bool v0 = false;
+    bool v1 = false;
+};
+
+/**
+ * Version information for a package
+ */
+struct VersionInfo {
+    std::optional<GitInfo> git;
+    std::optional<GitInfo> v0;
+    std::optional<GitInfo> v1;
+    std::optional<NpmInfo> npm;
+    VersionSupport supports;
+};
+
+/**
+ * Cached registry data
+ */
 struct CachedRegistry {
     std::string lastUpdatedAt;
     std::unordered_map<std::string, VersionInfo> registry;
 };
 
+/**
+ * NPM package metadata
+ */
 struct NpmPackageMetadata {
-    std::optional<std::unordered_map<std::string, unknown>> versions;
+    std::optional<std::unordered_map<std::string, std::any>> versions;
 };
-
 
 } // namespace elizaos

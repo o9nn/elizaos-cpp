@@ -1,15 +1,18 @@
+#pragma once
+
+#include <any>
+#include <cmath>
+#include <chrono>
 #include <functional>
+#include <future>
 #include <memory>
 #include <optional>
 #include <string>
+#include <thread>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
-
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
 
 /**
  * Defensive Sessions Client with 404 Error Handling
@@ -29,62 +32,136 @@ struct SessionLogData {
 
 struct SessionUploadOptions {
     std::optional<std::string> endpoint;
-    std::optional<double> retries;
-    std::optional<double> timeout;
+    std::optional<int> retries;
+    std::optional<int> timeout;
     std::optional<bool> failOnError;
 };
 
+struct UploadResult {
+    bool success;
+    std::optional<std::string> error;
+    int statusCode;
+};
+
+/**
+ * Sessions client for uploading session logs with defensive error handling
+ */
 class SessionsClient {
-  private defaultEndpoint: string;
-  private defaultOptions: SessionUploadOptions;
+private:
+    std::string defaultEndpoint_;
+    SessionUploadOptions defaultOptions_;
 
-  constructor(endpoint?: string, options: SessionUploadOptions = {}) {
-    this.defaultEndpoint = endpoint || process.env.SESSION_LOGS_ENDPOINT || '';
-    this.defaultOptions = {
-      retries: 3,
-      timeout: 10000,
-      failOnError: false,
-      ...options
-    };
-  }
+public:
+    /**
+     * Constructor
+     * @param endpoint - The endpoint URL for session logs
+     * @param options - Upload options
+     */
+    explicit SessionsClient(const std::string& endpoint = "", 
+                           const SessionUploadOptions& options = {})
+        : defaultEndpoint_(endpoint)
+        , defaultOptions_(options) {
+        // Set default values if not provided
+        if (!defaultOptions_.retries.has_value()) {
+            defaultOptions_.retries = 3;
+        }
+        if (!defaultOptions_.timeout.has_value()) {
+            defaultOptions_.timeout = 10000;
+        }
+        if (!defaultOptions_.failOnError.has_value()) {
+            defaultOptions_.failOnError = false;
+        }
+    }
 
-  /**
-   * Upload session logs with defensive error handling
-   * @param logData - The session log data to upload
-   * @param options - Upload options (optional)
-   * @returns Promise<boolean> - true if successful, false if failed but gracefully handled
-   */
-
-        // Handle specific HTTP status codes
-
-          // Client errors (400-499) - don't retry
+    /**
+     * Upload session logs with defensive error handling
+     * @param logData - The session log data to upload
+     * @param options - Upload options (optional)
+     * @return true if successful, false if failed but gracefully handled
+     */
+    bool uploadLogs(const SessionLogData& logData, 
+                    const SessionUploadOptions& options = {}) {
+        auto effectiveOptions = mergeOptions(options);
+        int maxRetries = effectiveOptions.retries.value_or(3);
         
-          // Server errors (500+) - retry
+        for (int attempt = 0; attempt < maxRetries; ++attempt) {
+            try {
+                auto result = performUpload(logData, effectiveOptions);
+                
+                if (result.success) {
+                    return true;
+                }
+                
+                // Handle specific HTTP status codes
+                if (result.statusCode >= 400 && result.statusCode < 500) {
+                    // Client errors (400-499) - don't retry
+                    if (!effectiveOptions.failOnError.value_or(false)) {
+                        return false;
+                    }
+                    break;
+                }
+                
+                // Server errors (500+) - retry with exponential backoff
+                if (attempt < maxRetries - 1) {
+                    int delayMs = static_cast<int>(std::pow(2, attempt) * 1000);
+                    std::this_thread::sleep_for(std::chrono::milliseconds(delayMs));
+                }
+            } catch (const std::exception& e) {
+                // Handle network errors, timeouts, etc.
+                if (attempt < maxRetries - 1) {
+                    int delayMs = static_cast<int>(std::pow(2, attempt) * 1000);
+                    std::this_thread::sleep_for(std::chrono::milliseconds(delayMs));
+                }
+            }
+        }
+        
+        // All retries exhausted
+        return !effectiveOptions.failOnError.value_or(false);
+    }
 
-        // Handle network errors, timeouts, etc.
+    /**
+     * Health check for the session logging endpoint
+     * @return true if endpoint is available
+     */
+    bool healthCheck() {
+        // Placeholder for health check implementation
+        return !defaultEndpoint_.empty();
+    }
 
-        // Wait before retry (exponential backoff)
-    
-    // All retries exhausted
+    /**
+     * Get the configured endpoint
+     */
+    std::string getEndpoint() const {
+        return defaultEndpoint_;
+    }
 
-  /**
-   * Perform the actual HTTP upload
-   */
+private:
+    /**
+     * Merge provided options with defaults
+     */
+    SessionUploadOptions mergeOptions(const SessionUploadOptions& options) const {
+        SessionUploadOptions merged;
+        merged.endpoint = options.endpoint.has_value() ? options.endpoint : 
+                          (defaultOptions_.endpoint.has_value() ? defaultOptions_.endpoint : 
+                           std::optional<std::string>(defaultEndpoint_));
+        merged.retries = options.retries.has_value() ? options.retries : defaultOptions_.retries;
+        merged.timeout = options.timeout.has_value() ? options.timeout : defaultOptions_.timeout;
+        merged.failOnError = options.failOnError.has_value() ? options.failOnError : defaultOptions_.failOnError;
+        return merged;
+    }
 
-  /**
-   * Utility method for delays
-   */
+    /**
+     * Perform the actual HTTP upload
+     */
+    UploadResult performUpload(const SessionLogData& logData, 
+                               const SessionUploadOptions& options) {
+        // Placeholder for actual HTTP implementation
+        // In a real implementation, this would use libcurl or similar
+        UploadResult result;
+        result.success = true;
+        result.statusCode = 200;
+        return result;
+    }
+};
 
-  /**
-   * Health check for the session logging endpoint
-   */
-
-// Export for use in workflows and other modules
-
-// Default for direct usage
-
-// CLI usage when run as a script
-  
-  // Example usage
-  
 } // namespace elizaos

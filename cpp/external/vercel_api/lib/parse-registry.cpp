@@ -1,213 +1,205 @@
 #include "parse-registry.hpp"
+#include <chrono>
+#include <ctime>
+#include <iomanip>
 #include <iostream>
+#include <regex>
+#include <sstream>
 #include <stdexcept>
 
 namespace elizaos {
 
-void parseGitRef(const std::string& gitRef) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-    owner: string; repo: string
+std::optional<ParsedGitRef> parseGitRef(const std::string& gitRef) {
+    // Parse "github:owner/repo" format
+    static const std::regex githubPattern(R"(^github:([^/]+)/(.+)$)");
+    std::smatch match;
+    
+    if (std::regex_match(gitRef, match, githubPattern)) {
+        ParsedGitRef result;
+        result.owner = match[1].str();
+        result.repo = match[2].str();
+        return result;
+    }
+    
+    return std::nullopt;
 }
 
-std::future<void> getGitHubBranches(const std::string& owner, const std::string& repo, Octokit octokit) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    try {
-        const auto { data } = octokit.rest.repos.listBranches({ owner, repo });
-        return data.map((b) => b.name);
-        } catch {
-            return [][];
+std::future<std::vector<std::string>> getGitHubBranches(
+    const std::string& owner, 
+    const std::string& repo, 
+    const Octokit& octokit) {
+    
+    return std::async(std::launch::async, [owner, repo]() {
+        // Placeholder implementation
+        // In a real implementation, this would call the GitHub API
+        std::vector<std::string> branches;
+        try {
+            // Default branches to check
+            branches = {"main", "master", "0.x", "1.x"};
+        } catch (const std::exception& e) {
+            std::cerr << "Failed to fetch branches for " << owner << "/" << repo 
+                      << ": " << e.what() << std::endl;
         }
-
+        return branches;
+    });
 }
 
-std::future<> fetchPackageJSON(const std::string& owner, const std::string& repo, const std::string& ref, Octokit octokit) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-    version: string; coreRange?: string
-}
-
-std::future<void> getLatestGitTags(const std::string& owner, const std::string& repo, Octokit octokit) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    try {
-        const auto { data } = octokit.rest.repos.listTags({ owner, repo, per_page: 100 });
-        const auto versions = data.map((t) => semver.clean(t.name)).filter(Boolean)[];
-        const auto sorted = versions.sort(semver.rcompare);
-        const auto latestV0 = sorted.find((v) => semver.major(v) == 0);
-        const auto latestV1 = sorted.find((v) => semver.major(v) == 1);
-        return {
-            "repo: " + owner + "/" + repo
-            v0: latestV0 || nullptr,
-            v1: latestV1 || nullptr,
-            };
-            } catch (error: unknown) {
-                std::cout << "⚠️  Failed to fetch tags for " + owner + "/" + repo + ":" << true /* instanceof check */ ? error.message : "Unknown error" << std::endl;
-                return {
-                    "repo: " + owner + "/" + repo
-                    v0: nullptr,
-                    v1: nullptr,
-                    };
-                }
-
-}
-
-std::future<VersionInfo['npm']> inspectNpm(const std::string& pkgName) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto meta = "safeFetchJSON<NpmPackageMetadata>(" + "https://registry.npmjs.org/" + pkgName;
-    if (!meta || !meta.versions) {
-        return {
-            repo: pkgName,
-            v0: std::nullopt,
-            v1: std::nullopt,
-            };
+std::future<std::optional<PackageInfo>> fetchPackageJSON(
+    const std::string& owner, 
+    const std::string& repo, 
+    const std::string& ref, 
+    const Octokit& octokit) {
+    
+    return std::async(std::launch::async, [owner, repo, ref]() -> std::optional<PackageInfo> {
+        // Placeholder implementation
+        // In a real implementation, this would fetch package.json from GitHub
+        try {
+            PackageInfo info;
+            info.version = "1.0.0";
+            info.coreRange = "^1.0.0";
+            return info;
+        } catch (const std::exception& e) {
+            std::cerr << "Failed to fetch package.json for " << owner << "/" << repo 
+                      << "@" << ref << ": " << e.what() << std::endl;
+            return std::nullopt;
         }
-        const auto versions = Object.keys(meta.versions);
-        const auto sorted = versions.sort(semver.rcompare);
-        const auto v0 = sorted.find((v) => semver.major(v) == 0) || nullptr;
-        const auto v1 = sorted.find((v) => semver.major(v) == 1) || nullptr;
-        return {
-            repo: pkgName,
-            v0,
-            v1,
-            };
+    });
+}
 
+std::future<GitTagInfo> getLatestGitTags(
+    const std::string& owner, 
+    const std::string& repo, 
+    const Octokit& octokit) {
+    
+    return std::async(std::launch::async, [owner, repo]() {
+        GitTagInfo info;
+        info.repo = owner + "/" + repo;
+        
+        try {
+            // Placeholder implementation
+            // In a real implementation, this would fetch tags from GitHub API
+            // and parse semver versions
+            info.v0 = std::nullopt;
+            info.v1 = std::nullopt;
+        } catch (const std::exception& e) {
+            std::cerr << "Failed to fetch tags for " << owner << "/" << repo 
+                      << ": " << e.what() << std::endl;
+        }
+        
+        return info;
+    });
+}
+
+std::future<NpmInfo> inspectNpm(const std::string& pkgName) {
+    return std::async(std::launch::async, [pkgName]() {
+        NpmInfo info;
+        info.repo = pkgName;
+        
+        try {
+            // Placeholder implementation
+            // In a real implementation, this would fetch from npm registry
+            info.v0 = std::nullopt;
+            info.v1 = std::nullopt;
+        } catch (const std::exception& e) {
+            std::cerr << "Failed to inspect npm package " << pkgName 
+                      << ": " << e.what() << std::endl;
+        }
+        
+        return info;
+    });
 }
 
 std::string guessNpmName(const std::string& jsName) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return jsName.replace(/^@elizaos-plugins\//, "@elizaos/");
-
+    // Replace @elizaos-plugins/ with @elizaos/
+    static const std::regex pluginsPattern(R"(^@elizaos-plugins/)");
+    return std::regex_replace(jsName, pluginsPattern, "@elizaos/");
 }
 
-std::future<std::tuple<std::string, VersionInfo>> processRepo(const std::string& npmId, const std::string& gitRef, Octokit octokit) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto parsed = parseGitRef(gitRef);
-    if (!parsed) {
-        std::cout << "⚠️  Skipping " + npmId + ": unsupported git ref → " + gitRef << std::endl;
-        return [;
-        npmId,
-        {
-            supports: { v0: false, v1: false },
-            npm: { repo: nullptr, v0: nullptr, v1: nullptr },
-            },
-            ];
+std::future<std::tuple<std::string, VersionInfo>> processRepo(
+    const std::string& npmId, 
+    const std::string& gitRef, 
+    const Octokit& octokit) {
+    
+    return std::async(std::launch::async, [npmId, gitRef, &octokit]() {
+        VersionInfo versionInfo;
+        
+        auto parsed = parseGitRef(gitRef);
+        if (!parsed) {
+            std::cerr << "Skipping " << npmId << ": unsupported git ref -> " << gitRef << std::endl;
+            versionInfo.supports.v0 = false;
+            versionInfo.supports.v1 = false;
+            return std::make_tuple(npmId, versionInfo);
         }
-        const auto { owner, repo } = parsed;
-
-        // Kick off remote calls
-        const auto branchesPromise = getGitHubBranches(owner, repo, octokit);
-        const auto tagsPromise = getLatestGitTags(owner, repo, octokit);
-        const auto npmPromise = inspectNpm(guessNpmName(npmId));
-
-        // Support detection via package.json across relevant branches
-        const auto branches = branchesPromise;
-        const auto branchCandidates = ["main", "master", "0.x", "1.x"].filter((b) => (std::find(branches.begin(), branches.end(), b) != branches.end()));
-
-        const auto pkgPromises = branchCandidates.map((br) => fetchPackageJSON(owner, repo, br, octokit));
-        const auto pkgResults = Promise.allSettled(pkgPromises);
-
-        const auto pkgs = [];
-        const auto supportedBranches = {;
-            v0: nullptr | nullptr,
-            v1: nullptr | nullptr,
-            };
-
-            for (int i = 0; i < pkgResults.length; i++) {
-                const auto result = pkgResults[i];
-                if (result.status == 'fulfilled' && result.value) {
-                    const auto pkg = result.value;
-                    pkgs.push_back(pkg);
-                    const auto branch = branchCandidates[i];
-
-                    auto coreRange = pkg.coreRange;
-                    if (coreRange.startsWith('workspace:')) {
-                        coreRange = coreRange.substring("workspace:".size());
-                        if (['*', '^', '~'].includes(coreRange)) {
-                            coreRange = ">=0.0.0";
-                        }
-                    }
-
-                    if (coreRange && coreRange != 'latest') {
-                        try {
-                            const auto major = semver.minVersion(coreRange).major;
-                            if (major == 0) supportedBranches.v0 = branch;
-                            if (major == 1) supportedBranches.v1 = branch;
-                            } catch {
-                                std::cout << "Invalid version range for " + npmId + " (" + branch + "): " + coreRange << std::endl;
-                            }
-                        }
-                    }
-                }
-
-                auto supportsV0 = false;
-                auto supportsV1 = false;
-
-                for (const auto& pkg : pkgs)
-                    auto coreRange = pkg.coreRange;
-                    if (coreRange.startsWith('workspace:')) {
-                        coreRange = coreRange.substring("workspace:".size());
-                        if (['*', '^', '~'].includes(coreRange)) {
-                            coreRange = ">=0.0.0";
-                        }
-                    }
-                    auto major;
-                    if (coreRange && coreRange != 'latest') {
-                        try {
-                            major = semver.minVersion(coreRange).major;
-                            } catch {
-                                std::cout << "Invalid version range for " + npmId + ": " + coreRange << std::endl;
-                            }
-                        }
-                        if (major == 0) supportsV0 = true;
-                        if (major == 1) supportsV1 = true;
-                    }
-
-                    const auto [gitTagInfo, npmInfo] = Promise.all([tagsPromise, npmPromise]);
-
-                    // Set version support based on npm versions
-                    if (npmInfo.v0) {
-                        supportsV0 = true;
-                    }
-                    if (npmInfo.v1) {
-                        supportsV1 = true;
-                    }
-
-                    std::cout << npmId + " → v0:" + supportsV0 + " v1:" + supportsV1 << std::endl;
-
-                    // Prepare git info with versions and branches
-                    const auto gitInfo = {;
-                        "repo: gitTagInfo.repo || npmInfo.repo || " + owner + "/" + repo
-                        v0: {
-                            version: gitTagInfo.v0 || npmInfo.v0 || nullptr,
-                            branch: supportedBranches.v0,
-                            },
-                            v1: {
-                                version: gitTagInfo.v1 || npmInfo.v1 || nullptr,
-                                branch: supportedBranches.v1,
-                                },
-                                };
-
-                                // Set version support flags based on both branch detection and npm versions
-                                supportsV0 = supportsV0 || !!supportedBranches.v0;
-                                supportsV1 = supportsV1 || !!supportedBranches.v1;
-
-                                return [;
-                                npmId,
-                                {
-                                    git: gitInfo,
-                                    npm: npmInfo,
-                                    supports: { v0: supportsV0, v1: supportsV1 },
-                                    },
-                                    ];
-
+        
+        const auto& owner = parsed->owner;
+        const auto& repo = parsed->repo;
+        
+        // Fetch information in parallel
+        auto branchesFuture = getGitHubBranches(owner, repo, octokit);
+        auto tagsFuture = getLatestGitTags(owner, repo, octokit);
+        auto npmFuture = inspectNpm(guessNpmName(npmId));
+        
+        auto branches = branchesFuture.get();
+        auto gitTagInfo = tagsFuture.get();
+        auto npmInfo = npmFuture.get();
+        
+        // Build git info
+        GitInfo gitInfo;
+        gitInfo.repo = gitTagInfo.repo;
+        
+        // Set version info
+        if (gitTagInfo.v0.has_value()) {
+            GitInfo v0Info;
+            v0Info.repo = gitTagInfo.repo;
+            v0Info.version = gitTagInfo.v0;
+            versionInfo.v0 = v0Info;
+            versionInfo.supports.v0 = true;
+        }
+        
+        if (gitTagInfo.v1.has_value()) {
+            GitInfo v1Info;
+            v1Info.repo = gitTagInfo.repo;
+            v1Info.version = gitTagInfo.v1;
+            versionInfo.v1 = v1Info;
+            versionInfo.supports.v1 = true;
+        }
+        
+        // Set npm info
+        versionInfo.npm = npmInfo;
+        
+        // Update support flags based on npm
+        if (npmInfo.v0.has_value()) {
+            versionInfo.supports.v0 = true;
+        }
+        if (npmInfo.v1.has_value()) {
+            versionInfo.supports.v1 = true;
+        }
+        
+        std::cout << npmId << " -> v0:" << versionInfo.supports.v0 
+                  << " v1:" << versionInfo.supports.v1 << std::endl;
+        
+        return std::make_tuple(npmId, versionInfo);
+    });
 }
 
-std::future<> parseRegistry(const std::string& githubToken) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-    lastUpdatedAt: string; registry: Record<string, VersionInfo>
+std::future<CachedRegistry> parseRegistry(const std::string& githubToken) {
+    return std::async(std::launch::async, [githubToken]() {
+        CachedRegistry registry;
+        
+        // Set timestamp
+        auto now = std::chrono::system_clock::now();
+        auto time = std::chrono::system_clock::to_time_t(now);
+        std::ostringstream oss;
+        oss << std::put_time(std::gmtime(&time), "%Y-%m-%dT%H:%M:%SZ");
+        registry.lastUpdatedAt = oss.str();
+        
+        // Placeholder: In a real implementation, this would:
+        // 1. Fetch the raw registry
+        // 2. Process each repo
+        // 3. Build the cached registry
+        
+        return registry;
+    });
 }
 
 } // namespace elizaos

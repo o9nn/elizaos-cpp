@@ -1,16 +1,17 @@
+#pragma once
+
 #include "sessions-client.hpp"
+#include <cstdlib>
 #include <functional>
+#include <iostream>
 #include <memory>
 #include <optional>
 #include <string>
+#include <thread>
 #include <unordered_map>
 #include <vector>
-#pragma once
 
 namespace elizaos {
-
-// NOTE: This is auto-generated approximate C++ code
-// Manual refinement required for production use
 
 /**
  * Workflow Utilities for Defensive Error Handling
@@ -29,8 +30,8 @@ struct WorkflowConfig {
     std::optional<std::string> sessionLogsEndpoint;
     std::optional<bool> enableSessionLogging;
     std::optional<bool> failOnSessionLogError;
-    std::optional<double> retryCount;
-    std::optional<double> timeoutMs;
+    std::optional<int> retryCount;
+    std::optional<int> timeoutMs;
 };
 
 /**
@@ -46,78 +47,202 @@ struct WorkflowContext {
 };
 
 /**
+ * Helper function to get environment variable
+ */
+inline std::optional<std::string> getEnvVar(const std::string& name) {
+    const char* value = std::getenv(name.c_str());
+    if (value) {
+        return std::string(value);
+    }
+    return std::nullopt;
+}
+
+/**
+ * Helper function to get environment variable with default
+ */
+inline std::string getEnvVarOrDefault(const std::string& name, const std::string& defaultValue) {
+    auto value = getEnvVar(name);
+    return value.value_or(defaultValue);
+}
+
+/**
+ * Helper function to parse integer from environment
+ */
+inline int parseIntEnv(const std::string& name, int defaultValue) {
+    auto value = getEnvVar(name);
+    if (value.has_value()) {
+        try {
+            return std::stoi(value.value());
+        } catch (...) {
+            return defaultValue;
+        }
+    }
+    return defaultValue;
+}
+
+/**
  * Main utility class for defensive workflow operations
  */
 class WorkflowUtils {
-  private config: WorkflowConfig;
-  private context: WorkflowContext;
-  private sessionsClient: SessionsClient;
+private:
+    WorkflowConfig config_;
+    WorkflowContext context_;
+    std::unique_ptr<SessionsClient> sessionsClient_;
 
-  constructor(config: WorkflowConfig = {}) {
-    this.config = {
-      enableSessionLogging: true,
-      failOnSessionLogError: false,
-      retryCount: 3,
-      timeoutMs: 10000,
-      ...config
-    };
+public:
+    /**
+     * Constructor
+     * @param config - Workflow configuration
+     */
+    explicit WorkflowUtils(const WorkflowConfig& config = {})
+        : config_(config) {
+        // Set defaults
+        if (!config_.enableSessionLogging.has_value()) {
+            config_.enableSessionLogging = true;
+        }
+        if (!config_.failOnSessionLogError.has_value()) {
+            config_.failOnSessionLogError = false;
+        }
+        if (!config_.retryCount.has_value()) {
+            config_.retryCount = 3;
+        }
+        if (!config_.timeoutMs.has_value()) {
+            config_.timeoutMs = 10000;
+        }
 
-    this.context = this.extractWorkflowContext();
-    this.sessionsClient = new SessionsClient(
-      this.config.sessionLogsEndpoint,
-      {
-        retries: this.config.retryCount || 3,
-        timeout: this.config.timeoutMs || 10000,
-        failOnError: this.config.failOnSessionLogError || false
-      }
-    );
-  }
+        context_ = extractWorkflowContext();
+        
+        SessionUploadOptions sessionOptions;
+        sessionOptions.retries = config_.retryCount;
+        sessionOptions.timeout = config_.timeoutMs;
+        sessionOptions.failOnError = config_.failOnSessionLogError;
+        
+        sessionsClient_ = std::make_unique<SessionsClient>(
+            config_.sessionLogsEndpoint.value_or(""),
+            sessionOptions
+        );
+    }
 
-  /**
-   * Extract workflow context from environment variables
-   */
+    /**
+     * Extract workflow context from environment variables
+     */
+    WorkflowContext extractWorkflowContext() {
+        WorkflowContext ctx;
+        ctx.workflowName = getEnvVar("GITHUB_WORKFLOW");
+        ctx.runId = getEnvVar("GITHUB_RUN_ID");
+        ctx.actor = getEnvVar("GITHUB_ACTOR");
+        ctx.repository = getEnvVar("GITHUB_REPOSITORY");
+        ctx.event = getEnvVar("GITHUB_EVENT_NAME");
+        ctx.ref = getEnvVar("GITHUB_REF");
+        return ctx;
+    }
 
-  /**
-   * Safely upload session logs without failing the workflow
-   */
+    /**
+     * Safely upload session logs without failing the workflow
+     * @param logData - The session log data
+     * @return true if successful or gracefully handled
+     */
+    bool uploadSessionLogs(const SessionLogData& logData) {
+        if (!config_.enableSessionLogging.value_or(true)) {
+            return true;
+        }
+        return sessionsClient_->uploadLogs(logData);
+    }
 
-  /**
-   * Check if the session logging service is available
-   */
+    /**
+     * Check if the session logging service is available
+     */
+    bool isSessionLoggingAvailable() {
+        return sessionsClient_->healthCheck();
+    }
 
-  /**
-   * Set GitHub Action output safely
-   */
-      // GitHub Actions output format
+    /**
+     * Set GitHub Action output safely
+     * @param name - Output name
+     * @param value - Output value
+     */
+    void setOutput(const std::string& name, const std::string& value) {
+        // GitHub Actions output format
+        std::cout << "::set-output name=" << name << "::" << value << std::endl;
+    }
 
-  /**
-   * Set GitHub Action environment variable safely
-   */
+    /**
+     * Set GitHub Action environment variable safely
+     * @param name - Variable name
+     * @param value - Variable value
+     */
+    void setEnv(const std::string& name, const std::string& value) {
+        auto githubEnv = getEnvVar("GITHUB_ENV");
+        if (githubEnv.has_value()) {
+            // Write to GITHUB_ENV file
+            // In practice, this would append to the file
+        }
+    }
 
-  /**
-   * Log warning with GitHub Actions annotation
-   */
+    /**
+     * Log warning with GitHub Actions annotation
+     * @param message - Warning message
+     */
+    void logWarning(const std::string& message) {
+        std::cout << "::warning::" << message << std::endl;
+    }
 
-  /**
-   * Log error with GitHub Actions annotation
-   */
+    /**
+     * Log error with GitHub Actions annotation
+     * @param message - Error message
+     */
+    void logError(const std::string& message) {
+        std::cerr << "::error::" << message << std::endl;
+    }
 
-  /**
-   * Exit gracefully with proper session log cleanup
-   */
+    /**
+     * Exit gracefully with proper session log cleanup
+     * @param exitCode - Exit code
+     */
+    void exitGracefully(int exitCode) {
+        // Perform any cleanup
+        std::exit(exitCode);
+    }
 
-  /**
-   * Wrap a function with defensive error handling
-   */
+    /**
+     * Wrap a function with defensive error handling
+     * @param fn - Function to wrap
+     * @param maxRetries - Maximum retry attempts
+     * @return Result of the function or nullopt on failure
+     */
+    template<typename Func>
+    auto withRetry(Func fn, int maxRetries = 3) -> std::optional<decltype(fn())> {
+        for (int attempt = 0; attempt < maxRetries; ++attempt) {
+            try {
+                return fn();
+            } catch (const std::exception& e) {
+                if (attempt < maxRetries - 1) {
+                    int delayMs = static_cast<int>(std::pow(2, attempt) * 1000);
+                    std::this_thread::sleep_for(std::chrono::milliseconds(delayMs));
+                }
+            }
+        }
+        return std::nullopt;
+    }
 
-        // Wait before retry
+    /**
+     * Get the workflow context
+     */
+    const WorkflowContext& getContext() const {
+        return context_;
+    }
+
+    /**
+     * Get the configuration
+     */
+    const WorkflowConfig& getConfig() const {
+        return config_;
+    }
+};
 
 /**
  * Factory function to create a WorkflowUtils instance with environment-based configuration
  */
 WorkflowUtils createWorkflowUtils();
 
-// Export types and classes
-
-// Default default WorkflowUtils;
 } // namespace elizaos

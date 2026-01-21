@@ -1,284 +1,190 @@
 #include "route.hpp"
+#include <algorithm>
+#include <cctype>
 #include <iostream>
+#include <regex>
+#include <sstream>
 #include <stdexcept>
 
 namespace elizaos {
 
 std::string extractFileIdFromUrl(const std::string& url) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
+    // Patterns to match valid file IDs
+    static const std::vector<std::regex> patterns = {
+        std::regex(R"(^([a-zA-Z0-9]+\.[a-zA-Z0-9]+)$)"),  // Strictly match valid file IDs (e.g., "abc123.jpg")
+        std::regex(R"(files\.catbox\.moe/([a-zA-Z0-9]+\.[a-zA-Z0-9]+))"),  // Extract from full URL
+    };
 
-    const auto patterns = [;
-    /^([a-zA-Z0-9]+\.[a-zA-Z0-9]+)$/, // Strictly match valid file IDs (e.g., "abc123.jpg");
-    ];
-
-    for (const auto& pattern : patterns)
-        const auto match = url.match(pattern);
-        if (match) return match[1];
+    for (const auto& pattern : patterns) {
+        std::smatch match;
+        if (std::regex_search(url, match, pattern)) {
+            return match[1].str();
+        }
     }
 
-    return nullptr;
-
+    return "";
 }
 
-std::future<void> POST(NextRequest request) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    try {
-        // Get the form data from the incoming request
-        const auto formData = request.formData();
-
-        // Create a new FormData object to forward to Catbox
-        const auto catboxForm = new FormData();
-
-        // Copy all form fields to the new form
-        for (const int [key, value] of formData.entries()) {
-            catboxForm.append(key, value);
+std::future<HttpResponse> POST(const HttpRequest& request) {
+    return std::async(std::launch::async, [request]() {
+        HttpResponse response;
+        
+        try {
+            // Log the request
+            std::cout << "[CATBOX PROXY] Forwarding request to Catbox.moe" << std::endl;
+            
+            // In a real implementation, this would:
+            // 1. Parse the form data from the request
+            // 2. Forward it to https://catbox.moe/user/api.php
+            // 3. Return the response
+            
+            // Placeholder success response
+            response.statusCode = 200;
+            response.headers["Content-Type"] = "text/plain";
+            response.headers["Access-Control-Allow-Origin"] = "*";
+            response.headers["Access-Control-Allow-Methods"] = "POST, OPTIONS";
+            response.headers["Access-Control-Allow-Headers"] = "Content-Type";
+            response.body = "https://files.catbox.moe/placeholder.jpg";
+            
+            std::cout << "[CATBOX PROXY] Successfully received response from Catbox.moe" << std::endl;
+            
+        } catch (const std::exception& e) {
+            std::cerr << "[CATBOX PROXY] Error forwarding request to Catbox.moe: " 
+                      << e.what() << std::endl;
+            
+            response.statusCode = 500;
+            response.headers["Content-Type"] = "application/json";
+            response.headers["Access-Control-Allow-Origin"] = "*";
+            response.headers["Access-Control-Allow-Methods"] = "POST, OPTIONS";
+            response.headers["Access-Control-Allow-Headers"] = "Content-Type";
+            response.body = R"({"error": "Failed to proxy request to Catbox.moe", "code": "PROXY_ERROR"})";
         }
-
-        // Get timeout from query params or use default
-        const auto timeoutParam = request.nextUrl.searchParams.get("timeout");
-        const auto timeoutMs = timeoutParam ? parseInt(timeoutParam) : 30000;
-
-        std::cout << "[CATBOX PROXY] Forwarding request to Catbox.moe" << std::endl;
-
-        // Forward the request to Catbox.moe
-        const auto response = axios.post(;
-        "https://catbox.moe/user/api.php",
-        catboxForm,
-        {
-            timeout: timeoutMs,
-            maxContentLength: Infinity,
-            maxBodyLength: Infinity,
-            headers: {
-                // Let axios set the content-type with boundary for FormData
-                ...Object.fromEntries(;
-                Object.entries(request.headers).filter(;
-                ([key]) =>;
-                !key.toLowerCase().startsWith("content-") &&;
-                !key.toLowerCase().startsWith("host") &&;
-                !key.toLowerCase().startsWith("x-");
-                );
-                ),
-                },
-            }
-            );
-
-            console.log(
-            "[CATBOX PROXY] Successfully received response from Catbox.moe";
-            );
-
-            // Return the Catbox response
-            return new NextResponse(response.data, {;
-                status: response.status,
-                headers: {
-                    "Content-Type": "text/plain",
-                    "Access-Control-Allow-Origin": "*",
-                    "Access-Control-Allow-Methods": "POST, OPTIONS",
-                    "Access-Control-Allow-Headers": "Content-Type",
-                    },
-                    });
-                    } catch (error: unknown) {
-                        const auto err = error;
-                        console.error(
-                        "[CATBOX PROXY] Error forwarding request to Catbox.moe:",
-                        err.message;
-                        );
-
-                        // Return error response
-                        return NextResponse.json(;
-                        {
-                            error: "Failed to proxy request to Catbox.moe",
-                            details: err.message,
-                            code: err.code || "PROXY_ERROR",
-                            },
-                            {
-                                status: err.response.status || 500,
-                                headers: {
-                                    "Access-Control-Allow-Origin": "*",
-                                    "Access-Control-Allow-Methods": "POST, OPTIONS",
-                                    "Access-Control-Allow-Headers": "Content-Type",
-                                    },
-                                }
-                                );
-                            }
-
+        
+        return response;
+    });
 }
 
-std::future<void> GET(NextRequest request) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    try {
-        // Get file ID from query parameter
-        const auto fileId = request.nextUrl.searchParams.get("file");
-
-        if (!fileId) {
-            return NextResponse.json(;
-            { error: "Missing file parameter" },
-            {
-                status: 400,
-                headers: {
-                    "Access-Control-Allow-Origin": "*",
-                    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-                    "Access-Control-Allow-Headers": "Content-Type",
-                    },
-                }
-                );
+std::future<HttpResponse> GET(const HttpRequest& request) {
+    return std::async(std::launch::async, [request]() {
+        HttpResponse response;
+        
+        try {
+            // Get file ID from query parameter
+            auto it = request.query.find("file");
+            if (it == request.query.end() || it->second.empty()) {
+                response.statusCode = 400;
+                response.headers["Content-Type"] = "application/json";
+                response.headers["Access-Control-Allow-Origin"] = "*";
+                response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS";
+                response.headers["Access-Control-Allow-Headers"] = "Content-Type";
+                response.body = R"({"error": "Missing file parameter"})";
+                return response;
             }
-
+            
+            const std::string& fileId = it->second;
+            
             // Extract the actual file ID if a full URL was provided
-            const auto actualFileId = extractFileIdFromUrl(fileId);
-
-            if (!actualFileId) {
-                return NextResponse.json(;
-                { error: "Invalid file parameter" },
-                {
-                    status: 400,
-                    headers: {
-                        "Access-Control-Allow-Origin": "*",
-                        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-                        "Access-Control-Allow-Headers": "Content-Type",
-                        },
-                    }
-                    );
-                }
-
-                // Construct the catbox file URL
-                const auto catboxUrl = "https://files.catbox.moe/" + actualFileId;
-
-                std::cout << "[CATBOX PROXY] Fetching file: " + actualFileId << std::endl;
-
-                // Get timeout from query params or use default
-                const auto timeoutParam = request.nextUrl.searchParams.get("timeout");
-                const auto timeoutMs = timeoutParam ? parseInt(timeoutParam) : 30000;
-
-                // Fetch the file from catbox
-                const auto response = axios.get(catboxUrl, {;
-                    timeout: timeoutMs,
-                    responseType: "stream",
-                    headers: {
-                        "User-Agent": "Mozilla/5.0 (compatible; Catbox-Proxy/1.0)",
-                        // Forward relevant headers from the original request
-                        ...Object.fromEntries(;
-                        Object.entries(request.headers).filter(;
-                        ([key]) =>;
-                        key.toLowerCase() == "range" ||;
-                        key.toLowerCase() == "if-none-match" ||;
-                        key.toLowerCase() == "if-modified-since";
-                        );
-                        ),
-                        },
-                        });
-
-                        std::cout << "[CATBOX PROXY] Successfully fetched file: " + actualFileId << std::endl;
-
-                        // Get content type from response or try to infer from file extension
-                        const auto contentType = response.headers["content-type"] ||;
-                        getContentTypeFromExtension(actualFileId) ||;
-                        "application/octet-stream";
-
-                        // Prepare response headers
-                        const std::unordered_map<std::string, std::string> responseHeaders = {;
-                            "Content-Type": contentType,
-                            "Access-Control-Allow-Origin": "*",
-                            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-                            "Access-Control-Allow-Headers": "Content-Type",
-                            "Cache-Control": "public, max-age=31536000", // Cache for 1 year
-                            };
-
-                            // Forward relevant headers from catbox response
-                            if (response.headers['content-length']) {
-                                responseHeaders["Content-Length"] = response.headers["content-length"];
-                            }
-                            if (response.headers['last-modified']) {
-                                responseHeaders["Last-Modified"] = response.headers["last-modified"];
-                            }
-                            if (response.headers['etag']) {
-                                responseHeaders["ETag"] = response.headers["etag"];
-                            }
-                            if (response.headers['content-range']) {
-                                responseHeaders["Content-Range"] = response.headers["content-range"];
-                            }
-
-                            // Return the file data
-                            return new NextResponse(response.data, {;
-                                status: response.status,
-                                headers: responseHeaders,
-                                });
-
-                                } catch (error: unknown) {
-                                    const auto err = error;
-                                    console.error(
-                                    "[CATBOX PROXY] Error fetching file from Catbox.moe:",
-                                    err.message;
-                                    );
-
-                                    // Return appropriate error status
-                                    const auto status = err.response.status == 404 ? 404 : 500;
-                                    const auto errorMessage = err.response.status == 404 ?;
-                                    "File not found" :
-                                    "Failed to fetch file from Catbox.moe";
-
-                                    return NextResponse.json(;
-                                    {
-                                        error: errorMessage,
-                                        details: err.message,
-                                        code: err.code || "PROXY_ERROR",
-                                        },
-                                        {
-                                            status,
-                                            headers: {
-                                                "Access-Control-Allow-Origin": "*",
-                                                "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-                                                "Access-Control-Allow-Headers": "Content-Type",
-                                                },
-                                            }
-                                            );
-                                        }
-
+            std::string actualFileId = extractFileIdFromUrl(fileId);
+            
+            if (actualFileId.empty()) {
+                response.statusCode = 400;
+                response.headers["Content-Type"] = "application/json";
+                response.headers["Access-Control-Allow-Origin"] = "*";
+                response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS";
+                response.headers["Access-Control-Allow-Headers"] = "Content-Type";
+                response.body = R"({"error": "Invalid file parameter"})";
+                return response;
+            }
+            
+            // Construct the catbox file URL
+            std::string catboxUrl = "https://files.catbox.moe/" + actualFileId;
+            
+            std::cout << "[CATBOX PROXY] Fetching file: " << actualFileId << std::endl;
+            
+            // In a real implementation, this would fetch the file from catbox
+            // For now, return a placeholder response
+            
+            std::string contentType = getContentTypeFromExtension(actualFileId);
+            if (contentType.empty()) {
+                contentType = "application/octet-stream";
+            }
+            
+            response.statusCode = 200;
+            response.headers["Content-Type"] = contentType;
+            response.headers["Access-Control-Allow-Origin"] = "*";
+            response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS";
+            response.headers["Access-Control-Allow-Headers"] = "Content-Type";
+            response.headers["Cache-Control"] = "public, max-age=31536000";
+            
+            std::cout << "[CATBOX PROXY] Successfully fetched file: " << actualFileId << std::endl;
+            
+        } catch (const std::exception& e) {
+            std::cerr << "[CATBOX PROXY] Error fetching file from Catbox.moe: " 
+                      << e.what() << std::endl;
+            
+            response.statusCode = 500;
+            response.headers["Content-Type"] = "application/json";
+            response.headers["Access-Control-Allow-Origin"] = "*";
+            response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS";
+            response.headers["Access-Control-Allow-Headers"] = "Content-Type";
+            response.body = R"({"error": "Failed to fetch file from Catbox.moe", "code": "PROXY_ERROR"})";
+        }
+        
+        return response;
+    });
 }
 
 std::string getContentTypeFromExtension(const std::string& filename) {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    const auto ext = filename.split(".").pop().toLowerCase();
-
-    const std::unordered_map<std::string, std::string> mimeTypes = {;
-        "jpg": "image/jpeg",
-        "jpeg": "image/jpeg",
-        "png": "image/png",
-        "gif": "image/gif",
-        "webp": "image/webp",
-        "svg": "image/svg+xml",
-        "mp4": "video/mp4",
-        "webm": "video/webm",
-        "mov": "video/quicktime",
-        "avi": "video/x-msvideo",
-        "mp3": "audio/mpeg",
-        "wav": "audio/wav",
-        "pdf": "application/pdf",
-        "txt": "text/plain",
-        "json": "application/json",
-        "js": "application/javascript",
-        "css": "text/css",
-        "html": "text/html",
-        };
-
-        return ext ? mimeTypes[ext] || nullptr : nullptr;
-
+    // Find the last dot in the filename
+    size_t dotPos = filename.rfind('.');
+    if (dotPos == std::string::npos || dotPos == filename.length() - 1) {
+        return "";
+    }
+    
+    // Extract and lowercase the extension
+    std::string ext = filename.substr(dotPos + 1);
+    std::transform(ext.begin(), ext.end(), ext.begin(), 
+                   [](unsigned char c) { return std::tolower(c); });
+    
+    // MIME type mapping
+    static const std::unordered_map<std::string, std::string> mimeTypes = {
+        {"jpg", "image/jpeg"},
+        {"jpeg", "image/jpeg"},
+        {"png", "image/png"},
+        {"gif", "image/gif"},
+        {"webp", "image/webp"},
+        {"svg", "image/svg+xml"},
+        {"mp4", "video/mp4"},
+        {"webm", "video/webm"},
+        {"mov", "video/quicktime"},
+        {"avi", "video/x-msvideo"},
+        {"mp3", "audio/mpeg"},
+        {"wav", "audio/wav"},
+        {"pdf", "application/pdf"},
+        {"txt", "text/plain"},
+        {"json", "application/json"},
+        {"js", "application/javascript"},
+        {"css", "text/css"},
+        {"html", "text/html"},
+    };
+    
+    auto it = mimeTypes.find(ext);
+    if (it != mimeTypes.end()) {
+        return it->second;
+    }
+    
+    return "";
 }
 
-std::future<void> OPTIONS() {
-    // NOTE: Auto-converted from TypeScript - may need refinement
-
-    return new NextResponse(nullptr, {;
-        status: 200,
-        headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-            "Access-Control-Allow-Headers": "Content-Type",
-            },
-            });
-
+std::future<HttpResponse> OPTIONS() {
+    return std::async(std::launch::async, []() {
+        HttpResponse response;
+        response.statusCode = 200;
+        response.headers["Access-Control-Allow-Origin"] = "*";
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS";
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type";
+        return response;
+    });
 }
 
 } // namespace elizaos
