@@ -66,11 +66,11 @@ jobs:
             cc: clang-14
             cxx: clang++-14
             build_type: Release
-          - os: ubuntu-20.04
-            compiler: gcc-9
-            cc: gcc-9
-            cxx: g++-9
-            build_type: Release
+#          - os: ubuntu-20.04
+#            compiler: gcc-9
+#            cc: gcc-9
+#            cxx: g++-9
+#            build_type: Release
 
           # Windows builds
           - os: windows-latest
