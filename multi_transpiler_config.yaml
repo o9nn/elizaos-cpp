@@ -2,23 +2,79 @@
 
 default_strategy: enhanced_hybrid
 
+# Directory mappings: map TypeScript source paths to C++ target paths
+# These mappings ensure transpiled files land in the correct cpp/packages location
+# Format: source_path: target_path (relative to input/output directories)
+directory_mappings:
+  # ===== Core packages =====
+  # Main eliza core package
+  "eliza/packages/core/src": "packages/core/core/src"
+
+  # Agent modules (top-level directories to core)
+  "agentloop/src": "packages/core/agentloop/src"
+  "agentmemory/src": "packages/core/agentmemory/src"
+  "agentaction/src": "packages/core/agentaction/src"
+  "agentagenda/src": "packages/core/agentagenda/src"
+
+  # ===== Application packages =====
+  "characters/src": "packages/applications/characters/src"
+  "knowledge/src": "packages/applications/knowledge/src"
+
+  # Hat module (as part of applications - goal_manager)
+  "hat/src": "packages/applications/goal_manager/src"
+
+  # Eliza application
+  "eliza-starter/src": "packages/applications/eliza/src"
+
+  # ===== Infrastructure packages =====
+  "agentcomms/src": "packages/infrastructure/agentcomms/src"
+  "agentbrowser/src": "packages/infrastructure/agentbrowser/src"
+  "agentlogger/src": "packages/infrastructure/agentlogger/src"
+  "agentshell/src": "packages/infrastructure/agentshell/src"
+
+  # ===== Plugin packages =====
+  "eliza/packages/plugin-starter/src": "packages/plugins/eliza_plugin_starter/src"
+  "eliza-plugin-starter/src": "packages/plugins/eliza_plugin_starter/src"
+  "plugin-specification/core-plugin-v1/src": "packages/plugins/plugin_specification/core-plugin-v1/src"
+  "plugin-specification/core-plugin-v2/src": "packages/plugins/plugin_specification/core-plugin-v2/src"
+  "plugins-automation/src": "packages/plugins/plugins_automation/src"
+
+  # ===== Starter packages =====
+  "eliza-3d-hyperfy-starter/src": "packages/starters/eliza_3d_hyperfy_starter/src"
+  "eliza-nextjs-starter/src": "packages/starters/eliza_nextjs_starter/src"
+
+  # ===== Integration packages =====
+  "otaku/src": "packages/integration/otaku/src"
+  "SWEagent/src": "packages/integration/SWEagent/src"
+  "SWEagent/tools/src": "packages/integration/SWEagent/tools/src"
+  "otc-agent/src": "packages/integration/otc_agent/src"
+  "mcp-gateway/src": "packages/integration/mcp_gateway/src"
+  "auto.fun/src": "packages/integration/auto_fun/src"
+  "autonomous-starter/src": "packages/integration/autonomous_starter/src"
+
+  # ===== Other eliza packages =====
+  "eliza/packages/api-client/src": "packages/core/api_client/src"
+  "eliza/packages/cli/src": "packages/core/cli/src"
+  "eliza/packages/client/src": "packages/core/client/src"
+  "eliza/packages/server/src": "packages/core/server/src"
+
 modules:
   # Type definitions - best type quality
   - pattern: "**/*.d.ts"
     primary: ts2cpp_only
     reason: "Type definitions only, ts2cpp excels here"
-  
+
   # Core modules - highest quality
   - pattern: "src/core/**/*.ts"
     primary: typescript2cxx_only
     reason: "Core modules need complete implementations"
-  
+
   # Performance-critical - native compilation (future)
   - pattern: "src/performance/**/*.ts"
     primary: enhanced_hybrid
     fallback: typescript2cxx_only
     reason: "Performance-critical modules"
-  
+
   # Everything else - enhanced hybrid
   - pattern: "**/*.ts"
     primary: enhanced_hybrid
@@ -29,15 +85,15 @@ strategies:
     stage1: ts2cpp          # Type definitions
     stage2: typescript2cxx  # Implementations
     stage3: type_conversion # Convert to native STL
-  
+
   fast_approximate:
     stage1: ts2cpp          # Type definitions
     stage2: python          # Fast implementations
     stage3: type_conversion # Convert to native STL
-  
+
   typescript2cxx_only:
     stage1: typescript2cxx  # Complete solution
     stage2: type_conversion # Convert js:: to std::
-  
+
   ts2cpp_only:
     stage1: ts2cpp          # Type definitions only
