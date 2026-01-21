@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-plugin-manager/src/providers/pluginKnowledgeProvider.h"
+#include "classified/packages/plugin-plugin-manager/src/providers/pluginKnowledgeProvider.h"
 
 std::shared_ptr<Provider> pluginKnowledgeProvider = object{
     object::pair{std::string("name"), std::string("pluginKnowledge")}, 

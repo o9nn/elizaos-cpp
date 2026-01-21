@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-inference/src/__tests__/claude-proxy-openai.test.h"
+#include "classified/packages/plugin-inference/src/__tests__/claude-proxy-openai.test.h"
 
 void Main(void)
 {

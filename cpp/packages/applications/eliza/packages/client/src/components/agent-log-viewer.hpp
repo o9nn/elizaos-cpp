@@ -1,5 +1,5 @@
 #include ".hooks/use-query-hooks.hpp"
-#include ".lib/api-client-config.hpp"
+#include "lib/api-client-config.hpp"
 #include <functional>
 #include <memory>
 #include <optional>

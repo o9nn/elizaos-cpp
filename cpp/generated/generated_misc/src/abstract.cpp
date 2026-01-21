@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/environment/hooks/abstract.h"
+#include "SWEagent/src/environment/hooks/abstract.h"
 
 void EnvHook::onInit(std::shared_ptr<EnvironmentInstance> _env)
 {

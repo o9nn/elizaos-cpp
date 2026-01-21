@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/plugin-specification/core-plugin-v2/src/audioUtils.h"
+#include "plugin-specification/core-plugin-v2/src/audioUtils.h"
 
 std::shared_ptr<Buffer> getWavHeader(double audioLength, double sampleRate, double channelCount, double bitsPerSample)
 {

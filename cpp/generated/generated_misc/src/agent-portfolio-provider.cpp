@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/plugin-birdeye/src/providers/agent-portfolio-provider.h"
+#include "spartan/src/plugins/plugin-birdeye/src/providers/agent-portfolio-provider.h"
 
 std::shared_ptr<Provider> agentPortfolioProvider = object{
     object::pair{std::string("name"), std::string("BIRDEYE_TRADE_PORTFOLIO")}, 

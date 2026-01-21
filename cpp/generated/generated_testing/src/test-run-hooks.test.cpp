@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/tests/test-run-hooks.test.h"
+#include "SWEagent/tests/test-run-hooks.test.h"
 
 std::any mockedGithub = jest->mocked(github);
 

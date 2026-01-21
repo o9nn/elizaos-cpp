@@ -1,4 +1,4 @@
-#include ".types.hpp"
+#include "types.hpp"
 #include "elizaos/core.hpp"
 #include "execution/buyService.hpp"
 #include "execution/sellService.hpp"

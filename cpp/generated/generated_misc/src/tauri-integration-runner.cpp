@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/game/tests/tauri-integration-runner.h"
+#include "classified/packages/game/tests/tauri-integration-runner.h"
 
 std::shared_ptr<Promise<void>> TauriIntegrationRunner::runAll()
 {

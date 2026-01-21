@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-inference/src/claude-proxy.h"
+#include "classified/packages/plugin-inference/src/claude-proxy.h"
 
 ClaudeProxy::ClaudeProxy(std::shared_ptr<IAgentRuntime> runtime_) : runtime(runtime_)  {
 }

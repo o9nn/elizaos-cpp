@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza-3d-hyperfy-starter/src/plugin-hyperfy/managers/emote-manager.h"
+#include "eliza-3d-hyperfy-starter/src/plugin-hyperfy/managers/emote-manager.h"
 
 EmoteManager::EmoteManager(std::any runtime) {
     this->runtime = runtime;

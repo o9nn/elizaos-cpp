@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/plugin-sql/src/__tests__/integration/seed/world-seed.h"
+#include "eliza/packages/plugin-sql/src/__tests__/integration/seed/world-seed.h"
 
 std::any worldTestAgentId = as<std::shared_ptr<UUID>>(uuidv4());
 std::any worldTestEntityId = as<std::shared_ptr<UUID>>(uuidv4());

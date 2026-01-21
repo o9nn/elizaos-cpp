@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/discrub-ext/src/classes/guild.h"
+#include "discrub-ext/src/classes/guild.h"
 
 Guild::Guild(object opts) {
     this->id = opts["id"];

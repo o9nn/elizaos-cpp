@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-elizaos-services/src/tests/real-integration.test.h"
+#include "classified/packages/plugin-elizaos-services/src/tests/real-integration.test.h"
 
 object RealIntegrationTestSuite = object{
     object::pair{std::string("name"), std::string("RealIntegrationTestSuite")}, 

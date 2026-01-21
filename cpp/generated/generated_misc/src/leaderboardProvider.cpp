@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-gamification/src/providers/leaderboardProvider.h"
+#include "otaku/src/plugins/plugin-gamification/src/providers/leaderboardProvider.h"
 
 std::shared_ptr<Provider> leaderboardProvider = object{
     object::pair{std::string("name"), std::string("LEADERBOARD")}, 

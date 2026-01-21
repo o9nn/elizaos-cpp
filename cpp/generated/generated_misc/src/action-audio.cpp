@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-vision/src/action-audio.h"
+#include "classified/packages/plugin-vision/src/action-audio.h"
 
 std::shared_ptr<Action> transcribeAudioAction = object{
     object::pair{std::string("name"), std::string("TRANSCRIBE_AUDIO")}, 

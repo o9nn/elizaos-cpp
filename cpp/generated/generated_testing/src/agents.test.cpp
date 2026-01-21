@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/api-client/src/__tests__/services/agents.test.h"
+#include "eliza/packages/api-client/src/__tests__/services/agents.test.h"
 
 std::any TEST_AGENT_ID = as<std::shared_ptr<UUID>>(std::string("550e8400-e29b-41d4-a716-446655440001"));
 std::any TEST_AGENT_ID_2 = as<std::shared_ptr<UUID>>(std::string("550e8400-e29b-41d4-a716-446655440002"));

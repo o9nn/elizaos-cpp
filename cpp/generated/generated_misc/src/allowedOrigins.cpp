@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/server/src/allowedOrigins.h"
+#include "auto.fun/packages/server/src/allowedOrigins.h"
 
 array<string> envAllowedOrigins = (process->env->ALLOWED_ORIGINS) ? std::any(process->env->ALLOWED_ORIGINS->split(std::string(","))->std::map([=](auto origin) mutable
 {

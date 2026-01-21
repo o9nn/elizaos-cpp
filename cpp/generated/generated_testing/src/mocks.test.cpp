@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/server/src/__tests__/test-utils/mocks.test.h"
+#include "eliza/packages/server/src/__tests__/test-utils/mocks.test.h"
 
 void Main(void)
 {

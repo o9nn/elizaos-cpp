@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/server/src/websocket-client.h"
+#include "auto.fun/packages/server/src/websocket-client.h"
 
 WebSocketClient::WebSocketClient() {
 }

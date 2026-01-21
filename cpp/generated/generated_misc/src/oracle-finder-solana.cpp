@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otc-agent/src/utils/oracle-finder-solana.h"
+#include "otc-agent/src/utils/oracle-finder-solana.h"
 
 std::shared_ptr<Promise<any>> findSolanaOracle(std::string tokenMint)
 {

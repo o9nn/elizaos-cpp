@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/trust_scoreboard/src/utils/helpers.h"
+#include "trust_scoreboard/src/utils/helpers.h"
 
 std::function<std::string(std::string, double)> truncateAddress = [=](auto address, auto length = 4) mutable
 {

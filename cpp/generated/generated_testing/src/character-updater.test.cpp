@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-self-modification/src/__tests__/character-updater.test.h"
+#include "autonomous-starter/src/plugin-self-modification/src/__tests__/character-updater.test.h"
 
 void Main(void)
 {

@@ -1,4 +1,4 @@
-#include ".types.hpp"
+#include "types.hpp"
 #include "elizaos/core.hpp"
 #include "pluginConfigurationService.hpp"
 #include <functional>

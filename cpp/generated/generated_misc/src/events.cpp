@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza-3d-hyperfy-starter/src/plugin-hyperfy/events.h"
+#include "eliza-3d-hyperfy-starter/src/plugin-hyperfy/events.h"
 
 object hyperfyEvents = object{
     object::pair{hyperfyEventType::MESSAGE_RECEIVED, array<std::function<std::shared_ptr<Promise<void>>(std::any)>>{ [=](auto payload) mutable

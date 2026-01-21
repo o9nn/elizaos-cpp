@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-list/src/lib/search-analytics.h"
+#include "elizas-list/src/lib/search-analytics.h"
 
 void trackSearch(std::string query, std::string userId)
 {

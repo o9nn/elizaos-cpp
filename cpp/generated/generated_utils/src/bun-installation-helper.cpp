@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/src/utils/bun-installation-helper.h"
+#include "classified/packages/cli/src/utils/bun-installation-helper.h"
 
 std::shared_ptr<Promise<std::shared_ptr<BunInstallationResult>>> checkBunInstallation()
 {

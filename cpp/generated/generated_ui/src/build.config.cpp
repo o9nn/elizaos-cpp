@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-personality/build.config.h"
+#include "classified/packages/plugin-personality/build.config.h"
 
 std::shared_ptr<BuildConfig> buildConfig = object{
     object::pair{std::string("entrypoints"), array<string>{ std::string("./src/index.ts") }}, 

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/run/inspector-cli.h"
+#include "SWEagent/src/run/inspector-cli.h"
 
 TrajectoryInspector::TrajectoryInspector(std::string trajPath, std::string dataPath) {
     auto content = fs::readFileSync(trajPath, std::string("utf-8"));

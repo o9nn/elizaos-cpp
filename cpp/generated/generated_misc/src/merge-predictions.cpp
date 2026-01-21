@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/run/merge-predictions.h"
+#include "SWEagent/src/run/merge-predictions.h"
 
 void mergePredictions(array<string> directories, std::string output)
 {

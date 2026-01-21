@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/tools/src/search/search-file.h"
+#include "SWEagent/tools/src/search/search-file.h"
 
 void searchFile(std::string searchTerm, std::string filePath)
 {

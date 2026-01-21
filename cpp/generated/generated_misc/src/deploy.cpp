@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/program/migrations/deploy.h"
+#include "auto.fun/packages/program/migrations/deploy.h"
 
 std::any anchor = require(std::string("@coral-xyz/anchor"));
 

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-list/src/lib/ml/predictor.h"
+#include "elizas-list/src/lib/ml/predictor.h"
 
 std::any MLPredictor::loadModel()
 {

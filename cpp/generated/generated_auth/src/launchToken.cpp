@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/program/tests/launchToken.h"
+#include "auto.fun/packages/program/tests/launchToken.h"
 
 void Main(void)
 {

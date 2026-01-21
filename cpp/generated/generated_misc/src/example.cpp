@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/rules/example.h"
+#include "SWEagent/src/rules/example.h"
 
 void validatePythonExample()
 {

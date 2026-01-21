@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/commands/publish/actions/npm-publish.h"
+#include "eliza/packages/cli/src/commands/publish/actions/npm-publish.h"
 
 std::shared_ptr<Promise<void>> publishToNpm(std::string cwd, std::shared_ptr<PackageJson> packageJson, std::string npmUsername)
 {

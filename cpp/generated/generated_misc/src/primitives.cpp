@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/core/src/types/primitives.h"
+#include "eliza/packages/core/src/types/primitives.h"
 
 UUID asUUID(std::string id)
 {

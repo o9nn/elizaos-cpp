@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/game/cypress/e2e/backup-restore.spec.h"
+#include "classified/packages/game/cypress/e2e/backup-restore.spec.h"
 
 void Main(void)
 {

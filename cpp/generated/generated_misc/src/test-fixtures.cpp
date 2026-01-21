@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/tests/test-fixtures.h"
+#include "SWEagent/tests/test-fixtures.h"
 
 object withTmpEnvFile()
 {

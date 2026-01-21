@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otc-agent/src/services/token-registration-listener-solana.h"
+#include "otc-agent/src/services/token-registration-listener-solana.h"
 
 void startSolanaListener()
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-bootstrap/src/templates/reply.h"
+#include "otaku/src/plugins/plugin-bootstrap/src/templates/reply.h"
 
 std::string replyTemplate = std::string("# Task: Generate dialog for the character {{agentName}}.\
 \

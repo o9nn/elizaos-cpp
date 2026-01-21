@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/discrub-ext/src/services/chrome-service.h"
+#include "discrub-ext/src/services/chrome-service.h"
 
 std::function<void(std::string, std::shared_ptr<ChromeCallback>)> sendChromeMessage = [=](auto msg, auto callback = undefined) mutable
 {

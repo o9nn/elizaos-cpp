@@ -1,4 +1,4 @@
-#include ".types.hpp"
+#include "types.hpp"
 #include "confidenceDecay.hpp"
 #include "experienceRelationships.hpp"
 #include <functional>

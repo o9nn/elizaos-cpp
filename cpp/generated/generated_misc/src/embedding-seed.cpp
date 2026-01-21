@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/plugin-sql/src/__tests__/integration/seed/embedding-seed.h"
+#include "eliza/packages/plugin-sql/src/__tests__/integration/seed/embedding-seed.h"
 
 std::function<std::any(double)> fixedUuid = [=](auto n) mutable
 {

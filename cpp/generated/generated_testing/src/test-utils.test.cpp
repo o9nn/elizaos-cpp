@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/tests/test-utils.test.h"
+#include "SWEagent/tests/test-utils.test.h"
 
 array<any> flattenArray(array<any> array)
 {

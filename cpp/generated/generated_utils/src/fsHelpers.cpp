@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizaos.github.io/src/lib/fsHelpers.h"
+#include "elizaos.github.io/src/lib/fsHelpers.h"
 
 void ensureDir(std::string dirPath)
 {

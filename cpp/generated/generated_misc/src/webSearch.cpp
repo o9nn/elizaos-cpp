@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-web-search/src/actions/webSearch.h"
+#include "otaku/src/plugins/plugin-web-search/src/actions/webSearch.h"
 
 std::string MaxTokens(std::string data, double maxTokens)
 {

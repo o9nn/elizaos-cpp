@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/discrub-ext/src/classes/reaction.h"
+#include "discrub-ext/src/classes/reaction.h"
 
 Reaction::Reaction(object opts) {
     this->count = opts["count"];

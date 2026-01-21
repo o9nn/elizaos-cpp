@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/discrub-ext/src/classes/role.h"
+#include "discrub-ext/src/classes/role.h"
 
 Role::Role(object opts) {
     this->id = opts["id"];

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-shell/provider.h"
+#include "autonomous-starter/src/plugin-shell/provider.h"
 
 double MAX_INDIVIDUAL_OUTPUT_LENGTH = 8000;
 double TRUNCATE_SEGMENT_LENGTH = 4000;

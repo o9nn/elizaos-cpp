@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/client/src/providers/use-sol-price-context.h"
+#include "auto.fun/packages/client/src/providers/use-sol-price-context.h"
 
 std::function<std::any()> useSolPriceContext = [=]() mutable
 {

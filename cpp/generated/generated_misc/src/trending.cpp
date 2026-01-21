@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/plugin-coinmarketcap/src/providers/trending.h"
+#include "spartan/src/plugins/plugin-coinmarketcap/src/providers/trending.h"
 
 std::shared_ptr<Provider> trendingProvider = object{
     object::pair{std::string("name"), std::string("COINMARKETCAP_CURRENCY_LATEST")}, 

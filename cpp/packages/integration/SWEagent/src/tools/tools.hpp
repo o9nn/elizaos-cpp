@@ -1,5 +1,5 @@
 #include ".environment/swe-env.hpp"
-#include ".types.hpp"
+#include "types.hpp"
 #include ".utils/log.hpp"
 #include "bundle.hpp"
 #include "commands.hpp"

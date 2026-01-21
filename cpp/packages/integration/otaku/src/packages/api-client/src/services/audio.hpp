@@ -1,4 +1,4 @@
-#include ".lib/base-client.hpp"
+#include "lib/base-client.hpp"
 #include ".types/audio.hpp"
 #include "elizaos/core.hpp"
 #include <functional>

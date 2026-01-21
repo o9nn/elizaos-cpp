@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-list/src/lib/ml/time-series.h"
+#include "elizas-list/src/lib/ml/time-series.h"
 
 TimeSeriesAnalyzer::TimeSeriesAnalyzer() {
     this->prophet = std::make_shared<Prophet>(object{

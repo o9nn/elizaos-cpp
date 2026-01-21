@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/rules/validators.h"
+#include "SWEagent/src/rules/validators.h"
 
 PythonValidator::PythonValidator(array<std::shared_ptr<CodingRule>> _rules) {
 }

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-list/src/lib/ml/anomaly-detection.h"
+#include "elizas-list/src/lib/ml/anomaly-detection.h"
 
 AnomalyDetector::AnomalyDetector() {
     this->isolationForest = std::make_shared<IsolationForest>(object{

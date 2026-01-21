@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/degenTrader/services/calculation/signalCalculation.h"
+#include "spartan/src/plugins/degenTrader/services/calculation/signalCalculation.h"
 
 std::any SignalCalculationService::calculateTechnicalSignals(std::any marketData)
 {

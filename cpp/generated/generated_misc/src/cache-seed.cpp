@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/plugin-sql/src/__tests__/integration/seed/cache-seed.h"
+#include "eliza/packages/plugin-sql/src/__tests__/integration/seed/cache-seed.h"
 
 std::any cacheTestAgentSettings = as<std::shared_ptr<Agent>>(object{
     object::pair{std::string("id"), as<std::shared_ptr<UUID>>(v4())}, 

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-autonomy/src/status-provider.h"
+#include "classified/packages/plugin-autonomy/src/status-provider.h"
 
 std::shared_ptr<Provider> autonomyStatusProvider = object{
     object::pair{std::string("name"), std::string("AUTONOMY_STATUS")}, 

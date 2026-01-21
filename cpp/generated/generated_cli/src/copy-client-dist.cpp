@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/scripts/copy-client-dist.h"
+#include "eliza/packages/cli/src/scripts/copy-client-dist.h"
 
 void main()
 {

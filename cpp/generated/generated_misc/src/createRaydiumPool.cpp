@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/program/scripts/createRaydiumPool.h"
+#include "auto.fun/packages/program/scripts/createRaydiumPool.h"
 
 void main()
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-vision/src/entity-tracker.h"
+#include "classified/packages/plugin-vision/src/entity-tracker.h"
 
 EntityTracker::EntityTracker(std::string worldId) {
     this->worldState = object{

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/plugin-sql/src/__tests__/integration/seed/relationship-seed.h"
+#include "eliza/packages/plugin-sql/src/__tests__/integration/seed/relationship-seed.h"
 
 std::any relationshipTestAgentId = as<std::shared_ptr<UUID>>(uuidv4());
 std::any relationshipTestSourceEntityId = as<std::shared_ptr<UUID>>(uuidv4());

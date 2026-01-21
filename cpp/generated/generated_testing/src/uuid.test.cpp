@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/plugin-specification/core-plugin-v2/__tests__/uuid.test.h"
+#include "plugin-specification/core-plugin-v2/__tests__/uuid.test.h"
 
 void Main(void)
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-personality/src/__tests__/unit/character-file-manager.test.h"
+#include "classified/packages/plugin-personality/src/__tests__/unit/character-file-manager.test.h"
 
 void Main(void)
 {

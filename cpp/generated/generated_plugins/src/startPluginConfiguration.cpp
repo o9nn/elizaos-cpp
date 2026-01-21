@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-manager/actions/startPluginConfiguration.h"
+#include "autonomous-starter/src/plugin-manager/actions/startPluginConfiguration.h"
 
 std::shared_ptr<Promise<any>> extractPluginNameFromMessage(std::shared_ptr<IAgentRuntime> runtime, std::string text)
 {

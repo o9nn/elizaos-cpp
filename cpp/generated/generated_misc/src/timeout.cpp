@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/the-org/src/communityManager/plugins/communityManager/providers/timeout.h"
+#include "the-org/src/communityManager/plugins/communityManager/providers/timeout.h"
 
 std::shared_ptr<Provider> timeoutUserProvider = object{
     object::pair{std::string("name"), std::string("TIMEOUT_USER_CONTEXT")}, 

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/autodoc/src/TypeScriptParser.h"
+#include "auto.fun/packages/autodoc/src/TypeScriptParser.h"
 
 std::any TypeScriptParser::parse(std::string file)
 {

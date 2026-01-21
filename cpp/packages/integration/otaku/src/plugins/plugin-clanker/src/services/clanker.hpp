@@ -1,4 +1,4 @@
-#include ".types.hpp"
+#include "types.hpp"
 #include ".utils/errors.hpp"
 #include ".utils/transactions.hpp"
 #include "elizaos/core.hpp"

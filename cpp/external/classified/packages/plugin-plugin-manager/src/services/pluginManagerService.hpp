@@ -1,5 +1,5 @@
 #include ".coreExtensions.hpp"
-#include ".types.hpp"
+#include "types.hpp"
 #include "elizaos/core.hpp"
 #include <functional>
 #include <memory>

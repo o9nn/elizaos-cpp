@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-auto/worldProvider.h"
+#include "autonomous-starter/src/plugin-auto/worldProvider.h"
 
 std::string AUTO_WORLD_SEED = std::string("autonomous_world_singleton");
 std::string AUTO_ROOM_SEED = std::string("autonomous_room_singleton");

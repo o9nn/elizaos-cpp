@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-robot/tests/setup.h"
+#include "autonomous-starter/src/plugin-robot/tests/setup.h"
 
 void Main(void)
 {

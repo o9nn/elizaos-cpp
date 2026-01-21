@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/discrub-ext/src/classes/channel.h"
+#include "discrub-ext/src/classes/channel.h"
 
 Channel::Channel(object opts) {
     this->id = opts["id"];

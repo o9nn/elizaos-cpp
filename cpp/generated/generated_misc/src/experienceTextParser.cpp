@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-experience/utils/experienceTextParser.h"
+#include "autonomous-starter/src/plugin-experience/utils/experienceTextParser.h"
 
 std::string detectDomain(std::string text, std::string defaultDomain)
 {

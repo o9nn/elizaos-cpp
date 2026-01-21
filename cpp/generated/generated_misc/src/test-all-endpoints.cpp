@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/plugin-birdeye/src/actions/test-all-endpoints.h"
+#include "spartan/src/plugins/plugin-birdeye/src/actions/test-all-endpoints.h"
 
 std::any testAllEndpointsAction = as<std::shared_ptr<Action>>(object{
     object::pair{std::string("name"), std::string("BIRDEYE_TEST_ALL_ENDPOINTS")}, 

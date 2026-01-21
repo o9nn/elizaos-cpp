@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/client/src/config/voice-models.h"
+#include "eliza/packages/client/src/config/voice-models.h"
 
 Record<std::string, string> providerPluginMap = object{
     object::pair{std::string("elevenlabs"), std::string("@elizaos/plugin-elevenlabs")}, 

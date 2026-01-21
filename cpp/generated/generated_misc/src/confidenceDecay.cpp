@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-experience/utils/confidenceDecay.h"
+#include "autonomous-starter/src/plugin-experience/utils/confidenceDecay.h"
 
 ConfidenceDecayManager::ConfidenceDecayManager(Partial<std::shared_ptr<DecayConfig>> config) {
     this->config = utils::assign(object{

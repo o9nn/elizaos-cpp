@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/plugin-specification/core-plugin-v1/src/state.h"
+#include "plugin-specification/core-plugin-v1/src/state.h"
 
 State fromV2State(std::shared_ptr<StateV2> stateV2)
 {

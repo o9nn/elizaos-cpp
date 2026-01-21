@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/tools/src/image-tools/view-image.h"
+#include "SWEagent/tools/src/image-tools/view-image.h"
 
 std::any getMimeType(std::string filename)
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/run/compare-runs.h"
+#include "SWEagent/src/run/compare-runs.h"
 
 std::shared_ptr<Set<string>> getResolved(std::string filePath)
 {

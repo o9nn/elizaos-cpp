@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/server/src/__tests__/integration/database-operations.test.h"
+#include "eliza/packages/server/src/__tests__/integration/database-operations.test.h"
 
 void Main(void)
 {

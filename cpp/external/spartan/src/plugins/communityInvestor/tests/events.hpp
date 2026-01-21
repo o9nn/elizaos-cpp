@@ -1,6 +1,6 @@
 #include ".events.hpp"
 #include ".service.hpp"
-#include ".types.hpp"
+#include "types.hpp"
 #include "elizaos/core.hpp"
 #include <functional>
 #include <memory>

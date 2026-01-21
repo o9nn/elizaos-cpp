@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otc-agent/src/lib/plugin-otc-desk/providers/shaw.h"
+#include "otc-agent/src/lib/plugin-otc-desk/providers/shaw.h"
 
 std::shared_ptr<Provider> tokenProvider = object{
     object::pair{std::string("name"), std::string("SHAW_INFO")}, 

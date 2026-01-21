@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otc-agent/src/app/api/solana/idl/route.h"
+#include "otc-agent/src/app/api/solana/idl/route.h"
 
 std::any GET()
 {

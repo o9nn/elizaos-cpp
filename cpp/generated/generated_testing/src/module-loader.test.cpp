@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/src/utils/module-loader.test.h"
+#include "classified/packages/cli/src/utils/module-loader.test.h"
 
 void Main(void)
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/client/src/utils/swapUtils.h"
+#include "auto.fun/packages/client/src/utils/swapUtils.h"
 
 double convertToBasisPoints(double feePercent)
 {

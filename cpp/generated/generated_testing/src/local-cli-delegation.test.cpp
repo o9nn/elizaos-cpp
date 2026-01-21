@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/tests/unit/utils/local-cli-delegation.test.h"
+#include "classified/packages/cli/tests/unit/utils/local-cli-delegation.test.h"
 
 std::any mockSpawn = mock();
 std::any mockExistsSync = mock();

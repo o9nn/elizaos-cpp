@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/server/src/prompts/create-token.h"
+#include "auto.fun/packages/server/src/prompts/create-token.h"
 
 std::any createTokenPrompt(std::any validatedData)
 {

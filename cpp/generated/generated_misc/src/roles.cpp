@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/plugin-specification/core-plugin-v2/src/roles.h"
+#include "plugin-specification/core-plugin-v2/src/roles.h"
 
 std::shared_ptr<Promise<Role>> getUserServerRole(std::shared_ptr<IAgentRuntime> runtime, std::string entityId, std::string serverId)
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-bootstrap/src/templates/multi-step.h"
+#include "otaku/src/plugins/plugin-bootstrap/src/templates/multi-step.h"
 
 std::string multiStepDecisionTemplate = std::string("<task>\
 Determine the next step the assistant should take in this conversation to help the user reach their goal.\

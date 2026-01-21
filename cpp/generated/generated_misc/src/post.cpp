@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/core/src/types/post.h"
+#include "classified/packages/core/src/types/post.h"
 
 std::any IPostService::override;
 

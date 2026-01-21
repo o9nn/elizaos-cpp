@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/tests/test-run-replay.test.h"
+#include "SWEagent/tests/test-run-replay.test.h"
 
 void Main(void)
 {

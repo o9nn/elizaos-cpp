@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/project-starter/src/__tests__/file-structure.test.h"
+#include "eliza/packages/project-starter/src/__tests__/file-structure.test.h"
 
 boolean fileExists(std::string filePath)
 {

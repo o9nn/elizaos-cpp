@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza-3d-hyperfy-starter/src/plugin-hyperfy/index.h"
+#include "eliza-3d-hyperfy-starter/src/plugin-hyperfy/index.h"
 
 std::string HYPERFY_WS_URL = OR((process->env->WS_URL), (std::string("wss://chill.hyperfy.xyz/ws")));
 std::any hyperfyPluginConfigSchema = z->object(object{

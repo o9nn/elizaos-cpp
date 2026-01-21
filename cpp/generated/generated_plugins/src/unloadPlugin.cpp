@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-manager/actions/unloadPlugin.h"
+#include "autonomous-starter/src/plugin-manager/actions/unloadPlugin.h"
 
 std::shared_ptr<Action> unloadPluginAction = object{
     object::pair{std::string("name"), std::string("UNLOAD_PLUGIN")}, 

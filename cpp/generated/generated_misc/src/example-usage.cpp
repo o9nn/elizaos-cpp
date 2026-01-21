@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-dynamic/examples/example-usage.h"
+#include "autonomous-starter/src/plugin-dynamic/examples/example-usage.h"
 
 void createWeatherPlugin(std::shared_ptr<Agent> agent)
 {

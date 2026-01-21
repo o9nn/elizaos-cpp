@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/packages/server/src/characters/default.h"
+#include "otaku/src/packages/server/src/characters/default.h"
 
 std::shared_ptr<Character> getDefaultCharacter()
 {

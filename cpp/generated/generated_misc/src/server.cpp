@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/api-client/src/services/server.h"
+#include "eliza/packages/api-client/src/services/server.h"
 
 std::shared_ptr<Promise<std::shared_ptr<ServerHealth>>> ServerService::checkHealth()
 {

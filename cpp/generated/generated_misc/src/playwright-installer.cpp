@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-stagehand/stagehand-server/src/playwright-installer.h"
+#include "classified/packages/plugin-stagehand/stagehand-server/src/playwright-installer.h"
 
 PlaywrightInstaller::PlaywrightInstaller(std::shared_ptr<Logger> logger) {
     this->logger = logger;

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/server/src/upload.h"
+#include "eliza/packages/server/src/upload.h"
 
 std::string generateSecureFilename(std::string originalName)
 {

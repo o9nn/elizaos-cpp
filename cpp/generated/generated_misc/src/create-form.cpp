@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-forms/src/actions/create-form.h"
+#include "classified/packages/plugin-forms/src/actions/create-form.h"
 
 std::any extractFormType(std::string text)
 {

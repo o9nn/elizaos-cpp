@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/server/src/prompts/enhance-prompt.h"
+#include "auto.fun/packages/server/src/prompts/enhance-prompt.h"
 
 std::any enhancePrompt(std::string userPrompt, std::any tokenMetadata)
 {

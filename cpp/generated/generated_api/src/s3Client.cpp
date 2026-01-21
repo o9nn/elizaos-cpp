@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/server/src/s3Client.h"
+#include "auto.fun/packages/server/src/s3Client.h"
 
 std::shared_ptr<Promise<void>> ensureMinioBucketExists(std::shared_ptr<S3Client> client, std::string bucketName)
 {

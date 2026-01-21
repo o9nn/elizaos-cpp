@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/discrub-ext/src/enum/tag.h"
+#include "discrub-ext/src/enum/tag.h"
 
 std::function<std::string(Tag)> getTagName = [=](auto type) mutable
 {

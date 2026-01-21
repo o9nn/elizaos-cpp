@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-gamification/src/actions/getLeaderboard.h"
+#include "otaku/src/plugins/plugin-gamification/src/actions/getLeaderboard.h"
 
 std::shared_ptr<Action> getLeaderboardAction = object{
     object::pair{std::string("name"), std::string("GET_LEADERBOARD")}, 

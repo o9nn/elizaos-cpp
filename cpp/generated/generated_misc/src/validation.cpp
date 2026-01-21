@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/plugin-coinmarketcap/src/actions/getPrice/validation.h"
+#include "spartan/src/plugins/plugin-coinmarketcap/src/actions/getPrice/validation.h"
 
 std::any isGetPriceContent(std::shared_ptr<GetPriceContent> content)
 {

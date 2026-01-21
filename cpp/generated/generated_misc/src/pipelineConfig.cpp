@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizaos.github.io/src/lib/pipelines/pipelineConfig.h"
+#include "elizaos.github.io/src/lib/pipelines/pipelineConfig.h"
 
 std::any ScoringConfigSchema = z->object(object{
     object::pair{std::string("pullRequest"), z->object(object{

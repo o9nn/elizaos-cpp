@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-manager/actions/loadPlugin.h"
+#include "autonomous-starter/src/plugin-manager/actions/loadPlugin.h"
 
 std::shared_ptr<Action> loadPluginAction = object{
     object::pair{std::string("name"), std::string("LOAD_PLUGIN")}, 

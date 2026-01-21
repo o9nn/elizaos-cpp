@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/project-starter/src/__tests__/models.test.h"
+#include "eliza/packages/project-starter/src/__tests__/models.test.h"
 
 std::function<std::shared_ptr<Promise<object>>(std::any, std::function<std::shared_ptr<Promise<string>>(std::any, std::shared_ptr<TestGenerateParams>)>)> runCoreModelTests = [=](auto modelType, auto modelFn) mutable
 {

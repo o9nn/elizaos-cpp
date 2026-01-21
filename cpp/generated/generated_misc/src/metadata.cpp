@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/commands/publish/utils/metadata.h"
+#include "eliza/packages/cli/src/commands/publish/utils/metadata.h"
 
 std::shared_ptr<Promise<std::shared_ptr<PackageMetadata>>> generatePackageMetadata(std::shared_ptr<PackageJson> packageJson, std::string cliVersion, std::string username)
 {

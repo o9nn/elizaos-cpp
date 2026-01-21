@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/run/quick-stats.h"
+#include "SWEagent/src/run/quick-stats.h"
 
 std::shared_ptr<Promise<string>> quickStats(std::string directory)
 {

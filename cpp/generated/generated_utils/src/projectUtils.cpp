@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-list/src/utils/projectUtils.h"
+#include "elizas-list/src/utils/projectUtils.h"
 
 std::function<array<any>(array<any>, std::any)> sortProjects = [=](auto projects, P1 sortBy) mutable
 {

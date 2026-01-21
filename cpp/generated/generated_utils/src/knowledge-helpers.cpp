@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/game/cypress/support/knowledge-helpers.h"
+#include "classified/packages/game/cypress/support/knowledge-helpers.h"
 
 KnowledgeTestHelper::KnowledgeTestHelper(std::string agentId) {
     this->agentId = agentId;

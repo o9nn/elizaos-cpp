@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/server/src/api/runtime/debug.h"
+#include "eliza/packages/server/src/api/runtime/debug.h"
 
 std::shared_ptr<express::Router> createDebugRouter(std::shared_ptr<AgentServer> serverInstance)
 {

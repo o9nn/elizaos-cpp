@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otc-agent/src/lib/notifications.h"
+#include "otc-agent/src/lib/notifications.h"
 
 std::shared_ptr<Promise<boolean>> sendWelcomeNotification(double fid)
 {

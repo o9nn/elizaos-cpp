@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/tests/unit/utils/testing/timeout-manager.test.h"
+#include "eliza/packages/cli/tests/unit/utils/testing/timeout-manager.test.h"
 
 std::function<std::any(double)> originalmockExit = process->exit;
 std::any mockExit = mock([=]() mutable

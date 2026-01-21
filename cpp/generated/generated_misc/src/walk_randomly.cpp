@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza-3d-hyperfy-starter/src/plugin-hyperfy/actions/walk_randomly.h"
+#include "eliza-3d-hyperfy-starter/src/plugin-hyperfy/actions/walk_randomly.h"
 
 double RANDOM_WALK_DEFAULT_INTERVAL = 4000;
 double RANDOM_WALK_DEFAULT_MAX_DISTANCE = 30;

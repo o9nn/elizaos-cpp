@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/client/src/hooks/use-config-account.h"
+#include "auto.fun/packages/client/src/hooks/use-config-account.h"
 
 array<string> configAccountQueryKey = array<string>{ std::string("configAccount") };
 std::function<std::shared_ptr<Promise<any>>(std::any)> getConfigAccount = [=](auto program) mutable

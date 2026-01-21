@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-goals/src/database/tables.h"
+#include "classified/packages/plugin-goals/src/database/tables.h"
 
 array<std::shared_ptr<TableSchema>> GOALS_TABLES = array<std::shared_ptr<TableSchema>>{ object{
     object::pair{std::string("name"), std::string("goals")}, 

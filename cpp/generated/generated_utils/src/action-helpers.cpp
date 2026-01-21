@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-defillama/src/utils/action-helpers.h"
+#include "otaku/src/plugins/plugin-defillama/src/utils/action-helpers.h"
 
 std::any sanitizeChainName(std::any value)
 {

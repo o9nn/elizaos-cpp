@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/plugin-sql/src/__tests__/unit/pglite/manager.test.h"
+#include "eliza/packages/plugin-sql/src/__tests__/unit/pglite/manager.test.h"
 
 void Main(void)
 {

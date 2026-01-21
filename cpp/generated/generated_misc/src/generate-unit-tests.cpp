@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/scripts/generate-unit-tests.h"
+#include "eliza/packages/cli/scripts/generate-unit-tests.h"
 
 std::shared_ptr<Promise<array<string>>> findAllSourceFiles(std::string dir, array<string> files)
 {

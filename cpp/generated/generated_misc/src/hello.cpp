@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/trust_scoreboard/src/pages/api/hello.h"
+#include "trust_scoreboard/src/pages/api/hello.h"
 
 void handler(std::shared_ptr<NextApiRequest> req, std::shared_ptr<NextApiResponse<Data>> res)
 {

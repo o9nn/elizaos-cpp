@@ -1,4 +1,4 @@
-#include ".lib/base-client.hpp"
+#include "lib/base-client.hpp"
 #include ".types/entities.hpp"
 #include "elizaos/core.hpp"
 #include <functional>

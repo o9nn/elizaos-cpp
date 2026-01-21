@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/packages/server/src/middleware/rate-limit.h"
+#include "otaku/src/packages/server/src/middleware/rate-limit.h"
 
 std::function<std::any()> createApiRateLimit = [=]() mutable
 {

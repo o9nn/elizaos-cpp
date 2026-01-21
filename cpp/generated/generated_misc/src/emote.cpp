@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza-3d-hyperfy-starter/src/plugin-hyperfy/providers/emote.h"
+#include "eliza-3d-hyperfy-starter/src/plugin-hyperfy/providers/emote.h"
 
 std::shared_ptr<Provider> hyperfyEmoteProvider = object{
     object::pair{std::string("name"), std::string("HYPERFY_EMOTE_LIST")}, 

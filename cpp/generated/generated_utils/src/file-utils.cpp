@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/server/src/api/shared/file-utils.h"
+#include "eliza/packages/server/src/api/shared/file-utils.h"
 
 std::string sanitizeFilename(std::string filename)
 {

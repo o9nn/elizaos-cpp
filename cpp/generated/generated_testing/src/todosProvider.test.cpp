@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-todo/tests/todosProvider.test.h"
+#include "autonomous-starter/src/plugin-todo/tests/todosProvider.test.h"
 
 void Main(void)
 {

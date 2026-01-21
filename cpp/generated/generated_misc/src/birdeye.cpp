@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/degenIntel/tasks/birdeye.h"
+#include "spartan/src/plugins/degenIntel/tasks/birdeye.h"
 
 std::string makeBulletpointList(array<string> array)
 {

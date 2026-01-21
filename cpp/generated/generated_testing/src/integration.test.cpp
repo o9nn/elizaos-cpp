@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-experience/tests/integration.test.h"
+#include "autonomous-starter/src/plugin-experience/tests/integration.test.h"
 
 std::string detectDomain(std::string text)
 {

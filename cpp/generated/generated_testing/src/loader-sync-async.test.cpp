@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/tests/unit/utils/loader-sync-async.test.h"
+#include "classified/packages/cli/tests/unit/utils/loader-sync-async.test.h"
 
 void Main(void)
 {

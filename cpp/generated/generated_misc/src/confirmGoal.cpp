@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-goals/src/actions/confirmGoal.h"
+#include "classified/packages/plugin-goals/src/actions/confirmGoal.h"
 
 std::shared_ptr<Promise<std::shared_ptr<ConfirmationResponse>>> extractConfirmationIntent(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<Memory> message, std::any pendingTask, std::shared_ptr<State> state)
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/tests/integration/plugin-test-isolation.test.h"
+#include "eliza/packages/cli/tests/integration/plugin-test-isolation.test.h"
 
 void Main(void)
 {

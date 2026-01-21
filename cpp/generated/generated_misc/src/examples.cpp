@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/plugin-coinmarketcap/src/actions/getPrice/examples.h"
+#include "spartan/src/plugins/plugin-coinmarketcap/src/actions/getPrice/examples.h"
 
 array<array<std::shared_ptr<ActionExample>>> priceExamples = array<array<std::shared_ptr<ActionExample>>>{ array<object>{ object{
     object::pair{std::string("user"), std::string("{{user1}}")}, 

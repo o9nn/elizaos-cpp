@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/degenTrader/config/trading.h"
+#include "spartan/src/plugins/degenTrader/config/trading.h"
 
 object DEFAULT_CONFIG = object{
     object::pair{std::string("intervals"), object{

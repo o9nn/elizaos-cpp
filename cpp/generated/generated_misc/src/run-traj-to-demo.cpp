@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/run/run-traj-to-demo.h"
+#include "SWEagent/src/run/run-traj-to-demo.h"
 
 void saveDemo(std::any data, std::string file, std::string trajPath)
 {

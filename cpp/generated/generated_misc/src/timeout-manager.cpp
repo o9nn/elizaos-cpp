@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/utils/testing/timeout-manager.h"
+#include "eliza/packages/cli/src/utils/testing/timeout-manager.h"
 
 std::shared_ptr<TestTimeoutManager> TestTimeoutManager::instance;
 

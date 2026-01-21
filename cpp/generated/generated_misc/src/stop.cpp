@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza-3d-hyperfy-starter/src/plugin-hyperfy/actions/stop.h"
+#include "eliza-3d-hyperfy-starter/src/plugin-hyperfy/actions/stop.h"
 
 std::shared_ptr<Action> hyperfyStopMovingAction = object{
     object::pair{std::string("name"), std::string("HYPERFY_STOP_MOVING")}, 

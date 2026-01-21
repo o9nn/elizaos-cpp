@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-list/src/lib/analysis/causal-inference.h"
+#include "elizas-list/src/lib/analysis/causal-inference.h"
 
 CausalInference::CausalInference() {
     this->dag = std::make_shared<DAG>();

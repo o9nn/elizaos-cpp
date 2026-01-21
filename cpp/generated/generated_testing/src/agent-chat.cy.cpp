@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/project-starter/src/__tests__/cypress/e2e/agent-chat.cy.h"
+#include "eliza/packages/project-starter/src/__tests__/cypress/e2e/agent-chat.cy.h"
 
 void Main(void)
 {

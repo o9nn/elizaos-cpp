@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizaos.github.io/src/lib/pipelines/codeAreaHelpers.h"
+#include "elizaos.github.io/src/lib/pipelines/codeAreaHelpers.h"
 
 std::any extractAreaFromPath(std::string path)
 {

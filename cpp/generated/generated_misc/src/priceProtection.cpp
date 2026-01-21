@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otc-agent/src/services/priceProtection.h"
+#include "otc-agent/src/services/priceProtection.h"
 
 PriceProtectionService::PriceProtectionService() {
     this->marketDataService = std::make_shared<MarketDataService>();

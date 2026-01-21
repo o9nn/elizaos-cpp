@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/autofun/providers/cmc_market.h"
+#include "spartan/src/plugins/autofun/providers/cmc_market.h"
 
 std::shared_ptr<Provider> cmcMarketProvider = object{
     object::pair{std::string("name"), std::string("COINMARKETCAP_CURRENCY_LATEST")}, 

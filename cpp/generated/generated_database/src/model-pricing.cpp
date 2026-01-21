@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/agent/utils/model-pricing.h"
+#include "SWEagent/src/agent/utils/model-pricing.h"
 
 double calculateCost(std::string modelName, double inputTokens, double outputTokens)
 {

@@ -1,2 +1,2 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/plugin-birdeye/src/types/api/defi.h"
+#include "spartan/src/plugins/plugin-birdeye/src/types/api/defi.h"
 

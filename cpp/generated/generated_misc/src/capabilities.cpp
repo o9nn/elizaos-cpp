@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-bootstrap/providers/capabilities.h"
+#include "autonomous-starter/src/plugin-bootstrap/providers/capabilities.h"
 
 std::shared_ptr<Provider> capabilitiesProvider = object{
     object::pair{std::string("name"), std::string("CAPABILITIES")}, 

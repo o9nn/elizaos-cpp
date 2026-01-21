@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/game/cypress/e2e/06-ui-navigation.cy.h"
+#include "classified/packages/game/cypress/e2e/06-ui-navigation.cy.h"
 
 void Main(void)
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/discrub-ext/src/app/store.h"
+#include "discrub-ext/src/app/store.h"
 
 std::any store = configureStore(object{
     object::pair{std::string("reducer"), object{

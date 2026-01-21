@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza-plugin-starter/src/plugins/calculator/eval-basic.h"
+#include "eliza-plugin-starter/src/plugins/calculator/eval-basic.h"
 
 std::shared_ptr<Evaluator> calculationEvaluator = object{
     object::pair{std::string("name"), std::string("VALIDATE_CALCULATION")}, 

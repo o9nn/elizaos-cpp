@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otc-agent/src/lib/entityId.h"
+#include "otc-agent/src/lib/entityId.h"
 
 boolean isSolanaAddress(std::string address)
 {

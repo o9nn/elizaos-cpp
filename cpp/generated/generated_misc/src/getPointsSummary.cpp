@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-gamification/src/actions/getPointsSummary.h"
+#include "otaku/src/plugins/plugin-gamification/src/actions/getPointsSummary.h"
 
 std::shared_ptr<Action> getPointsSummaryAction = object{
     object::pair{std::string("name"), std::string("GET_POINTS_SUMMARY")}, 

@@ -1,4 +1,4 @@
-#include ".types.hpp"
+#include "types.hpp"
 #include ".utils/character-updater.hpp"
 #include ".utils/validation.hpp"
 #include ".utils/xml-parser.hpp"

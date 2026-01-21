@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otc-agent/src/lib/agent-runtime.h"
+#include "otc-agent/src/lib/agent-runtime.h"
 
 std::shared_ptr<AgentRuntimeManager> AgentRuntimeManager::instance;
 

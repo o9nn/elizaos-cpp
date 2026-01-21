@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-plugin-manager/src/__tests__/unit/installPluginFromRegistry.test.h"
+#include "classified/packages/plugin-plugin-manager/src/__tests__/unit/installPluginFromRegistry.test.h"
 
 void Main(void)
 {

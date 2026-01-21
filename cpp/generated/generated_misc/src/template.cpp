@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/plugin-coinmarketcap/src/actions/getPrice/template.h"
+#include "spartan/src/plugins/plugin-coinmarketcap/src/actions/getPrice/template.h"
 
 std::string getPriceTemplate = std::string("Respond with a JSON object containing BOTH symbol and currency. Currency must default to "USD" if not specified.\
 \

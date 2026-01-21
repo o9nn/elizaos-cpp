@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza-3d-hyperfy-starter/src/plugin-hyperfy/managers/behavior-manager.h"
+#include "eliza-3d-hyperfy-starter/src/plugin-hyperfy/managers/behavior-manager.h"
 
 BehaviorManager::BehaviorManager(std::shared_ptr<IAgentRuntime> runtime) {
     this->runtime = runtime;

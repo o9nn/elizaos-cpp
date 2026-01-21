@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-dynamic/__tests__/plugin-creation-actions.test.h"
+#include "autonomous-starter/src/plugin-dynamic/__tests__/plugin-creation-actions.test.h"
 
 std::function<std::any(std::string)> createMockMemory = [=](auto text) mutable
 {

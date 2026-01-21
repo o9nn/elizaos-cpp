@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/server/src/__tests__/basic-functionality.test.h"
+#include "eliza/packages/server/src/__tests__/basic-functionality.test.h"
 
 void Main(void)
 {

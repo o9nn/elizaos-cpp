@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/agent/utils/yaml.h"
+#include "SWEagent/src/agent/utils/yaml.h"
 
 object parseMultilineString(array<string> lines, double startIndex, double expectedIndent)
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/the-org/src/projectManager/plugins/team-coordinator/forms/scheduleForm.h"
+#include "the-org/src/projectManager/plugins/team-coordinator/forms/scheduleForm.h"
 
 std::shared_ptr<Promise<void>> sendCheckInScheduleForm(std::shared_ptr<HandlerCallback> callback, array<object> channels)
 {

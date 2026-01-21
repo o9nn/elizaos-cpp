@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-stagehand/src/__tests__/retry.test.h"
+#include "classified/packages/plugin-stagehand/src/__tests__/retry.test.h"
 
 void Main(void)
 {

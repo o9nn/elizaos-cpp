@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/plugins-automation/src/githubUrlsJson.h"
+#include "plugins-automation/src/githubUrlsJson.h"
 
 std::shared_ptr<Promise<void>> main()
 {

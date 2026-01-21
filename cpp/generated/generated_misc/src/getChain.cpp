@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otc-agent/src/lib/getChain.h"
+#include "otc-agent/src/lib/getChain.h"
 
 std::shared_ptr<Chain> getChain()
 {

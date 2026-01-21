@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-robot/tests/mocks/robotjs.h"
+#include "autonomous-starter/src/plugin-robot/tests/mocks/robotjs.h"
 
 object mockScreenCapture = object{
     object::pair{std::string("image"), Buffer::from(std::string("mock-screenshot-data"))}, 

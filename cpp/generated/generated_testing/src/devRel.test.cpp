@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/the-org/tests/devRel.test.h"
+#include "the-org/tests/devRel.test.h"
 
 void Main(void)
 {

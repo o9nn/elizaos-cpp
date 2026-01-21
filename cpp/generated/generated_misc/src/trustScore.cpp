@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/communityInvestor/tests/trustScore.h"
+#include "spartan/src/plugins/communityInvestor/tests/trustScore.h"
 
 std::any testUserIdGlobalTrustScore = asUUID(uuidv4());
 std::any testWorldId = asUUID(uuidv4());

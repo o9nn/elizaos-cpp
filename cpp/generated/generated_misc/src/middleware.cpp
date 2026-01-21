@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/server/src/api/shared/middleware.h"
+#include "eliza/packages/server/src/api/shared/middleware.h"
 
 std::function<std::function<void(std::any, std::any, std::any)>(std::shared_ptr<Map<std::any, any>>)> agentExistsMiddleware = [=](auto agents) mutable
 {

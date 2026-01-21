@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/the-org/src/projectManager/plugins/team-coordinator/tasks.h"
+#include "the-org/src/projectManager/plugins/team-coordinator/tasks.h"
 
 std::function<std::shared_ptr<Promise<void>>(std::any, std::any)> registerTasks = [=](auto runtime, auto initialWorldId = undefined) mutable
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/core/src/test-utils/mock-runtime.h"
+#include "classified/packages/core/src/test-utils/mock-runtime.h"
 
 Partial<std::shared_ptr<IAgentRuntime>> createMockRuntime(Partial<std::shared_ptr<IAgentRuntime>> overrides)
 {

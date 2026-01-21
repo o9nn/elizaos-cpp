@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizaos.github.io/src/lib/decode.h"
+#include "elizaos.github.io/src/lib/decode.h"
 
 std::string decodeBase64(std::string encodedString)
 {

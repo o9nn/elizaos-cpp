@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/tests/test-commands/interactive-dummy.h"
+#include "SWEagent/tests/test-commands/interactive-dummy.h"
 
 std::string InteractiveDummyCommand::PROMPT = std::string("(dummy) ");
 

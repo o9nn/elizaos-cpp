@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-coingecko/src/actions/getCategoriesWithMarketData.action.h"
+#include "otaku/src/plugins/plugin-coingecko/src/actions/getCategoriesWithMarketData.action.h"
 
 std::shared_ptr<Action> getCategoriesWithMarketDataAction = object{
     object::pair{std::string("name"), std::string("GET_CATEGORIES_WITH_MARKET_DATA")}, 

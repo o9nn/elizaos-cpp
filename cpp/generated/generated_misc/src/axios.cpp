@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/trust_scoreboard/src/utils/axios.h"
+#include "trust_scoreboard/src/utils/axios.h"
 
 std::string baseURL = process->env->NEXT_PUBLIC_NEST_API_URL;
 std::any axiosInstance = axios->create(object{

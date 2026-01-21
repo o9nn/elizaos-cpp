@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/commands/tee/phala-wrapper.h"
+#include "eliza/packages/cli/src/commands/tee/phala-wrapper.h"
 
 std::any phalaCliCommand = ((std::make_shared<Command>(std::string("phala"))))->description(std::string("Official Phala Cloud CLI - Manage TEE deployments on Phala Cloud"))->allowUnknownOption()->helpOption(false)->action([=](auto _, auto command) mutable
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-todo/src/tests/e2e-simple.test.h"
+#include "classified/packages/plugin-todo/src/tests/e2e-simple.test.h"
 
 std::any mockRuntime = createMockRuntime(object{
     object::pair{std::string("db"), nullptr}, 

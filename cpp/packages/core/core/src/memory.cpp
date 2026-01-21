@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/api-client/src/services/memory.h"
+#include "eliza/packages/api-client/src/services/memory.h"
 
 std::shared_ptr<Promise<object>> MemoryService::getAgentMemories(std::shared_ptr<UUID> agentId, std::shared_ptr<MemoryParams> params)
 {

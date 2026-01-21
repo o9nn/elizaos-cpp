@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-knowledge/src/docs-loader.h"
+#include "classified/packages/plugin-knowledge/src/docs-loader.h"
 
 std::string getKnowledgePath()
 {

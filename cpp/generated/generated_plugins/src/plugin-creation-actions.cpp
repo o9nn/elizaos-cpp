@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-dynamic/actions/plugin-creation-actions.h"
+#include "autonomous-starter/src/plugin-dynamic/actions/plugin-creation-actions.h"
 
 std::shared_ptr<Promise<std::shared_ptr<PluginSpecification>>> generatePluginSpecification(std::string description, std::shared_ptr<IAgentRuntime> runtime)
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-list/src/utils/github.h"
+#include "elizas-list/src/utils/github.h"
 
 std::any fetchGitHubData(std::string repo)
 {

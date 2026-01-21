@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/lander/src/hooks/useGithubReleases.h"
+#include "classified/packages/lander/src/hooks/useGithubReleases.h"
 
 std::function<object()> useGithubReleases = [=]() mutable
 {

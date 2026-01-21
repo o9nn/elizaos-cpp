@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-sam/src/actions/sayAloud.h"
+#include "classified/packages/plugin-sam/src/actions/sayAloud.h"
 
 std::string extractTextToSpeak(std::string messageText)
 {

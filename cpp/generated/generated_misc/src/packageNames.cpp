@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/plugins-automation/src/packageNames.h"
+#include "plugins-automation/src/packageNames.h"
 
 std::shared_ptr<Promise<void>> main()
 {

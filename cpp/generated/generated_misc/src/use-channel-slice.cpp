@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/discrub-ext/src/features/channel/use-channel-slice.h"
+#include "discrub-ext/src/features/channel/use-channel-slice.h"
 
 std::function<object()> useChannelSlice = [=]() mutable
 {

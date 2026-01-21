@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/plugin-specification/core-plugin-v1/src/__tests__/action.test.h"
+#include "plugin-specification/core-plugin-v1/src/__tests__/action.test.h"
 
 std::function<std::any(double)> createTestUUID = [=](auto num) mutable
 {

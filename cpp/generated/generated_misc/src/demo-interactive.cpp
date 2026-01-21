@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-autocoder/scripts/demo-interactive.h"
+#include "classified/packages/plugin-autocoder/scripts/demo-interactive.h"
 
 void runDemo()
 {

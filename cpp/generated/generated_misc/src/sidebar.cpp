@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/docs/versioned_docs/version-0.25.9/rest/sidebar.h"
+#include "eliza/packages/docs/versioned_docs/version-0.25.9/rest/sidebar.h"
 
 std::shared_ptr<SidebarsConfig> sidebar = object{
     object::pair{std::string("apisidebar"), array<object>{ object{

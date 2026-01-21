@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/api-client/src/services/media.h"
+#include "eliza/packages/api-client/src/services/media.h"
 
 std::shared_ptr<Promise<std::shared_ptr<MediaUploadResponse>>> MediaService::uploadAgentMedia(std::shared_ptr<UUID> agentId, std::shared_ptr<MediaUploadParams> params)
 {

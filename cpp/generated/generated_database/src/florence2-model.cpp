@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-vision/src/florence2-model.h"
+#include "classified/packages/plugin-vision/src/florence2-model.h"
 
 Florence2Model::Florence2Model() {
     this->localModel = std::make_shared<Florence2Local>();

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/server/src/chart.h"
+#include "auto.fun/packages/server/src/chart.h"
 
 std::any getLatestCandle(std::string tokenMint, std::any swap, std::any tokenInfo)
 {

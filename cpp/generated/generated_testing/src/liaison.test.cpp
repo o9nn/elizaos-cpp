@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/the-org/tests/liaison.test.h"
+#include "the-org/tests/liaison.test.h"
 
 void Main(void)
 {

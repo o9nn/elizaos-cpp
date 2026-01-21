@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/api-client/src/__tests__/base-client.test.h"
+#include "eliza/packages/api-client/src/__tests__/base-client.test.h"
 
 TestClient::TestClient(std::shared_ptr<ApiClientConfig> config) : BaseApiClient(config) {
 }

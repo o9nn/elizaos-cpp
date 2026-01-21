@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-gamification/src/utils/contentQuality.h"
+#include "otaku/src/plugins/plugin-gamification/src/utils/contentQuality.h"
 
 double calculateEntropy(std::string text)
 {

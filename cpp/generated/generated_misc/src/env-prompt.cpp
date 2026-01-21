@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/src/utils/env-prompt.h"
+#include "classified/packages/cli/src/utils/env-prompt.h"
 
 std::shared_ptr<Promise<string>> getEnvFilePath()
 {

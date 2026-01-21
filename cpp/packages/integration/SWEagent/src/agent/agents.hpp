@@ -1,5 +1,5 @@
 #include ".exceptions.hpp"
-#include ".types.hpp"
+#include "types.hpp"
 #include ".utils/log.hpp"
 #include "action-sampler.hpp"
 #include "history-processors.hpp"

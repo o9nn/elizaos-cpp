@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/program/tests/checkConfig.h"
+#include "auto.fun/packages/program/tests/checkConfig.h"
 
 void Main(void)
 {

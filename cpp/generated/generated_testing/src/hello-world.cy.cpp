@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-elizaos-services/cypress/e2e/hello-world.cy.h"
+#include "classified/packages/plugin-elizaos-services/cypress/e2e/hello-world.cy.h"
 
 void Main(void)
 {

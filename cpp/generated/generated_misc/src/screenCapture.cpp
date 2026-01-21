@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/game/src/utils/screenCapture.h"
+#include "classified/packages/game/src/utils/screenCapture.h"
 
 std::shared_ptr<ScreenCaptureCapabilities> checkScreenCaptureCapabilities()
 {

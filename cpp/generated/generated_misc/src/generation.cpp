@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-env/generation.h"
+#include "autonomous-starter/src/plugin-env/generation.h"
 
 boolean canGenerateEnvVar(std::string varName, std::string type, std::string description)
 {

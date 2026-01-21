@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/packages/api-client/src/services/sessions.h"
+#include "otaku/src/packages/api-client/src/services/sessions.h"
 
 std::any validateRequiredParam(std::any value, std::string paramName)
 {

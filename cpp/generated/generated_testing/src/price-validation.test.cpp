@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otc-agent/tests/price-validation.test.h"
+#include "otc-agent/tests/price-validation.test.h"
 
 boolean skipIntegration = OR((process->env->CI == std::string("true")), (process->env->SKIP_INTEGRATION == std::string("true")));
 double TEST_TIMEOUT = 60000;

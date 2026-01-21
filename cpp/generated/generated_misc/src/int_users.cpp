@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/degenIntel/interfaces/int_users.h"
+#include "spartan/src/plugins/degenIntel/interfaces/int_users.h"
 
 void interface_list_users(std::any runtime)
 {

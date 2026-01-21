@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizaos.github.io/src/lib/walletLinking/readmeUtils.h"
+#include "elizaos.github.io/src/lib/walletLinking/readmeUtils.h"
 
 std::any parseWalletLinkingDataFromReadme(std::string readmeContent)
 {

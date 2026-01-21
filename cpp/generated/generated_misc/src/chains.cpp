@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/degenTrader/config/chains.h"
+#include "spartan/src/plugins/degenTrader/config/chains.h"
 
 object CHAIN_CONFIG = object{
     object::pair{std::string("SOLANA_ENABLED"), false}, 

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/server/src/api/shared/response-utils.h"
+#include "eliza/packages/server/src/api/shared/response-utils.h"
 
 std::function<void(std::any, double, std::string, std::string, std::string)> sendError = [=](auto res, auto status, auto code, auto message, auto details = undefined) mutable
 {

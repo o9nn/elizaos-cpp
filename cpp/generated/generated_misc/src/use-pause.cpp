@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/client/src/hooks/use-pause.h"
+#include "auto.fun/packages/client/src/hooks/use-pause.h"
 
 std::any usePause()
 {

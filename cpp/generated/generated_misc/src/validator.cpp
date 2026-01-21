@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/degenTrader/utils/validator.h"
+#include "spartan/src/plugins/degenTrader/utils/validator.h"
 
 boolean validateSolanaAddress(std::any address)
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/agentserver/src/__tests__/services/agent-export-import-simple.test.h"
+#include "classified/packages/agentserver/src/__tests__/services/agent-export-import-simple.test.h"
 
 void Main(void)
 {

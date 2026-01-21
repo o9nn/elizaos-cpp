@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-world/src/lib/token-utils.h"
+#include "elizas-world/src/lib/token-utils.h"
 
 Record<std::string, double> loadCachedScores()
 {

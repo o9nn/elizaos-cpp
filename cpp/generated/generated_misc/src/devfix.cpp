@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/autonomous-trader/actions/devfix.h"
+#include "spartan/src/plugins/autonomous-trader/actions/devfix.h"
 
 std::shared_ptr<Action> devFix = object{
     object::pair{std::string("name"), std::string("DEV_FIX")}, 

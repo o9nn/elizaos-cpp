@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/core/src/types/lp.h"
+#include "eliza/packages/core/src/types/lp.h"
 
 std::any ILpService::override;
 

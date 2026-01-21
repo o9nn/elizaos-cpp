@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/client/src/config/agent-templates.h"
+#include "eliza/packages/client/src/config/agent-templates.h"
 
 std::any getTemplateById(std::string id)
 {

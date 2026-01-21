@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/src/utils/__tests__/bun-exec.test.h"
+#include "classified/packages/cli/src/utils/__tests__/bun-exec.test.h"
 
 object mockLogger = object{
     object::pair{std::string("debug"), mock([=]() mutable

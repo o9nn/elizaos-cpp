@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-bootstrap/providers/facts.h"
+#include "autonomous-starter/src/plugin-bootstrap/providers/facts.h"
 
 std::any formatFacts(array<std::shared_ptr<Memory>> facts)
 {

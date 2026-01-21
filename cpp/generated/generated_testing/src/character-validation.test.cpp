@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/core/src/__tests__/character-validation.test.h"
+#include "eliza/packages/core/src/__tests__/character-validation.test.h"
 
 void Main(void)
 {

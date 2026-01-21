@@ -1,4 +1,4 @@
-#include ".types.hpp"
+#include "types.hpp"
 #include ".utils/config-utils.hpp"
 #include ".utils/dependency-resolver.hpp"
 #include ".utils/plugin-utils.hpp"

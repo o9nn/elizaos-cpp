@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/raydium/src/raydium-config.h"
+#include "auto.fun/packages/raydium/src/raydium-config.h"
 
 std::function<std::string()> getRpcUrl = [=]() mutable
 {

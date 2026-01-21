@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-coingecko/src/actions/getTokenPriceChart.action.h"
+#include "otaku/src/plugins/plugin-coingecko/src/actions/getTokenPriceChart.action.h"
 
 std::string formatMarketCap(double value)
 {

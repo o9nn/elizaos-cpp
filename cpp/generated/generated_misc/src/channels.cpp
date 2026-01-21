@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/server/src/api/media/channels.h"
+#include "eliza/packages/server/src/api/media/channels.h"
 
 std::shared_ptr<Promise<object>> saveUploadedFile(std::shared_ptr<Express::Multer::File> file, std::string channelId)
 {

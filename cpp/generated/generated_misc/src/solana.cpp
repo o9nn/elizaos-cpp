@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/server/src/solana.h"
+#include "auto.fun/packages/server/src/solana.h"
 
 std::any initSolanaConfig()
 {

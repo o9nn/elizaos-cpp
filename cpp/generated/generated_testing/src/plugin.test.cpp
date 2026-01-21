@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/project-starter/src/__tests__/plugin.test.h"
+#include "eliza/packages/project-starter/src/__tests__/plugin.test.h"
 
 void documentTestResult(std::string testName, std::any result, std::any error)
 {

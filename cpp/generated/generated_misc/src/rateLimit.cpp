@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-list/src/lib/rateLimit.h"
+#include "elizas-list/src/lib/rateLimit.h"
 
 std::shared_ptr<Promise<boolean>> RateLimiter::checkLimit(std::string key, double limit, double window)
 {

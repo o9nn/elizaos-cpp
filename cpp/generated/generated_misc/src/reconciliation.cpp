@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otc-agent/src/services/reconciliation.h"
+#include "otc-agent/src/services/reconciliation.h"
 
 ReconciliationService::ReconciliationService() {
     auto chain = getChain();

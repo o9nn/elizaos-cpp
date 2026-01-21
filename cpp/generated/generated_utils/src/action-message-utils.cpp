@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/frontend/lib/action-message-utils.h"
+#include "otaku/src/frontend/lib/action-message-utils.h"
 
 std::shared_ptr<ToolPart> convertActionMessageToToolPart(std::any message)
 {

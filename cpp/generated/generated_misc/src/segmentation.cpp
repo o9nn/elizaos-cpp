@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-list/src/lib/analytics/segmentation.h"
+#include "elizas-list/src/lib/analytics/segmentation.h"
 
 std::shared_ptr<Promise<array<std::shared_ptr<UserSegment>>>> UserSegmentation::generateSegments()
 {

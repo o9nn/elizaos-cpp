@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-plugin-manager/src/actions/searchPluginAction.h"
+#include "classified/packages/plugin-plugin-manager/src/actions/searchPluginAction.h"
 
 std::any extractSearchQuery(std::string text)
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/commands/dev/utils/file-watcher.h"
+#include "eliza/packages/cli/src/commands/dev/utils/file-watcher.h"
 
 array<string> findTsFiles(std::string dir, std::string watchDir)
 {

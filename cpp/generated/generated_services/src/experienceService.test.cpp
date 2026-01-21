@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-experience/tests/experienceService.test.h"
+#include "autonomous-starter/src/plugin-experience/tests/experienceService.test.h"
 
 std::any mockRuntime = as<std::shared_ptr<IAgentRuntime>>(as<any>(object{
     object::pair{std::string("agentId"), as<std::shared_ptr<const>>(std::string("test-agent-123"))}, 

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/client/src/hooks/use-outside-clickdetection.h"
+#include "auto.fun/packages/client/src/hooks/use-outside-clickdetection.h"
 
 std::function<void(array<any>, std::function<void()>)> useOutsideClickDetection = [=](auto refs, auto doOnOutsideClick) mutable
 {

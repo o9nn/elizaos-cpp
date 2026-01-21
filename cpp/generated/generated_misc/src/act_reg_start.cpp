@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/autonomous-trader/actions/act_reg_start.h"
+#include "spartan/src/plugins/autonomous-trader/actions/act_reg_start.h"
 
 std::any generateRandomString(std::any length)
 {

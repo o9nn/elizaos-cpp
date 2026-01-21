@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otc-agent/src/hooks/useDeploymentValidation.h"
+#include "otc-agent/src/hooks/useDeploymentValidation.h"
 
 void useDeploymentValidation()
 {

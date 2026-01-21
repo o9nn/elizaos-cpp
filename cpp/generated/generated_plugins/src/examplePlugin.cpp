@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-manager/examples/examplePlugin.h"
+#include "autonomous-starter/src/plugin-manager/examples/examplePlugin.h"
 
 std::shared_ptr<Action> exampleAction = object{
     object::pair{std::string("name"), std::string("EXAMPLE_ACTION")}, 

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/degenIntel/tasks/tsk_sentiment-signal.h"
+#include "spartan/src/plugins/degenIntel/tasks/tsk_sentiment-signal.h"
 
 void setupSentimentGenerator(std::any runtime)
 {

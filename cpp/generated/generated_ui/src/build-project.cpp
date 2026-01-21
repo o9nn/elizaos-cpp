@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/utils/build-project.h"
+#include "eliza/packages/cli/src/utils/build-project.h"
 
 void buildProject(std::string cwd, boolean isPlugin)
 {

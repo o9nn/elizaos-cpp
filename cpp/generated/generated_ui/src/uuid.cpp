@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/plugin-specification/core-plugin-v2/src/uuid.h"
+#include "plugin-specification/core-plugin-v2/src/uuid.h"
 
 std::any validateUuid(std::any value)
 {

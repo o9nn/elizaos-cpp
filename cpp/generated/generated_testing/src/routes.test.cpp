@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/project-starter/src/__tests__/routes.test.h"
+#include "eliza/packages/project-starter/src/__tests__/routes.test.h"
 
 void Main(void)
 {

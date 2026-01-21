@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/degenTrader/utils/analyzeTrade.h"
+#include "spartan/src/plugins/degenTrader/utils/analyzeTrade.h"
 
 double calculateVolatility(array<double> priceHistory)
 {

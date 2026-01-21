@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/aum-tracker/src/scripts/token-metadata-service.h"
+#include "aum-tracker/src/scripts/token-metadata-service.h"
 
 void main()
 {

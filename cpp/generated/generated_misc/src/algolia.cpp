@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-list/src/lib/algolia.h"
+#include "elizas-list/src/lib/algolia.h"
 
 void indexProject(std::any project)
 {

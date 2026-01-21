@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-bootstrap/providers/time.h"
+#include "autonomous-starter/src/plugin-bootstrap/providers/time.h"
 
 std::shared_ptr<Provider> timeProvider = object{
     object::pair{std::string("name"), std::string("TIME")}, 

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/discrub-ext/src/features/message/use-message-slice.h"
+#include "discrub-ext/src/features/message/use-message-slice.h"
 
 std::function<object()> useMessageSlice = [=]() mutable
 {

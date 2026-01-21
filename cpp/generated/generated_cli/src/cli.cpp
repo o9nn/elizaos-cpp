@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/rules/cli.h"
+#include "SWEagent/src/rules/cli.h"
 
 std::shared_ptr<Promise<array<string>>> findProjectFiles()
 {

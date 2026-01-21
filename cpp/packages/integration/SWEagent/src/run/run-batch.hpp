@@ -1,6 +1,6 @@
 #include ".agent/agents.hpp"
 #include ".environment/swe-env.hpp"
-#include ".types.hpp"
+#include "types.hpp"
 #include ".utils/config.hpp"
 #include ".utils/log.hpp"
 #include "batch-instances.hpp"

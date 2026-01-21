@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/plugin-dummy-services/src/e2e/scenarios.h"
+#include "eliza/packages/plugin-dummy-services/src/e2e/scenarios.h"
 
 std::shared_ptr<TestSuite> dummyServicesScenariosSuite = object{
     object::pair{std::string("name"), std::string("Dummy Services Plugin E2E Scenarios")}, 

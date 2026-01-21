@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/core/src/__tests__/prompts.test.h"
+#include "eliza/packages/core/src/__tests__/prompts.test.h"
 
 void Main(void)
 {

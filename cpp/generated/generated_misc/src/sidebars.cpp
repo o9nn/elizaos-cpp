@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/docs/sidebars.h"
+#include "auto.fun/packages/docs/sidebars.h"
 
 std::shared_ptr<SidebarsConfig> sidebars = object{
     object::pair{std::string("docs"), array<object>{ object{

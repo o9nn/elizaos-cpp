@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizaos.github.io/src/lib/data/tags.h"
+#include "elizaos.github.io/src/lib/data/tags.h"
 
 std::any TagScoringSchema = z->object(object{
     object::pair{std::string("points"), z->number()}, 

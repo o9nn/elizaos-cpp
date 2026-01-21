@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/tests/unit/utils/selection.test.h"
+#include "classified/packages/cli/tests/unit/utils/selection.test.h"
 
 void Main(void)
 {

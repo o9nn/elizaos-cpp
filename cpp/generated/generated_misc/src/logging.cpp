@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/server/src/api/runtime/logging.h"
+#include "eliza/packages/server/src/api/runtime/logging.h"
 
 std::shared_ptr<express::Router> createLoggingRouter()
 {

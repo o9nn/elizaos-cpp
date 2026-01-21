@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/plugin-birdeye/src/actions/token-search-symbol.h"
+#include "spartan/src/plugins/plugin-birdeye/src/actions/token-search-symbol.h"
 
 std::string SYMBOL_SEARCH_MODE = std::string("strict");
 std::any tokenSearchSymbolAction = as<std::shared_ptr<Action>>(object{

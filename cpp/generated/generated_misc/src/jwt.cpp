@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/packages/server/src/middleware/jwt.h"
+#include "otaku/src/packages/server/src/middleware/jwt.h"
 
 std::string generateAuthToken(std::string userId, std::string email, std::string username, boolean isAdmin)
 {

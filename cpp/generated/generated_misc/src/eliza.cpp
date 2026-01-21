@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/characters/eliza.h"
+#include "eliza/packages/cli/src/characters/eliza.h"
 
 std::shared_ptr<Character> getElizaCharacter()
 {

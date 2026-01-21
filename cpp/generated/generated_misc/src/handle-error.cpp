@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/utils/handle-error.h"
+#include "eliza/packages/cli/src/utils/handle-error.h"
 
 void handleError(std::any error)
 {

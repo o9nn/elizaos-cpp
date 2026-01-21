@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/client/src/lib/pca.h"
+#include "eliza/packages/client/src/lib/pca.h"
 
 array<array<double>> computePca(array<array<double>> data, double dims)
 {

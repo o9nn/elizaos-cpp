@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/autodoc/src/DirectoryTraversal.h"
+#include "auto.fun/packages/autodoc/src/DirectoryTraversal.h"
 
 array<string> DirectoryTraversal::FORCED_EXCLUDED_DIRS = array<string>{ std::string("node_modules"), std::string(".git"), std::string("dist"), std::string("build"), std::string("coverage"), std::string(".next"), std::string(".nuxt"), std::string(".cache"), std::string("tmp"), std::string("temp"), std::string(".turbo"), std::string(".husky"), std::string(".github"), std::string(".vscode"), std::string("public"), std::string("static") };
 

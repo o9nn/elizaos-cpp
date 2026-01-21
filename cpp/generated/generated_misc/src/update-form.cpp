@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-forms/src/actions/update-form.h"
+#include "classified/packages/plugin-forms/src/actions/update-form.h"
 
 std::shared_ptr<Action> updateFormAction = object{
     object::pair{std::string("name"), std::string("UPDATE_FORM")}, 

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/server/src/mcap.h"
+#include "auto.fun/packages/server/src/mcap.h"
 
 std::shared_ptr<Promise<double>> getSOLPrice()
 {

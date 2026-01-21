@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-experience/providers/recentExperiences.h"
+#include "autonomous-starter/src/plugin-experience/providers/recentExperiences.h"
 
 std::shared_ptr<Provider> recentExperiencesProvider = object{
     object::pair{std::string("name"), std::string("recentExperiences")}, 

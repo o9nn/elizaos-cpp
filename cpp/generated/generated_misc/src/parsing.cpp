@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/agent/tools/parsing.h"
+#include "SWEagent/src/agent/tools/parsing.h"
 
 std::string FunctionCallingParser::formatErrorMessage(object error)
 {

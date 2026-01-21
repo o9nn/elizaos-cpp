@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-list/src/lib/ab-testing/experiments.h"
+#include "elizas-list/src/lib/ab-testing/experiments.h"
 
 std::shared_ptr<Promise<string>> ABTestingService::assignVariant(std::string experimentId, std::string userId)
 {

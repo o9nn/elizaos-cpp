@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/packages/api-client/build.h"
+#include "otaku/src/packages/api-client/build.h"
 
 std::function<std::shared_ptr<Promise<void>>()> run = createBuildRunner(object{
     object::pair{std::string("packageName"), std::string("@elizaos/api-client")}, 

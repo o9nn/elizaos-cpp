@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-bootstrap/providers/world.h"
+#include "autonomous-starter/src/plugin-bootstrap/providers/world.h"
 
 std::shared_ptr<Provider> worldProvider = object{
     object::pair{std::string("name"), std::string("WORLD")}, 

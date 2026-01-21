@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-world/src/lib/cache.h"
+#include "elizas-world/src/lib/cache.h"
 
 std::any getCachedData()
 {

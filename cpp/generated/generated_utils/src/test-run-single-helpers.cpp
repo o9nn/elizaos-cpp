@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/tests/test-run-single-helpers.h"
+#include "SWEagent/tests/test-run-single-helpers.h"
 
 std::shared_ptr<Promise<void>> MockRuntime::createSession(std::shared_ptr<CreateBashSessionRequest> _request)
 {

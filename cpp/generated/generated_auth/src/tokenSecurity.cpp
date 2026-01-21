@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/degenTrader/services/validation/tokenSecurity.h"
+#include "spartan/src/plugins/degenTrader/services/validation/tokenSecurity.h"
 
 std::shared_ptr<Promise<object>> TokenSecurityService::validateTokenForTrading(std::string tokenAddress)
 {

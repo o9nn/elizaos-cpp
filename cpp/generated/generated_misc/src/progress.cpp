@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/run/progress.h"
+#include "SWEagent/src/run/progress.h"
 
 RunBatchProgressManager::RunBatchProgressManager(double _numInstances, std::string yamlReportPath) {
     this->yamlReportPath = yamlReportPath;

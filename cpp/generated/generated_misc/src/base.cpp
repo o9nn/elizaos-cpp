@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/plugin-app/src/forms/base.h"
+#include "spartan/src/plugins/plugin-app/src/forms/base.h"
 
 form::form() {
     this->fields = array<any>();

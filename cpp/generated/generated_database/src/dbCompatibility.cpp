@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-todo/services/dbCompatibility.h"
+#include "autonomous-starter/src/plugin-todo/services/dbCompatibility.h"
 
 DatabaseCompatibilityService::DatabaseCompatibilityService() {
     this->detectDatabaseType();

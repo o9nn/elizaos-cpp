@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/src/commands/env/utils/file-operations.h"
+#include "classified/packages/cli/src/commands/env/utils/file-operations.h"
 
 std::shared_ptr<Promise<string>> getGlobalEnvPath()
 {

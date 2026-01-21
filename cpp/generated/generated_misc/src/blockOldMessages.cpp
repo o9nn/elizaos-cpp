@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/game/src/utils/blockOldMessages.h"
+#include "classified/packages/game/src/utils/blockOldMessages.h"
 
 void blockOldMessages()
 {

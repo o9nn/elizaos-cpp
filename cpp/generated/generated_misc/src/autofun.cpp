@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/autofun/providers/autofun.h"
+#include "spartan/src/plugins/autofun/providers/autofun.h"
 
 std::shared_ptr<Provider> autofunProvider = object{
     object::pair{std::string("name"), std::string("AUTOFUN_INFORMATION")}, 

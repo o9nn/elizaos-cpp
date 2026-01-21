@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/plugin-bootstrap/src/actions/unmuteRoom.h"
+#include "eliza/packages/plugin-bootstrap/src/actions/unmuteRoom.h"
 
 std::string shouldUnmuteTemplate = std::string("# Task: Decide if {{agentName}} should unmute this previously muted room and start considering it for responses again.\
 \

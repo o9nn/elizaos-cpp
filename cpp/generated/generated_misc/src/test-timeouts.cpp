@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/tests/test-timeouts.h"
+#include "eliza/packages/cli/tests/test-timeouts.h"
 
 boolean isCI = OR((process->env->CI == std::string("true")), (process->env->GITHUB_ACTIONS == std::string("true")));
 boolean isMacOS = process->platform == std::string("darwin");

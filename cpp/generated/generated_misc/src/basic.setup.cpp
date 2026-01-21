@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otc-agent/tests/wallet-setup/basic.setup.h"
+#include "otc-agent/tests/wallet-setup/basic.setup.h"
 
 std::string SEED_PHRASE = OR((process->env->SEED_PHRASE), (std::string("test test test test test test test test test test test junk")));
 std::string PASSWORD = OR((process->env->WALLET_PASSWORD), (std::string("Tester@1234")));

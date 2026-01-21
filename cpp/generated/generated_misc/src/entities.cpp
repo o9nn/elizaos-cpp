@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/packages/api-client/src/services/entities.h"
+#include "otaku/src/packages/api-client/src/services/entities.h"
 
 std::shared_ptr<Promise<std::shared_ptr<Entity>>> EntitiesService::getEntity(std::shared_ptr<UUID> entityId)
 {

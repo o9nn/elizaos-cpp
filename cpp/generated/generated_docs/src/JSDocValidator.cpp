@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/autodoc/src/JSDocValidator.h"
+#include "auto.fun/packages/autodoc/src/JSDocValidator.h"
 
 JSDocValidator::JSDocValidator(std::shared_ptr<AIService> aiService_) : aiService(aiService_)  {
 }

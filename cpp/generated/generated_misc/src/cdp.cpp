@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/packages/api-client/src/services/cdp.h"
+#include "otaku/src/packages/api-client/src/services/cdp.h"
 
 std::shared_ptr<Promise<std::shared_ptr<WalletInfo>>> CdpService::getOrCreateWallet(std::string name)
 {

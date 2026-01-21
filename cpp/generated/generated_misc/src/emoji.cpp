@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/discrub-ext/src/classes/emoji.h"
+#include "discrub-ext/src/classes/emoji.h"
 
 Emoji::Emoji(object opts) {
     this->id = opts["id"];

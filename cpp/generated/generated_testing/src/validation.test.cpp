@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-env/validation.test.h"
+#include "autonomous-starter/src/plugin-env/validation.test.h"
 
 std::any mockFetch = vi->fn();
 

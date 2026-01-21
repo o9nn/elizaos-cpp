@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizaos.github.io/src/lib/llm-formatter.h"
+#include "elizaos.github.io/src/lib/llm-formatter.h"
 
 std::string sanitizeBodyText(std::any text, double maxLength)
 {

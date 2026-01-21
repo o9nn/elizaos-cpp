@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/api-client/src/client.h"
+#include "eliza/packages/api-client/src/client.h"
 
 ElizaClient::ElizaClient(std::shared_ptr<ApiClientConfig> config) {
     this->agents = std::make_shared<AgentsService>(config);

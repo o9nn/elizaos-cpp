@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/the-org/src/loadTest/__tests__/service.test.h"
+#include "the-org/src/loadTest/__tests__/service.test.h"
 
 void Main(void)
 {

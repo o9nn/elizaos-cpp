@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza-3d-hyperfy-starter/src/plugin-hyperfy/actions/use.h"
+#include "eliza-3d-hyperfy-starter/src/plugin-hyperfy/actions/use.h"
 
 std::string useItemTemplate = std::string("\
 # Task: Decide if the agent should interact with an entity (e.g. pick up or activate) based on recent context.\

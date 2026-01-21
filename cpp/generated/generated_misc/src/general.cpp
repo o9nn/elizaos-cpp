@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/rules/general.h"
+#include "SWEagent/src/rules/general.h"
 
 object validateAgainstRules(std::string code, std::shared_ptr<CodingGuidelines> guidelines)
 {

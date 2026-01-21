@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/plugin-specification/core-plugin-v1/src/__tests__/provider.test.h"
+#include "plugin-specification/core-plugin-v1/src/__tests__/provider.test.h"
 
 std::any mockRuntime = as<any>(object{
     object::pair{std::string("getSetting"), vi->fn()->mockReturnValue(std::string("test-setting"))}, 

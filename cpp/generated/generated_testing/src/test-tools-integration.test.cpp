@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/tests/test-tools-integration.test.h"
+#include "SWEagent/tests/test-tools-integration.test.h"
 
 void Main(void)
 {

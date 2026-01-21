@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/trust_scoreboard/src/pages/api/partners.h"
+#include "trust_scoreboard/src/pages/api/partners.h"
 
 std::shared_ptr<Promise<array<std::shared_ptr<Partner>>>> getAllPartners()
 {

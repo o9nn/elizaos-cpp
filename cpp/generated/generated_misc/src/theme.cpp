@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/discrub-ext/src/theme.h"
+#include "discrub-ext/src/theme.h"
 
 std::string primaryMain = std::string("#7289da");
 std::string primaryDark = std::string("rgb(79, 95, 152)");
