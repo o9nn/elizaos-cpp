@@ -1267,6 +1267,11 @@ class TypeScriptToCppTranspiler:
         if not expr:
             return expr
 
+        # Convert process.env.VAR_NAME to std::getenv("VAR_NAME")
+        expr = re.sub(r'process\.env\.([A-Z_][A-Z0-9_]*)', r'std::getenv("\1")', expr)
+        expr = re.sub(r'process\.env\["([^"]+)"\]', r'std::getenv("\1")', expr)
+        expr = re.sub(r"process\.env\['([^']+)'\]", r'std::getenv("\1")', expr)
+
         # Remove type assertions like "as any" or "as string"
         expr = re.sub(r'\s+as\s+\w+', '', expr)
 
@@ -1316,6 +1321,10 @@ class TypeScriptToCppTranspiler:
         # Convert nullish coalescing (simplified)
         expr = expr.replace('??', '||')
 
+        # Convert this.member to this->member or member_ (for C++ classes)
+        # In C++, 'this' is a pointer, so use -> instead of .
+        expr = re.sub(r'\bthis\.([a-zA-Z_]\w*)', r'this->\1', expr)
+
         # Convert arrow functions (simple cases)
         if '=>' in expr and not any(kw in expr for kw in ['===', '!==']):
             expr = self.convert_arrow_function(expr)
@@ -1342,6 +1351,25 @@ class TypeScriptToCppTranspiler:
 
         # Convert .includes() to std::find pattern (simplified)
         expr = re.sub(r'(\w+)\.includes\(([^)]+)\)', r'(std::find(\1.begin(), \1.end(), \2) != \1.end())', expr)
+
+        # Convert JavaScript regex literals /pattern/flags to std::regex
+        # Pattern: /regex/ or /regex/gi etc.
+        def convert_regex_literal(match):
+            pattern = match.group(1)
+            flags = match.group(2) if match.group(2) else ''
+            # Escape backslashes for C++ raw string
+            escaped_pattern = pattern.replace('\\', '\\\\')
+            # Convert flags to std::regex_constants
+            flag_parts = []
+            if 'i' in flags:
+                flag_parts.append('std::regex_constants::icase')
+            if flag_parts:
+                return f'std::regex(R"({escaped_pattern})", {" | ".join(flag_parts)})'
+            return f'std::regex(R"({escaped_pattern})")'
+        
+        # Match regex literals (be careful not to match division)
+        # Only convert if preceded by = or ( or , or space
+        expr = re.sub(r'(?<=[=(,\s])/([^/\n]+)/([gimsuy]*)', convert_regex_literal, expr)
 
         return expr
 
@@ -1376,45 +1404,124 @@ class TypeScriptToCppTranspiler:
         return ''.join(result)
     
     def convert_object_literal(self, obj_str: str) -> str:
-        """Convert object literal to C++ struct initialization"""
-        # For now, keep structure but change syntax slightly
-        # { key: value } -> { .key = value } for designated initializers (C++20)
-        # Or just return as-is for simpler conversion
+        """Convert object literal to C++ struct/map initialization"""
+        # Remove outer braces for processing
+        inner = obj_str.strip()[1:-1].strip()
         
-        # Simple approach: change : to =
-        # This works for simple struct initialization
-        result = obj_str.replace(': ', ' = ')
+        if not inner:
+            return '{}'
         
-        # Handle shorthand properties like { walletAddress } -> { .walletAddress = walletAddress }
-        # This is complex, so for now just add comment
-        if '{' in result and '=' not in result:
-            return obj_str + ' /* TODO: Convert object literal */'
+        # Parse key-value pairs properly
+        pairs = []
+        current = []
+        depth = 0
+        in_string = False
+        string_char = None
         
-        return result
+        for i, char in enumerate(inner):
+            if char in '"\'' and (i == 0 or inner[i-1] != '\\'):
+                if not in_string:
+                    in_string = True
+                    string_char = char
+                elif char == string_char:
+                    in_string = False
+            elif not in_string:
+                if char in '{[(':
+                    depth += 1
+                elif char in '}])':
+                    depth -= 1
+                elif char == ',' and depth == 0:
+                    pairs.append(''.join(current).strip())
+                    current = []
+                    continue
+            current.append(char)
+        
+        if current:
+            pairs.append(''.join(current).strip())
+        
+        # Convert each pair from "key: value" to "{"key", value}"
+        cpp_pairs = []
+        for pair in pairs:
+            if ':' in pair:
+                # Find the first colon that's not inside nested braces/strings
+                colon_pos = -1
+                depth = 0
+                in_str = False
+                str_char = None
+                for i, char in enumerate(pair):
+                    if char in '"\'' and (i == 0 or pair[i-1] != '\\'):
+                        if not in_str:
+                            in_str = True
+                            str_char = char
+                        elif char == str_char:
+                            in_str = False
+                    elif not in_str:
+                        if char in '{[(':
+                            depth += 1
+                        elif char in '}])':
+                            depth -= 1
+                        elif char == ':' and depth == 0:
+                            colon_pos = i
+                            break
+                
+                if colon_pos > 0:
+                    key = pair[:colon_pos].strip().strip('"\'')
+                    value = pair[colon_pos+1:].strip()
+                    # Convert the value recursively if it's an object
+                    if value.startswith('{'):
+                        value = self.convert_object_literal(value)
+                    # Convert single quotes to double quotes in string values
+                    if value.startswith("'") and value.endswith("'"):
+                        value = '"' + value[1:-1] + '"'
+                    cpp_pairs.append(f'{{"{key}", {value}}}')
+                else:
+                    cpp_pairs.append(pair)
+            else:
+                # Shorthand property: { foo } -> { "foo", foo }
+                prop = pair.strip()
+                if prop and prop.isidentifier():
+                    cpp_pairs.append(f'{{"{prop}", {prop}}}')
+                else:
+                    cpp_pairs.append(pair)
+        
+        return '{' + ', '.join(cpp_pairs) + '}'
     
     def convert_template_string(self, expr: str) -> str:
         """Convert template strings to string concatenation"""
         # Pattern: `text ${var} more text`
-        # Convert to: "text " + std::to_string(var) + " more text"
+        # Convert to: std::string("text ") + var + std::string(" more text")
 
         result = []
         i = 0
         in_template = False
         current_part = []
+        template_start = -1
 
         while i < len(expr):
             if expr[i] == '`':
-                in_template = not in_template
-                if current_part:
-                    escaped_content = ''.join(current_part).replace('"', '\\"')
-                    result.append('"' + escaped_content + '"')
-                    current_part = []
+                if not in_template:
+                    # Starting a template
+                    in_template = True
+                    template_start = i
+                    # Save any content before the template
+                    if current_part:
+                        result.append(''.join(current_part))
+                        current_part = []
+                else:
+                    # Ending a template
+                    in_template = False
+                    if current_part:
+                        escaped_content = ''.join(current_part).replace('\\', '\\\\').replace('"', '\\"')
+                        if escaped_content:
+                            result.append(f'std::string("{escaped_content}")')
+                        current_part = []
                 i += 1
             elif in_template and expr[i:i+2] == '${':
                 # Found interpolation start
                 if current_part:
-                    escaped_content = ''.join(current_part).replace('"', '\\"')
-                    result.append('"' + escaped_content + '"')
+                    escaped_content = ''.join(current_part).replace('\\', '\\\\').replace('"', '\\"')
+                    if escaped_content:
+                        result.append(f'std::string("{escaped_content}")')
                     current_part = []
 
                 # Find matching }
@@ -1429,13 +1536,19 @@ class TypeScriptToCppTranspiler:
 
                 # Extract variable and convert
                 var_expr = expr[i+2:j-1].strip()
-                # Check if it's a simple string variable or something more complex
+                # Convert the inner expression
+                converted_var = self.convert_expression(var_expr) if var_expr else ''
+                
+                # Check if it's likely a string or needs conversion
                 if re.match(r'^[\w.]+$', var_expr):
-                    # Simple variable - might be a string already
-                    result.append(var_expr)
+                    # Simple variable - could be string, add as-is
+                    result.append(converted_var)
+                elif re.match(r'^[\w.]+\([^)]*\)$', var_expr):
+                    # Function call - add as-is
+                    result.append(converted_var)
                 else:
                     # Complex expression - wrap in to_string for safety
-                    result.append(f'std::to_string({var_expr})')
+                    result.append(f'std::to_string({converted_var})')
                 i = j
             elif in_template:
                 current_part.append(expr[i])
@@ -1445,14 +1558,14 @@ class TypeScriptToCppTranspiler:
                 current_part.append(expr[i])
                 i += 1
 
-        # Handle any remaining content
-        if current_part and not in_template:
-            # Non-template content at end
-            pass
+        # Handle any remaining content outside template
+        if current_part:
+            result.append(''.join(current_part))
 
         if not result:
             return expr
 
+        # Join with + for string concatenation
         return ' + '.join(result)
 
     def convert_switch_statement(self, stmt: str, body_lines: List[str]) -> str:
@@ -1493,28 +1606,62 @@ class TypeScriptToCppTranspiler:
         return '\n'.join(cpp_lines)
     
     def convert_arrow_function(self, expr: str) -> str:
-        """Convert arrow function to C++ lambda (simplified)"""
+        """Convert arrow function to C++ lambda"""
         # Pattern: (params) => expr
         # Pattern: param => expr
+        # Pattern: (params) => { ... }
         
-        # Simple single-param case
+        # Helper to convert parameters to C++ style
+        def convert_lambda_params(params_str: str) -> str:
+            if not params_str.strip():
+                return ''
+            params = []
+            for p in params_str.split(','):
+                p = p.strip()
+                if ':' in p:
+                    # Has type annotation: (x: number) => ...
+                    name, type_hint = p.split(':', 1)
+                    name = name.strip()
+                    cpp_type = self.convert_type(type_hint.strip())
+                    params.append(f'{cpp_type} {name}')
+                else:
+                    # No type annotation, use auto
+                    params.append(f'auto {p}')
+            return ', '.join(params)
+        
+        # Try to match arrow function patterns
+        # Multi-param with block body: (params) => { ... }
+        match = re.match(r'\(([^)]*)\)\s*=>\s*\{(.*)\}$', expr, re.DOTALL)
+        if match:
+            params = convert_lambda_params(match.group(1))
+            body = match.group(2).strip()
+            # Convert body statements
+            converted_body = self.convert_function_body(body, indent_level=0) if body else ''
+            return f'[&]({params}) {{ {converted_body} }}'
+        
+        # Multi-param with expression body: (params) => expr
+        match = re.match(r'\(([^)]*)\)\s*=>\s*(.+)', expr)
+        if match:
+            params = convert_lambda_params(match.group(1))
+            body = match.group(2).strip()
+            # Check if body is a block
+            if body.startswith('{'):
+                return f'[&]({params}) {body}'
+            else:
+                # Expression body - convert the expression
+                converted_body = self.convert_expression(body)
+                return f'[&]({params}) {{ return {converted_body}; }}'
+        
+        # Simple single-param case: param => expr
         match = re.match(r'(\w+)\s*=>\s*(.+)', expr)
         if match:
             param = match.group(1)
-            body = match.group(2)
-            return f'[&]({param}) {{ return {body}; }}'
-        
-        # Multi-param case
-        match = re.match(r'\(([^)]*)\)\s*=>\s*(.+)', expr)
-        if match:
-            params = match.group(1)
-            body = match.group(2)
-            if body.strip().startswith('{'):
-                # Block body
-                return f'[&]({params}) {body}'
+            body = match.group(2).strip()
+            if body.startswith('{'):
+                return f'[&](auto {param}) {body}'
             else:
-                # Expression body
-                return f'[&]({params}) {{ return {body}; }}'
+                converted_body = self.convert_expression(body)
+                return f'[&](auto {param}) {{ return {converted_body}; }}'
         
         return expr
     
