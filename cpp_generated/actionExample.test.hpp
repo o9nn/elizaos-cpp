@@ -1,9 +1,9 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V1_SRC___TESTS___ACTIONEXAMPLE_TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V1_SRC___TESTS___ACTIONEXAMPLE_TEST_H
+#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CORE_SRC_SPECS_V1___TESTS___ACTIONEXAMPLE_TEST_H
+#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CORE_SRC_SPECS_V1___TESTS___ACTIONEXAMPLE_TEST_H
 #include "core.h"
-#include "vitest.h"
+#include "bun:test.h"
 #include "../types.h"
-#include "@elizaos/core-plugin-v2.h"
+#include "../../v2.h"
 using ContentV2 = Content;
 using ActionExampleV2 = ActionExample;
 #include "../actionExample.h"

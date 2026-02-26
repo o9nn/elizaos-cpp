@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/degenIntel/tasks/twitterParser.h"
+#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/autofun/tasks/twitterParser.h"
 
 TwitterParser::TwitterParser(std::shared_ptr<IAgentRuntime> runtime) {
     this->runtime = runtime;

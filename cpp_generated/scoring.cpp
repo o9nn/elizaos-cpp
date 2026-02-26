@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/degenTrader/services/calculation/scoring.h"
+#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/autofunTrader/services/calculation/scoring.h"
 
 std::shared_ptr<Promise<array<std::shared_ptr<TokenSignal>>>> ScoringService::scoreTokenSignals(array<std::shared_ptr<TokenSignal>> signals)
 {

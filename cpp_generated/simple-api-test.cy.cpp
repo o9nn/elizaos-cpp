@@ -1,8 +1,8 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-goals/cypress/e2e/simple-api-test.cy.h"
+#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-todo/cypress/e2e/simple-api-test.cy.h"
 
 void Main(void)
 {
-    describe(std::string("Goals Plugin API Tests"), [=]() mutable
+    describe(std::string("Todo Plugin API Tests"), [=]() mutable
     {
         shared baseUrl = OR((Cypress->config(std::string("baseUrl"))), (std::string("http://localhost:7777")));
         describe(std::string("Basic Server Tests"), [=]() mutable
@@ -23,7 +23,7 @@ void Main(void)
             {
                 cy->request(object{
                     object::pair{std::string("method"), std::string("GET")}, 
-                    object::pair{std::string("url"), string_empty + baseUrl + std::string("/api/goals")}, 
+                    object::pair{std::string("url"), string_empty + baseUrl + std::string("/api/todos")}, 
                     object::pair{std::string("failOnStatusCode"), false}
                 })->then([=](auto response) mutable
                 {
@@ -37,7 +37,7 @@ void Main(void)
                             expect(world["rooms"])->to->be->an(std::string("array"));
                         }
                     } else {
-                        cy->log(std::string("Goals API endpoint not available in dev mode"));
+                        cy->log(std::string("Todo API endpoint not available in dev mode"));
                     }
                 }
                 );
@@ -72,14 +72,14 @@ void Main(void)
                 cy->get(std::string("body"))->should(std::string("exist"));
             }
             );
-            it(std::string("should check goals page availability"), [=]() mutable
+            it(std::string("should check todos page availability"), [=]() mutable
             {
                 cy->request(object{
-                    object::pair{std::string("url"), std::string("/goals")}, 
+                    object::pair{std::string("url"), std::string("/todos")}, 
                     object::pair{std::string("failOnStatusCode"), false}
                 })->then([=](auto response) mutable
                 {
-                    cy->log(std::string("Goals page status: ") + response["status"] + string_empty);
+                    cy->log(std::string("Todos page status: ") + response["status"] + string_empty);
                 }
                 );
             }

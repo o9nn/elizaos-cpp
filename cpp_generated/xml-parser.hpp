@@ -1,110 +1,19 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_SRC_UTILS_XML-PARSER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_SRC_UTILS_XML-PARSER_H
+#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-SELF-MODIFICATION_SRC_UTILS_XML-PARSER_H
+#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-SELF-MODIFICATION_SRC_UTILS_XML-PARSER_H
 #include "core.h"
+#include "fast-xml-parser.h"
+#include "../types.h"
 
-class OTCQuote;
-class QuoteAccepted;
+extern any parser;
+extern any builder;
+string sanitizeXml(string xmlString);
 
-class OTCQuote : public object, public std::enable_shared_from_this<OTCQuote> {
-public:
-    using std::enable_shared_from_this<OTCQuote>::shared_from_this;
-    string quoteId;
+string escapeXml(string unsafe);
 
-    string beneficiary;
+any isValidOperationType(string type);
 
-    string tokenAmount;
+std::shared_ptr<CharacterDiff> parseCharacterDiff(string xmlString);
 
-    string tokenAmountFormatted;
-
-    string tokenSymbol;
-
-    any tokenChain;
-
-    double apr;
-
-    double lockupMonths;
-
-    double lockupDays;
-
-    double pricePerToken;
-
-    double priceUsd;
-
-    double totalValueUsd;
-
-    double totalUsd;
-
-    double discountBps;
-
-    double discountPercent;
-
-    double discountUsd;
-
-    double finalPriceUsd;
-
-    string paymentCurrency;
-
-    string paymentAmount;
-
-    string paymentSymbol;
-
-    double ethPrice;
-
-    string createdAt;
-
-    string status;
-
-    string message;
-
-    string consignmentId;
-
-    boolean isFixedPrice;
-};
-
-class QuoteAccepted : public object, public std::enable_shared_from_this<QuoteAccepted> {
-public:
-    using std::enable_shared_from_this<QuoteAccepted>::shared_from_this;
-    string quoteId;
-
-    string offerId;
-
-    string transactionHash;
-
-    string tokenAmount;
-
-    string tokenAmountFormatted;
-
-    string tokenSymbol;
-
-    string tokenName;
-
-    string paidAmount;
-
-    string paymentCurrency;
-
-    double discountBps;
-
-    double discountPercent;
-
-    string totalSaved;
-
-    string finalPrice;
-
-    string status;
-
-    string timestamp;
-
-    string message;
-};
-
-any extractXMLFromMessage(string messageText);
-
-any parseOTCQuoteXML(string xmlString);
-
-any parseQuoteAcceptedXML(string xmlString);
-
-boolean messageContainsQuote(string messageText);
-
-object parseMessageXML(string messageText);
+string buildCharacterDiffXml(std::shared_ptr<CharacterDiff> diff);
 
 #endif

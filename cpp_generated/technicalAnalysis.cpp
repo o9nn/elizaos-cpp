@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/degenTrader/services/calculation/technicalAnalysis.h"
+#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/autofunTrader/services/calculation/technicalAnalysis.h"
 
 any TechnicalAnalysisService::calculateTechnicalSignals(any marketData)
 {

@@ -1,91 +1,87 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-robot/tests/index.test.h"
+#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-todo/tests/index.test.h"
 
 void Main(void)
 {
-    vi->mock(std::string("@jitsi/robotjs"), [=]() mutable
+    describe(std::string("TodoPlugin"), [=]() mutable
     {
-        return (object{
-            object::pair{std::string("default"), object{
-                object::pair{std::string("getScreenSize"), vi->fn([=]() mutable
-                {
-                    return (object{
-                        object::pair{std::string("width"), 1920}, 
-                        object::pair{std::string("height"), 1080}
-                    });
-                }
-                )}, 
-                object::pair{std::string("screen"), object{
-                    object::pair{std::string("capture"), vi->fn([=]() mutable
-                    {
-                        return (object{
-                            object::pair{std::string("image"), Buffer::from(std::string("mock-screenshot-data"))}, 
-                            object::pair{std::string("width"), 1920}, 
-                            object::pair{std::string("height"), 1080}, 
-                            object::pair{std::string("byteWidth"), 7680}, 
-                            object::pair{std::string("bitsPerPixel"), 32}, 
-                            object::pair{std::string("bytesPerPixel"), 4}
-                        });
-                    }
-                    )}
-                }}, 
-                object::pair{std::string("moveMouse"), vi->fn()}, 
-                object::pair{std::string("mouseClick"), vi->fn()}, 
-                object::pair{std::string("typeString"), vi->fn()}
-            }}
-        });
+        it(std::string("should export TodoPlugin with correct structure"), [=]() mutable
+        {
+            expect(TodoPlugin)->toBeDefined();
+            expect(TodoPlugin->name)->toBe(std::string("todo"));
+            expect(TodoPlugin->description)->toBe(std::string("Provides task management functionality with daily recurring and one-off tasks."));
+            expect(TodoPlugin->providers)->toHaveLength(1);
+            expect(TodoPlugin->actions)->toHaveLength(4);
+            expect(TodoPlugin->services)->toHaveLength(2);
+            expect(TodoPlugin->routes)->toBeDefined();
+            expect(TodoPlugin->init)->toBeInstanceOf(Function);
+        }
+        );
+        it(std::string("should have all required actions"), [=]() mutable
+        {
+            auto actionNames = TodoPlugin->actions->map([=](auto action) mutable
+            {
+                return action["name"];
+            }
+            );
+            expect(actionNames)->toContain(std::string("CREATE_TODO"));
+            expect(actionNames)->toContain(std::string("COMPLETE_TODO"));
+            expect(actionNames)->toContain(std::string("UPDATE_TODO"));
+            expect(actionNames)->toContain(std::string("CANCEL_TODO"));
+        }
+        );
+        it(std::string("should have all required services"), [=]() mutable
+        {
+            expect(TodoPlugin->services)->toContain(TodoService);
+            expect(TodoPlugin->services->some([=](auto s) mutable
+            {
+                return s["name"] == std::string("TodoReminderService");
+            }
+            ))->toBe(true);
+        }
+        );
     }
     );
-    describe(std::string("Robot Plugin"), [=]() mutable
+    describe(std::string("TodoService"), [=]() mutable
     {
-        describe(std::string("plugin structure"), [=]() mutable
+        shared<std::shared_ptr<IAgentRuntime>> mockRuntime;
+        beforeEach([=]() mutable
         {
-            it(std::string("should have correct plugin properties"), [=]() mutable
-            {
-                expect(robotPlugin->name)->toBe(std::string("plugin-robot"));
-                expect(robotPlugin->description)->toBe(std::string("Control screen using robotjs and provide screen context"));
-            }
-            );
-            it(std::string("should export correct components"), [=]() mutable
-            {
-                expect(robotPlugin->actions)->toHaveLength(1);
-                expect(robotPlugin->providers)->toHaveLength(1);
-                expect(robotPlugin->services)->toHaveLength(1);
-                expect(const_(robotPlugin->actions)[0])->toBe(performScreenAction);
-                expect(const_(robotPlugin->providers)[0])->toBe(screenProvider);
-                expect(const_(robotPlugin->services)[0])->toBe(RobotService);
-            }
-            );
-            it(std::string("should have valid action structure"), [=]() mutable
-            {
-                expect(robotPlugin->actions)->toBeInstanceOf(Array);
-                expect(robotPlugin->actions->length)->toBeGreaterThan(0);
-                auto action = const_(robotPlugin->actions)[0];
-                expect(action->name)->toBe(std::string("PERFORM_SCREEN_ACTION"));
-                expect(action->similes)->toEqual(array<string>{ std::string("SCREEN_ACTION"), std::string("CONTROL_SCREEN"), std::string("INTERACT_SCREEN") });
-                expect(action->description)->toContain(std::string("Perform mouse and keyboard actions"));
-                expect(type_of(action->validate))->toBe(std::string("function"));
-                expect(type_of(action->handler))->toBe(std::string("function"));
-                expect(action->examples)->toBeDefined();
-            }
-            );
-            it(std::string("should have valid provider structure"), [=]() mutable
-            {
-                expect(robotPlugin->providers)->toBeInstanceOf(Array);
-                expect(robotPlugin->providers->length)->toBeGreaterThan(0);
-                auto provider = const_(robotPlugin->providers)[0];
-                expect(provider->name)->toBe(std::string("SCREEN_CONTEXT"));
-                expect(provider->description)->toBe(std::string("Current screen context with OCR, description history, and change detection information."));
-                expect(provider->position)->toBe(50);
-                expect(type_of(provider->get))->toBe(std::string("function"));
-            }
-            );
-            it(std::string("should have valid service structure"), [=]() mutable
-            {
-                auto service = const_(robotPlugin->services)[0];
-                expect(service->serviceType)->toBe(std::string("ROBOT"));
-                expect(type_of(service->start))->toBe(std::string("function"));
-            }
-            );
+            mockRuntime = as<any>(object{
+                object::pair{std::string("agentId"), as<any>(std::string("test-agent"))}, 
+                object::pair{std::string("getSetting"), vi->fn()}, 
+                object::pair{std::string("getService"), vi->fn()}, 
+                object::pair{std::string("createTask"), vi->fn()}, 
+                object::pair{std::string("registerTaskWorker"), vi->fn()}, 
+                object::pair{std::string("getTasks"), vi->fn()}, 
+                object::pair{std::string("updateTask"), vi->fn()}
+            });
+        }
+        );
+        it(std::string("should have correct service type"), [=]() mutable
+        {
+            expect(TodoService::serviceType)->toBe(std::string("TODO"));
+        }
+        );
+        it(std::string("should start and initialize service"), [=]() mutable
+        {
+            auto service = std::async([=]() { TodoService::start(mockRuntime); });
+            expect(service)->toBeInstanceOf(TodoService);
+            expect(service->capabilityDescription)->toBe(std::string("The agent can manage to-do lists with daily recurring and one-off tasks"));
+        }
+        );
+        it(std::string("should stop service gracefully"), [=]() mutable
+        {
+            auto service = std::async([=]() { TodoService::start(mockRuntime); });
+            std::async([=]() { service->stop(); });
+            expect(true)->toBe(true);
+        }
+        );
+        it(std::string("should stop service via static method"), [=]() mutable
+        {
+            auto service = std::async([=]() { TodoService::start(mockRuntime); });
+            mockRuntime->getService = vi->fn()->mockReturnValue(service);
+            std::async([=]() { TodoService::stop(mockRuntime); });
+            expect(mockRuntime->getService)->toHaveBeenCalledWith(TodoService::serviceType);
         }
         );
     }

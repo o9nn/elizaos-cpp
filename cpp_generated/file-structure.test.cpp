@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/project-starter/src/__tests__/file-structure.test.h"
+#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/project-tee-starter/__tests__/file-structure.test.h"
 
 boolean fileExists(string filePath)
 {
@@ -17,13 +17,13 @@ void Main(void)
 {
     describe(std::string("Project Structure Validation"), [=]() mutable
     {
-        shared rootDir = path->resolve(__dirname, std::string("../.."));
+        shared rootDir = path->resolve(__dirname, std::string(".."));
         describe(std::string("Directory Structure"), [=]() mutable
         {
             it(std::string("should have the expected directory structure"), [=]() mutable
             {
                 expect(directoryExists(path->join(rootDir, std::string("src"))))->toBe(true);
-                expect(directoryExists(path->join(rootDir, std::string("src"), std::string("__tests__"))))->toBe(true);
+                expect(directoryExists(path->join(rootDir, std::string("__tests__"))))->toBe(true);
             }
             );
             it(std::string("should have a dist directory after building"), [=]() mutable
@@ -67,7 +67,7 @@ void Main(void)
             it(std::string("should have the correct package.json configuration"), [=]() mutable
             {
                 auto packageJson = JSON->parse(fs->readFileSync(path->join(rootDir, std::string("package.json")), std::string("utf8")));
-                expect(packageJson["name"])->toBe(std::string("@elizaos/project-starter"));
+                expect(packageJson["name"])->toBe(std::string("@elizaos/project-tee-starter"));
                 expect(packageJson["scripts"])->toHaveProperty(std::string("build"));
                 expect(packageJson["scripts"])->toHaveProperty(std::string("test"));
                 expect(packageJson["scripts"])->toHaveProperty(std::string("test:coverage"));

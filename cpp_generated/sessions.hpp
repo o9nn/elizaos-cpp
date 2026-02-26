@@ -1,62 +1,196 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PACKAGES_API-CLIENT_SRC_SERVICES_SESSIONS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PACKAGES_API-CLIENT_SRC_SERVICES_SESSIONS_H
+#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PACKAGES_API-CLIENT_SRC_TYPES_SESSIONS_H
+#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PACKAGES_API-CLIENT_SRC_TYPES_SESSIONS_H
 #include "core.h"
-#include "../lib/base-client.h"
-#include "../types/sessions.h"
+#include "@elizaos/core.h"
+#include "./base.h"
 
-class SessionMessageQueryParams;
-class SessionsService;
+class MessageAttachment;
+class SessionMessageMetadata;
+class SessionMetadata;
+class Session;
+class CreateSessionParams;
+class CreateSessionResponse;
+class SendMessageParams;
+class GetMessagesParams;
+class SimplifiedMessage;
+class GetMessagesResponse;
+class SessionInfoResponse;
+class SessionsHealthResponse;
+class ListSessionsResponse;
+class MessageResponse;
 
-class SessionMessageQueryParams : public object, public std::enable_shared_from_this<SessionMessageQueryParams> {
+class MessageAttachment : public object, public std::enable_shared_from_this<MessageAttachment> {
 public:
-    using std::enable_shared_from_this<SessionMessageQueryParams>::shared_from_this;
-    string limit;
+    using std::enable_shared_from_this<MessageAttachment>::shared_from_this;
+    any type;
 
-    string before;
+    string url;
 
-    string after;
+    string name;
+
+    double size;
+
+    string mimeType;
 };
 
-template <typename P0>
-any toTimestampString(P0 value, string paramName);
-
-any validateRequiredParam(any value, string paramName);
-
-class SessionsService : public BaseApiClient, public std::enable_shared_from_this<SessionsService> {
+class SessionMessageMetadata : public object, public std::enable_shared_from_this<SessionMessageMetadata> {
 public:
-    using std::enable_shared_from_this<SessionsService>::shared_from_this;
-    virtual std::shared_ptr<Promise<std::shared_ptr<SessionsHealthResponse>>> checkHealth();
-    virtual std::shared_ptr<Promise<std::shared_ptr<CreateSessionResponse>>> createSession(std::shared_ptr<CreateSessionParams> params);
-    virtual std::shared_ptr<Promise<std::shared_ptr<SessionInfoResponse>>> getSession(string sessionId);
-    virtual std::shared_ptr<Promise<std::shared_ptr<MessageResponse>>> sendMessage(string sessionId, std::shared_ptr<SendMessageParams> params);
-    virtual std::shared_ptr<Promise<std::shared_ptr<GetMessagesResponse>>> getMessages(string sessionId, std::shared_ptr<GetMessagesParams> params = undefined);
-    virtual std::shared_ptr<Promise<object>> deleteSession(string sessionId);
-    virtual std::shared_ptr<Promise<std::shared_ptr<ListSessionsResponse>>> listSessions();
-    SessionsService(std::shared_ptr<ApiClientConfig> config);
+    using std::enable_shared_from_this<SessionMessageMetadata>::shared_from_this;
+    string source;
+
+    any priority;
+
+    array<string> tags;
+
+    Record<string, any> context;
+
+    string thought;
+
+    array<string> actions;
 };
 
-template <typename P0>
-any toTimestampString(P0 value, string paramName)
-{
-    if (!value) return undefined;
-    double timestamp;
-    if (is<Date>(value)) {
-        timestamp = value->getTime();
-    } else if (type_of(value) == std::string("string")) {
-        auto date = std::make_shared<Date>(value);
-        timestamp = date->getTime();
-        if (isNaN(timestamp)) {
-            console->warn(std::string("Invalid date string for ") + paramName + std::string(": ") + value + string_empty);
-            return undefined;
-        }
-    } else if (type_of(value) == std::string("number")) {
-        timestamp = value;
-    } else {
-        console->warn(std::string("Invalid type for ") + paramName + std::string(": ") + type_of(value) + string_empty);
-        return undefined;
-    }
-    return timestamp->toString();
+class SessionMetadata : public object, public std::enable_shared_from_this<SessionMetadata> {
+public:
+    using std::enable_shared_from_this<SessionMetadata>::shared_from_this;
+    string platform;
+
+    string username;
+
+    string discriminator;
+
+    string avatar;
 };
 
+class Session : public object, public std::enable_shared_from_this<Session> {
+public:
+    using std::enable_shared_from_this<Session>::shared_from_this;
+    string id;
+
+    std::shared_ptr<UUID> agentId;
+
+    std::shared_ptr<UUID> channelId;
+
+    std::shared_ptr<UUID> userId;
+
+    std::shared_ptr<SessionMetadata> metadata;
+
+    std::shared_ptr<Date> createdAt;
+
+    std::shared_ptr<Date> lastActivity;
+};
+
+class CreateSessionParams : public object, public std::enable_shared_from_this<CreateSessionParams> {
+public:
+    using std::enable_shared_from_this<CreateSessionParams>::shared_from_this;
+    string agentId;
+
+    string userId;
+
+    std::shared_ptr<SessionMetadata> metadata;
+};
+
+class CreateSessionResponse : public object, public std::enable_shared_from_this<CreateSessionResponse> {
+public:
+    using std::enable_shared_from_this<CreateSessionResponse>::shared_from_this;
+    string sessionId;
+
+    std::shared_ptr<UUID> agentId;
+
+    std::shared_ptr<UUID> userId;
+
+    std::shared_ptr<Date> createdAt;
+
+    std::shared_ptr<SessionMetadata> metadata;
+};
+
+class SendMessageParams : public object, public std::enable_shared_from_this<SendMessageParams> {
+public:
+    using std::enable_shared_from_this<SendMessageParams>::shared_from_this;
+    string content;
+
+    array<std::shared_ptr<MessageAttachment>> attachments;
+
+    std::shared_ptr<SessionMessageMetadata> metadata;
+};
+
+class GetMessagesParams : public PaginationParams, public std::enable_shared_from_this<GetMessagesParams> {
+public:
+    using std::enable_shared_from_this<GetMessagesParams>::shared_from_this;
+    any before;
+
+    any after;
+};
+
+class SimplifiedMessage : public object, public std::enable_shared_from_this<SimplifiedMessage> {
+public:
+    using std::enable_shared_from_this<SimplifiedMessage>::shared_from_this;
+    string id;
+
+    string content;
+
+    string authorId;
+
+    boolean isAgent;
+
+    std::shared_ptr<Date> createdAt;
+
+    std::shared_ptr<SessionMessageMetadata> metadata;
+};
+
+class GetMessagesResponse : public object, public std::enable_shared_from_this<GetMessagesResponse> {
+public:
+    using std::enable_shared_from_this<GetMessagesResponse>::shared_from_this;
+    array<std::shared_ptr<SimplifiedMessage>> messages;
+
+    boolean hasMore;
+};
+
+class SessionInfoResponse : public object, public std::enable_shared_from_this<SessionInfoResponse> {
+public:
+    using std::enable_shared_from_this<SessionInfoResponse>::shared_from_this;
+    string sessionId;
+
+    std::shared_ptr<UUID> agentId;
+
+    std::shared_ptr<UUID> userId;
+
+    std::shared_ptr<Date> createdAt;
+
+    std::shared_ptr<Date> lastActivity;
+
+    std::shared_ptr<SessionMetadata> metadata;
+};
+
+class SessionsHealthResponse : public object, public std::enable_shared_from_this<SessionsHealthResponse> {
+public:
+    using std::enable_shared_from_this<SessionsHealthResponse>::shared_from_this;
+    any status;
+
+    double activeSessions;
+
+    string timestamp;
+};
+
+class ListSessionsResponse : public object, public std::enable_shared_from_this<ListSessionsResponse> {
+public:
+    using std::enable_shared_from_this<ListSessionsResponse>::shared_from_this;
+    array<std::shared_ptr<SessionInfoResponse>> sessions;
+
+    double total;
+};
+
+class MessageResponse : public object, public std::enable_shared_from_this<MessageResponse> {
+public:
+    using std::enable_shared_from_this<MessageResponse>::shared_from_this;
+    string id;
+
+    string content;
+
+    string authorId;
+
+    std::shared_ptr<Date> createdAt;
+
+    std::shared_ptr<SessionMessageMetadata> metadata;
+};
 
 #endif

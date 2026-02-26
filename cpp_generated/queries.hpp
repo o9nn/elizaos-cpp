@@ -1,13 +1,11 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAOS_GITHUB_IO_SRC_LIB_WALLETLINKING_QUERIES_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAOS_GITHUB_IO_SRC_LIB_WALLETLINKING_QUERIES_H
+#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PLUGINS_PLUGIN-MORPHO_SRC_SERVICES_QUERIES_H
+#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PLUGINS_PLUGIN-MORPHO_SRC_SERVICES_QUERIES_H
 #include "core.h"
-#include "server-only.h"
-#include "@/lib/data/db.h"
-#include "@/lib/data/schema.h"
-#include "drizzle-orm.h"
-#include "@/lib/walletLinking/chainUtils.h"
-#include "./readmeUtils.h"
 
-std::shared_ptr<Promise<any>> getUserWalletData(string username);
-
+extern string Q_MARKETS;
+extern string Q_VAULTS;
+extern string Q_VAULT_BY_ADDRESS;
+extern string Q_USER_MARKET_POSITIONS;
+extern string Q_USER_VAULT_POSITIONS;
+extern string Q_MARKET_SUMMARY;
 #endif

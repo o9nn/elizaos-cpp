@@ -1,49 +1,46 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PROJECT-STARTER_SRC___TESTS___E2E_PROJECT_TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PROJECT-STARTER_SRC___TESTS___E2E_PROJECT_TEST_H
+#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PROJECT-TEE-STARTER_E2E_PROJECT_TEST_H
+#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PROJECT-TEE-STARTER_E2E_PROJECT_TEST_H
 #include "core.h"
 #include "@elizaos/core.h"
+#include "../src/index.h"
+using mrTeeCharacter = character;
 
-class ProjectTestSuite;
+class MrTeeProjectTestSuite;
 
-class ProjectTestSuite : public TestSuite, public std::enable_shared_from_this<ProjectTestSuite> {
+class MrTeeProjectTestSuite : public TestSuite, public std::enable_shared_from_this<MrTeeProjectTestSuite> {
 public:
-    using std::enable_shared_from_this<ProjectTestSuite>::shared_from_this;
-    string name = std::string("project");
+    using std::enable_shared_from_this<MrTeeProjectTestSuite>::shared_from_this;
+    string name = std::string("mr-tee-project");
 
-    string description = std::string("E2E tests for project-specific features");
+    string description = std::string("E2E tests for Mr. TEE project-specific features");
 
     array<object> tests = array<object>{ object{
-        object::pair{std::string("name"), std::string("Project runtime environment test")}, 
+        object::pair{std::string("name"), std::string("Mr. TEE Project runtime environment test")}, 
         object::pair{std::string("fn"), [=](auto runtime) mutable
         {
             try
             {
-                if (!runtime["character"]) {
+                if (!runtime->character) {
                     throw any(std::make_shared<Error>(std::string("Character not loaded in runtime")));
                 }
-                auto character = runtime["character"];
-                if (!character["name"]) {
-                    throw any(std::make_shared<Error>(std::string("Character name is missing")));
+                if (runtime->character->name != mrTeeCharacter->name) {
+                    throw any(std::make_shared<Error>(std::string("Expected character name to be ") + mrTeeCharacter->name + std::string(", got ") + runtime->character->name + string_empty));
                 }
-                if (character["name"] != std::string("Eliza")) {
-                    throw any(std::make_shared<Error>(std::string("Expected character name 'Eliza', got '") + character["name"] + std::string("'")));
+                if (!runtime->character->system->includes(std::string("Mr. TEE"))) {
+                    throw any(std::make_shared<Error>(std::string("Character system prompt does not contain "Mr. TEE"")));
                 }
-                if (!character["system"]) {
-                    throw any(std::make_shared<Error>(std::string("Character system prompt is missing")));
+                auto hasTeePlugin = runtime->character->plugins->some([=](auto p) mutable
+                {
+                    return AND((type_of(p) == std::string("string")), (p["includes"](std::string("tee"))));
                 }
-                if (!Array->isArray(character["bio"])) {
-                    throw any(std::make_shared<Error>(std::string("Character bio should be an array")));
-                }
-                if (!Array->isArray(character["messageExamples"])) {
-                    throw any(std::make_shared<Error>(std::string("Character message examples should be an array")));
-                }
-                if (AND((character["plugins"]), (!Array->isArray(character["plugins"])))) {
-                    throw any(std::make_shared<Error>(std::string("Character plugins should be an array")));
+                );
+                if (!hasTeePlugin) {
+                    throw any(std::make_shared<Error>(std::string("Character does not have TEE plugin")));
                 }
             }
             catch (const any& error)
             {
-                throw any(std::make_shared<Error>(std::string("Project runtime environment test failed: ") + (as<std::shared_ptr<Error>>(error))->message + string_empty));
+                throw any(std::make_shared<Error>(std::string("Mr. TEE Project runtime environment test failed: ") + error["message"] + string_empty));
             }
         }
         }

@@ -1,24 +1,58 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAOS_GITHUB_IO_SRC_LIB_DATA_TAGS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAOS_GITHUB_IO_SRC_LIB_DATA_TAGS_H
+#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAS-LIST_SRC_TYPES_TAGS_H
+#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAS-LIST_SRC_TYPES_TAGS_H
 #include "core.h"
-#include "zod.h"
+#include "react-icons.h"
 
-typedef z::infer<TagScoringSchema> TagScoring;
+class TagMetadata;
+class TagAnalytics;
+class TagCategory;
 
-typedef z::infer<TagPatternSchema> TagPattern;
+class TagMetadata : public object, public std::enable_shared_from_this<TagMetadata> {
+public:
+    using std::enable_shared_from_this<TagMetadata>::shared_from_this;
+    std::shared_ptr<IconType> icon;
 
-typedef z::infer<TagRuleSchema> TagRule;
+    string color;
 
-enum struct TagPatternType;
-enum struct TagCategory;
+    boolean trending;
 
-enum struct TagPatternType {
-    FILE_PATH = std::string("FILE_PATH"), COMMIT_MESSAGE = std::string("COMMIT_MESSAGE"), CODE_CONTENT = std::string("CODE_CONTENT"), PR_TITLE = std::string("PR_TITLE"), PR_DESCRIPTION = std::string("PR_DESCRIPTION"), PR_CLOSES_ISSUE = std::string("PR_CLOSES_ISSUE"), ISSUE_TITLE = std::string("ISSUE_TITLE"), ISSUE_BODY = std::string("ISSUE_BODY"), COMMENT = std::string("COMMENT"), LABEL = std::string("LABEL"), REACTION = std::string("REACTION")
+    string description;
+
+    double popularity;
+
+    string category;
+
+    array<string> relatedTags;
 };
-enum struct TagCategory {
-    AREA = std::string("AREA"), ROLE = std::string("ROLE"), TECH = std::string("TECH")
+
+class TagAnalytics : public object, public std::enable_shared_from_this<TagAnalytics> {
+public:
+    using std::enable_shared_from_this<TagAnalytics>::shared_from_this;
+    double usageCount;
+
+    double trendingScore;
+
+    double projectCount;
+
+    double recentGrowth;
+
+    double averageStars;
 };
-extern any TagScoringSchema;
-extern any TagPatternSchema;
-extern any TagRuleSchema;
+
+class TagCategory : public object, public std::enable_shared_from_this<TagCategory> {
+public:
+    using std::enable_shared_from_this<TagCategory>::shared_from_this;
+    string id;
+
+    string name;
+
+    string description;
+
+    std::shared_ptr<IconType> icon;
+
+    string color;
+
+    array<string> tags;
+};
+
 #endif

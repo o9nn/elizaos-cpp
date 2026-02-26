@@ -1,12 +1,11 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V2_SRC_ACTIONS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V2_SRC_ACTIONS_H
+#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CORE_SRC_ACTIONS_H
+#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CORE_SRC_ACTIONS_H
 #include "core.h"
-#include "@elizaos/core.h"
-using coreComposeActionExamples = composeActionExamples;
-using coreFormatActionNames = formatActionNames;
-using coreFormatActions = formatActions;
+#include "unique-names-generator.h"
+#include "./types.h"
 
-extern std::function<any(array<any>, double)> composeActionExamples;
+extern std::function<string(array<std::shared_ptr<Action>>, double)> composeActionExamples;
+extern std::function<string(array<array<std::shared_ptr<ActionExample>>>)> formatSelectedExamples;
 string formatActionNames(array<std::shared_ptr<Action>> actions);
 
 string formatActions(array<std::shared_ptr<Action>> actions);

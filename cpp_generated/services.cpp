@@ -1,6 +1,6 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-autocoder/project-template/src/services.h"
+#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-starter/src/services.h"
 
-array<any> services = array<any>();
+array<any> Services = array<any>();
 
 void Main(void)
 {

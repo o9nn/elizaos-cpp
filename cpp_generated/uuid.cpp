@@ -1,15 +1,18 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/plugin-specification/core-plugin-v2/src/uuid.h"
+#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/core/src/specs/v1/uuid.h"
 
-any validateUuid(any value)
+UUID asUUID(string id)
 {
-    return coreValidateUuid(value);
+    auto validUuid = validateUuid(id);
+    if (!validUuid) {
+        throw any(std::make_shared<Error>(std::string("Invalid UUID format: ") + id + string_empty));
+    }
+    return as<UUID>(id->toLowerCase());
 };
 
 
-any uuidSchema = as<std::shared_ptr<z::ZodType<std::shared_ptr<UUID>>>>(z->string()->uuid());
-
-void Main(void)
+UUID generateUuidFromString(string input)
 {
-}
+    return stringToUuid(input);
+};
 
-MAIN
+

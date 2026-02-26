@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/autodoc/src/JSDocValidator.h"
+#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/autodoc/src/JSDocValidator.h"
 
 JSDocValidator::JSDocValidator(std::shared_ptr<AIService> aiService_) : aiService(aiService_)  {
 }
@@ -11,16 +11,16 @@ std::shared_ptr<Promise<string>> JSDocValidator::validateAndFixJSDoc(string file
     auto fixedComment = this->fixCommonJSDocIssues(originalComment);
     auto codeWithFixedComment = code->replace(originalComment, fixedComment);
     if (this->isValidTypeScript(codeWithFixedComment)) {
-        console->log(std::string("✓ JSDoc comment in ") + fileName + std::string(" was fixed using regex patterns"));
+        console->log(std::string("[✓] JSDoc comment in ") + fileName + std::string(" was fixed using regex patterns"));
         return fixedComment;
     }
-    console->log(std::string("❌JSDoc comment in ") + fileName + std::string(" regex patterns failed, making AI call for help"));
+    console->log(std::string("[❌] JSDoc comment in ") + fileName + std::string(" regex patterns failed, making AI call for help"));
     try
     {
         auto regeneratedComment = std::async([=]() { this->regenerateJSDoc(code); });
         auto codeWithRegeneratedComment = code->replace(originalComment, regeneratedComment);
         if (this->isValidTypeScript(codeWithRegeneratedComment)) {
-            console->log(std::string("✓ JSDoc comment in ") + fileName + std::string(" was regenerated using AI"));
+            console->log(std::string("[✓] JSDoc comment in ") + fileName + std::string(" was regenerated using AI"));
             return regeneratedComment;
         }
     }
@@ -28,7 +28,7 @@ std::shared_ptr<Promise<string>> JSDocValidator::validateAndFixJSDoc(string file
     {
         console->error(std::string("Error during AI regeneration for ") + fileName + std::string(":"), error);
     }
-    console->warn(std::string("⚠️ HUMAN INTERVENTION NEEDED - Invalid JSDoc in ") + fileName + string_empty);
+    console->warn(std::string("[⚠️] HUMAN INTERVENTION NEEDED - Invalid JSDoc in ") + fileName + string_empty);
     console->warn(std::string("Original comment:"), originalComment);
     return originalComment;
 }

@@ -1,22 +1,12 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_TEST_HYBRID_SRC_LOGGER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_TEST_HYBRID_SRC_LOGGER_H
+#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CORE_SRC_SPECS_V2_LOGGER_H
+#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CORE_SRC_SPECS_V2_LOGGER_H
 #include "core.h"
+#include "../../logger.h"
+using coreLogger = logger;
 
-class Logger;
+typedef std::function<void(array<any>)> LogMethod;
 
-class Logger : public object, public std::enable_shared_from_this<Logger> {
-public:
-    using std::enable_shared_from_this<Logger>::shared_from_this;
-    string prefix;
 
-    Logger(string prefix = std::string("ElizaOS"));
-    virtual void log(string level, string message);
-    virtual void info(string message);
-    virtual void warn(string message);
-    virtual void error(string message);
-    virtual void debug(string message);
-};
-
-std::shared_ptr<Logger> createLogger(string prefix = undefined);
-
+extern Record<any, LogMethod> logger;
+extern std::shared_ptr<Record<any, std::shared_ptr<LogMethod>>> elizaLogger;
 #endif

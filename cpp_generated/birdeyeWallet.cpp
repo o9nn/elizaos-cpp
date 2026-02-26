@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/degenIntel/providers/birdeyeWallet.h"
+#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/autofun/providers/birdeyeWallet.h"
 
 std::shared_ptr<Provider> birdeyeTradePortfolioProvider = object{
     object::pair{std::string("name"), std::string("INTEL_TRADE_PORTFOLIO")}, 
@@ -20,10 +20,10 @@ Your trades for ") + portfolio["wallet"] + std::string(" (value: $") + portfolio
         try
         {
             auto idx = 1;
-            auto& __array3956_4830 = trades;
-            for (auto __indx3956_4830 = 0_N; __indx3956_4830 < __array3956_4830->get_length(); __indx3956_4830++)
+            auto& __array3891_4765 = trades;
+            for (auto __indx3891_4765 = 0_N; __indx3891_4765 < __array3891_4765->get_length(); __indx3891_4765++)
             {
-                auto& h = const_(__array3956_4830)[__indx3956_4830];
+                auto& h = const_(__array3891_4765)[__indx3891_4765];
                 {
                     console->log(std::string("h"), h["data"]["status"] == true, !!(AND((h["data"]), (h["data"]["balanceChange"]))), AND((AND((h["data"]), (h["data"]["balanceChange"]))), (h["data"]["balanceChange"]["length"] > 0)));
                     if (AND((AND((AND((h["data"]["status"] == true), (h["data"]))), (h["data"]["balanceChange"]))), (h["data"]["balanceChange"]["length"] > 0))) {

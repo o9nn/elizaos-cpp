@@ -1,23 +1,15 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V2_SRC_UUID_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V2_SRC_UUID_H
+#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CORE_SRC_SPECS_V1_UUID_H
+#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CORE_SRC_SPECS_V1_UUID_H
 #include "core.h"
-#include "zod.h"
+#include "../v2.h"
 #include "./types.h"
-#include "@elizaos/core.h"
-using coreValidateUuid = validateUuid;
-using coreStringToUuid = stringToUuid;
+using UUIDv1 = UUID;
 
-extern any uuidSchema;
-any validateUuid(any value);
+typedef UUIDv1 UUID;
 
-template <typename P0>
-std::shared_ptr<UUID> stringToUuid(P0 target);
 
-template <typename P0>
-std::shared_ptr<UUID> stringToUuid(P0 target)
-{
-    return coreStringToUuid(target);
-};
+UUID asUUID(string id);
 
+UUID generateUuidFromString(string input);
 
 #endif

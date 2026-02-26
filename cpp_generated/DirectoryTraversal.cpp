@@ -1,6 +1,6 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/autodoc/src/DirectoryTraversal.h"
+#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/autodoc/src/DirectoryTraversal.h"
 
-array<string> DirectoryTraversal::FORCED_EXCLUDED_DIRS = array<string>{ std::string("node_modules"), std::string(".git"), std::string("dist"), std::string("build"), std::string("coverage"), std::string(".next"), std::string(".nuxt"), std::string(".cache"), std::string("tmp"), std::string("temp"), std::string(".turbo"), std::string(".husky"), std::string(".github"), std::string(".vscode"), std::string("public"), std::string("static") };
+array<string> DirectoryTraversal::FORCED_EXCLUDED_DIRS = array<string>{ std::string("node_modules"), std::string(".git"), std::string("dist"), std::string("build"), std::string("coverage"), std::string(".next"), std::string(".nuxt"), std::string(".cache"), std::string("tmp"), std::string("temp"), std::string(".turbo"), std::string(".husky"), std::string(".github"), std::string(".vscode"), std::string("public"), std::string("static"), std::string("client") };
 
 DirectoryTraversal::DirectoryTraversal(std::shared_ptr<Configuration> config_, array<string> prFiles_) : config(config_), prFiles(prFiles_)  {
 }

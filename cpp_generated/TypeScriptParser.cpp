@@ -1,22 +1,26 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/autodoc/src/TypeScriptParser.h"
+#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/autodoc/src/TypeScriptParser.h"
 
 any TypeScriptParser::parse(string file)
 {
     try
     {
         auto content = fs->readFileSync(file, std::string("utf-8"));
+        auto isTsxFile = OR((file->endsWith(std::string(".tsx"))), ((AND((AND((content->includes(std::string("<"))), (content->includes(std::string(">"))))), (content->includes(std::string("React")))))));
         auto parserOptions = object{
             object::pair{std::string("sourceType"), std::string("module")}, 
-            object::pair{std::string("ecmaVersion"), 2020}, 
+            object::pair{std::string("ecmaVersion"), std::string("latest")}, 
             object::pair{std::string("ecmaFeatures"), object{
-                object::pair{std::string("jsx"), true}
+                object::pair{std::string("jsx"), true}, 
+                object::pair{std::string("globalReturn"), false}
             }}, 
             object::pair{std::string("range"), true}, 
             object::pair{std::string("loc"), true}, 
             object::pair{std::string("tokens"), true}, 
             object::pair{std::string("comment"), true}, 
             object::pair{std::string("errorOnUnknownASTType"), false}, 
-            object::pair{std::string("errorOnTypeScriptSyntacticAndSemanticIssues"), false}
+            object::pair{std::string("errorOnTypeScriptSyntacticAndSemanticIssues"), false}, 
+            object::pair{std::string("project"), undefined}, 
+            object::pair{std::string("extraFileExtensions"), array<string>{ std::string(".tsx") }}
         };
         auto ast = parse(content, parserOptions);
         if (OR((!ast), (type_of(ast) != std::string("object")))) {
@@ -28,7 +32,7 @@ any TypeScriptParser::parse(string file)
     catch (const any& error)
     {
         if (is<Error>(error)) {
-            this->handleParseError(error);
+            this->handleParseError(error, file);
         } else {
             console->error(std::string("Unknown error:"), error);
         }
@@ -44,17 +48,19 @@ object TypeScriptParser::extractExports(string file)
         object::pair{std::string("providers"), array<any>()}, 
         object::pair{std::string("evaluators"), array<any>()}
     };
-    if (ast) {
+    if (AND((ast), (ast["body"]))) {
         ast["body"]["forEach"]([=](auto node) mutable
         {
             if (node["type"] == std::string("ImportDeclaration")) {
                 auto source = node["source"]["value"];
-                if (source["startsWith"](std::string("./actions/"))) {
-                    exports["actions"]->push(source);
-                } else if (source["startsWith"](std::string("./providers/"))) {
-                    exports["providers"]->push(source);
-                } else if (source["startsWith"](std::string("./evaluators/"))) {
-                    exports["evaluators"]->push(source);
+                if (type_of(source) == std::string("string")) {
+                    if (source->startsWith(std::string("./actions/"))) {
+                        exports["actions"]->push(source);
+                    } else if (source->startsWith(std::string("./providers/"))) {
+                        exports["providers"]->push(source);
+                    } else if (source->startsWith(std::string("./evaluators/"))) {
+                        exports["evaluators"]->push(source);
+                    }
                 }
             }
         }
@@ -113,8 +119,12 @@ string TypeScriptParser::extractActionCode(string filePath, std::shared_ptr<Acti
 "));
 }
 
-void TypeScriptParser::handleParseError(std::shared_ptr<Error> error)
+void TypeScriptParser::handleParseError(std::shared_ptr<Error> error, string file)
 {
-    console->error(std::string("Error parsing TypeScript file:"), error->message);
+    auto fileInfo = (file) ? any(std::string(" in file ") + file + string_empty) : any(string_empty);
+    console->error(std::string("Error parsing TypeScript file") + fileInfo + std::string(":"), error->message);
+    if (error->message->includes(std::string("Unexpected token"))) {
+        console->warn(std::string("Skipping file due to parsing error") + fileInfo + std::string(". This might be due to unsupported syntax."));
+    }
 }
 

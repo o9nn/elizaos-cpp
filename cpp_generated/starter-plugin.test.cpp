@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/project-starter/src/__tests__/e2e/starter-plugin.test.h"
+#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/project-tee-starter/e2e/starter-plugin.test.h"
 
 void Main(void)
 {

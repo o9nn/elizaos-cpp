@@ -1,51 +1,52 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V2_SRC_SETTINGS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V2_SRC_SETTINGS_H
+#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CORE_SRC_TYPES_SETTINGS_H
+#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CORE_SRC_TYPES_SETTINGS_H
 #include "core.h"
-#include "@elizaos/core.h"
-using coreCreateSettingFromConfig = createSettingFromConfig;
-using coreGetSalt = getSalt;
-using coreEncryptStringValue = encryptStringValue;
-using coreDecryptStringValue = decryptStringValue;
-using coreSaltSettingValue = saltSettingValue;
-using coreUnsaltSettingValue = unsaltSettingValue;
-using coreSaltWorldSettings = saltWorldSettings;
-using coreUnsaltWorldSettings = unsaltWorldSettings;
-using coreUpdateWorldSettings = updateWorldSettings;
-using coreGetWorldSettings = getWorldSettings;
-using coreInitializeOnboarding = initializeOnboarding;
-using coreEncryptedCharacter = encryptedCharacter;
-using coreDecryptedCharacter = decryptedCharacter;
-using coreEncryptObjectValues = encryptObjectValues;
-using coreDecryptObjectValues = decryptObjectValues;
 
-std::shared_ptr<Setting> createSettingFromConfig(Omit<std::shared_ptr<Setting>, string> configSetting);
+class RuntimeSettings;
+class Setting;
+class WorldSettings;
+class OnboardingConfig;
 
-string getSalt();
+class RuntimeSettings : public object, public std::enable_shared_from_this<RuntimeSettings> {
+public:
+    using std::enable_shared_from_this<RuntimeSettings>::shared_from_this;
+};
 
-string encryptStringValue(string value, string salt);
+class Setting : public object, public std::enable_shared_from_this<Setting> {
+public:
+    using std::enable_shared_from_this<Setting>::shared_from_this;
+    string name;
 
-string decryptStringValue(string value, string salt);
+    string description;
 
-std::shared_ptr<Setting> saltSettingValue(std::shared_ptr<Setting> setting, string salt);
+    string usageDescription;
 
-std::shared_ptr<Setting> unsaltSettingValue(std::shared_ptr<Setting> setting, string salt);
+    any value;
 
-std::shared_ptr<WorldSettings> saltWorldSettings(std::shared_ptr<WorldSettings> worldSettings, string salt);
+    boolean required;
 
-std::shared_ptr<WorldSettings> unsaltWorldSettings(std::shared_ptr<WorldSettings> worldSettings, string salt);
+    boolean public;
 
-std::shared_ptr<Promise<boolean>> updateWorldSettings(std::shared_ptr<IAgentRuntime> runtime, string serverId, std::shared_ptr<WorldSettings> worldSettings);
+    boolean secret;
 
-std::shared_ptr<Promise<any>> getWorldSettings(std::shared_ptr<IAgentRuntime> runtime, string serverId);
+    std::function<boolean(any)> validation;
 
-std::shared_ptr<Promise<any>> initializeOnboarding(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<World> world, std::shared_ptr<OnboardingConfig> config);
+    array<string> dependsOn;
 
-std::shared_ptr<Character> encryptedCharacter(std::shared_ptr<Character> character);
+    std::function<string(any)> onSetAction;
 
-std::shared_ptr<Character> decryptedCharacter(std::shared_ptr<Character> character, std::shared_ptr<IAgentRuntime> runtime);
+    std::function<boolean(object)> visibleIf;
+};
 
-Record<string, any> encryptObjectValues(Record<string, any> obj, string salt);
+class WorldSettings : public object, public std::enable_shared_from_this<WorldSettings> {
+public:
+    using std::enable_shared_from_this<WorldSettings>::shared_from_this;
+};
 
-Record<string, any> decryptObjectValues(Record<string, any> obj, string salt);
+class OnboardingConfig : public object, public std::enable_shared_from_this<OnboardingConfig> {
+public:
+    using std::enable_shared_from_this<OnboardingConfig>::shared_from_this;
+    object settings;
+};
 
 #endif

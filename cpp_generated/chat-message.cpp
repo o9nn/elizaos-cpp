@@ -1,2 +1,2 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otc-agent/src/types/chat-message.h"
+#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza-nextjs-starter/src/types/chat-message.h"
 

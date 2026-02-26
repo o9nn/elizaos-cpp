@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-robot/tests/setup.h"
+#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-experience/tests/setup.h"
 
 void Main(void)
 {
@@ -13,26 +13,14 @@ void Main(void)
         });
     }
     );
-    vi->spyOn(console, std::string("log"))->mockImplementation([=]() mutable
-    {
-    }
-    );
-    vi->spyOn(console, std::string("warn"))->mockImplementation([=]() mutable
-    {
-    }
-    );
-    vi->spyOn(console, std::string("error"))->mockImplementation([=]() mutable
-    {
-    }
-    );
-    vi->spyOn(console, std::string("info"))->mockImplementation([=]() mutable
-    {
-    }
-    );
-    vi->spyOn(console, std::string("debug"))->mockImplementation([=]() mutable
-    {
-    }
-    );
+    global->console = utils::assign(object{
+        , 
+        object::pair{std::string("log"), vi->fn()}, 
+        object::pair{std::string("debug"), vi->fn()}, 
+        object::pair{std::string("info"), vi->fn()}, 
+        object::pair{std::string("warn"), vi->fn()}, 
+        object::pair{std::string("error"), vi->fn()}
+    }, console);
     process->env->NODE_ENV = std::string("test");
 }
 

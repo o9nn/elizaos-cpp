@@ -1,21 +1,29 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza-3d-hyperfy-starter/src/plugin-hyperfy/managers/guards.h"
+#include "/home/runner/work/elizaos-cpp/elizaos-cpp/discrub-ext/src/app/guards.h"
 
-boolean AgentActivityLock::isActive()
+std::function<any(any)> isMessage = [=](auto entity) mutable
 {
-    return this->count > 0;
-}
-
-void AgentActivityLock::enter()
+    if (!entity) return false;
+    auto message = as<std::shared_ptr<Message>>(entity);
+    return (AND((AND((in(std::string("content"), message)), (in(std::string("attachments"), message)))), (in(std::string("embeds"), message))));
+};
+std::function<any(any)> isGuild = [=](auto entity) mutable
 {
-    this->count++;
-}
-
-void AgentActivityLock::exit()
+    if (!entity) return false;
+    auto guild = as<std::shared_ptr<Guild>>(entity);
+    return AND((in(std::string("emojis"), guild)), (in(std::string("roles"), guild)));
+};
+std::function<any(any)> isRole = [=](auto entity) mutable
 {
-    this->count = Math->max(0, this->count - 1);
-}
-
-std::shared_ptr<AgentActivityLock> agentActivityLock = std::make_shared<AgentActivityLock>();
+    if (!entity) return false;
+    auto role = as<std::shared_ptr<Role>>(entity);
+    return AND((in(std::string("color"), role)), (in(std::string("hoist"), role)));
+};
+std::function<any(any)> isAttachment = [=](auto entity) mutable
+{
+    if (!entity) return false;
+    auto attachment = as<std::shared_ptr<Attachment>>(entity);
+    return in(std::string("filename"), attachment);
+};
 
 void Main(void)
 {

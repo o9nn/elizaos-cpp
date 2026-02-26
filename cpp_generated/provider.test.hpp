@@ -1,31 +1,15 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V1_SRC___TESTS___PROVIDER_TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V1_SRC___TESTS___PROVIDER_TEST_H
+#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-ROBOT_TESTS_PROVIDER_TEST_H
+#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-ROBOT_TESTS_PROVIDER_TEST_H
 #include "core.h"
 #include "vitest.h"
 #include "../provider.h"
-#include "../state.h"
-#include "../state.h"
-#include "../provider.h"
-#include "@elizaos/core-plugin-v2.h"
+#include "../service.h"
+#include "@elizaos/core.h"
+#include "../types.h"
 
-class ProviderV2;
-
-class ProviderV2 : public object, public std::enable_shared_from_this<ProviderV2> {
-public:
-    using std::enable_shared_from_this<ProviderV2>::shared_from_this;
-    string name;
-
-    string description;
-
-    boolean dynamic;
-
-    double position;
-
-    boolean private;
-
-    std::function<std::shared_ptr<Promise<any>>(any, any, any)> get;
-};
-
+extern object mockRobotService;
 extern any mockRuntime;
-extern any mockMessage;
+extern std::function<any(string)> createMockMessage;
+extern std::function<any(std::shared_ptr<Record<string, any>>)> createMockState;
+extern std::function<std::shared_ptr<ScreenContext>(std::shared_ptr<Partial<std::shared_ptr<ScreenContext>>>)> createMockScreenContext;
 #endif

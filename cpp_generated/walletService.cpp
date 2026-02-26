@@ -1,6 +1,7 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/degenTrader/services/walletService.h"
+#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/autofunTrader/services/walletService.h"
 
 WalletService::WalletService(std::shared_ptr<IAgentRuntime> runtime_) : runtime(runtime_)  {
+    this->_runtime = runtime;
     this->CONFIRMATION_CONFIG = object{
         object::pair{std::string("MAX_ATTEMPTS"), 12}, 
         object::pair{std::string("INITIAL_TIMEOUT"), 2000}, 
@@ -58,6 +59,40 @@ any WalletService::getWallet()
         , 
         , 
     };
+}
+
+any WalletService::getWalletBalances()
+{
+    try
+    {
+        auto connection = std::make_shared<Connection>(this->_runtime["getSetting"](std::string("SOLANA_RPC_URL")));
+        auto solBalance = std::async([=]() { connection->getBalance(this->keypair["publicKey"]); });
+        auto tokenAccounts = std::async([=]() { connection->getParsedTokenAccountsByOwner(this->keypair["publicKey"], object{
+            object::pair{std::string("programId"), std::make_shared<PublicKey>(std::string("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"))}
+        }); });
+        auto balances = object{
+            object::pair{std::string("solBalance"), solBalance / 1000000000}, 
+            object::pair{std::string("tokens"), tokenAccounts->value->map([=](auto account) mutable
+            {
+                return (object{
+                    object::pair{std::string("mint"), account["account"]->data->parsed->info->mint}, 
+                    object::pair{std::string("balance"), account["account"]->data->parsed->info->tokenAmount->amount}, 
+                    object::pair{std::string("decimals"), account["account"]->data->parsed->info->tokenAmount->decimals}, 
+                    object::pair{std::string("uiAmount"), account["account"]->data->parsed->info->tokenAmount->uiAmount}
+                });
+            }
+            )}
+        };
+        return balances;
+    }
+    catch (const any& error)
+    {
+        logger->error(std::string("Failed to get wallet balances:"), error);
+        return object{
+            object::pair{std::string("solBalance"), 0}, 
+            object::pair{std::string("tokens"), array<any>()}
+        };
+    }
 }
 
 std::shared_ptr<Promise<double>> WalletService::getBalance()

@@ -1,5 +1,5 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_DEGENTRADER_UTILS_ANALYZETRADE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_DEGENTRADER_UTILS_ANALYZETRADE_H
+#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_AUTOFUNTRADER_UTILS_ANALYZETRADE_H
+#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_AUTOFUNTRADER_UTILS_ANALYZETRADE_H
 #include "core.h"
 #include "../types.h"
 #include "@elizaos/core.h"
@@ -17,7 +17,7 @@ RET assessMarketCondition(std::shared_ptr<IAgentRuntime> runtime)
 {
     try
     {
-        auto tradeService = as<any>(runtime->getService(ServiceTypes["DEGEN_TRADING"]));
+        auto tradeService = as<any>(runtime->getService(ServiceTypes::AUTOFUN_TRADING));
         auto solData = std::async([=]() { tradeService["dataService"]["getTokenMarketData"](std::string("So11111111111111111111111111111111111111112")); });
         if (OR((!solData["priceHistory"]), (solData["priceHistory"]["length"] < 24))) {
             return std::string("neutral");

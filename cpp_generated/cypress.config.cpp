@@ -1,2 +1,2 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/project-starter/cypress.config.h"
+#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/plugin-starter/cypress.config.h"
 

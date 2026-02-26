@@ -1,40 +1,17 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA-3D-HYPERFY-STARTER_SRC_PLUGIN-HYPERFY_MANAGERS_GUARDS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA-3D-HYPERFY-STARTER_SRC_PLUGIN-HYPERFY_MANAGERS_GUARDS_H
+#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_APP_GUARDS_H
+#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_APP_GUARDS_H
 #include "core.h"
+#include "../classes/attachment.h"
+using Attachment = _default;
+#include "../classes/guild.h"
+using Guild = _default;
+#include "../classes/message.h"
+using Message = _default;
+#include "../classes/role.h"
+using Role = _default;
 
-class AgentActivityLock;
-
-class AgentActivityLock : public object, public std::enable_shared_from_this<AgentActivityLock> {
-public:
-    using std::enable_shared_from_this<AgentActivityLock>::shared_from_this;
-    double count = 0;
-
-    virtual boolean isActive();
-    virtual void enter();
-    virtual void exit();
-    template <typename T>
-    std::shared_ptr<Promise<T>> run(std::function<std::shared_ptr<Promise<T>>()> fn);
-};
-
-extern std::shared_ptr<AgentActivityLock> agentActivityLock;
-template <typename T>
-std::shared_ptr<Promise<T>> AgentActivityLock::run(std::function<std::shared_ptr<Promise<T>>()> fn)
-{
-    this->enter();
-    {
-        utils::finally __finally506_537([&]() mutable
-        {
-            this->exit();
-        });
-        try
-        {
-            return std::async([=]() { fn(); });
-        }
-        catch (...)
-        {
-            throw;
-        }
-    }
-}
-
+extern std::function<any(any)> isMessage;
+extern std::function<any(any)> isGuild;
+extern std::function<any(any)> isRole;
+extern std::function<any(any)> isAttachment;
 #endif

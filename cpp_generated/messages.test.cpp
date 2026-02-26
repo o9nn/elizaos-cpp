@@ -1,19 +1,13 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/plugin-specification/core-plugin-v2/__tests__/messages.test.h"
+#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/core/src/__tests__/messages.test.h"
 
 void Main(void)
 {
     describe(std::string("Messages Library"), [=]() mutable
     {
-        shared<any> runtime;
         shared<array<std::shared_ptr<Entity>>> entities;
         shared<std::shared_ptr<UUID>> entityId;
         beforeAll([=]() mutable
         {
-            runtime = as<any>(as<any>(object{
-                object::pair{std::string("getParticipantsForRoom"), vi->fn()}, 
-                object::pair{std::string("getEntityById"), vi->fn()}, 
-                object::pair{std::string("getRoom"), vi->fn()}
-            }));
             entityId = as<std::shared_ptr<UUID>>(std::string("123e4567-e89b-12d3-a456-426614174000"));
             entities = array<object>{ object{
                 object::pair{std::string("id"), entityId}, 
@@ -111,31 +105,6 @@ void Main(void)
             object::pair{std::string("id"), as<std::shared_ptr<UUID>>(std::string("123e4567-e89b-12d3-a456-426614174007"))}, 
             object::pair{std::string("names"), array<string>{ std::string("Bob") }}, 
             object::pair{std::string("agentId"), as<std::shared_ptr<UUID>>(std::string("123e4567-e89b-12d3-a456-426614174002"))}
-        } };
-        auto mockMessages = array<std::shared_ptr<Memory>>{ object{
-            object::pair{std::string("id"), as<std::shared_ptr<UUID>>(std::string("123e4567-e89b-12d3-a456-426614174008"))}, 
-            object::pair{std::string("roomId"), as<std::shared_ptr<UUID>>(std::string("123e4567-e89b-12d3-a456-426614174009"))}, 
-            object::pair{std::string("entityId"), as<std::shared_ptr<UUID>>(const_(mockEntities)[0]->id)}, 
-            object::pair{std::string("createdAt"), Date->now() - 5000}, 
-            object::pair{std::string("content"), as<std::shared_ptr<Content>>(object{
-                object::pair{std::string("text"), std::string("Hello everyone!")}, 
-                object::pair{std::string("action"), std::string("wave")}
-            })}, 
-            object::pair{std::string("agentId"), std::string("123e4567-e89b-12d3-a456-426614174001")}
-        }, object{
-            object::pair{std::string("id"), as<std::shared_ptr<UUID>>(std::string("123e4567-e89b-12d3-a456-426614174010"))}, 
-            object::pair{std::string("roomId"), as<std::shared_ptr<UUID>>(std::string("123e4567-e89b-12d3-a456-426614174009"))}, 
-            object::pair{std::string("entityId"), as<std::shared_ptr<UUID>>(const_(mockEntities)[1]->id)}, 
-            object::pair{std::string("createdAt"), Date->now() - 60000}, 
-            object::pair{std::string("content"), as<std::shared_ptr<Content>>(object{
-                object::pair{std::string("text"), std::string("Hi Alice!")}, 
-                object::pair{std::string("attachments"), array<object>{ object{
-                    object::pair{std::string("id"), as<std::shared_ptr<UUID>>(std::string("123e4567-e89b-12d3-a456-426614174011"))}, 
-                    object::pair{std::string("title"), std::string("Document")}, 
-                    object::pair{std::string("url"), std::string("https://example.com/doc.pdf")}
-                } }}
-            })}, 
-            object::pair{std::string("agentId"), std::string("123e4567-e89b-12d3-a456-426614174001")}
         } };
         describe(std::string("formatEntities"), [=]() mutable
         {

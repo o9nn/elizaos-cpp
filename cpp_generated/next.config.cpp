@@ -1,8 +1,6 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/vercel-api/next.config.h"
+#include "/home/runner/work/elizaos-cpp/elizaos-cpp/sandbox-template-cloud/next.config.h"
 
-std::shared_ptr<NextConfig> nextConfig = object{
-    object::pair{std::string("experimental"), object{}}
-};
+std::shared_ptr<NextConfig> nextConfig = object{};
 
 void Main(void)
 {

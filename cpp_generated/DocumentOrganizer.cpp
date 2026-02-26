@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/autodoc/src/AIService/utils/DocumentOrganizer.h"
+#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/autodoc/src/AIService/utils/DocumentOrganizer.h"
 
 std::shared_ptr<OrganizedDocs> DocumentOrganizer::organizeDocumentation(array<std::shared_ptr<ASTQueueItem>> docs)
 {

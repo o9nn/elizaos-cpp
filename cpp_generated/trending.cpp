@@ -1,18 +1,20 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/plugin-coinmarketcap/src/providers/trending.h"
+#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/plugin-birdeye/src/providers/trending.h"
 
 std::shared_ptr<Provider> trendingProvider = object{
-    object::pair{std::string("name"), std::string("COINMARKETCAP_CURRENCY_LATEST")}, 
-    object::pair{std::string("description"), std::string("Coinmarketcaps latest information about the cryptocurrencies")}, 
+    object::pair{std::string("name"), std::string("BIRDEYE_TRENDING_CRYPTOCURRENCY")}, 
+    object::pair{std::string("description"), std::string("Birdeye's trending cryptocurrencies")}, 
     object::pair{std::string("dynamic"), true}, 
     object::pair{std::string("get"), [=](auto runtime, auto message, auto state) mutable
     {
-        auto tokens = OR(((std::async([=]() { runtime->getCache<array<std::shared_ptr<IToken>>>(std::string("coinmarketcap_sync")); }))), (array<any>()));
+        console->log(std::string("intel:provider - get birdeye"));
+        auto chains = array<string>{ std::string("solana"), std::string("base") };
+        auto tokens = OR(((std::async([=]() { runtime->getCache<array<std::shared_ptr<IToken>>>(std::string("tokens_solana")); }))), (array<any>()));
         if (!tokens["length"]) {
-            logger->warn(std::string("No CMC token data found"));
+            logger->warn(std::string("intel:provider - no birdeye token data found"));
             return false;
         }
         auto latestTxt = std::string("\
-Current CoinMarketCap list of all active cryptocurrencies with latest market data:");
+Current Birdeye Trending list:");
         auto idx = 1;
         auto reduceTokens = tokens["map"]([=](auto t) mutable
         {

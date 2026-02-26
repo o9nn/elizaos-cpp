@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza-3d-hyperfy-starter/src/plugin-hyperfy/actions/ignore.h"
+#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-bootstrap/actions/ignore.h"
 
 std::shared_ptr<Action> ignoreAction = as<std::shared_ptr<Action>>(object{
     object::pair{std::string("name"), std::string("IGNORE")}, 
@@ -47,7 +47,7 @@ std::shared_ptr<Action> ignoreAction = as<std::shared_ptr<Action>>(object{
     }, object{
         object::pair{std::string("name"), std::string("{{name2}}")}, 
         object::pair{std::string("content"), object{
-            object::pair{std::string("text"), std::string("Uh, don’t let the volatility sway your long-term strategy")}
+            object::pair{std::string("text"), std::string("Uh, don't let the volatility sway your long-term strategy")}
         }}
     }, object{
         object::pair{std::string("name"), std::string("{{name1}}")}, 

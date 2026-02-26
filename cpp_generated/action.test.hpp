@@ -1,27 +1,14 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V1_SRC___TESTS___ACTION_TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V1_SRC___TESTS___ACTION_TEST_H
+#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-ROBOT_TESTS_ACTION_TEST_H
+#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-ROBOT_TESTS_ACTION_TEST_H
 #include "core.h"
 #include "vitest.h"
 #include "../action.h"
 #include "../types.h"
+#include "../service.js.h"
+#include "@elizaos/core.h"
 
-class ActionV2;
-
-extern std::function<any(double)> createTestUUID;
-class ActionV2 : public object, public std::enable_shared_from_this<ActionV2> {
-public:
-    using std::enable_shared_from_this<ActionV2>::shared_from_this;
-    string name;
-
-    string description;
-
-    array<string> similes;
-
-    array<array<object>> examples;
-
-    any handler;
-
-    any validate;
-};
-
+extern std::shared_ptr<RobotService> mockRobotService;
+extern any mockRuntime;
+extern std::function<any(string)> createMockMessage;
+extern std::function<any(std::shared_ptr<Record<string, any>>)> createMockState;
 #endif

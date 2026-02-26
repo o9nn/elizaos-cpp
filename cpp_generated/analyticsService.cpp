@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/degenTrader/services/analyticsService.h"
+#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/autofunTrader/services/analyticsService.h"
 
 AnalyticsService::AnalyticsService(std::shared_ptr<IAgentRuntime> runtime_) : runtime(runtime_)  {
 }

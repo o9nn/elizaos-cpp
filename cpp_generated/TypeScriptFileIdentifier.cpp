@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/autodoc/src/TypeScriptFileIdentifier.h"
+#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/autodoc/src/TypeScriptFileIdentifier.h"
 
 boolean TypeScriptFileIdentifier::isTypeScriptFile(string file)
 {
