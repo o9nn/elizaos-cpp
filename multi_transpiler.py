@@ -607,11 +607,17 @@ class MultiTranspiler:
     def write_output(self, result: TranspilationResult, output_dir: Path, ts_file: Path):
         """Write transpilation result to output directory, preserving source directory structure"""
         # Calculate relative path from input directory
+        # Ensure both paths are resolved to avoid relative_to failures due to path format differences
+        resolved_ts_file = ts_file.resolve()
+        
         if self.input_path is not None:
+            resolved_input_path = self.input_path.resolve()
             try:
-                rel_path = ts_file.relative_to(self.input_path)
+                rel_path = resolved_ts_file.relative_to(resolved_input_path)
             except ValueError:
                 # If ts_file is not relative to input_path, use just the filename
+                # This should rarely happen if paths are set up correctly
+                print(f"  Warning: Could not compute relative path for {resolved_ts_file} from {resolved_input_path}")
                 rel_path = Path(ts_file.name)
         else:
             rel_path = Path(ts_file.name)
@@ -666,8 +672,11 @@ class MultiTranspiler:
         
         for ts_file in ts_files:
             # Show relative path to help understand structure
+            # Use resolved paths to ensure consistent path comparison
+            resolved_ts_file = ts_file.resolve()
+            resolved_input_path = self.input_path.resolve()
             try:
-                rel_path = ts_file.relative_to(self.input_path)
+                rel_path = resolved_ts_file.relative_to(resolved_input_path)
                 print(f"Processing: {rel_path}")
             except ValueError:
                 print(f"Processing: {ts_file.name}")
