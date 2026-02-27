@@ -1,0 +1,10 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZAOS_GITHUB_IO_SRC_LIB_PIPELINES_SUMMARIZE_CONFIG_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZAOS_GITHUB_IO_SRC_LIB_PIPELINES_SUMMARIZE_CONFIG_H
+#include "core.hpp"
+#include "zod.hpp"
+
+typedef z::infer<AISummaryConfigSchema> AISummaryConfig;
+
+
+extern any AISummaryConfigSchema;
+#endif

@@ -1,0 +1,14 @@
+#include "audioUtils.hpp"
+
+std::shared_ptr<Buffer> getWavHeader(double audioLength, double sampleRate, double channelCount, double bitsPerSample)
+{
+    return coreGetWavHeader(audioLength, sampleRate, channelCount, bitsPerSample);
+};
+
+
+Readable prependWavHeader(Readable readable, double audioLength, double sampleRate, double channelCount, double bitsPerSample)
+{
+    return corePrependWavHeader(readable, audioLength, sampleRate, channelCount, bitsPerSample);
+};
+
+

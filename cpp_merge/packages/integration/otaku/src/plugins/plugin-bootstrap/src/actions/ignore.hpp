@@ -1,0 +1,7 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTAKU_SRC_PLUGINS_PLUGIN_BOOTSTRAP_SRC_ACTIONS_IGNORE_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTAKU_SRC_PLUGINS_PLUGIN_BOOTSTRAP_SRC_ACTIONS_IGNORE_H
+#include "core.hpp"
+// External dependency removed
+
+extern std::shared_ptr<Action> ignoreAction;
+#endif

@@ -1,0 +1,214 @@
+#include "use-file-upload.hpp"
+#include <string>
+#include <vector>
+#include <map>
+#include <iostream>
+#include <stdexcept>
+
+namespace elizaos {
+
+void useFileUpload(auto channelId) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    const auto [selectedFiles, setSelectedFiles] = useState<UploadingFile[]>([]);
+    const auto blobUrlsRef = useRef<Set<string>>(std::make_unique<Set>());
+    const auto { toast } = useToast();
+    const auto elizaClient = createElizaClient();
+
+    // Cleanup blob URLs on unmount
+    useEffect[&](() {
+        return [&]() {;
+            blobUrlsRef.current.forEach[&]((url) { return URL.revokeObjectURL(url)); };
+            blobUrlsRef.current.clear();
+            };
+            }, []);
+
+            const auto handleFileChange = useCallback(;
+            [&](e: React.ChangeEvent<HTMLInputElement>) {
+                const auto files = Array.from(e.target.files || []);
+                const auto validFiles = files.filter(;
+                (file) =>;
+                file.type.substr(0, "image/") ||;
+                file.type.substr(0, "video/") ||;
+                file.type.substr(0, "audio/") ||;
+                file.type == "application/pdf" ||;
+                file.type == "application/msword" ||;
+                file.type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||;
+                file.type == "application/vnd.ms-excel" ||;
+                file.type == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||;
+                file.type == "application/vnd.ms-powerpoint" ||;
+                file.type ==;
+                "application/vnd.openxmlformats-officedocument.presentationml.presentation" ||;
+                file.type.substr(0, "text/");
+                );
+
+                const auto uniqueFiles = validFiles.filter[&]((newFile) {;
+                    return !selectedFiles.some(;
+                    (existingFile) =>;
+                    existingFile.file.name == newFile.name &&;
+                    existingFile.file.size == newFile.size &&;
+                    existingFile.file.lastModified == newFile.lastModified;
+                    );
+                    });
+
+                    const std::vector<UploadingFile> newUploadingFiles = uniqueFiles.std::map((file) => ({;
+                        file,
+                        id: randomUUID(),
+                        isUploading: false,
+                        }));
+
+                        setSelectedFiles[&]((prev) {
+                            const auto combined = [...prev, ...newUploadingFiles];
+                            return Array.from[&](;
+                            "new Map(combined.std::map((f) { return [" + f.file.name + "-" + f.file.size; };
+                            );
+                            });
+                            if (e.target) e.target.value = '';
+                            },
+                            [selectedFiles];
+                            );
+
+                            const auto removeFile = useCallback[&]((fileId: std::string) {;
+                                setSelectedFiles[&]((prev) {
+                                    const auto file = prev.find[&]((f) { return f.id == fileId); };
+                                    if (file.blobUrl) {
+                                        URL.revokeObjectURL(file.blobUrl);
+                                        blobUrlsRef.current.delete(file.blobUrl);
+                                    }
+                                    return prev.filter[&]((f) { return f.id != fileId); };
+                                    });
+                                    }, []);
+
+                                    const auto createBlobUrls = useCallback((files: UploadingFile[]): Media[] => {;
+                                        const std::vector<std::string> attachmentBlobUrls = [];
+                                        const auto optimisticAttachments = files;
+                                        .std::map[&]((sf) {
+                                            const auto blobUrl = URL.createObjectURL(sf.file);
+                                            blobUrlsRef.current.add(blobUrl);
+                                            attachmentBlobUrls.push_back(blobUrl);
+                                            sf.blobUrl = blobUrl;
+                                            return {
+                                                id: sf.id,
+                                                url: blobUrl,
+                                                title: sf.file.name,
+                                                contentType: getContentTypeFromMimeType(sf.file.type),
+                                                isUploading: true,
+                                                };
+                                                });
+                                                .filter[&]((att) { return att.contentType != std::nullopt)[]; };
+
+                                                return optimisticAttachments;
+                                                }, []);
+
+                                                const auto uploadFiles = useCallback(;
+                                                std::async (;
+                                                files: UploadingFile[]
+                                                ): Promise<{
+                                                    uploaded: Media[];
+                                                    failed: Array<{ file: UploadingFile; error: std::string }>;
+                                                    blobUrls: std::string[];
+                                                    }> => {
+                                                        if (!files.size()) return { uploaded: [], failed: [], blobUrls: [] };
+
+                                                        const auto uploadPromises = files.std::map[&](std::async (fileData) {;
+                                                            try {
+                                                                const auto uploadResult =;
+                                                                chatType == ChannelType.DM && agentId;
+                                                                ? elizaClient.media.uploadAgentMedia(agentId, {
+                                                                    file: fileData.file,
+                                                                    filename: fileData.file.name,
+                                                                    });
+                                                                    : elizaClient.media.uploadChannelMedia(channelId!, fileData.file);
+
+                                                                    return {
+                                                                        success: true,
+                                                                        media: {
+                                                                            id: fileData.id,
+                                                                            url: uploadResult.url,
+                                                                            title: fileData.file.name,
+                                                                            source: "file_upload",
+                                                                            contentType: getContentTypeFromMimeType(fileData.file.type),
+                                                                            },
+                                                                            };
+                                                                            } catch (uploadError) {
+                                                                                "clientLogger.error(" + "Failed to upload " + fileData.file.name + ":"
+
+                                                                                // Direct error handling
+                                                                                toast({
+                                                                                    "title: " + "Upload Failed: " + fileData.file.name
+                                                                                    description: true /* instanceof check */ ? uploadError.message : "Upload failed",
+                                                                                    variant: "destructive",
+                                                                                    });
+
+                                                                                    return {
+                                                                                        success: false,
+                                                                                        file: fileData,
+                                                                                        error: true /* instanceof check */ ? uploadError.message : "Upload failed",
+                                                                                        };
+                                                                                    }
+                                                                                    });
+
+                                                                                    const auto settledUploads = Promise.allSettled(uploadPromises);
+                                                                                    const std::vector<Media> uploaded = [];
+                                                                                    const std::vector<std::string> failed = [];
+                                                                                    const std::vector<std::string> blobUrls = [];
+
+                                                                                    settledUploads.forEach[&]((result, index) {
+                                                                                        if (result.status == 'fulfilled') {
+                                                                                            if (result.value.success && 'media' in result.value) {
+                                                                                                uploaded.push_back(result.value.media);
+                                                                                                } else if ("file" in result.value) {
+                                                                                                    failed.push_back(result.value as { file: UploadingFile; error: std::string });
+                                                                                                }
+                                                                                                } else {
+                                                                                                    // Handle rejected std::promise
+                                                                                                    failed.push_back({
+                                                                                                        file: files[index],
+                                                                                                        error: result.reason.message || "Upload failed",
+                                                                                                        });
+                                                                                                    }
+                                                                                                    });
+
+                                                                                                    // Collect blob URLs for cleanup
+                                                                                                    files.forEach[&]((f) {
+                                                                                                        if (f.blobUrl) blobUrls.push(f.blobUrl);
+                                                                                                        });
+
+                                                                                                        return { uploaded, failed, blobUrls }
+                                                                                                        },
+                                                                                                        [chatType, agentId, channelId, toast];
+                                                                                                        );
+
+                                                                                                        const auto cleanupBlobUrls = useCallback[&]((urls: std::string[]) {;
+                                                                                                            urls.forEach[&]((url) {
+                                                                                                                URL.revokeObjectURL(url);
+                                                                                                                blobUrlsRef.current.delete(url);
+                                                                                                                });
+                                                                                                                }, []);
+
+                                                                                                                const auto clearFiles = useCallback[&](() {;
+                                                                                                                    // Cleanup all blob URLs
+                                                                                                                    selectedFiles.forEach[&]((file) {
+                                                                                                                        if (file.blobUrl) {
+                                                                                                                            URL.revokeObjectURL(file.blobUrl);
+                                                                                                                            blobUrlsRef.current.delete(file.blobUrl);
+                                                                                                                        }
+                                                                                                                        });
+                                                                                                                        setSelectedFiles([]);
+                                                                                                                        }, [selectedFiles]);
+
+                                                                                                                        return {
+                                                                                                                            selectedFiles,
+                                                                                                                            setSelectedFiles,
+                                                                                                                            handleFileChange,
+                                                                                                                            removeFile,
+                                                                                                                            createBlobUrls,
+                                                                                                                            uploadFiles,
+                                                                                                                            cleanupBlobUrls,
+                                                                                                                            clearFiles,
+                                                                                                                            getContentTypeFromMimeType,
+                                                                                                                            };
+
+}
+
+} // namespace elizaos

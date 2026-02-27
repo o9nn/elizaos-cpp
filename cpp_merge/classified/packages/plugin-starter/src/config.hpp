@@ -1,0 +1,8 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_STARTER_SRC_CONFIG_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_STARTER_SRC_CONFIG_H
+#include "core.hpp"
+// External dependency removed
+#include "zod.hpp"
+
+extern any configSchema;
+#endif

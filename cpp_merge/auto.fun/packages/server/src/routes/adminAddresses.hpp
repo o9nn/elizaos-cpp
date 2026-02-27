@@ -1,0 +1,7 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTO_FUN_PACKAGES_SERVER_SRC_ROUTES_ADMINADDRESSES_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTO_FUN_PACKAGES_SERVER_SRC_ROUTES_ADMINADDRESSES_H
+#include "core.hpp"
+
+extern std::function<array<string>(string)> parseAdminAddresses;
+extern array<string> adminAddresses;
+#endif

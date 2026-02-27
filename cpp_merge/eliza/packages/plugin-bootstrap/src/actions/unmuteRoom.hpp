@@ -1,0 +1,8 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_ACTIONS_UNMUTEROOM_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_PLUGIN_BOOTSTRAP_SRC_ACTIONS_UNMUTEROOM_H
+#include "core.hpp"
+// External dependency removed
+
+extern string shouldUnmuteTemplate;
+extern std::shared_ptr<Action> unmuteRoomAction;
+#endif

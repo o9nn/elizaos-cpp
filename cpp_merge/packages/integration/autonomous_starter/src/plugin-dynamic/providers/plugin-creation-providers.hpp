@@ -1,0 +1,9 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTONOMOUS_STARTER_SRC_PLUGIN_DYNAMIC_PROVIDERS_PLUGIN_CREATION_PROVIDERS_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTONOMOUS_STARTER_SRC_PLUGIN_DYNAMIC_PROVIDERS_PLUGIN_CREATION_PROVIDERS_H
+#include "core.hpp"
+// External dependency removed
+#include "../services/plugin-creation-service.h"
+
+extern std::shared_ptr<Provider> pluginCreationStatusProvider;
+extern std::shared_ptr<Provider> pluginCreationCapabilitiesProvider;
+#endif

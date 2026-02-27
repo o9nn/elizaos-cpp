@@ -1,0 +1,13 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_SQL_SRC___TESTS___INTEGRATION_SEED_COMPONENT_SEED_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_SQL_SRC___TESTS___INTEGRATION_SEED_COMPONENT_SEED_H
+#include "core.hpp"
+// External dependency removed
+#include "uuid.hpp"
+
+extern any componentTestAgentSettings;
+extern object componentTestWorld;
+extern object componentTestEntity;
+extern object componentTestSourceEntity;
+extern object componentTestRoom;
+extern object componentTestComponents;
+#endif

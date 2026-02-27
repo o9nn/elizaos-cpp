@@ -1,0 +1,198 @@
+#include "ai16z-price-agent.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <cstdlib>
+#include <map>
+#include <iostream>
+#include <stdexcept>
+
+namespace elizaos {
+
+std::future<void> main() {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    auto mcpClient: Client | std::nullopt;
+
+    try {
+        // Setup wallet for payments
+        const auto walletKey = (std::getenv("WALLET_PRIVATE_KEY") || DEFAULT_WALLET_KEY);
+        const auto account = privateKeyToAccount(walletKey);
+
+        std::cout << "[Agent] Wallet configured (for testing):" << std::endl;
+        std::cout << "[Agent] Address: " + account.address << std::endl;
+        std::cout << "[Agent] Using FREE gateway configuration (no payment required)\n" << std::endl;
+
+        // Path to the gateway config and entry point
+        const auto gatewayRoot = join(__dirname, "..");
+        const auto gatewayEntry = join(gatewayRoot, "src", "index.ts");
+        const auto configPath = join(gatewayRoot, "examples", "coingecko-free-config.yaml");
+
+        std::cout << "[Agent] Initializing MCP Gateway connection..." << std::endl;
+        std::cout << "[Agent] Gateway: " + gatewayEntry << std::endl;
+        std::cout << "[Agent] Config: " + configPath << std::endl;
+
+        // Create MCP client using stdio transport
+        mcpClient = new Client({
+            name: "ai16z-price-agent",
+            version: "1.0.0"
+            }, {
+            capabilities: {}
+            });
+
+            const auto transport = new StdioClientTransport({;
+                command: "bun",
+                "args: ["run", gatewayEntry, " + "--config=" + configPath
+                });
+
+                mcpClient.connect(transport);
+
+                std::cout << "[Agent] Connected to MCP Gateway" << std::endl;
+
+                // List available tools from the MCP server
+                const auto toolsResult = mcpClient.listTools();
+                const auto availableTools = toolsResult.tools;
+
+                std::cout << "[Agent] Available MCP tools:" << availableTools.std::map[&]((t: { name: std::string }) { return t.name) << std::endl; };
+
+                // Initialize Anthropic client with x402 payment support
+                const auto anthropic = new Anthropic({;
+                    apiKey: std::getenv("ANTHROPIC_API_KEY") || "required",
+                    fetch: wrapFetchWithPayment(fetch, account)
+                    });
+
+                    // Convert MCP tools to Anthropic tool format
+                    // Note: Anthropic requires tool names to match ^[a-zA-Z0-9_-]{1,128}$
+                    // So we transform "crypto:get_price" to "crypto_get_price"
+                    const std::vector<Anthropic::Tool> tools = availableTools.std::map((tool: { name: std::string; description?: std::string; inputSchema: Record<std::string, unknown> }) => ({;
+                        name: tool.name.replace(/:/g, "_"),
+                        description: tool.description || "",
+                        input_schema: {
+                            type: "object",
+                            ...tool.inputSchema;
+                        }
+                        }));
+
+                        // Create a mapping from transformed names back to original MCP tool names
+                        const auto toolNameMap = new Map<std::string, string>();
+                        for (const auto& tool : availableTools)
+                            toolNameMap.std::set(tool.name.replace(/:/g, "_"), tool.name);
+                        }
+
+                        std::cout << "\n[Agent] Starting AI16Z price query...\n" << std::endl;
+
+                        // Initial message to Claude
+                        const std::vector<Anthropic::MessageParam> messages = [;
+                        {
+                            role: "user",
+                            content: "What is the current price of AI16Z token in USD?"
+                        }
+                        ];
+
+                        // Run agent loop with tool calling
+                        auto continueLoop = true;
+                        auto iterations = 0;
+                        const auto maxIterations = 10;
+
+                        while (continueLoop && iterations < maxIterations) {
+                            iterations++;
+
+                            const auto response = anthropic.messages.create({;
+                                model: "claude-3-7-sonnet-20250219",
+                                max_tokens: 4096,
+                                "system: "
+
+                                Your task is to fetch the current price of the AI16Z token (also known).;
+
+                                Available tools provide access to cryptocurrency information through CoinGecko.;
+
+                                Steps to follow:
+                                1. Search for the AI16Z token using available tools;
+                                2. Get its current price in USD;
+                                3. Provide a clear, concise response with the price;
+
+                                "Be specific and accurate. The token might be listed as \"ai16z\", \"AI16Z\", or similar variations."
+                                messages,
+                                tools;
+                                });
+
+                                // Check if we should stop
+                                if (response.stop_reason == 'end_turn') {
+                                    // Extract final text response
+                                    const auto textContent = response.content.find[&]((c: { type: std::string; text?: std::string }) { return c.type == "text"); };
+                                    if (textContent && 'text' in textContent) {
+                                        std::cout << "\n[Agent] Result:\n" << std::endl;
+                                        std::cout << textContent.text << std::endl;
+                                    }
+                                    continueLoop = false;
+                                    break;
+                                }
+
+                                // Process tool calls
+                                if (response.stop_reason == 'tool_use') {
+                                    const std::vector<Anthropic::ToolResultBlockParam> toolResults = [];
+
+                                    for (const auto& block : response.content)
+                                        if (block.type == 'tool_use') {
+                                            std::cout << "[Agent] Calling tool: " + block.name << std::endl;
+
+                                            try {
+                                                // Translate transformed tool name back to original MCP tool name
+                                                const auto originalToolName = toolNameMap.get(block.name) || block.name;
+
+                                                // Call the MCP tool
+                                                const auto result = mcpClient.callTool({;
+                                                    name: originalToolName,
+                                                    arguments: block.input<std::string, unknown>
+                                                    });
+
+                                                    toolResults.push_back({
+                                                        type: "tool_result",
+                                                        tool_use_id: block.id,
+                                                        content: /* JSON.stringify */ std::string(result.content)
+                                                        });
+                                                        } catch (toolError) {
+                                                            std::cerr << "[Agent] Tool error:" << toolError << std::endl;
+                                                            toolResults.push_back({
+                                                                type: "tool_result",
+                                                                tool_use_id: block.id,
+                                                                "content: " + "Error: " + std::to_string(true /* instanceof check */ ? toolError.message : std::to_string(toolError))
+                                                                });
+                                                            }
+                                                        }
+                                                    }
+
+                                                    // Add assistant message with tool use and user message with tool results
+                                                    messages.push_back({
+                                                        role: "assistant",
+                                                        content: response.content
+                                                        });
+                                                        messages.push_back({
+                                                            role: "user",
+                                                            content: toolResults
+                                                            });
+                                                            } else {
+                                                                continueLoop = false;
+                                                            }
+                                                        }
+
+                                                        std::cout << "\n[Agent] Done!" << std::endl;
+
+                                                        } catch (error) {
+                                                            std::cerr << "[Agent] Error:" << error << std::endl;
+                                                            std::exit(1);
+                                                            } finally {
+                                                                // Ensure cleanup
+                                                                if (mcpClient) {
+                                                                    try {
+                                                                        mcpClient.close();
+                                                                        std::cout << "[Agent] MCP client closed" << std::endl;
+                                                                        } catch (closeError) {
+                                                                            std::cerr << "[Agent] Error closing MCP client:" << closeError << std::endl;
+                                                                        }
+                                                                    }
+                                                                }
+
+}
+
+} // namespace elizaos

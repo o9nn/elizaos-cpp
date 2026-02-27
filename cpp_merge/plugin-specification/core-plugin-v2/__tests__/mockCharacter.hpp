@@ -1,0 +1,7 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_PLUGIN_SPECIFICATION_CORE_PLUGIN_V2___TESTS___MOCKCHARACTER_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_PLUGIN_SPECIFICATION_CORE_PLUGIN_V2___TESTS___MOCKCHARACTER_H
+#include "core.hpp"
+// External dependency removed
+
+extern std::shared_ptr<Character> mockCharacter;
+#endif

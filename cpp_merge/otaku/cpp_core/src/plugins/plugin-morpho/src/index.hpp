@@ -1,0 +1,34 @@
+#pragma once
+#include <algorithm>
+#include <cstdint>
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
+#include "plugin.hpp"
+
+namespace elizaos {
+
+// NOTE: This is auto-generated approximate C++ code
+// Manual refinement required for production use
+
+
+
+// Export the default plugin
+
+// Named exports for convenience
+
+// Export services
+
+// Export actions
+
+// Export types
+* from "./types";
+
+// Export utilities
+  // GasOptimizer
+
+} // namespace elizaos

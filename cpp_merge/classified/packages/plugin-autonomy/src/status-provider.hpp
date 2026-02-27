@@ -1,0 +1,7 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_AUTONOMY_SRC_STATUS_PROVIDER_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_AUTONOMY_SRC_STATUS_PROVIDER_H
+#include "core.hpp"
+// External dependency removed
+
+extern std::shared_ptr<Provider> autonomyStatusProvider;
+#endif

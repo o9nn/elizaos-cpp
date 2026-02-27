@@ -1,0 +1,2 @@
+#include "chat-message.h"
+

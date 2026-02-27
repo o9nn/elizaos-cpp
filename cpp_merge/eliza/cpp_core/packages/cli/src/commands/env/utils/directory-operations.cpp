@@ -1,0 +1,33 @@
+#include "directory-operations.hpp"
+#include <string>
+#include <future>
+#include <iostream>
+#include <stdexcept>
+
+namespace elizaos {
+
+std::future<bool> safeDeleteDirectory(const std::string& dir, ResetActionRecord actions, const std::string& label) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    if (!existsSync(dir)) {
+        "actions.skipped.push_back(" + label + " (not found)";
+        return false;
+    }
+
+    try {
+        rimraf(dir);
+        if (!existsSync(dir)) {
+            actions.deleted.push_back(label);
+            return true;
+            } else {
+                "actions.warning.push_back(" + "Failed to delete " + std::to_string(label.toLowerCase());
+                return false;
+            }
+            } catch (error) {
+                "actions.warning.push_back(" + "Failed to delete " + std::to_string(label.toLowerCase());
+                return false;
+            }
+
+}
+
+} // namespace elizaos

@@ -1,0 +1,2 @@
+#include "resolution-type.h"
+

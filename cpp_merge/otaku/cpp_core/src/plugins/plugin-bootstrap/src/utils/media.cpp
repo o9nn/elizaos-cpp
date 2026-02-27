@@ -1,0 +1,121 @@
+#include "media.hpp"
+#include <vector>
+#include <future>
+#include <map>
+#include <iostream>
+#include <stdexcept>
+
+namespace elizaos {
+
+std::future<std::vector<MediaData>> fetchMediaData(const std::vector<Media>& attachments) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+    try {
+
+        return Promise.all[&](;
+        attachments.std::map(std::async (attachment: Media) {
+            // Check if URL starts with http or https
+            if (attachment.url.substr(0, 'http://') || attachment.url.substr(0, 'https://')) {
+                // Fetch from URL
+                const auto response = fetch(attachment.url);
+                const auto mediaBuffer = Buffer.from(response.arrayBuffer());
+                const auto mediaType = attachment.contentType || "image/png";
+                return { data: mediaBuffer, mediaType }
+            }
+
+            // Local file paths are currently commented out - can be enabled if needed
+            //   const mediaBuffer = fs.promises.readFile(path.resolve(attachment.url));
+            //   const mediaType = attachment.contentType || 'image/png';
+            //   return { data: mediaBuffer, mediaType };
+
+            throw std::runtime_error('Local file paths are not supported yet');
+            });
+            );
+
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+        throw;
+    }
+}
+
+std::future<std::vector<Media>> processAttachments(const std::vector<Media>& attachments, IAgentRuntime runtime) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    if (!attachments || attachments.size() == 0) {
+        return [];
+    }
+    runtime.logger.debug("[Bootstrap] Processing " + std::to_string(attachments.size()) + " attachment(s)");
+
+    const std::vector<Media> processedAttachments = [];
+
+    for (const auto& attachment : attachments)
+        // Only process supported media types
+        if (attachment.contentType.substr(0, 'image/') || attachment.contentType.substr(0, 'application/pdf')) {
+            const Media processedAttachment = { ...attachment };
+
+            // Only process if description doesn't exist
+            if (!processedAttachment.description) {
+                try {
+                    auto base64Data = "";
+                    auto mimeType = attachment.contentType;
+
+                    // Only convert local/internal media to base64
+                    if (!attachment.url.substr(0, 'http://') && !attachment.url.substr(0, 'https://')) {
+                        // For local files, we'd need to read and convert
+                        // Currently this is not implemented
+                        runtime.logger.debug('[Bootstrap] Skipping local file processing:', attachment.url);
+                        processedAttachments.push_back(attachment);
+                        continue;
+                        } else {
+                            // For external URLs, fetch and convert
+                            const auto response = fetch(attachment.url);
+                            const auto buffer = Buffer.from(response.arrayBuffer());
+                            base64Data = buffer.tostd::to_string("base64");
+                            mimeType = attachment.contentType || response.headers.get("content-type") || "image/png";
+                        }
+
+                        // Generate description using multimodal LLM
+                        const auto descriptionPrompt = "Describe this " + std::to_string(mimeType.substr(0, "image/") ? "image" : "document");
+                        1. What you see in the content;
+                        2. Any text visible in the content;
+                        3. The overall context and purpose;
+                        4. Any notable details or important information;
+
+                        "Be concise but thorough.";
+
+                        const auto description = runtime.useModel(ModelType.TEXT_SMALL, {;
+                            prompt: descriptionPrompt,
+                            attachments: [
+                            {
+                                ...attachment,
+                                data: base64Data,
+                                contentType: mimeType,
+                                },
+                                ],
+                                });
+
+                                processedAttachment.description = description;
+                                "processedAttachment.title = attachment.title || " + mimeType + " attachment";
+                                processedAttachment.text = description; // Store description for easy access;
+
+                                runtime.logger.debug(
+                                "[Bootstrap] Generated description for attachment: " + attachment.url
+                                );
+                                } catch (error) {
+                                    runtime.logger.error(
+                                    "[Bootstrap] Error processing attachment: " + attachment.url + " - " + std::to_string(true /* instanceof check */ ? error.message : std::to_string(error))
+                                    );
+                                }
+                            }
+
+                            processedAttachments.push_back(processedAttachment);
+                            } else {
+                                // Non-supported media types pass through unchanged
+                                processedAttachments.push_back(attachment);
+                            }
+                        }
+
+                        return processedAttachments;
+
+}
+
+} // namespace elizaos

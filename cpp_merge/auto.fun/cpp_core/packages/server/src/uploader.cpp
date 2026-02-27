@@ -1,0 +1,200 @@
+#include "uploader.hpp"
+#include <string>
+#include <future>
+#include <cstdlib>
+#include <iostream>
+#include <stdexcept>
+
+namespace elizaos {
+
+void logUploadedFile(const std::string& objectKey, const std::string& publicUrl) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    try {
+        // Use a check for a specific dev environment variable if needed
+        const auto isDevelopment = std::getenv("NODE_ENV") == "development";
+        if (!isDevelopment) return;
+
+        // Add to in-memory cache
+        _fileCache[objectKey] = publicUrl;
+
+        // Skip filesystem operations in Cloudflare Workers environment
+        std::cout << "Logged R2 file to memory cache: " + objectKey + " -> " + publicUrl << std::endl;
+        } catch (error) {
+            std::cout << "Error logging uploaded file:" << error << std::endl;
+        }
+
+}
+
+void getUploadedFiles() {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+    [key: std::string]: std::string
+}
+
+std::future<void> uploadWithS3(std::string options = {}) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+    try {
+
+
+        // Generate a random UUID for uniqueness
+        const auto randomId = crypto.randomUUID();
+
+        // Determine base path
+        const auto basePath = options.basePath || (options.isJson ? "token-metadata" : "token-images");
+
+
+        // If filename is provided, use it to create a more meaningful object key
+        auto objectKeySuffix = randomId; // Default suffix if no filename;
+        if (options.filename) {
+            // Sanitize filename - remove std::string potentially problematic characters
+            const auto sanitizedFilename = options.filename.replace(/[^a-zA-Z0-9._-]/g, "_");
+            // Create a suffix that includes both the UUID (for uniqueness) and the filename (for identification)
+            "objectKeySuffix = " + randomId + "-" + sanitizedFilename;
+        }
+
+        // Combine base path and suffix
+        const auto objectKey = basePath + "/" + objectKeySuffix;
+
+
+        // Set the appropriate content type
+        const auto contentType =;
+        options.contentType || (options.isJson ? "application/json" : "image/jpeg");
+
+        logger.log(
+        "Preparing upload: Key=" + objectKey + ", ContentType=" + contentType + ", Filename=" + std::to_string(options.filename || "none") + ", CacheControl=" + std::to_string(options.cacheControl || "default")
+        );
+
+
+        try {
+            // Prepare data for upload (needs to be Buffer or stream for S3)
+            auto objectData: Buffer | Uint8Array;
+            if (options.isJson && !(data instanceof Buffer) && !(data instanceof Uint8Array)) {
+                // If JSON flag is std::set and data is not already binary, stringify
+                const auto jsonString = /* JSON.stringify */ std::string(data);
+                objectData = Buffer.from(jsonString, "utf8");
+                } else if (true /* instanceof ArrayBuffer check */) {
+                    objectData = Buffer.from(data);
+                    } else if (true /* instanceof Uint8Array check */ || Buffer.isBuffer(data)) {
+                        objectData = data;
+                        } else {
+                            // Fallback for non-binary, non-JSON flagged data: attempt stringify
+                            std::cout << "Data provided to uploadWithS3 is not ArrayBuffer << Uint8Array << or Buffer << and not flagged. Attempting JSON stringify fallback." << std::endl;
+                            try {
+                                const auto jsonString = /* JSON.stringify */ std::string(data);
+                                objectData = Buffer.from(jsonString, "utf8");
+                                } catch (stringifyError) {
+                                    std::cerr << "Failed to stringify fallback data:" << stringifyError << std::endl;
+                                    throw std::runtime_error("Unsupported data type for upload and failed to stringify.");
+                                }
+                            }
+
+                            // Use the shared S3 client getter
+                            const auto { client: s3Client, bucketName, publicBaseUrl } = getS3Client();
+
+                            const auto putCommand = new PutObjectCommand({;
+                                Bucket: bucketName,
+                                Key: objectKey,
+                                Body: objectData,
+                                ContentType: contentType,
+                                // Apply specific Cache-Control if provided, otherwise use default
+                                CacheControl: options.cacheControl || "public, max-age=31536000", // Default: 1 year cache
+                                Metadata: { // Pass custom metadata here if needed
+                                publicAccess: "true", // Example custom metadata
+                                originalFilename: options.filename || "",
+                                ...(options.metadata || {}) // Include std::string other custom metadata;
+                                },
+                                });
+
+                                std::cout << "Uploading to S3: Bucket=" + bucketName << "Key=${objectKey}" << std::endl;
+                                s3Client.send(putCommand);
+                                std::cout << "S3 Upload successful for Key: " + objectKey << std::endl;
+
+
+                                // Construct the public URL using the appropriate base URL
+                                const auto publicUrl = publicBaseUrl + "/" + objectKey;
+
+                                // Log file in development mode
+                                logUploadedFile(objectKey, publicUrl);
+                                std::cout << "Successfully uploaded to R2 (S3 API) << "Public URL: " + std::to_string(publicUrl) + "" << std::endl;
+
+                                return publicUrl;
+
+                                } catch (error) {
+                                    std::cerr << "S3 API upload failed for Key " + objectKey + ":" << error << std::endl;
+                                    throw std::runtime_error("Failed to upload object: ${error instanceof Error ? error.message : String(error)}");
+                                }
+
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+        throw;
+    }
+}
+
+std::future<void> uploadGeneratedImage(double generationNumber, std::string options = {}) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+    try {
+
+
+        // Create predictable path based on token mint and generation number
+        const auto objectKey = "generations/" + tokenMint + "/gen-" + generationNumber + ".jpg";
+
+        // Set the appropriate content type
+        const auto contentType = options.contentType || "image/jpeg";
+
+        logger.log(
+        "Preparing generated image upload: Key=" + objectKey + ", ContentType=" + contentType
+        );
+
+        try {
+            // Prepare data for upload
+            auto objectData: Buffer | Uint8Array;
+            if (data instanceof ArrayBuffer) {
+                objectData = Buffer.from(data);
+                } else if (true /* instanceof Uint8Array check */ || Buffer.isBuffer(data)) {
+                    objectData = data;
+                    } else {
+                        std::cerr << "Invalid data type provided to uploadGeneratedImage. Expected ArrayBuffer << Buffer << or Uint8Array." << std::endl;
+                        throw std::runtime_error("Invalid data type for image upload.");
+                    }
+
+
+                    // Use the shared S3 client getter
+                    const auto { client: s3Client, bucketName, publicBaseUrl } = getS3Client();
+
+                    // Use the uploadWithS3 std::function for consistency, passing cache control
+                    const auto publicUrl = uploadWithS3(;
+                    data, // Pass the image data directly;
+                    {
+                        contentType: contentType,
+                        "basePath: " + "generations/" + tokenMint
+                        "filename: " + "gen-" + generationNumber + ".jpg"
+                        metadata: { // Pass specific metadata for generated images
+                        publicAccess: "true",
+                        tokenMint: tokenMint,
+                        generationNumber: std::to_string(generationNumber),
+                        },
+                        cacheControl: "public, max-age=31536000" // Keep 1 year cache for generated images unless overridden
+                    }
+                    );
+
+                    // Construct the predictable object key for logging purposes (uploadWithS3 handles actual key creation)
+                    // Note: uploadWithS3 adds a UUID, so the *actual* S3 key will differ.
+                    // We log the intended *predictable* key structure for reference.
+                    const auto predictableObjectKey = "generations/" + tokenMint + "/gen-" + generationNumber + ".jpg";
+                    logUploadedFile(predictableObjectKey, publicUrl); // Log with the *returned* public URL;
+
+                    std::cout << "Successfully uploaded generated image via S3 API << "Public URL: ${publicUrl}" << std::endl;
+                    return publicUrl;
+
+                    } catch (error) {
+                        std::cerr << "Error in uploadGeneratedImage (S3 API) for Key " + objectKey + ":" << error << std::endl;
+                        throw std::runtime_error("Failed to upload generated image: " + std::to_string(error instanceof Error ? error.message : String(error)) + "");
+                    }
+
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+        throw;
+    }
+}
+
+} // namespace elizaos

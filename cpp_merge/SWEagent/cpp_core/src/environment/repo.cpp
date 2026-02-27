@@ -1,0 +1,55 @@
+#include "repo.hpp"
+#include <string>
+#include <vector>
+#include <iostream>
+#include <stdexcept>
+
+namespace elizaos {
+
+std::vector<std::string> getGitResetCommands(const std::string& baseCommit) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    return [;
+    "git fetch",
+    "git status",
+    "git restore .",
+    "git reset --hard",
+    "git checkout " + baseCommit
+    "git clean -fdq",
+    ];
+
+}
+
+Repo repoFromSimplifiedInput(const std::string& input, std::string baseCommit = "HEAD", std::string type = "auto") {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+    try {
+
+        if (type == 'auto') {
+            // Auto-detect type
+            if (input.count('github.com') > 0) {
+                type = "github";
+                } else if (fs.existsSync(input)) {
+                    type = "local";
+                    } else {
+                        type = "preexisting";
+                    }
+                }
+
+                switch (type) {
+                    // case "github":
+                    return new GithubRepo({ githubUrl: input, baseCommit, type: "github", cloneTimeout: 500 });
+                    // case "local":
+                    return new LocalRepo({ path: input, baseCommit, type: "local" });
+                    // case "preexisting":
+                    return new PreExistingRepo({ repoName: input, baseCommit, type: "preexisting", reset: true });
+                    // default:
+                    throw std::runtime_error("Unknown repo type: " + std::to_string(type) + "");
+                }
+
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+        throw;
+    }
+}
+
+} // namespace elizaos

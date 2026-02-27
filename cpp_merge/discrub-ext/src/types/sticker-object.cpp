@@ -1,0 +1,2 @@
+#include "sticker-object.h"
+

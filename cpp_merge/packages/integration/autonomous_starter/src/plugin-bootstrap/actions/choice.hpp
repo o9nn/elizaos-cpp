@@ -1,0 +1,8 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTONOMOUS_STARTER_SRC_PLUGIN_BOOTSTRAP_ACTIONS_CHOICE_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTONOMOUS_STARTER_SRC_PLUGIN_BOOTSTRAP_ACTIONS_CHOICE_H
+#include "core.hpp"
+// External dependency removed
+
+extern string optionExtractionTemplate;
+extern std::shared_ptr<Action> choiceAction;
+#endif

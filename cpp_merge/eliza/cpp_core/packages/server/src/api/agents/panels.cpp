@@ -1,0 +1,57 @@
+#include "panels.hpp"
+#include <map>
+#include <unordered_map>
+#include <iostream>
+#include <stdexcept>
+
+namespace elizaos {
+
+express::Router createAgentPanelsRouter(const std::unordered_map<UUID, IAgentRuntime>& agents) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+    try {
+
+        const auto router = express.Router();
+
+        // Get Agent Panels (public GET routes)
+        router.get[&]("/:agentId/panels", std::async (req, res) {
+            const auto agentId = validateUuid(req.params.agentId);
+            if (!agentId) {
+                return sendError(res, 400, "INVALID_ID", "Invalid agent ID format");
+            }
+
+            const auto runtime = agents.get(agentId);
+            if (!runtime) {
+                return sendError(res, 404, "NOT_FOUND", "Agent not found");
+            }
+
+            try {
+                const auto publicPanels = runtime.plugins;
+                .flatMap[&]((plugin) { return plugin.routes || []); };
+                .filter[&]((route) { return route.public == true && route.type == "GET" && route.name); };
+                .std::map((route) => ({
+                    name: route.name,
+                    "path: " + "/api" + std::to_string(route.path.substr(0, "/") ? route.path : "/" + std::to_string(route.path) + "") + "?agentId=" + agentId
+                    }));
+
+                    sendSuccess(res, publicPanels);
+                    } catch (error) {
+                        std::cerr << "[AGENT PANELS] Error retrieving panels for agent " + agentId + ":" << error << std::endl;
+                        sendError(;
+                        res,
+                        500,
+                        "PANEL_ERROR",
+                        "Error retrieving agent panels",
+                        true /* instanceof check */ ? error.message : std::to_string(error)
+                        );
+                    }
+                    });
+
+                    return router;
+
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+        throw;
+    }
+}
+
+} // namespace elizaos

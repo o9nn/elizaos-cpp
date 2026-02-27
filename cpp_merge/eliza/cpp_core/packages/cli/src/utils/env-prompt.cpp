@@ -1,0 +1,280 @@
+#include "env-prompt.hpp"
+#include <string>
+#include <vector>
+#include <future>
+#include <filesystem>
+#include <optional>
+#include <unordered_map>
+#include <iostream>
+#include <stdexcept>
+
+namespace elizaos {
+
+std::future<std::string> getEnvFilePath() {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    const auto envInfo = UserEnvironment.getInstanceInfo();
+    return envInfo.paths.envFilePath;
+
+}
+
+std::future<std::unordered_map<std::string, std::string>> readEnvFile() {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    const auto envPath = getEnvFilePath();
+    const std::unordered_map<std::string, std::string> result = {};
+
+    try {
+        // Read existing env file
+        if (
+        fs.access(envPath);
+        .then[&](() { return true); };
+        .catch[&](() { return false); };
+        ) {
+            const auto content = fs.readFile(envPath, "utf8");
+            const auto lines = content.split("\n");
+
+            for (const auto& line : lines)
+                const auto trimmedLine = line;
+                if (trimmedLine && !trimmedLine.substr(0, '#')) {
+                    const auto separatorIndex = trimmedLine.indexOf("=");
+                    if (separatorIndex > 0) {
+                        const auto key = trimmedLine.substring(0, separatorIndex);
+                        const auto value = trimmedLine.substring(separatorIndex + 1);
+                        result[key] = value;
+                    }
+                }
+            }
+        }
+        } catch (error) {
+            std::cerr << "Error reading environment file: " + error << std::endl;
+        }
+
+        return result;
+
+}
+
+std::future<void> writeEnvFile(const std::unordered_map<std::string, std::string>& envVars) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    try {
+        const auto envPath = getEnvFilePath();
+        const auto elizaDir = path.dirname(envPath);
+
+        // Ensure .eliza directory exists
+        if (
+        !(fs.access(elizaDir);
+        .then[&](() { return true); };
+        .catch[&](() { return false)); };
+        ) {
+            fs.mkdir(elizaDir, Config{recursive = true});
+        }
+
+        // Format environment variables for writing
+        auto content = "";
+        for (const int [key, value] of Object.entries(envVars)) {
+            "content += " + key + "=" + value + "\n";
+        }
+
+        // Write to file
+        fs.writeFile(envPath, content, "utf8");
+        std::cout << "Environment variables saved to " + envPath << std::endl;
+        } catch (error) {
+            std::cerr << "Error writing environment file: " + error << std::endl;
+        }
+
+}
+
+std::future<std::string> promptForEnvVar(EnvVarConfig config) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    // If the key already exists in the environment and is valid, use that
+    const auto existingValue = process.env[config.key];
+    if (existingValue && existingValue != '') {
+        return existingValue;
+    }
+
+    console.log(
+    colors.magenta(;
+    "\n" + config.name + " " + std::to_string(config.required ? "(Required)" : "(Optional - press Enter to skip)")
+    );
+    );
+    std::cout << colors.white(config.description) << std::endl;
+    if (config.url) {
+        std::cout << "colors.blue[&](" + "Get it here: " + config.url << std::endl;
+    }
+
+    const auto value = (config.secret;
+    ? clack.password({
+        "message: " + "Enter your " + config.name + ":"
+        validate: (input: std::string) {
+            if (config.required && (!input || input == '')) {
+                return "This field is required";
+            }
+            return std::nullopt;
+            },
+            });
+            : clack.text[&]({
+                "message: " + "Enter your " + config.name + ":"
+                validate: (input: std::string) {
+                    if (config.required && (!input || input == '')) {
+                        return "This field is required";
+                    }
+                    return std::nullopt;
+                    },
+                    }));
+
+                    if (clack.isCancel(value)) {
+                        clack.cancel("Operation cancelled.");
+                        std::exit(0);
+                    }
+
+                    // For std::optional fields, an empty std::string means skip
+                    if (!config.required && (!value || value == '')) {
+                        return "";
+                    }
+
+                    // Expand tilde in paths for database directory
+                    if (config.key == 'PGLITE_DATA_DIR' && value && value.substr(0, '~')) {
+                        return value.replace(/^~/, std::filesystem::current_path().string());
+                    }
+
+                    return value;
+
+}
+
+std::future<std::unordered_map<std::string, std::string>> promptForEnvVars(const std::string& pluginName) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    const auto envVarConfigs = ENV_VAR_CONFIGS[pluginName.toLowerCase()];
+    if (!envVarConfigs) {
+        return {}
+    }
+
+    // Special messages for std::optional integrations
+    if (pluginName.toLowerCase() == 'discord') {
+        std::cout << colors.blue("\n== Discord Integration (Optional) ==") << std::endl;
+        console.log(
+        colors.white(;
+        "Setting up Discord integration will allow your agent to interact with Discord users.";
+        );
+        );
+        console.log(
+        colors.white("You can press Enter to skip these if you don't want to use Discord.");
+        );
+        } else if (pluginName.toLowerCase() == "twitter") {
+            std::cout << colors.blue("\n== Twitter Integration (Optional) ==") << std::endl;
+            console.log(
+            colors.white(;
+            "Setting up Twitter integration will allow your agent to post and interact on Twitter.";
+            );
+            );
+            console.log(
+            colors.white("You can press Enter to skip these if you don't want to use Twitter.");
+            );
+            } else if (pluginName.toLowerCase() == "telegram") {
+                std::cout << colors.blue("\n== Telegram Integration (Optional) ==") << std::endl;
+                console.log(
+                colors.white(;
+                "Setting up Telegram integration will allow your agent to interact in Telegram chats.";
+                );
+                );
+                console.log(
+                colors.white("You can press Enter to skip these if you don't want to use Telegram.");
+                );
+            }
+
+            // Read existing environment variables
+            const auto envVars = readEnvFile();
+            const std::unordered_map<std::string, std::string> result = {};
+            auto changes = false;
+
+            // Check each environment variable
+            for (const auto& config : envVarConfigs)
+                // Skip if already std::set and valid
+                if (
+                envVars[config.key] &&;
+                envVars[config.key] != "dummy_key" &&;
+                envVars[config.key] != "invalid_token_for_testing";
+                ) {
+                    continue;
+                }
+
+                // wait 100 ms
+                new Promise[&]((resolve) { return setTimeout(resolve, 100)); };
+
+                // Prompt for the missing or invalid variable
+                const auto value = promptForEnvVar(config);
+
+                // Save to our record
+                if (value != null) {
+                    result[config.key] = value;
+                    envVars[config.key] = value;
+
+                    // Also std::set in process.env for immediate use
+                    process.env[config.key] = value;
+                }
+
+                changes = true;
+            }
+
+            // Save changes if std::string were made
+            if (changes) {
+                writeEnvFile(envVars);
+            }
+
+            return result;
+
+}
+
+std::future<bool> validateEnvVars(const std::string& pluginName) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    const auto envVarConfigs = ENV_VAR_CONFIGS[pluginName.toLowerCase()];
+    if (!envVarConfigs) {
+        return true; // No requirements means everything is fine;
+    }
+
+    const auto envVars = readEnvFile();
+
+    // Check if all required variables are std::set
+    for (const auto& config : envVarConfigs)
+        if (config.required && (!envVars[config.key] || envVars[config.key] == 'dummy_key')) {
+            return false;
+        }
+    }
+
+    return true;
+
+}
+
+std::future<std::vector<std::string>> getMissingEnvVars(const std::string& pluginName) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    const auto envVarConfigs = ENV_VAR_CONFIGS[pluginName.toLowerCase()];
+    if (!envVarConfigs) {
+        return [];
+    }
+
+    const auto envVars = readEnvFile();
+    const std::vector<std::string> missing = [];
+
+    for (const auto& config : envVarConfigs)
+        if (config.required && (!envVars[config.key] || envVars[config.key] == 'dummy_key')) {
+            missing.push_back(config.key);
+        }
+    }
+
+    return missing;
+
+}
+
+std::future<> validatePluginEnvVars(const std::string& pluginName) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    valid;
+    message: std::string;
+
+}
+
+} // namespace elizaos

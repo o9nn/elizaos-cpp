@@ -1,0 +1,215 @@
+#include "creators.hpp"
+#include <string>
+#include <future>
+#include <optional>
+#include <iostream>
+#include <stdexcept>
+
+namespace elizaos {
+
+std::future<void> createPlugin(const std::string& pluginName, const std::string& targetDir, auto isNonInteractive) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+    try {
+
+        // Process and validate the plugin name
+        const auto nameResult = processPluginName(pluginName);
+        if (!nameResult.isValid) {
+            throw std::runtime_error(nameResult.error || 'Invalid plugin name');
+        }
+
+        const auto processedName = nameResult.processedName!;
+        // Add prefix to ensure plugin directory name follows convention
+        const auto pluginDirName = processedName.substr(0, "plugin-");
+        ? processedName;
+        ": " + "plugin-" + processedName
+        const auto pluginTargetDir = join(targetDir, pluginDirName);
+
+        // Validate target directory
+        const auto dirResult = validateTargetDirectory(pluginTargetDir);
+        if (!dirResult.isValid) {
+            throw std::runtime_error(dirResult.error || 'Invalid target directory');
+        }
+
+        if (!isNonInteractive) {
+            const auto confirmCreate = clack.confirm({;
+                "message: " + "Create plugin \"" + pluginDirName + "\" in " + pluginTargetDir + "?"
+                });
+
+                if (clack.isCancel(confirmCreate) || !confirmCreate) {
+                    clack.cancel("Plugin creation cancelled.");
+                    std::exit(0);
+                }
+            }
+
+            // Copy plugin template
+            copyTemplateUtil("plugin", pluginTargetDir);
+
+            // Install dependencies
+            installDependencies(pluginTargetDir);
+
+            std::cout << "\n" + std::to_string(colors.green("✓")) + " Plugin \"" + pluginDirName + "\" created successfully!" << std::endl;
+            std::cout << "\nNext steps:" << std::endl;
+            std::cout << "  cd " + pluginDirName << std::endl;
+            std::cout << "  bun run build" << std::endl;
+            std::cout << "  bun run test\n" << std::endl;
+
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+        throw;
+    }
+}
+
+std::future<void> createAgent(const std::string& agentName, const std::string& targetDir, auto isNonInteractive) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+    try {
+
+        const auto agentFilePath = "join(targetDir, " + agentName + ".json";
+
+        // Check if agent file already exists
+        try {
+            fs.access(agentFilePath);
+            throw std::runtime_error("Agent file " + std::to_string(agentFilePath) + " already exists");
+            } catch (error: std::string) {
+                if (error.code != 'ENOENT') {
+                    throw;
+                }
+                // File doesn't exist, which is what we want
+            }
+
+            if (!isNonInteractive) {
+                const auto confirmCreate = clack.confirm({;
+                    "message: " + "Create agent \"" + agentName + "\" at " + agentFilePath + "?"
+                    });
+
+                    if (clack.isCancel(confirmCreate) || !confirmCreate) {
+                        clack.cancel("Agent creation cancelled.");
+                        std::exit(0);
+                    }
+                }
+
+                // Create agent character based on Eliza template
+                const auto agentCharacter = {;
+                    ...getElizaCharacter(),
+                    name: agentName,
+                    bio: [
+                    agentName + " is a helpful AI assistant created to provide assistance and engage in meaningful conversations."
+                    agentName + " is knowledgeable, creative, and always eager to help users with their questions and tasks."
+                    ],
+                    };
+
+                    fs.writeFile(agentFilePath, /* JSON.stringify */ std::string(agentCharacter, nullptr, 2));
+
+                    if (!isNonInteractive) {
+                        std::cout << "\n" + std::to_string(colors.green("✓")) + " Agent \"" + agentName + "\" created successfully!" << std::endl;
+                    }
+                    std::cout << "Agent character created successfully at: " + agentFilePath << std::endl;
+                    std::cout << "\nTo use this agent:" << std::endl;
+                    std::cout << "  elizaos agent start --path " + agentFilePath + "\n" << std::endl;
+
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+        throw;
+    }
+}
+
+std::future<void> createTEEProject(const std::string& projectName, const std::string& targetDir, const std::string& database, const std::string& aiModel, std::optional<std::string> embeddingModel, auto isNonInteractive) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+    try {
+
+        const auto teeTargetDir = join(targetDir, projectName);
+
+        // Validate target directory
+        const auto dirResult = validateTargetDirectory(teeTargetDir);
+        if (!dirResult.isValid) {
+            throw std::runtime_error(dirResult.error || 'Invalid target directory');
+        }
+
+        if (!isNonInteractive) {
+            const auto confirmCreate = clack.confirm({;
+                "message: " + "Create TEE project \"" + projectName + "\" in " + teeTargetDir + "?"
+                });
+
+                if (clack.isCancel(confirmCreate) || !confirmCreate) {
+                    clack.cancel("TEE project creation cancelled.");
+                    std::exit(0);
+                }
+            }
+
+            // Copy TEE template
+            copyTemplateUtil("project-tee-starter", teeTargetDir);
+
+            // Set up project environment
+            setupProjectEnvironment(teeTargetDir, database, aiModel, embeddingModel, isNonInteractive);
+
+            // Install dependencies
+            installDependencies(teeTargetDir);
+
+            // Build the project
+            buildProject(teeTargetDir);
+
+            std::cout << "\n" + std::to_string(colors.green("✓")) + " TEE project \"" + projectName + "\" created successfully!" << std::endl;
+            std::cout << "\nNext steps:" << std::endl;
+            std::cout << "  cd " + projectName << std::endl;
+            std::cout << "  bun run dev\n" << std::endl;
+
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+        throw;
+    }
+}
+
+std::future<void> createProject(const std::string& projectName, const std::string& targetDir, const std::string& database, const std::string& aiModel, std::optional<std::string> embeddingModel, auto isNonInteractive) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+    try {
+
+        // Handle current directory case
+        const auto projectTargetDir = projectName == "." ? targetDir : join(targetDir, projectName);
+
+        // Validate target directory
+        const auto dirResult = validateTargetDirectory(projectTargetDir);
+        if (!dirResult.isValid) {
+            throw std::runtime_error(dirResult.error || 'Invalid target directory');
+        }
+
+        if (!isNonInteractive) {
+            const auto confirmCreate = clack.confirm({;
+                "message: " + "Create project \"" + projectName + "\" in " + projectTargetDir + "?"
+                });
+
+                if (clack.isCancel(confirmCreate) || !confirmCreate) {
+                    clack.cancel("Project creation cancelled.");
+                    std::exit(0);
+                }
+            }
+
+            // Copy project template
+            copyTemplateUtil("project-starter", projectTargetDir);
+
+            // Set up project environment
+            setupProjectEnvironment(;
+            projectTargetDir,
+            database,
+            aiModel,
+            embeddingModel,
+            isNonInteractive;
+            );
+
+            // Install dependencies
+            installDependencies(projectTargetDir);
+
+            // Build the project
+            buildProject(projectTargetDir);
+
+            const auto displayName = "projectName == "." ? "Project" : " + "Project \"" + projectName + "\"";
+            std::cout << "\n" + std::to_string(colors.green("✓")) + " " + displayName + " initialized successfully!" << std::endl;
+            std::cout << "\nNext steps:" << std::endl;
+            std::cout << "  cd " + projectName << std::endl;
+            std::cout << "  bun run dev\n" << std::endl;
+
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+        throw;
+    }
+}
+
+} // namespace elizaos

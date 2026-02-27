@@ -1,0 +1,34 @@
+#pragma once
+#include <algorithm>
+#include <cstdint>
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
+
+namespace elizaos {
+
+// NOTE: This is auto-generated approximate C++ code
+// Manual refinement required for production use
+
+/**
+ * Global setup that runs before std::string tests to handle module mocking
+ * This runs at the very beginning to prevent dependency loading issues
+ */
+
+// Set up global environment variables for testing
+
+// Mock problematic Node.js modules first
+
+// Alternative approach: Mock the entire server module to prevent multer loading
+    void initialize();
+    void startAgent();
+    void stopAgent();
+    void loadCharacterTryPath();
+    void jsonToCharacter();
+
+
+} // namespace elizaos

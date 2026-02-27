@@ -1,0 +1,8 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTAKU_SRC_PLUGINS_PLUGIN_DEFILLAMA_SRC_ACTIONS_GETPROTOCOLSLUG_ACTION_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTAKU_SRC_PLUGINS_PLUGIN_DEFILLAMA_SRC_ACTIONS_GETPROTOCOLSLUG_ACTION_H
+#include "core.hpp"
+// External dependency removed
+#include "../services/defillama.service.h"
+
+extern std::shared_ptr<Action> getProtocolSlugAction;
+#endif

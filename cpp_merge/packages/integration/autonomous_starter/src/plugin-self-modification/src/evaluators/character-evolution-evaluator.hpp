@@ -1,0 +1,9 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTONOMOUS_STARTER_SRC_PLUGIN_SELF_MODIFICATION_SRC_EVALUATORS_CHARACTER_EVOLUTION_EVALUATOR_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTONOMOUS_STARTER_SRC_PLUGIN_SELF_MODIFICATION_SRC_EVALUATORS_CHARACTER_EVOLUTION_EVALUATOR_H
+#include "core.hpp"
+// External dependency removed
+#include "../services/character-modification-service.h"
+
+extern string evolutionAnalysisTemplate;
+extern std::shared_ptr<Evaluator> characterEvolutionEvaluator;
+#endif
