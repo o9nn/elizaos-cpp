@@ -1,0 +1,8 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CORE_SRC_SPECS_INDEX_H
+#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CORE_SRC_SPECS_INDEX_H
+#include "core.h"
+#include "./v1.h"
+#include "./v2.h"
+
+extern any defaultSpec;
+#endif

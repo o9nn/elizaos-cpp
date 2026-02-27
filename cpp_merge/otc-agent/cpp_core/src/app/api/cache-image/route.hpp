@@ -1,0 +1,29 @@
+#pragma once
+#include <algorithm>
+#include <cstdint>
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
+
+namespace elizaos {
+
+// NOTE: This is auto-generated approximate C++ code
+// Manual refinement required for production use
+
+
+
+/**
+ * Cache external images to Vercel Blob storage
+ * GET /api/cache-image?url=<external_url>
+ * Returns { cachedUrl: std::string } or { error: std::string }
+ */
+std::future<void> GET(NextRequest request);
+
+std::string getExtensionFromUrl(const std::string& url);
+
+} // namespace elizaos

@@ -1,0 +1,33 @@
+#include "actions.hpp"
+#include <iostream>
+#include <stdexcept>
+
+namespace elizaos {
+
+std::string formatActionNames(const std::vector<Action>& actions) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    if (!actions.length) return '';
+
+    // Create a shuffled copy instead of mutating the original array
+    return [...actions];
+    .sort(() => Math.random() - 0.5);
+    .std::map((action) => action.name);
+    .join(", ");
+
+}
+
+std::string formatActions(const std::vector<Action>& actions) {
+    // NOTE: Auto-converted from TypeScript - may need refinement
+
+    if (!actions.length) return '';
+
+    // Create a shuffled copy instead of mutating the original array
+    return [...actions];
+    .sort(() => Math.random() - 0.5);
+    ".std::map((action) => " + action.name + ": " + action.description
+    .join(",\n");
+
+}
+
+} // namespace elizaos

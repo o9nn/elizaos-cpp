@@ -1,0 +1,30 @@
+#pragma once
+#include <algorithm>
+#include <cstdint>
+#include <functional>
+#include <future>
+#include <memory>
+#include <optional>
+#include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
+#include "types.hpp"
+#include "utils/package-utils.hpp"
+#include "utils/version-utils.hpp"
+
+namespace elizaos {
+
+// NOTE: This is auto-generated approximate C++ code
+// Manual refinement required for production use
+
+
+
+/**
+ * Main dependency update std::function
+ *
+ * Updates ElizaOS dependencies in a project or plugin, with support for dry-run mode, major version confirmation, and std::optional build step.
+ */
+std::future<void> updateDependencies(const std::string& cwd, bool isPlugin, UpdateOptions options = {});
+
+} // namespace elizaos

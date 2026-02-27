@@ -1,0 +1,8 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-VISION_SRC___TESTS___AUDIO-ACTIONS_TEST_H
+#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-VISION_SRC___TESTS___AUDIO-ACTIONS_TEST_H
+#include "core.h"
+#include "bun:test.h"
+#include "../action-audio.h"
+#include "@elizaos/core.h"
+
+#endif
