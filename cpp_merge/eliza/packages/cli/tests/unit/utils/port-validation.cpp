@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/tests/unit/utils/port-validation.test.h"
+#include "port-validation.test.h"
 
 void Main(void)
 {

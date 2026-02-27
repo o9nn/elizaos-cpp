@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/core/src/types/message.h"
+#include "message.hpp"
 
 any IMessageService::override;
 

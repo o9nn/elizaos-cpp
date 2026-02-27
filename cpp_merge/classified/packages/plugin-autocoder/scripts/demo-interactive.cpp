@@ -1,9 +1,9 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-autocoder/scripts/demo-interactive.h"
+#include "demo-interactive.h"
 
 void runDemo()
 {
     console->log(std:("🎬 Interactive Claude Code Test Demo"));
-    console->log(std:("===========\
+    console->log(std:("===\
 "));
     auto requiredKeys = array<string>{ std:("ANTHROPIC_API_KEY") };
     auto missingKeys = requiredKeys->filter([=](auto key) mutable

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/communityInvestor/utils.h"
+#include "utils.hpp"
 
 any getZodJsonSchema(std::shared_ptr<ZodType<any>> schema)
 {

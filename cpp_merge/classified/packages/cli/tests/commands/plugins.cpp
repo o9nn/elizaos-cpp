@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/tests/commands/plugins.test.h"
+#include "plugins.test.h"
 
 any PLUGIN_INSTALLATION_BUFFER = (process->platform == std:("win32")) ? 30000 : 0;
 

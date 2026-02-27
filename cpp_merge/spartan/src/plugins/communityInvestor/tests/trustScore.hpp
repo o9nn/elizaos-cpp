@@ -1,10 +1,10 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_COMMUNITYINVESTOR_TESTS_TRUSTSCORE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_COMMUNITYINVESTOR_TESTS_TRUSTSCORE_H
-#include "core.h"
-#include "@elizaos/core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SPARTAN_SRC_PLUGINS_COMMUNITYINVESTOR_TESTS_TRUSTSCORE_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SPARTAN_SRC_PLUGINS_COMMUNITYINVESTOR_TESTS_TRUSTSCORE_H
+#include "core.hpp"
+// External dependency removed
 using CoreComponent = Component;
-#include "@elizaos/core.h"
-#include "uuid.h"
+// External dependency removed
+#include "uuid.hpp"
 using uuidv4 = v4;
 #include "../service.h"
 #include "../types.h"

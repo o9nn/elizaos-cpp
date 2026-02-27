@@ -1,11 +1,11 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_DEGENTRADER_SERVICES_WALLETSERVICE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_DEGENTRADER_SERVICES_WALLETSERVICE_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "@solana/web3.js.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SPARTAN_SRC_PLUGINS_DEGENTRADER_SERVICES_WALLETSERVICE_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SPARTAN_SRC_PLUGINS_DEGENTRADER_SERVICES_WALLETSERVICE_H
+#include "core.hpp"
+// External dependency removed
+// External dependency removed
 #include "../utils/analyzeTrade.h"
-#include "bs58.h"
-using bs58 = _default;
+#include "bs58.hpp"
+// Using alias removed (invalid transpilation)
 
 class WalletOperationResult;
 class WalletService;

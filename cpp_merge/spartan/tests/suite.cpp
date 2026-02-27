@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/tests/suite.h"
+#include "suite.hpp"
 
 SpartanTestSuite::SpartanTestSuite(double completionTimeout) {
     this->completionTimeout = completionTimeout;

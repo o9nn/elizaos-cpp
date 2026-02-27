@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/plugin-sql/src/__tests__/unit/pg/adapter.test.h"
+#include "adapter.test.h"
 
 void Main(void)
 {

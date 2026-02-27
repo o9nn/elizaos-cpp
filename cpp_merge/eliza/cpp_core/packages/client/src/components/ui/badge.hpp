@@ -8,7 +8,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
-#include "badge.hpp"
+// Self-include removed: badge.hpp
 
 namespace elizaos {
 

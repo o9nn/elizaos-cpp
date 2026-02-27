@@ -1,9 +1,9 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_SRC_RUN_INSPECTOR-CLI_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_SRC_RUN_INSPECTOR-CLI_H
-#include "core.h"
-#include "path.h"
-#include "fs.h"
-#include "readline.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SWEAGENT_SRC_RUN_INSPECTOR_CLI_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SWEAGENT_SRC_RUN_INSPECTOR_CLI_H
+#include "core.hpp"
+#include "path.hpp"
+#include "fs.hpp"
+#include "readline.hpp"
 #include "js-yaml.h"
 #include "../utils/files.h"
 

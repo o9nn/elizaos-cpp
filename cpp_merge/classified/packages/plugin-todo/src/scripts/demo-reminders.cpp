@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-todo/src/scripts/demo-reminders.h"
+#include "demo-reminders.h"
 
 any setupReminderDemo(std::shared_ptr<IAgentRuntime> runtime)
 {

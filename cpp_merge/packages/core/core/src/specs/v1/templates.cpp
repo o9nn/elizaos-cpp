@@ -1,2 +1,2 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/core/src/specs/v1/templates.h"
+#include "templates.hpp"
 

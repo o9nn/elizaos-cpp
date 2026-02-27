@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/utils/cli-prompts.h"
+#include "cli-prompts.h"
 
 std::shared_ptr<Promise<string>> promptWithNav(string label, string initial, std::function<any(string)> validate)
 {

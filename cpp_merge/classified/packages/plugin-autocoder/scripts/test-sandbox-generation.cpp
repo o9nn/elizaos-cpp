@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-autocoder/scripts/test-sandbox-generation.h"
+#include "test-sandbox-generation.h"
 
 array<string> requiredKeys = array<string>{ std:("ANTHROPIC_API_KEY"), std:("E2B_API_KEY") };
 array<string> missingKeys = requiredKeys->filter([=](auto key) mutable

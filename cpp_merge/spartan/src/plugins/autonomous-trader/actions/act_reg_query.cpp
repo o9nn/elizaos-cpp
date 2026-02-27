@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/autonomous-trader/actions/act_reg_query.h"
+#include "act_reg_query.hpp"
 
 std::shared_ptr<Action> checkRegistration = object{
     object::pair{std:("name"), std:("CHECK_REGISTRATION")}, 

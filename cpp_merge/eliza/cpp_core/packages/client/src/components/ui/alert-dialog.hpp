@@ -8,7 +8,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
-#include "alert-dialog.hpp"
+// Self-include removed: alert-dialog.hpp
 #include "button.hpp"
 
 namespace elizaos {

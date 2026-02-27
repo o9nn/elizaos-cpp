@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/client/src/hooks/use-sol-price.h"
+#include "use-sol-price.h"
 
 any useSolPrice()
 {

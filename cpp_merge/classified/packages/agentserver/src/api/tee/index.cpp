@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/agentserver/src/api/tee/index.h"
+#include "index.hpp"
 
 std::shared_ptr<express::Router> teeRouter()
 {

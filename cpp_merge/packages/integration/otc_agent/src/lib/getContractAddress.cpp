@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otc-agent/src/lib/getContractAddress.h"
+#include "getContractAddress.hpp"
 
 std::shared_ptr<Address> getContractAddress()
 {

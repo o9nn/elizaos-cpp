@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/tests/integration/sql-plugin-exclusion.test.h"
+#include "sql-plugin-exclusion.test.h"
 
 void Main(void)
 {

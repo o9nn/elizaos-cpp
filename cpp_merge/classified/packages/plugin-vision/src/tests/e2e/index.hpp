@@ -1,18 +1,18 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-VISION_SRC_TESTS_E2E_INDEX_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-VISION_SRC_TESTS_E2E_INDEX_H
-#include "core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_VISION_SRC_TESTS_E2E_INDEX_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_VISION_SRC_TESTS_E2E_INDEX_H
+#include "core.hpp"
 #include "./vision-basic.h"
-using VisionBasicE2ETestSuite = _default;
+// Using alias removed (invalid transpilation)
 #include "./vision-autonomy.h"
-using VisionAutonomyE2ETestSuite = _default;
+// Using alias removed (invalid transpilation)
 #include "./vision-capture-log.h"
-using VisionCaptureLogTestSuite = _default;
+// Using alias removed (invalid transpilation)
 #include "./screen-vision.h"
-using ScreenVisionE2ETestSuite = _default;
+// Using alias removed (invalid transpilation)
 #include "./vision-runtime.h"
-using VisionRuntimeTestSuite = _default;
+// Using alias removed (invalid transpilation)
 #include "./vision-worker-tests.h"
-using VisionWorkerE2ETestSuite = _default;
+// Using alias removed (invalid transpilation)
 
 extern array<any> testSuites;
 #endif

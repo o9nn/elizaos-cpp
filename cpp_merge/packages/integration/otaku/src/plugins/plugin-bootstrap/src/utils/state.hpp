@@ -1,7 +1,7 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PLUGINS_PLUGIN-BOOTSTRAP_SRC_UTILS_STATE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PLUGINS_PLUGIN-BOOTSTRAP_SRC_UTILS_STATE_H
-#include "core.h"
-#include "@elizaos/core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTAKU_SRC_PLUGINS_PLUGIN_BOOTSTRAP_SRC_UTILS_STATE_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTAKU_SRC_PLUGINS_PLUGIN_BOOTSTRAP_SRC_UTILS_STATE_H
+#include "core.hpp"
+// External dependency removed
 
 std::shared_ptr<Promise<std::shared_ptr<State>>> refreshStateAfterAction(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<Memory> message, std::shared_ptr<State> currentState, array<any> actionResults);
 

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/plugin-jupiter/src/index.h"
+#include "index.hpp"
 
 std::shared_ptr<Plugin> jupiterPlugin = object{
     object::pair{std:("name"), std:("jupiterOS")}, 

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/commands/plugins/actions/remove.h"
+#include "remove.hpp"
 
 std::shared_ptr<Promise<void>> removePlugin(string plugin)
 {

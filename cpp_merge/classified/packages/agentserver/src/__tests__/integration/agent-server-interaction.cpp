@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/agentserver/src/__tests__/integration/agent-server-interaction.test.h"
+#include "agent-server-interaction.test.h"
 
 void Main(void)
 {

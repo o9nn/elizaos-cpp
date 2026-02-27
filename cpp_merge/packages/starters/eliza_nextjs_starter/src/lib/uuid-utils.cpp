@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza-nextjs-starter/src/lib/uuid-utils.h"
+#include "uuid-utils.h"
 
 string generateUUIDFromString(string inputString)
 {

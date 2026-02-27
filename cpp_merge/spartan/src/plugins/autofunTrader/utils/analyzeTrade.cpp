@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/autofunTrader/utils/analyzeTrade.h"
+#include "analyzeTrade.hpp"
 
 double calculateVolatility(array<double> priceHistory)
 {

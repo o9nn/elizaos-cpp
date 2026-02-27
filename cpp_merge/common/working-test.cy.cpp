@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-todo/cypress/e2e/working-test.cy.h"
+#include "working-test.cy.h"
 
 void Main(void)
 {

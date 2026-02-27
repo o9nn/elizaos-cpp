@@ -9,7 +9,7 @@
 #include <unordered_set>
 #include <vector>
 #include "button.hpp"
-#include "sheet.hpp"
+// Self-include removed: sheet.hpp
 
 namespace elizaos {
 

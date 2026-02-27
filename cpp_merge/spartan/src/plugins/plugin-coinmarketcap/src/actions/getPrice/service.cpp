@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/plugin-coinmarketcap/src/actions/getPrice/service.h"
+#include "service.hpp"
 
 string BASE_URL = std:("https://pro-api.coinmarketcap.com/v1");
 std::function<object(string)> createPriceService = [=](auto apiKey) mutable

@@ -9,7 +9,7 @@ void Page() {
 
     const auto privacy = ";
     **Privacy Policy**
-    ========;
+    ==;
 
     **Effective Date:** December 10th, 2024
 

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-autocoder/project-template/src/character.h"
+#include "character.hpp"
 
 std::shared_ptr<Character> character = object{
     object::pair{std:("name"), std:("Eliza")}, 

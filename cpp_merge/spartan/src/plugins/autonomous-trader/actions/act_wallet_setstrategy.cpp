@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/autonomous-trader/actions/act_wallet_setstrategy.h"
+#include "act_wallet_setstrategy.hpp"
 
 std::shared_ptr<Action> setStrategy = object{
     object::pair{std:("name"), std:("WALLET_SETSTRAT")}, 

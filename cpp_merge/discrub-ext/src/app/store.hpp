@@ -1,27 +1,27 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_APP_STORE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_APP_STORE_H
-#include "core.h"
-#include "@reduxjs/toolkit.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_DISCRUB_EXT_SRC_APP_STORE_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_DISCRUB_EXT_SRC_APP_STORE_H
+#include "core.hpp"
+// External dependency removed
 #include "../features/app/app-slice.h"
-using appReducer = _default;
+// Using alias removed (invalid transpilation)
 #include "../features/channel/channel-slice.h"
-using channelReducer = _default;
+// Using alias removed (invalid transpilation)
 #include "../features/user/user-slice.h"
-using userReducer = _default;
+// Using alias removed (invalid transpilation)
 #include "../features/thread/thread-slice.h"
-using threadReducer = _default;
+// Using alias removed (invalid transpilation)
 #include "../features/dm/dm-slice.h"
-using dmReducer = _default;
+// Using alias removed (invalid transpilation)
 #include "../features/guild/guild-slice.h"
-using guildReducer = _default;
+// Using alias removed (invalid transpilation)
 #include "../features/relationship/relationship-slice.h"
-using relationshipReducer = _default;
+// Using alias removed (invalid transpilation)
 #include "../features/purge/purge-slice.h"
-using purgeReducer = _default;
+// Using alias removed (invalid transpilation)
 #include "../features/export/export-slice.h"
-using exportReducer = _default;
+// Using alias removed (invalid transpilation)
 #include "../features/message/message-slice.h"
-using messageReducer = _default;
+// Using alias removed (invalid transpilation)
 
 typedef ReturnType<> RootState;
 

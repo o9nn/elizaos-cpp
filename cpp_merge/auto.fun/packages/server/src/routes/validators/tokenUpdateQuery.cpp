@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/server/src/routes/validators/tokenUpdateQuery.h"
+#include "tokenUpdateQuery.hpp"
 
 object parseUpdateTokenRequest(object raw)
 {

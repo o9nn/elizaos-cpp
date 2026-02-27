@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-list/src/lib/analysis/feature-engineering.h"
+#include "feature-engineering.h"
 
 std::shared_ptr<Promise<std::shared_ptr<EngineeredFeatures>>> FeatureEngineering::engineerFeatures(array<Record<string, any>> data, std::shared_ptr<FeatureConfig> config)
 {

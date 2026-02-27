@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-experience/utils/experienceTextParser.h"
+#include "experienceTextParser.hpp"
 
 string detectDomain(string text, string defaultDomain)
 {

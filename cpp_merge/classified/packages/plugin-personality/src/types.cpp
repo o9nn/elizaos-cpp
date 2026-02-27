@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-personality/src/types.h"
+#include "types.hpp"
 
 namespace @elizaos/core {
 }

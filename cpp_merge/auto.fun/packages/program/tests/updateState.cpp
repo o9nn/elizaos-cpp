@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/program/tests/updateState.h"
+#include "updateState.hpp"
 
 void Main(void)
 {

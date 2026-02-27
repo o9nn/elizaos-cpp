@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/project-tee-starter/__tests__/plugin.test.h"
+#include "plugin.test.h"
 
 void Main(void)
 {

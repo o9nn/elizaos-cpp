@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/project-starter/src/__tests__/cypress/e2e/user-workflow.cy.h"
+#include "user-workflow.cy.h"
 
 void Main(void)
 {

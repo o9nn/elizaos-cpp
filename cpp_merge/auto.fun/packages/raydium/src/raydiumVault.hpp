@@ -1,17 +1,17 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_RAYDIUM_SRC_RAYDIUMVAULT_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_RAYDIUM_SRC_RAYDIUMVAULT_H
-#include "core.h"
-#include "@coral-xyz/anchor.h"
-#include "@solana/spl-token.h"
-#include "@coral-xyz/anchor.h"
-#include "@raydium-io/raydium-sdk-v2.h"
-#include "@raydium-io/raydium-sdk-v2.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTO_FUN_PACKAGES_RAYDIUM_SRC_RAYDIUMVAULT_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTO_FUN_PACKAGES_RAYDIUM_SRC_RAYDIUMVAULT_H
+#include "core.hpp"
+// External dependency removed
+// External dependency removed
+// External dependency removed
+// External dependency removed
+// External dependency removed
 #include "./pdas.h"
-#include "@autodotfun/types/types/raydium_vault.h"
+// External dependency removed
 #include "./utils.h"
-#include "@autodotfun/server/src/db.h"
+// External dependency removed
 #include "drizzle-orm.h"
-#include "@solana/web3.js.h"
+// External dependency removed
 
 any depositToRaydiumVault(std::shared_ptr<anchor::AnchorProvider> provider, std::shared_ptr<anchor::web3::Keypair> signerWallet, std::shared_ptr<Program<std::shared_ptr<RaydiumVault>>> program, std::shared_ptr<anchor::web3::PublicKey> position_nft, std::shared_ptr<anchor::web3::PublicKey> claimer_address);
 

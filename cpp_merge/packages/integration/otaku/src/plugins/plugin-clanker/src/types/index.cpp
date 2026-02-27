@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-clanker/src/types/index.h"
+#include "index.hpp"
 
 string NATIVE_TOKEN_ADDRESSES = std:("0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE");
 any ClankerConfigSchema = z->object(object{

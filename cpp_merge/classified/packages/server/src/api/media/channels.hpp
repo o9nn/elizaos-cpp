@@ -1,18 +1,18 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_SERVER_SRC_API_MEDIA_CHANNELS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_SERVER_SRC_API_MEDIA_CHANNELS_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "express.h"
-using express = _default;
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_SERVER_SRC_API_MEDIA_CHANNELS_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_SERVER_SRC_API_MEDIA_CHANNELS_H
+#include "core.hpp"
+// External dependency removed
+#include "express.hpp"
+// Using alias removed (invalid transpilation)
 #include "express-rate-limit.h"
-using rateLimit = _default;
+// Using alias removed (invalid transpilation)
 #include "../shared/constants.h"
-#include "multer.h"
-using multer = _default;
-#include "fs.h"
-using fs = _default;
-#include "path.h"
-using path = _default;
+#include "multer.hpp"
+// Using alias removed (invalid transpilation)
+#include "fs.hpp"
+// Using alias removed (invalid transpilation)
+#include "path.hpp"
+// Using alias removed (invalid transpilation)
 
 extern any storage;
 extern any upload;

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/tests/test-problem-statement-multimodal.test.h"
+#include "test-problem-statement-multimodal.test.h"
 
 any mockedChildProcess = as<std::shared_ptr<jest::Mocked<child_process>>>(child_process);
 

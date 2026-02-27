@@ -1,12 +1,12 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_AGENTSERVER_SRC_UTILS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_AGENTSERVER_SRC_UTILS_H
-#include "core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_AGENTSERVER_SRC_UTILS_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_AGENTSERVER_SRC_UTILS_H
+#include "core.hpp"
 #include "node:path.h"
-using path = _default;
+// Using alias removed (invalid transpilation)
 #include "node:fs.h"
-using fs = _default;
-#include "dotenv.h"
-using dotenv = _default;
+// Using alias removed (invalid transpilation)
+#include "dotenv.hpp"
+// Using alias removed (invalid transpilation)
 
 string expandTildePath(string filepath);
 

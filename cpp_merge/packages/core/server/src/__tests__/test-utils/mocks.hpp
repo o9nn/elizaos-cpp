@@ -1,9 +1,9 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_SERVER_SRC___TESTS___TEST-UTILS_MOCKS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_SERVER_SRC___TESTS___TEST-UTILS_MOCKS_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "@elizaos/core.h"
-#include "express.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_SERVER_SRC___TESTS___TEST_UTILS_MOCKS_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_SERVER_SRC___TESTS___TEST_UTILS_MOCKS_H
+#include "core.hpp"
+// External dependency removed
+// External dependency removed
+#include "express.hpp"
 #include "bun:test.h"
 
 std::shared_ptr<IAgentRuntime> createMockAgentRuntime(Partial<std::shared_ptr<IAgentRuntime>> overrides = undefined);

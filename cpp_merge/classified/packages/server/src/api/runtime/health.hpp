@@ -1,10 +1,10 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_SERVER_SRC_API_RUNTIME_HEALTH_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_SERVER_SRC_API_RUNTIME_HEALTH_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "@elizaos/core.h"
-#include "express.h"
-using express = _default;
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_SERVER_SRC_API_RUNTIME_HEALTH_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_SERVER_SRC_API_RUNTIME_HEALTH_H
+#include "core.hpp"
+// External dependency removed
+// External dependency removed
+#include "express.hpp"
+// Using alias removed (invalid transpilation)
 #include "../../index.h"
 
 std::shared_ptr<express::Router> createHealthRouter(std::shared_ptr<Map<std::shared_ptr<UUID>, std::shared_ptr<IAgentRuntime>>> agents, std::shared_ptr<AgentServer> serverInstance);

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza-plugin-starter/src/plugins/translation/service.h"
+#include "service.hpp"
 
 std::shared_ptr<Promise<object>> simulateTranslationAPI(string text, string targetLang, string sourceLang, object config)
 {

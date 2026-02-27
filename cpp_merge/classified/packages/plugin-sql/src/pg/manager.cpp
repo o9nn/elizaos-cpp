@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-sql/src/pg/manager.h"
+#include "manager.hpp"
 
 PostgresConnectionManager::PostgresConnectionManager(string connectionString) {
     this->pool = std::make_shared<Pool>(object{

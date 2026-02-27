@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/degenTrader/config/providers.h"
+#include "providers.hpp"
 
 object PROVIDER_CONFIG = object{
     object::pair{std:("BIRDEYE_API"), std:("https://public-api.birdeye.so")}, 

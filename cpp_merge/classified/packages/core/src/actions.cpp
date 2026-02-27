@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/core/src/actions.h"
+#include "actions.hpp"
 
 string formatActionNames(array<std::shared_ptr<Action>> actions)
 {

@@ -1,13 +1,13 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-DYNAMIC___TESTS___PLUGIN-CREATION-SERVICE_TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-DYNAMIC___TESTS___PLUGIN-CREATION-SERVICE_TEST_H
-#include "core.h"
-#include "vitest.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTONOMOUS_STARTER_SRC_PLUGIN_DYNAMIC___TESTS___PLUGIN_CREATION_SERVICE_TEST_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTONOMOUS_STARTER_SRC_PLUGIN_DYNAMIC___TESTS___PLUGIN_CREATION_SERVICE_TEST_H
+#include "core.hpp"
+#include "vitest.hpp"
 #include "../services/plugin-creation-service.h"
-#include "@elizaos/core.h"
+// External dependency removed
 #include "fs-extra.h"
-#include "child_process.h"
-#include "@anthropic-ai/sdk.h"
-using Anthropic = _default;
+#include "child_process.hpp"
+// External dependency removed
+// Using alias removed (invalid transpilation)
 
 extern std::function<any()> createMockRuntime;
 extern std::function<object()> createMockChildProcess;

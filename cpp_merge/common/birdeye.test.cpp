@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/plugin-birdeye/__tests__/birdeye.test.h"
+#include "birdeye.test.h"
 
 void Main(void)
 {

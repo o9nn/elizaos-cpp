@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/plugin-sql/src/schema/channelParticipant.h"
+#include "channelParticipant.hpp"
 
 any channelParticipantsTable = pgTable(std:("channel_participants"), object{
     object::pair{std:("channelId"), text(std:("channel_id"))->notNull()->references([=]() mutable

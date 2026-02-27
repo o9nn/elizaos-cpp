@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/api-client/src/services/agents.h"
+#include "agents.hpp"
 
 std::shared_ptr<Promise<object>> AgentsService::listAgents()
 {

@@ -1,7 +1,7 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-ENV_INDEX_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-ENV_INDEX_H
-#include "core.h"
-#include "@elizaos/core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTONOMOUS_STARTER_SRC_PLUGIN_ENV_INDEX_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTONOMOUS_STARTER_SRC_PLUGIN_ENV_INDEX_H
+#include "core.hpp"
+// External dependency removed
 #include "./service.h"
 #include "./providers/envStatus.h"
 #include "./actions/setEnvVar.h"

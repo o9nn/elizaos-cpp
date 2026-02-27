@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-plugin-manager/src/__tests__/e2e/test-utils.h"
+#include "test-utils.h"
 
 std::shared_ptr<Promise<object>> setupScenario(std::shared_ptr<IAgentRuntime> runtime)
 {

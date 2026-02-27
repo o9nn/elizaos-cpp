@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/discrub-ext/src/features/user/use-user-slice.h"
+#include "use-user-slice.h"
 
 std::function<object()> useUserSlice = [=]() mutable
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-web-search/src/actions/cryptoNews.h"
+#include "cryptoNews.hpp"
 
 string MaxTokens(string data, double maxTokens)
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/utils/serialization.h"
+#include "serialization.hpp"
 
 any convertToYamlLiteralString(any data)
 {

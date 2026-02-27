@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizaos.github.io/src/lib/pipelines/summarize/config.h"
+#include "config.hpp"
 
 any AISummaryConfigSchema = z->object(object{
     object::pair{std:("enabled"), z->boolean()->default(false)}, 

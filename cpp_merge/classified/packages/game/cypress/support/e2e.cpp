@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/game/cypress/support/e2e.h"
+#include "e2e.hpp"
 
 namespace global {
     namespace Cypress {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-bootstrap/actions/choice.h"
+#include "choice.hpp"
 
 string optionExtractionTemplate = std:("# Task: Extract selected task and option from user message\
 \

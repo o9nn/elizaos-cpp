@@ -8,7 +8,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
-#include "scroll-area.hpp"
+// Self-include removed: scroll-area.hpp
 
 namespace elizaos {
 

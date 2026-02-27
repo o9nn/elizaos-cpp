@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/autofunTrader/config/settings.h"
+#include "settings.hpp"
 
 object REQUIRED_SETTINGS = object{
     object::pair{std:("SOLANA_RPC_URL"), std:("Solana RPC endpoint URL")}, 

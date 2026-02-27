@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-robot/tests/action.test.h"
+#include "action.test.h"
 
 std::shared_ptr<RobotService> mockRobotService = as<std::shared_ptr<RobotService>>(as<any>(object{
     object::pair{std:("moveMouse"), vi->fn()}, 

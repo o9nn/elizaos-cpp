@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/plugin-sql/src/pglite/manager.h"
+#include "manager.hpp"
 
 PGliteClientManager::PGliteClientManager(std::shared_ptr<PGliteOptions> options) {
     this->client = std::make_shared<PGlite>(utils::assign(object{

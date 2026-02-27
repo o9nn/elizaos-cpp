@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/autofunTrader/index.h"
+#include "index.hpp"
 
 std::shared_ptr<Plugin> autofunTraderPlugin = object{
     object::pair{std:("name"), std:("Autofun Trader Plugin")}, 

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-autocoder/src/__tests__/autocoder-plugin-check.test.h"
+#include "autocoder-plugin-check.test.h"
 
 void Main(void)
 {

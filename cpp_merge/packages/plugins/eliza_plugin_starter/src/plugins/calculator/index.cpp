@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza-plugin-starter/src/plugins/calculator/index.h"
+#include "index.hpp"
 
 std::shared_ptr<Plugin> calculatorPlugin = object{
     object::pair{std:("name"), std:("calculator")}, 

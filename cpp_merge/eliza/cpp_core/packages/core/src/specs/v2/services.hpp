@@ -8,7 +8,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
-#include "services.hpp"
+// Self-include removed: services.hpp
 #include "types.hpp"
 
 namespace elizaos {

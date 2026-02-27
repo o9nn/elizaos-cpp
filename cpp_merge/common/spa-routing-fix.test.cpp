@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/agentserver/src/__tests__/spa-routing-fix.test.h"
+#include "spa-routing-fix.test.h"
 
 void Main(void)
 {

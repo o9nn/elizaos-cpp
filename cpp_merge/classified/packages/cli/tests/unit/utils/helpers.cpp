@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/tests/unit/utils/helpers.test.h"
+#include "helpers.test.h"
 
 object originalConsoleLog = console->log;
 any consoleSpy = mock([=]() mutable

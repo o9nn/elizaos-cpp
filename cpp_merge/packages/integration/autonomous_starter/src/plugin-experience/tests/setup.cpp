@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-experience/tests/setup.h"
+#include "setup.hpp"
 
 void Main(void)
 {

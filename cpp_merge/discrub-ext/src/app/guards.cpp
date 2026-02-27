@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/discrub-ext/src/app/guards.h"
+#include "guards.hpp"
 
 std::function<any(any)> isMessage = [=](auto entity) mutable
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-self-modification/src/evaluators/character-evolution-evaluator.h"
+#include "character-evolution-evaluator.h"
 
 string evolutionAnalysisTemplate = std:("Analyze the recent conversation and determine if the agent's character should evolve based on what was learned.\
 \

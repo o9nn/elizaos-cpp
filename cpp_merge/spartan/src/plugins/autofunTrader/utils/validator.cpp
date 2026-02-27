@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/autofunTrader/utils/validator.h"
+#include "validator.hpp"
 
 boolean validateSolanaAddress(any address)
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza-starter/src/clients/index.h"
+#include "index.hpp"
 
 any initializeClients(std::shared_ptr<Character> character, std::shared_ptr<IAgentRuntime> runtime)
 {

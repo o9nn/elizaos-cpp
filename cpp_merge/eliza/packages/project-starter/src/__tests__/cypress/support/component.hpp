@@ -1,10 +1,10 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PROJECT-STARTER_SRC___TESTS___CYPRESS_SUPPORT_COMPONENT_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PROJECT-STARTER_SRC___TESTS___CYPRESS_SUPPORT_COMPONENT_H
-#include "core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_PROJECT_STARTER_SRC___TESTS___CYPRESS_SUPPORT_COMPONENT_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_PROJECT_STARTER_SRC___TESTS___CYPRESS_SUPPORT_COMPONENT_H
+#include "core.hpp"
 #include "./commands.h"
-#include "@testing-library/cypress/add-commands.h"
+// External dependency removed
 #include "../../../frontend/index.css.h"
-#include "@cypress/react.h"
+// External dependency removed
 
 namespace global {
     namespace Cypress {

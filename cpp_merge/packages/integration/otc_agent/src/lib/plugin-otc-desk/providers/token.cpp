@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otc-agent/src/lib/plugin-otc-desk/providers/token.h"
+#include "token.hpp"
 
 std::shared_ptr<Provider> tokenProvider = object{
     object::pair{std:("name"), std:("ELIZAOS_INFO")}, 

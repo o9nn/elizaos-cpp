@@ -1,9 +1,9 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-SQL_SRC_PGLITE_MANAGER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-SQL_SRC_PGLITE_MANAGER_H
-#include "core.h"
-#include "@electric-sql/pglite.h"
-#include "@electric-sql/pglite/contrib/fuzzystrmatch.h"
-#include "@electric-sql/pglite/vector.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_SQL_SRC_PGLITE_MANAGER_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_SQL_SRC_PGLITE_MANAGER_H
+#include "core.hpp"
+// External dependency removed
+// External dependency removed
+// External dependency removed
 #include "../types.h"
 
 class PGliteClientManager;

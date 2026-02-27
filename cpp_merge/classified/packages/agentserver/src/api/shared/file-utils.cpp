@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/agentserver/src/api/shared/file-utils.h"
+#include "file-utils.h"
 
 string sanitizeFilename(string filename)
 {

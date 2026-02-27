@@ -1,12 +1,12 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAS-LIST_SRC_LIB_REALTIME_WEBSOCKET_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAS-LIST_SRC_LIB_REALTIME_WEBSOCKET_H
-#include "core.h"
-#include "ws.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZAS_LIST_SRC_LIB_REALTIME_WEBSOCKET_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZAS_LIST_SRC_LIB_REALTIME_WEBSOCKET_H
+#include "core.hpp"
+#include "ws.hpp"
 using WebSocketServer = Server;
-#include "http.h"
+#include "http.hpp"
 using HTTPServer = Server;
 #include "../monitoring/logger.h"
-#include "ioredis.h"
+#include "ioredis.hpp"
 
 class RealtimeService;
 

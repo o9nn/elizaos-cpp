@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/commands/start/utils/loader.h"
+#include "loader.hpp"
 
 any tryLoadFile(string filePath)
 {

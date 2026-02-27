@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-autocoder/project-template/src/providers.h"
+#include "providers.hpp"
 
 array<any> providers = array<any>();
 

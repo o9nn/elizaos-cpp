@@ -1,7 +1,7 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-MANAGER_INDEX_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-MANAGER_INDEX_H
-#include "core.h"
-#include "@elizaos/core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTONOMOUS_STARTER_SRC_PLUGIN_MANAGER_INDEX_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTONOMOUS_STARTER_SRC_PLUGIN_MANAGER_INDEX_H
+#include "core.hpp"
+// External dependency removed
 #include "./services/pluginManagerService.h"
 #include "./services/pluginConfigurationService.h"
 #include "./services/pluginUserInteractionService.h"

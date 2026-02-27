@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/degenIntel/index.h"
+#include "index.hpp"
 
 std::shared_ptr<Plugin> degenIntelPlugin = object{
     object::pair{std:("name"), std:("spartan-intel")}, 

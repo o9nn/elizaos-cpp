@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-bootstrap/src/providers/capabilities.h"
+#include "capabilities.hpp"
 
 std::shared_ptr<Provider> capabilitiesProvider = object{
     object::pair{std:("name"), std:("CAPABILITIES")}, 

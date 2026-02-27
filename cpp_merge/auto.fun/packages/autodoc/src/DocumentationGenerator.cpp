@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/autodoc/src/DocumentationGenerator.h"
+#include "DocumentationGenerator.hpp"
 
 DocumentationGenerator::DocumentationGenerator(std::shared_ptr<DirectoryTraversal> directoryTraversal_, std::shared_ptr<TypeScriptParser> typeScriptParser_, std::shared_ptr<JsDocAnalyzer> jsDocAnalyzer_, std::shared_ptr<JsDocGenerator> jsDocGenerator_, std::shared_ptr<GitManager> gitManager_, std::shared_ptr<Configuration> configuration_, std::shared_ptr<AIService> aiService_) : directoryTraversal(directoryTraversal_), typeScriptParser(typeScriptParser_), jsDocAnalyzer(jsDocAnalyzer_), jsDocGenerator(jsDocGenerator_), gitManager(gitManager_), configuration(configuration_), aiService(aiService_)  {
     this->typeScriptFiles = this->directoryTraversal->traverse();

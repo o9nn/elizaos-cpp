@@ -1,8 +1,8 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_UTILS_CLI-PROMPTS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_UTILS_CLI-PROMPTS_H
-#include "core.h"
-#include "@clack/prompts.h"
-#include "@elizaos/core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_CLI_SRC_UTILS_CLI_PROMPTS_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_CLI_SRC_UTILS_CLI_PROMPTS_H
+#include "core.hpp"
+// External dependency removed
+// External dependency removed
 
 extern string NAV_BACK;
 extern string NAV_NEXT;

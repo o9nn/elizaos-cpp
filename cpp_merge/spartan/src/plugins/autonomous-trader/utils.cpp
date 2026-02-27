@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/autonomous-trader/utils.h"
+#include "utils.hpp"
 
 any acquireService(std::shared_ptr<IAgentRuntime> runtime, any serviceType, string asking, double retries)
 {

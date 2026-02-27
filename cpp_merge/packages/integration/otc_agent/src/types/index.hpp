@@ -1,9 +1,9 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_SRC_TYPES_INDEX_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_SRC_TYPES_INDEX_H
-#include "core.h"
-#include "viem.h"
-#include "@/config/chains.h"
-#include "@/lib/plugin-otc-desk/types.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTC_AGENT_SRC_TYPES_INDEX_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTC_AGENT_SRC_TYPES_INDEX_H
+#include "core.hpp"
+#include "viem.hpp"
+// External dependency removed
+// External dependency removed
 
 typedef any EVMChain;
 

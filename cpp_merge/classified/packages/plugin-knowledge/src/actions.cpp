@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-knowledge/src/actions.h"
+#include "actions.hpp"
 
 std::shared_ptr<Action> processKnowledgeAction = object{
     object::pair{std:("name"), std:("PROCESS_KNOWLEDGE")}, 

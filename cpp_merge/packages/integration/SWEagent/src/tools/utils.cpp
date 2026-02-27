@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/tools/utils.h"
+#include "utils.hpp"
 
 string guardMultilineInput(string action, std::function<any(string)> matchFct)
 {

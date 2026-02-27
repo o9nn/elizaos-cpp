@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-gamification/src/constants.h"
+#include "constants.hpp"
 
 Record<GamificationEventType, double> BASE_POINTS = object{
     object::pair{GamificationEventType::ACCOUNT_CREATION, 100}, 

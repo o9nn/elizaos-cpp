@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/raydium/src/utils.h"
+#include "utils.hpp"
 
 double fixedPoint = parseFloat(std:("1000000000"));
 string vaultConfigSeed = std:("raydium_vault_config");

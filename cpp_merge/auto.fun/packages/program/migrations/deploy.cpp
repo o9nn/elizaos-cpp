@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/program/migrations/deploy.h"
+#include "deploy.hpp"
 
 any anchor = require(std:("@coral-xyz/anchor"));
 

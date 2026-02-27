@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/agentserver/src/utils.h"
+#include "utils.hpp"
 
 string expandTildePath(string filepath)
 {

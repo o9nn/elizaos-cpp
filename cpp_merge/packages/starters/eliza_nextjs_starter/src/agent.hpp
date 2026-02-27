@@ -1,12 +1,12 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA-NEXTJS-STARTER_SRC_AGENT_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA-NEXTJS-STARTER_SRC_AGENT_H
-#include "core.h"
-#include "dotenv.h"
-using dotenv = _default;
-#include "@elizaos/core.h"
-#include "@/plugin-rag.h"
-#include "@/plugin-groq.h"
-#include "@elizaos/plugin-openai.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_NEXTJS_STARTER_SRC_AGENT_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_NEXTJS_STARTER_SRC_AGENT_H
+#include "core.hpp"
+#include "dotenv.hpp"
+// Using alias removed (invalid transpilation)
+// External dependency removed
+// External dependency removed
+// External dependency removed
+// External dependency removed
 
 extern Partial<std::shared_ptr<Character>> character;
 extern object devRel;

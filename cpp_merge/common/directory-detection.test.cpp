@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/tests/unit/utils/directory-detection.test.h"
+#include "directory-detection.test.h"
 
 object TestFixtures = object{
     object::pair{std:("packageJson"), object{

@@ -192,9 +192,9 @@ class MessagingService extends BaseApiClient {
 
     // Remove user from participants
 
-  // ===================================
+  // ========
   // Jobs API - One-off messaging
-  // ===================================
+  // ========
 
   /**
    * Create a new job (one-off message to agent)

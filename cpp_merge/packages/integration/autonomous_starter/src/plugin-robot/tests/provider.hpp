@@ -1,10 +1,10 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-ROBOT_TESTS_PROVIDER_TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-ROBOT_TESTS_PROVIDER_TEST_H
-#include "core.h"
-#include "vitest.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTONOMOUS_STARTER_SRC_PLUGIN_ROBOT_TESTS_PROVIDER_TEST_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTONOMOUS_STARTER_SRC_PLUGIN_ROBOT_TESTS_PROVIDER_TEST_H
+#include "core.hpp"
+#include "vitest.hpp"
 #include "../provider.h"
 #include "../service.h"
-#include "@elizaos/core.h"
+// External dependency removed
 #include "../types.h"
 
 extern object mockRobotService;

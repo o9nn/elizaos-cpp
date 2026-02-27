@@ -1,11 +1,11 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-TODO_SRC_TESTS_REMINDER-ROLODEX_TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-TODO_SRC_TESTS_REMINDER-ROLODEX_TEST_H
-#include "core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_TODO_SRC_TESTS_REMINDER_ROLODEX_TEST_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_TODO_SRC_TESTS_REMINDER_ROLODEX_TEST_H
+#include "core.hpp"
 #include "bun:test.h"
-#include "@elizaos/core.h"
-#include "@elizaos/core.h"
+// External dependency removed
+// External dependency removed
 #include "../services/reminderService.h"
-#include "uuid.h"
+#include "uuid.hpp"
 using uuidv4 = v4;
 
 class MockRolodexService;

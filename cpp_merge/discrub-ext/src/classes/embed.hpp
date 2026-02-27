@@ -1,6 +1,6 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_CLASSES_EMBED_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_CLASSES_EMBED_H
-#include "core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_DISCRUB_EXT_SRC_CLASSES_EMBED_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_DISCRUB_EXT_SRC_CLASSES_EMBED_H
+#include "core.hpp"
 #include "../types/embed-footer-object.h"
 #include "../types/embed-image-object.h"
 #include "../types/embed-thumbnail-object.h"

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/core/src/specs/v1/types.h"
+#include "types.hpp"
 
 any Service::instance = nullptr;
 

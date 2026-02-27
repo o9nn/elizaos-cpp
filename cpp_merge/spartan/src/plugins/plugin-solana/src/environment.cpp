@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/plugin-solana/src/environment.h"
+#include "environment.hpp"
 
 std::shared_ptr<Promise<SolanaConfig>> validateSolanaConfig(std::shared_ptr<IAgentRuntime> runtime)
 {

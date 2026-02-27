@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/plugin-bootstrap/src/providers/anxiety.h"
+#include "anxiety.hpp"
 
 std::shared_ptr<Provider> anxietyProvider = object{
     object::pair{std:("name"), std:("ANXIETY")}, 

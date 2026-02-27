@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/packages/server/src/middleware/security.h"
+#include "security.hpp"
 
 std::function<std::function<void(any, any, any)>()> securityMiddleware = [=]() mutable
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/communityInvestor/tests/service.h"
+#include "service.hpp"
 
 any testUserIdGlobalForService = asUUID(uuidv4());
 std::function<any(any, any, any)> createFullMockComponentForSvcTest = [=](auto userId, auto profileData, auto runtime) mutable

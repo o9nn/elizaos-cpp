@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-sam/src/__tests__/sam-audio.test.h"
+#include "sam-audio.test.h"
 
 void Main(void)
 {

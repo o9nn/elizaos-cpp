@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-stagehand/src/__tests__/e2e-browser.test.h"
+#include "e2e-browser.test.h"
 
 std::function<any()> createMockRuntime = [=]() mutable
 {

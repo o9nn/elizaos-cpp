@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-autocoder/src/__tests__/integration.test.h"
+#include "integration.test.h"
 
 object mockSqlPlugin = object{
     object::pair{std:("name"), std:("@elizaos/plugin-sql")}, 

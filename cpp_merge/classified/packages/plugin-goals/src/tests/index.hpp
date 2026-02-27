@@ -1,10 +1,10 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-GOALS_SRC_TESTS_INDEX_TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-GOALS_SRC_TESTS_INDEX_TEST_H
-#include "core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_GOALS_SRC_TESTS_INDEX_TEST_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_GOALS_SRC_TESTS_INDEX_TEST_H
+#include "core.hpp"
 #include "bun:test.h"
 #include "../index.h"
-using GoalsPlugin = _default;
-#include "@elizaos/core.h"
+// Using alias removed (invalid transpilation)
+// External dependency removed
 
 class TestSuite;
 

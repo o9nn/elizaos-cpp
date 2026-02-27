@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/project-tee-starter/__tests__/events.test.h"
+#include "events.test.h"
 
 void Main(void)
 {

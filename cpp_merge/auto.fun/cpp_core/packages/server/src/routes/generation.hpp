@@ -10,7 +10,7 @@
 #include <unordered_set>
 #include <vector>
 #include "db.hpp"
-#include "generation.hpp"
+// Self-include removed: generation.hpp
 #include "prompts/create-token.hpp"
 #include "s3Client.hpp"
 #include "util.hpp"

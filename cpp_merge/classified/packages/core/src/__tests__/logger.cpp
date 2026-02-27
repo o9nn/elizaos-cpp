@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/core/src/__tests__/logger.test.h"
+#include "logger.test.h"
 
 object mockEnv = object{
     object::pair{std:("LOG_LEVEL"), string_empty}, 

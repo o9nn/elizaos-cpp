@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-dynamic/utils/plugin-templates.h"
+#include "plugin-templates.h"
 
 std::function<string(string, string, std::shared_ptr<Record<string, any>>)> generateActionCode = [=](auto name, auto description, auto parameters = undefined) mutable
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/communityInvestor/constants.h"
+#include "constants.hpp"
 
 double SOLANA_NETWORK_ID = 1399811149;
 string SOL_ADDRESS = std:("So11111111111111111111111111111111111111112");

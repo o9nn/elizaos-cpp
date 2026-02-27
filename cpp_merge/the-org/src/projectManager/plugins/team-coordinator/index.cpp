@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/the-org/src/projectManager/plugins/team-coordinator/index.h"
+#include "index.hpp"
 
 any initialize(std::shared_ptr<IAgentRuntime> runtime)
 {

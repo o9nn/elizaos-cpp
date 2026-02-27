@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/commands/env/index.h"
+#include "index.hpp"
 
 any env = ((std::make_shared<Command>()))->name(std:("env"))->description(std:("Manage environment variables and secrets"));
 

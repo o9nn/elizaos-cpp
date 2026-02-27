@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/src/utils/build-project.h"
+#include "build-project.h"
 
 void buildProject(string cwd, boolean isPlugin)
 {

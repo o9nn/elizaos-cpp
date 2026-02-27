@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-bootstrap/src/templates/reflection.h"
+#include "reflection.hpp"
 
 string reflectionTemplate = std:("# Task: Generate Agent Reflection, Extract Facts and Relationships\
 \

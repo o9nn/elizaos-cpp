@@ -1,2 +1,2 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza-nextjs-starter/src/types/chat.h"
+#include "chat.hpp"
 

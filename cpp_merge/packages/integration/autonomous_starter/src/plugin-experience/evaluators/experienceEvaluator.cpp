@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-experience/evaluators/experienceEvaluator.h"
+#include "experienceEvaluator.hpp"
 
 string extractContext(array<std::shared_ptr<Memory>> messages)
 {

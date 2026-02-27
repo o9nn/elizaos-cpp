@@ -1,13 +1,13 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PACKAGES_SERVER_SRC_UPLOAD_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PACKAGES_SERVER_SRC_UPLOAD_H
-#include "core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTAKU_SRC_PACKAGES_SERVER_SRC_UPLOAD_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTAKU_SRC_PACKAGES_SERVER_SRC_UPLOAD_H
+#include "core.hpp"
 #include "node:fs.h"
-using fs = _default;
+// Using alias removed (invalid transpilation)
 #include "node:path.h"
-using path = _default;
-#include "multer.h"
-using multer = _default;
-#include "@elizaos/core.h"
+// Using alias removed (invalid transpilation)
+#include "multer.hpp"
+// Using alias removed (invalid transpilation)
+// External dependency removed
 #include "./api/shared/file-utils.js.h"
 #include "./api/shared/constants.js.h"
 

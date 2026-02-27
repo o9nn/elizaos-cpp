@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-forms/src/__tests__/e2e/forms-plugin.test.h"
+#include "forms-plugin.test.h"
 
 void setupModelHandlers(std::shared_ptr<IAgentRuntime> runtime)
 {

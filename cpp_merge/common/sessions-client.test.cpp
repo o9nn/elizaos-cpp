@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/src/model/capi/sessions-client.test.h"
+#include "sessions-client.test.h"
 
 void Main(void)
 {

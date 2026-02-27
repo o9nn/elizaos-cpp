@@ -26,6 +26,8 @@ if(SOURCE_COUNT GREATER 0)
         ${CMAKE_CURRENT_SOURCE_DIR}/include
         ${CMAKE_CURRENT_SOURCE_DIR}/cpp_core
         ${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_SOURCE_DIR}/../cpp/include/elizaos
+        ${CMAKE_SOURCE_DIR}/../cpp/include
     )
     
     # Set properties

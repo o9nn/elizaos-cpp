@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/plugin-birdeye/src/providers/trending.h"
+#include "trending.hpp"
 
 std::shared_ptr<Provider> trendingProvider = object{
     object::pair{std:("name"), std:("BIRDEYE_TRENDING_CRYPTOCURRENCY")}, 

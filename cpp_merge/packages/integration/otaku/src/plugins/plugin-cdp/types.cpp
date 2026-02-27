@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-cdp/types.h"
+#include "types.hpp"
 
 Record<double, string> DEFAULT_RPC_URLS = object{
     object::pair{mainnet->id, std:("https://ethereum.publicnode.com")}, 

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/core/src/types/service.h"
+#include "service.hpp"
 
 ServiceTypeName Service::serviceType = ServiceType["UNKNOWN"];
 

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/the-org/tests/socialMediaManager.test.h"
+#include "socialMediaManager.test.h"
 
 void Main(void)
 {

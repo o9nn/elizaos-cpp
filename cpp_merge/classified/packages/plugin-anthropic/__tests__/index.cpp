@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-anthropic/__tests__/index.test.h"
+#include "index.test.h"
 
 any extractAndParseJSON = vi->fn([=](auto x) mutable
 {

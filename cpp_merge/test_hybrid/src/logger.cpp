@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/test_hybrid/src/logger.h"
+#include "logger.hpp"
 
 Logger::Logger(string prefix) {
     this->prefix = prefix;

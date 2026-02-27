@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-list/src/app/api/analytics/insights/route.h"
+#include "route.hpp"
 
 any GET(std::shared_ptr<Request> request)
 {

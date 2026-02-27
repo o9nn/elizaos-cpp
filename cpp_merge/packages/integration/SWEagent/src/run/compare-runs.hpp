@@ -1,8 +1,8 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_SRC_RUN_COMPARE-RUNS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_SRC_RUN_COMPARE-RUNS_H
-#include "core.h"
-#include "path.h"
-#include "fs.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SWEAGENT_SRC_RUN_COMPARE_RUNS_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SWEAGENT_SRC_RUN_COMPARE_RUNS_H
+#include "core.hpp"
+#include "path.hpp"
+#include "fs.hpp"
 
 std::shared_ptr<Set<string>> getResolved(string filePath);
 

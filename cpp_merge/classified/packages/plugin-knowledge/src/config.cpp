@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-knowledge/src/config.h"
+#include "config.hpp"
 
 std::shared_ptr<ModelConfig> validateModelConfig(std::shared_ptr<IAgentRuntime> runtime)
 {

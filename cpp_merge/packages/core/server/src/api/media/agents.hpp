@@ -1,17 +1,17 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_SERVER_SRC_API_MEDIA_AGENTS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_SERVER_SRC_API_MEDIA_AGENTS_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "express.h"
-using express = _default;
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_SERVER_SRC_API_MEDIA_AGENTS_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_SERVER_SRC_API_MEDIA_AGENTS_H
+#include "core.hpp"
+// External dependency removed
+#include "express.hpp"
+// Using alias removed (invalid transpilation)
 #include "../shared/response-utils.h"
 #include "../shared/constants.h"
-#include "multer.h"
-using multer = _default;
-#include "fs.h"
-using fs = _default;
-#include "path.h"
-using path = _default;
+#include "multer.hpp"
+// Using alias removed (invalid transpilation)
+#include "fs.hpp"
+// Using alias removed (invalid transpilation)
+#include "path.hpp"
+// Using alias removed (invalid transpilation)
 
 extern any storage;
 extern any upload;

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otc-agent/scripts/solana-admin.h"
+#include "solana-admin.h"
 
 std::shared_ptr<Promise<std::shared_ptr<Connection>>> getConnection()
 {

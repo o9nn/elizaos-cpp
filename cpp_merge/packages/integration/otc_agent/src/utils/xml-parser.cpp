@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otc-agent/src/utils/xml-parser.h"
+#include "xml-parser.h"
 
 any extractXMLFromMessage(string messageText)
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-relay/src/utils/multichain-wallet.h"
+#include "multichain-wallet.h"
 
 MultiChainWallet::MultiChainWallet(std::shared_ptr<Account> account, string defaultRpcUrl, double initialChainId) {
     this->account = account;

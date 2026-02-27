@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-list/src/lib/redis.h"
+#include "redis.hpp"
 
 any redis = std::make_shared<Redis>(OR((process->env->REDIS_URL), (std:("redis://localhost:6379"))));
 

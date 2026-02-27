@@ -1,10 +1,10 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_SERVER_SRC_GETALLTOKENS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_SERVER_SRC_GETALLTOKENS_H
-#include "core.h"
-#include "@solana/web3.js.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTO_FUN_PACKAGES_SERVER_SRC_GETALLTOKENS_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTO_FUN_PACKAGES_SERVER_SRC_GETALLTOKENS_H
+#include "core.hpp"
+// External dependency removed
 #include "drizzle-orm.h"
 #include "p-queue.h"
-using PQueue = _default;
+// Using alias removed (invalid transpilation)
 #include "./db.h"
 #include "./logger.h"
 #include "./cron.h"

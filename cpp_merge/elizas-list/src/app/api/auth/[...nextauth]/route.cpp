@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-list/src/app/api/auth/[/* spread: nextauth */]/route.h"
+#include "route.hpp"
 
 std::shared_ptr<AuthOptions> authOptions = object{
     object::pair{std:("adapter"), PrismaAdapter(prisma)}, 

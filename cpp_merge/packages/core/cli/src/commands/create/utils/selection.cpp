@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/commands/create/utils/selection.h"
+#include "selection.hpp"
 
 std::shared_ptr<Promise<array<string>>> getLocalAvailableDatabases()
 {

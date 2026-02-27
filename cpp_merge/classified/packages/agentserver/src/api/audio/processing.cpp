@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/agentserver/src/api/audio/processing.h"
+#include "processing.hpp"
 
 string _validateSecureFilePath(string filePath)
 {

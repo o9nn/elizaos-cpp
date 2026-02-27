@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-knowledge/src/types.h"
+#include "types.hpp"
 
 namespace @elizaos/core {
 }

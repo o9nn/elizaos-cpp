@@ -23,6 +23,8 @@ add_library(${MODULE_NAME} STATIC ${MODULE_SOURCES} ${MODULE_HEADERS})
 target_include_directories(${MODULE_NAME} PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/cpp_core
+        ${CMAKE_SOURCE_DIR}/../cpp/include/elizaos
+        ${CMAKE_SOURCE_DIR}/../cpp/include
     ${CMAKE_CURRENT_SOURCE_DIR}/packages
 )
 

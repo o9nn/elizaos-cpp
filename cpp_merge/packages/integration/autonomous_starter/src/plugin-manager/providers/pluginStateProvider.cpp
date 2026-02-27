@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-manager/providers/pluginStateProvider.h"
+#include "pluginStateProvider.hpp"
 
 std::shared_ptr<Provider> pluginStateProvider = object{
     object::pair{std:("name"), std:("pluginState")}, 

@@ -1,10 +1,10 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_CREATE_UTILS_VALIDATION_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_CREATE_UTILS_VALIDATION_H
-#include "core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_CREATE_UTILS_VALIDATION_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_CREATE_UTILS_VALIDATION_H
+#include "core.hpp"
 #include "node:fs.h"
 #include "node:fs/promises.h"
-using fs = _default;
-#include "zod.h"
+// Using alias removed (invalid transpilation)
+#include "zod.hpp"
 #include "../types.h"
 #include "../types.h"
 

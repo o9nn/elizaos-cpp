@@ -1,6 +1,6 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_FEATURES_MESSAGE_USE-MESSAGE-SLICE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_FEATURES_MESSAGE_USE-MESSAGE-SLICE_H
-#include "core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_DISCRUB_EXT_SRC_FEATURES_MESSAGE_USE_MESSAGE_SLICE_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_DISCRUB_EXT_SRC_FEATURES_MESSAGE_USE_MESSAGE_SLICE_H
+#include "core.hpp"
 #include "../../app/store.h"
 #include "./message-slice.h"
 using setIsLoadingAction = setIsLoading;
@@ -29,9 +29,9 @@ using deleteReactionAction = deleteReaction;
 #include "../../enum/has-type.h"
 #include "../../enum/sort-direction.h"
 #include "../../classes/message.h"
-using Message = _default;
+// Using alias removed (invalid transpilation)
 #include "../../classes/attachment.h"
-using Attachment = _default;
+// Using alias removed (invalid transpilation)
 
 extern std::function<object()> useMessageSlice;
 #endif

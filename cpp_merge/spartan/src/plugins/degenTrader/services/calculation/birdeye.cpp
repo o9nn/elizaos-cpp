@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/degenTrader/services/calculation/birdeye.h"
+#include "birdeye.hpp"
 
 BirdeyeService::BirdeyeService(string apiKey_) : apiKey(apiKey_)  {
 }

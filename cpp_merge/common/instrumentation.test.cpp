@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/plugin-specification/core-plugin-v2/__tests__/instrumentation.test.h"
+#include "instrumentation.test.h"
 
 void Main(void)
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-sql/drizzle.config.h"
+#include "drizzle.config.h"
 
 void Main(void)
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-bootstrap/src/__tests__/ambiguity-handling.test.h"
+#include "ambiguity-handling.test.h"
 
 Content handleAmbiguity(Content responseContent)
 {

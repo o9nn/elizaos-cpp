@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/autodoc/src/JsDocGenerator.h"
+#include "JsDocGenerator.hpp"
 
 JsDocGenerator::JsDocGenerator(std::shared_ptr<AIService> aiService_) : aiService(aiService_)  {
 }

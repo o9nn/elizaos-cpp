@@ -8,7 +8,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
-#include "avatar.hpp"
+// Self-include removed: avatar.hpp
 
 namespace elizaos {
 

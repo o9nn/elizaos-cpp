@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-elizaos-services/src/auth/AuthenticationService.h"
+#include "AuthenticationService.hpp"
 
 AuthenticationService::AuthenticationService(std::shared_ptr<IAgentRuntime> runtime) {
     this->runtime = runtime;

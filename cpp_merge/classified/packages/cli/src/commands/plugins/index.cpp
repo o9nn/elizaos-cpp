@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/src/commands/plugins/index.h"
+#include "index.hpp"
 
 any plugins = ((std::make_shared<Command>()))->name(std:("plugins"))->description(std:("Manage ElizaOS plugins"))->action([=]() mutable
 {

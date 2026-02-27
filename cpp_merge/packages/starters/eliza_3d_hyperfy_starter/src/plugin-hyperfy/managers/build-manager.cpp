@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza-3d-hyperfy-starter/src/plugin-hyperfy/managers/build-manager.h"
+#include "build-manager.h"
 
 BuildManager::BuildManager(std::shared_ptr<IAgentRuntime> runtime) {
     this->runtime = runtime;

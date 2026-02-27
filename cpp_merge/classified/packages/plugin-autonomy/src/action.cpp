@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-autonomy/src/action.h"
+#include "action.hpp"
 
 std::shared_ptr<Action> sendToAdminAction = object{
     object::pair{std:("name"), std:("SEND_TO_ADMIN")}, 

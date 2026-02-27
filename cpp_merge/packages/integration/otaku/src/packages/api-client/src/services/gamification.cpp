@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/packages/api-client/src/services/gamification.h"
+#include "gamification.hpp"
 
 std::shared_ptr<Promise<std::shared_ptr<UserSummary>>> GamificationService::getUserSummary(std::shared_ptr<UUID> agentId, std::shared_ptr<UUID> userId)
 {

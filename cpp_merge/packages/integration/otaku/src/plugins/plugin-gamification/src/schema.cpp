@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-gamification/src/schema.h"
+#include "schema.hpp"
 
 any gamificationEventsTable = pgTable(std:("gamification_events"), object{
     object::pair{std:("eventId"), uuid(std:("event_id"))->primaryKey()->defaultRandom()}, 

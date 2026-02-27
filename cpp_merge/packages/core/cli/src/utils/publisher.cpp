@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/utils/publisher.h"
+#include "publisher.hpp"
 
 std::shared_ptr<Promise<boolean>> testPublishToNpm(string cwd)
 {

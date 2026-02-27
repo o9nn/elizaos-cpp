@@ -1,2 +1,2 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/hat/src/components/PhotoEditor/types.h"
+#include "types.hpp"
 

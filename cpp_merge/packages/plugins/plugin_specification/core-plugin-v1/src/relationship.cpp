@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/plugin-specification/core-plugin-v1/src/relationship.h"
+#include "relationship.hpp"
 
 Relationship fromV2Relationship(std::shared_ptr<RelationshipV2> relationshipV2)
 {

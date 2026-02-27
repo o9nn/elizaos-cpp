@@ -1,13 +1,13 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_CLI_SRC_UTILS_PACKAGE-MANAGER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_CLI_SRC_UTILS_PACKAGE-MANAGER_H
-#include "core.h"
-#include "@elizaos/core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_CLI_SRC_UTILS_PACKAGE_MANAGER_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_CLI_SRC_UTILS_PACKAGE_MANAGER_H
+#include "core.hpp"
+// External dependency removed
 #include "./user-environment.h"
 #include "./bun-installation-helper.h"
 #include "./run-bun.h"
 #include "node:fs.h"
 #include "node:path.h"
-using path = _default;
+// Using alias removed (invalid transpilation)
 #include "./bun-exec.h"
 
 std::shared_ptr<Promise<string>> getPackageManager();

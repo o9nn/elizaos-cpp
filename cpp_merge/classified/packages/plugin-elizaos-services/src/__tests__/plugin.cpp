@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-elizaos-services/src/__tests__/plugin.test.h"
+#include "plugin.test.h"
 
 any createRealRuntime()
 {

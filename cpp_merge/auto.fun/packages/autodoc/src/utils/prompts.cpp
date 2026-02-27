@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/autodoc/src/utils/prompts.h"
+#include "prompts.hpp"
 
 object PROMPT_TEMPLATES = object{
     object::pair{std:("overview"), [=](auto packageJson, auto docs) mutable

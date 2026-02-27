@@ -1,12 +1,12 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_TOOLS_SRC_WEB-BROWSER_INDEX_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_TOOLS_SRC_WEB-BROWSER_INDEX_H
-#include "core.h"
-#include "commander.h"
-#include "playwright.h"
-#include "express.h"
-using express = _default;
-#include "fs.h"
-#include "path.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SWEAGENT_TOOLS_SRC_WEB_BROWSER_INDEX_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SWEAGENT_TOOLS_SRC_WEB_BROWSER_INDEX_H
+#include "core.hpp"
+#include "commander.hpp"
+#include "playwright.hpp"
+#include "express.hpp"
+// Using alias removed (invalid transpilation)
+#include "fs.hpp"
+#include "path.hpp"
 
 class BrowserManager;
 class BrowserServer;

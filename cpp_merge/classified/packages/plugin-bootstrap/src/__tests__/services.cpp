@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-bootstrap/src/__tests__/services.test.h"
+#include "services.test.h"
 
 std::function<array<std::shared_ptr<PluginService>>()> getPluginServices = [=]() mutable
 {

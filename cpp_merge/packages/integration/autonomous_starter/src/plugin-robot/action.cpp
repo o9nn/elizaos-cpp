@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-robot/action.h"
+#include "action.hpp"
 
 std::shared_ptr<Action> performScreenAction = object{
     object::pair{std:("name"), std:("PERFORM_SCREEN_ACTION")}, 

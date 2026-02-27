@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/agentserver/src/api/agents/knowledge.h"
+#include "knowledge.hpp"
 
 std::shared_ptr<express::Router> createAgentKnowledgeRouter(std::shared_ptr<Map<std::shared_ptr<UUID>, std::shared_ptr<IAgentRuntime>>> agents, std::shared_ptr<AgentServer> _serverInstance)
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-bootstrap/src/providers/world.h"
+#include "world.hpp"
 
 std::shared_ptr<Provider> worldProvider = object{
     object::pair{std:("name"), std:("WORLD")}, 

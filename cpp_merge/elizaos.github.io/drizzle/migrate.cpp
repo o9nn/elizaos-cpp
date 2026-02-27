@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizaos.github.io/drizzle/migrate.h"
+#include "migrate.hpp"
 
 std::function<void(any, any, any)> customMigrate = [=](auto db, auto config, auto maxMigrationNumber) mutable
 {

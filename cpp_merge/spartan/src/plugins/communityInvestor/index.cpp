@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/communityInvestor/index.h"
+#include "index.hpp"
 
 std::shared_ptr<Plugin> communityInvestorPlugin = object{
     object::pair{std:("name"), std:("community-investor")}, 

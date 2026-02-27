@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza-starter/src/config/index.h"
+#include "index.hpp"
 
 object parseArguments()
 {

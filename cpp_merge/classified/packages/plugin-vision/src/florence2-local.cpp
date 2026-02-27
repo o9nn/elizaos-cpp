@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-vision/src/florence2-local.h"
+#include "florence2-local.h"
 
 Florence2Local::Florence2Local(std::shared_ptr<Florence2LocalConfig> config) {
     this->config = object{

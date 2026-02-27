@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/game/cypress/e2e/05-messaging-and-websocket.cy.h"
+#include "05-messaging-and-websocket.cy.h"
 
 void Main(void)
 {

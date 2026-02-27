@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-self-modification/src/utils/validation.h"
+#include "validation.hpp"
 
 std::shared_ptr<ValidationResult> validateCharacterDiff(std::shared_ptr<CharacterDiff> diff)
 {

@@ -1,9 +1,9 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_RAYDIUM_SRC_RAYDIUM-CONFIG_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_RAYDIUM_SRC_RAYDIUM-CONFIG_H
-#include "core.h"
-#include "@raydium-io/raydium-sdk-v2.h"
-#include "@solana/spl-token.h"
-#include "@solana/web3.js.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTO_FUN_PACKAGES_RAYDIUM_SRC_RAYDIUM_CONFIG_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTO_FUN_PACKAGES_RAYDIUM_SRC_RAYDIUM_CONFIG_H
+#include "core.hpp"
+// External dependency removed
+// External dependency removed
+// External dependency removed
 
 typedef any Cluster;
 

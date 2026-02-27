@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza-nextjs-starter/src/app/fonts.h"
+#include "fonts.hpp"
 
 object inter = object{
     object::pair{std:("className"), std:("font-sans")}, 

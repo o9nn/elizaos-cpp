@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-experience/src/actions/record-experience.h"
+#include "record-experience.h"
 
 std::shared_ptr<Action> recordExperienceAction = object{
     object::pair{std:("name"), std:("RECORD_EXPERIENCE")}, 

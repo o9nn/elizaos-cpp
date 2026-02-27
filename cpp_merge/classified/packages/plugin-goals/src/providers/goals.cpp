@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-goals/src/providers/goals.h"
+#include "goals.hpp"
 
 std::shared_ptr<Provider> goalsProvider = object{
     object::pair{std:("name"), std:("GOALS")}, 

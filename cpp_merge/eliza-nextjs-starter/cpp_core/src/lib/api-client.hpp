@@ -90,7 +90,7 @@ struct MessageSubmission {
 
     // Check content type before parsing
 
-// === AGENT MANAGEMENT ===
+// == AGENT MANAGEMENT ==
 
 /**
  * Get all available agents
@@ -100,7 +100,7 @@ struct MessageSubmission {
  * Get specific agent details
  */
 
-// === MEMORY MANAGEMENT ===
+// == MEMORY MANAGEMENT ==
 
 /**
  * Fetches memories for a given agent (latest API)
@@ -123,7 +123,7 @@ struct MessageSubmission {
  */
 std::vector<ChatMessage> transformMemoriesToChatMessages(const std::vector<BackendMemory>& memories);
 
-// === MESSAGING SYSTEM ===
+// == MESSAGING SYSTEM ==
 
 /**
  * Submit a message via the messaging system
@@ -142,7 +142,7 @@ std::vector<ChatMessage> transformMemoriesToChatMessages(const std::vector<Backe
  * Send message to channel
  */
 
-// === ROOM MANAGEMENT ===
+// == ROOM MANAGEMENT ==
 
 /**
  * Get agent rooms
@@ -152,7 +152,7 @@ std::vector<ChatMessage> transformMemoriesToChatMessages(const std::vector<Backe
  * Create a new room
  */
 
-// === SERVER HEALTH ===
+// == SERVER HEALTH ==
 
 /**
  * Ping server for health check
@@ -163,7 +163,7 @@ std::vector<ChatMessage> transformMemoriesToChatMessages(const std::vector<Backe
  * Get server status
  */
 
-// === DM CHANNEL MANAGEMENT ===
+// == DM CHANNEL MANAGEMENT ==
 
 struct DMChannel {
     std: id;

@@ -1,12 +1,12 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_DEGENTRADER_SERVICES_EXECUTION_SELLSERVICE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_DEGENTRADER_SERVICES_EXECUTION_SELLSERVICE_H
-#include "core.h"
-#include "@elizaos/core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SPARTAN_SRC_PLUGINS_DEGENTRADER_SERVICES_EXECUTION_SELLSERVICE_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SPARTAN_SRC_PLUGINS_DEGENTRADER_SERVICES_EXECUTION_SELLSERVICE_H
+#include "core.hpp"
+// External dependency removed
 #include "../base/BaseTradeService.h"
 #include "../validation/TokenValidationService.h"
 #include "../calculation/tradeCalculation.h"
 #include "../../types.h"
-#include "uuid.h"
+#include "uuid.hpp"
 using uuidv4 = v4;
 #include "../../utils/bignumber.h"
 #include "../../utils/wallet.h"

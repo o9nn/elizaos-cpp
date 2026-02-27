@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-relay/src/index.h"
+#include "index.hpp"
 
 std::shared_ptr<Plugin> relayPlugin = object{
     object::pair{std:("name"), std:("relay")}, 

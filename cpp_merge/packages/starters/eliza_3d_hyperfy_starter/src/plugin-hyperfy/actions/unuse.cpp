@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza-3d-hyperfy-starter/src/plugin-hyperfy/actions/unuse.h"
+#include "unuse.hpp"
 
 std::shared_ptr<Action> hyperfyUnuseItemAction = object{
     object::pair{std:("name"), std:("HYPERFY_UNUSE_ITEM")}, 

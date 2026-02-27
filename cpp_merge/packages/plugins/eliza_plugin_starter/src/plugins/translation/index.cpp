@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza-plugin-starter/src/plugins/translation/index.h"
+#include "index.hpp"
 
 std::shared_ptr<Plugin> translationPlugin = object{
     object::pair{std:("name"), std:("translation")}, 

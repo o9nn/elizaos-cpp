@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/server/src/getAllTokens.h"
+#include "getAllTokens.hpp"
 
 std::shared_ptr<Promise<any>> getLastProcessedSlot()
 {

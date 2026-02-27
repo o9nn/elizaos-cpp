@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/client/src/hooks/use-confirmation.h"
+#include "use-confirmation.h"
 
 any useConfirmation()
 {

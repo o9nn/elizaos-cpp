@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/core/src/__tests__/uuid.test.h"
+#include "uuid.test.h"
 
 void Main(void)
 {

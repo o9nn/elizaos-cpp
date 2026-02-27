@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-experience/src/providers/experienceProvider.h"
+#include "experienceProvider.hpp"
 
 std::shared_ptr<Provider> experienceProvider = object{
     object::pair{std:("name"), std:("EXPERIENCE")}, 

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-experience/providers/experienceRAG.h"
+#include "experienceRAG.hpp"
 
 std::shared_ptr<Provider> experienceRAGProvider = object{
     object::pair{std:("name"), std:("experienceRAG")}, 

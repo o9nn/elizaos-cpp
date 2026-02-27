@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-manager/evaluators/pluginConfigurationEvaluator.h"
+#include "pluginConfigurationEvaluator.hpp"
 
 std::shared_ptr<Evaluator> pluginConfigurationEvaluator = object{
     object::pair{std:("name"), std:("pluginConfigurationEvaluator")}, 

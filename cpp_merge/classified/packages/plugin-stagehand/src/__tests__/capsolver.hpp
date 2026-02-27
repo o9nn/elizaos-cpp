@@ -1,10 +1,10 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-STAGEHAND_SRC___TESTS___CAPSOLVER_TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-STAGEHAND_SRC___TESTS___CAPSOLVER_TEST_H
-#include "core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_STAGEHAND_SRC___TESTS___CAPSOLVER_TEST_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_STAGEHAND_SRC___TESTS___CAPSOLVER_TEST_H
+#include "core.hpp"
 #include "bun:test.h"
-#include "@elizaos/core.h"
-#include "axios.h"
-using axios = _default;
+// External dependency removed
+#include "axios.hpp"
+// Using alias removed (invalid transpilation)
 #include "../capsolver.h"
 
 extern std::function<object(any)> createMockResponse;

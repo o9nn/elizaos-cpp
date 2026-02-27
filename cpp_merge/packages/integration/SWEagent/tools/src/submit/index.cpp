@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/tools/src/submit/index.h"
+#include "index.hpp"
 
 void submit()
 {

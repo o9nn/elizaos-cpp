@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/run/remove-unfinished.h"
+#include "remove-unfinished.h"
 
 std::shared_ptr<Promise<void>> removeUnfinished(string baseDir, boolean dryRun)
 {

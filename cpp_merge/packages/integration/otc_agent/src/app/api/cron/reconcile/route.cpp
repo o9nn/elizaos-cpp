@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otc-agent/src/app/api/cron/reconcile/route.h"
+#include "route.hpp"
 
 any GET(std::shared_ptr<NextRequest> request)
 {

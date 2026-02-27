@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/src/commands/create/utils/validation.h"
+#include "validation.hpp"
 
 std::shared_ptr<CreateOptions> validateCreateOptions(any options)
 {

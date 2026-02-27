@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/commands/start/index.h"
+#include "index.hpp"
 
 any start = ((std::make_shared<Command>()))->name(std:("start"))->description(std:("Start the Eliza agent server"))->option(std:("-c, --configure"), std:("Reconfigure services and AI models"))->option(std:("-p, --port <port>"), std:("Port to listen on"), validatePort)->option(std:("--character <paths...>"), std:("Character file(s) to use"))->hook(std:("preAction"), [=]() mutable
 {

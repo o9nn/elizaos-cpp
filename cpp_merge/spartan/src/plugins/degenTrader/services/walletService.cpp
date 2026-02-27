@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/degenTrader/services/walletService.h"
+#include "walletService.hpp"
 
 WalletService::WalletService(std::shared_ptr<IAgentRuntime> runtime_) : runtime(runtime_)  {
     this->CONFIRMATION_CONFIG = object{

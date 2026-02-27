@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/run/extract-pred.h"
+#include "extract-pred.h"
 
 void extractPred(string trajPath)
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/agentserver/src/character.h"
+#include "character.hpp"
 
 std::function<any()> createTerminalCharacter = [=]() mutable
 {

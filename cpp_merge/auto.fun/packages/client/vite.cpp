@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/client/vite.config.h"
+#include "vite.config.h"
 
 void Main(void)
 {

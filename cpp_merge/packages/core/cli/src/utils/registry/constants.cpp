@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/utils/registry/constants.h"
+#include "constants.hpp"
 
 string REGISTRY_ORG = std:("elizaos-plugins");
 string REGISTRY_REPO_NAME = std:("registry");

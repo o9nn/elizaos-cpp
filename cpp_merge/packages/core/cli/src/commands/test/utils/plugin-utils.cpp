@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/commands/test/utils/plugin-utils.h"
+#include "plugin-utils.h"
 
 std::shared_ptr<Promise<array<std::shared_ptr<Plugin>>>> loadPluginDependencies(std::shared_ptr<DirectoryInfo> projectInfo)
 {

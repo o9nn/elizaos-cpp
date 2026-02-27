@@ -280,9 +280,9 @@ class AgentServer {
   // Optional: Method to remove a participant
     // Since we don't have a direct method for this, we'll need to handle it at the channel level
 
-  // ==============
+  // ====
   // Server-Agent Association Methods
-  // ==============
+  // ====
 
   /**
    * Add an agent to a server

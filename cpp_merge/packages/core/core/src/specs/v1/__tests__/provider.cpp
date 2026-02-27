@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/core/src/specs/v1/__tests__/provider.test.h"
+#include "provider.test.h"
 
 any mockRuntime = as<any>(object{
     object::pair{std:("getSetting"), mock()->mockReturnValue(std:("test-setting"))}, 

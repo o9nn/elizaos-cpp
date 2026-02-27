@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/core/src/prompts.h"
+#include "prompts.hpp"
 
 string shouldRespondTemplate = std:("<task>Decide on behalf of {{agentName}} whether they should respond to the message, ignore it or stop the conversation.</task>\
 \

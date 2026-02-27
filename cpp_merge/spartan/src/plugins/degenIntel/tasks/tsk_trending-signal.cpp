@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/degenIntel/tasks/tsk_trending-signal.h"
+#include "tsk_trending-signal.h"
 
 BuySignal::BuySignal(std::shared_ptr<IAgentRuntime> runtime) {
     this->runtime = runtime;

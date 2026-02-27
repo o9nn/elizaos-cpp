@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-cdp/actions/cdp-tx-explorer-link.h"
+#include "cdp-tx-explorer-link.h"
 
 std::shared_ptr<Action> cdpTxExplorerLink = object{
     object::pair{std:("name"), std:("GET_TX_EXPLORER_LINK")}, 

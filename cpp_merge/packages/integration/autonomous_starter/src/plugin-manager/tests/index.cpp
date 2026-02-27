@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-manager/tests/index.test.h"
+#include "index.test.h"
 
 void Main(void)
 {

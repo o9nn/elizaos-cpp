@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-defillama/src/index.h"
+#include "index.hpp"
 
 std::shared_ptr<Plugin> defiLlamaPlugin = object{
     object::pair{std:("name"), std:("plugin-defillama")}, 

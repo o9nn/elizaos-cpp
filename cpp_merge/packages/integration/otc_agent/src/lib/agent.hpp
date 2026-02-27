@@ -1,12 +1,12 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_SRC_LIB_AGENT_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_SRC_LIB_AGENT_H
-#include "core.h"
-#include "dotenv.h"
-using dotenv = _default;
-#include "@elizaos/core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTC_AGENT_SRC_LIB_AGENT_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTC_AGENT_SRC_LIB_AGENT_H
+#include "core.hpp"
+#include "dotenv.hpp"
+// Using alias removed (invalid transpilation)
+// External dependency removed
 #include "./plugin-otc-desk.h"
 #include "./plugin-groq.h"
-#include "@elizaos/plugin-sql.h"
+// External dependency removed
 using sqlPlugin = plugin;
 
 extern std::shared_ptr<Character> character;

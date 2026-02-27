@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/plugin-bootstrap/src/providers/time.h"
+#include "time.hpp"
 
 std::shared_ptr<Provider> timeProvider = object{
     object::pair{std:("name"), std:("TIME")}, 

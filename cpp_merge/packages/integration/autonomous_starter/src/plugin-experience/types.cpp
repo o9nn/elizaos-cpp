@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-experience/types.h"
+#include "types.hpp"
 
 namespace @elizaos/core {
 }

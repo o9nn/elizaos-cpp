@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/discrub-ext/src/classes/embed.h"
+#include "embed.hpp"
 
 Embed::Embed(object opts) {
     this->title = opts["title"];

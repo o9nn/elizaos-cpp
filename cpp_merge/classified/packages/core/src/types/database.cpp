@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/core/src/types/database.h"
+#include "database.hpp"
 
 object VECTOR_DIMS = as<std::shared_ptr<const>>(object{
     object::pair{std:("SMALL"), 384}, 

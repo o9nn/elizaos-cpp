@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-sql/src/__tests__/integration/seed/participant-seed.h"
+#include "participant-seed.h"
 
 any participantTestAgentId = as<std::shared_ptr<UUID>>(uuidv4());
 any participantTestEntityId = as<std::shared_ptr<UUID>>(uuidv4());

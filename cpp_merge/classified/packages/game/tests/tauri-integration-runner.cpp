@@ -1,9 +1,9 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/game/tests/tauri-integration-runner.h"
+#include "tauri-integration-runner.h"
 
 std::shared_ptr<Promise<void>> TauriIntegrationRunner::runAll()
 {
     console->log(std:("🚀 Starting Tauri Integration Test Runner"));
-    console->log(std:("============="));
+    console->log(std:("==="));
     {
         utils::finally __finally1197_1233([&]() mutable
         {
@@ -287,7 +287,7 @@ std::shared_ptr<Promise<void>> TauriIntegrationRunner::runIntegrationTests()
     ); });
     console->log(std:("\
 📊 Test Results Summary:"));
-    console->log(std:("========"));
+    console->log(std:("=="));
     shared passed = 0;
     shared failed = 0;
     this->results->forEach([=](auto result) mutable

@@ -1,7 +1,7 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-PLUGIN-MANAGER_SRC_INDEX_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-PLUGIN-MANAGER_SRC_INDEX_H
-#include "core.h"
-#include "@elizaos/core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_PLUGIN_MANAGER_SRC_INDEX_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_PLUGIN_MANAGER_SRC_INDEX_H
+#include "core.hpp"
+// External dependency removed
 #include "./services/pluginManagerService.h"
 #include "./services/pluginConfigurationService.h"
 #include "./actions/loadPlugin.h"
@@ -15,7 +15,7 @@
 #include "./providers/registryPluginsProvider.h"
 #include "./providers/pluginKnowledgeProvider.h"
 #include "./types.h"
-#include "@elizaos/core.h"
+// External dependency removed
 
 extern std::shared_ptr<Plugin> pluginManagerPlugin;
 #endif

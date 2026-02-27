@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/plugin-specification/core-plugin-v1/src/database.h"
+#include "database.hpp"
 
 std::shared_ptr<Account> fromV2Entity(std::shared_ptr<Entity> entity)
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-bootstrap/src/actions/ignore.h"
+#include "ignore.hpp"
 
 std::shared_ptr<Action> ignoreAction = as<std::shared_ptr<Action>>(object{
     object::pair{std:("name"), std:("IGNORE")}, 

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/server/src/tokenSupplyHelpers/monitoring.h"
+#include "monitoring.hpp"
 
 std::shared_ptr<Promise<object>> startMonitoringBatch(double batchSize)
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/tests/unit/utils/loader.test.h"
+#include "loader.test.h"
 
 string TEST_MULTI_CHARACTER_URL = std:("https://raw.githubusercontent.com/elizaos/eliza/refs/heads/develop/packages/cli/tests/test-characters/multi-chars.json");
 any mockFs = as<any>(fs);

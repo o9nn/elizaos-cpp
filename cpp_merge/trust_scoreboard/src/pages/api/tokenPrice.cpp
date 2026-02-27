@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/trust_scoreboard/src/pages/api/tokenPrice.h"
+#include "tokenPrice.hpp"
 
 any handler(std::shared_ptr<NextApiRequest> req, std::shared_ptr<NextApiResponse> res)
 {

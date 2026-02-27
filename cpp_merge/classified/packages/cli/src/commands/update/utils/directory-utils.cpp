@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/src/commands/update/utils/directory-utils.h"
+#include "directory-utils.h"
 
 void handleInvalidDirectory(std::shared_ptr<DirectoryInfo> directoryInfo)
 {

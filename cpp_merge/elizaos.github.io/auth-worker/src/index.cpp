@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizaos.github.io/auth-worker/src/index.h"
+#include "index.hpp"
 
 std::shared_ptr<Promise<std::shared_ptr<Response>>> handleCallback(std::shared_ptr<Request> request, std::shared_ptr<Env> env)
 {

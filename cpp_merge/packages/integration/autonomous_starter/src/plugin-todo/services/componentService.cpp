@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-todo/services/componentService.h"
+#include "componentService.hpp"
 
 ComponentService::ComponentService(std::shared_ptr<IAgentRuntime> runtime_) : runtime(runtime_)  {
 }

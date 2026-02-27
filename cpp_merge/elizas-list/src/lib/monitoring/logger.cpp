@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-list/src/lib/monitoring/logger.h"
+#include "logger.hpp"
 
 object logger = object{
     object::pair{std:("error"), [=](auto message, auto error = undefined) mutable

@@ -1,11 +1,11 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAOS_GITHUB_IO_SRC_LIB_PIPELINES_SUMMARIZE_CONTEXT_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAOS_GITHUB_IO_SRC_LIB_PIPELINES_SUMMARIZE_CONTEXT_H
-#include "core.h"
-#include "@/lib/pipelines/pipelineConfig.h"
-#include "@/lib/logger.h"
-#include "@/lib/pipelines/types.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZAOS_GITHUB_IO_SRC_LIB_PIPELINES_SUMMARIZE_CONTEXT_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZAOS_GITHUB_IO_SRC_LIB_PIPELINES_SUMMARIZE_CONTEXT_H
+#include "core.hpp"
+// External dependency removed
+// External dependency removed
+// External dependency removed
 #include "./config.h"
-#include "@/lib/date-utils.h"
+// External dependency removed
 
 class SummarizerPipelineContext;
 class CreateContributorSummaryContextOptions;

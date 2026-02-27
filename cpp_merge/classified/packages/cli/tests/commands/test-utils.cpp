@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/tests/commands/test-utils.h"
+#include "test-utils.h"
 
 std::shared_ptr<Promise<string>> execShellCommand(string command, object options)
 {

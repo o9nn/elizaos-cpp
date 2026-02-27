@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/tools/src/web-browser/index.h"
+#include "index.hpp"
 
 BrowserManager::BrowserManager() {
     if (!fs::existsSync(this->screenshotDir)) {

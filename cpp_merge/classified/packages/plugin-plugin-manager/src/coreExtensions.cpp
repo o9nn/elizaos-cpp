@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-plugin-manager/src/coreExtensions.h"
+#include "coreExtensions.hpp"
 
 void extendRuntimeWithEventUnregistration(std::shared_ptr<IAgentRuntime> runtime)
 {

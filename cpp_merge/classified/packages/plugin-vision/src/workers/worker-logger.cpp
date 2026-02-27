@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-vision/src/workers/worker-logger.h"
+#include "worker-logger.h"
 
 object logger = object{
     object::pair{std:("info"), [=](auto message, Args... args_) mutable

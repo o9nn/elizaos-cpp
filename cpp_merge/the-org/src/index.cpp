@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/the-org/src/index.h"
+#include "index.hpp"
 
 array<any> allAgents = array<object>{ devRel, communityManager, liaison, projectManager, socialMediaManager };
 array<string> rawArgs = process->argv->slice(2);

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-goals/src/index.h"
+#include "index.hpp"
 
 any getGoalsService(std::shared_ptr<IAgentRuntime> runtime)
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-robot/tests/provider.test.h"
+#include "provider.test.h"
 
 object mockRobotService = object{
     object::pair{std:("moveMouse"), vi->fn()}, 

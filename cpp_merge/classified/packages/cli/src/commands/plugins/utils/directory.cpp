@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/src/commands/plugins/utils/directory.h"
+#include "directory.hpp"
 
 std::function<std::shared_ptr<Record<string, string>>(string)> getDependenciesFromDirectory = [=](auto cwd) mutable
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/project-starter/src/__tests__/cypress/e2e/dashboard.cy.h"
+#include "dashboard.cy.h"
 
 void Main(void)
 {

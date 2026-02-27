@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otc-agent/src/app/api/rpc/base/route.h"
+#include "route.hpp"
 
 any POST(std::shared_ptr<NextRequest> request)
 {

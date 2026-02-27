@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/game/src/types/tauri-utils.h"
+#include "tauri-utils.h"
 
 array<std::shared_ptr<MemoryEntry>> extractMemoriesFromResponse(any response)
 {

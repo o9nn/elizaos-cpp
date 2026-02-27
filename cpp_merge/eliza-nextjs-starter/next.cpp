@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza-nextjs-starter/next.config.h"
+#include "next.config.h"
 
 std::shared_ptr<NextConfig> nextConfig = object{
     object::pair{std:("compiler"), object{

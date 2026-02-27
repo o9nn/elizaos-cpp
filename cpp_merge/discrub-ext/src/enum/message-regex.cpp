@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/discrub-ext/src/enum/message-regex.h"
+#include "message-regex.h"
 
 std::shared_ptr<RegExp> MessageRegex::BOLD = (new RegExp(std:("\*\*(?<text>[^*]+)(?=(\*\*))\*\*")));
 

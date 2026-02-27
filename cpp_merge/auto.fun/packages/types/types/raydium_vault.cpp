@@ -1,2 +1,2 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/types/types/raydium_vault.h"
+#include "raydium_vault.hpp"
 

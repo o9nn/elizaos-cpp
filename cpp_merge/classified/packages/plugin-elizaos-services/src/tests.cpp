@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-elizaos-services/src/tests.h"
+#include "tests.hpp"
 
 object ElizaOSServicesTestSuite = object{
     object::pair{std:("name"), std:("ElizaOSServicesTestSuite")}, 

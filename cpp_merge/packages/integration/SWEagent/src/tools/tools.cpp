@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/tools/tools.h"
+#include "tools.hpp"
 
 ToolHandler::ToolHandler(std::shared_ptr<ToolConfig> config) {
     this->config = utils::assign(object{

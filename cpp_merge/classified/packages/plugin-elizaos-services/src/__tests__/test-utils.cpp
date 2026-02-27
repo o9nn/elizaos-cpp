@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-elizaos-services/src/__tests__/test-utils.h"
+#include "test-utils.h"
 
 std::shared_ptr<MockRuntime> createMockRuntime(Partial<std::shared_ptr<MockRuntime>> overrides)
 {

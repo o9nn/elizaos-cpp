@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-todo/src/tests/schema.test.h"
+#include "schema.test.h"
 
 void Main(void)
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/src/utils/run-bun.h"
+#include "run-bun.h"
 
 std::shared_ptr<Promise<void>> runBunCommand(array<string> args, string cwd, boolean silent)
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/tests/setup.h"
+#include "setup.hpp"
 
 std::function<array<any>()> createMockHistory = [=]() mutable
 {

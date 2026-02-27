@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-experience/src/utils/experienceFormatter.h"
+#include "experienceFormatter.hpp"
 
 string formatExperienceForDisplay(std::shared_ptr<Experience> experience)
 {

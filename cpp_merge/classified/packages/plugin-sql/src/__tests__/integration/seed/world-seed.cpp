@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-sql/src/__tests__/integration/seed/world-seed.h"
+#include "world-seed.h"
 
 any worldTestAgentId = as<std::shared_ptr<UUID>>(uuidv4());
 any worldTestEntityId = as<std::shared_ptr<UUID>>(uuidv4());

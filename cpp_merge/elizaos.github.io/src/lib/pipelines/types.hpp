@@ -1,10 +1,10 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAOS_GITHUB_IO_SRC_LIB_PIPELINES_TYPES_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAOS_GITHUB_IO_SRC_LIB_PIPELINES_TYPES_H
-#include "core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZAOS_GITHUB_IO_SRC_LIB_PIPELINES_TYPES_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZAOS_GITHUB_IO_SRC_LIB_PIPELINES_TYPES_H
+#include "core.hpp"
 #include "./pipelineConfig.h"
 #include "../logger.h"
 #include "p-map.h"
-using pMap = _default;
+// Using alias removed (invalid transpilation)
 
 template <typename TInput, typename TOutput, typename TContext>
 using PipelineStep = std::function<any(TInput, TContext)>;

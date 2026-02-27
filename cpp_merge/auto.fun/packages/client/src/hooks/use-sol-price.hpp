@@ -1,8 +1,8 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_CLIENT_SRC_HOOKS_USE-SOL-PRICE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_CLIENT_SRC_HOOKS_USE-SOL-PRICE_H
-#include "core.h"
-#include "@/utils/env.h"
-#include "@tanstack/react-query.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTO_FUN_PACKAGES_CLIENT_SRC_HOOKS_USE_SOL_PRICE_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTO_FUN_PACKAGES_CLIENT_SRC_HOOKS_USE_SOL_PRICE_H
+#include "core.hpp"
+// External dependency removed
+// External dependency removed
 
 class SolPriceResponse;
 class CoinGeckoResponse;

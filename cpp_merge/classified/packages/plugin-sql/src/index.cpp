@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-sql/src/index.h"
+#include "index.hpp"
 
 std::shared_ptr<IDatabaseAdapter> createDatabaseAdapter(object config, std::shared_ptr<UUID> agentId)
 {

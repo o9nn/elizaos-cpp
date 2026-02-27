@@ -1,16 +1,16 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_THE-ORG_SRC_COMMUNITYMANAGER_INDEX_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_THE-ORG_SRC_COMMUNITYMANAGER_INDEX_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "dotenv.h"
-using dotenv = _default;
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_THE_ORG_SRC_COMMUNITYMANAGER_INDEX_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_THE_ORG_SRC_COMMUNITYMANAGER_INDEX_H
+#include "core.hpp"
+// External dependency removed
+#include "dotenv.hpp"
+// Using alias removed (invalid transpilation)
 #include "node:fs.h"
-using fs = _default;
+// Using alias removed (invalid transpilation)
 #include "node:path.h"
-using path = _default;
+// Using alias removed (invalid transpilation)
 #include "../init.h"
 #include "./plugins/communityManager.h"
-using communityManagerPlugin = _default;
+// Using alias removed (invalid transpilation)
 
 extern any imagePath;
 extern string avatar;

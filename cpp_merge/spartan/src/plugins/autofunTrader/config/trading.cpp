@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/autofunTrader/config/trading.h"
+#include "trading.hpp"
 
 object DEFAULT_CONFIG = object{
     object::pair{std:("intervals"), object{

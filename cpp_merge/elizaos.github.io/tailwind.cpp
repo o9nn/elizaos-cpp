@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizaos.github.io/tailwind.config.h"
+#include "tailwind.config.h"
 
 object config = object{
     object::pair{std:("darkMode"), array<string>{ std:("class") }}, 

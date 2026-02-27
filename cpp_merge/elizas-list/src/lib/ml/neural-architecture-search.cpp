@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-list/src/lib/ml/neural-architecture-search.h"
+#include "neural-architecture-search.h"
 
 NeuralArchitectureSearch::NeuralArchitectureSearch(std::shared_ptr<NASConfig> config) {
     this->searchSpace = this->defineSearchSpace(config);

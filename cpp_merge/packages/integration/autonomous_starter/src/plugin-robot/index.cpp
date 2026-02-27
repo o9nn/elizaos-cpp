@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-robot/index.h"
+#include "index.hpp"
 
 std::shared_ptr<Plugin> robotPlugin = object{
     object::pair{std:("name"), std:("plugin-robot")}, 

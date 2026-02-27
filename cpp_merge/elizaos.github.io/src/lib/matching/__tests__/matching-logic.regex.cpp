@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizaos.github.io/src/lib/matching/__tests__/matching-logic.regex.test.h"
+#include "matching-logic.regex.test.h"
 
 void Main(void)
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/agentserver/src/__tests__/progression-e2e.test.h"
+#include "progression-e2e.test.h"
 
 void Main(void)
 {

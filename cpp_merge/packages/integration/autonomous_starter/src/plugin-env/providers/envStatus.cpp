@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-env/providers/envStatus.h"
+#include "envStatus.hpp"
 
 string formatEnvVarStatus(std::shared_ptr<EnvVarConfig> config, boolean showValues)
 {

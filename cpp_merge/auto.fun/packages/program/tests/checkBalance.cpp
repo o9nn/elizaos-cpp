@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/program/tests/checkBalance.h"
+#include "checkBalance.hpp"
 
 void Main(void)
 {

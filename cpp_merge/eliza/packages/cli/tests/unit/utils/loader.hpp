@@ -1,11 +1,11 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_TESTS_UNIT_UTILS_LOADER_TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_TESTS_UNIT_UTILS_LOADER_TEST_H
-#include "core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_CLI_TESTS_UNIT_UTILS_LOADER_TEST_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_CLI_TESTS_UNIT_UTILS_LOADER_TEST_H
+#include "core.hpp"
 #include "bun:test.h"
 #include "node:fs.h"
-using fs = _default;
+// Using alias removed (invalid transpilation)
 #include "../../../src/commands/start/utils/loader.h"
-#include "@elizaos/core.h"
+// External dependency removed
 
 extern string TEST_MULTI_CHARACTER_URL;
 extern any mockFs;

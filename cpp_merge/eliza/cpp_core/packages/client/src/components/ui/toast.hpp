@@ -8,7 +8,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
-#include "toast.hpp"
+// Self-include removed: toast.hpp
 
 namespace elizaos {
 

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/api-client/src/__tests__/services/system.test.h"
+#include "system.test.h"
 
 object originalConsoleError = console->error;
 object originalConsoleWarn = console->warn;

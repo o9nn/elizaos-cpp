@@ -1,9 +1,9 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_VERCEL-API_APP_API_PLUGINS_REGISTRY_ROUTE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_VERCEL-API_APP_API_PLUGINS_REGISTRY_ROUTE_H
-#include "core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_VERCEL_API_APP_API_PLUGINS_REGISTRY_ROUTE_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_VERCEL_API_APP_API_PLUGINS_REGISTRY_ROUTE_H
+#include "core.hpp"
 #include "next/server.h"
-#include "@/lib/parse-registry.h"
-#include "@/lib/types.h"
+// External dependency removed
+// External dependency removed
 
 extern any cachedData;
 extern double cacheTimestamp;

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/agentserver/src/upload.h"
+#include "upload.hpp"
 
 string generateSecureFilename(string originalName)
 {

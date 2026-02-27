@@ -60,11 +60,11 @@ IAgentRuntime createMockAgentRuntime(std::optional<std::optional<IAgentRuntime>>
                 registerModel: jest.fn(),
                 getModel: jest.fn[&](() { return std::nullopt),
                 registerEvent: jest.fn(),
-                getEvent: jest.fn(() => std::nullopt),
-                emitEvent: jest.fn(() => Promise.resolve()),
+                getEvent: jest.fn[&](() { return std::nullopt),
+                emitEvent: jest.fn[&](() { return Promise.resolve()),
                 registerTaskWorker: jest.fn(),
-                getTaskWorker: jest.fn(() => std::nullopt),
-                stop: jest.fn(() => Promise.resolve()),
+                getTaskWorker: jest.fn[&](() { return std::nullopt),
+                stop: jest.fn[&](() { return Promise.resolve()),
                 addEmbeddingToMemory: jest.fn((memory: Memory) => Promise.resolve(memory)),
                 createRunId: jest.fn(() => "123e4567-e89b-12d3-a456-426614174000"),
                 startRun: jest.fn(() => "123e4567-e89b-12d3-a456-426614174000"),
@@ -152,7 +152,7 @@ IAgentRuntime createMockAgentRuntime(std::optional<std::optional<IAgentRuntime>>
                 getMemoriesByWorldId: jest.fn(() => Promise.resolve([])),
 
                 ...overrides,
-                }; }; };
+                }; }; }; }; }; }; };
 
                 return baseRuntime;
 

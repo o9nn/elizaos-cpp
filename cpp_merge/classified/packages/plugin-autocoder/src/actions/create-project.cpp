@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-autocoder/src/actions/create-project.h"
+#include "create-project.h"
 
 any extractProjectName(string text)
 {

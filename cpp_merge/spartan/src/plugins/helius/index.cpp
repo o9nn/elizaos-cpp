@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/helius/index.h"
+#include "index.hpp"
 
 std::shared_ptr<Plugin> heliusPlugin = object{
     object::pair{std:("name"), std:("helius")}, 

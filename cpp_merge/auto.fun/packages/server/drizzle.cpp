@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/server/drizzle.config.h"
+#include "drizzle.config.h"
 
 void Main(void)
 {

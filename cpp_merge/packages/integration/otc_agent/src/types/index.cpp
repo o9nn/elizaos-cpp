@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otc-agent/src/types/index.h"
+#include "index.hpp"
 
 void Main(void)
 {

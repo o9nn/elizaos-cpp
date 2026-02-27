@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-plugin-manager/src/__tests__/e2e/registryIntegration.e2e.h"
+#include "registryIntegration.e2e.h"
 
 void Main(void)
 {

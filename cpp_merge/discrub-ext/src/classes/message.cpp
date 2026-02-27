@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/discrub-ext/src/classes/message.h"
+#include "message.hpp"
 
 Message::Message(object opts) {
     this->id = opts["id"];

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/server/src/routes/adminAddresses.h"
+#include "adminAddresses.hpp"
 
 std::function<array<string>(string)> parseAdminAddresses = [=](auto addressesStr) mutable
 {

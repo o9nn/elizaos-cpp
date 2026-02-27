@@ -1,11 +1,11 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_GAME_TESTS_TAURI-INTEGRATION-RUNNER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_GAME_TESTS_TAURI-INTEGRATION-RUNNER_H
-#include "core.h"
-#include "child_process.h"
-#include "fs.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_GAME_TESTS_TAURI_INTEGRATION_RUNNER_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_GAME_TESTS_TAURI_INTEGRATION_RUNNER_H
+#include "core.hpp"
+#include "child_process.hpp"
+#include "fs.hpp"
 using fs = promises;
-#include "path.h"
-using path = _default;
+#include "path.hpp"
+// Using alias removed (invalid transpilation)
 
 class TestResult;
 class TauriIntegrationRunner;

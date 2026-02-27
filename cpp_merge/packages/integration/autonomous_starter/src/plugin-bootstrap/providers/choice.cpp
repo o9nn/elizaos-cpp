@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-bootstrap/providers/choice.h"
+#include "choice.hpp"
 
 std::shared_ptr<Provider> choiceProvider = object{
     object::pair{std:("name"), std:("CHOICE")}, 

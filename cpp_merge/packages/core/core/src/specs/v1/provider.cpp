@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/core/src/specs/v1/provider.h"
+#include "provider.hpp"
 
 Provider fromV2Provider(std::shared_ptr<ProviderV2> providerV2)
 {

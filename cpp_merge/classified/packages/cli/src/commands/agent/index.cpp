@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/src/commands/agent/index.h"
+#include "index.hpp"
 
 any agent = ((std::make_shared<Command>()))->name(std:("agent"))->description(std:("Manage ElizaOS agents"));
 

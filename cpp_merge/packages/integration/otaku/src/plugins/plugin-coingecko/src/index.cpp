@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-coingecko/src/index.h"
+#include "index.hpp"
 
 std::shared_ptr<Plugin> coingeckoPlugin = object{
     object::pair{std:("name"), std:("plugin-coingecko")}, 

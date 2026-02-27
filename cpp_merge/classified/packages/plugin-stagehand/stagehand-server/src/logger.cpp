@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-stagehand/stagehand-server/src/logger.h"
+#include "logger.hpp"
 
 void Logger::error(string message, any error)
 {

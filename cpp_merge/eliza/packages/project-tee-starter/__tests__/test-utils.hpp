@@ -1,15 +1,15 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PROJECT-TEE-STARTER___TESTS___TEST-UTILS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PROJECT-TEE-STARTER___TESTS___TEST-UTILS_H
-#include "core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_PROJECT_TEE_STARTER___TESTS___TEST_UTILS_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_PROJECT_TEE_STARTER___TESTS___TEST_UTILS_H
+#include "core.hpp"
 #include "bun:test.h"
-#include "@elizaos/core.h"
+// External dependency removed
 #include "./utils/core-test-utils.h"
 using createCoreMockRuntime = createMockRuntime;
 using createCoreMockMessage = createMockMessage;
 using createCoreMockState = createMockState;
 #include "../src/character.h"
 #include "../src/plugin.h"
-using plugin = _default;
+// Using alias removed (invalid transpilation)
 
 std::shared_ptr<IAgentRuntime> createMockRuntime(Partial<std::shared_ptr<IAgentRuntime>> overrides = object{});
 

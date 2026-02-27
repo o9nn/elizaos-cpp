@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/autonomous-trader/strategies/strategy_llm.h"
+#include "strategy_llm.hpp"
 
 void llmStrategy(std::shared_ptr<IAgentRuntime> runtime)
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/plugin-sql/src/schema/types.h"
+#include "types.hpp"
 
 any stringJsonb = customType<object>(object{
     , 

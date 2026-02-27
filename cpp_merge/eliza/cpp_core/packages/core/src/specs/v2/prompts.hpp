@@ -8,7 +8,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
-#include "prompts.hpp"
+// Self-include removed: prompts.hpp
 
 namespace elizaos {
 

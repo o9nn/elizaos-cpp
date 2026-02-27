@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/tests/unit/index.test.h"
+#include "index.test.h"
 #include <string>
 #include <vector>
 

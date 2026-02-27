@@ -1,11 +1,11 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_CLIENT_SRC_UTILS_INDEX_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_CLIENT_SRC_UTILS_INDEX_H
-#include "core.h"
-#include "@/types.h"
-#include "dayjs.h"
-using dayjs = _default;
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTO_FUN_PACKAGES_CLIENT_SRC_UTILS_INDEX_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTO_FUN_PACKAGES_CLIENT_SRC_UTILS_INDEX_H
+#include "core.hpp"
+// External dependency removed
+#include "dayjs.hpp"
+// Using alias removed (invalid transpilation)
 #include "dayjs/plugin/relativeTime.h"
-using relativeTime = _default;
+// Using alias removed (invalid transpilation)
 #include "./env.h"
 
 extern any moment;

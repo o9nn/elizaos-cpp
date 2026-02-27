@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/agentserver/src/api/system/version.h"
+#include "version.hpp"
 
 std::shared_ptr<VersionInfo> getVersionInfo()
 {

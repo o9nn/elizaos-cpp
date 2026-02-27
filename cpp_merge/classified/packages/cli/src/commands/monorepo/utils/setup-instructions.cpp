@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/src/commands/monorepo/utils/setup-instructions.h"
+#include "setup-instructions.h"
 
 std::shared_ptr<PlatformInstructions> getBunInstallInstructions()
 {

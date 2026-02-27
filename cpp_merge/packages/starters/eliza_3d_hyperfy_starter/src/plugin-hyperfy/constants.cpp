@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza-3d-hyperfy-starter/src/plugin-hyperfy/constants.h"
+#include "constants.hpp"
 
 array<object> EMOTES_LIST = array<object>{ object{
     object::pair{std:("name"), std:("crawling")}, 

@@ -13,7 +13,7 @@ void startRecording() {
             });
             .then[&]((stream) {
                 setIsRecording(true);
-                // ====== Analyzing ======
+                // == Analyzing ==
                 const auto AudioContext = window.AudioContext;
                 const auto audioCtx = std::make_unique<AudioContext>();
                 const auto analyser = audioCtx.createAnalyser();
@@ -36,7 +36,7 @@ void startRecording() {
                     mediaRecorderRef.current.mediaRecorder = new MediaRecorder(stream, options);
                     mediaRecorderRef.current.mediaRecorder.start();
                     recordingChunks = [];
-                    // ====== Recording ======
+                    // == Recording ==
                     recorder = new MediaRecorder(stream);
                     recorder.start();
                     recorder.ondataavailable = [&](e) {

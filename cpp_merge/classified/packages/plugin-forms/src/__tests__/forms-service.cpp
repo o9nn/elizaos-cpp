@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-forms/src/__tests__/forms-service.test.h"
+#include "forms-service.test.h"
 
 std::function<any(string)> createMockMemory = [=](auto text) mutable
 {

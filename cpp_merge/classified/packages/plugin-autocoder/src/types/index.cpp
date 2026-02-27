@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-autocoder/src/types/index.h"
+#include "index.hpp"
 
 any isCodeGenerationService(any service)
 {

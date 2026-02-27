@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-elizaos-services/src/auth/PlatformIntegration.h"
+#include "PlatformIntegration.hpp"
 
 PlatformIntegrationService::PlatformIntegrationService(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<PlatformAuthConfig> config) {
     this->runtime = runtime;

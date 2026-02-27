@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza-3d-hyperfy-starter/src/plugin-hyperfy/actions/ignore.h"
+#include "ignore.hpp"
 
 std::shared_ptr<Action> ignoreAction = as<std::shared_ptr<Action>>(object{
     object::pair{std:("name"), std:("IGNORE")}, 

@@ -1,12 +1,12 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAOS_GITHUB_IO_SRC_LIB_PIPELINES_SUMMARIZE_AIPROJECTSUMMARY_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAOS_GITHUB_IO_SRC_LIB_PIPELINES_SUMMARIZE_AIPROJECTSUMMARY_H
-#include "core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZAOS_GITHUB_IO_SRC_LIB_PIPELINES_SUMMARIZE_AIPROJECTSUMMARY_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZAOS_GITHUB_IO_SRC_LIB_PIPELINES_SUMMARIZE_AIPROJECTSUMMARY_H
+#include "core.hpp"
 #include "./config.h"
 #include "./callAIService.h"
 #include "../codeAreaHelpers.h"
 #include "../export/queries.h"
-#include "@date-fns/utc.h"
-#include "@/lib/date-utils.h"
+// External dependency removed
+// External dependency removed
 
 class CompletedItem;
 class FocusArea;

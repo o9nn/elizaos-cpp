@@ -1,11 +1,11 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_CLIENT_SRC_UTILS_SWAPUTILS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_CLIENT_SRC_UTILS_SWAPUTILS_H
-#include "core.h"
-#include "@/hooks/use-config-account.h"
-#include "@/types.h"
-#include "@autodotfun/types/types/autofun.ts.h"
-#include "@coral-xyz/anchor.h"
-#include "@solana/web3.js.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTO_FUN_PACKAGES_CLIENT_SRC_UTILS_SWAPUTILS_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTO_FUN_PACKAGES_CLIENT_SRC_UTILS_SWAPUTILS_H
+#include "core.hpp"
+// External dependency removed
+// External dependency removed
+// External dependency removed
+// External dependency removed
+// External dependency removed
 #include "./env.h"
 
 double convertToBasisPoints(double feePercent);

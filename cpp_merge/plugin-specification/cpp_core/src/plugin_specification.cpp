@@ -16,9 +16,9 @@ namespace elizaos {
 // Global plugin manager instance
 std::shared_ptr<PluginManager> globalPluginManager = std::make_shared<PluginManager>();
 
-// ========================
+// ======
 // PluginVersion Implementation
-// ========================
+// ======
 
 std: PluginVersion::toString() const {
     std::ostringstream oss;
@@ -80,18 +80,18 @@ PluginVersion PluginVersion::fromString(const std:& versionStr) {
     return version;
 }
 
-// ========================
+// ======
 // PluginDependency Implementation
-// ========================
+// ======
 
 bool PluginDependency::isSatisfiedBy(const PluginVersion& version) const {
     return version.isCompatibleWith(minVersion) && 
            (maxVersion.major == 0 || version.major <= maxVersion.major);
 }
 
-// ========================
+// ======
 // PluginParameter Implementation
-// ========================
+// ======
 
 JsonValue PluginParameter::toJson() const {
     JsonValue json;
@@ -157,9 +157,9 @@ PluginParameter PluginParameter::fromJson(const JsonValue& json) {
     return param;
 }
 
-// ========================
+// ======
 // PluginMetadata Implementation
-// ========================
+// ======
 
 JsonValue PluginMetadata::toJson() const {
     JsonValue json;
@@ -220,9 +220,9 @@ std::vector<std::string> PluginMetadata::getValidationErrors() const {
     return errors;
 }
 
-// ========================
+// ======
 // PluginResult Implementation
-// ========================
+// ======
 
 JsonValue PluginResult::toJson() const {
     JsonValue json;
@@ -233,9 +233,9 @@ JsonValue PluginResult::toJson() const {
     return json;
 }
 
-// ========================
+// ======
 // PluginInterface Implementation
-// ========================
+// ======
 
 PluginResult PluginInterface::handleHook(PluginHook hook, const PluginContext& context) {
     // Default implementation - do nothing
@@ -274,9 +274,9 @@ std::vector<PluginCapability> PluginInterface::getCapabilities() const {
     return getMetadata().capabilities;
 }
 
-// ========================
+// ======
 // SimplePlugin Implementation
-// ========================
+// ======
 
 SimplePlugin::SimplePlugin(const PluginMetadata& metadata) : metadata_(metadata) {}
 
@@ -299,9 +299,9 @@ std::vector<PluginCapability> SimplePlugin::getCapabilities() const {
     return metadata_.capabilities;
 }
 
-// ========================
+// ======
 // PluginRegistry Implementation
-// ========================
+// ======
 
 PluginRegistry::PluginRegistry() = default;
 PluginRegistry::~PluginRegistry() = default;
@@ -479,9 +479,9 @@ bool PluginRegistry::validatePlugin(std::shared_ptr<PluginInterface> plugin) con
     return metadata.validate();
 }
 
-// ========================
+// ======
 // PluginManager Implementation
-// ========================
+// ======
 
 PluginManager::PluginManager() = default;
 PluginManager::~PluginManager() = default;
@@ -735,9 +735,9 @@ bool PluginManager::updatePluginConfiguration(const std:& pluginName, const std:
     return true;
 }
 
-// ========================
+// ======
 // PluginFactory Implementation  
-// ========================
+// ======
 
 std::unordered_map<std:, PluginFactory::PluginCreator> PluginFactory::creators_;
 std::mutex PluginFactory::creatorsMutex_;
@@ -769,9 +769,9 @@ std::vector<std::string> PluginFactory::getRegisteredPlugins() {
     return plugins;
 }
 
-// ========================
+// ======
 // Utility Functions
-// ========================
+// ======
 
 std: pluginCapabilityToString(PluginCapability capability) {
     switch (capability) {

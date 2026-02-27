@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-autocoder/project-template/src/actions.h"
+#include "actions.hpp"
 
 array<any> actions = array<any>();
 

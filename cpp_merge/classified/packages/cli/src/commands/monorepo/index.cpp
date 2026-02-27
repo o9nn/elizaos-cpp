@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/src/commands/monorepo/index.h"
+#include "index.hpp"
 
 any monorepo = ((std::make_shared<Command>()))->name(std:("monorepo"))->description(std:("Clone ElizaOS monorepo from a specific branch, defaults to develop"))->option(std:("-b, --branch <branch>"), std:("Branch to install"), std:("develop"))->option(std:("-d, --dir <directory>"), std:("Destination directory"), std:("./eliza"))->action([=](auto options) mutable
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/degenIntel/providers/sentiment.h"
+#include "sentiment.hpp"
 
 std::shared_ptr<Provider> sentimentProvider = object{
     object::pair{std:("name"), std:("CRYPTOTWITTER_MARKET_SENTIMENT")}, 

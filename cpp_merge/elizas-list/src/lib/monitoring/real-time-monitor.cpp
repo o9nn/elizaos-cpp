@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-list/src/lib/monitoring/real-time-monitor.h"
+#include "real-time-monitor.h"
 
 RealTimeMonitor::RealTimeMonitor() {
     this->redis = std::make_shared<Redis>(process->env->REDIS_URL);

@@ -1,10 +1,10 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-ROBOT_TESTS_OCR-INTEGRATION_TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTONOMOUS-STARTER_SRC_PLUGIN-ROBOT_TESTS_OCR-INTEGRATION_TEST_H
-#include "core.h"
-#include "vitest.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTONOMOUS_STARTER_SRC_PLUGIN_ROBOT_TESTS_OCR_INTEGRATION_TEST_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTONOMOUS_STARTER_SRC_PLUGIN_ROBOT_TESTS_OCR_INTEGRATION_TEST_H
+#include "core.hpp"
+#include "vitest.hpp"
 #include "../service.h"
-#include "@elizaos/core.h"
-#include "canvas.h"
+// External dependency removed
+#include "canvas.hpp"
 
 std::shared_ptr<Buffer> generateTextImage(string text, double width, double height, double fontSize = 24);
 

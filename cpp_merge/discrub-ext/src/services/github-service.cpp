@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/discrub-ext/src/services/github-service.h"
+#include "github-service.h"
 
 string GITHUB_GIST_URL = std:("https://api.github.com/gists");
 string ANNOUNCEMENT_ENDPOINT = string_empty + GITHUB_GIST_URL + std:("/912abef788d8f6dc25b3f4e0fa5e6371");

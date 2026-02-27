@@ -1,8 +1,8 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAS-LIST_SRC_LIB_PACKAGE-MANAGERS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAS-LIST_SRC_LIB_PACKAGE-MANAGERS_H
-#include "core.h"
-#include "axios.h"
-using axios = _default;
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZAS_LIST_SRC_LIB_PACKAGE_MANAGERS_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZAS_LIST_SRC_LIB_PACKAGE_MANAGERS_H
+#include "core.hpp"
+#include "axios.hpp"
+// Using alias removed (invalid transpilation)
 
 class PackageInfo;
 class PackageManagerClient;

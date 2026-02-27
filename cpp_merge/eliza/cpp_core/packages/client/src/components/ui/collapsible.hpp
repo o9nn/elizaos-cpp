@@ -9,7 +9,7 @@
 #include <unordered_set>
 #include <vector>
 #include "button.hpp"
-#include "collapsible.hpp"
+// Self-include removed: collapsible.hpp
 
 namespace elizaos {
 

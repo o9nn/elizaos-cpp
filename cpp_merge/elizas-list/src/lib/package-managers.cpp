@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-list/src/lib/package-managers.h"
+#include "package-managers.h"
 
 std::shared_ptr<Promise<std::shared_ptr<PackageInfo>>> PackageManagerClient::getNpmInfo(string packageName)
 {

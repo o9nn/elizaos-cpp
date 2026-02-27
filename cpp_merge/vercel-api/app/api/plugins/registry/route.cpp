@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/vercel-api/app/api/plugins/registry/route.h"
+#include "route.hpp"
 
 any GET()
 {

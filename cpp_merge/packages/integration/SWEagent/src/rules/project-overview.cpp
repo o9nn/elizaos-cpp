@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/rules/project-overview.h"
+#include "project-overview.h"
 
 any getComponentByPath(string path)
 {

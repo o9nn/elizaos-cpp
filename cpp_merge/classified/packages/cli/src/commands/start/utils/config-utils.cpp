@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/src/commands/start/utils/config-utils.h"
+#include "config-utils.h"
 
 std::shared_ptr<Promise<std::shared_ptr<RuntimeSettings>>> loadEnvConfig()
 {

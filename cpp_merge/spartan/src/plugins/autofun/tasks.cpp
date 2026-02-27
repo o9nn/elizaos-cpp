@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/autofun/tasks.h"
+#include "tasks.hpp"
 
 std::function<std::shared_ptr<Promise<void>>(any, any)> registerTasks = [=](auto runtime, auto worldId = undefined) mutable
 {

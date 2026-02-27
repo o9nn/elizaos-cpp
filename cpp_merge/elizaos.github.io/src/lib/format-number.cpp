@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizaos.github.io/src/lib/format-number.h"
+#include "format-number.h"
 
 string formatCompactNumber(double number, double maximumFractionDigits)
 {

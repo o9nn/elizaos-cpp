@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/degenTrader/types.h"
+#include "types.hpp"
 
 object ServiceTypes = as<std::shared_ptr<const>>(object{
     object::pair{std:("DEGEN_TRADING"), std:("degen_trader")}

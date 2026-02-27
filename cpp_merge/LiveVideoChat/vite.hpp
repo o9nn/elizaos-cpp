@@ -1,8 +1,8 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_LIVEVIDEOCHAT_VITE_CONFIG_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_LIVEVIDEOCHAT_VITE_CONFIG_H
-#include "core.h"
-#include "@vitejs/plugin-react.h"
-using react = _default;
-#include "vite.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_LIVEVIDEOCHAT_VITE_CONFIG_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_LIVEVIDEOCHAT_VITE_CONFIG_H
+#include "core.hpp"
+// External dependency removed
+// Using alias removed (invalid transpilation)
+// Self-include removed: vite.hpp
 
 #endif

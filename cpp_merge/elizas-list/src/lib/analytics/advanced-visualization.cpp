@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-list/src/lib/analytics/advanced-visualization.h"
+#include "advanced-visualization.h"
 
 std::shared_ptr<ChartConfiguration> AdvancedVisualization::generateSegmentationSunburst(array<any> segments)
 {

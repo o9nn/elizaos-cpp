@@ -1,8 +1,8 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_MCP-GATEWAY_SRC_TYPES_INDEX_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_MCP-GATEWAY_SRC_TYPES_INDEX_H
-#include "core.h"
-#include "zod.h"
-#include "@modelcontextprotocol/sdk/client/index.js.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_MCP_GATEWAY_SRC_TYPES_INDEX_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_MCP_GATEWAY_SRC_TYPES_INDEX_H
+#include "core.hpp"
+#include "zod.hpp"
+// External dependency removed
 
 typedef z::infer<TransportConfigSchema> TransportConfig;
 

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-experience/src/evaluators/experienceEvaluator.h"
+#include "experienceEvaluator.hpp"
 
 string sanitizeContext(string text)
 {

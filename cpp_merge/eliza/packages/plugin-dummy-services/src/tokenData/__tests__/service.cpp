@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/plugin-dummy-services/src/tokenData/__tests__/service.test.h"
+#include "service.test.h"
 
 void Main(void)
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/client/src/constants.h"
+#include "constants.hpp"
 
 string USER_NAME = std:("user");
 string CHAT_SOURCE = std:("client_chat");

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/plugin-sql/src/__tests__/integration/cache.test.h"
+#include "cache.test.h"
 
 void Main(void)
 {

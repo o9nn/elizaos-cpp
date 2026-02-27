@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-todo/src/database/tables.h"
+#include "tables.hpp"
 
 array<std::shared_ptr<TableSchema>> TODO_TABLES = array<std::shared_ptr<TableSchema>>{ object{
     object::pair{std:("name"), std:("todos")}, 

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/agentserver/src/services/progressionTracker.h"
+#include "progressionTracker.hpp"
 
 ProgressionTracker::ProgressionTracker(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<CapabilityProgressionService> progressionService) {
     this->runtime = runtime;

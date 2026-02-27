@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/client/src/hooks/use-elevenlabs-voices.h"
+#include "use-elevenlabs-voices.h"
 
 any useElevenLabsVoices()
 {

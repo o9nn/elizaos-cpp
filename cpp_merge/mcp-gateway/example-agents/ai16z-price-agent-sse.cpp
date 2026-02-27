@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/mcp-gateway/example-agents/ai16z-price-agent-sse.h"
+#include "ai16z-price-agent-sse.h"
 
 std::shared_ptr<Promise<void>> main()
 {

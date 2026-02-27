@@ -1,16 +1,16 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAS-WORLD_SRC_LIB_TOKEN-UTILS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAS-WORLD_SRC_LIB_TOKEN-UTILS_H
-#include "core.h"
-#include "@solana/web3.js.h"
-#include "@solana/spl-token.h"
-#include "axios.h"
-using axios = _default;
-#include "@/types.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZAS_WORLD_SRC_LIB_TOKEN_UTILS_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZAS_WORLD_SRC_LIB_TOKEN_UTILS_H
+#include "core.hpp"
+// External dependency removed
+// External dependency removed
+#include "axios.hpp"
+// Using alias removed (invalid transpilation)
+// External dependency removed
 #include "alchemy-sdk.h"
-#include "fs.h"
-using fs = _default;
-#include "path.h"
-using path = _default;
+#include "fs.hpp"
+// Using alias removed (invalid transpilation)
+#include "path.hpp"
+// Using alias removed (invalid transpilation)
 
 class SolSnifferResponse;
 

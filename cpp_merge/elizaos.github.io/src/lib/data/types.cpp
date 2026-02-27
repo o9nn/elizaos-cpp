@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizaos.github.io/src/lib/data/types.h"
+#include "types.hpp"
 
 any GithubUserSchema = z->object(object{
     object::pair{std:("login"), z->string()}, 

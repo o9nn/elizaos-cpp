@@ -1,10 +1,10 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_CLI_SCRIPTS_GENERATE-UNIT-TESTS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_CLI_SCRIPTS_GENERATE-UNIT-TESTS_H
-#include "core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_CLI_SCRIPTS_GENERATE_UNIT_TESTS_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_CLI_SCRIPTS_GENERATE_UNIT_TESTS_H
+#include "core.hpp"
 #include "fs/promises.h"
-#include "path.h"
-#include "fs.h"
-#include "@clack/prompts.h"
+#include "path.hpp"
+#include "fs.hpp"
+// External dependency removed
 
 class FileToTest;
 

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-knowledge/src/index.h"
+#include "index.hpp"
 
 std::shared_ptr<Plugin> knowledgePlugin = object{
     object::pair{std:("name"), std:("knowledge")}, 

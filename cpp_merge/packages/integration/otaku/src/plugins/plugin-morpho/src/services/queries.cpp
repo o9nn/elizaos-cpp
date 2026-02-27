@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-morpho/src/services/queries.h"
+#include "queries.hpp"
 
 string Q_MARKETS = std:("\
   query Markets($chainIds: [Int!], $first: Int!) {\

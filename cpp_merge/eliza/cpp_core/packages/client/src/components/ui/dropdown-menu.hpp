@@ -9,7 +9,7 @@
 #include <unordered_set>
 #include <vector>
 #include "button.hpp"
-#include "dropdown-menu.hpp"
+// Self-include removed: dropdown-menu.hpp
 
 namespace elizaos {
 

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/plugin-sql/src/__tests__/fixtures/hello-world-plugin.h"
+#include "hello-world-plugin.h"
 
 any helloWorldTable = pgTable(std:("hello_world"), object{
     object::pair{std:("id"), uuid(std:("id"))->defaultRandom()->primaryKey()}, 

@@ -28,29 +28,29 @@ namespace elizaos {
  * - Similar pattern to LoadingPanel
  */
 
-// ====================
+// =====
 // EXAMPLE 1: Simple Content Modal
-// ====================
+// =====
 void ExampleSimpleModal();
 
-// ====================
+// =====
 // EXAMPLE 2: Form Modal (like SendModal)
-// ====================
+// =====
 void ExampleFormModal();
 
-// ====================
+// =====
 // EXAMPLE 3: Confirmation Modal
-// ====================
+// =====
 void ExampleConfirmationModal();
 
-// ====================
+// =====
 // EXAMPLE 4: Custom Styling Modal
-// ====================
+// =====
 void ExampleCustomStyledModal();
 
-// ====================
+// =====
 // EXAMPLE 5: Converting existing SendModal
-// ====================
+// =====
 
 /**
  * HOW TO CONVERT YOUR EXISTING MODALS:

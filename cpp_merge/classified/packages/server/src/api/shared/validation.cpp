@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/server/src/api/shared/validation.h"
+#include "validation.hpp"
 
 std::function<any(std::shared_ptr<Map<any, any>>, any)> getRuntime = [=](auto agents, auto agentId) mutable
 {

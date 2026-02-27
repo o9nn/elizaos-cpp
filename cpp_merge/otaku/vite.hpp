@@ -1,10 +1,10 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_VITE_CONFIG_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_VITE_CONFIG_H
-#include "core.h"
-#include "vite.h"
-#include "@vitejs/plugin-react.h"
-using react = _default;
-#include "path.h"
-using path = _default;
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTAKU_VITE_CONFIG_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTAKU_VITE_CONFIG_H
+#include "core.hpp"
+// Self-include removed: vite.hpp
+// External dependency removed
+// Using alias removed (invalid transpilation)
+#include "path.hpp"
+// Using alias removed (invalid transpilation)
 
 #endif

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/autonomous-trader/actions/act_wallet_create.h"
+#include "act_wallet_create.hpp"
 
 std::shared_ptr<Action> walletCreate = object{
     object::pair{std:("name"), std:("WALLET_CREATION")}, 

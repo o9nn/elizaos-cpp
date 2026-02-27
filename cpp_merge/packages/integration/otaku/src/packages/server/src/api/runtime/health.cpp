@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/packages/server/src/api/runtime/health.h"
+#include "health.hpp"
 
 std::shared_ptr<express::Router> createHealthRouter(std::shared_ptr<ElizaOS> elizaOS, std::shared_ptr<AgentServer> serverInstance)
 {

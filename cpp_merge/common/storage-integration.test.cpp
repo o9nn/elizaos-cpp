@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-elizaos-services/src/tests/storage-integration.test.h"
+#include "storage-integration.test.h"
 
 object StorageIntegrationTestSuite = object{
     object::pair{std:("name"), std:("StorageIntegrationTestSuite")}, 

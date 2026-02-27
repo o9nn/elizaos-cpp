@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-list/src/lib/analytics/visualization.h"
+#include "visualization.hpp"
 
 std::shared_ptr<ChartConfiguration> AnalyticsVisualization::generateTimeSeriesChart(array<std::shared_ptr<TimeSeriesDataPoint>> data)
 {

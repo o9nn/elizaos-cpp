@@ -12,7 +12,7 @@
 #include <variant>
 #include <vector>
 #include "types.hpp"
-#include "utils.hpp"
+// Self-include removed: utils.hpp
 
 namespace elizaos {
 

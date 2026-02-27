@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/program/tests/claim.h"
+#include "claim.hpp"
 
 void Main(void)
 {

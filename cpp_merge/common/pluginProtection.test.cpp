@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-plugin-manager/src/__tests__/unit/pluginProtection.test.h"
+#include "pluginProtection.test.h"
 
 void Main(void)
 {

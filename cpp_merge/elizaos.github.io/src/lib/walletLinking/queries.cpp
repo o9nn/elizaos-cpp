@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizaos.github.io/src/lib/walletLinking/queries.h"
+#include "queries.hpp"
 
 std::shared_ptr<Promise<any>> getUserWalletData(string username)
 {

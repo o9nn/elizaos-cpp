@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/plugin-sql/src/__tests__/integration/seed/task-seed.h"
+#include "task-seed.h"
 
 any taskTestAgentId = as<std::shared_ptr<UUID>>(uuidv4());
 any taskTestRoomId = as<std::shared_ptr<UUID>>(uuidv4());

@@ -1,9 +1,9 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_RAYDIUM_SRC_UTILS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_RAYDIUM_SRC_UTILS_H
-#include "core.h"
-#include "@coral-xyz/anchor.h"
-#include "@solana/spl-token.h"
-#include "@solana/web3.js.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTO_FUN_PACKAGES_RAYDIUM_SRC_UTILS_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTO_FUN_PACKAGES_RAYDIUM_SRC_UTILS_H
+#include "core.hpp"
+// External dependency removed
+// External dependency removed
+// External dependency removed
 
 extern double fixedPoint;
 extern string vaultConfigSeed;

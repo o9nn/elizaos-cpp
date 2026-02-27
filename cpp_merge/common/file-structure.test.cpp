@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/project-tee-starter/__tests__/file-structure.test.h"
+#include "file-structure.test.h"
 
 boolean fileExists(string filePath)
 {

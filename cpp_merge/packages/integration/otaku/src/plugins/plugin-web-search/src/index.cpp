@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-web-search/src/index.h"
+#include "index.hpp"
 
 object webSearchPlugin = object{
     object::pair{std:("name"), std:("webSearch")}, 

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/client/src/hooks/use-sidebar-state.h"
+#include "use-sidebar-state.h"
 
 any useSidebarState()
 {

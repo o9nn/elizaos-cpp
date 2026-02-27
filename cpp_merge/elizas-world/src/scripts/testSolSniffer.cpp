@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-world/src/scripts/testSolSniffer.h"
+#include "testSolSniffer.hpp"
 
 void testSolSnifferAPI()
 {

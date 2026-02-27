@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/the-org/src/projectManager/plugins/team-coordinator/actions/updateFormat.h"
+#include "updateFormat.hpp"
 
 std::shared_ptr<UUID> getStorageRoomId(std::shared_ptr<IAgentRuntime> runtime, string serverId)
 {

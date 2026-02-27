@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-vision/build.config.h"
+#include "build.config.h"
 #include <cstdlib>
 
 std::shared_ptr<BuildConfig> buildConfig = object{

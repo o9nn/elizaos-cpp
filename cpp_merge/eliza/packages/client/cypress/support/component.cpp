@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/client/cypress/support/component.h"
+#include "component.hpp"
 
 any mountWithProviders(std::shared_ptr<React::ReactNode> component, object options)
 {

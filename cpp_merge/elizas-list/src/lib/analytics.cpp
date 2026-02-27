@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-list/src/lib/analytics.h"
+#include "analytics.hpp"
 
 void Analytics::trackProjectView(string projectId, string userId)
 {

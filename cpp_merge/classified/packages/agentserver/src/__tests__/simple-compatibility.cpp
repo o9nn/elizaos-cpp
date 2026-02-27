@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/agentserver/src/__tests__/simple-compatibility.test.h"
+#include "simple-compatibility.test.h"
 
 void Main(void)
 {

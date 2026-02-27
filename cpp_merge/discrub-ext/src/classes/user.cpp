@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/discrub-ext/src/classes/user.h"
+#include "user.hpp"
 
 User::User(object opts) {
     this->id = opts["id"];

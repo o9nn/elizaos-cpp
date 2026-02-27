@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/plugin-app/src/forms/user.h"
+#include "user.hpp"
 
 void userreg_create_addfields(any form, any values)
 {

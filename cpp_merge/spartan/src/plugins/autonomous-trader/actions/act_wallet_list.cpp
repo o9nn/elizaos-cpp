@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/autonomous-trader/actions/act_wallet_list.h"
+#include "act_wallet_list.hpp"
 
 std::shared_ptr<Action> userMetawalletList = object{
     object::pair{std:("name"), std:("USER_METAWALLET_LIST")}, 

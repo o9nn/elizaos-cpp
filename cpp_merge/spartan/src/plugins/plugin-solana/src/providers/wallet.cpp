@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/plugin-solana/src/providers/wallet.h"
+#include "wallet.hpp"
 
 std::shared_ptr<Provider> walletProvider = object{
     object::pair{std:("name"), std:("solana-wallet")}, 

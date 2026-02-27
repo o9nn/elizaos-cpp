@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/agentserver/src/__tests__/integration/agent-portability.test.h"
+#include "agent-portability.test.h"
 
 void Main(void)
 {

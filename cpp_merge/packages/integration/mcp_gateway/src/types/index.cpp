@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/mcp-gateway/src/types/index.h"
+#include "index.hpp"
 
 any StdioTransportSchema = z->object(object{
     object::pair{std:("type"), z->literal(std:("stdio"))}, 

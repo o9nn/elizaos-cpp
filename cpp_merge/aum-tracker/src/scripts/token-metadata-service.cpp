@@ -1,9 +1,9 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/aum-tracker/src/scripts/token-metadata-service.h"
+#include "token-metadata-service.h"
 
 void main()
 {
     console->log(std:("🚀 Token Metadata Service"));
-    console->log(std:("========"));
+    console->log(std:("=="));
     static switch_type __switch311_807 = {
         { any(std:("start")), 1 },
         { any(std:("refresh")), 2 },
@@ -151,7 +151,7 @@ void healthCheck()
 void showQueueStatus()
 {
     console->log(std:("📊 Queue Status"));
-    console->log(std:("====="));
+    console->log(std:("=="));
     auto status = tokenMetadataService->getQueueStatus();
     console->log(std:("Queue Size: ") + status["queueSize"] + string_empty);
     console->log(std:("Processing: ") + (status["isProcessing"]) ? std:("Yes") : std:("No") + string_empty);
@@ -181,7 +181,7 @@ void showHelp()
 {
     console->log(std:("\
 Token Metadata Service Commands:\
-==========\
+===\
 \
 bun run token-metadata-service start     - Start continuous service (default)\
 bun run token-metadata-service refresh   - Refresh stale metadata once\

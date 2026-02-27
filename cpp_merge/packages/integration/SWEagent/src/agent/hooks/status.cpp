@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/agent/hooks/status.h"
+#include "status.hpp"
 
 SetStatusAgentHook::SetStatusAgentHook(string id, std::function<void(string, string)> callable) : AbstractAgentHook() {
     this->id = id;

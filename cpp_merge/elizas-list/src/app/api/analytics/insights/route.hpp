@@ -1,10 +1,10 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAS-LIST_SRC_APP_API_ANALYTICS_INSIGHTS_ROUTE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAS-LIST_SRC_APP_API_ANALYTICS_INSIGHTS_ROUTE_H
-#include "core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZAS_LIST_SRC_APP_API_ANALYTICS_INSIGHTS_ROUTE_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZAS_LIST_SRC_APP_API_ANALYTICS_INSIGHTS_ROUTE_H
+#include "core.hpp"
 #include "next/server.h"
-#include "@/lib/analytics/segmentation.h"
-#include "@/lib/analytics/visualization.h"
-#include "@/lib/monitoring/logger.h"
+// External dependency removed
+// External dependency removed
+// External dependency removed
 
 class TimeSeriesDataPoint;
 class InteractionData;

@@ -1,7 +1,7 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_TESTS_PRICE-VALIDATION_TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_TESTS_PRICE-VALIDATION_TEST_H
-#include "core.h"
-#include "vitest.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTC_AGENT_TESTS_PRICE_VALIDATION_TEST_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTC_AGENT_TESTS_PRICE_VALIDATION_TEST_H
+#include "core.hpp"
+#include "vitest.hpp"
 #include "../src/utils/price-validator.h"
 #include "../src/utils/pool-finder-base.h"
 #include "../src/utils/pool-finder-solana.h"

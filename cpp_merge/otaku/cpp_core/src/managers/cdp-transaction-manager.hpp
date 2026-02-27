@@ -15,9 +15,9 @@ namespace elizaos {
 
 
 
-// ==================================
+// ========
 // Types
-// ==================================
+// ========
 
 struct TokenBalance {
     std: symbol;
@@ -97,9 +97,9 @@ struct SendNFTResult {
     std: network;
 };
 
-// ==================================
+// ========
 // CDP Transaction Manager Class (Singleton)
-// ==================================
+// ========
 
 class CdpTransactionManager {
   private static instance: CdpTransactionManager | null = null;
@@ -119,13 +119,13 @@ class CdpTransactionManager {
    * Get the singleton instance of CdpTransactionManager
    */
 
-  // ==================================
+  // ========
   // Initialization
-  // ==================================
+  // ========
 
-  // ==================================
+  // ========
   // Icon Cache Helpers
-  // ==================================
+  // ========
 
   /**
    * Get icon from global cache by contract address
@@ -150,9 +150,9 @@ class CdpTransactionManager {
       // Cache the result (even if null)
       // Cache null to prevent retries
 
-  // ==================================
+  // ========
   // Wallet Operations
-  // ==================================
+  // ========
 
   /**
    * Construct viem walletClient and publicClient for a given CDP account and network
@@ -161,9 +161,9 @@ class CdpTransactionManager {
 
     // toAccount() allows viem to use CDP's server-managed wallet signing
 
-  // ==================================
+  // ========
   // Token Operations
-  // ==================================
+  // ========
 
     // Validate chain if provided
 
@@ -243,9 +243,9 @@ class CdpTransactionManager {
 
     // Cache aggregate result if fetching all chains
 
-  // ==================================
+  // ========
   // NFT Operations
-  // ==================================
+  // ========
 
     // If address not provided, get it from CDP account (for write operations or when entity metadata unavailable)
       
@@ -261,9 +261,9 @@ class CdpTransactionManager {
 
           // Populate icon cache with NFT image (for NFT contract addresses)
 
-  // ==================================
+  // ========
   // Transaction History
-  // ==================================
+  // ========
 
   /**
    * Helper: Extract timestamp from transaction data
@@ -290,15 +290,15 @@ class CdpTransactionManager {
 
               // Get icon from global cache or fetch if not found
 
-  // ==================================
+  // ========
   // Send Operations
-  // ==================================
+  // ========
 
       // Fallback to viem (CDP server-managed wallet via toAccount)
 
-  // ==================================
+  // ========
   // Swap Operations
-  // ==================================
+  // ========
 
     // Validate account address for price estimation
       // For price estimation, we can use a placeholder address or fall back to alternative methods
@@ -340,9 +340,9 @@ class CdpTransactionManager {
 
       // Non-CDP-supported networks: use 0x API
 
-  // ==================================
+  // ========
   // Private Helper Methods - Transaction Confirmation
-  // ==================================
+  // ========
 
   /**
    * Wait for transaction receipt and verify it didn't revert
@@ -353,21 +353,21 @@ class CdpTransactionManager {
    * @throws Error if transaction reverted
    */
 
-  // ==================================
+  // ========
   // Private Helper Methods - Swap Fallback
-  // ==================================
+  // ========
 
   /**
    * Execute swap using 0x API
    */
 
-  // ==================================
+  // ========
   // Private Helper Methods - Token Approval & Wrapping
-  // ==================================
+  // ========
 
-  // ==================================
+  // ========
   // Private Helper Methods - Uniswap
-  // ==================================
+  // ========
 
     // Try MEDIUM fee tier first
   
@@ -391,9 +391,9 @@ class CdpTransactionManager {
 
     // If swapping TO native token, unwrap it
 
-  // ==================================
+  // ========
   // Private Helper Methods - 0x API
-  // ==================================
+  // ========
 
       // Build base parameters
 
@@ -419,9 +419,9 @@ class CdpTransactionManager {
 
     // Double-check quote hasn't expired right before execution
 
-  // ==================================
+  // ========
   // Token Search Operations
-  // ==================================
+  // ========
 
     // Map chain names to CoinGecko platform IDs
 
@@ -443,9 +443,9 @@ class CdpTransactionManager {
 
                 // Get decimals from CoinGecko's detail_platforms
 
-  // ==================================
+  // ========
   // Private Helper Methods - Token Info & Utilities
-  // ==================================
+  // ========
 
         return parseFloat("0." + std::to_string(zeros) + "" + std::to_string(balanceStr) + "");
         return parseFloat("" + std::to_string(intPart) + "." + std::to_string(fracPart) + "");

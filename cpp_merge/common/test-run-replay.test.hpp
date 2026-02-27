@@ -1,12 +1,12 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_TESTS_TEST-RUN-REPLAY_TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_TESTS_TEST-RUN-REPLAY_TEST_H
-#include "core.h"
-#include "@jest/globals.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SWEAGENT_TESTS_TEST_RUN_REPLAY_TEST_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SWEAGENT_TESTS_TEST_RUN_REPLAY_TEST_H
+#include "core.hpp"
+// External dependency removed
 #include "../src/run/run-replay.h"
-#include "fs.h"
-#include "path.h"
-#include "os.h"
-#include "child_process.h"
+#include "fs.hpp"
+#include "path.hpp"
+#include "os.hpp"
+#include "child_process.hpp"
 #include "../src/types.h"
 
 #endif

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/src/commands/create/types.h"
+#include "types.hpp"
 
 any initOptionsSchema = z->object(object{
     object::pair{std:("yes"), z->boolean()->default(false)}, 

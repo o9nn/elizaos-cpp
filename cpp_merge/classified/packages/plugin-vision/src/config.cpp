@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-vision/src/config.h"
+#include "config.hpp"
 
 ConfigurationManager::ConfigurationManager(any runtime) {
     this->runtime = runtime;

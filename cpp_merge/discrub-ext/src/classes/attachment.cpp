@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/discrub-ext/src/classes/attachment.h"
+#include "attachment.hpp"
 
 Attachment::Attachment(object opts) {
     this->id = opts["id"];

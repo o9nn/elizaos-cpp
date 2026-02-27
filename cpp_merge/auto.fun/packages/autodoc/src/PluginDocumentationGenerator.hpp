@@ -1,10 +1,10 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_AUTODOC_SRC_PLUGINDOCUMENTATIONGENERATOR_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_AUTODOC_SRC_PLUGINDOCUMENTATIONGENERATOR_H
-#include "core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTO_FUN_PACKAGES_AUTODOC_SRC_PLUGINDOCUMENTATIONGENERATOR_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTO_FUN_PACKAGES_AUTODOC_SRC_PLUGINDOCUMENTATIONGENERATOR_H
+#include "core.hpp"
 #include "node:fs.h"
-using fs = _default;
+// Using alias removed (invalid transpilation)
 #include "node:path.h"
-using path = _default;
+// Using alias removed (invalid transpilation)
 #include "./AIService/AIService.js.h"
 #include "./AIService/generators/FullDocumentationGenerator.js.h"
 #include "./Configuration.js.h"

@@ -1,19 +1,19 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGINS-AUTOMATION_SRC_NPMDOWNLOADSTATS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGINS-AUTOMATION_SRC_NPMDOWNLOADSTATS_H
-#include "core.h"
-#include "axios.h"
-using axios = _default;
-#include "xlsx.h"
-#include "chalk.h"
-using chalk = _default;
-#include "ora.h"
-using ora = _default;
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_PLUGINS_AUTOMATION_SRC_NPMDOWNLOADSTATS_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_PLUGINS_AUTOMATION_SRC_NPMDOWNLOADSTATS_H
+#include "core.hpp"
+#include "axios.hpp"
+// Using alias removed (invalid transpilation)
+#include "xlsx.hpp"
+#include "chalk.hpp"
+// Using alias removed (invalid transpilation)
+#include "ora.hpp"
+// Using alias removed (invalid transpilation)
 #include "fs-extra.h"
-using fs = _default;
-#include "path.h"
-using path = _default;
-#include "dotenv.h"
-using dotenv = _default;
+// Using alias removed (invalid transpilation)
+#include "path.hpp"
+// Using alias removed (invalid transpilation)
+#include "dotenv.hpp"
+// Using alias removed (invalid transpilation)
 
 class PackageInfo;
 class VersionDownloads;

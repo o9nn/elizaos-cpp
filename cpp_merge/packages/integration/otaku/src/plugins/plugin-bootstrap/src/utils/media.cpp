@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-bootstrap/src/utils/media.h"
+#include "media.hpp"
 
 std::shared_ptr<Promise<array<MediaData>>> fetchMediaData(array<std::shared_ptr<Media>> attachments)
 {

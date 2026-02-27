@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-stagehand/stagehand-server/src/session-manager.h"
+#include "session-manager.h"
 
 SessionManager::SessionManager(std::shared_ptr<Logger> logger_, std::shared_ptr<PlaywrightInstaller> playwrightInstaller_) : logger(logger_), playwrightInstaller(playwrightInstaller_)  {
 }

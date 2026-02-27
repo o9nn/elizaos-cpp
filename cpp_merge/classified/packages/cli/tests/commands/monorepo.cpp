@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/tests/commands/monorepo.test.h"
+#include "monorepo.test.h"
 
 void Main(void)
 {

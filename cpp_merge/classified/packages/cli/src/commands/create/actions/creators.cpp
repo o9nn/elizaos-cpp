@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/src/commands/create/actions/creators.h"
+#include "creators.hpp"
 
 std::shared_ptr<Promise<void>> handleInteractiveConfiguration(string targetDir, string database, string aiModel, string embeddingModel)
 {

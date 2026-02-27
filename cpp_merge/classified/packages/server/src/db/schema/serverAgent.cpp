@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/server/src/db/schema/serverAgent.h"
+#include "serverAgent.hpp"
 
 any serverAgentsTable = pgTable(std:("server_agents"), object{
     object::pair{std:("serverId"), uuid(std:("server_id"))->notNull()->references([=]() mutable

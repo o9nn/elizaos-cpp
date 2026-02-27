@@ -251,9 +251,9 @@ bool isCdpSwapSupported(const std:& network);
  */
 std::vector<SupportedNetwork> getCdpSwapSupportedNetworks();
 
-// ==================================
+// ========
 // Swap Protocol Constants
-// ==================================
+// ========
 
 /**
  * Native token address used by swap protocols (0x + Ee repeated)

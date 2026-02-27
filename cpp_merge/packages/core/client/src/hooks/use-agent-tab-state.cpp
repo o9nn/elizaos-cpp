@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/client/src/hooks/use-agent-tab-state.h"
+#include "use-agent-tab-state.h"
 
 any useAgentTabState(any agentId)
 {

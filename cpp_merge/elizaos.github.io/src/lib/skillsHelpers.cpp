@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizaos.github.io/src/lib/skillsHelpers.h"
+#include "skillsHelpers.hpp"
 
 object calculateLevelStats(double xp)
 {

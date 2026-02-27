@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/plugin-solana/src/actions/transfer.h"
+#include "transfer.hpp"
 
 boolean isTransferContent(std::shared_ptr<TransferContent> content)
 {

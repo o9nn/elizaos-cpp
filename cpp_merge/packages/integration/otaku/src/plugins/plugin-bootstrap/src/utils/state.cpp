@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-bootstrap/src/utils/state.h"
+#include "state.hpp"
 
 std::shared_ptr<Promise<std::shared_ptr<State>>> refreshStateAfterAction(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<Memory> message, std::shared_ptr<State> currentState, array<any> actionResults)
 {

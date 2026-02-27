@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-gamification/src/providers/pointsProvider.h"
+#include "pointsProvider.hpp"
 
 std::shared_ptr<Provider> pointsProvider = object{
     object::pair{std:("name"), std:("USER_POINTS")}, 

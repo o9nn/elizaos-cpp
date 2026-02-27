@@ -1,9 +1,9 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V2_SRC_UUID_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V2_SRC_UUID_H
-#include "core.h"
-#include "zod.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_PLUGIN_SPECIFICATION_CORE_PLUGIN_V2_SRC_UUID_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_PLUGIN_SPECIFICATION_CORE_PLUGIN_V2_SRC_UUID_H
+#include "core.hpp"
+#include "zod.hpp"
 #include "./types.h"
-#include "@elizaos/core.h"
+// External dependency removed
 using coreValidateUuid = validateUuid;
 using coreStringToUuid = stringToUuid;
 

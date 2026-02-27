@@ -1,10 +1,10 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PACKAGES_SERVER_SRC_MIDDLEWARE_JWT_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PACKAGES_SERVER_SRC_MIDDLEWARE_JWT_H
-#include "core.h"
-#include "jsonwebtoken.h"
-using jwt = _default;
-#include "express.h"
-#include "@elizaos/core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTAKU_SRC_PACKAGES_SERVER_SRC_MIDDLEWARE_JWT_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTAKU_SRC_PACKAGES_SERVER_SRC_MIDDLEWARE_JWT_H
+#include "core.hpp"
+#include "jsonwebtoken.hpp"
+// Using alias removed (invalid transpilation)
+#include "express.hpp"
+// External dependency removed
 
 class AuthTokenPayload;
 class AuthenticatedRequest;

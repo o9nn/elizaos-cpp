@@ -1,9 +1,9 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-STAGEHAND_STAGEHAND-SERVER_SRC_INDEX_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-STAGEHAND_STAGEHAND-SERVER_SRC_INDEX_H
-#include "core.h"
-#include "ws.h"
-#include "@browserbasehq/stagehand.h"
-#include "dotenv.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_STAGEHAND_STAGEHAND_SERVER_SRC_INDEX_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_STAGEHAND_STAGEHAND_SERVER_SRC_INDEX_H
+#include "core.hpp"
+#include "ws.hpp"
+// External dependency removed
+#include "dotenv.hpp"
 #include "./session-manager.js.h"
 #include "./message-handler.js.h"
 #include "./logger.js.h"

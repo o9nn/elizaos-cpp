@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/src/commands/start/utils/plugin-utils.h"
+#include "plugin-utils.h"
 
 any isValidPluginShape(any obj)
 {

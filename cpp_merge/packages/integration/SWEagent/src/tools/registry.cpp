@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/tools/registry.h"
+#include "registry.hpp"
 
 EnvRegistry::EnvRegistry() {
     this->data = object{};

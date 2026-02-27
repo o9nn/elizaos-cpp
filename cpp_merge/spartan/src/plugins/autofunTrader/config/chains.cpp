@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/autofunTrader/config/chains.h"
+#include "chains.hpp"
 
 object CHAIN_CONFIG = object{
     object::pair{std:("SOLANA_ENABLED"), false}, 

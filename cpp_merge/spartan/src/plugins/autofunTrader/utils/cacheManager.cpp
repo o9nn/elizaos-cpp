@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/autofunTrader/utils/cacheManager.h"
+#include "cacheManager.hpp"
 
 std::shared_ptr<Promise<void>> CacheManager::delete(string key)
 {

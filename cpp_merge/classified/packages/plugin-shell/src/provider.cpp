@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-shell/src/provider.h"
+#include "provider.hpp"
 
 double MAX_INDIVIDUAL_OUTPUT_LENGTH = 8000;
 double TRUNCATE_SEGMENT_LENGTH = 4000;

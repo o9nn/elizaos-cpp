@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/core/src/specs/v1/__tests__/state.test.h"
+#include "state.test.h"
 
 std::function<any(double)> createTestUUID = [=](auto num) mutable
 {

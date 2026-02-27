@@ -1,11 +1,11 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_CLI_SRC_COMMANDS_CREATE_ACTIONS_SETUP_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_CLI_SRC_COMMANDS_CREATE_ACTIONS_SETUP_H
-#include "core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_CLI_SRC_COMMANDS_CREATE_ACTIONS_SETUP_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_CLI_SRC_COMMANDS_CREATE_ACTIONS_SETUP_H
+#include "core.hpp"
 #include "node:fs.h"
 #include "node:fs/promises.h"
-using fs = _default;
-#include "@/src/utils.h"
-#include "@/src/utils/spinner-utils.h"
+// Using alias removed (invalid transpilation)
+// External dependency removed
+// External dependency removed
 
 std::shared_ptr<Promise<void>> createProjectDirectories(string targetDir);
 

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-env/service.test.h"
+#include "service.test.h"
 
 std::function<any()> createMockRuntime = [=]() mutable
 {

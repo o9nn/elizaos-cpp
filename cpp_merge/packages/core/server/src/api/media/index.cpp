@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/server/src/api/media/index.h"
+#include "index.hpp"
 
 std::shared_ptr<express::Router> mediaRouter()
 {

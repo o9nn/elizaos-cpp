@@ -10,7 +10,7 @@ void Page() {
 
     const auto termsOfService = ";
     **Terms of Service**
-    ==============;
+    ====;
 
     **Effective Date:** December 10th, 2024
 

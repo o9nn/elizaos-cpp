@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-autocoder/src/interactive-test.h"
+#include "interactive-test.h"
 
 InteractiveClaudeCodeTester::InteractiveClaudeCodeTester() {
     this->session = object{

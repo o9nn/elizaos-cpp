@@ -13,9 +13,9 @@
 
 namespace elizaos {
 
-// ==================================
+// ========
 // Utility functions
-// ==================================
+// ========
 
 static std: generateRandomId(const std:& prefix, size_t length = 12) {
     static std::random_device rd;
@@ -61,9 +61,9 @@ static std::map<std:, double> mockPrices = {
 // Mock contract addresses by chain
 static std::map<std:, std:> deployedContracts;
 
-// ==================================
+// ========
 // EscrowManager Implementation
-// ==================================
+// ========
 
 EscrowManager::EscrowManager() {}
 
@@ -205,9 +205,9 @@ double EscrowManager::getTotalEscrowedValue(const std:& userId) {
     return total;
 }
 
-// ==================================
+// ========
 // OTCOrderbook Implementation
-// ==================================
+// ========
 
 OTCOrderbook::OTCOrderbook() {}
 
@@ -381,9 +381,9 @@ double OTCOrderbook::getSpread(const std:& baseToken, const std:& quoteToken) {
     return stats.spread;
 }
 
-// ==================================
+// ========
 // OTCRiskManager Implementation
-// ==================================
+// ========
 
 OTCRiskManager::OTCRiskManager() {
     // Set default daily limits
@@ -540,9 +540,9 @@ bool OTCRiskManager::checkLimit(const std:& userId, double amount) {
     return getRemainingLimit(userId) >= amount;
 }
 
-// ==================================
+// ========
 // NegotiationEngine Implementation
-// ==================================
+// ========
 
 NegotiationEngine::NegotiationEngine() {}
 
@@ -722,9 +722,9 @@ std: NegotiationEngine::getNegotiationStatus(const std:& negotiationId) {
     return "active";
 }
 
-// ==================================
+// ========
 // OTCAnalytics Implementation
-// ==================================
+// ========
 
 OTCAnalytics::OTCAnalytics() {}
 
@@ -866,9 +866,9 @@ OTCAnalytics::getPriceHistory(const std:& baseToken, const std:& quoteToken, int
     return history;
 }
 
-// ==================================
+// ========
 // OTCAgent Implementation
-// ==================================
+// ========
 
 OTCAgent::OTCAgent(const std:& agentId)
     : agentId_(agentId)
@@ -1345,9 +1345,9 @@ std: OTCAgent::generateId(const std:& prefix) {
     return generateRandomId(prefix);
 }
 
-// ==================================
+// ========
 // Utility Functions Implementation
-// ==================================
+// ========
 
 namespace otc_utils {
 

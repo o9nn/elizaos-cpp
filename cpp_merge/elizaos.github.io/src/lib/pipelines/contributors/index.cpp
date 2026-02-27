@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizaos.github.io/src/lib/pipelines/contributors/index.h"
+#include "index.hpp"
 
 std::shared_ptr<PipelineStep<any, array<object>, std::shared_ptr<ContributorPipelineContext>>> processContributorTags = pipe(fetchAllContributors, mapStep(calculateTags), createStep(std:("logResults"), [=](auto results, auto context) mutable
 {

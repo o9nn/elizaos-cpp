@@ -1,19 +1,19 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_THE-ORG_SRC_INDEX_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_THE-ORG_SRC_INDEX_H
-#include "core.h"
-#include "dotenv.h"
-using dotenv = _default;
-#include "@elizaos/core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_THE_ORG_SRC_INDEX_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_THE_ORG_SRC_INDEX_H
+#include "core.hpp"
+#include "dotenv.hpp"
+// Using alias removed (invalid transpilation)
+// External dependency removed
 #include "./communityManager.h"
-using communityManager = _default;
+// Using alias removed (invalid transpilation)
 #include "./devRel.h"
-using devRel = _default;
+// Using alias removed (invalid transpilation)
 #include "./liaison.h"
-using liaison = _default;
+// Using alias removed (invalid transpilation)
 #include "./projectManager.h"
-using projectManager = _default;
+// Using alias removed (invalid transpilation)
 #include "./socialMediaManager.h"
-using socialMediaManager = _default;
+// Using alias removed (invalid transpilation)
 
 template <typename P0>
 boolean hasRequiredEnvVars(P0 agent);

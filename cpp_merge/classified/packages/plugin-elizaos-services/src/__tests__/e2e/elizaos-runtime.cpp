@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-elizaos-services/src/__tests__/e2e/elizaos-runtime.test.h"
+#include "elizaos-runtime.test.h"
 
 object TEST_CONFIG = object{
     object::pair{std:("ELIZAOS_API_URL"), OR((process->env->ELIZAOS_API_URL), (std:("http://localhost:8001")))}, 

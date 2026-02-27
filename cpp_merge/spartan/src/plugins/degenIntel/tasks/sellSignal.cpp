@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/degenIntel/tasks/sellSignal.h"
+#include "sellSignal.hpp"
 
 SellSignal::SellSignal(std::shared_ptr<IAgentRuntime> runtime) {
     this->runtime = runtime;

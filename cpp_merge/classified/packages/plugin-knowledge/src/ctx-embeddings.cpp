@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-knowledge/src/ctx-embeddings.h"
+#include "ctx-embeddings.h"
 
 string getContextualizationPrompt(string docContent, string chunkContent, double minTokens, double maxTokens, string promptTemplate)
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-experience/src/utils/confidenceDecay.h"
+#include "confidenceDecay.hpp"
 
 ConfidenceDecayManager::ConfidenceDecayManager(Partial<std::shared_ptr<DecayConfig>> config) {
     this->config = utils::assign(object{

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/core/src/specs/v2/__tests__/roles.test.h"
+#include "roles.test.h"
 
 void Main(void)
 {

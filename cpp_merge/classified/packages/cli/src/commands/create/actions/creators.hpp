@@ -1,20 +1,20 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_CLI_SRC_COMMANDS_CREATE_ACTIONS_CREATORS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_CLI_SRC_COMMANDS_CREATE_ACTIONS_CREATORS_H
-#include "core.h"
-#include "@/src/characters/eliza.h"
-#include "@/src/utils.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_CLI_SRC_COMMANDS_CREATE_ACTIONS_CREATORS_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_CLI_SRC_COMMANDS_CREATE_ACTIONS_CREATORS_H
+#include "core.hpp"
+// External dependency removed
+// External dependency removed
 using copyTemplateUtil = copyTemplate;
-#include "path.h"
+#include "path.hpp"
 #include "node:fs/promises.h"
-using fs = _default;
-#include "@clack/prompts.h"
-#include "yoctocolors.h"
-using colors = _default;
+// Using alias removed (invalid transpilation)
+// External dependency removed
+#include "yoctocolors.hpp"
+// Using alias removed (invalid transpilation)
 #include "../utils.h"
 #include "./setup.h"
-#include "@/src/utils/spinner-utils.h"
+// External dependency removed
 #include "node:fs.h"
-#include "@/src/utils/helpers.h"
+// External dependency removed
 
 std::shared_ptr<Promise<void>> handleInteractiveConfiguration(string targetDir, string database, string aiModel, string embeddingModel = undefined);
 

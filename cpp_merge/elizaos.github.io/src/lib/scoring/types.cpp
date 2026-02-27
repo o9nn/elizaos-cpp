@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizaos.github.io/src/lib/scoring/types.h"
+#include "types.hpp"
 
 any UserScoreMetricsSchema = z->object(object{
     object::pair{std:("pullRequests"), z->object(object{

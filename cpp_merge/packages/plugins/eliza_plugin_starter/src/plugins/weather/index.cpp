@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza-plugin-starter/src/plugins/weather/index.h"
+#include "index.hpp"
 
 std::shared_ptr<Plugin> weatherPlugin = object{
     object::pair{std:("name"), std:("weather")}, 

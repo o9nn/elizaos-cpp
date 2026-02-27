@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otc-agent/src/utils/render-tracker.h"
+#include "render-tracker.h"
 
 string summarizeValue(any value)
 {

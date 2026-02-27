@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/client/vite.config.h"
+#include "vite.config.h"
 
 std::function<string()> getVersionAndWriteInfo = [=]() mutable
 {

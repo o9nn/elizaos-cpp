@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/degenTrader/index.h"
+#include "index.hpp"
 
 std::shared_ptr<Plugin> degenTraderPlugin = object{
     object::pair{std:("name"), std:("Degen Trader Plugin")}, 

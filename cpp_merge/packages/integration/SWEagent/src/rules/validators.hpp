@@ -1,8 +1,8 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_SRC_RULES_VALIDATORS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_SRC_RULES_VALIDATORS_H
-#include "core.h"
-#include "fs.h"
-#include "path.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SWEAGENT_SRC_RULES_VALIDATORS_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SWEAGENT_SRC_RULES_VALIDATORS_H
+#include "core.hpp"
+#include "fs.hpp"
+#include "path.hpp"
 #include "./types.h"
 #include "./general.h"
 

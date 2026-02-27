@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-bootstrap/actions/none.h"
+#include "none.hpp"
 
 std::shared_ptr<Action> noneAction = as<std::shared_ptr<Action>>(object{
     object::pair{std:("name"), std:("NONE")}, 

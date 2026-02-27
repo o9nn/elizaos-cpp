@@ -1,9 +1,9 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_CLI_SRC_COMMANDS_START_UTILS_PLUGIN-UTILS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_CLI_SRC_COMMANDS_START_UTILS_PLUGIN-UTILS_H
-#include "core.h"
-#include "@/src/utils.h"
-#include "@/src/utils/plugin-context.h"
-#include "@elizaos/core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_CLI_SRC_COMMANDS_START_UTILS_PLUGIN_UTILS_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_CLI_SRC_COMMANDS_START_UTILS_PLUGIN_UTILS_H
+#include "core.hpp"
+// External dependency removed
+// External dependency removed
+// External dependency removed
 #include "../types.h"
 
 any isValidPluginShape(any obj);

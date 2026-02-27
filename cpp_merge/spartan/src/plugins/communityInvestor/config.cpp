@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/communityInvestor/config.h"
+#include "config.hpp"
 
 double getConvictionMultiplier(Conviction conviction)
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/program/tests/initAutofun.h"
+#include "initAutofun.hpp"
 
 void Main(void)
 {

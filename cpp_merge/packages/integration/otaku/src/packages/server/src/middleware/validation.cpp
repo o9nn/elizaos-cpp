@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/packages/server/src/middleware/validation.h"
+#include "validation.hpp"
 
 std::function<std::function<void(any, any, any)>(any)> agentExistsMiddleware = [=](auto elizaOS) mutable
 {

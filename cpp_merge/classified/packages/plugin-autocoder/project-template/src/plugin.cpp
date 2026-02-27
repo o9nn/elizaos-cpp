@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-autocoder/project-template/src/plugin.h"
+#include "plugin.hpp"
 
 std::shared_ptr<Plugin> plugin = object{
     object::pair{std:("name"), std:("starter")}, 

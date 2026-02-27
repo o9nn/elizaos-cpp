@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/autofunTrader/services/calculation/signalCalculation.h"
+#include "signalCalculation.hpp"
 
 any SignalCalculationService::calculateTechnicalSignals(any marketData)
 {

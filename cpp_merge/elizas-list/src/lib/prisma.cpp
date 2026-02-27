@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-list/src/lib/prisma.h"
+#include "prisma.hpp"
 
 object globalForPrisma = as<object>(as<any>(global));
 any prisma = OR((globalForPrisma["prisma"]), (std::make_shared<PrismaClient>()));

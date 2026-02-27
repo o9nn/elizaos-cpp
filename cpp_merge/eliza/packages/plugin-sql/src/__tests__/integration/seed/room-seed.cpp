@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/plugin-sql/src/__tests__/integration/seed/room-seed.h"
+#include "room-seed.h"
 
 any roomTestAgentId = as<std::shared_ptr<UUID>>(uuidv4());
 any roomTestEntityId = as<std::shared_ptr<UUID>>(uuidv4());

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-elizaos-services/src/auth/CLIAuthCommands.h"
+#include "CLIAuthCommands.hpp"
 
 CLIAuthCommands::CLIAuthCommands(std::shared_ptr<IAgentRuntime> runtime) {
     this->authService = std::make_shared<AuthenticationService>(runtime);

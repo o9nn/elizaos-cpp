@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/program/tests/utils.h"
+#include "utils.hpp"
 
 any provider = anchor->AnchorProvider->env();
 any connection = provider->connection;

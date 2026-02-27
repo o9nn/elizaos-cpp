@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-bootstrap/providers/shouldRespond.h"
+#include "shouldRespond.hpp"
 
 std::shared_ptr<Config> nameConfig = object{
     object::pair{std:("dictionaries"), array<any>{ adjectives, names }}, 

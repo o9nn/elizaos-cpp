@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/autofun/schemas.h"
+#include "schemas.hpp"
 
 any TokenSchema = z->object(object{
     object::pair{std:("provider"), z->string()}, 

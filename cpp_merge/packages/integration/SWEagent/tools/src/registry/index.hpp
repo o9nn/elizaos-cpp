@@ -1,10 +1,10 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_TOOLS_SRC_REGISTRY_INDEX_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_TOOLS_SRC_REGISTRY_INDEX_H
-#include "core.h"
-#include "fs.h"
-#include "path.h"
-#include "os.h"
-#include "commander.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SWEAGENT_TOOLS_SRC_REGISTRY_INDEX_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SWEAGENT_TOOLS_SRC_REGISTRY_INDEX_H
+#include "core.hpp"
+#include "fs.hpp"
+#include "path.hpp"
+#include "os.hpp"
+#include "commander.hpp"
 
 class EnvRegistry;
 

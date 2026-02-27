@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/discrub-ext/src/features/dm/use-dm-slice.h"
+#include "use-dm-slice.h"
 
 std::function<object()> useDmSlice = [=]() mutable
 {

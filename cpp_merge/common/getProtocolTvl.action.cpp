@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-defillama/src/actions/getProtocolTvl.action.h"
+#include "getProtocolTvl.action.h"
 
 std::shared_ptr<Action> getProtocolTvlAction = object{
     object::pair{std:("name"), std:("GET_PROTOCOL_TVL")}, 

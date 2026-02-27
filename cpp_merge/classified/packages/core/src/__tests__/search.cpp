@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/core/src/__tests__/search.test.h"
+#include "search.test.h"
 
 void Main(void)
 {

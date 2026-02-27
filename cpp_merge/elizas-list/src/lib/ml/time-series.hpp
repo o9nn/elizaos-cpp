@@ -1,7 +1,7 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAS-LIST_SRC_LIB_ML_TIME-SERIES_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAS-LIST_SRC_LIB_ML_TIME-SERIES_H
-#include "core.h"
-#include "@tensorflow/tfjs-node.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZAS_LIST_SRC_LIB_ML_TIME_SERIES_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZAS_LIST_SRC_LIB_ML_TIME_SERIES_H
+#include "core.hpp"
+// External dependency removed
 #include "prophet-js.h"
 #include "statistics.js.h"
 #include "../monitoring/logger.h"

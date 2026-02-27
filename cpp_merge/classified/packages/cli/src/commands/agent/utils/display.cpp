@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/src/commands/agent/utils/display.h"
+#include "display.hpp"
 
 std::shared_ptr<Promise<void>> listAgents(std::shared_ptr<OptionValues> opts)
 {

@@ -1,8 +1,8 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PROJECT-STARTER_CYPRESS_CONFIG_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PROJECT-STARTER_CYPRESS_CONFIG_H
-#include "core.h"
-#include "cypress.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_PROJECT_STARTER_CYPRESS_CONFIG_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_PROJECT_STARTER_CYPRESS_CONFIG_H
+#include "core.hpp"
+// Self-include removed: cypress.hpp
 #include "./vite.config.h"
-using viteConfig = _default;
+// Using alias removed (invalid transpilation)
 
 #endif

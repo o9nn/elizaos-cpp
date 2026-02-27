@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/utils/eliza-paths.h"
+#include "eliza-paths.h"
 
 string getElizaBaseDir(string cwd)
 {

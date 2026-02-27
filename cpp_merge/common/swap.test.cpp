@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/plugin-solana/__tests__/actions/swap.test.h"
+#include "swap.test.h"
 
 void Main(void)
 {

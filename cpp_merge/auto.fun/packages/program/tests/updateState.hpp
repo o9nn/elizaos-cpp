@@ -1,11 +1,11 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_PROGRAM_TESTS_UPDATESTATE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_PROGRAM_TESTS_UPDATESTATE_H
-#include "core.h"
-#include "@coral-xyz/anchor.h"
-#include "@coral-xyz/anchor.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTO_FUN_PACKAGES_PROGRAM_TESTS_UPDATESTATE_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTO_FUN_PACKAGES_PROGRAM_TESTS_UPDATESTATE_H
+#include "core.hpp"
+// External dependency removed
+// External dependency removed
 #include "../target/types/raydium_vault.h"
-#include "@coral-xyz/anchor/dist/cjs/nodewallet.h"
-using NodeWallet = _default;
+// External dependency removed
+// Using alias removed (invalid transpilation)
 #include "./utils.h"
 
 #endif

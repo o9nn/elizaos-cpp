@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-list/src/data/tags.h"
+#include "tags.hpp"
 
 object PROJECT_TAGS = object{
     object::pair{std:("LANGUAGES"), array<string>{ std:("JavaScript"), std:("TypeScript"), std:("Python"), std:("Rust"), std:("Go"), std:("Solidity"), std:("C++"), std:("Java"), std:("Kotlin"), std:("Swift"), std:("PHP"), std:("Ruby") }}, 

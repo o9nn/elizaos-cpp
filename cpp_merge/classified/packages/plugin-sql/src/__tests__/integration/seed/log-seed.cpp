@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-sql/src/__tests__/integration/seed/log-seed.h"
+#include "log-seed.h"
 
 any logTestAgentSettings = as<std::shared_ptr<Agent>>(object{
     object::pair{std:("id"), as<std::shared_ptr<UUID>>(v4())}, 

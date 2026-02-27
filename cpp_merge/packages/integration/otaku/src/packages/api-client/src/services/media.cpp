@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/packages/api-client/src/services/media.h"
+#include "media.hpp"
 
 std::shared_ptr<Promise<std::shared_ptr<MediaUploadResponse>>> MediaService::uploadAgentMedia(std::shared_ptr<UUID> agentId, std::shared_ptr<MediaUploadParams> params)
 {

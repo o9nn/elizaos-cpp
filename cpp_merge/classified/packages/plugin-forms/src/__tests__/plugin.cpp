@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-forms/src/__tests__/plugin.test.h"
+#include "plugin.test.h"
 
 void Main(void)
 {

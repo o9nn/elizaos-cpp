@@ -1,17 +1,17 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_DEGENINTEL_TASKS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_DEGENINTEL_TASKS_H
-#include "core.h"
-#include "@elizaos/core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SPARTAN_SRC_PLUGINS_DEGENINTEL_TASKS_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SPARTAN_SRC_PLUGINS_DEGENINTEL_TASKS_H
+#include "core.hpp"
+// External dependency removed
 #include "./tasks/birdeye.h"
-using Birdeye = _default;
+// Using alias removed (invalid transpilation)
 #include "./tasks/buySignal.h"
-using BuySignal = _default;
+// Using alias removed (invalid transpilation)
 #include "./tasks/sellSignal.h"
-using SellSignal = _default;
+// Using alias removed (invalid transpilation)
 #include "./tasks/twitter.h"
-using Twitter = _default;
+// Using alias removed (invalid transpilation)
 #include "./tasks/twitterParser.h"
-using TwitterParser = _default;
+// Using alias removed (invalid transpilation)
 #include "./types.h"
 
 extern std::function<std::shared_ptr<Promise<void>>(any, any)> registerTasks;

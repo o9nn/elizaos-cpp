@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/core/src/types/components.h"
+#include "components.hpp"
 
 std::shared_ptr<ActionResult> createActionResult(Partial<std::shared_ptr<ActionResult>> partial)
 {

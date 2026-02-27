@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizaos.github.io/src/lib/matching/matchPatterns.h"
+#include "matchPatterns.hpp"
 
 array<std::shared_ptr<TagPattern>> matchPatterns(array<std::shared_ptr<TagPattern>> patterns, MatchContent content)
 {

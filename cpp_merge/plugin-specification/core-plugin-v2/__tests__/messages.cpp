@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/plugin-specification/core-plugin-v2/__tests__/messages.test.h"
+#include "messages.test.h"
 
 void Main(void)
 {

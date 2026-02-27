@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-defillama/src/actions/getYieldHistory.action.h"
+#include "getYieldHistory.action.h"
 
 std::shared_ptr<Action> getYieldHistoryAction = object{
     object::pair{std:("name"), std:("GET_YIELD_HISTORY")}, 

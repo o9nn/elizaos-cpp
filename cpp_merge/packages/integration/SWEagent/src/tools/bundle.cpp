@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/tools/bundle.h"
+#include "bundle.hpp"
 
 Bundle::Bundle(object config) {
     this->path = config["path"];

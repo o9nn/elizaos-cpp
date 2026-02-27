@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza-3d-hyperfy-starter/src/plugin-hyperfy/templates.h"
+#include "templates.hpp"
 
 std::function<string(any)> autoTemplate = [=](auto actionsText) mutable
 {

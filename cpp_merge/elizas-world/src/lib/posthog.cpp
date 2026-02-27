@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-world/src/lib/posthog.h"
+#include "posthog.hpp"
 
 void Main(void)
 {

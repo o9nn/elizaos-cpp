@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizaos.github.io/src/lib/pipelines/summarize/aiProjectSummary.h"
+#include "aiProjectSummary.hpp"
 
 std::shared_ptr<Promise<any>> generateProjectSummary(std::shared_ptr<RepositoryMetrics> metrics, std::shared_ptr<AISummaryConfig> config, object dateInfo, std::shared_ptr<IntervalType> intervalType)
 {

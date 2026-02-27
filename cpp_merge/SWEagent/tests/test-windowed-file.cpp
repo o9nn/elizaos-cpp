@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/tests/test-windowed-file.test.h"
+#include "test-windowed-file.test.h"
 
 void Main(void)
 {

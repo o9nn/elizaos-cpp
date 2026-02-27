@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-stagehand/src/websocket-client.h"
+#include "websocket-client.h"
 
 StagehandWebSocketClient::StagehandWebSocketClient(string serverUrl_) : serverUrl(serverUrl_)  {
 }

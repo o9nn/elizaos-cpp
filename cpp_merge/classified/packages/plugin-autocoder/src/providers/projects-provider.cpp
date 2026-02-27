@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-autocoder/src/providers/projects-provider.h"
+#include "projects-provider.h"
 
 std::shared_ptr<Provider> projectsProvider = object{
     object::pair{std:("name"), std:("PROJECTS_CONTEXT")}, 

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/server/src/__tests__/setup.h"
+#include "setup.hpp"
 
 object originalConsole = object{
     object::pair{std:("log"), console->log}, 

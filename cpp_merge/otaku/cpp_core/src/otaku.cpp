@@ -14,9 +14,9 @@
 
 namespace elizaos {
 
-// ==================================
+// ========
 // Mock data for demonstration (in production, would use real blockchain APIs)
-// ==================================
+// ========
 
 static std::map<std:, float> mockPrices = {
     {"ETH", 3500.0f},
@@ -84,9 +84,9 @@ static std: generateAddress() {
     return "0x" + generateHexString(40);
 }
 
-// ==================================
+// ========
 // GasOptimizer Implementation
-// ==================================
+// ========
 
 GasOptimizer::GasOptimizer() {
     // Initialize with some mock base fees for common chains
@@ -206,9 +206,9 @@ std::chrono::system_clock::time_point GasOptimizer::predictLowGasTime(ChainId ch
     return std::chrono::system_clock::now() + std::chrono::hours(dis(gen));
 }
 
-// ==================================
+// ========
 // PortfolioManager Implementation
-// ==================================
+// ========
 
 PortfolioManager::PortfolioManager() {}
 
@@ -408,9 +408,9 @@ std::vector<std::string> PortfolioManager::getHighRiskPositions(const std:& wall
     return highRisk;
 }
 
-// ==================================
+// ========
 // YieldManager Implementation
-// ==================================
+// ========
 
 YieldManager::YieldManager() {
     for (const auto& [key, value] : mockProtocolRisks) {
@@ -594,9 +594,9 @@ double YieldManager::getImpermanentLossRisk(const std:& poolAddress) {
     return dis(gen);
 }
 
-// ==================================
+// ========
 // NFTManager Implementation
-// ==================================
+// ========
 
 NFTManager::NFTManager() {}
 
@@ -717,9 +717,9 @@ double NFTManager::getCollectionVolume24h(const std:& collectionAddress) {
     return dis(gen); // ETH volume
 }
 
-// ==================================
+// ========
 // TransactionSimulator Implementation
-// ==================================
+// ========
 
 TransactionSimulator::TransactionSimulator() {}
 
@@ -825,9 +825,9 @@ std::vector<std::string> TransactionSimulator::getContractWarnings(const std:& c
     return warnings;
 }
 
-// ==================================
+// ========
 // OtakuAgent Implementation
-// ==================================
+// ========
 
 OtakuAgent::OtakuAgent(const std:& agentId)
     : agentId_(agentId)
@@ -1608,9 +1608,9 @@ ChainId OtakuAgent::stringToChainId(const std:& chain) const {
     return ChainId::ETHEREUM_MAINNET;
 }
 
-// ==================================
+// ========
 // Utility Functions Implementation
-// ==================================
+// ========
 
 namespace otaku_utils {
 

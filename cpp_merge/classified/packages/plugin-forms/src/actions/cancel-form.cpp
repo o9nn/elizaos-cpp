@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-forms/src/actions/cancel-form.h"
+#include "cancel-form.h"
 
 std::shared_ptr<Action> cancelFormAction = object{
     object::pair{std:("name"), std:("CANCEL_FORM")}, 

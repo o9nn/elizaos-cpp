@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-forms/src/providers/forms-provider.h"
+#include "forms-provider.h"
 
 std::shared_ptr<Provider> formsProvider = object{
     object::pair{std:("name"), std:("FORMS_CONTEXT")}, 

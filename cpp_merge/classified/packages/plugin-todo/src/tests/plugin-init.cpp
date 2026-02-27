@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-todo/src/tests/plugin-init.test.h"
+#include "plugin-init.test.h"
 
 void Main(void)
 {

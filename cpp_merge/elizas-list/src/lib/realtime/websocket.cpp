@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-list/src/lib/realtime/websocket.h"
+#include "websocket.hpp"
 
 RealtimeService::RealtimeService(std::shared_ptr<HTTPServer> server) {
     this->wss = std::make_shared<WebSocketServer>(object{

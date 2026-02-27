@@ -1,9 +1,9 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-SQL_SRC_PG_MANAGER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-SQL_SRC_PG_MANAGER_H
-#include "core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_SQL_SRC_PG_MANAGER_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_SQL_SRC_PG_MANAGER_H
+#include "core.hpp"
 #include "drizzle-orm/node-postgres.h"
-#include "pg.h"
-#include "@elizaos/core.h"
+#include "pg.hpp"
+// External dependency removed
 
 class PostgresConnectionManager;
 

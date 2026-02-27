@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/src/services/__tests__/env-file.service.test.h"
+#include "env-file.service.test.h"
 
 object mockFs = object{
     object::pair{std:("promises"), object{

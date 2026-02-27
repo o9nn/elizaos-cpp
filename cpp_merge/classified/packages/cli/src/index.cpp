@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/src/index.h"
+#include "index.hpp"
 
 void gracefulShutdown(string signal)
 {

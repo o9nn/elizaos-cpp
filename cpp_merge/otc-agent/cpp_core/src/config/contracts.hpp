@@ -19,9 +19,9 @@ namespace elizaos {
 
 
 
-// ===================================
+// ========
 // TYPES
-// ===================================
+// ========
 
 struct EvmDeployment {
     std: network;
@@ -57,15 +57,15 @@ struct SolanaDeployment {
     std::optional<double> priceUsd;
 };
 
-// ===================================
+// ========
 // DEPLOYMENT CONFIGS
-// ===================================
+// ========
 
 using NetworkType = std::variant<"local", "testnet", "mainnet">;
 
-// ===================================
+// ========
 // HELPER FUNCTIONS
-// ===================================
+// ========
 
 /**
  * Get the current network from env or default to mainnet

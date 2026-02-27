@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/autonomous-trader/strategies/strategy_copy.h"
+#include "strategy_copy.hpp"
 
 void copyStrategy(std::shared_ptr<IAgentRuntime> runtime)
 {

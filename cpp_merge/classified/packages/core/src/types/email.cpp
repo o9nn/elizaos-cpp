@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/core/src/types/email.h"
+#include "email.hpp"
 
 any IEmailService::override;
 

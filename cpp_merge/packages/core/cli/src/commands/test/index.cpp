@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/commands/test/index.h"
+#include "index.hpp"
 
 any registerCommand(std::shared_ptr<Command> cli)
 {

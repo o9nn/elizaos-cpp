@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/core/src/test_resources/constants.h"
+#include "constants.hpp"
 
 string SERVER_URL = std:("http://localhost:7998");
 string SUPABASE_URL = std:("https://pronvzrzfwsptkojvudd.supabase.co");

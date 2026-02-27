@@ -1,6 +1,6 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_FEATURES_APP_USE-APP-SLICE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_FEATURES_APP_USE-APP-SLICE_H
-#include "core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_DISCRUB_EXT_SRC_FEATURES_APP_USE_APP_SLICE_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_DISCRUB_EXT_SRC_FEATURES_APP_USE_APP_SLICE_H
+#include "core.hpp"
 #include "../../app/store.h"
 #include "./app-slice.h"
 using setDiscrubPausedAction = setDiscrubPaused;
@@ -15,7 +15,7 @@ using setTimeoutMessageAction = setTimeoutMessage;
 using setSettingsAction = setSettings;
 #include "./app-types.h"
 #include "../../classes/message.h"
-using Message = _default;
+// Using alias removed (invalid transpilation)
 #include "../../app/hooks.h"
 
 extern std::function<object()> useAppSlice;

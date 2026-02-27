@@ -1,8 +1,8 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_SRC_SERVICES_PRICEPROTECTION_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_SRC_SERVICES_PRICEPROTECTION_H
-#include "core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTC_AGENT_SRC_SERVICES_PRICEPROTECTION_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTC_AGENT_SRC_SERVICES_PRICEPROTECTION_H
+#include "core.hpp"
 #include "./database.h"
-#include "@/config/chains.h"
+// External dependency removed
 #include "./marketDataService.h"
 
 class ValidationResult;

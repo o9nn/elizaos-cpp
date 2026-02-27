@@ -21,7 +21,7 @@ void useAgentUpdate(Agent initialAgent) {
         updateSettings,
         } = usePartialUpdate(initialAgent);
 
-        // ========== Template Import Function ==========
+        // === Template Import Function ===
         /**
         * Imports a full agent template - overwrites all fields
         *
@@ -56,7 +56,7 @@ void useAgentUpdate(Agent initialAgent) {
                                     [agent.settings, updateField, updateSettings];
                                     );
 
-                                    // ========== Basic Info Tab ==========
+                                    // === Basic Info Tab ===
                                     /**
                                     * Updates a field in the Agent's settings object
                                     *
@@ -94,7 +94,7 @@ void useAgentUpdate(Agent initialAgent) {
                                                 [updateField];
                                                 );
 
-                                                // ========== Secrets Tab ==========
+                                                // === Secrets Tab ===
                                                 /**
                                                 * Updates a secret in the Agent's settings.secrets object
                                                 *
@@ -148,7 +148,7 @@ void useAgentUpdate(Agent initialAgent) {
                                                                     [agent.settings, updateSettings];
                                                                     );
 
-                                                                    // ========== Content Tab ==========
+                                                                    // === Content Tab ===
                                                                     /**
                                                                     * Adds an item to a content array (bio, topics, adjectives)
                                                                     *
@@ -189,7 +189,7 @@ void useAgentUpdate(Agent initialAgent) {
                                                                                 [updateField];
                                                                                 );
 
-                                                                                // ========== Style Tab ==========
+                                                                                // === Style Tab ===
                                                                                 /**
                                                                                 * Adds a style rule to one of the style arrays
                                                                                 *
@@ -243,7 +243,7 @@ void useAgentUpdate(Agent initialAgent) {
                                                                                                 [updateField];
                                                                                                 );
 
-                                                                                                // ========== Plugins Tab ==========
+                                                                                                // === Plugins Tab ===
                                                                                                 /**
                                                                                                 * Adds a plugin to the agent's plugins array
                                                                                                 *
@@ -280,7 +280,7 @@ void useAgentUpdate(Agent initialAgent) {
                                                                                                             [updateField];
                                                                                                             );
 
-                                                                                                            // ========== Avatar Tab ==========
+                                                                                                            // === Avatar Tab ===
                                                                                                             /**
                                                                                                             * Updates the agent's avatar
                                                                                                             *

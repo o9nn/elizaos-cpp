@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/commands/shared/url-utils.h"
+#include "url-utils.h"
 
 string getAgentRuntimeUrl(std::shared_ptr<OptionValues> opts)
 {

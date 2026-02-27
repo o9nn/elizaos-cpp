@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/tests/commands/create.test.h"
+#include "create.test.h"
 
 void Main(void)
 {

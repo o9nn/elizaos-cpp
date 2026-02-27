@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/plugin-bootstrap/src/__tests__/attachments.test.h"
+#include "attachments.test.h"
 
 void Main(void)
 {

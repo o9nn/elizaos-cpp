@@ -1,15 +1,15 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_FEATURES_EXPORT_EXPORT-TYPES_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_FEATURES_EXPORT_EXPORT-TYPES_H
-#include "core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_DISCRUB_EXT_SRC_FEATURES_EXPORT_EXPORT_TYPES_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_DISCRUB_EXT_SRC_FEATURES_EXPORT_EXPORT_TYPES_H
+#include "core.hpp"
 #include "../../classes/channel.h"
-using Channel = _default;
+// Using alias removed (invalid transpilation)
 #include "../../classes/guild.h"
-using Guild = _default;
+// Using alias removed (invalid transpilation)
 #include "../../classes/message.h"
-using Message = _default;
+// Using alias removed (invalid transpilation)
 #include "../../enum/export-type.h"
 #include "./export-utils.h"
-using ExportUtils = _default;
+// Using alias removed (invalid transpilation)
 
 typedef object ExportState;
 

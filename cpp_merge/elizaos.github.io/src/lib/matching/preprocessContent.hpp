@@ -1,10 +1,10 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAOS_GITHUB_IO_SRC_LIB_MATCHING_PREPROCESSCONTENT_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAOS_GITHUB_IO_SRC_LIB_MATCHING_PREPROCESSCONTENT_H
-#include "core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZAOS_GITHUB_IO_SRC_LIB_MATCHING_PREPROCESSCONTENT_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZAOS_GITHUB_IO_SRC_LIB_MATCHING_PREPROCESSCONTENT_H
+#include "core.hpp"
 #include "./types.h"
 #include "../data/tags.h"
-#include "path.h"
-using path = _default;
+#include "path.hpp"
+// Using alias removed (invalid transpilation)
 
 string preprocessFilePathContent(string content);
 

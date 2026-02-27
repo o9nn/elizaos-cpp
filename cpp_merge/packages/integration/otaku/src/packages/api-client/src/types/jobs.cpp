@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/packages/api-client/src/types/jobs.h"
+#include "jobs.hpp"
 
 object JobValidation = as<std::shared_ptr<const>>(object{
     object::pair{std:("MAX_CONTENT_LENGTH"), 50000}, 

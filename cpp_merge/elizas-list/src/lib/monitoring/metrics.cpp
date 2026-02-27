@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-list/src/lib/monitoring/metrics.h"
+#include "metrics.hpp"
 
 Record<string, double> MetricsService::metrics = object{};
 

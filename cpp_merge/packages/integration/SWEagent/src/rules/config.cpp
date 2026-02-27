@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/rules/config.h"
+#include "config.hpp"
 
 string exportToCursorFormat(std::shared_ptr<Rule> rule)
 {

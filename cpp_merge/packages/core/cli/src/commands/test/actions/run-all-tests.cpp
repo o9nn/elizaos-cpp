@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/commands/test/actions/run-all-tests.h"
+#include "run-all-tests.h"
 
 std::shared_ptr<Promise<void>> runAllTests(any testPath, std::shared_ptr<TestCommandOptions> options)
 {

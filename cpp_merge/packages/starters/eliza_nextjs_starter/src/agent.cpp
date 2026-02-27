@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza-nextjs-starter/src/agent.h"
+#include "agent.hpp"
 
 Partial<std::shared_ptr<Character>> character = object{
     object::pair{std:("name"), std:("Eliza.how")}, 

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/tools/commands.h"
+#include "commands.hpp"
 
 std::shared_ptr<Set<string>> extractKeys(string formatString)
 {

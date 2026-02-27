@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/tests/test-models.test.h"
+#include "test-models.test.h"
 
 void Main(void)
 {

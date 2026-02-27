@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/game/cypress/e2e/01-setup-and-configuration.cy.h"
+#include "01-setup-and-configuration.cy.h"
 
 void Main(void)
 {

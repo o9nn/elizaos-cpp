@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/server/src/routes/validators/tokenQuery.h"
+#include "tokenQuery.hpp"
 
 std::shared_ptr<TokenQueryParams> parseTokensQuery(std::shared_ptr<RawTokenQuery> raw)
 {

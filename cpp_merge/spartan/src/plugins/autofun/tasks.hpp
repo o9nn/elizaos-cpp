@@ -1,13 +1,13 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_AUTOFUN_TASKS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_AUTOFUN_TASKS_H
-#include "core.h"
-#include "@elizaos/core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SPARTAN_SRC_PLUGINS_AUTOFUN_TASKS_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SPARTAN_SRC_PLUGINS_AUTOFUN_TASKS_H
+#include "core.hpp"
+// External dependency removed
 #include "./tasks/chat.h"
-using Chat = _default;
+// Using alias removed (invalid transpilation)
 #include "./tasks/twitter.h"
-using Twitter = _default;
+// Using alias removed (invalid transpilation)
 #include "./tasks/twitterParser.h"
-using TwitterParser = _default;
+// Using alias removed (invalid transpilation)
 
 extern std::function<std::shared_ptr<Promise<void>>(any, any)> registerTasks;
 #endif

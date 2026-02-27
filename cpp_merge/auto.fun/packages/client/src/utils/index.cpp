@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/client/src/utils/index.h"
+#include "index.hpp"
 
 string toSubscript(double num)
 {

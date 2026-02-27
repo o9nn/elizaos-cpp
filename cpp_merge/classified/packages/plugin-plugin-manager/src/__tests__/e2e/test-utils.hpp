@@ -1,10 +1,10 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-PLUGIN-MANAGER_SRC___TESTS___E2E_TEST-UTILS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-PLUGIN-MANAGER_SRC___TESTS___E2E_TEST-UTILS_H
-#include "core.h"
-#include "@elizaos/core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_PLUGIN_MANAGER_SRC___TESTS___E2E_TEST_UTILS_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_PLUGIN_MANAGER_SRC___TESTS___E2E_TEST_UTILS_H
+#include "core.hpp"
+// External dependency removed
 #include "node:assert.h"
 using assert = strict;
-#include "uuid.h"
+#include "uuid.hpp"
 using uuid = v4;
 
 std::shared_ptr<Promise<object>> setupScenario(std::shared_ptr<IAgentRuntime> runtime);

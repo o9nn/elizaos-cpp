@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-personality/src/utils/json-parser.h"
+#include "json-parser.h"
 
 any extractJsonFromResponse(string response)
 {

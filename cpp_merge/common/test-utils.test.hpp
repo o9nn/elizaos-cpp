@@ -1,8 +1,8 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_TESTS_TEST-UTILS_TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_TESTS_TEST-UTILS_TEST_H
-#include "core.h"
-#include "@jest/globals.h"
-#include "path.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SWEAGENT_TESTS_TEST_UTILS_TEST_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SWEAGENT_TESTS_TEST_UTILS_TEST_H
+#include "core.hpp"
+// External dependency removed
+#include "path.hpp"
 #include "../src/utils/config.h"
 #include "../src/utils/common.h"
 

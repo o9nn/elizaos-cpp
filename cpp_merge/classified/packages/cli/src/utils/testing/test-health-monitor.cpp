@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/src/utils/testing/test-health-monitor.h"
+#include "test-health-monitor.h"
 
 TestHealthMonitor::TestHealthMonitor(string dataDir) {
     this->healthDataPath = path->join(dataDir, std:("health.json"));

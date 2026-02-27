@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/autodoc/src/AIService/AIService.h"
+#include "AIService.hpp"
 
 AIService::AIService(std::shared_ptr<Configuration> configuration_) : configuration(configuration_)  {
     if (!process->env->OPENAI_API_KEY) {

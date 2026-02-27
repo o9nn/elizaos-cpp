@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/plugins-automation/src/npmDownloadStats.h"
+#include "npmDownloadStats.hpp"
 
 std::shared_ptr<Promise<void>> NpmDownloadStatsGenerator::main()
 {

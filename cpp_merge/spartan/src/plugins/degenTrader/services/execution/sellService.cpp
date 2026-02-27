@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/degenTrader/services/execution/sellService.h"
+#include "sellService.hpp"
 
 SellService::SellService(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<WalletService> walletService, std::shared_ptr<DataService> dataService, std::shared_ptr<AnalyticsService> analyticsService, std::shared_ptr<TradeMemoryService> tradeMemoryService) : BaseTradeService(runtime, walletService, dataService, analyticsService) {
     this->validationService = std::make_shared<TokenValidationService>(runtime, walletService, dataService, analyticsService);

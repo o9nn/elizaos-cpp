@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-list/src/lib/analytics/predictive.h"
+#include "predictive.hpp"
 
 PredictiveAnalytics::PredictiveAnalytics() {
     this->mlPredictor = std::make_shared<MLPredictor>();

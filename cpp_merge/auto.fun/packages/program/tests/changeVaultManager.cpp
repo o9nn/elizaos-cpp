@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/program/tests/changeVaultManager.h"
+#include "changeVaultManager.hpp"
 
 void Main(void)
 {

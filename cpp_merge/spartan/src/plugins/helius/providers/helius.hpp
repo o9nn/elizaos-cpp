@@ -1,9 +1,9 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_HELIUS_PROVIDERS_HELIUS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_HELIUS_PROVIDERS_HELIUS_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "ws.h"
-using WebSocket = _default;
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SPARTAN_SRC_PLUGINS_HELIUS_PROVIDERS_HELIUS_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SPARTAN_SRC_PLUGINS_HELIUS_PROVIDERS_HELIUS_H
+#include "core.hpp"
+// External dependency removed
+#include "ws.hpp"
+// Using alias removed (invalid transpilation)
 
 class HeliusWebSocket;
 class IToken;

@@ -1,9 +1,9 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_TEE_PHALA-WRAPPER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_TEE_PHALA-WRAPPER_H
-#include "core.h"
-#include "commander.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_TEE_PHALA_WRAPPER_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_TEE_PHALA_WRAPPER_H
+#include "core.hpp"
+#include "commander.hpp"
 #include "node:child_process.h"
-#include "@elizaos/core.h"
+// External dependency removed
 #include "../../utils/emoji-handler.h"
 
 extern any phalaCliCommand;

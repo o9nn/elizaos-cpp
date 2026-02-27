@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/autonomous-trader/actions/act_reg_delete.h"
+#include "act_reg_delete.hpp"
 
 std::shared_ptr<Action> deleteRegistration = object{
     object::pair{std:("name"), std:("DELETE_REGISTRATION")}, 

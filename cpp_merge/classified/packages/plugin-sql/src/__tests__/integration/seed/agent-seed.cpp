@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-sql/src/__tests__/integration/seed/agent-seed.h"
+#include "agent-seed.h"
 
 std::shared_ptr<Agent> testAgent = object{
     object::pair{std:("name"), std:("Integration Test Agent")}, 

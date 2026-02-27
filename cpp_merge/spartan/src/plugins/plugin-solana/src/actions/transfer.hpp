@@ -1,9 +1,9 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_PLUGIN-SOLANA_SRC_ACTIONS_TRANSFER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_PLUGIN-SOLANA_SRC_ACTIONS_TRANSFER_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "@solana/spl-token.h"
-#include "@solana/web3.js.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SPARTAN_SRC_PLUGINS_PLUGIN_SOLANA_SRC_ACTIONS_TRANSFER_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SPARTAN_SRC_PLUGINS_PLUGIN_SOLANA_SRC_ACTIONS_TRANSFER_H
+#include "core.hpp"
+// External dependency removed
+// External dependency removed
+// External dependency removed
 #include "../keypairUtils.h"
 
 class TransferContent;

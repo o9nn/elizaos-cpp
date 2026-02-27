@@ -1,15 +1,15 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-AUTOCODER_SRC___TESTS___E2E_INDEX_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-AUTOCODER_SRC___TESTS___E2E_INDEX_H
-#include "core.h"
-#include "@elizaos/core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_AUTOCODER_SRC___TESTS___E2E_INDEX_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_AUTOCODER_SRC___TESTS___E2E_INDEX_H
+#include "core.hpp"
+// External dependency removed
 #include "./basic-functionality.test.h"
-using basicFunctionalityTestSuite = _default;
+// Using alias removed (invalid transpilation)
 #include "./code-generation.test.h"
-using codeGenerationE2ETestSuite = _default;
+// Using alias removed (invalid transpilation)
 #include "./claude-code-integration.test.h"
-using claudeCodeIntegrationTestSuite = _default;
+// Using alias removed (invalid transpilation)
 #include "./claude-code-stress-test.h"
-using claudeCodeStressTestSuite = _default;
+// Using alias removed (invalid transpilation)
 
 extern array<std::shared_ptr<TestSuite>> testSuites;
 #endif

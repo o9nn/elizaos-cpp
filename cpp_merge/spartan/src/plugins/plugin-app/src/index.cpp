@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/plugin-app/src/index.h"
+#include "index.hpp"
 
 std::shared_ptr<Plugin> appPlugin = object{
     object::pair{std:("name"), std:("AppDev")}, 

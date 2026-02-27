@@ -1,9 +1,9 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_AUTODOC_SRC_TYPESCRIPTPARSER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_AUTODOC_SRC_TYPESCRIPTPARSER_H
-#include "core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTO_FUN_PACKAGES_AUTODOC_SRC_TYPESCRIPTPARSER_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTO_FUN_PACKAGES_AUTODOC_SRC_TYPESCRIPTPARSER_H
+#include "core.hpp"
 #include "node:fs.h"
-using fs = _default;
-#include "@typescript-eslint/parser.h"
+// Using alias removed (invalid transpilation)
+// External dependency removed
 #include "./types.h"
 
 class TypeScriptParser;

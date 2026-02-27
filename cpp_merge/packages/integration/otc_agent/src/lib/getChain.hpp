@@ -1,8 +1,8 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_SRC_LIB_GETCHAIN_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_SRC_LIB_GETCHAIN_H
-#include "core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTC_AGENT_SRC_LIB_GETCHAIN_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTC_AGENT_SRC_LIB_GETCHAIN_H
+#include "core.hpp"
 #include "viem/chains.h"
-#include "@/config/contracts.h"
+// External dependency removed
 
 extern std::shared_ptr<Chain> anvil;
 std::shared_ptr<Chain> getChain();

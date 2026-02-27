@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/plugin-sql/src/__tests__/integration/room.test.h"
+#include "room.test.h"
 
 void Main(void)
 {

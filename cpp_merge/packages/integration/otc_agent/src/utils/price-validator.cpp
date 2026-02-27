@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otc-agent/src/utils/price-validator.h"
+#include "price-validator.h"
 
 std::shared_ptr<Promise<std::shared_ptr<PriceValidationResult>>> checkPriceDivergence(string tokenAddress, std::shared_ptr<Chain> chain, double poolPriceUsd)
 {

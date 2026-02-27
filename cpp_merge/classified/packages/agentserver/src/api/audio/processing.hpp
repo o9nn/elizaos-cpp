@@ -1,16 +1,16 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_AGENTSERVER_SRC_API_AUDIO_PROCESSING_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_AGENTSERVER_SRC_API_AUDIO_PROCESSING_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "@elizaos/core.h"
-#include "express.h"
-using express = _default;
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_AGENTSERVER_SRC_API_AUDIO_PROCESSING_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_AGENTSERVER_SRC_API_AUDIO_PROCESSING_H
+#include "core.hpp"
+// External dependency removed
+// External dependency removed
+#include "express.hpp"
+// Using alias removed (invalid transpilation)
 #include "node:fs.h"
-using fs = _default;
+// Using alias removed (invalid transpilation)
 #include "node:os.h"
-using os = _default;
+// Using alias removed (invalid transpilation)
 #include "node:path.h"
-using path = _default;
+// Using alias removed (invalid transpilation)
 #include "../shared/file-utils.h"
 #include "../shared/response-utils.h"
 #include "../shared/uploads/index.h"

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/packages/server/src/api/audio/processing.h"
+#include "processing.hpp"
 
 std::shared_ptr<express::Router> createAudioProcessingRouter(std::shared_ptr<ElizaOS> elizaOS)
 {

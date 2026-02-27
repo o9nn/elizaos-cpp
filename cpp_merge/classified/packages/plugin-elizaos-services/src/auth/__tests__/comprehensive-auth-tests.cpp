@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-elizaos-services/src/auth/__tests__/comprehensive-auth-tests.test.h"
+#include "comprehensive-auth-tests.test.h"
 
 object mockConsole = object{
     object::pair{std:("log"), mock()}, 

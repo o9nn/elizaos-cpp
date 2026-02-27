@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/src/commands/tee/index.h"
+#include "index.hpp"
 
 any teeCommand = ((std::make_shared<Command>(std:("tee"))))->description(std:("Manage TEE deployments"))->addCommand(phalaCliCommand);
 

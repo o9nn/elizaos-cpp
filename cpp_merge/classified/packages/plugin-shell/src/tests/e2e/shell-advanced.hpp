@@ -1,12 +1,12 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-SHELL_SRC_TESTS_E2E_SHELL-ADVANCED_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-SHELL_SRC_TESTS_E2E_SHELL-ADVANCED_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "@elizaos/core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_SHELL_SRC_TESTS_E2E_SHELL_ADVANCED_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_SHELL_SRC_TESTS_E2E_SHELL_ADVANCED_H
+#include "core.hpp"
+// External dependency removed
+// External dependency removed
 #include "../../service.h"
 #include "../../action.h"
-#include "path.h"
-using path = _default;
+#include "path.hpp"
+// Using alias removed (invalid transpilation)
 
 class ShellAdvancedE2ETestSuite;
 

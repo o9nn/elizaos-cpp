@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/plugin-solana/src/sendTransaction.h"
+#include "sendTransaction.hpp"
 
 std::shared_ptr<Promise<string>> sendTransaction(std::shared_ptr<Connection> connection, array<any> instructions, std::shared_ptr<Keypair> wallet)
 {

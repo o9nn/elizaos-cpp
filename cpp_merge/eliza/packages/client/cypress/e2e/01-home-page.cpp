@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/client/cypress/e2e/01-home-page.cy.h"
+#include "01-home-page.cy.h"
 
 void Main(void)
 {

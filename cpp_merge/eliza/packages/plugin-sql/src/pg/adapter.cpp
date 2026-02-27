@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/plugin-sql/src/pg/adapter.h"
+#include "adapter.hpp"
 
 PgDatabaseAdapter::PgDatabaseAdapter(std::shared_ptr<UUID> agentId, std::shared_ptr<PostgresConnectionManager> manager, any _schema) : BaseDrizzleAdapter(agentId) {
     this->manager = manager;

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-dynamic/providers/plugin-creation-providers.h"
+#include "plugin-creation-providers.h"
 
 std::shared_ptr<Provider> pluginCreationStatusProvider = object{
     object::pair{std:("name"), std:("plugin_creation_status")}, 

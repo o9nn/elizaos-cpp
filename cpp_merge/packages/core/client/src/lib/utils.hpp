@@ -1,17 +1,17 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLIENT_SRC_LIB_UTILS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLIENT_SRC_LIB_UTILS_H
-#include "core.h"
-#include "@/constants.h"
-#include "@elizaos/core.h"
-#include "clsx.h"
-#include "dayjs.h"
-using dayjs = _default;
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_CLIENT_SRC_LIB_UTILS_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_CLIENT_SRC_LIB_UTILS_H
+#include "core.hpp"
+// External dependency removed
+// External dependency removed
+#include "clsx.hpp"
+#include "dayjs.hpp"
+// Using alias removed (invalid transpilation)
 #include "dayjs/plugin/localizedFormat.h"
-using localizedFormat = _default;
+// Using alias removed (invalid transpilation)
 #include "tailwind-merge.h"
-#include "@elizaos/core.h"
+// External dependency removed
 using CoreUUID = UUID;
-#include "@/types.h"
+// External dependency removed
 using ClientMessageChannel = MessageChannel;
 
 template <typename /* spread: Args */>

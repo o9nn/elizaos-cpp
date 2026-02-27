@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-elizaos-services/cypress/support/commands.h"
+#include "commands.hpp"
 
 namespace global {
     namespace Cypress {

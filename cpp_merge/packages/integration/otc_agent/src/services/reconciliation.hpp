@@ -1,12 +1,12 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_SRC_SERVICES_RECONCILIATION_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_SRC_SERVICES_RECONCILIATION_H
-#include "core.h"
-#include "viem.h"
-#include "@/contracts/artifacts/contracts/OTC.sol/OTC.json.h"
-using otcArtifact = _default;
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTC_AGENT_SRC_SERVICES_RECONCILIATION_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTC_AGENT_SRC_SERVICES_RECONCILIATION_H
+#include "core.hpp"
+#include "viem.hpp"
+// External dependency removed
+// Using alias removed (invalid transpilation)
 #include "./database.h"
-#include "@/lib/getChain.h"
-#include "@/lib/getContractAddress.h"
+// External dependency removed
+// External dependency removed
 
 class SimplePublicClient;
 class OnChainOffer;

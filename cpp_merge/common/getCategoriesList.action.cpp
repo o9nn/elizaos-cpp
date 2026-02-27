@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-coingecko/src/actions/getCategoriesList.action.h"
+#include "getCategoriesList.action.h"
 
 std::shared_ptr<Action> getCategoriesListAction = object{
     object::pair{std:("name"), std:("GET_CATEGORIES_LIST")}, 

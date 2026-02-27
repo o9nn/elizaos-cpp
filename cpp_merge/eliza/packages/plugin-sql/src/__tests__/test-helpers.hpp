@@ -1,16 +1,16 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PLUGIN-SQL_SRC___TESTS___TEST-HELPERS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_PLUGIN-SQL_SRC___TESTS___TEST-HELPERS_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "@elizaos/core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_PLUGIN_SQL_SRC___TESTS___TEST_HELPERS_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_PLUGIN_SQL_SRC___TESTS___TEST_HELPERS_H
+#include "core.hpp"
+// External dependency removed
+// External dependency removed
 #include "drizzle-orm.h"
 #include "node:fs.h"
-using fs = _default;
+// Using alias removed (invalid transpilation)
 #include "node:os.h"
-using os = _default;
+// Using alias removed (invalid transpilation)
 #include "node:path.h"
-using path = _default;
-#include "uuid.h"
+// Using alias removed (invalid transpilation)
+#include "uuid.hpp"
 #include "../index.h"
 using sqlPlugin = plugin;
 #include "../migration-service.h"

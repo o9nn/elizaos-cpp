@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/core/src/types/service.h"
+#include "service.hpp"
 
 Service::Service(std::shared_ptr<IAgentRuntime> runtime) {
     if (runtime) {

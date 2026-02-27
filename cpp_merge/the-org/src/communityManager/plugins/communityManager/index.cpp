@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/the-org/src/communityManager/plugins/communityManager/index.h"
+#include "index.hpp"
 
 std::shared_ptr<Plugin> communityManagerPlugin = object{
     object::pair{std:("name"), std:("community-manager")}, 

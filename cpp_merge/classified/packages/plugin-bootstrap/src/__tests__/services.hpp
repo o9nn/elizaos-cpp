@@ -1,11 +1,11 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-BOOTSTRAP_SRC___TESTS___SERVICES_TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-BOOTSTRAP_SRC___TESTS___SERVICES_TEST_H
-#include "core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_BOOTSTRAP_SRC___TESTS___SERVICES_TEST_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_BOOTSTRAP_SRC___TESTS___SERVICES_TEST_H
+#include "core.hpp"
 #include "bun:test.h"
 #include "../services/task.h"
-#include "@elizaos/core.h"
+// External dependency removed
 #include "../index.h"
-#include "@elizaos/core.h"
+// External dependency removed
 #include "./test-utils.h"
 
 class PluginService;

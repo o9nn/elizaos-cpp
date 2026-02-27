@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-coingecko/src/actions/getNFTCollectionStats.action.h"
+#include "getNFTCollectionStats.action.h"
 
 std::shared_ptr<Action> getNFTCollectionStatsAction = object{
     object::pair{std:("name"), std:("GET_NFT_COLLECTION_STATS")}, 

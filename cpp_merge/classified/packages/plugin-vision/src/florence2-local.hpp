@@ -1,12 +1,12 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-VISION_SRC_FLORENCE2-LOCAL_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-VISION_SRC_FLORENCE2-LOCAL_H
-#include "core.h"
-#include "@tensorflow/tfjs.h"
-#include "@tensorflow/tfjs-backend-wasm.h"
-#include "@elizaos/core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_VISION_SRC_FLORENCE2_LOCAL_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_VISION_SRC_FLORENCE2_LOCAL_H
+#include "core.hpp"
+// External dependency removed
+// External dependency removed
+// External dependency removed
 #include "./types.h"
-#include "sharp.h"
-using sharp = _default;
+#include "sharp.hpp"
+// Using alias removed (invalid transpilation)
 
 class Florence2LocalConfig;
 class Florence2Local;

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/plugin-bootstrap/src/__tests__/test-utils.h"
+#include "test-utils.h"
 
 MockRuntime createMockRuntime(Partial<MockRuntime> overrides)
 {

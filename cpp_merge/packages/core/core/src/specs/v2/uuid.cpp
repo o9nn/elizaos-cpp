@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/core/src/specs/v2/uuid.h"
+#include "uuid.hpp"
 
 any validateUuid(any value)
 {

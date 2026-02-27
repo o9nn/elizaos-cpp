@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-bootstrap/src/__tests__/providers.test.h"
+#include "providers.test.h"
 
 void Main(void)
 {

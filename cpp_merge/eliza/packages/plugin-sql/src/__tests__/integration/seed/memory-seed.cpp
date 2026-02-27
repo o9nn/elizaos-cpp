@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/plugin-sql/src/__tests__/integration/seed/memory-seed.h"
+#include "memory-seed.h"
 
 any memoryTestAgentId = as<std::shared_ptr<UUID>>(uuidv4());
 any memoryTestEntityId = as<std::shared_ptr<UUID>>(uuidv4());

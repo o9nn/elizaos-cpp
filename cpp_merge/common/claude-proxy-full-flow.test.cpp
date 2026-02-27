@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-autocoder/src/__tests__/e2e/claude-proxy-full-flow.test.h"
+#include "claude-proxy-full-flow.test.h"
 
 void Main(void)
 {

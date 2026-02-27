@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/packages/api-client/src/services/messaging.h"
+#include "messaging.hpp"
 
 std::shared_ptr<Promise<std::shared_ptr<Message>>> MessagingService::submitMessage(std::shared_ptr<MessageSubmitParams> params)
 {

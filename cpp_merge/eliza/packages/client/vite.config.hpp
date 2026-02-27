@@ -1,13 +1,13 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLIENT_VITE_CONFIG_CYPRESS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLIENT_VITE_CONFIG_CYPRESS_H
-#include "core.h"
-#include "@vitejs/plugin-react-swc.h"
-using react = _default;
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_CLIENT_VITE_CONFIG_CYPRESS_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_CLIENT_VITE_CONFIG_CYPRESS_H
+#include "core.hpp"
+// External dependency removed
+// Using alias removed (invalid transpilation)
 #include "node:path.h"
-using path = _default;
-#include "vite.h"
+// Using alias removed (invalid transpilation)
+#include "vite.hpp"
 #include "vite-plugin-node-polyfills.h"
-#include "@tailwindcss/vite.h"
-using tailwindcss = _default;
+// External dependency removed
+// Using alias removed (invalid transpilation)
 
 #endif

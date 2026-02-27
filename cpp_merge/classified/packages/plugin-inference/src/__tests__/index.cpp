@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-inference/src/__tests__/index.test.h"
+#include "index.test.h"
 
 std::function<any(std::shared_ptr<Record<string, string>>)> createMockRuntime = [=](auto settings = object{}) mutable
 {

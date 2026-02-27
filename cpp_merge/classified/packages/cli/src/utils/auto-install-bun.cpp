@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/src/utils/auto-install-bun.h"
+#include "auto-install-bun.h"
 
 void updatePathForBun()
 {

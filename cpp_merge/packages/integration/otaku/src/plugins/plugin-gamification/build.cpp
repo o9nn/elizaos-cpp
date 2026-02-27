@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-gamification/build.h"
+#include "build.hpp"
 
 any result = std::async([=]() { build(object{
     object::pair{std:("entrypoints"), array<string>{ std:("src/index.ts") }}, 

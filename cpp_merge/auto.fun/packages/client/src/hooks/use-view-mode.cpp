@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/client/src/hooks/use-view-mode.h"
+#include "use-view-mode.h"
 
 std::function<any()> useViewMode = [=]() mutable
 {

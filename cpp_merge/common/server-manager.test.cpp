@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/tests/unit/utils/server-manager.test.h"
+#include "server-manager.test.h"
 
 object mockServerState = object{
     object::pair{std:("process"), as<any>(nullptr)}, 

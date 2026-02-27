@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizaos.github.io/src/lib/pipelines/export/index.h"
+#include "index.hpp"
 
 std::shared_ptr<PipelineStep<object, array<object>, std::shared_ptr<RepoPipelineContext>>> generateDailyRepoStats = pipe(generateTimeIntervals<object>(std:("day")), mapStep(exportRepoStatsForInterval));
 std::shared_ptr<PipelineStep<object, array<object>, std::shared_ptr<RepoPipelineContext>>> generateWeeklyRepoStats = pipe(generateTimeIntervals<object>(std:("week")), mapStep(exportRepoStatsForInterval));

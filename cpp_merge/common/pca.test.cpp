@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/client/src/lib/pca.test.h"
+#include "pca.test.h"
 
 void Main(void)
 {

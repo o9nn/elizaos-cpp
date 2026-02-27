@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza-plugin-starter/src/plugins/weather/provider.h"
+#include "provider.hpp"
 
 std::shared_ptr<WeatherConfig> providerConfig;
 std::shared_ptr<Provider> weatherProvider = object{

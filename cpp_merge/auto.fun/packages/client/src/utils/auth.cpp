@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/client/src/utils/auth.h"
+#include "auth.hpp"
 
 std::function<string(string)> sanitizeToken = [=](auto token) mutable
 {

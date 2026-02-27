@@ -1,8 +1,8 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_SRC_RUN_MERGE-PREDICTIONS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_SRC_RUN_MERGE-PREDICTIONS_H
-#include "core.h"
-#include "path.h"
-#include "fs.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SWEAGENT_SRC_RUN_MERGE_PREDICTIONS_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SWEAGENT_SRC_RUN_MERGE_PREDICTIONS_H
+#include "core.hpp"
+#include "path.hpp"
+#include "fs.hpp"
 #include "../utils/log.h"
 
 extern std::shared_ptr<AgentLogger> logger;

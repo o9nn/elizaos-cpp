@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-experience/__tests__/plugin.test.h"
+#include "plugin.test.h"
 
 void Main(void)
 {

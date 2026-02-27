@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/plugin-sql/src/__tests__/integration/postgres-adapter.test.h"
+#include "postgres-adapter.test.h"
 
 void Main(void)
 {

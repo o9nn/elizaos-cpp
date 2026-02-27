@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/agentserver/test-setup.h"
+#include "test-setup.h"
 
 std::function<object(string)> createMockPlugin = [=](auto name) mutable
 {

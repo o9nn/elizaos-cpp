@@ -1,12 +1,12 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_SERVER_SRC_CLAIMFEES_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_AUTO_FUN_PACKAGES_SERVER_SRC_CLAIMFEES_H
-#include "core.h"
-#include "@solana/web3.js.h"
-#include "@autodotfun/raydium/src/raydiumVault.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTO_FUN_PACKAGES_SERVER_SRC_CLAIMFEES_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTO_FUN_PACKAGES_SERVER_SRC_CLAIMFEES_H
+#include "core.hpp"
+// External dependency removed
+// External dependency removed
 #include "./tokenSupplyHelpers/customWallet.h"
-#include "@coral-xyz/anchor.h"
-#include "@autodotfun/types/types/raydium_vault.h"
-#include "@autodotfun/types/idl/raydium_vault.json.h"
+// External dependency removed
+// External dependency removed
+// External dependency removed
 #include "./websocket-client.h"
 #include "./db.h"
 

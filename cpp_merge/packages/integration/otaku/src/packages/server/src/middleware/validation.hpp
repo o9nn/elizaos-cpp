@@ -1,10 +1,10 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PACKAGES_SERVER_SRC_MIDDLEWARE_VALIDATION_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PACKAGES_SERVER_SRC_MIDDLEWARE_VALIDATION_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "express.h"
-using express = _default;
-#include "@elizaos/core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTAKU_SRC_PACKAGES_SERVER_SRC_MIDDLEWARE_VALIDATION_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTAKU_SRC_PACKAGES_SERVER_SRC_MIDDLEWARE_VALIDATION_H
+#include "core.hpp"
+// External dependency removed
+#include "express.hpp"
+// Using alias removed (invalid transpilation)
+// External dependency removed
 #include "../api/shared/response-utils.h"
 #include "../api/shared/validation.h"
 #include "./jwt.h"

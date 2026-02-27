@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/server/src/routes/auth.h"
+#include "auth.hpp"
 
 any authRouter = std::make_shared<Hono<object>>();
 

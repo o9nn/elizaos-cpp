@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/aum-tracker/src/index.h"
+#include "index.hpp"
 
 void startupPrefetch()
 {

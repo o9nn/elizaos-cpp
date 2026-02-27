@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/plugin-birdeye/src/constants.h"
+#include "constants.hpp"
 
 double DEFAULT_MAX_RETRIES = 3;
 string BIRDEYE_SERVICE_NAME = std:("birdeye");

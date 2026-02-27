@@ -1,11 +1,11 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_DEGENINTEL_INDEX_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SPARTAN_SRC_PLUGINS_DEGENINTEL_INDEX_H
-#include "core.h"
-#include "@elizaos/core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SPARTAN_SRC_PLUGINS_DEGENINTEL_INDEX_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SPARTAN_SRC_PLUGINS_DEGENINTEL_INDEX_H
+#include "core.hpp"
+// External dependency removed
 #include "./apis.h"
-using routes = _default;
+// Using alias removed (invalid transpilation)
 #include "./tasks.h"
-#include "@elizaos/core.h"
+// External dependency removed
 #include "./providers/sentiment.h"
 #include "./providers/cmcMarket.h"
 #include "./providers/birdeyeTrending.h"

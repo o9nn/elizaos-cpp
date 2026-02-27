@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-cdp/index.h"
+#include "index.hpp"
 
 std::shared_ptr<Plugin> cdpPlugin = object{
     object::pair{std:("name"), std:("cdp")}, 

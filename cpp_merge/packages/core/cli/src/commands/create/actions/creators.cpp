@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/commands/create/actions/creators.h"
+#include "creators.hpp"
 
 std::shared_ptr<Promise<void>> createPlugin(string pluginName, string targetDir, boolean isNonInteractive)
 {

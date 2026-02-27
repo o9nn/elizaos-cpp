@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-todo/tests/createTodoAction.test.h"
+#include "createTodoAction.test.h"
 
 void Main(void)
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/client/src/lib/utils.h"
+#include "utils.hpp"
 
 string characterNameToUrl(string name)
 {

@@ -1,9 +1,9 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-KNOWLEDGE_SRC_DOCS-LOADER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-KNOWLEDGE_SRC_DOCS-LOADER_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "fs.h"
-#include "path.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_KNOWLEDGE_SRC_DOCS_LOADER_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_KNOWLEDGE_SRC_DOCS_LOADER_H
+#include "core.hpp"
+// External dependency removed
+#include "fs.hpp"
+#include "path.hpp"
 #include "./service.ts.h"
 #include "./types.ts.h"
 #include "./utils.ts.h"

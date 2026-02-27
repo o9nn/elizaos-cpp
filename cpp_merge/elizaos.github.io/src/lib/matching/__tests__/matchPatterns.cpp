@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizaos.github.io/src/lib/matching/__tests__/matchPatterns.test.h"
+#include "matchPatterns.test.h"
 
 void Main(void)
 {

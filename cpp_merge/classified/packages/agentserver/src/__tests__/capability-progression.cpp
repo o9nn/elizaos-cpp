@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/agentserver/src/__tests__/capability-progression.test.h"
+#include "capability-progression.test.h"
 
 void Main(void)
 {

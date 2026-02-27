@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/plugin-specification/core-plugin-v2/src/prompts.h"
+#include "prompts.hpp"
 
 string shouldRespondTemplate = coreShouldRespondTemplate;
 string messageHandlerTemplate = coreMessageHandlerTemplate;

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/mcp-gateway/src/index.h"
+#include "index.hpp"
 
 std::shared_ptr<Promise<void>> main()
 {

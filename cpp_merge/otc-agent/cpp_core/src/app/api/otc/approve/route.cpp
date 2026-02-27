@@ -416,7 +416,7 @@ std::future<void> POST(NextRequest request) {
                                                                                                                                                             });
                                                                                                                                                         }
 
-                                                                                                                                                        // ====== PRICE VALIDATION ======
+                                                                                                                                                        // == PRICE VALIDATION ==
                                                                                                                                                         // Validate that the offer price hasn't diverged too much from market price
                                                                                                                                                         // This prevents abuse from stale quotes or manipulated pool prices
                                                                                                                                                         const auto MAX_PRICE_DIVERGENCE_BPS = 1000; // 10% maximum divergence;
@@ -557,7 +557,7 @@ std::future<void> POST(NextRequest request) {
                                                                                                                                                                                                     priceError,
                                                                                                                                                                                                     );
                                                                                                                                                                                                 }
-                                                                                                                                                                                                // ====== END PRICE VALIDATION ======
+                                                                                                                                                                                                // == END PRICE VALIDATION ==
 
                                                                                                                                                                                                 // Approve immediately
                                                                                                                                                                                                 const auto accountAddr = (;

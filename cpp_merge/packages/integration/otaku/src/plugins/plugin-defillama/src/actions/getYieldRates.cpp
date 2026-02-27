@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-defillama/src/actions/getYieldRates.action.h"
+#include "getYieldRates.action.h"
 
 std::shared_ptr<Action> getYieldRatesAction = object{
     object::pair{std:("name"), std:("GET_YIELD_RATES")}, 

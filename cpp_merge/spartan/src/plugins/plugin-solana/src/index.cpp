@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/plugin-solana/src/index.h"
+#include "index.hpp"
 
 std::shared_ptr<Plugin> solanaPlugin = object{
     object::pair{std:("name"), SOLANA_SERVICE_NAME}, 

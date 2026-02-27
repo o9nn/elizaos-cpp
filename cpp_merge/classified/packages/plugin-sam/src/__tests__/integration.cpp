@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-sam/src/__tests__/integration.test.h"
+#include "integration.test.h"
 
 void Main(void)
 {

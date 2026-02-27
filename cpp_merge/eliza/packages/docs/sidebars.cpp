@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/docs/sidebars.h"
+#include "sidebars.hpp"
 
 std::shared_ptr<SidebarsConfig> sidebars = object{
     object::pair{std:("tutorialSidebar"), array<object>{ object{

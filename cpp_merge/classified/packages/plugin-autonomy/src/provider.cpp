@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-autonomy/src/provider.h"
+#include "provider.hpp"
 
 std::shared_ptr<Provider> adminChatProvider = object{
     object::pair{std:("name"), std:("ADMIN_CHAT_HISTORY")}, 

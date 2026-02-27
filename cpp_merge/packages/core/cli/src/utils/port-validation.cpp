@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/utils/port-validation.h"
+#include "port-validation.h"
 
 double validatePort(string value)
 {

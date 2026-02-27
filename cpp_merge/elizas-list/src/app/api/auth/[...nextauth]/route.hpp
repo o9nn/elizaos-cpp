@@ -1,12 +1,12 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAS-LIST_SRC_APP_API_AUTH_[___NEXTAUTH]_ROUTE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAS-LIST_SRC_APP_API_AUTH_[___NEXTAUTH]_ROUTE_H
-#include "core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZAS_LIST_SRC_APP_API_AUTH_[___NEXTAUTH]_ROUTE_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZAS_LIST_SRC_APP_API_AUTH_[___NEXTAUTH]_ROUTE_H
+#include "core.hpp"
 #include "next-auth.h"
-using NextAuth = _default;
-#include "@next-auth/prisma-adapter.h"
-#include "@/lib/prisma.h"
+// Using alias removed (invalid transpilation)
+// External dependency removed
+// External dependency removed
 #include "next-auth/providers/github.h"
-using GithubProvider = _default;
+// Using alias removed (invalid transpilation)
 
 extern std::shared_ptr<AuthOptions> authOptions;
 extern any handler;

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/commands/create/index.h"
+#include "index.hpp"
 
 any create = ((std::make_shared<Command>(std:("create"))))->description(std:("Create a new ElizaOS project, plugin, agent, or TEE project"))->argument(std:("[name]"), std:("name of the project/plugin/agent to create"))->option(std:("--dir <dir>"), std:("directory to create the project in"), std:("."))->option(std:("--yes, -y"), std:("skip prompts and use defaults"))->option(std:("--type <type>"), std:("type of project to create (project, plugin, agent, tee)"), std:("project"))->action([=](auto name = undefined, auto opts = undefined) mutable
 {

@@ -1,11 +1,11 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAS-WORLD_SRC_LIB_CACHE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAS-WORLD_SRC_LIB_CACHE_H
-#include "core.h"
-#include "@/types.h"
-#include "fs.h"
-using fs = _default;
-#include "path.h"
-using path = _default;
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZAS_WORLD_SRC_LIB_CACHE_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZAS_WORLD_SRC_LIB_CACHE_H
+#include "core.hpp"
+// External dependency removed
+#include "fs.hpp"
+// Using alias removed (invalid transpilation)
+#include "path.hpp"
+// Using alias removed (invalid transpilation)
 
 extern any CACHE_FILE;
 extern double CACHE_DURATION;

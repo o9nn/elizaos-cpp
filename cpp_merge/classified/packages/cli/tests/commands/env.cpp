@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/tests/commands/env.test.h"
+#include "env.test.h"
 
 void Main(void)
 {

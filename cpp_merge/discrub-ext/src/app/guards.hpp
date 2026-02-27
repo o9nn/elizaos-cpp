@@ -1,14 +1,14 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_APP_GUARDS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_APP_GUARDS_H
-#include "core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_DISCRUB_EXT_SRC_APP_GUARDS_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_DISCRUB_EXT_SRC_APP_GUARDS_H
+#include "core.hpp"
 #include "../classes/attachment.h"
-using Attachment = _default;
+// Using alias removed (invalid transpilation)
 #include "../classes/guild.h"
-using Guild = _default;
+// Using alias removed (invalid transpilation)
 #include "../classes/message.h"
-using Message = _default;
+// Using alias removed (invalid transpilation)
 #include "../classes/role.h"
-using Role = _default;
+// Using alias removed (invalid transpilation)
 
 extern std::function<any(any)> isMessage;
 extern std::function<any(any)> isGuild;

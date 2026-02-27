@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/core/src/__tests__/services-by-type.test.h"
+#include "services-by-type.test.h"
 
 any MockWalletService1::override;
 

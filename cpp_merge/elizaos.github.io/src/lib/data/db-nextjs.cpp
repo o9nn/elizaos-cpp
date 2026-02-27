@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizaos.github.io/src/lib/data/db-nextjs.h"
+#include "db-nextjs.h"
 
 std::shared_ptr<Database::Database> sqlite;
 any db = drizzle(sqlite, object{

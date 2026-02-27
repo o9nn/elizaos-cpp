@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/tests/unit/basic.test.h"
+#include "basic.test.h"
 
 void Main(void)
 {

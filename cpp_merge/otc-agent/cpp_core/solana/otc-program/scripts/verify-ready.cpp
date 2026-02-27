@@ -26,7 +26,7 @@ std::future<void> verify() {
     const auto available = tokenBalance - reserved;
 
     std::cout << "📊 LOCALNET READINESS CHECK" << std::endl;
-    std::cout << "========\n" << std::endl;
+    std::cout << "==\n" << std::endl;
 
     std::cout << "✅ Prices:" << std::endl;
     std::cout << "   Token: $" + std::to_string(tokenPrice.toFixed(2)) << std::endl;

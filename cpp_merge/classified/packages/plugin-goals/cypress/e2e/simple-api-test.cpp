@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-goals/cypress/e2e/simple-api-test.cy.h"
+#include "simple-api-test.cy.h"
 
 void Main(void)
 {

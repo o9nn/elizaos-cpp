@@ -1,14 +1,14 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_SCRIPTS_SOLANA-ADMIN_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTC-AGENT_SCRIPTS_SOLANA-ADMIN_H
-#include "core.h"
-#include "dotenv.h"
-#include "@coral-xyz/anchor.h"
-#include "@solana/web3.js.h"
-#include "@solana/spl-token.h"
-#include "bs58.h"
-using bs58 = _default;
-#include "fs.h"
-#include "path.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTC_AGENT_SCRIPTS_SOLANA_ADMIN_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTC_AGENT_SCRIPTS_SOLANA_ADMIN_H
+#include "core.hpp"
+#include "dotenv.hpp"
+// External dependency removed
+// External dependency removed
+// External dependency removed
+#include "bs58.hpp"
+// Using alias removed (invalid transpilation)
+#include "fs.hpp"
+#include "path.hpp"
 
 extern string SOLANA_RPC;
 extern any PROGRAM_ID;

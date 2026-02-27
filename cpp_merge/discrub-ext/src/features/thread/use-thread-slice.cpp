@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/discrub-ext/src/features/thread/use-thread-slice.h"
+#include "use-thread-slice.h"
 
 std::function<object()> useThreadSlice = [=]() mutable
 {

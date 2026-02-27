@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-relay/src/types/index.h"
+#include "index.hpp"
 
 object RelaySupportedChains = as<std::shared_ptr<const>>(object{
     object::pair{std:("ETHEREUM"), 1}, 

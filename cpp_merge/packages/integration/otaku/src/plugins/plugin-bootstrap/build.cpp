@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-bootstrap/build.h"
+#include "build.hpp"
 
 std::function<std::shared_ptr<Promise<void>>()> run = createBuildRunner(object{
     object::pair{std:("packageName"), std:("@elizaos/plugin-bootstrap")}, 

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-starter/src/tests.h"
+#include "tests.hpp"
 
 std::shared_ptr<TestSuite> PluginTestSuite = object{
     object::pair{std:("name"), std:("plugin_starter_test_suite")}, 

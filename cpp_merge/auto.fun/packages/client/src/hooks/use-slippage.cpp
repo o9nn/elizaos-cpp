@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/client/src/hooks/use-slippage.h"
+#include "use-slippage.h"
 
 std::function<any()> useSlippage = [=]() mutable
 {

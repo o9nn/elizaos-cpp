@@ -1,12 +1,12 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-ELIZAOS-SERVICES_SRC___TESTS___CLI-INTEGRATION_TEST_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-ELIZAOS-SERVICES_SRC___TESTS___CLI-INTEGRATION_TEST_H
-#include "core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_ELIZAOS_SERVICES_SRC___TESTS___CLI_INTEGRATION_TEST_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_ELIZAOS_SERVICES_SRC___TESTS___CLI_INTEGRATION_TEST_H
+#include "core.hpp"
 #include "bun:test.h"
-#include "child_process.h"
+#include "child_process.hpp"
 #include "fs/promises.h"
-#include "os.h"
-#include "path.h"
-#include "@elizaos/core.h"
+#include "os.hpp"
+#include "path.hpp"
+// External dependency removed
 
 class TestEnvironment;
 

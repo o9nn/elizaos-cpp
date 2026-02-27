@@ -1,8 +1,8 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_START_UTILS_LOADER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_START_UTILS_LOADER_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "@elizaos/server.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_START_UTILS_LOADER_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_START_UTILS_LOADER_H
+#include "core.hpp"
+// External dependency removed
+// External dependency removed
 using serverTryLoadFile = tryLoadFile;
 using serverLoadCharactersFromUrl = loadCharactersFromUrl;
 using serverJsonToCharacter = jsonToCharacter;

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/autonomous-trader/actions/act_reg_confirmemail.h"
+#include "act_reg_confirmemail.hpp"
 
 any findGeneratedCode(any message, any length)
 {

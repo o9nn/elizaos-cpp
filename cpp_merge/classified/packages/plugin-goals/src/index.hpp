@@ -1,10 +1,10 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-GOALS_SRC_INDEX_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-GOALS_SRC_INDEX_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "@elizaos/core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_GOALS_SRC_INDEX_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_GOALS_SRC_INDEX_H
+#include "core.hpp"
+// External dependency removed
+// External dependency removed
 #include "./apis.h"
-using routes = _default;
+// Using alias removed (invalid transpilation)
 #include "./actions/cancelGoal.h"
 #include "./actions/completeGoal.h"
 #include "./actions/confirmGoal.h"

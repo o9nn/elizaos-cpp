@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-stagehand/build.config.h"
+#include "build.config.h"
 
 std::shared_ptr<BuildConfig> buildConfig = object{
     object::pair{std:("entrypoints"), array<string>{ std:("./src/index.ts") }}, 

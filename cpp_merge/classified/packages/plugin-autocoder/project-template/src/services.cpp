@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-autocoder/project-template/src/services.h"
+#include "services.hpp"
 
 array<any> services = array<any>();
 

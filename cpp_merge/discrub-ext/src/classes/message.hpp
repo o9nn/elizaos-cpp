@@ -1,10 +1,10 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_CLASSES_MESSAGE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_CLASSES_MESSAGE_H
-#include "core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_DISCRUB_EXT_SRC_CLASSES_MESSAGE_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_DISCRUB_EXT_SRC_CLASSES_MESSAGE_H
+#include "core.hpp"
 #include "./attachment.h"
-using Attachment = _default;
+// Using alias removed (invalid transpilation)
 #include "./embed.h"
-using Embed = _default;
+// Using alias removed (invalid transpilation)
 #include "../types/message-reference-object.h"
 #include "./user.h"
 #include "../types/channel-mention-object.h"
@@ -13,7 +13,7 @@ using Embed = _default;
 #include "../types/application-object.h"
 #include "../types/message-interaction-object.h"
 #include "./channel.h"
-using Channel = _default;
+// Using alias removed (invalid transpilation)
 #include "../types/component-object.h"
 #include "../types/sticker-item-object.h"
 #include "../types/sticker-object.h"

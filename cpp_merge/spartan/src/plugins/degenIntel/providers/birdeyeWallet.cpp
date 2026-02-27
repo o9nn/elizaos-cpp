@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/degenIntel/providers/birdeyeWallet.h"
+#include "birdeyeWallet.hpp"
 
 std::shared_ptr<Provider> birdeyeTradePortfolioProvider = object{
     object::pair{std:("name"), std:("INTEL_TRADE_PORTFOLIO")}, 

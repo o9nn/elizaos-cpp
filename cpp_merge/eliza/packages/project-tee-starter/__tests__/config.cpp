@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/project-tee-starter/__tests__/config.test.h"
+#include "config.test.h"
 
 void Main(void)
 {

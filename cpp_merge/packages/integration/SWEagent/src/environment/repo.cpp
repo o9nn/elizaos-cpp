@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/environment/repo.h"
+#include "repo.hpp"
 
 array<string> getGitResetCommands(string baseCommit)
 {

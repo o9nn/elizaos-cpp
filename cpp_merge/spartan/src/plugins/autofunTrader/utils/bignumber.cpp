@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/autofunTrader/utils/bignumber.h"
+#include "bignumber.hpp"
 
 string formatBN(std::shared_ptr<BigNumber> value, double decimals)
 {

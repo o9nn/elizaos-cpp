@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/plugin-sql/src/pglite/adapter.h"
+#include "adapter.hpp"
 
 PgliteDatabaseAdapter::PgliteDatabaseAdapter(std::shared_ptr<UUID> agentId, std::shared_ptr<PGliteClientManager> manager) : BaseDrizzleAdapter(agentId) {
     this->manager = manager;

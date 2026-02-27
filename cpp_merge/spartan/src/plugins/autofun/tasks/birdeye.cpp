@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/autofun/tasks/birdeye.h"
+#include "birdeye.hpp"
 
 string makeBulletpointList(array<string> array)
 {

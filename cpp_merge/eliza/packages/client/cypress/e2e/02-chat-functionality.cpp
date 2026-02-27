@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/client/cypress/e2e/02-chat-functionality.cy.h"
+#include "02-chat-functionality.cy.h"
 
 void Main(void)
 {

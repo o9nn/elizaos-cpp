@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/run/hooks/types.h"
+#include "types.hpp"
 
 void AbstractRunHook::onInit(Record<string, any> _run)
 {

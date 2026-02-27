@@ -1,2 +1,2 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/discrub-ext/src/types/message-call-object.h"
+#include "message-call-object.h"
 

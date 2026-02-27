@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/program/tests/acceptAuthority.h"
+#include "acceptAuthority.hpp"
 
 void Main(void)
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-goals/src/tests/action-handlers.test.h"
+#include "action-handlers.test.h"
 
 void Main(void)
 {

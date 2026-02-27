@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/packages/server/src/api/tee/index.h"
+#include "index.hpp"
 
 std::shared_ptr<express::Router> teeRouter()
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/communityInvestor/schemas.h"
+#include "schemas.hpp"
 
 TokenPerformance transformTokenPerformance(any dbToken, string chain)
 {

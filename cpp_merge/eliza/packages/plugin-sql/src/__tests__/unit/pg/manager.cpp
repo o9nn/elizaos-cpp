@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/plugin-sql/src/__tests__/unit/pg/manager.test.h"
+#include "manager.test.h"
 
 object mockPoolInstance = object{
     object::pair{std:("connect"), mock()}, 

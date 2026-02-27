@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-forms/src/index.h"
+#include "index.hpp"
 
 std::shared_ptr<Plugin> formsPlugin = object{
     object::pair{std:("name"), std:("@elizaos/plugin-forms")}, 

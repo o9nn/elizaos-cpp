@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza-nextjs-starter/src/utils/assert.h"
+#include "assert.hpp"
 
 any assert(any condition, string message)
 {

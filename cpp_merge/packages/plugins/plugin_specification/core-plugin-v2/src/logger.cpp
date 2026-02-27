@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/plugin-specification/core-plugin-v2/src/logger.h"
+#include "logger.hpp"
 
 Record<any, LogMethod> logger = object{
     object::pair{std:("trace"), [=](Args... args_) mutable

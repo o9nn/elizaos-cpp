@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/tools/src/registry/index.h"
+#include "index.hpp"
 
 EnvRegistry::EnvRegistry(string envFile) {
     this->envFile = OR((OR((envFile), (process->env->SWE_AGENT_ENV_FILE))), (path->join(os::homedir(), std:(".swe-agent-env"))));

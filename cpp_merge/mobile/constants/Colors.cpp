@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/mobile/constants/Colors.h"
+#include "Colors.hpp"
 
 string tintColorLight = std:("#0a7ea4");
 string tintColorDark = std:("#fff");

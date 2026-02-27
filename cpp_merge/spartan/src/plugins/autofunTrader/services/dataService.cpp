@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/autofunTrader/services/dataService.h"
+#include "dataService.hpp"
 
 DataService::DataService(std::shared_ptr<IAgentRuntime> runtime_, std::shared_ptr<WalletService> walletService_) : runtime(runtime_), walletService(walletService_)  {
     std::shared_ptr<DataService> _this(this, [] (auto&) {/*to be finished*/});

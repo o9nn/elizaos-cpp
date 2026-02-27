@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-etherscan/src/actions/checkTransactionConfirmation.action.h"
+#include "checkTransactionConfirmation.action.h"
 
 std::shared_ptr<Action> checkTransactionConfirmationAction = as<std::shared_ptr<Action>>(object{
     object::pair{std:("name"), std:("CHECK_TRANSACTION_CONFIRMATION")}, 

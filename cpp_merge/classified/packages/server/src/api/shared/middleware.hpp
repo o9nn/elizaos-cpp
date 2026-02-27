@@ -1,14 +1,14 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_SERVER_SRC_API_SHARED_MIDDLEWARE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_SERVER_SRC_API_SHARED_MIDDLEWARE_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "express.h"
-using express = _default;
-#include "@elizaos/core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_SERVER_SRC_API_SHARED_MIDDLEWARE_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_SERVER_SRC_API_SHARED_MIDDLEWARE_H
+#include "core.hpp"
+// External dependency removed
+#include "express.hpp"
+// Using alias removed (invalid transpilation)
+// External dependency removed
 #include "./response-utils.h"
 #include "./validation.h"
 #include "express-rate-limit.h"
-using rateLimit = _default;
+// Using alias removed (invalid transpilation)
 
 extern std::function<std::function<void(any, any, any)>(std::shared_ptr<Map<any, any>>)> agentExistsMiddleware;
 extern std::function<std::function<void(any, any, any)>(string)> validateUuidMiddleware;

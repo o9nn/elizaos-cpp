@@ -1,12 +1,12 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-KNOWLEDGE_VITE_CONFIG_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-KNOWLEDGE_VITE_CONFIG_H
-#include "core.h"
-#include "@vitejs/plugin-react-swc.h"
-using react = _default;
-#include "vite.h"
-#include "path.h"
-using path = _default;
-#include "@tailwindcss/vite.h"
-using tailwindcss = _default;
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_KNOWLEDGE_VITE_CONFIG_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_KNOWLEDGE_VITE_CONFIG_H
+#include "core.hpp"
+// External dependency removed
+// Using alias removed (invalid transpilation)
+// Self-include removed: vite.hpp
+#include "path.hpp"
+// Using alias removed (invalid transpilation)
+// External dependency removed
+// Using alias removed (invalid transpilation)
 
 #endif

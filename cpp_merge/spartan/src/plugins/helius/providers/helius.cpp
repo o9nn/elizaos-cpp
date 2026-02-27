@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/helius/providers/helius.h"
+#include "helius.hpp"
 
 HeliusWebSocket::HeliusWebSocket(string apiKey_, std::shared_ptr<IAgentRuntime> runtime_) : apiKey(apiKey_), runtime(runtime_)  {
 }

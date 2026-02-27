@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/server/src/__tests__/character-file-size-regression.test.h"
+#include "character-file-size-regression.test.h"
 
 void Main(void)
 {

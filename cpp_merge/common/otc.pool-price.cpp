@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otc-agent/solana/otc-program/tests/otc.pool-price.h"
+#include "otc.pool-price.h"
 
 void Main(void)
 {

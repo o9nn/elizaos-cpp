@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-manager/providers/registryPluginsProvider.h"
+#include "registryPluginsProvider.hpp"
 
 std::shared_ptr<Provider> registryPluginsProvider = object{
     object::pair{std:("name"), std:("registryPlugins")}, 

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/src/commands/start/utils/dependency-resolver.h"
+#include "dependency-resolver.h"
 
 array<std::shared_ptr<Plugin>> resolvePluginDependencies(std::shared_ptr<Map<string, std::shared_ptr<Plugin>>> availablePlugins, boolean isTestMode)
 {

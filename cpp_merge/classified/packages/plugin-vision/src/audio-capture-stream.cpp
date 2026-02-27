@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-vision/src/audio-capture-stream.h"
+#include "audio-capture-stream.h"
 
 StreamingAudioCaptureService::StreamingAudioCaptureService(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<StreamingAudioConfig> config) : EventEmitter() {
     this->runtime = runtime;

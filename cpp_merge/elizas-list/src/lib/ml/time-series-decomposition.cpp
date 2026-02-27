@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizas-list/src/lib/ml/time-series-decomposition.h"
+#include "time-series-decomposition.h"
 
 TimeSeriesDecomposer::TimeSeriesDecomposer() {
     this->stl = std::make_shared<STL>(object{

@@ -200,6 +200,56 @@ def fix_chained_method_calls(content: str) -> str:
     return content
 
 
+def fix_absolute_include_paths(content: str) -> str:
+    """Fix absolute include paths to relative paths."""
+    # Replace absolute paths with relative paths
+    # Pattern: #include "/home/runner/work/.../file.h"
+    content = re.sub(
+        r'#include\s+"/[^"]+/([^/"]+\.h(?:pp)?)"',
+        r'#include "\1"',
+        content
+    )
+    # Fix header guard names that contain invalid characters
+    content = re.sub(
+        r'#ifndef\s+(_HOME_[A-Z0-9_-]+)',
+        lambda m: '#ifndef ' + m.group(1).replace('-', '_').upper(),
+        content
+    )
+    content = re.sub(
+        r'#define\s+(_HOME_[A-Z0-9_-]+)',
+        lambda m: '#define ' + m.group(1).replace('-', '_').upper(),
+        content
+    )
+    # Fix invalid include paths like @vitejs/plugin-react.h
+    content = re.sub(
+        r'#include\s+"@[^"]+\.h(?:pp)?"',
+        '// External dependency removed',
+        content
+    )
+    # Fix includes for .h -> .hpp
+    content = re.sub(
+        r'#include\s+"(\w+)\.h"',
+        r'#include "\1.hpp"',
+        content
+    )
+    # Remove invalid using statements like 'using react = _default;'
+    content = re.sub(
+        r'using\s+\w+\s*=\s*_default\s*;',
+        '// Using alias removed (invalid transpilation)',
+        content
+    )
+    return content
+
+
+def remove_self_includes(content: str, filepath: Path) -> str:
+    """Remove self-includes (file including itself)."""
+    filename = filepath.name
+    # Pattern: #include "filename.hpp" where filename matches current file
+    pattern = rf'#include\s+"{re.escape(filename)}"'
+    content = re.sub(pattern, f'// Self-include removed: {filename}', content)
+    return content
+
+
 def add_required_includes(content: str) -> str:
     """Add commonly needed includes if not present."""
     includes_needed = []
@@ -249,6 +299,8 @@ def process_file(filepath: Path) -> bool:
     content = original_content
     
     # Apply all fixes
+    content = fix_absolute_include_paths(content)
+    content = remove_self_includes(content, filepath)
     content = fix_arrow_functions(content)
     content = fix_process_references(content)
     content = fix_import_meta(content)

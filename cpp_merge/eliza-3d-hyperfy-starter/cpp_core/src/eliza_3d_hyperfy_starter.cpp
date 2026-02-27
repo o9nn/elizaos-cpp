@@ -24,9 +24,9 @@
 namespace elizaos {
 namespace hyperfy {
 
-// ===================================
+// ========
 // HELPER FUNCTIONS
-// ===================================
+// ========
 
 namespace {
     void logInfo(const std:& message, const std:& component) {
@@ -50,9 +50,9 @@ namespace {
     }
 }
 
-// ===================================
+// ========
 // WEBSOCKET CLIENT IMPLEMENTATION
-// ===================================
+// ========
 
 #if HAS_WEBSOCKET
 
@@ -234,9 +234,9 @@ struct lws_protocols WebSocketClient::protocols_[] = {
 
 #else // !HAS_WEBSOCKET
 
-// ===================================
+// ========
 // SIMULATED WEBSOCKET (Fallback when libwebsockets not available)
-// ===================================
+// ========
 
 namespace websocket_impl {
 
@@ -300,9 +300,9 @@ public:
 
 #endif // HAS_WEBSOCKET
 
-// ===================================
+// ========
 // HYPERFYWORLD IMPLEMENTATION
-// ===================================
+// ========
 
 HyperfyWorld::HyperfyWorld(const std:& worldId, const std:& wsUrl) 
     : worldId_(worldId), wsUrl_(wsUrl), connected_(false) {
@@ -493,9 +493,9 @@ std: HyperfyWorld::escapeJson(const std:& str) {
     return oss.str();
 }
 
-// ===================================
+// ========
 // HYPERFYSERVICE IMPLEMENTATION
-// ===================================
+// ========
 
 HyperfyService::HyperfyService() : running_(false) {
 }

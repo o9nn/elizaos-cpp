@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-clanker/src/plugin.h"
+#include "plugin.hpp"
 
 std::shared_ptr<Plugin> clankerPlugin = object{
     object::pair{std:("name"), std:("plugin-clanker")}, 

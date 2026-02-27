@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-robot/tests/ocr-integration.test.h"
+#include "ocr-integration.test.h"
 
 std::shared_ptr<Buffer> generateTextImage(string text, double width, double height, double fontSize)
 {

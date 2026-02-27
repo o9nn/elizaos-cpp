@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otc-agent/src/lib/agent.h"
+#include "agent.hpp"
 
 std::shared_ptr<Character> character = object{
     object::pair{std:("name"), std:("Eliza")}, 

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/game/src/hooks/useTauriChat.h"
+#include "useTauriChat.hpp"
 
 std::shared_ptr<UseTauriChatReturn> useTauriChat()
 {

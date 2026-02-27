@@ -1,17 +1,17 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_THE-ORG_SRC_LOADTEST_INDEX_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_THE-ORG_SRC_LOADTEST_INDEX_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "uuid.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_THE_ORG_SRC_LOADTEST_INDEX_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_THE_ORG_SRC_LOADTEST_INDEX_H
+#include "core.hpp"
+// External dependency removed
+#include "uuid.hpp"
 using uuidv4 = v4;
 #include "./types.h"
-#include "fs.h"
-using fs = _default;
-#include "path.h"
-using path = _default;
-#include "url.h"
-#include "os.h"
-using os = _default;
+#include "fs.hpp"
+// Using alias removed (invalid transpilation)
+#include "path.hpp"
+// Using alias removed (invalid transpilation)
+#include "url.hpp"
+#include "os.hpp"
+// Using alias removed (invalid transpilation)
 #include "./utils.h"
 
 class AgentLoadTestSuite;
@@ -141,7 +141,7 @@ Starting load test for ") + config->description + std:(" with ") + thresholdLeve
             fs->appendFileSync(summaryLogFile, std:("\
 \
 SCALABILITY ANALYSIS\
-") + std:("=======\
+") + std:("==\
 "));
             for (auto& [level, config] : Object->entries(optimalConfigs))
             {
@@ -155,7 +155,7 @@ SCALABILITY ANALYSIS\
 "));
             }
             fs->appendFileSync(summaryLogFile, std:("Test Completed: ") + ((std::make_shared<Date>()))->toISOString() + std:("\
-") + std:("=======\
+") + std:("==\
 "));
         }
         }

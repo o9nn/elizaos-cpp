@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/server/src/auth/session.h"
+#include "session.hpp"
 
 std::shared_ptr<Promise<string>> createSession(std::shared_ptr<SessionData> data)
 {

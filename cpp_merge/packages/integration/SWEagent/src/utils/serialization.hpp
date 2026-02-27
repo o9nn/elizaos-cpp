@@ -1,8 +1,8 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_SRC_UTILS_SERIALIZATION_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_SRC_UTILS_SERIALIZATION_H
-#include "core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SWEAGENT_SRC_UTILS_SERIALIZATION_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SWEAGENT_SRC_UTILS_SERIALIZATION_H
+#include "core.hpp"
 #include "js-yaml.h"
-using yaml = _default;
+// Using alias removed (invalid transpilation)
 
 any convertToYamlLiteralString(any data);
 

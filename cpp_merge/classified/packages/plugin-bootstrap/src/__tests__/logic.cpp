@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-bootstrap/src/__tests__/logic.test.h"
+#include "logic.test.h"
 
 void Main(void)
 {

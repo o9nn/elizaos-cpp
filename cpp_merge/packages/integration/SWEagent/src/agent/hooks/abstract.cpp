@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/agent/hooks/abstract.h"
+#include "abstract.hpp"
 
 void AbstractAgentHook::onInit(std::shared_ptr<DefaultAgent> _agent)
 {

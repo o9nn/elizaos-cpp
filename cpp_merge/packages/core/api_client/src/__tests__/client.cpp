@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/api-client/src/__tests__/client.test.h"
+#include "client.test.h"
 
 void Main(void)
 {

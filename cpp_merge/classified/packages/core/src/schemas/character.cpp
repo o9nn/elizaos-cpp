@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/core/src/schemas/character.h"
+#include "character.hpp"
 
 std::shared_ptr<CharacterValidationResult> validateCharacter(any data)
 {

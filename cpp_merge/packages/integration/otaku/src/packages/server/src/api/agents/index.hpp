@@ -1,9 +1,9 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PACKAGES_SERVER_SRC_API_AGENTS_INDEX_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_OTAKU_SRC_PACKAGES_SERVER_SRC_API_AGENTS_INDEX_H
-#include "core.h"
-#include "@elizaos/core.h"
-#include "express.h"
-using express = _default;
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTAKU_SRC_PACKAGES_SERVER_SRC_API_AGENTS_INDEX_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTAKU_SRC_PACKAGES_SERVER_SRC_API_AGENTS_INDEX_H
+#include "core.hpp"
+// External dependency removed
+#include "express.hpp"
+// Using alias removed (invalid transpilation)
 #include "../../index.h"
 #include "./crud.h"
 #include "./lifecycle.h"

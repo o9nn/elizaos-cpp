@@ -299,9 +299,8 @@ void MultiWalletProvider() {
                                                                                                 setSolanaWalletAdapter[&]({
                                                                                                     publicKey: { toBase58: () { return typedWallet.address },
                                                                                                     signTransaction: <T extends SolanaTransaction>[&](tx: T) { return provider.signTransaction(tx),
-                                                                                                    signAllTransactions: <T extends SolanaTransaction>(txs: T[]) =>
-                                                                                                    provider.signAllTransactions(txs),
-                                                                                                    }); }; };
+                                                                                                    signAllTransactions: <T extends SolanaTransaction>[&](txs: T[]) { return provider.signAllTransactions(txs),
+                                                                                                    }); }; }; };
                                                                                                 }
                                                                                                 } catch (error) {
                                                                                                     std::cerr << "Failed to create Solana adapter:" << error << std::endl;

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/server/src/routes/validators/tokenHoldersQuery.h"
+#include "tokenHoldersQuery.hpp"
 
 std::shared_ptr<ParsedHoldersQuery> parseHoldersQuery(any mintParam, std::shared_ptr<RawHoldersQuery> query)
 {

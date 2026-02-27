@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/game/cypress/plugins/index.h"
+#include "index.hpp"
 
 object execAsync = promisify(exec);
 

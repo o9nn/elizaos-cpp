@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-bootstrap/src/providers/facts.h"
+#include "facts.hpp"
 
 any formatFacts(array<std::shared_ptr<Memory>> facts)
 {

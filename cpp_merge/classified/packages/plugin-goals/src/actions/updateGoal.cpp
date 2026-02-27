@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-goals/src/actions/updateGoal.h"
+#include "updateGoal.hpp"
 
 std::shared_ptr<Promise<std::shared_ptr<GoalSelection>>> extractGoalSelection(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<Memory> message, array<std::shared_ptr<GoalData>> availableGoals)
 {

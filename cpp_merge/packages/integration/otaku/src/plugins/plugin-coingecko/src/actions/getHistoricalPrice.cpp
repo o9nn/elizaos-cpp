@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-coingecko/src/actions/getHistoricalPrice.action.h"
+#include "getHistoricalPrice.action.h"
 
 string formatMarketCap(double value)
 {

@@ -1,12 +1,12 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_SRC_TOOLS_BUNDLE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_SWEAGENT_SRC_TOOLS_BUNDLE_H
-#include "core.h"
-#include "path.h"
-using path = _default;
-#include "fs.h"
-using fs = _default;
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SWEAGENT_SRC_TOOLS_BUNDLE_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SWEAGENT_SRC_TOOLS_BUNDLE_H
+#include "core.hpp"
+#include "path.hpp"
+// Using alias removed (invalid transpilation)
+#include "fs.hpp"
+// Using alias removed (invalid transpilation)
 #include "js-yaml.h"
-using yaml = _default;
+// Using alias removed (invalid transpilation)
 #include "./commands.h"
 
 class BundleConfig;

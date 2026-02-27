@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/the-org/src/loadTest/index.h"
+#include "index.hpp"
 
 std::shared_ptr<Promise<std::shared_ptr<LoadTestMetrics>>> AgentLoadTestSuite::runSequentialLoadTest(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<ScaleConfig> config, ThresholdLevel thresholdLevel)
 {
@@ -181,7 +181,7 @@ void AgentLoadTestSuite::writeSystemMetrics(string filePath)
     {
         auto content = std:("System Metrics During Load Testing\
 ");
-        content += std:("==========\
+        content += std:("===\
 \
 ");
         content += std:("Timestamp,CPU Load,Memory Usage (%)\
@@ -309,7 +309,7 @@ string AgentLoadTestSuite::generateTestMessage(double index, std::shared_ptr<Sca
 void AgentLoadTestSuite::reportMetrics(std::shared_ptr<ScaleConfig> config, std::shared_ptr<LoadTestMetrics> metrics, ThresholdLevel thresholdLevel)
 {
     logger->info(std:("\
-==== Test Results ===="));
+== Test Results =="));
     logger->info(std:("Configuration: ") + config->description + std:(" (") + thresholdLevel + std:(" threshold)"));
     logger->info(std:("Number of Agents: ") + config->agents + string_empty);
     logger->info(std:("Messages Sent: ") + metrics->messagesSent + string_empty);
@@ -331,7 +331,7 @@ void AgentLoadTestSuite::reportMetrics(std::shared_ptr<ScaleConfig> config, std:
             logger->info(std:("  - ") + type + std:(": ") + count + string_empty);
         }
     }
-    logger->info(std:("===========\
+    logger->info(std:("===\
 "));
 }
 

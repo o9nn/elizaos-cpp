@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/autodoc/src/PluginDocumentationGenerator.h"
+#include "PluginDocumentationGenerator.hpp"
 
 PluginDocumentationGenerator::PluginDocumentationGenerator(std::shared_ptr<AIService> aiService_, std::shared_ptr<GitManager> gitManager_, std::shared_ptr<Configuration> configuration_) : aiService(aiService_), gitManager(gitManager_), configuration(configuration_)  {
     this->fullDocumentationGenerator = std::make_shared<FullDocumentationGenerator>(configuration);

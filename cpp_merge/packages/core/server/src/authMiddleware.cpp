@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/server/src/authMiddleware.h"
+#include "authMiddleware.hpp"
 
 any apiKeyAuthMiddleware(std::shared_ptr<Request> req, std::shared_ptr<Response> res, std::shared_ptr<NextFunction> next)
 {

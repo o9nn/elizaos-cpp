@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/constants/chains.h"
+#include "chains.hpp"
 
 any getChainConfig(string network)
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/core/src/__tests__/parsing.test.h"
+#include "parsing.test.h"
 
 void Main(void)
 {

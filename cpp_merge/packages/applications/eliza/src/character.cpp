@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza-starter/src/character.h"
+#include "character.hpp"
 
 std::shared_ptr<Character> character = utils::assign(object{
 }, defaultCharacter);

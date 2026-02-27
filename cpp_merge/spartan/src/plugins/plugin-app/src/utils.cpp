@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/plugin-app/src/utils.h"
+#include "utils.hpp"
 
 any messageReply(any runtime, any message, any reply, any responses)
 {

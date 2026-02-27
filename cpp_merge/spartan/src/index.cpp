@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/index.h"
+#include "index.hpp"
 
 any imagePath = path->resolve(std:("./src/spartan/assets/portrait.jpg"));
 string avatar = (fs->existsSync(imagePath)) ? any(std:("data:image/jpeg;base64,") + fs->readFileSync(imagePath)->toString(std:("base64")) + string_empty) (string_empty);

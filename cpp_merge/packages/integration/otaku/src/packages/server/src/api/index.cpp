@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/packages/server/src/api/index.h"
+#include "index.hpp"
 
 std::shared_ptr<SocketIOServer> setupSocketIO(std::shared_ptr<http::Server> server, std::shared_ptr<ElizaOS> elizaOS, std::shared_ptr<AgentServer> serverInstance)
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/tests/unit/utils/build-project.test.h"
+#include "build-project.test.h"
 
 object mockLogger = object{
     object::pair{std:("info"), mock()}, 

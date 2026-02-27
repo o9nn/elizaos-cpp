@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza-nextjs-starter/src/app/constants.h"
+#include "constants.hpp"
 
 object siteConfig = object{
     object::pair{std:("name"), std:("AI Eliza")}, 

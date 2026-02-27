@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/frontend/lib/cdpUser.h"
+#include "cdpUser.hpp"
 
 any extractEmailFromCdpUser(any user, boolean isSignedIn)
 {

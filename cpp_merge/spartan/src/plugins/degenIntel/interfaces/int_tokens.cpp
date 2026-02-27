@@ -1,2 +1,2 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/degenIntel/interfaces/int_tokens.h"
+#include "int_tokens.hpp"
 

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/discrub-ext/src/features/app/use-app-slice.h"
+#include "use-app-slice.h"
 
 std::function<object()> useAppSlice = [=]() mutable
 {

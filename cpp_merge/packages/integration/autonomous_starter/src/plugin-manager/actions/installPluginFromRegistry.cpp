@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-manager/actions/installPluginFromRegistry.h"
+#include "installPluginFromRegistry.hpp"
 
 std::shared_ptr<Action> installPluginFromRegistryAction = object{
     object::pair{std:("name"), std:("installPluginFromRegistry")}, 

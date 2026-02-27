@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/game/cypress/support/wait-for-server.h"
+#include "wait-for-server.h"
 
 std::function<any(double)> waitForElizaServer = [=](auto maxRetries = 36) mutable
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/core/src/__tests__/mockCharacter.h"
+#include "mockCharacter.hpp"
 
 std::shared_ptr<Character> mockCharacter = object{
     object::pair{std:("name"), std:("Eliza")}, 

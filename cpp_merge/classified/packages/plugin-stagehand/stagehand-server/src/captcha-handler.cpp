@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-stagehand/stagehand-server/src/captcha-handler.h"
+#include "captcha-handler.h"
 
 std::shared_ptr<Promise<std::shared_ptr<CaptchaInfo>>> detectCaptchaType(std::shared_ptr<Page> page)
 {

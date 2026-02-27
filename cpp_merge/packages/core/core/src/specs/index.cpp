@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/core/src/specs/index.h"
+#include "index.hpp"
 
 any defaultSpec = v2;
 

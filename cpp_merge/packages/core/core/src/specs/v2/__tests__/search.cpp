@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/core/src/specs/v2/__tests__/search.test.h"
+#include "search.test.h"
 
 void Main(void)
 {

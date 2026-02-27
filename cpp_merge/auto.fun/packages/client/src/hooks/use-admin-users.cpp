@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/client/src/hooks/use-admin-users.h"
+#include "use-admin-users.h"
 
 std::function<object(boolean, double)> useAdminUsers = [=](auto showSuspended = false, auto limit = 50) mutable
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/plugins/plugin-coingecko/src/actions/getTrendingTokens.action.h"
+#include "getTrendingTokens.action.h"
 
 std::shared_ptr<Action> getTrendingTokensAction = object{
     object::pair{std:("name"), std:("GET_TRENDING_TOKENS")}, 

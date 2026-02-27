@@ -1,14 +1,14 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA-3D-HYPERFY-STARTER_SRC_PLUGIN-HYPERFY_MANAGERS_EMOTE-MANAGER_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA-3D-HYPERFY-STARTER_SRC_PLUGIN-HYPERFY_MANAGERS_EMOTE-MANAGER_H
-#include "core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_3D_HYPERFY_STARTER_SRC_PLUGIN_HYPERFY_MANAGERS_EMOTE_MANAGER_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_3D_HYPERFY_STARTER_SRC_PLUGIN_HYPERFY_MANAGERS_EMOTE_MANAGER_H
+#include "core.hpp"
 #include "fs/promises.h"
-using fs = _default;
-#include "path.h"
-using path = _default;
+// Using alias removed (invalid transpilation)
+#include "path.hpp"
+// Using alias removed (invalid transpilation)
 #include "../constants.js.h"
 #include "../hyperfy/src/core/extras/playerEmotes.js.h"
 #include "../utils.h"
-#include "@elizaos/core.h"
+// External dependency removed
 #include "../service.js.h"
 
 class EmoteManager;

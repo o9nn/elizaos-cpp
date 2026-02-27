@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/server/src/chart.h"
+#include "chart.hpp"
 
 any getLatestCandle(string tokenMint, any swap, any tokenInfo)
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/degenTrader/utils/wallet.h"
+#include "wallet.hpp"
 
 std::shared_ptr<Keypair> getWalletKeypair(std::shared_ptr<IAgentRuntime> runtime)
 {

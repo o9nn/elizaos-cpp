@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/config/src/index.h"
+#include "index.hpp"
 
 object configPaths = object{
     object::pair{std:("typescript"), object{

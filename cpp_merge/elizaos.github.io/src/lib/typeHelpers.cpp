@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizaos.github.io/src/lib/typeHelpers.h"
+#include "typeHelpers.hpp"
 
 std::function<any(std::shared_ptr<T>)> isNotNullOrUndefined = template <typename T>
 [=](auto value) mutable

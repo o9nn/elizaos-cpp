@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizaos.github.io/src/lib/pipelines/summarize/mutations.h"
+#include "mutations.hpp"
 
 std::shared_ptr<Promise<void>> storeDailySummary(string username, string date, string summary, std::shared_ptr<IntervalType> intervalType)
 {

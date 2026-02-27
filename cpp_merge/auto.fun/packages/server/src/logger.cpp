@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/server/src/logger.h"
+#include "logger.hpp"
 
 std::function<string()> getTimestamp = [=]() mutable
 {

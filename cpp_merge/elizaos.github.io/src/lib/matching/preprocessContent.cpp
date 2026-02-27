@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/elizaos.github.io/src/lib/matching/preprocessContent.h"
+#include "preprocessContent.hpp"
 
 string preprocessFilePathContent(string content)
 {

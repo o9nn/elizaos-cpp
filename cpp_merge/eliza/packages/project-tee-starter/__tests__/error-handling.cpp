@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/project-tee-starter/__tests__/error-handling.test.h"
+#include "error-handling.test.h"
 
 void Main(void)
 {

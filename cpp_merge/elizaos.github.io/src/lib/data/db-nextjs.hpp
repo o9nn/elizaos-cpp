@@ -1,11 +1,11 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAOS_GITHUB_IO_SRC_LIB_DATA_DB-NEXTJS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZAOS_GITHUB_IO_SRC_LIB_DATA_DB-NEXTJS_H
-#include "core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZAOS_GITHUB_IO_SRC_LIB_DATA_DB_NEXTJS_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZAOS_GITHUB_IO_SRC_LIB_DATA_DB_NEXTJS_H
+#include "core.hpp"
 #include "better-sqlite3.h"
-using Database = _default;
+// Using alias removed (invalid transpilation)
 #include "drizzle-orm/better-sqlite3.h"
-#include "path.h"
-using path = _default;
+#include "path.hpp"
+// Using alias removed (invalid transpilation)
 #include "./schema.h"
 
 extern std::shared_ptr<Database::Database> sqlite;

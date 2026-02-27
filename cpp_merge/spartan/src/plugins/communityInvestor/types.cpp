@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/spartan/src/plugins/communityInvestor/types.h"
+#include "types.hpp"
 
 void Main(void)
 {

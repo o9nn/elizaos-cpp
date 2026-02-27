@@ -8,7 +8,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
-#include "connection-status.hpp"
+// Self-include removed: connection-status.hpp
 
 namespace elizaos {
 

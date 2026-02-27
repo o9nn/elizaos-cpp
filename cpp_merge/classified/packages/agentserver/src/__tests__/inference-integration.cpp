@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/agentserver/src/__tests__/inference-integration.test.h"
+#include "inference-integration.test.h"
 
 void Main(void)
 {

@@ -1,12 +1,12 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_SERVER_SRC_DB_CONNECTION_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_SERVER_SRC_DB_CONNECTION_H
-#include "core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_SERVER_SRC_DB_CONNECTION_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_SERVER_SRC_DB_CONNECTION_H
+#include "core.hpp"
 #include "drizzle-orm/node-postgres.h"
 #include "drizzle-orm/pglite.h"
 using drizzlePglite = drizzle;
-#include "pg.h"
-#include "@electric-sql/pglite.h"
-#include "@elizaos/core.h"
+#include "pg.hpp"
+// External dependency removed
+// External dependency removed
 #include "./schema.h"
 
 typedef any DatabaseConnection;

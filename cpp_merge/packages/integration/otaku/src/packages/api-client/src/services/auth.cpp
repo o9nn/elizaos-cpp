@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/packages/api-client/src/services/auth.h"
+#include "auth.hpp"
 
 std::shared_ptr<Promise<std::shared_ptr<LoginResponse>>> AuthService::login(std::shared_ptr<LoginRequest> request)
 {

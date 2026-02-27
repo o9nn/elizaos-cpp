@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/cli/src/commands/env/utils/validation.h"
+#include "validation.hpp"
 
 string maskedValue(string value)
 {

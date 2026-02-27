@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-vision/src/index.h"
+#include "index.hpp"
 
 std::shared_ptr<Plugin> visionPlugin = object{
     object::pair{std:("name"), std:("vision")}, 

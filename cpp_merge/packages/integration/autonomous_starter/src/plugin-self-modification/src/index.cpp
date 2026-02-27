@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-self-modification/src/index.h"
+#include "index.hpp"
 
 std::shared_ptr<Plugin> selfModificationPlugin = object{
     object::pair{std:("name"), std:("self-modification")}, 

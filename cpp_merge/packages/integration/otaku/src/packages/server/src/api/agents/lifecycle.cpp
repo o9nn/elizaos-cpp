@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otaku/src/packages/server/src/api/agents/lifecycle.h"
+#include "lifecycle.hpp"
 
 std::shared_ptr<express::Router> createAgentLifecycleRouter(std::shared_ptr<ElizaOS> elizaOS, std::shared_ptr<AgentServer> serverInstance)
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-auto/events.h"
+#include "events.hpp"
 
 string responseTemplate = std:("Example response:\
 <response>\

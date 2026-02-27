@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/cli/tests/setup.h"
+#include "setup.hpp"
 
 void Main(void)
 {

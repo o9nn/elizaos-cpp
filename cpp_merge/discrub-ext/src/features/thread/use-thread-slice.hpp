@@ -1,6 +1,6 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_FEATURES_THREAD_USE-THREAD-SLICE_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_DISCRUB-EXT_SRC_FEATURES_THREAD_USE-THREAD-SLICE_H
-#include "core.h"
+#ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_DISCRUB_EXT_SRC_FEATURES_THREAD_USE_THREAD_SLICE_H
+#define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_DISCRUB_EXT_SRC_FEATURES_THREAD_USE_THREAD_SLICE_H
+#include "core.hpp"
 #include "../../app/store.h"
 #include "./thread-slice.h"
 using setThreadsAction = setThreads;
@@ -11,9 +11,9 @@ using liftThreadRestrictionsAction = liftThreadRestrictions;
 using getThreadsFromMessagesAction = getThreadsFromMessages;
 #include "../../app/hooks.h"
 #include "../../classes/channel.h"
-using Channel = _default;
+// Using alias removed (invalid transpilation)
 #include "../../classes/message.h"
-using Message = _default;
+// Using alias removed (invalid transpilation)
 
 extern std::function<object()> useThreadSlice;
 #endif

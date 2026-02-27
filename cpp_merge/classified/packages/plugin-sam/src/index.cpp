@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-sam/src/index.h"
+#include "index.hpp"
 
 std::shared_ptr<Plugin> samPlugin = object{
     object::pair{std:("name"), std:("@elizaos/plugin-sam")}, 

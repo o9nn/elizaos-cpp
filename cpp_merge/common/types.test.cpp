@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-env/types.test.h"
+#include "types.test.h"
 
 void Main(void)
 {

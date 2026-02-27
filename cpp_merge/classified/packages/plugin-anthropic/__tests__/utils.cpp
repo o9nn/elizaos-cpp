@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-anthropic/__tests__/utils.test.h"
+#include "utils.test.h"
 
 std::function<string(string)> jsonrepairImpl = [=](auto x) mutable
 {

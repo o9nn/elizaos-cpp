@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza-starter/src/cache/index.h"
+#include "index.hpp"
 
 any initializeDbCache(std::shared_ptr<Character> character, std::shared_ptr<IDatabaseCacheAdapter> db)
 {

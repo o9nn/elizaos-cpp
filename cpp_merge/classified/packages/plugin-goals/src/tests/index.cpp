@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-goals/src/tests/index.test.h"
+#include "index.test.h"
 
 TestSuite::TestSuite(string name_, any config_) : name(name_), config(config_)  {
 }

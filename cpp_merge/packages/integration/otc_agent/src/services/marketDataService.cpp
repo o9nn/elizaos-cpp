@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/otc-agent/src/services/marketDataService.h"
+#include "marketDataService.hpp"
 
 MarketDataService::MarketDataService() {
     this->coingeckoApiKey = process->env->COINGECKO_API_KEY;

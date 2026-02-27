@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/the-org/src/loadTest/__tests__/service.test.h"
+#include "service.test.h"
 
 void Main(void)
 {
@@ -10,7 +10,7 @@ void Main(void)
         beforeEach([=]() mutable
         {
             testStartTime = Date->now();
-            logger->info(std:("================"));
+            logger->info(std:("===="));
             logger->info(std:("Test starting at: ") + ((std::make_shared<Date>(testStartTime)))->toISOString() + string_empty);
             logger->info(std:("Setting up test environment for LoadTestService..."));
             mockRuntime = as<std::shared_ptr<AgentRuntime>>(as<any>(object{
@@ -37,7 +37,7 @@ void Main(void)
             auto testDuration = Date->now() - testStartTime;
             logger->info(std:("-----------------------------------------------------"));
             logger->info(std:("Test completed in ") + testDuration + std:("ms"));
-            logger->info(std:("================"));
+            logger->info(std:("===="));
         }
         );
         it(std:("should start a test and record metrics"), [=]() mutable

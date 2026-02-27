@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/auto.fun/packages/autodoc/src/AIService/utils/CodeFormatter.h"
+#include "CodeFormatter.hpp"
 
 string CodeFormatter::ensureTypeScriptExtension(string filePath)
 {

@@ -1,4 +1,4 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-starter/src/services.h"
+#include "services.hpp"
 
 array<any> Services = array<any>();
 

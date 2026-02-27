@@ -12,7 +12,7 @@
 #include <vector>
 #include "agent/problem-statement.hpp"
 #include "environment/swe-env.hpp"
-#include "types.hpp"
+// Self-include removed: types.hpp
 
 namespace elizaos {
 
