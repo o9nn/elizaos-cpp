@@ -98,11 +98,40 @@ python3 fix_transpiler_errors.py .
 | eliza-3d-hyperfy-starter | ✅ | ✅ | ✅ | Merged |
 | eliza-nextjs-starter | ✅ | ✅ | ✅ | Merged |
 | plugin-specification | ✅ | ✅ | ✅ | Merged |
+| LiveVideoChat | ✅ | - | ✅ | ✅ Building |
 | spartan | ✅ | - | ✅ | Transpiled |
 | the-org | ✅ | - | ✅ | Transpiled |
 | trust_scoreboard | ✅ | - | ✅ | Transpiled |
 | vercel-api | ✅ | - | ✅ | Transpiled |
 | common | ✅ | - | - | Transpiled |
+
+## Known Limitations
+
+The transpiled code requires external npm package dependencies to be implemented in C++ or replaced with equivalent functionality:
+
+1. **Missing External Dependencies**: Many transpiled files reference npm packages that don't have C++ equivalents:
+   - `clsx` - CSS class utility
+   - `dotenv` - Environment variable loading
+   - `axios` - HTTP client
+   - Various React/Vue/Next.js packages
+
+2. **Node.js Modules**: Node.js-specific modules like `node:fs`, `node:path` are commented out and need filesystem equivalents
+
+3. **Complex TypeScript Patterns**: Some advanced TypeScript patterns may not convert correctly:
+   - Generic type parameters
+   - Union types
+   - Decorators
+   - Complex async/await patterns
+
+## Recommendations for Development
+
+1. **Use cpp_core code**: The `cpp_core/` subdirectories contain production-quality C++ implementations that should be preferred when functionality overlaps
+
+2. **Incremental building**: Start with modules that have fewer external dependencies (like LiveVideoChat)
+
+3. **Stub external dependencies**: Create header stubs for missing dependencies to enable compilation
+
+4. **Manual refinement**: Files with complex logic may need manual review and rewriting
 
 ## Notes
 
