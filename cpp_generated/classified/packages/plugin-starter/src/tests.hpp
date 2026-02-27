@@ -1,0 +1,7 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-STARTER_SRC_TESTS_H
+#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-STARTER_SRC_TESTS_H
+#include "core.h"
+#include "@elizaos/core.h"
+
+extern std::shared_ptr<TestSuite> PluginTestSuite;
+#endif

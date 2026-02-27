@@ -1,0 +1,7 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_THE-ORG_SRC_PROJECTMANAGER_PLUGINS_INDEX_H
+#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_THE-ORG_SRC_PROJECTMANAGER_PLUGINS_INDEX_H
+#include "core.h"
+#include "./team-coordinator.h"
+
+extern array<any> plugins;
+#endif

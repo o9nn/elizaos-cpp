@@ -1,0 +1,8 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-STAGEHAND_SRC___TESTS___RETRY_TEST_H
+#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_PLUGIN-STAGEHAND_SRC___TESTS___RETRY_TEST_H
+#include "core.h"
+#include "bun:test.h"
+#include "../retry.h"
+#include "@elizaos/core.h"
+
+#endif

@@ -3,7 +3,7 @@
 void runDemo()
 {
     console->log(std::string("🎬 Interactive Claude Code Test Demo"));
-    console->log(std::string("========================\
+    console->log(std::string("================\
 "));
     auto requiredKeys = array<string>{ std::string("ANTHROPIC_API_KEY") };
     auto missingKeys = requiredKeys->filter([=](auto key) mutable

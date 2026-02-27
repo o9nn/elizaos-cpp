@@ -2,7 +2,7 @@
 
 std::function<std::shared_ptr<Promise<any>>()> fetchHighestRankedUsers = [=]() mutable
 {
-    console->log(std::string("sdasdsdadasd=/* ?? */ ||/* ?? */ ||/* ?? */ ||/* ?? */ ||?"));
+    console->log(std::string("sdasdsdadasd=/* /* ?? */ || */ ||/* /* ?? */ || */ ||/* /* ?? */ || */ ||/* /* ?? */ || */ ||?"));
     try
     {
         auto response = std::async([=]() { get(std::string("/user/highestRankedUsers")); });

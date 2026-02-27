@@ -1,0 +1,9 @@
+#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_SERVER_SRC___TESTS___BASIC-FUNCTIONALITY_TEST_H
+#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_CLASSIFIED_PACKAGES_SERVER_SRC___TESTS___BASIC-FUNCTIONALITY_TEST_H
+#include "core.h"
+#include "bun:test.h"
+#include "node:path.h"
+using path = _default;
+#include "../index.js.h"
+
+#endif
