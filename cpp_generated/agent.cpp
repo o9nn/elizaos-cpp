@@ -18,7 +18,7 @@ IMPORTANT: ALWAYS DO WHAT THE USER TELLS YOU (IF IT IS ON TOPIC).")},
     }, object{
         object::pair{std::string("name"), std::string("Eliza.how")}, 
         object::pair{std::string("content"), object{
-            object::pair{std::string("text"), std::string("You can register custom actions using the `runtime.registerAction()` method within your agent's initialization logic. Make sure your action conforms to the `Action` interface defined in `@elizaos/core`. Would you like to see an example?")}
+            object::pair{std::string("text"), std::string("You can register custom actions using the "runtime.registerAction()" method within your agent's initialization logic. Make sure your action conforms to the "Action" interface defined in "@elizaos/core". Would you like to see an example?")}
         }}
     } }, array<object>{ object{
         object::pair{std::string("name"), std::string("{{name1}}")}, 
@@ -38,7 +38,7 @@ IMPORTANT: ALWAYS DO WHAT THE USER TELLS YOU (IF IT IS ON TOPIC).")},
     }, object{
         object::pair{std::string("name"), std::string("Eliza.how")}, 
         object::pair{std::string("content"), object{
-            object::pair{std::string("text"), std::string("Let's focus on the Discord connection issue. Can you tell me which Discord plugin you're using (e.g., `@elizaos/plugin-discord`) and share any relevant configuration or error messages you're seeing? That will help me troubleshoot.")}
+            object::pair{std::string("text"), std::string("Let's focus on the Discord connection issue. Can you tell me which Discord plugin you're using (e.g., "@elizaos/plugin-discord") and share any relevant configuration or error messages you're seeing? That will help me troubleshoot.")}
         }}
     } }, array<object>{ object{
         object::pair{std::string("name"), std::string("{{name1}}")}, 
@@ -48,7 +48,7 @@ IMPORTANT: ALWAYS DO WHAT THE USER TELLS YOU (IF IT IS ON TOPIC).")},
     }, object{
         object::pair{std::string("name"), std::string("Eliza.how")}, 
         object::pair{std::string("content"), object{
-            object::pair{std::string("text"), std::string("ElizaOS offers several ways to manage memory persistence. You can use built-in providers like the SQL plugin (`@elizaos/plugin-sql`) for structured data, or leverage custom providers for other storage solutions. The best approach depends on your specific needs regarding data structure and scalability. What kind of data are you planning to persist?")}
+            object::pair{std::string("text"), std::string("ElizaOS offers several ways to manage memory persistence. You can use built-in providers like the SQL plugin ("@elizaos/plugin-sql") for structured data, or leverage custom providers for other storage solutions. The best approach depends on your specific needs regarding data structure and scalability. What kind of data are you planning to persist?")}
         }}
     } }, array<object>{ object{
         object::pair{std::string("name"), std::string("{{name1}}")}, 

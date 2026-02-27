@@ -4,7 +4,7 @@ std::shared_ptr<Promise<string>> generateTeamReport(std::shared_ptr<IAgentRuntim
 {
     try
     {
-        logger->info(std::string("=== GENERATE TEAM REPORT START ==="));
+        logger->info(std::string("== GENERATE TEAM REPORT START =="));
         logger->info(std::string("Generating report for standup type: ") + standupType + string_empty);
         auto roomIdLocal = createUniqueUuid(runtime, std::string("report-channel-config"));
         auto memories = std::async([=]() { runtime->getMemories(object{
@@ -160,7 +160,7 @@ std::shared_ptr<Promise<string>> generateTeamReport(std::shared_ptr<IAgentRuntim
 ");
         }
         logger->info(std::string("Successfully generated team report"));
-        logger->info(std::string("=== GENERATE TEAM REPORT END ==="));
+        logger->info(std::string("== GENERATE TEAM REPORT END =="));
         return report;
     }
     catch (const any& error)
@@ -185,7 +185,7 @@ std::shared_ptr<Action> generateReport = object{
     {
         try
         {
-            logger->info(std::string("=== GENERATE REPORT HANDLER START ==="));
+            logger->info(std::string("== GENERATE REPORT HANDLER START =="));
             if (!state) return false;
             if (!callback) {
                 logger->warn(std::string("No callback function provided"));
@@ -258,13 +258,13 @@ std::shared_ptr<Action> generateReport = object{
                 object::pair{std::string("source"), std::string("discord")}
             };
             std::async([=]() { callback(content, array<any>()); });
-            logger->info(std::string("=== GENERATE REPORT HANDLER END ==="));
+            logger->info(std::string("== GENERATE REPORT HANDLER END =="));
             return true;
         }
         catch (const any& error)
         {
             auto err = as<std::shared_ptr<Error>>(error);
-            logger->error(std::string("=== GENERATE REPORT HANDLER ERROR ==="));
+            logger->error(std::string("== GENERATE REPORT HANDLER ERROR =="));
             logger->error(std::string("Error details:"), object{
                 object::pair{std::string("name"), OR((err->name), (std::string("Unknown error")))}, 
                 object::pair{std::string("message"), OR((err->message), (std::string("No error message")))}, 

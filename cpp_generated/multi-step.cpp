@@ -44,7 +44,7 @@ Determine the next step the assistant should take in this conversation to help t
 **Decision Logic**:\
 - If you've executed an action, ask: "Would adding another related action provide NEW valuable insights?"\
 - If YES (complementary): Proceed with the related action\
-- If NO (redundant): Set `isFinish: true`\
+- If NO (redundant): Set "isFinish: true"\
 ## 3. Identify Information Gaps\
 - Does the user's request require information you don't have?\
 - Have you already gathered this in a prior step of THIS round?\
@@ -53,13 +53,13 @@ Determine the next step the assistant should take in this conversation to help t
 - Based on what you've ALREADY done in THIS round, what (if anything) would ADD VALUE?\
 - **For simple, specific requests** (e.g., "send 0.05 ETH", "what's the price of BTC"):\
   * Execute the ONE action needed\
-  * Set `isFinish: true` after successful execution\
+  * Set "isFinish: true" after successful execution\
 - **For exploratory/broad requests** (e.g., "what's trending", "analyze this token"):\
   * Consider executing MULTIPLE COMPLEMENTARY actions that provide richer, multi-dimensional insights\
-  * Only set `isFinish: true` when you've provided comprehensive information\
+  * Only set "isFinish: true" when you've provided comprehensive information\
 - **For multi-step requests** (e.g., "get price then swap"):\
   * Execute each step in sequence\
-  * Set `isFinish: true` only when ALL steps are complete\
+  * Set "isFinish: true" only when ALL steps are complete\
 - Extract parameters from the **latest user message first**, then results from THIS round.\
 ---\
 {{actionsWithParams}}\
@@ -69,7 +69,7 @@ Determine the next step the assistant should take in this conversation to help t
 You have executed the following actions in THIS multi-step execution round:\
 {{actionResults}}\
  **IMPORTANT**: These are actions YOU took in this execution, not from earlier in the conversation.\
-- If the user's request has been ADEQUATELY satisfied, set `isFinish: true`\
+- If the user's request has been ADEQUATELY satisfied, set "isFinish: true"\
 - Do NOT repeat the EXACT SAME action with the SAME parameters\
 - DO consider executing RELATED/COMPLEMENTARY actions that add different value\
 {{else}}\

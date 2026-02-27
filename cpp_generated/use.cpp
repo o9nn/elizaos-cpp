@@ -11,11 +11,11 @@ string useItemTemplate = std::string("\
 Decide if the agent should use/interact with a specific entity based on the conversation and world state.\
 \
 Response format:\
-```json\
+"""json\
 {\
   "entityId": "<string>" // or null if none\
 }\
-```\
+"""\
 ");
 std::shared_ptr<Action> hyperfyUseItemAction = object{
     object::pair{std::string("name"), std::string("HYPERFY_USE_ITEM")}, 

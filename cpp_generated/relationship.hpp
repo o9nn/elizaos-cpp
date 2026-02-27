@@ -1,37 +1,29 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V1_SRC_RELATIONSHIP_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V1_SRC_RELATIONSHIP_H
+#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V1_SRC___TESTS___RELATIONSHIP_TEST_H
+#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_PLUGIN-SPECIFICATION_CORE-PLUGIN-V1_SRC___TESTS___RELATIONSHIP_TEST_H
 #include "core.h"
-#include "./types.h"
-using RelationshipFromTypes = Relationship;
-#include "@elizaos/core-plugin-v2.h"
-using RelationshipV2 = Relationship;
+#include "vitest.h"
+#include "../relationship.h"
+#include "../types.h"
 
-typedef RelationshipFromTypes Relationship;
+class RelationshipV2;
 
+extern std::function<any(double)> createTestUUID;
+class RelationshipV2 : public object, public std::enable_shared_from_this<RelationshipV2> {
+public:
+    using std::enable_shared_from_this<RelationshipV2>::shared_from_this;
+    std::shared_ptr<UUID> id;
 
-Relationship fromV2Relationship(std::shared_ptr<RelationshipV2> relationshipV2);
+    std::shared_ptr<UUID> sourceEntityId;
 
-std::shared_ptr<RelationshipV2> toV2Relationship(Relationship relationship, std::shared_ptr<UUID> agentId);
+    std::shared_ptr<UUID> targetEntityId;
 
-array<Relationship> fromV2Relationships(array<std::shared_ptr<RelationshipV2>> relationshipsV2);
+    std::shared_ptr<UUID> agentId;
 
-array<std::shared_ptr<RelationshipV2>> toV2Relationships(array<Relationship> relationships, std::shared_ptr<UUID> agentId);
+    array<string> tags;
 
-extern object RELATIONSHIP_STATUSES;
-string tagsToStatus(array<string> tags);
+    object metadata;
 
-array<string> statusToTags(string status);
-
-Relationship fromV2RelationshipEnhanced(std::shared_ptr<RelationshipV2> relationshipV2);
-
-std::shared_ptr<RelationshipV2> toV2RelationshipEnhanced(Relationship relationship, std::shared_ptr<UUID> agentId);
-
-Relationship createV1Relationship(std::shared_ptr<UUID> userA, std::shared_ptr<UUID> userB, string status = RELATIONSHIP_STATUSES["UNKNOWN"], std::shared_ptr<UUID> roomId = undefined);
-
-boolean areRelationshipsEquivalent(Relationship rel1, Relationship rel2);
-
-array<Relationship> filterRelationshipsByStatus(array<Relationship> relationships, string status);
-
-array<Relationship> getRelationshipsForUser(array<Relationship> relationships, std::shared_ptr<UUID> userId);
+    string createdAt;
+};
 
 #endif

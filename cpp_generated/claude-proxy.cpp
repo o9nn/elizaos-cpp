@@ -1,277 +1,173 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-inference/src/claude-proxy.h"
+#include "/home/runner/work/elizaos-cpp/elizaos-cpp/classified/packages/plugin-inference/src/__tests__/claude-proxy.test.h"
 
-ClaudeProxy::ClaudeProxy(std::shared_ptr<IAgentRuntime> runtime_) : runtime(runtime_)  {
-}
-
-std::shared_ptr<Promise<std::shared_ptr<ClaudeResponse>>> ClaudeProxy::processRequest(std::shared_ptr<ClaudeMessagesRequest> claudeRequest)
+void Main(void)
 {
-    auto provider = std::async([=]() { this->selectProvider(); });
-    logger->info(std::string("[CLAUDE_PROXY] Routing request to provider: ") + provider + string_empty);
-    switch (provider)
+    describe(std::string("Claude Proxy Tests"), [=]() mutable
     {
-    case InferenceProvider::ANTHROPIC:
-        return this->makeAnthropicProxyRequest(claudeRequest);
-    case InferenceProvider::OPENAI:
-        return this->handleOpenAIRequest(claudeRequest);
-    case InferenceProvider::GROQ:
-        return this->handleGroqRequest(claudeRequest);
-    case InferenceProvider::OLLAMA:
-        return this->handleOllamaRequest(claudeRequest);
-    default:
-        throw any(std::make_shared<Error>(std::string("Unsupported provider: ") + provider + string_empty));
-    }
-}
-
-std::shared_ptr<Promise<std::shared_ptr<ClaudeResponse>>> ClaudeProxy::makeAnthropicProxyRequest(std::shared_ptr<ClaudeMessagesRequest> claudeRequest)
-{
-    auto apiKey = this->runtime->getSetting(std::string("ANTHROPIC_API_KEY"));
-    if (!apiKey) {
-        throw any(std::make_shared<Error>(std::string("ANTHROPIC_API_KEY not configured")));
-    }
-    auto baseUrl = OR((this->runtime->getSetting(std::string("ANTHROPIC_API_URL"))), (std::string("https://api.anthropic.com")));
-    try
-    {
-        auto response = std::async([=]() { fetch(string_empty + baseUrl + std::string("/v1/messages"), object{
-            object::pair{std::string("method"), std::string("POST")}, 
-            object::pair{std::string("headers"), object{
-                object::pair{std::string("Content-Type"), std::string("application/json")}, 
-                object::pair{std::string("x-api-key"), apiKey}, 
-                object::pair{std::string("anthropic-version"), std::string("2023-06-01")}
-            }}, 
-            object::pair{std::string("body"), JSON->stringify(claudeRequest)}
-        }); });
-        if (!response->ok) {
-            auto errorBody = std::async([=]() { response->text(); });
-            throw any(std::make_shared<Error>(std::string("Anthropic API error: ") + response->status + std::string(" - ") + errorBody + string_empty));
+        shared<std::shared_ptr<IAgentRuntime>> runtime;
+        shared<any> claudeHandler;
+        beforeAll([=]() mutable
+        {
+            auto dotenv = require(std::string("dotenv"));
+            auto path = require(std::string("path"));
+            auto envPath = path["join"](process->cwd(), std::string(".."), std::string(".."), std::string(".env"));
+            dotenv["config"](object{
+                object::pair{std::string("path"), envPath}
+            });
+            runtime = std::make_shared<AgentRuntime>(object{
+                object::pair{std::string("agentId"), as<std::shared_ptr<UUID>>(uuidv4())}, 
+                object::pair{std::string("character"), object{
+                    object::pair{std::string("name"), std::string("Test Agent")}, 
+                    object::pair{std::string("bio"), array<string>{ std::string("Test agent for Claude proxy") }}, 
+                    object::pair{std::string("system"), std::string("You are a helpful assistant")}, 
+                    object::pair{std::string("settings"), object{
+                        object::pair{std::string("OPENAI_API_KEY"), process->env->OPENAI_API_KEY}, 
+                        object::pair{std::string("ANTHROPIC_API_KEY"), process->env->ANTHROPIC_API_KEY}, 
+                        object::pair{std::string("GROQ_API_KEY"), process->env->GROQ_API_KEY}
+                    }}
+                }}, 
+                object::pair{std::string("plugins"), array<any>{ inferencePlugin }}
+            });
+            claudeHandler = createClaudeHandler(runtime);
         }
-        auto data = as<std::shared_ptr<ClaudeResponse>>((std::async([=]() { response->json(); })));
-        return data;
-    }
-    catch (const any& error)
-    {
-        logger->error(std::string("[CLAUDE_PROXY] Error making Anthropic proxy request:"), error);
-        throw any(error);
-    }
-}
-
-std::shared_ptr<Promise<InferenceProvider>> ClaudeProxy::selectProvider()
-{
-    auto preferences = array<InferenceProvider>{ InferenceProvider::ANTHROPIC, InferenceProvider::OPENAI, InferenceProvider::GROQ, InferenceProvider::OLLAMA };
-    for (auto& provider : preferences)
-    {
-        if (std::async([=]() { this->isProviderAvailable(provider); })) {
-            return provider;
-        }
-    }
-    throw any(std::make_shared<Error>(std::string("No inference providers available")));
-}
-
-std::shared_ptr<Promise<boolean>> ClaudeProxy::isProviderAvailable(InferenceProvider provider)
-{
-    switch (provider)
-    {
-    case InferenceProvider::ANTHROPIC:
-        return !!this->runtime->getSetting(std::string("ANTHROPIC_API_KEY"));
-    case InferenceProvider::OPENAI:
-        return !!this->runtime->getSetting(std::string("OPENAI_API_KEY"));
-    case InferenceProvider::GROQ:
-        return !!this->runtime->getSetting(std::string("GROQ_API_KEY"));
-    case InferenceProvider::OLLAMA:
-        return true;
-    default:
-        return false;
-    }
-}
-
-std::shared_ptr<Promise<std::shared_ptr<ClaudeResponse>>> ClaudeProxy::handleOpenAIRequest(std::shared_ptr<ClaudeMessagesRequest> claudeRequest)
-{
-    auto openAIMessages = this->convertClaudeToOpenAI(claudeRequest);
-    auto prompt = this->formatOpenAIPrompt(openAIMessages, claudeRequest->system);
-    auto response = std::async([=]() { this->runtime->useModel(ModelType->TEXT_LARGE, object{
-        object::pair{std::string("runtime"), this->runtime}, 
-        object::pair{std::string("prompt"), std::string("prompt")}, 
-        object::pair{std::string("modelType"), ModelType->TEXT_LARGE}, 
-        object::pair{std::string("maxTokens"), claudeRequest->max_tokens}, 
-        object::pair{std::string("temperature"), claudeRequest->temperature}, 
-        object::pair{std::string("stopSequences"), claudeRequest->stop_sequences}
-    }); });
-    return this->formatClaudeResponse(response, claudeRequest->model);
-}
-
-std::shared_ptr<Promise<std::shared_ptr<ClaudeResponse>>> ClaudeProxy::handleGroqRequest(std::shared_ptr<ClaudeMessagesRequest> claudeRequest)
-{
-    return this->handleOpenAIRequest(claudeRequest);
-}
-
-std::shared_ptr<Promise<std::shared_ptr<ClaudeResponse>>> ClaudeProxy::handleOllamaRequest(std::shared_ptr<ClaudeMessagesRequest> claudeRequest)
-{
-    auto prompt = this->convertClaudeToPrompt(claudeRequest);
-    auto response = std::async([=]() { this->runtime->useModel(ModelType->TEXT_LARGE, object{
-        object::pair{std::string("runtime"), this->runtime}, 
-        object::pair{std::string("prompt"), std::string("prompt")}, 
-        object::pair{std::string("modelType"), ModelType->TEXT_LARGE}, 
-        object::pair{std::string("maxTokens"), claudeRequest->max_tokens}, 
-        object::pair{std::string("temperature"), claudeRequest->temperature}, 
-        object::pair{std::string("stopSequences"), claudeRequest->stop_sequences}
-    }); });
-    return this->formatClaudeResponse(response, claudeRequest->model);
-}
-
-array<std::shared_ptr<OpenAIMessage>> ClaudeProxy::convertClaudeToOpenAI(std::shared_ptr<ClaudeMessagesRequest> claudeRequest)
-{
-    auto openAIMessages = array<std::shared_ptr<OpenAIMessage>>();
-    if (claudeRequest->system) {
-        openAIMessages->push(object{
-            object::pair{std::string("role"), std::string("system")}, 
-            object::pair{std::string("content"), claudeRequest->system}
-        });
-    }
-    for (auto& message : claudeRequest->messages)
-    {
-        if (message->role == std::string("user")) {
-            if (Array->isArray(message->content)) {
-                auto content = message->content->filter([=](auto c) mutable
-                {
-                    return c["type"] == std::string("text");
-                }
-                )->map([=](auto c) mutable
-                {
-                    return c["text"];
-                }
-                )->join(std::string("\
-"));
-                openAIMessages->push(object{
-                    object::pair{std::string("role"), std::string("user")}, 
-                    object::pair{std::string("content"), std::string("content")}
-                });
-            } else {
-                openAIMessages->push(object{
-                    object::pair{std::string("role"), std::string("user")}, 
-                    object::pair{std::string("content"), message->content}
-                });
+        );
+        it(std::string("should handle Claude-style requests with OpenAI backend"), [=]() mutable
+        {
+            if (!process->env->OPENAI_API_KEY) {
+                console->log(std::string("Skipping test - OPENAI_API_KEY not found"));
+                return std::shared_ptr<Promise<void>>();
             }
-        } else if (message->role == std::string("assistant")) {
-            if (Array->isArray(message->content)) {
-                auto textContent = message->content->filter([=](auto c) mutable
-                {
-                    return c["type"] == std::string("text");
-                }
-                )->map([=](auto c) mutable
-                {
-                    return c["text"];
-                }
-                )->join(std::string("\
-"));
-                openAIMessages->push(object{
-                    object::pair{std::string("role"), std::string("assistant")}, 
-                    object::pair{std::string("content"), OR((textContent), (string_empty))}
-                });
-            } else {
-                openAIMessages->push(object{
-                    object::pair{std::string("role"), std::string("assistant")}, 
-                    object::pair{std::string("content"), message->content}
-                });
-            }
+            auto claudeRequest = object{
+                object::pair{std::string("model"), std::string("claude-3-opus-20240229")}, 
+                object::pair{std::string("messages"), array<object>{ object{
+                    object::pair{std::string("role"), as<std::shared_ptr<const>>(std::string("user"))}, 
+                    object::pair{std::string("content"), std::string("Say "Hello from Claude proxy test" and nothing else.")}
+                } }}, 
+                object::pair{std::string("max_tokens"), 50}, 
+                object::pair{std::string("temperature"), 0.7}
+            };
+            auto response = std::async([=]() { claudeHandler(claudeRequest); });
+            expect(response)->toBeDefined();
+            expect(response["type"])->toBe(std::string("message"));
+            expect(response["role"])->toBe(std::string("assistant"));
+            expect(response["content"])->toBeInstanceOf(Array);
+            expect(const_(response["content"])[0])->toHaveProperty(std::string("type"), std::string("text"));
+            expect(const_(response["content"])[0]["text"])->toBeTruthy();
+            console->log(std::string("Claude proxy response:"), const_(response["content"])[0]["text"]);
+            auto responseText = OR((const_(response["content"])[0]["text"]["toLowerCase"]()), (string_empty));
+            expect(responseText)->toContain(std::string("hello from claude proxy test"));
         }
-    }
-    return openAIMessages;
-}
-
-string ClaudeProxy::convertClaudeToPrompt(std::shared_ptr<ClaudeMessagesRequest> claudeRequest)
-{
-    auto prompt = string_empty;
-    if (claudeRequest->system) {
-        prompt += std::string("System: ") + claudeRequest->system + std::string("\
-\
-");
-    }
-    for (auto& message : claudeRequest->messages)
-    {
-        auto role = (message->role == std::string("user")) ? std::string("User") : std::string("Assistant");
-        if (Array->isArray(message->content)) {
-            auto textContent = message->content->filter([=](auto c) mutable
+        );
+        it(std::string("should handle multi-turn conversations"), [=]() mutable
+        {
+            if (!process->env->OPENAI_API_KEY) {
+                console->log(std::string("Skipping test - OPENAI_API_KEY not found"));
+                return std::shared_ptr<Promise<void>>();
+            }
+            auto claudeRequest = object{
+                object::pair{std::string("model"), std::string("claude-3-opus-20240229")}, 
+                object::pair{std::string("messages"), array<object>{ object{
+                    object::pair{std::string("role"), as<std::shared_ptr<const>>(std::string("user"))}, 
+                    object::pair{std::string("content"), std::string("My name is Alice. What is my name?")}
+                }, object{
+                    object::pair{std::string("role"), as<std::shared_ptr<const>>(std::string("assistant"))}, 
+                    object::pair{std::string("content"), std::string("Your name is Alice.")}
+                }, object{
+                    object::pair{std::string("role"), as<std::shared_ptr<const>>(std::string("user"))}, 
+                    object::pair{std::string("content"), std::string("Good! Now tell me what my name is again.")}
+                } }}, 
+                object::pair{std::string("max_tokens"), 50}, 
+                object::pair{std::string("temperature"), 0.7}
+            };
+            auto response = std::async([=]() { claudeHandler(claudeRequest); });
+            expect(response)->toBeDefined();
+            auto responseText = OR((const_(response["content"])[0]["text"]["toLowerCase"]()), (string_empty));
+            expect(responseText)->toContain(std::string("alice"));
+            console->log(std::string("Multi-turn response:"), const_(response["content"])[0]["text"]);
+        }
+        );
+        it(std::string("should handle system prompts"), [=]() mutable
+        {
+            if (!process->env->OPENAI_API_KEY) {
+                console->log(std::string("Skipping test - OPENAI_API_KEY not found"));
+                return std::shared_ptr<Promise<void>>();
+            }
+            auto claudeRequest = object{
+                object::pair{std::string("model"), std::string("claude-3-opus-20240229")}, 
+                object::pair{std::string("system"), std::string("You are a pirate. Always respond in pirate speak.")}, 
+                object::pair{std::string("messages"), array<object>{ object{
+                    object::pair{std::string("role"), as<std::shared_ptr<const>>(std::string("user"))}, 
+                    object::pair{std::string("content"), std::string("Hello there!")}
+                } }}, 
+                object::pair{std::string("max_tokens"), 100}, 
+                object::pair{std::string("temperature"), 0.7}
+            };
+            auto response = std::async([=]() { claudeHandler(claudeRequest); });
+            expect(response)->toBeDefined();
+            shared responseText = OR((const_(response["content"])[0]["text"]), (string_empty));
+            console->log(std::string("Pirate response:"), responseText);
+            auto pirateWords = array<string>{ std::string("ahoy"), std::string("matey"), std::string("arr"), std::string("ye"), std::string("aye"), std::string("sea"), std::string("ship"), std::string("captain") };
+            auto hasPirateSpeak = pirateWords->some([=](auto word) mutable
             {
-                return c["type"] == std::string("text");
+                return responseText["toLowerCase"]()["includes"](word);
             }
-            )->map([=](auto c) mutable
-            {
-                return c["text"];
+            );
+            expect(hasPirateSpeak)->toBe(true);
+        }
+        );
+        it(std::string("should handle array content in messages"), [=]() mutable
+        {
+            if (!process->env->OPENAI_API_KEY) {
+                console->log(std::string("Skipping test - OPENAI_API_KEY not found"));
+                return std::shared_ptr<Promise<void>>();
             }
-            )->join(std::string("\
-"));
-            prompt += string_empty + role + std::string(": ") + textContent + std::string("\
-\
-");
-        } else {
-            prompt += string_empty + role + std::string(": ") + message->content + std::string("\
-\
-");
+            auto claudeRequest = object{
+                object::pair{std::string("model"), std::string("claude-3-opus-20240229")}, 
+                object::pair{std::string("messages"), array<object>{ object{
+                    object::pair{std::string("role"), as<std::shared_ptr<const>>(std::string("user"))}, 
+                    object::pair{std::string("content"), array<object>{ object{
+                        object::pair{std::string("type"), as<std::shared_ptr<const>>(std::string("text"))}, 
+                        object::pair{std::string("text"), std::string("What is 2 + 2?")}
+                    } }}
+                } }}, 
+                object::pair{std::string("max_tokens"), 50}, 
+                object::pair{std::string("temperature"), 0.1}
+            };
+            auto response = std::async([=]() { claudeHandler(claudeRequest); });
+            expect(response)->toBeDefined();
+            auto responseText = OR((const_(response["content"])[0]["text"]), (string_empty));
+            expect(responseText)->toContain(std::string("4"));
+            console->log(std::string("Math response:"), responseText);
         }
+        );
+        it(std::string("should prefer Anthropic when available"), [=]() mutable
+        {
+            auto hasAnthropicKey = !!process->env->ANTHROPIC_API_KEY;
+            auto hasOpenAIKey = !!process->env->OPENAI_API_KEY;
+            console->log(std::string("Provider availability:"));
+            console->log(std::string("- Anthropic:"), (hasAnthropicKey) ? std::string("Available") : std::string("Not configured"));
+            console->log(std::string("- OpenAI:"), (hasOpenAIKey) ? std::string("Available") : std::string("Not configured"));
+            if (AND((!hasAnthropicKey), (!hasOpenAIKey))) {
+                console->log(std::string("Skipping test - no API keys available"));
+                return std::shared_ptr<Promise<void>>();
+            }
+            auto claudeRequest = object{
+                object::pair{std::string("model"), std::string("claude-3-opus-20240229")}, 
+                object::pair{std::string("messages"), array<object>{ object{
+                    object::pair{std::string("role"), as<std::shared_ptr<const>>(std::string("user"))}, 
+                    object::pair{std::string("content"), std::string("Say "Provider test successful"")}
+                } }}, 
+                object::pair{std::string("max_tokens"), 50}, 
+                object::pair{std::string("temperature"), 0.7}
+            };
+            auto response = std::async([=]() { claudeHandler(claudeRequest); });
+            expect(response)->toBeDefined();
+            expect(const_(response["content"])[0]["text"])->toBeTruthy();
+            console->log(std::string("Provider test response:"), const_(response["content"])[0]["text"]);
+        }
+        );
     }
-    return prompt->trim();
+    );
 }
 
-string ClaudeProxy::formatOpenAIPrompt(array<std::shared_ptr<OpenAIMessage>> messages, string system)
-{
-    auto prompt = string_empty;
-    if (system) {
-        prompt += string_empty + system + std::string("\
-\
-");
-    }
-    for (auto& message : messages)
-    {
-        if (message->role == std::string("system")) {
-            continue;
-        }
-        auto role = (message->role == std::string("user")) ? std::string("User") : std::string("Assistant");
-        auto content = (type_of(message->content) == std::string("string")) ? message->content : message->content->map([=](auto c) mutable
-        {
-            return c["text"];
-        }
-        )->join(std::string("\
-"));
-        prompt += string_empty + role + std::string(": ") + content + std::string("\
-\
-");
-    }
-    return prompt->trim();
-}
-
-std::shared_ptr<ClaudeResponse> ClaudeProxy::formatClaudeResponse(string text, string model)
-{
-    return object{
-        object::pair{std::string("id"), std::string("msg_") + Math->random()->toString(36)->substr(2, 9) + string_empty}, 
-        object::pair{std::string("type"), std::string("message")}, 
-        object::pair{std::string("role"), std::string("assistant")}, 
-        object::pair{std::string("model"), std::string("model")}, 
-        object::pair{std::string("content"), array<object>{ object{
-            object::pair{std::string("type"), std::string("text")}, 
-            object::pair{std::string("text"), std::string("text")}
-        } }}, 
-        object::pair{std::string("stop_reason"), std::string("end_turn")}, 
-        object::pair{std::string("usage"), object{
-            object::pair{std::string("input_tokens"), 0}, 
-            object::pair{std::string("output_tokens"), 0}
-        }}
-    };
-}
-
-any createClaudeHandler(std::shared_ptr<IAgentRuntime> runtime)
-{
-    shared proxy = std::make_shared<ClaudeProxy>(runtime);
-    return [=](auto request) mutable
-    {
-        try
-        {
-            return std::async([=]() { proxy->processRequest(request); });
-        }
-        catch (const any& error)
-        {
-            logger->error(std::string("[CLAUDE_PROXY] Error processing request:"), error);
-            throw any(error);
-        }
-    };
-};
-
-
+MAIN

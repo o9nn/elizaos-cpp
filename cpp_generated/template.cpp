@@ -16,12 +16,12 @@ Here are the cryptocurrency symbol mappings:\
 IMPORTANT: Response must ALWAYS include both "symbol" and "currency" fields.\
 \
 Example response:\
-```json\
+"""json\
 {\
     "symbol": "BTC",\
     "currency": "USD"\
 }\
-```\
+"""\
 \
 {{recentMessages}}\
 \

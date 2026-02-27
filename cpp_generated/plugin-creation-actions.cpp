@@ -1,492 +1,460 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-dynamic/actions/plugin-creation-actions.h"
+#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/src/plugin-dynamic/__tests__/plugin-creation-actions.test.h"
 
-std::shared_ptr<Promise<std::shared_ptr<PluginSpecification>>> generatePluginSpecification(string description, std::shared_ptr<IAgentRuntime> runtime)
+std::function<any(string)> createMockMemory = [=](auto text) mutable
 {
-    shared lowerDesc = description->toLowerCase();
-    auto name = std::string("@elizaos/plugin-");
-    auto pluginType = std::string("custom");
-    if (lowerDesc->includes(std::string("weather"))) {
-        pluginType = std::string("weather");
-        name += std::string("weather");
-    } else if (OR((lowerDesc->includes(std::string("database"))), (lowerDesc->includes(std::string("sql"))))) {
-        pluginType = std::string("database");
-        name += std::string("database");
-    } else if (OR((lowerDesc->includes(std::string("api"))), (lowerDesc->includes(std::string("rest"))))) {
-        pluginType = std::string("api");
-        name += std::string("api");
-    } else if (OR((lowerDesc->includes(std::string("todo"))), (lowerDesc->includes(std::string("task"))))) {
-        pluginType = std::string("todo");
-        name += std::string("todo");
-    } else if (OR((lowerDesc->includes(std::string("email"))), (lowerDesc->includes(std::string("mail"))))) {
-        pluginType = std::string("email");
-        name += std::string("email");
-    } else if (OR((lowerDesc->includes(std::string("chat"))), (lowerDesc->includes(std::string("message"))))) {
-        pluginType = std::string("chat");
-        name += std::string("chat");
-    } else {
-        auto words = description->split((new RegExp(std::string("\s"))))->filter([=](auto w) mutable
-        {
-            return w->get_length() > 4;
-        }
-        );
-        name += OR((const_(words)[0]->toLowerCase()), (std::string("custom")));
-    }
-    auto specification = object{
-        object::pair{std::string("name"), std::string("name")}, 
-        object::pair{std::string("description"), description->slice(0, 200)}, 
-        object::pair{std::string("version"), std::string("1.0.0")}, 
-        object::pair{std::string("actions"), array<any>()}, 
-        object::pair{std::string("providers"), array<any>()}, 
-        object::pair{std::string("services"), array<any>()}, 
-        object::pair{std::string("evaluators"), array<any>()}
-    };
-    auto actionKeywords = object{
-        object::pair{std::string("create"), array<string>{ std::string("create"), std::string("add"), std::string("new"), std::string("generate"), std::string("make") }}, 
-        object::pair{std::string("read"), array<string>{ std::string("get"), std::string("fetch"), std::string("retrieve"), std::string("list"), std::string("show"), std::string("display") }}, 
-        object::pair{std::string("update"), array<string>{ std::string("update"), std::string("modify"), std::string("change"), std::string("edit"), std::string("set") }}, 
-        object::pair{std::string("delete"), array<string>{ std::string("delete"), std::string("remove"), std::string("clear"), std::string("destroy") }}, 
-        object::pair{std::string("execute"), array<string>{ std::string("execute"), std::string("run"), std::string("perform"), std::string("do"), std::string("process") }}
-    };
-    for (auto& [actionType, keywords] : Object->entries(actionKeywords))
-    {
-        if (keywords->some([=](auto kw) mutable
-        {
-            return lowerDesc->includes(kw);
-        }
-        )) {
-            specification->actions->push(object{
-                object::pair{std::string("name"), string_empty + actionType + string_empty + (pluginType->charAt(0)->toUpperCase() + pluginType->slice(1)) + string_empty}, 
-                object::pair{std::string("description"), string_empty + (actionType->charAt(0)->toUpperCase() + actionType->slice(1)) + std::string(" operation for ") + pluginType + string_empty}, 
-                object::pair{std::string("parameters"), object{}}
-            });
-        }
-    }
-    if (OR((OR((OR((lowerDesc->includes(std::string("provide"))), (lowerDesc->includes(std::string("information"))))), (lowerDesc->includes(std::string("data"))))), (lowerDesc->includes(std::string("context"))))) {
-        specification->providers->push(object{
-            object::pair{std::string("name"), string_empty + pluginType + std::string("Provider")}, 
-            object::pair{std::string("description"), std::string("Provides ") + pluginType + std::string(" data and context")}, 
-            object::pair{std::string("dataStructure"), object{}}
-        });
-    }
-    if (OR((OR((OR((lowerDesc->includes(std::string("service"))), (lowerDesc->includes(std::string("background"))))), (lowerDesc->includes(std::string("monitor"))))), (lowerDesc->includes(std::string("watch"))))) {
-        specification->services->push(object{
-            object::pair{std::string("name"), string_empty + pluginType + std::string("Service")}, 
-            object::pair{std::string("description"), std::string("Background service for ") + pluginType + std::string(" operations")}, 
-            object::pair{std::string("methods"), array<string>{ std::string("start"), std::string("stop"), std::string("status") }}
-        });
-    }
-    if (OR((OR((OR((lowerDesc->includes(std::string("evaluate"))), (lowerDesc->includes(std::string("analyze"))))), (lowerDesc->includes(std::string("check"))))), (lowerDesc->includes(std::string("validate"))))) {
-        specification->evaluators->push(object{
-            object::pair{std::string("name"), string_empty + pluginType + std::string("Evaluator")}, 
-            object::pair{std::string("description"), std::string("Evaluates and analyzes ") + pluginType + std::string(" data")}, 
-            object::pair{std::string("triggers"), array<any>()}
-        });
-    }
-    if (AND((AND((AND((!specification->actions->get_length()), (!specification->providers->get_length()))), (!specification->services->get_length()))), (!specification->evaluators->get_length()))) {
-        specification->actions = array<object>{ object{
-            object::pair{std::string("name"), std::string("handle") + (pluginType->charAt(0)->toUpperCase() + pluginType->slice(1)) + string_empty}, 
-            object::pair{std::string("description"), std::string("Main handler for ") + pluginType + std::string(" operations")}
-        } };
-    }
-    return specification;
+    return as<std::shared_ptr<Memory>>(as<any>((object{
+        object::pair{std::string("id"), as<any>(crypto->randomUUID())}, 
+        object::pair{std::string("content"), object{
+            object::pair{std::string("text"), std::string("text")}
+        }}, 
+        object::pair{std::string("userId"), as<any>(crypto->randomUUID())}, 
+        object::pair{std::string("roomId"), as<any>(crypto->randomUUID())}, 
+        object::pair{std::string("entityId"), std::string("entity-id")}, 
+        object::pair{std::string("createdAt"), Date->now()}
+    })));
 };
-
-
-any PluginSpecificationSchema = z->object(object{
-    object::pair{std::string("name"), z->string()->regex((new RegExp(std::string("^@?[a-zA-Z0-9-_]+\/[a-zA-Z0-9-_]+"))), std::string("Invalid plugin name format"))}, 
-    object::pair{std::string("description"), z->string()->min(10, std::string("Description must be at least 10 characters"))}, 
-    object::pair{std::string("version"), z->string()->regex((new RegExp(std::string("^\d+\.\d+\.\d+"))), std::string("Version must be in semver format"))->optional()->default(std::string("1.0.0"))}, 
-    object::pair{std::string("actions"), z->array(z->object(object{
-        object::pair{std::string("name"), z->string()->regex((new RegExp(std::string("^[a-zA-Z][a-zA-Z0-9]*"))), std::string("Action name must be alphanumeric"))}, 
-        object::pair{std::string("description"), z->string()}, 
-        object::pair{std::string("parameters"), z->record(z->any())->optional()}
-    }))->optional()}, 
-    object::pair{std::string("providers"), z->array(z->object(object{
-        object::pair{std::string("name"), z->string()->regex((new RegExp(std::string("^[a-zA-Z][a-zA-Z0-9]*"))), std::string("Provider name must be alphanumeric"))}, 
-        object::pair{std::string("description"), z->string()}, 
-        object::pair{std::string("dataStructure"), z->record(z->any())->optional()}
-    }))->optional()}, 
-    object::pair{std::string("services"), z->array(z->object(object{
-        object::pair{std::string("name"), z->string()->regex((new RegExp(std::string("^[a-zA-Z][a-zA-Z0-9]*"))), std::string("Service name must be alphanumeric"))}, 
-        object::pair{std::string("description"), z->string()}, 
-        object::pair{std::string("methods"), z->array(z->string())->optional()}
-    }))->optional()}, 
-    object::pair{std::string("evaluators"), z->array(z->object(object{
-        object::pair{std::string("name"), z->string()->regex((new RegExp(std::string("^[a-zA-Z][a-zA-Z0-9]*"))), std::string("Evaluator name must be alphanumeric"))}, 
-        object::pair{std::string("description"), z->string()}, 
-        object::pair{std::string("triggers"), z->array(z->string())->optional()}
-    }))->optional()}, 
-    object::pair{std::string("dependencies"), z->record(z->string())->optional()}, 
-    object::pair{std::string("environmentVariables"), z->array(z->object(object{
-        object::pair{std::string("name"), z->string()}, 
-        object::pair{std::string("description"), z->string()}, 
-        object::pair{std::string("required"), z->boolean()}, 
-        object::pair{std::string("sensitive"), z->boolean()}
-    }))->optional()}
-});
-std::shared_ptr<Action> createPluginAction = object{
-    object::pair{std::string("name"), std::string("createPlugin")}, 
-    object::pair{std::string("description"), std::string("Create a new plugin from a specification using AI assistance")}, 
-    object::pair{std::string("similes"), array<string>{ std::string("generate plugin"), std::string("build plugin"), std::string("make plugin"), std::string("develop plugin"), std::string("create extension"), std::string("build extension") }}, 
-    object::pair{std::string("examples"), array<array<object>>{ array<object>{ object{
-        object::pair{std::string("name"), std::string("user")}, 
-        object::pair{std::string("content"), object{
-            object::pair{std::string("text"), std::string("Create a plugin for managing user preferences")}
-        }}
-    }, object{
-        object::pair{std::string("name"), std::string("agent")}, 
-        object::pair{std::string("content"), object{
-            object::pair{std::string("text"), std::string("I'll create a user preferences management plugin for you. Let me start by generating the necessary components...")}
-        }}
-    } }, array<object>{ object{
-        object::pair{std::string("name"), std::string("user")}, 
-        object::pair{std::string("content"), object{
-            object::pair{std::string("text"), std::string("Build a plugin that adds weather information capabilities")}
-        }}
-    }, object{
-        object::pair{std::string("name"), std::string("agent")}, 
-        object::pair{std::string("content"), object{
-            object::pair{std::string("text"), std::string("I'll create a weather information plugin with actions for fetching current weather, forecasts, and weather alerts.")}
-        }}
-    } } }}, 
-    object::pair{std::string("validate"), [=](auto runtime, auto message, auto state = undefined) mutable
-    {
-        auto service = as<std::shared_ptr<PluginCreationService>>(runtime->services->get(std::string("plugin_creation")));
-        if (!service) {
-            return false;
-        }
-        auto jobs = service->getAllJobs();
-        auto activeJob = jobs->find([=](auto job) mutable
-        {
-            return OR((job->status == std::string("running")), (job->status == std::string("pending")));
-        }
-        );
-        if (activeJob) {
-            return false;
-        }
-        if (!isValidJsonSpecification(message->content->text)) {
-            return false;
-        }
-        return validatePrompt(message);
-    }
-    }, 
-    object::pair{std::string("handler"), [=](auto runtime, auto message, auto state = undefined, auto options = undefined, auto callback = undefined) mutable
-    {
-        try
-        {
-            auto service = as<std::shared_ptr<PluginCreationService>>(runtime->services->get(std::string("plugin_creation")));
-            if (!service) {
-                return std::string("Plugin creation service not available. Please ensure the plugin is properly installed.");
-            }
-            std::shared_ptr<PluginSpecification> specification;
-            try
-            {
-                auto parsed = JSON->parse(message->content->text);
-                specification = as<std::shared_ptr<PluginSpecification>>(PluginSpecificationSchema->parse(parsed));
-            }
-            catch (const any& error)
-            {
-                if (is<z->ZodError>(error)) {
-                    return std::string("Invalid plugin specification:\
-") + error["errors"]["map"]([=](auto e) mutable
-                    {
-                        return std::string("- ") + e["path"]->join(std::string(".")) + std::string(": ") + e["message"] + string_empty;
-                    }
-                    )["join"](std::string("\
-")) + string_empty;
-                }
-                return std::string("Failed to parse specification: ") + error["message"] + string_empty;
-            }
-            auto apiKey = runtime->getSetting(std::string("ANTHROPIC_API_KEY"));
-            if (!apiKey) {
-                return std::string("ANTHROPIC_API_KEY is not configured. Please set it to enable AI-powered plugin generation.");
-            }
-            auto jobId = std::async([=]() { service->createPlugin(specification, apiKey); });
-            return std::string("Plugin creation job started successfully!\
-\
-Job ID: ") + jobId + std::string("\
-Plugin: ") + specification->name + std::string("\
-\
-Use 'checkPluginCreationStatus' to monitor progress.");
-        }
-        catch (const any& error)
-        {
-            return std::string("Failed to create plugin: ") + error["message"] + string_empty;
-        }
-    }
-    }
-};
-std::shared_ptr<Action> checkPluginCreationStatusAction = object{
-    object::pair{std::string("name"), std::string("checkPluginCreationStatus")}, 
-    object::pair{std::string("description"), std::string("Check the status of a plugin creation job")}, 
-    object::pair{std::string("similes"), array<string>{ std::string("plugin status"), std::string("check plugin progress"), std::string("plugin creation status"), std::string("get plugin status") }}, 
-    object::pair{std::string("examples"), array<array<object>>{ array<object>{ object{
-        object::pair{std::string("name"), std::string("user")}, 
-        object::pair{std::string("content"), object{
-            object::pair{std::string("text"), std::string("What's the status of my plugin creation?")}
-        }}
-    }, object{
-        object::pair{std::string("name"), std::string("agent")}, 
-        object::pair{std::string("content"), object{
-            object::pair{std::string("text"), std::string("Let me check the status of your plugin creation job...")}
-        }}
-    } } }}, 
-    object::pair{std::string("validate"), [=](auto runtime, auto message, auto state = undefined) mutable
-    {
-        auto service = as<std::shared_ptr<PluginCreationService>>(runtime->services->get(std::string("plugin_creation")));
-        if (!service) {
-            return false;
-        }
-        auto jobs = service->getAllJobs();
-        return jobs->get_length() > 0;
-    }
-    }, 
-    object::pair{std::string("handler"), [=](auto runtime, auto message, auto state = undefined, auto options = undefined, auto callback = undefined) mutable
-    {
-        try
-        {
-            auto service = as<std::shared_ptr<PluginCreationService>>(runtime->services->get(std::string("plugin_creation")));
-            if (!service) {
-                return std::string("Plugin creation service not available.");
-            }
-            auto jobs = service->getAllJobs();
-            if (jobs->get_length() == 0) {
-                return std::string("No plugin creation jobs found.");
-            }
-            auto jobIdMatch = message->content->text->match((new RegExp(std::string("[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"))));
-            any targetJob;
-            if (jobIdMatch) {
-                targetJob = service->getJobStatus(const_(jobIdMatch)[0]);
-                if (!targetJob) {
-                    return std::string("Job with ID ") + const_(jobIdMatch)[0] + std::string(" not found.");
-                }
-            } else {
-                targetJob = const_(jobs->filter([=](auto job) mutable
-                {
-                    return OR((job->status == std::string("running")), (job->status == std::string("pending")));
-                }
-                )->sort([=](auto a, auto b) mutable
-                {
-                    return b->startedAt->getTime() - a->startedAt->getTime();
-                }
-                ))[0];
-                if (!targetJob) {
-                    targetJob = const_(jobs->sort([=](auto a, auto b) mutable
-                    {
-                        return b->startedAt->getTime() - a->startedAt->getTime();
-                    }
-                    ))[0];
-                }
-            }
-            if (!targetJob) {
-                return std::string("No plugin creation jobs found.");
-            }
-            shared response = std::string("📦 Plugin Creation Status\
-");
-            response += std::string("━━━━━━━━━━━━━━━━━━━━━━━━━━━━\
-\
-");
-            response += std::string("🆔 Job ID: ") + targetJob["id"] + std::string("\
-");
-            response += std::string("📌 Plugin: ") + targetJob["specification"]["name"] + std::string("\
-");
-            response += std::string("📊 Status: ") + targetJob["status"]["toUpperCase"]() + std::string("\
-");
-            response += std::string("🔄 Phase: ") + targetJob["currentPhase"] + std::string("\
-");
-            response += std::string("📈 Progress: ") + Math->round(targetJob["progress"]) + std::string("%\
-");
-            response += std::string("⏱️ Started: ") + targetJob["startedAt"]["toLocaleString"]() + std::string("\
-");
-            if (targetJob["completedAt"]) {
-                response += std::string("✅ Completed: ") + targetJob["completedAt"]["toLocaleString"]() + std::string("\
-");
-                auto duration = targetJob["completedAt"]["getTime"]() - targetJob["startedAt"]["getTime"]();
-                response += std::string("⏳ Duration: ") + Math->round(duration / 1000) + std::string("s\
-");
-            }
-            if (targetJob["logs"]["length"] > 0) {
-                response += std::string("\
-📝 Recent Activity:\
-");
-                targetJob["logs"]["slice"](-5)["forEach"]([=](auto log) mutable
-                {
-                    response += std::string("  ") + log + std::string("\
-");
-                }
-                );
-            }
-            if (targetJob["status"] == std::string("completed")) {
-                response += std::string("\
-✅ Plugin created successfully!\
-");
-                response += std::string("📂 Location: ") + targetJob["outputPath"] + std::string("\
-");
-            } else if (targetJob["status"] == std::string("failed")) {
-                response += std::string("\
-❌ Plugin creation failed\
-");
-                if (targetJob["error"]) {
-                    response += std::string("Error: ") + targetJob["error"] + std::string("\
-");
-                }
-            }
-            return response;
-        }
-        catch (const any& error)
-        {
-            return std::string("Failed to check status: ") + error["message"] + string_empty;
-        }
-    }
-    }
-};
-std::shared_ptr<Action> cancelPluginCreationAction = object{
-    object::pair{std::string("name"), std::string("cancelPluginCreation")}, 
-    object::pair{std::string("description"), std::string("Cancel the current plugin creation job")}, 
-    object::pair{std::string("similes"), array<string>{ std::string("stop plugin creation"), std::string("abort plugin creation"), std::string("cancel plugin") }}, 
-    object::pair{std::string("examples"), array<array<object>>{ array<object>{ object{
-        object::pair{std::string("name"), std::string("user")}, 
-        object::pair{std::string("content"), object{
-            object::pair{std::string("text"), std::string("Cancel the plugin creation")}
-        }}
-    }, object{
-        object::pair{std::string("name"), std::string("agent")}, 
-        object::pair{std::string("content"), object{
-            object::pair{std::string("text"), std::string("I'll cancel the current plugin creation job.")}
-        }}
-    } } }}, 
-    object::pair{std::string("validate"), [=](auto runtime, auto message, auto state = undefined) mutable
-    {
-        auto service = as<std::shared_ptr<PluginCreationService>>(runtime->services->get(std::string("plugin_creation")));
-        if (!service) {
-            return false;
-        }
-        auto jobs = service->getAllJobs();
-        auto activeJob = jobs->find([=](auto job) mutable
-        {
-            return OR((job->status == std::string("running")), (job->status == std::string("pending")));
-        }
-        );
-        return !!activeJob;
-    }
-    }, 
-    object::pair{std::string("handler"), [=](auto runtime, auto message, auto state = undefined, auto options = undefined, auto callback = undefined) mutable
-    {
-        try
-        {
-            auto service = as<std::shared_ptr<PluginCreationService>>(runtime->services->get(std::string("plugin_creation")));
-            if (!service) {
-                return std::string("Plugin creation service not available.");
-            }
-            auto jobs = service->getAllJobs();
-            auto activeJob = jobs->find([=](auto job) mutable
-            {
-                return OR((job->status == std::string("running")), (job->status == std::string("pending")));
-            }
-            );
-            if (!activeJob) {
-                return std::string("No active plugin creation job to cancel.");
-            }
-            service->cancelJob(activeJob->id);
-            return std::string("Plugin creation job has been cancelled.\
-\
-Job ID: ") + activeJob->id + std::string("\
-Plugin: ") + activeJob->specification->name + string_empty;
-        }
-        catch (const any& error)
-        {
-            return std::string("Failed to cancel job: ") + error["message"] + string_empty;
-        }
-    }
-    }
-};
-std::shared_ptr<Action> createPluginFromDescriptionAction = object{
-    object::pair{std::string("name"), std::string("createPluginFromDescription")}, 
-    object::pair{std::string("description"), std::string("Create a plugin from a natural language description")}, 
-    object::pair{std::string("similes"), array<string>{ std::string("describe plugin"), std::string("plugin from description"), std::string("explain plugin"), std::string("I need a plugin that") }}, 
-    object::pair{std::string("examples"), array<array<object>>{ array<object>{ object{
-        object::pair{std::string("name"), std::string("user")}, 
-        object::pair{std::string("content"), object{
-            object::pair{std::string("text"), std::string("I need a plugin that helps manage todo lists with add, remove, and list functionality")}
-        }}
-    }, object{
-        object::pair{std::string("name"), std::string("agent")}, 
-        object::pair{std::string("content"), object{
-            object::pair{std::string("text"), std::string("I'll create a todo list management plugin based on your description. This will include actions for adding, removing, and listing todos.")}
-        }}
-    } } }}, 
-    object::pair{std::string("validate"), [=](auto runtime, auto message, auto state = undefined) mutable
-    {
-        auto service = as<std::shared_ptr<PluginCreationService>>(runtime->services->get(std::string("plugin_creation")));
-        if (!service) {
-            return false;
-        }
-        auto jobs = service->getAllJobs();
-        auto activeJob = jobs->find([=](auto job) mutable
-        {
-            return OR((job->status == std::string("running")), (job->status == std::string("pending")));
-        }
-        );
-        if (activeJob) {
-            return false;
-        }
-        return AND((message->content->text), (message->content->text->length > 20));
-    }
-    }, 
-    object::pair{std::string("handler"), [=](auto runtime, auto message, auto state = undefined, auto options = undefined, auto callback = undefined) mutable
-    {
-        try
-        {
-            auto service = as<std::shared_ptr<PluginCreationService>>(runtime->services->get(std::string("plugin_creation")));
-            if (!service) {
-                return std::string("Plugin creation service not available.");
-            }
-            auto apiKey = runtime->getSetting(std::string("ANTHROPIC_API_KEY"));
-            if (!apiKey) {
-                return std::string("ANTHROPIC_API_KEY is not configured. Please set it to enable AI-powered plugin generation.");
-            }
-            auto specification = std::async([=]() { generatePluginSpecification(message->content->text, runtime); });
-            try
-            {
-                PluginSpecificationSchema->parse(specification);
-            }
-            catch (const any& error)
-            {
-                if (is<z->ZodError>(error)) {
-                    return std::string("Failed to generate valid specification:\
-") + error["errors"]["map"]([=](auto e) mutable
-                    {
-                        return std::string("- ") + e["path"]->join(std::string(".")) + std::string(": ") + e["message"] + string_empty;
-                    }
-                    )["join"](std::string("\
-")) + string_empty;
-                }
-            }
-            auto jobId = std::async([=]() { service->createPlugin(specification, apiKey); });
-            return (std::string("I'm creating a plugin based on your description!\
-\
-") + std::string("📦 Plugin: ") + specification->name + std::string("\
-") + std::string("📝 Description: ") + specification->description + std::string("\
-") + std::string("🆔 Job ID: ") + jobId + std::string("\
-\
-") + std::string("Components to be created:\
-") + string_empty + (specification->actions->get_length()) ? any(std::string("- ") + specification->actions->get_length() + std::string(" actions\
-")) : any(string_empty) + string_empty + string_empty + (specification->providers->get_length()) ? any(std::string("- ") + specification->providers->get_length() + std::string(" providers\
-")) : any(string_empty) + string_empty + string_empty + (specification->services->get_length()) ? any(std::string("- ") + specification->services->get_length() + std::string(" services\
-")) : any(string_empty) + string_empty + string_empty + (specification->evaluators->get_length()) ? any(std::string("- ") + specification->evaluators->get_length() + std::string(" evaluators\
-")) : any(string_empty) + std::string("\
-") + std::string("Use 'checkPluginCreationStatus' to monitor progress."));
-        }
-        catch (const any& error)
-        {
-            return std::string("Failed to create plugin: ") + error["message"] + string_empty;
-        }
-    }
-    }
+std::function<any()> createMockRuntime = [=]() mutable
+{
+    auto service = as<std::shared_ptr<PluginCreationService>>(as<any>(object{
+        object::pair{std::string("getAllJobs"), vi->fn()->mockReturnValue(array<any>())}, 
+        object::pair{std::string("createPlugin"), vi->fn()->mockReturnValue(std::string("job-123"))}, 
+        object::pair{std::string("getJobStatus"), vi->fn()}, 
+        object::pair{std::string("cancelJob"), vi->fn()}
+    }));
+    return as<any>(object{
+        object::pair{std::string("services"), object{
+            object::pair{std::string("get"), vi->fn()->mockReturnValue(service)}
+        }}, 
+        object::pair{std::string("getSetting"), vi->fn()}
+    });
 };
 
 void Main(void)
 {
+    describe(std::string("Plugin Creation Actions"), [=]() mutable
+    {
+        shared<std::shared_ptr<IAgentRuntime>> runtime;
+        shared<std::shared_ptr<State>> state;
+        beforeEach([=]() mutable
+        {
+            runtime = createMockRuntime();
+            state = object{
+                object::pair{std::string("values"), object{}}, 
+                object::pair{std::string("data"), object{}}, 
+                object::pair{std::string("text"), string_empty}
+            };
+            vi->clearAllMocks();
+        }
+        );
+        describe(std::string("createPluginAction"), [=]() mutable
+        {
+            shared validSpec = JSON->stringify(object{
+                object::pair{std::string("name"), std::string("@test/plugin")}, 
+                object::pair{std::string("description"), std::string("Test plugin for testing")}, 
+                object::pair{std::string("version"), std::string("1.0.0")}, 
+                object::pair{std::string("actions"), array<object>{ object{
+                    object::pair{std::string("name"), std::string("testAction")}, 
+                    object::pair{std::string("description"), std::string("Test")}
+                } }}
+            });
+            it(std::string("should validate when no active jobs and valid JSON"), [=]() mutable
+            {
+                auto message = createMockMemory(validSpec);
+                auto result = std::async([=]() { createPluginAction->validate(runtime, message, state); });
+                expect(result)->toBe(true);
+            }
+            );
+            it(std::string("should not validate when active job exists"), [=]() mutable
+            {
+                auto service = as<std::shared_ptr<PluginCreationService>>(runtime->services->get(std::string("plugin_creation")));
+                (as<any>(std::bind(&PluginCreationService::getAllJobs, service)))["mockReturnValue"](array<object>{ object{
+                    object::pair{std::string("status"), std::string("running")}
+                } });
+                auto message = createMockMemory(validSpec);
+                auto result = std::async([=]() { createPluginAction->validate(runtime, message, state); });
+                expect(result)->toBe(false);
+            }
+            );
+            it(std::string("should not validate with invalid JSON"), [=]() mutable
+            {
+                auto message = createMockMemory(std::string("not json"));
+                auto result = std::async([=]() { createPluginAction->validate(runtime, message, state); });
+                expect(result)->toBe(false);
+            }
+            );
+            it(std::string("should not validate when service unavailable"), [=]() mutable
+            {
+                (as<any>(runtime->services->get))["mockReturnValue"](nullptr);
+                auto message = createMockMemory(validSpec);
+                auto result = std::async([=]() { createPluginAction->validate(runtime, message, state); });
+                expect(result)->toBe(false);
+            }
+            );
+            it(std::string("should handle plugin creation with valid spec"), [=]() mutable
+            {
+                (as<any>(runtime->getSetting))["mockReturnValue"](std::string("test-api-key"));
+                auto message = createMockMemory(validSpec);
+                auto result = std::async([=]() { createPluginAction->handler(runtime, message, state); });
+                expect(result)->toContain(std::string("Plugin creation job started successfully!"));
+                expect(result)->toContain(std::string("Job ID: job-123"));
+                expect(result)->toContain(std::string("@test/plugin"));
+                auto service = as<std::shared_ptr<PluginCreationService>>(runtime->services->get(std::string("plugin_creation")));
+                expect(std::bind(&PluginCreationService::createPlugin, service, std::placeholders::_1, std::placeholders::_2))->toHaveBeenCalledWith(expect->objectContaining(object{
+                    object::pair{std::string("name"), std::string("@test/plugin")}, 
+                    object::pair{std::string("description"), std::string("Test plugin for testing")}
+                }), std::string("test-api-key"));
+            }
+            );
+            it(std::string("should validate plugin specification"), [=]() mutable
+            {
+                auto invalidSpecs = array<object>{ object{
+                    object::pair{std::string("name"), std::string("invalid name")}, 
+                    object::pair{std::string("description"), std::string("test")}
+                }, object{
+                    object::pair{std::string("name"), std::string("@test/plugin")}, 
+                    object::pair{std::string("description"), std::string("short")}
+                }, object{
+                    object::pair{std::string("name"), std::string("@test/plugin")}, 
+                    object::pair{std::string("description"), std::string("Valid description")}, 
+                    object::pair{std::string("version"), std::string("invalid")}
+                }, object{
+                    object::pair{std::string("name"), std::string("../../../etc/passwd")}, 
+                    object::pair{std::string("description"), std::string("Path traversal attempt")}
+                } };
+                for (auto& spec : invalidSpecs)
+                {
+                    auto message = createMockMemory(JSON->stringify(spec));
+                    auto result = std::async([=]() { createPluginAction->handler(runtime, message, state); });
+                    expect(result)->toContain(std::string("Invalid plugin specification"));
+                }
+            }
+            );
+            it(std::string("should handle missing API key"), [=]() mutable
+            {
+                (as<any>(runtime->getSetting))["mockReturnValue"](nullptr);
+                auto message = createMockMemory(validSpec);
+                auto result = std::async([=]() { createPluginAction->handler(runtime, message, state); });
+                expect(result)->toContain(std::string("ANTHROPIC_API_KEY is not configured"));
+            }
+            );
+            it(std::string("should handle service unavailable"), [=]() mutable
+            {
+                (as<any>(runtime->services->get))["mockReturnValue"](nullptr);
+                auto message = createMockMemory(validSpec);
+                auto result = std::async([=]() { createPluginAction->handler(runtime, message, state); });
+                expect(result)->toContain(std::string("Plugin creation service not available"));
+            }
+            );
+            it(std::string("should handle invalid JSON"), [=]() mutable
+            {
+                auto message = createMockMemory(std::string("{ invalid json }"));
+                auto result = std::async([=]() { createPluginAction->handler(runtime, message, state); });
+                expect(result)->toContain(std::string("Failed to parse specification"));
+            }
+            );
+            it(std::string("should handle service errors"), [=]() mutable
+            {
+                (as<any>(runtime->getSetting))["mockReturnValue"](std::string("test-api-key"));
+                auto service = as<std::shared_ptr<PluginCreationService>>(runtime->services->get(std::string("plugin_creation")));
+                (as<any>(std::bind(&PluginCreationService::createPlugin, service, std::placeholders::_1, std::placeholders::_2)))["mockRejectedValue"](std::make_shared<Error>(std::string("Service error")));
+                auto message = createMockMemory(validSpec);
+                auto result = std::async([=]() { createPluginAction->handler(runtime, message, state); });
+                expect(result)->toContain(std::string("Failed to create plugin: Service error"));
+            }
+            );
+        }
+        );
+        describe(std::string("checkPluginCreationStatusAction"), [=]() mutable
+        {
+            it(std::string("should validate when jobs exist"), [=]() mutable
+            {
+                auto service = as<std::shared_ptr<PluginCreationService>>(runtime->services->get(std::string("plugin_creation")));
+                (as<any>(std::bind(&PluginCreationService::getAllJobs, service)))["mockReturnValue"](array<object>{ object{
+                    object::pair{std::string("id"), std::string("job-123")}
+                } });
+                auto message = createMockMemory(std::string("check status"));
+                auto result = std::async([=]() { checkPluginCreationStatusAction->validate(runtime, message, state); });
+                expect(result)->toBe(true);
+            }
+            );
+            it(std::string("should not validate when no jobs"), [=]() mutable
+            {
+                auto message = createMockMemory(std::string("check status"));
+                auto result = std::async([=]() { checkPluginCreationStatusAction->validate(runtime, message, state); });
+                expect(result)->toBe(false);
+            }
+            );
+            it(std::string("should show detailed job status"), [=]() mutable
+            {
+                auto mockJob = object{
+                    object::pair{std::string("id"), std::string("job-123")}, 
+                    object::pair{std::string("specification"), object{
+                        object::pair{std::string("name"), std::string("@test/plugin")}
+                    }}, 
+                    object::pair{std::string("status"), std::string("running")}, 
+                    object::pair{std::string("currentPhase"), std::string("building")}, 
+                    object::pair{std::string("progress"), 60}, 
+                    object::pair{std::string("startedAt"), std::make_shared<Date>()}, 
+                    object::pair{std::string("logs"), array<string>{ std::string("[2024-01-01T10:00:00Z] Starting job"), std::string("[2024-01-01T10:01:00Z] Building plugin") }}
+                };
+                auto service = as<std::shared_ptr<PluginCreationService>>(runtime->services->get(std::string("plugin_creation")));
+                (as<any>(std::bind(&PluginCreationService::getAllJobs, service)))["mockReturnValue"](array<object>{ mockJob });
+                (as<any>(std::bind(&PluginCreationService::getJobStatus, service, std::placeholders::_1)))["mockReturnValue"](mockJob);
+                auto message = createMockMemory(std::string("check status"));
+                auto result = std::async([=]() { checkPluginCreationStatusAction->handler(runtime, message, state); });
+                expect(result)->toContain(std::string("Plugin Creation Status"));
+                expect(result)->toContain(std::string("Job ID: job-123"));
+                expect(result)->toContain(std::string("Status: RUNNING"));
+                expect(result)->toContain(std::string("Phase: building"));
+                expect(result)->toContain(std::string("Progress: 60%"));
+                expect(result)->toContain(std::string("Recent Activity:"));
+            }
+            );
+            it(std::string("should handle specific job ID in message"), [=]() mutable
+            {
+                auto jobId = std::string("12345678-1234-1234-1234-123456789012");
+                auto mockJob = object{
+                    object::pair{std::string("id"), jobId}, 
+                    object::pair{std::string("specification"), object{
+                        object::pair{std::string("name"), std::string("@test/plugin")}
+                    }}, 
+                    object::pair{std::string("status"), std::string("completed")}, 
+                    object::pair{std::string("currentPhase"), std::string("done")}, 
+                    object::pair{std::string("progress"), 100}, 
+                    object::pair{std::string("startedAt"), std::make_shared<Date>()}, 
+                    object::pair{std::string("completedAt"), std::make_shared<Date>()}, 
+                    object::pair{std::string("outputPath"), std::string("/path/to/plugin")}, 
+                    object::pair{std::string("logs"), array<any>()}
+                };
+                auto service = as<std::shared_ptr<PluginCreationService>>(runtime->services->get(std::string("plugin_creation")));
+                (as<any>(std::bind(&PluginCreationService::getAllJobs, service)))["mockReturnValue"](array<object>{ mockJob });
+                (as<any>(std::bind(&PluginCreationService::getJobStatus, service, std::placeholders::_1)))["mockReturnValue"](mockJob);
+                auto message = createMockMemory(std::string("Check status for ") + jobId + string_empty);
+                auto result = std::async([=]() { checkPluginCreationStatusAction->handler(runtime, message, state); });
+                expect(std::bind(&PluginCreationService::getJobStatus, service, std::placeholders::_1))->toHaveBeenCalledWith(jobId);
+                expect(result)->toContain(std::string("Plugin created successfully!"));
+                expect(result)->toContain(std::string("Location: /path/to/plugin"));
+            }
+            );
+            it(std::string("should show failed job details"), [=]() mutable
+            {
+                auto mockJob = object{
+                    object::pair{std::string("id"), std::string("job-123")}, 
+                    object::pair{std::string("specification"), object{
+                        object::pair{std::string("name"), std::string("@test/plugin")}
+                    }}, 
+                    object::pair{std::string("status"), std::string("failed")}, 
+                    object::pair{std::string("currentPhase"), std::string("testing")}, 
+                    object::pair{std::string("progress"), 80}, 
+                    object::pair{std::string("startedAt"), std::make_shared<Date>()}, 
+                    object::pair{std::string("completedAt"), std::make_shared<Date>()}, 
+                    object::pair{std::string("error"), std::string("Tests failed: 3 failing tests")}, 
+                    object::pair{std::string("logs"), array<any>()}
+                };
+                auto service = as<std::shared_ptr<PluginCreationService>>(runtime->services->get(std::string("plugin_creation")));
+                (as<any>(std::bind(&PluginCreationService::getAllJobs, service)))["mockReturnValue"](array<object>{ mockJob });
+                auto message = createMockMemory(std::string("status"));
+                auto result = std::async([=]() { checkPluginCreationStatusAction->handler(runtime, message, state); });
+                expect(result)->toContain(std::string("Plugin creation failed"));
+                expect(result)->toContain(std::string("Tests failed: 3 failing tests"));
+            }
+            );
+            it(std::string("should handle no jobs found"), [=]() mutable
+            {
+                auto service = as<std::shared_ptr<PluginCreationService>>(runtime->services->get(std::string("plugin_creation")));
+                (as<any>(std::bind(&PluginCreationService::getAllJobs, service)))["mockReturnValue"](array<any>());
+                auto message = createMockMemory(std::string("check status"));
+                auto result = std::async([=]() { checkPluginCreationStatusAction->handler(runtime, message, state); });
+                expect(result)->toBe(std::string("No plugin creation jobs found."));
+            }
+            );
+            it(std::string("should handle job not found by ID"), [=]() mutable
+            {
+                auto jobId = std::string("12345678-1234-1234-1234-123456789012");
+                auto service = as<std::shared_ptr<PluginCreationService>>(runtime->services->get(std::string("plugin_creation")));
+                (as<any>(std::bind(&PluginCreationService::getAllJobs, service)))["mockReturnValue"](array<object>{ object{
+                    object::pair{std::string("id"), std::string("other-job")}
+                } });
+                (as<any>(std::bind(&PluginCreationService::getJobStatus, service, std::placeholders::_1)))["mockReturnValue"](nullptr);
+                auto message = createMockMemory(std::string("Check ") + jobId + string_empty);
+                auto result = std::async([=]() { checkPluginCreationStatusAction->handler(runtime, message, state); });
+                expect(result)->toContain(std::string("Job with ID ") + jobId + std::string(" not found"));
+            }
+            );
+        }
+        );
+        describe(std::string("cancelPluginCreationAction"), [=]() mutable
+        {
+            it(std::string("should validate when active job exists"), [=]() mutable
+            {
+                auto service = as<std::shared_ptr<PluginCreationService>>(runtime->services->get(std::string("plugin_creation")));
+                (as<any>(std::bind(&PluginCreationService::getAllJobs, service)))["mockReturnValue"](array<object>{ object{
+                    object::pair{std::string("id"), std::string("job-123")}, 
+                    object::pair{std::string("status"), std::string("running")}
+                } });
+                auto message = createMockMemory(std::string("cancel"));
+                auto result = std::async([=]() { cancelPluginCreationAction->validate(runtime, message, state); });
+                expect(result)->toBe(true);
+            }
+            );
+            it(std::string("should not validate when no active job"), [=]() mutable
+            {
+                auto service = as<std::shared_ptr<PluginCreationService>>(runtime->services->get(std::string("plugin_creation")));
+                (as<any>(std::bind(&PluginCreationService::getAllJobs, service)))["mockReturnValue"](array<object>{ object{
+                    object::pair{std::string("id"), std::string("job-123")}, 
+                    object::pair{std::string("status"), std::string("completed")}
+                } });
+                auto message = createMockMemory(std::string("cancel"));
+                auto result = std::async([=]() { cancelPluginCreationAction->validate(runtime, message, state); });
+                expect(result)->toBe(false);
+            }
+            );
+            it(std::string("should cancel active job with details"), [=]() mutable
+            {
+                auto mockJob = object{
+                    object::pair{std::string("id"), std::string("job-123")}, 
+                    object::pair{std::string("status"), std::string("running")}, 
+                    object::pair{std::string("specification"), object{
+                        object::pair{std::string("name"), std::string("@test/plugin")}
+                    }}
+                };
+                auto service = as<std::shared_ptr<PluginCreationService>>(runtime->services->get(std::string("plugin_creation")));
+                (as<any>(std::bind(&PluginCreationService::getAllJobs, service)))["mockReturnValue"](array<object>{ mockJob });
+                auto message = createMockMemory(std::string("cancel"));
+                auto result = std::async([=]() { cancelPluginCreationAction->handler(runtime, message, state); });
+                expect(result)->toContain(std::string("Plugin creation job has been cancelled"));
+                expect(result)->toContain(std::string("Job ID: job-123"));
+                expect(result)->toContain(std::string("@test/plugin"));
+                expect(std::bind(&PluginCreationService::cancelJob, service, std::placeholders::_1))->toHaveBeenCalledWith(std::string("job-123"));
+            }
+            );
+            it(std::string("should handle no active job to cancel"), [=]() mutable
+            {
+                auto service = as<std::shared_ptr<PluginCreationService>>(runtime->services->get(std::string("plugin_creation")));
+                (as<any>(std::bind(&PluginCreationService::getAllJobs, service)))["mockReturnValue"](array<any>());
+                auto message = createMockMemory(std::string("cancel"));
+                auto result = std::async([=]() { cancelPluginCreationAction->handler(runtime, message, state); });
+                expect(result)->toBe(std::string("No active plugin creation job to cancel."));
+            }
+            );
+        }
+        );
+        describe(std::string("createPluginFromDescriptionAction"), [=]() mutable
+        {
+            it(std::string("should validate with long description"), [=]() mutable
+            {
+                auto message = createMockMemory(std::string("I need a plugin that manages user preferences with storage and retrieval"));
+                auto result = std::async([=]() { createPluginFromDescriptionAction->validate(runtime, message, state); });
+                expect(result)->toBe(true);
+            }
+            );
+            it(std::string("should not validate with short description"), [=]() mutable
+            {
+                auto message = createMockMemory(std::string("plugin"));
+                auto result = std::async([=]() { createPluginFromDescriptionAction->validate(runtime, message, state); });
+                expect(result)->toBe(false);
+            }
+            );
+            it(std::string("should not validate when active job exists"), [=]() mutable
+            {
+                auto service = as<std::shared_ptr<PluginCreationService>>(runtime->services->get(std::string("plugin_creation")));
+                (as<any>(std::bind(&PluginCreationService::getAllJobs, service)))["mockReturnValue"](array<object>{ object{
+                    object::pair{std::string("status"), std::string("running")}
+                } });
+                auto message = createMockMemory(std::string("I need a plugin that manages todo lists"));
+                auto result = std::async([=]() { createPluginFromDescriptionAction->validate(runtime, message, state); });
+                expect(result)->toBe(false);
+            }
+            );
+            it(std::string("should create plugin from todo description"), [=]() mutable
+            {
+                (as<any>(runtime->getSetting))["mockReturnValue"](std::string("test-api-key"));
+                auto message = createMockMemory(std::string("I need a plugin that manages todo lists with add, remove, and list functionality"));
+                auto result = std::async([=]() { createPluginFromDescriptionAction->handler(runtime, message, state); });
+                expect(result)->toContain(std::string("I'm creating a plugin based on your description!"));
+                expect(result)->toContain(std::string("Plugin: @elizaos/plugin-todo"));
+                expect(result)->toContain(std::string("Job ID: job-123"));
+                expect(result)->toContain(std::string("actions"));
+                auto service = as<std::shared_ptr<PluginCreationService>>(runtime->services->get(std::string("plugin_creation")));
+                expect(std::bind(&PluginCreationService::createPlugin, service, std::placeholders::_1, std::placeholders::_2))->toHaveBeenCalledWith(expect->objectContaining(object{
+                    object::pair{std::string("name"), std::string("@elizaos/plugin-todo")}, 
+                    object::pair{std::string("actions"), expect->arrayContaining(array<any>{ expect->objectContaining(object{
+                        object::pair{std::string("name"), expect->stringContaining(std::string("Todo"))}
+                    }) })}
+                }), std::string("test-api-key"));
+            }
+            );
+            it(std::string("should create weather plugin from description"), [=]() mutable
+            {
+                (as<any>(runtime->getSetting))["mockReturnValue"](std::string("test-api-key"));
+                auto message = createMockMemory(std::string("Create a weather information plugin that can fetch current weather and forecasts"));
+                auto result = std::async([=]() { createPluginFromDescriptionAction->handler(runtime, message, state); });
+                expect(result)->toContain(std::string("@elizaos/plugin-weather"));
+                auto service = as<std::shared_ptr<PluginCreationService>>(runtime->services->get(std::string("plugin_creation")));
+                auto callArgs = const_(const_((as<any>(std::bind(&PluginCreationService::createPlugin, service, std::placeholders::_1, std::placeholders::_2)))["mock"]["calls"])[0])[0];
+                expect(callArgs["name"])->toBe(std::string("@elizaos/plugin-weather"));
+                expect(callArgs["actions"])->toBeDefined();
+                expect(callArgs["actions"]["length"])->toBeGreaterThan(0);
+            }
+            );
+            it(std::string("should create database plugin from description"), [=]() mutable
+            {
+                (as<any>(runtime->getSetting))["mockReturnValue"](std::string("test-api-key"));
+                auto message = createMockMemory(std::string("Build a database plugin for SQL queries and data management"));
+                auto result = std::async([=]() { createPluginFromDescriptionAction->handler(runtime, message, state); });
+                expect(result)->toContain(std::string("@elizaos/plugin-database"));
+            }
+            );
+            it(std::string("should detect multiple component types"), [=]() mutable
+            {
+                (as<any>(runtime->getSetting))["mockReturnValue"](std::string("test-api-key"));
+                auto message = createMockMemory(std::string("I need a plugin that provides user data, has a background service to monitor changes, ") + std::string("and can evaluate user activity patterns"));
+                auto result = std::async([=]() { createPluginFromDescriptionAction->handler(runtime, message, state); });
+                expect(result)->toContain(std::string("providers"));
+                expect(result)->toContain(std::string("services"));
+                expect(result)->toContain(std::string("evaluators"));
+                auto service = as<std::shared_ptr<PluginCreationService>>(runtime->services->get(std::string("plugin_creation")));
+                auto callArgs = const_(const_((as<any>(std::bind(&PluginCreationService::createPlugin, service, std::placeholders::_1, std::placeholders::_2)))["mock"]["calls"])[0])[0];
+                expect(callArgs["providers"]["length"])->toBeGreaterThan(0);
+                expect(callArgs["services"]["length"])->toBeGreaterThan(0);
+                expect(callArgs["evaluators"]["length"])->toBeGreaterThan(0);
+            }
+            );
+            it(std::string("should handle missing API key"), [=]() mutable
+            {
+                (as<any>(runtime->getSetting))["mockReturnValue"](nullptr);
+                auto message = createMockMemory(std::string("I need a todo plugin"));
+                auto result = std::async([=]() { createPluginFromDescriptionAction->handler(runtime, message, state); });
+                expect(result)->toContain(std::string("ANTHROPIC_API_KEY is not configured"));
+            }
+            );
+            it(std::string("should create custom plugin for unrecognized type"), [=]() mutable
+            {
+                (as<any>(runtime->getSetting))["mockReturnValue"](std::string("test-api-key"));
+                auto message = createMockMemory(std::string("I need a blockchain integration plugin for smart contracts"));
+                auto result = std::async([=]() { createPluginFromDescriptionAction->handler(runtime, message, state); });
+                expect(result)->toContain(std::string("@elizaos/plugin-blockchain"));
+                auto service = as<std::shared_ptr<PluginCreationService>>(runtime->services->get(std::string("plugin_creation")));
+                auto callArgs = const_(const_((as<any>(std::bind(&PluginCreationService::createPlugin, service, std::placeholders::_1, std::placeholders::_2)))["mock"]["calls"])[0])[0];
+                expect(callArgs["name"])->toContain(std::string("blockchain"));
+                expect(callArgs["actions"]["length"])->toBeGreaterThan(0);
+            }
+            );
+            it(std::string("should ensure at least one component exists"), [=]() mutable
+            {
+                (as<any>(runtime->getSetting))["mockReturnValue"](std::string("test-api-key"));
+                auto message = createMockMemory(std::string("I need a simple utility plugin"));
+                auto result = std::async([=]() { createPluginFromDescriptionAction->handler(runtime, message, state); });
+                auto service = as<std::shared_ptr<PluginCreationService>>(runtime->services->get(std::string("plugin_creation")));
+                auto callArgs = const_(const_((as<any>(std::bind(&PluginCreationService::createPlugin, service, std::placeholders::_1, std::placeholders::_2)))["mock"]["calls"])[0])[0];
+                auto hasComponents = OR((OR((OR((callArgs["actions"]["length"] > 0), (callArgs["providers"]["length"] > 0))), (callArgs["services"]["length"] > 0))), (callArgs["evaluators"]["length"] > 0));
+                expect(hasComponents)->toBe(true);
+            }
+            );
+        }
+        );
+    }
+    );
 }
 
 MAIN

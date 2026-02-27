@@ -268,7 +268,7 @@ void Main(void)
                     object::pair{std::string("script1"), object{
                         object::pair{std::string("variableName"), std::string("OLD_SECRET")}, 
                         object::pair{std::string("pluginName"), std::string("old-plugin")}, 
-                        object::pair{std::string("script"), std::string("console.log("old secret")")}, 
+                        object::pair{std::string("script"), std::string("std::cout << "old secret" << std::endl")}, 
                         object::pair{std::string("dependencies"), array<any>()}, 
                         object::pair{std::string("attempts"), 1}, 
                         object::pair{std::string("status"), std::string("success")}, 

@@ -27,7 +27,7 @@ void TrajectoryInspector::showStep()
         return;
     }
     auto step = const_(this->trajData->trajectory)[this->currentStep];
-    console->log(std::string("=== Step ") + (this->currentStep + 1) + std::string("/") + this->get_nSteps() + std::string(" ===\
+    console->log(std::string("== Step ") + (this->currentStep + 1) + std::string("/") + this->get_nSteps() + std::string(" ==\
 "));
     if (this->showFull) {
         console->log(yaml->dump(step, object{
@@ -55,7 +55,7 @@ void TrajectoryInspector::showStep()
 void TrajectoryInspector::showInfo()
 {
     console->clear();
-    console->log(std::string("=== Trajectory Info ===\
+    console->log(std::string("== Trajectory Info ==\
 "));
     auto info = utils::assign(object{
     }, this->trajData->info);

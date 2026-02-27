@@ -139,7 +139,7 @@ std::shared_ptr<Action> cdpTxExplorerLink = object{
             auto text = std::string(" **Transaction Explorer Link**\
 \
 ") + std::string("Network: ") + networkName + std::string("\
-") + std::string("Transaction Hash: `") + txhash + std::string("`\
+") + std::string("Transaction Hash: "") + txhash + std::string(""\
 ") + std::string("Link: ") + explorerLink + string_empty;
             auto data = object{
                 object::pair{std::string("txhash"), std::string("txhash")}, 

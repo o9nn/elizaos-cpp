@@ -4,7 +4,7 @@ std::shared_ptr<Promise<boolean>> postUpdateToDiscordChannel(std::shared_ptr<IAg
 {
     try
     {
-        logger->info(std::string("=== POST TEAM MEMBER UPDATE TO DISCORD START ==="));
+        logger->info(std::string("== POST TEAM MEMBER UPDATE TO DISCORD START =="));
         auto discordService = as<any>(runtime->getService(std::string("discord")));
         if (!discordService) {
             logger->error(std::string("Discord service not available"));
@@ -126,13 +126,13 @@ std::shared_ptr<Promise<boolean>> postUpdateToDiscordChannel(std::shared_ptr<IAg
         logger->info(std::string("Attempting to send update to Discord channel"));
         std::async([=]() { (as<any>(targetChannel))->send(updateMessage); });
         logger->info(std::string("Successfully sent team member update to Discord"));
-        logger->info(std::string("=== POST TEAM MEMBER UPDATE TO DISCORD END ==="));
+        logger->info(std::string("== POST TEAM MEMBER UPDATE TO DISCORD END =="));
         return true;
     }
     catch (const any& error)
     {
         auto err = as<std::shared_ptr<Error>>(error);
-        logger->error(std::string("=== POST TEAM MEMBER UPDATE TO DISCORD ERROR ==="));
+        logger->error(std::string("== POST TEAM MEMBER UPDATE TO DISCORD ERROR =="));
         logger->error(std::string("Error details:"), object{
             object::pair{std::string("name"), OR((err->name), (std::string("Unknown")))}, 
             object::pair{std::string("message"), OR((err->message), (std::string("No message")))}, 
@@ -147,7 +147,7 @@ std::shared_ptr<Promise<boolean>> storeTeamMemberUpdate(std::shared_ptr<IAgentRu
 {
     try
     {
-        logger->info(std::string("=== STORE TEAM MEMBER UPDATE START ==="));
+        logger->info(std::string("== STORE TEAM MEMBER UPDATE START =="));
         logger->info(std::string("Storing update for team member:"), object{
             object::pair{std::string("teamMemberId"), update->teamMemberId}, 
             object::pair{std::string("updateId"), update->updateId}, 
@@ -176,13 +176,13 @@ std::shared_ptr<Promise<boolean>> storeTeamMemberUpdate(std::shared_ptr<IAgentRu
         };
         std::async([=]() { runtime->createMemory(memory, std::string("messages")); });
         logger->info(std::string("Successfully stored team member update"));
-        logger->info(std::string("=== STORE TEAM MEMBER UPDATE END ==="));
+        logger->info(std::string("== STORE TEAM MEMBER UPDATE END =="));
         return true;
     }
     catch (const any& error)
     {
         auto err = as<std::shared_ptr<Error>>(error);
-        logger->error(std::string("=== STORE TEAM MEMBER UPDATE ERROR ==="));
+        logger->error(std::string("== STORE TEAM MEMBER UPDATE ERROR =="));
         logger->error(std::string("Error details:"), object{
             object::pair{std::string("name"), OR((err->name), (std::string("Unknown")))}, 
             object::pair{std::string("message"), OR((err->message), (std::string("No message")))}, 
@@ -197,7 +197,7 @@ std::shared_ptr<Promise<any>> parseTeamMemberUpdate(std::shared_ptr<IAgentRuntim
 {
     try
     {
-        logger->info(std::string("=== PARSE TEAM MEMBER UPDATE START ==="));
+        logger->info(std::string("== PARSE TEAM MEMBER UPDATE START =="));
         logger->info(std::string("Parsing update from message:"), object{
             object::pair{std::string("messageId"), message->id}, 
             object::pair{std::string("entityId"), message->entityId}
@@ -234,7 +234,7 @@ std::shared_ptr<Promise<any>> parseTeamMemberUpdate(std::shared_ptr<IAgentRuntim
         any parsedData;
         try
         {
-            auto cleanedResponse = parsedResponse->replace((new RegExp(std::string("```json\n?|\n?```"))), string_empty)->trim();
+            auto cleanedResponse = parsedResponse->replace((new RegExp(std::string(""""json\n?|\n?""""))), string_empty)->trim();
             parsedData = JSON->parse(cleanedResponse);
             logger->info(std::string("Successfully parsed fields from AI response:"), parsedData);
         }
@@ -269,13 +269,13 @@ std::shared_ptr<Promise<any>> parseTeamMemberUpdate(std::shared_ptr<IAgentRuntim
             object::pair{std::string("answers"), JSON->stringify(parsedData["answers"])}
         };
         logger->info(std::string("Successfully parsed team member update:"), update);
-        logger->info(std::string("=== PARSE TEAM MEMBER UPDATE END ==="));
+        logger->info(std::string("== PARSE TEAM MEMBER UPDATE END =="));
         return update;
     }
     catch (const any& error)
     {
         auto err = as<std::shared_ptr<Error>>(error);
-        logger->error(std::string("=== PARSE TEAM MEMBER UPDATE ERROR ==="));
+        logger->error(std::string("== PARSE TEAM MEMBER UPDATE ERROR =="));
         logger->error(std::string("Error details:"), object{
             object::pair{std::string("name"), OR((err->name), (std::string("Unknown")))}, 
             object::pair{std::string("message"), OR((err->message), (std::string("No message")))}, 
@@ -299,7 +299,7 @@ std::shared_ptr<Action> teamMemberUpdatesAction = object{
     {
         try
         {
-            logger->info(std::string("=== RECORD TEAM MEMBER UPDATES HANDLER START ==="));
+            logger->info(std::string("== RECORD TEAM MEMBER UPDATES HANDLER START =="));
             logger->info(std::string("Handler details:"), object{
                 object::pair{std::string("messageId"), message->id}, 
                 object::pair{std::string("entityId"), message->entityId}, 
@@ -363,7 +363,7 @@ End your message with "sending my updates"");
                 logger->info(std::string("Sending confirmation to user"));
                 std::async([=]() { callback(content, array<any>()); });
                 logger->info(std::string("Successfully recorded team member update"));
-                logger->info(std::string("=== RECORD TEAM MEMBER UPDATES HANDLER END ==="));
+                logger->info(std::string("== RECORD TEAM MEMBER UPDATES HANDLER END =="));
                 return true;
             }
             catch (const any& error)
@@ -398,7 +398,7 @@ Remember to end your message with "sending my updates"")},
         catch (const any& error)
         {
             auto err = as<std::shared_ptr<Error>>(error);
-            logger->error(std::string("=== RECORD TEAM MEMBER UPDATES HANDLER ERROR ==="));
+            logger->error(std::string("== RECORD TEAM MEMBER UPDATES HANDLER ERROR =="));
             logger->error(std::string("Error details:"), object{
                 object::pair{std::string("name"), OR((err->name), (std::string("Unknown")))}, 
                 object::pair{std::string("message"), OR((err->message), (std::string("No message")))}, 

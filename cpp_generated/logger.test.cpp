@@ -67,7 +67,7 @@ void Main(void)
         );
         describe(std::string("Logger Creation"), [=]() mutable
         {
-            it(std::string("should export logger instance"), [=]() mutable
+            it(std::string("should logger instance"), [=]() mutable
             {
                 expect(logger)->toBeDefined();
                 expect(type_of(logger["info"]))->toBe(std::string("function"));
@@ -78,7 +78,7 @@ void Main(void)
                 expect(type_of(logger["debug"]))->toBe(std::string("function"));
             }
             );
-            it(std::string("should export elizaLogger as alias for backward compatibility"), [=]() mutable
+            it(std::string("should elizaLogger as alias for backward compatibility"), [=]() mutable
             {
                 expect(elizaLogger)->toBeDefined();
                 expect(elizaLogger)->toBe(logger);

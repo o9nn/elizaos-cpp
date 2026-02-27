@@ -64,7 +64,7 @@ std::shared_ptr<Promise<string>> quickStats(string directory)
         auto& [status, files] = const_(__array2104_2405)[__indx2104_2405];
         {
             result->push(std::string("\
-## `") + status + std::string("` - ") + files->get_length() + std::string(" trajectories"));
+## "") + status + std::string("" - ") + files->get_length() + std::string(" trajectories"));
             auto subdirs = std::make_shared<Set>(files->map([=](auto file) mutable
             {
                 return path->dirname(file);

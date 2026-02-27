@@ -22,9 +22,9 @@ string JsDocGenerator::buildPrompt(std::shared_ptr<ASTQueueItem> queueItem)
     return std::string("Generate JSDoc comment for the following code:\
 \
 \
-        ```typescript\
+        """typescript\
         ") + queueItem->code + std::string("\
-        ```\
+        """\
 \
         Only return the JSDoc comment, not the code itself.\
         ");
@@ -41,11 +41,11 @@ string JsDocGenerator::buildClassPrompt(std::shared_ptr<ASTQueueItem> queueItem)
         Only return the JSDoc comment for the class, no other text or code.\
 \
         Example:\
-        ```\
+        """\
         /**\
          * This is a class that does something. It has a method that does something.\
          */\
-        ```\
+        """\
         ");
 }
 

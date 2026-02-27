@@ -4,10 +4,10 @@
 #include "clsx.h"
 #include "tailwind-merge.h"
 
-template <typename ...Args>
+template <typename /* spread: Args */>
 any cn(Args... inputs_);
 
-template <typename ...Args>
+template <typename /* spread: Args */>
 any cn(Args... inputs_)
 {
     array<std::shared_ptr<ClassValue>> inputs = array<std::shared_ptr<ClassValue>>{inputs_...};

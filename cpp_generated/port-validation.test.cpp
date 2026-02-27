@@ -4,7 +4,7 @@ void Main(void)
 {
     describe(std::string("validatePort"), [=]() mutable
     {
-        it(std::string("should return valid port number as number"), [=]() mutable
+        it(std::string("should return valid port number"), [=]() mutable
         {
             expect(validatePort(std::string("3000")))->toBe(3000);
             expect(validatePort(std::string("8080")))->toBe(8080);

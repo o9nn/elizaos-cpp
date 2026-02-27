@@ -31,7 +31,7 @@ std::shared_ptr<Promise<std::shared_ptr<anchor::Program>>> getProgram(std::share
 
 std::shared_ptr<Promise<void>> createTreasury(string tokenMintStr)
 {
-    console->log(std::string("=== CREATE DESK TOKEN TREASURY ===\
+    console->log(std::string("== CREATE DESK TOKEN TREASURY ==\
 "));
     auto tokenMint = std::make_shared<PublicKey>(tokenMintStr);
     auto connection = std::async([=]() { getConnection(); });
@@ -62,7 +62,7 @@ Creating ATA for desk..."));
 
 std::shared_ptr<Promise<void>> registerToken(string tokenMintStr, double priceUsd)
 {
-    console->log(std::string("=== REGISTER TOKEN ON DESK ===\
+    console->log(std::string("== REGISTER TOKEN ON DESK ==\
 "));
     auto tokenMint = std::make_shared<PublicKey>(tokenMintStr);
     auto connection = std::async([=]() { getConnection(); });
@@ -104,7 +104,7 @@ Registering token..."));
 
 std::shared_ptr<Promise<void>> setPrice(string tokenMintStr, double priceUsd)
 {
-    console->log(std::string("=== SET TOKEN PRICE ===\
+    console->log(std::string("== SET TOKEN PRICE ==\
 "));
     auto tokenMint = std::make_shared<PublicKey>(tokenMintStr);
     auto connection = std::async([=]() { getConnection(); });
@@ -131,7 +131,7 @@ Setting price..."));
 
 std::shared_ptr<Promise<void>> showStatus()
 {
-    console->log(std::string("=== SOLANA OTC DESK STATUS ===\
+    console->log(std::string("== SOLANA OTC DESK STATUS ==\
 "));
     auto connection = std::async([=]() { getConnection(); });
     console->log(std::string("Program ID:"), PROGRAM_ID->toBase58());

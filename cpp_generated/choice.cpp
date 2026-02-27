@@ -60,7 +60,7 @@ std::shared_ptr<Provider> choiceProvider = object{
                 )) {
                     (as<array<string>>(options))->forEach([=](auto optionName) mutable
                     {
-                        output += std::string("   - `") + optionName + std::string("`\
+                        output += std::string("   - "") + optionName + std::string(""\
 ");
                     }
                     );
@@ -71,7 +71,7 @@ std::shared_ptr<Provider> choiceProvider = object{
                 )) {
                     (as<array<std::shared_ptr<OptionObject>>>(options))->forEach([=](auto optionObj) mutable
                     {
-                        output += std::string("   - `") + optionObj->name + std::string("` ") + (optionObj->description) ? any(std::string("- ") + optionObj->description + string_empty) : any(string_empty) + std::string("\
+                        output += std::string("   - "") + optionObj->name + std::string("" ") + (optionObj->description) ? any(std::string("- ") + optionObj->description + string_empty) : any(string_empty) + std::string("\
 ");
                     }
                     );

@@ -142,7 +142,7 @@ void Main(void)
                 auto script = object{
                     object::pair{std::string("variableName"), std::string("SECRET_KEY")}, 
                     object::pair{std::string("pluginName"), std::string("test-plugin")}, 
-                    object::pair{std::string("script"), std::string("console.log("generated value");")}, 
+                    object::pair{std::string("script"), std::string("std::cout << "generated value" << std::endl;")}, 
                     object::pair{std::string("dependencies"), array<string>{ std::string("crypto") }}, 
                     object::pair{std::string("attempts"), 0}, 
                     object::pair{std::string("status"), std::string("pending")}, 
@@ -150,7 +150,7 @@ void Main(void)
                 };
                 expect(script->variableName)->toBe(std::string("SECRET_KEY"));
                 expect(script->pluginName)->toBe(std::string("test-plugin"));
-                expect(script->script)->toBe(std::string("console.log("generated value");"));
+                expect(script->script)->toBe(std::string("std::cout << "generated value" << std::endl;"));
                 expect(script->dependencies)->toEqual(array<string>{ std::string("crypto") });
                 expect(script->attempts)->toBe(0);
                 expect(script->status)->toBe(std::string("pending"));
@@ -162,7 +162,7 @@ void Main(void)
                 auto script = object{
                     object::pair{std::string("variableName"), std::string("API_KEY")}, 
                     object::pair{std::string("pluginName"), std::string("test-plugin")}, 
-                    object::pair{std::string("script"), std::string("console.log("api key");")}, 
+                    object::pair{std::string("script"), std::string("std::cout << "api key" << std::endl;")}, 
                     object::pair{std::string("dependencies"), array<any>()}, 
                     object::pair{std::string("attempts"), 2}, 
                     object::pair{std::string("status"), std::string("failed")}, 
@@ -182,7 +182,7 @@ void Main(void)
                     auto script = object{
                         object::pair{std::string("variableName"), std::string("TEST_VAR")}, 
                         object::pair{std::string("pluginName"), std::string("test")}, 
-                        object::pair{std::string("script"), std::string("console.log("test");")}, 
+                        object::pair{std::string("script"), std::string("std::cout << "test" << std::endl;")}, 
                         object::pair{std::string("dependencies"), array<any>()}, 
                         object::pair{std::string("attempts"), 0}, 
                         object::pair{std::string("status"), std::string("status")}, 

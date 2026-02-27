@@ -1,2 +1,2 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/autonomous-starter/vite.config.h"
+#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/client/vite.config.cypress.h"
 

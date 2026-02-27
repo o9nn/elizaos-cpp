@@ -48,8 +48,8 @@ boolean JSDocValidator::isValidTypeScript(string code)
 
 string JSDocValidator::fixCommonJSDocIssues(string comment)
 {
-    comment = comment->replace((new RegExp(std::string("^```[\s\S]*?\"))), string_empty);
-    comment = comment->replace((new RegExp(std::string("\n```"))), string_empty);
+    comment = comment->replace((new RegExp(std::string("^"""[\s\S]*?\"))), string_empty);
+    comment = comment->replace((new RegExp(std::string("\n""""))), string_empty);
     auto fixes = array<array<any>>{ array<std::shared_ptr<RegExp>>{ (new RegExp(std::string("\/\*\*?(?!\*"))), std::string("/**") }, array<std::shared_ptr<RegExp>>{ (new RegExp(std::string("\*{3,}"))), std::string("**") }, array<std::shared_ptr<RegExp>>{ (new RegExp(std::string("\*(?!\s|\*|\/)"))), std::string("* ") }, array<std::shared_ptr<RegExp>>{ (new RegExp(std::string("^(\s*)\*\s\s+/"))), std::string("$1* ") }, array<std::shared_ptr<RegExp>>{ (new RegExp(std::string("\*\/\s*\n\s*\*\*\/"))), std::string("*/") }, array<std::shared_ptr<RegExp>>{ (new RegExp(std::string("\n\s*\*\s*\n\s*\*\/"))), std::string("\
  */") }, array<std::shared_ptr<RegExp>>{ (new RegExp(std::string("\*+\/"))), std::string("*/") }, array<std::shared_ptr<RegExp>>{ (new RegExp(std::string("(?<!\s)\*\/"))), std::string(" */") }, array<std::shared_ptr<RegExp>>{ (new RegExp(std::string("\*\/\s+\*\/"))), std::string("*/") }, array<std::shared_ptr<RegExp>>{ (new RegExp(std::string("\n\*"))), std::string("\
  *") }, array<std::shared_ptr<RegExp>>{ (new RegExp(std::string("^\s*\*\s*$/"))), std::string(" *") }, array<std::shared_ptr<RegExp>>{ (new RegExp(std::string("\s+$/"))), string_empty }, array<std::shared_ptr<RegExp>>{ (new RegExp(std::string("@(param|returns?|throws?|example)\s{2,}"))), std::string("@$1 ") }, array<std::shared_ptr<RegExp>>{ (new RegExp(std::string("\{(\w+)\}"))), std::string("{ $1 }") }, array<std::shared_ptr<RegExp>>{ (new RegExp(std::string("\r\n"))), std::string("\

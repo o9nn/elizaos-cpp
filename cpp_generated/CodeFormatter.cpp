@@ -15,7 +15,7 @@ string CodeFormatter::formatApiComponents(std::shared_ptr<FileDocsGroup> fileGro
         sections->push(std::string("#### Classes"));
         fileGroup->classes->forEach([=](auto c) mutable
         {
-            sections->push(std::string("##### `") + c->name + std::string("`"));
+            sections->push(std::string("##### "") + c->name + std::string("""));
             if (c->jsDoc) sections->push(this->formatJSDoc(c->jsDoc, c->code));
             auto classMethods = fileGroup->methods->filter([=](auto m) mutable
             {
@@ -26,7 +26,7 @@ string CodeFormatter::formatApiComponents(std::shared_ptr<FileDocsGroup> fileGro
                 sections->push(std::string("**Methods:**"));
                 classMethods->forEach([=](auto m) mutable
                 {
-                    sections->push(std::string("###### `") + m->name + std::string("`") + (m->jsDoc) ? any(std::string("\
+                    sections->push(std::string("###### "") + m->name + std::string(""") + (m->jsDoc) ? any(std::string("\
 ") + this->formatJSDoc(m->jsDoc, m->code) + string_empty) : any(string_empty) + string_empty);
                 }
                 );
@@ -38,7 +38,7 @@ string CodeFormatter::formatApiComponents(std::shared_ptr<FileDocsGroup> fileGro
         sections->push(std::string("#### Interfaces"));
         fileGroup->interfaces->forEach([=](auto i) mutable
         {
-            sections->push(std::string("##### `") + i->name + std::string("`"));
+            sections->push(std::string("##### "") + i->name + std::string("""));
             if (i->jsDoc) sections->push(this->formatJSDoc(i->jsDoc, i->code));
         }
         );
@@ -47,7 +47,7 @@ string CodeFormatter::formatApiComponents(std::shared_ptr<FileDocsGroup> fileGro
         sections->push(std::string("#### Types"));
         fileGroup->types->forEach([=](auto t) mutable
         {
-            sections->push(std::string("##### `") + t->name + std::string("`"));
+            sections->push(std::string("##### "") + t->name + std::string("""));
             if (t->jsDoc) sections->push(this->formatJSDoc(t->jsDoc, t->code));
         }
         );
@@ -56,7 +56,7 @@ string CodeFormatter::formatApiComponents(std::shared_ptr<FileDocsGroup> fileGro
         sections->push(std::string("#### Functions"));
         fileGroup->functions->forEach([=](auto f) mutable
         {
-            sections->push(std::string("##### `") + f->name + std::string("`"));
+            sections->push(std::string("##### "") + f->name + std::string("""));
             if (f->jsDoc) sections->push(this->formatJSDoc(f->jsDoc, f->code));
         }
         );
@@ -70,7 +70,7 @@ string CodeFormatter::formatApiComponents(std::shared_ptr<FileDocsGroup> fileGro
         sections->push(std::string("#### Methods"));
         standaloneMethods->forEach([=](auto m) mutable
         {
-            sections->push(std::string("##### `") + m->name + std::string("`"));
+            sections->push(std::string("##### "") + m->name + std::string("""));
             if (m->jsDoc) sections->push(this->formatJSDoc(m->jsDoc, m->code));
         }
         );
@@ -138,20 +138,20 @@ string CodeFormatter::formatFilePath(string filePath)
 
 string CodeFormatter::formatJSDoc(string jsDoc, string _code)
 {
-    auto cleanDoc = jsDoc->replace((new RegExp(std::string("^```\s*\n?/"))), string_empty)->replace((new RegExp(std::string("\n?```\s*$/"))), string_empty);
+    auto cleanDoc = jsDoc->replace((new RegExp(std::string("^"""\s*\n?/"))), string_empty)->replace((new RegExp(std::string("\n?"""\s*$/"))), string_empty);
     cleanDoc = cleanDoc->trim()->replace((new RegExp(std::string("\n{3,}"))), std::string("\
 \
 "));
-    auto docSection = std::string("```typescript\
+    auto docSection = std::string(""""typescript\
 ") + cleanDoc + std::string("\
-```");
+"""");
     return docSection;
 }
 
 string CodeFormatter::truncateCodeBlock(string code, double maxLength)
 {
     if (code->get_length() <= maxLength) return code;
-    auto codeBlockRegex = (new RegExp(std::string("```[\s\S]*?```")));
+    auto codeBlockRegex = (new RegExp(std::string(""""[\s\S]*?"""")));
     auto codeBlocks = OR((code->match(codeBlockRegex)), (array<any>()));
     if (codeBlocks->length == 0) {
         return string_empty + code->slice(0, maxLength) + std::string("... (truncated)");
@@ -187,7 +187,7 @@ string CodeFormatter::truncateCodeBlock(string code, double maxLength)
         }
     }
     if (code->get_length() > maxLength) {
-        auto blocks = code->split(std::string("```"));
+        auto blocks = code->split(std::string("""""));
         auto truncatedBlocks = blocks->map([=](auto block, auto index) mutable
         {
             if (index % 2 == 1) {
@@ -202,7 +202,7 @@ string CodeFormatter::truncateCodeBlock(string code, double maxLength)
             return block->slice(0, 500);
         }
         );
-        code = truncatedBlocks->join(std::string("```"));
+        code = truncatedBlocks->join(std::string("""""));
     }
     return code;
 }

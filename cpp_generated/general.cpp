@@ -8,7 +8,7 @@ object validateAgainstRules(string code, std::shared_ptr<CodingGuidelines> guide
             violations->push(std::string("Use pathlib instead of os.path"));
         }
         if (AND((code->match((new RegExp(std::string("with\s+open\s*\"))))), (!code->includes(std::string("Path"))))) {
-            violations->push(std::string("Use Path.read_text() over with...open() constructs"));
+            violations->push(std::string("Use Path.read_text() over with/* spread: open */() constructs"));
         }
     }
     if (guidelines->language == std::string("typescript")) {
@@ -38,7 +38,7 @@ array<std::shared_ptr<CodingRule>> PYTHON_CODING_RULES = array<std::shared_ptr<C
     object::pair{std::string("category"), std::string("filesystem")}, 
     object::pair{std::string("rule"), std::string("Use pathlib instead of os.path")}, 
     object::pair{std::string("enforcement"), std::string("required")}, 
-    object::pair{std::string("alternatives"), array<string>{ std::string("Path.read_text() over with...open() constructs") }}
+    object::pair{std::string("alternatives"), array<string>{ std::string("Path.read_text() over with/* spread: open */() constructs") }}
 }, object{
     object::pair{std::string("id"), std::string("use-argparse")}, 
     object::pair{std::string("category"), std::string("api")}, 

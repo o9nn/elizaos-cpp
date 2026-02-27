@@ -17,22 +17,22 @@ string transferTemplate = std::string("Respond with a JSON markdown block contai
 \
 Example responses:\
 For SPL tokens:\
-```json\
+"""json\
 {\
     "tokenAddress": "BieefG47jAHCGZBxi2q87RDuHyGZyYC3vAzxpyu8pump",\
     "recipient": "9jW8FPr6BSSsemWPV22UUCzSqkVdTp6HTyPqeqyuBbCa",\
     "amount": "1000"\
 }\
-```\
+"""\
 \
 For SOL:\
-```json\
+"""json\
 {\
     "tokenAddress": null,\
     "recipient": "9jW8FPr6BSSsemWPV22UUCzSqkVdTp6HTyPqeqyuBbCa",\
     "amount": 1.5\
 }\
-```\
+"""\
 \
 {{recentMessages}}\
 \

@@ -1,17 +1,46 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/api-client/src/client.h"
+#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/api-client/src/__tests__/client.test.h"
 
-ElizaClient::ElizaClient(std::shared_ptr<ApiClientConfig> config) {
-    this->agents = std::make_shared<AgentsService>(config);
-    this->messaging = std::make_shared<MessagingService>(config);
-    this->memory = std::make_shared<MemoryService>(config);
-    this->audio = std::make_shared<AudioService>(config);
-    this->media = std::make_shared<MediaService>(config);
-    this->server = std::make_shared<ServerService>(config);
-    this->system = std::make_shared<SystemService>(config);
-}
-
-std::shared_ptr<ElizaClient> ElizaClient::create(std::shared_ptr<ApiClientConfig> config)
+void Main(void)
 {
-    return std::make_shared<ElizaClient>(config);
+    describe(std::string("ElizaClient"), [=]() mutable
+    {
+        shared config = object{
+            object::pair{std::string("baseUrl"), std::string("http://localhost:3000")}, 
+            object::pair{std::string("apiKey"), std::string("test-key")}
+        };
+        it(std::string("should create client with all services"), [=]() mutable
+        {
+            auto client = std::make_shared<ElizaClient>(config);
+            expect(client->agents)->toBeInstanceOf(AgentsService);
+            expect(client->messaging)->toBeInstanceOf(MessagingService);
+            expect(client->memory)->toBeInstanceOf(MemoryService);
+            expect(client->audio)->toBeInstanceOf(AudioService);
+            expect(client->media)->toBeInstanceOf(MediaService);
+            expect(client->server)->toBeInstanceOf(ServerService);
+            expect(client->system)->toBeInstanceOf(SystemService);
+        }
+        );
+        it(std::string("should create client using static create method"), [=]() mutable
+        {
+            auto client = ElizaClient::create(config);
+            expect(client)->toBeInstanceOf(ElizaClient);
+            expect(client->agents)->toBeInstanceOf(AgentsService);
+        }
+        );
+        it(std::string("should pass config to all services"), [=]() mutable
+        {
+            auto client = std::make_shared<ElizaClient>(config);
+            expect(client->agents)->toBeDefined();
+            expect(client->messaging)->toBeDefined();
+            expect(client->memory)->toBeDefined();
+            expect(client->audio)->toBeDefined();
+            expect(client->media)->toBeDefined();
+            expect(client->server)->toBeDefined();
+            expect(client->system)->toBeDefined();
+        }
+        );
+    }
+    );
 }
 
+MAIN

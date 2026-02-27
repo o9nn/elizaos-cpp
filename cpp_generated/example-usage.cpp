@@ -164,16 +164,16 @@ void main()
         object::pair{std::string("name"), std::string("PluginCreator")}, 
         object::pair{std::string("plugins"), array<any>{ pluginDynamic }}
     });
-    console->log(std::string("=== Weather Plugin Example ==="));
+    console->log(std::string("== Weather Plugin Example =="));
     std::async([=]() { createWeatherPlugin(agent); });
     console->log(std::string("\
-=== Todo Plugin from Description ==="));
+== Todo Plugin from Description =="));
     std::async([=]() { createTodoPlugin(agent); });
     console->log(std::string("\
-=== Database Plugin Specification ==="));
+== Database Plugin Specification =="));
     console->log(JSON->stringify(getDatabasePluginSpec(), nullptr, 2));
     console->log(std::string("\
-=== Social Media Plugin Specification ==="));
+== Social Media Plugin Specification =="));
     console->log(JSON->stringify(getSocialMediaPluginSpec(), nullptr, 2));
 };
 

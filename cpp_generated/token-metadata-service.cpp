@@ -3,7 +3,7 @@
 void main()
 {
     console->log(std::string("🚀 Token Metadata Service"));
-    console->log(std::string("========================"));
+    console->log(std::string("================"));
     static switch_type __switch311_807 = {
         { any(std::string("start")), 1 },
         { any(std::string("refresh")), 2 },
@@ -151,7 +151,7 @@ void healthCheck()
 void showQueueStatus()
 {
     console->log(std::string("📊 Queue Status"));
-    console->log(std::string("==============="));
+    console->log(std::string("=========="));
     auto status = tokenMetadataService->getQueueStatus();
     console->log(std::string("Queue Size: ") + status["queueSize"] + string_empty);
     console->log(std::string("Processing: ") + (status["isProcessing"]) ? std::string("Yes") : std::string("No") + string_empty);
@@ -181,7 +181,7 @@ void showHelp()
 {
     console->log(std::string("\
 Token Metadata Service Commands:\
-================================\
+======================\
 \
 bun run token-metadata-service start     - Start continuous service (default)\
 bun run token-metadata-service refresh   - Refresh stale metadata once\

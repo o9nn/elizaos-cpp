@@ -59,12 +59,12 @@ void Main(void)
             expect(result->text)->toContain(std::string("Pending Tasks"));
             expect(result->text)->toContain(std::string("1. **Approve Post**"));
             expect(result->text)->toContain(std::string("A blog post is awaiting approval."));
-            expect(result->text)->toContain(std::string("- `approve`"));
-            expect(result->text)->toContain(std::string("- `reject`"));
-            expect(result->text)->toContain(std::string("- `edit` - Edit the post"));
+            expect(result->text)->toContain(std::string("- "approve""));
+            expect(result->text)->toContain(std::string("- "reject""));
+            expect(result->text)->toContain(std::string("- "edit" - Edit the post"));
             expect(result->text)->toContain(std::string("2. **Select Image**"));
-            expect(result->text)->toContain(std::string("- `imageA.jpg` - A cat"));
-            expect(result->text)->toContain(std::string("- `imageB.jpg` - A dog"));
+            expect(result->text)->toContain(std::string("- "imageA.jpg" - A cat"));
+            expect(result->text)->toContain(std::string("- "imageB.jpg" - A dog"));
             expect(result->text)->toContain(std::string("To select an option, reply with the option name (e.g., 'post' or 'cancel')."));
             expect(mockRuntime->getTasks)->toHaveBeenCalledWith(object{
                 object::pair{std::string("roomId"), mockMessage->roomId}, 

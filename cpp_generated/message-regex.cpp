@@ -4,7 +4,7 @@ std::shared_ptr<RegExp> MessageRegex::BOLD = (new RegExp(std::string("\*\*(?<tex
 
 std::shared_ptr<RegExp> MessageRegex::LINK = (new RegExp(std::string("(?:(?<name>\[[^\]]+\])(?<url>\([^ )]+)?(?<description>[^[]*(?=(?:'|")\))'\))?)")));
 
-std::shared_ptr<RegExp> MessageRegex::QUOTE = (new RegExp(std::string("`(?<text>[^`]+)(?=(`))`")));
+std::shared_ptr<RegExp> MessageRegex::QUOTE = (new RegExp(std::string(""(?<text>[^"]+)(?=("))"")));
 
 std::shared_ptr<RegExp> MessageRegex::CHANNEL_MENTION = (new RegExp(std::string("<#(?<channel_id>\d+)>")));
 
@@ -14,7 +14,7 @@ std::shared_ptr<RegExp> MessageRegex::UNDER_LINE = (new RegExp(std::string("__(?
 
 std::shared_ptr<RegExp> MessageRegex::ITALICS = (new RegExp(std::string("(_|\*)(?<text>[^_*]+)(?=((_|\*)(\s|$)))(_|\*)")));
 
-std::shared_ptr<RegExp> MessageRegex::CODE = (new RegExp(std::string("```(?<text>[^`]+)(?=(```))```")));
+std::shared_ptr<RegExp> MessageRegex::CODE = (new RegExp(std::string(""""(?<text>[^"]+)(?=("""))"""")));
 
 std::shared_ptr<RegExp> MessageRegex::USER_MENTION = (new RegExp(std::string("<@(?:&|!)?(?<user_id>[0-9]+)>")));
 

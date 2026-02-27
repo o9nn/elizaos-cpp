@@ -3,12 +3,12 @@
 any extractJsonFromResponse(string response)
 {
     auto cleaned = response->trim();
-    if (cleaned->startsWith(std::string("```json"))) {
+    if (cleaned->startsWith(std::string(""""json"))) {
         cleaned = cleaned->substring(7);
-    } else if (cleaned->startsWith(std::string("```"))) {
+    } else if (cleaned->startsWith(std::string("""""))) {
         cleaned = cleaned->substring(3);
     }
-    if (cleaned->endsWith(std::string("```"))) {
+    if (cleaned->endsWith(std::string("""`"))) {
         cleaned = cleaned->substring(0, cleaned->get_length() - 3);
     }
     cleaned = cleaned->trim();

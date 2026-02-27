@@ -2,9 +2,9 @@
 
 **Date**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
 **Strategy**: enhanced_hybrid
-**Trigger**: workflow_dispatch
-**Commit**: 22ab02c63e2fdd390c3664461fb9286ae7deb0de
-**Workflow**: #29
+**Trigger**: push
+**Commit**: 9ce0747af5cb97e6b8ced9ec07b8cd32b77ae719
+**Workflow**: #30
 
 ## Configuration
 
@@ -14,9 +14,9 @@
 
 ## Files Generated
 
-- **Header files**: 869
-- **Implementation files**: 869
-- **Total files**: 1738
+- **Header files**: 1033
+- **Implementation files**: 1033
+- **Total files**: 2066
 
 ## Multi-Transpiler System
 
@@ -47,10 +47,55 @@ This transpilation used the **5-backend multi-transpiler system**:
 ✅ **Nested namespaces** supported
 ✅ **String interpolation** supported
 
+## Post-Transpilation Refinement
+
+Refinement was applied to fix common known errors:
+
+- **Files modified**: 98
+- **Total fixes applied**: 558
+
+### Fix Types Applied
+
+  template literal -> string concat: 210
+  === -> ==: 146
+  export removal: 61
+  double semicolon fix: 54
+  arrow fn -> lambda: 24
+  spread operator -> comment: 15
+  console.log -> std::cout: 14
+  await removal: 13
+  ?. -> .: 9
+  as string removal: 4
+  ?? -> || (semantic change): 4
+  export default removal: 2
+  as number removal: 1
+  as any removal: 1
+
+### Notes for Future Transpiler Improvements
+
+Patterns requiring transpiler improvements:
+  - setTimeout needs manual conversion: 52 files affected
+    → Recommendation: Add timer handling (std::thread or platform-specific)
+  - Remaining import statement: 22 files affected
+  - Remaining require() call: 12 files affected
+  - process.env needs manual conversion: 7 files affected
+    → Recommendation: Add environment variable handling (std::getenv)
+  - setInterval needs manual conversion: 6 files affected
+    → Recommendation: Add timer handling (std::thread or platform-specific)
+  - Remaining arrow function found: 1 files affected
+    → Recommendation: Improve arrow function to lambda conversion
+  - JSON.stringify needs manual conversion: 1 files affected
+    → Recommendation: Add nlohmann/json or similar library integration
+  - Nullish coalescing: 1 files affected
+
+
 ## File List
 
 ```
+cpp_generated/experienceService.cpp
 cpp_generated/loader-sync-async.test.cpp
+cpp_generated/test-tools-integration.cpp
+cpp_generated/publish.hpp
 cpp_generated/registryIntegration.e2e.hpp
 cpp_generated/update-form.cpp
 cpp_generated/adapter.cpp
@@ -65,11 +110,13 @@ cpp_generated/updateState.cpp
 cpp_generated/project.test.hpp
 cpp_generated/tsup.config.hpp
 cpp_generated/progression-e2e.test.cpp
+cpp_generated/tsup.cpp
 cpp_generated/emoji-handler.test.hpp
 cpp_generated/facts.hpp
 cpp_generated/pipelineConfig.hpp
 cpp_generated/projectManager.test.hpp
 cpp_generated/cacheManager.hpp
+cpp_generated/synpress.cpp
 cpp_generated/advanced-visualization.cpp
 cpp_generated/use-app-slice.cpp
 cpp_generated/auth.cpp
@@ -79,8 +126,11 @@ cpp_generated/actions.test.hpp
 cpp_generated/logger.cpp
 cpp_generated/validation.test.hpp
 cpp_generated/adapter.hpp
+cpp_generated/socialMediaManager.hpp
 cpp_generated/causal-inference.hpp
+cpp_generated/simple.cpp
 cpp_generated/uuid-utils.hpp
+cpp_generated/working-test.hpp
 cpp_generated/shouldRespond.hpp
 cpp_generated/roles.test.hpp
 cpp_generated/unuse.hpp
@@ -100,8 +150,10 @@ cpp_generated/test-quick-stats.test.cpp
 cpp_generated/devRel.test.cpp
 cpp_generated/remove.hpp
 cpp_generated/matching-logic.regex.test.hpp
+cpp_generated/backup-restore.cpp
 cpp_generated/upload.cpp
 cpp_generated/ctx-embeddings.hpp
+cpp_generated/bus-eventemitter-compatibility.hpp
 cpp_generated/decode.cpp
 cpp_generated/env.cpp
 cpp_generated/choice.cpp
@@ -114,10 +166,13 @@ cpp_generated/action.cpp
 cpp_generated/postgres-adapter.test.hpp
 cpp_generated/middleware.cpp
 cpp_generated/forms-plugin.test.hpp
+cpp_generated/claude-code-integration.cpp
 cpp_generated/entityId.hpp
 cpp_generated/pluginConfigurationStatus.hpp
 cpp_generated/test-run-replay.test.hpp
 cpp_generated/plugin-init.test.cpp
+cpp_generated/basic.hpp
+cpp_generated/test-problem-statement-multimodal.hpp
 cpp_generated/app-types.hpp
 cpp_generated/guild-member-object.cpp
 cpp_generated/setup-instructions.cpp
@@ -141,13 +196,18 @@ cpp_generated/time-series.cpp
 cpp_generated/cli.hpp
 cpp_generated/basic.test.hpp
 cpp_generated/attachments.test.cpp
+cpp_generated/inference-integration.hpp
 cpp_generated/validation.hpp
+cpp_generated/character-file-size-regression.hpp
 cpp_generated/e2e-browser.test.hpp
+cpp_generated/messages.hpp
 cpp_generated/store.hpp
 cpp_generated/backup-restore.spec.cpp
 cpp_generated/birdeye.hpp
 cpp_generated/test-health-monitor.cpp
+cpp_generated/services-by-type.cpp
 cpp_generated/aiProjectSummary.hpp
+cpp_generated/pluginConfiguration.cpp
 cpp_generated/embed-video-object.cpp
 cpp_generated/port-validation.test.cpp
 cpp_generated/directory-detection.test.hpp
@@ -159,6 +219,7 @@ cpp_generated/aiProjectSummary.cpp
 cpp_generated/lp.cpp
 cpp_generated/plugin-self-modification.hpp
 cpp_generated/hello.hpp
+cpp_generated/spa-routing-fix.cpp
 cpp_generated/readmeUtils.cpp
 cpp_generated/embed-type.hpp
 cpp_generated/birdeye.test.cpp
@@ -176,22 +237,28 @@ cpp_generated/cli-prompts.hpp
 cpp_generated/routes.test.hpp
 cpp_generated/audioUtils.cpp
 cpp_generated/test-windowed-file.test.hpp
+cpp_generated/plugin-creation-service.cpp
 cpp_generated/phala-wrapper.cpp
 cpp_generated/test-helpers.cpp
+cpp_generated/models.hpp
 cpp_generated/test-helpers.hpp
 cpp_generated/backup-restore.spec.hpp
+cpp_generated/05-messaging-and-websocket.hpp
 cpp_generated/has-type.cpp
 cpp_generated/CodeGenerationService.test.hpp
 cpp_generated/message-reference-object.cpp
 cpp_generated/act_wallet_list.hpp
+cpp_generated/cli-integration.hpp
 cpp_generated/scheduleForm.hpp
 cpp_generated/create-form.hpp
 cpp_generated/axios.hpp
 cpp_generated/channelParticipant.hpp
+cpp_generated/reminderService.hpp
 cpp_generated/environment.hpp
 cpp_generated/robotjs.hpp
 cpp_generated/plugins.test.cpp
 cpp_generated/act_reg_confirmemail.hpp
+cpp_generated/getYieldHistory.cpp
 cpp_generated/messages.test.hpp
 cpp_generated/examples.cpp
 cpp_generated/getProtocolSlug.action.cpp
@@ -200,7 +267,9 @@ cpp_generated/local-cli-delegation.test.cpp
 cpp_generated/ai16z-price-agent-sse.hpp
 cpp_generated/logging.cpp
 cpp_generated/tradeMemoryService.hpp
+cpp_generated/entities-extra.cpp
 cpp_generated/pca.test.cpp
+cpp_generated/todosProvider.hpp
 cpp_generated/embed-field-object.hpp
 cpp_generated/getChain.hpp
 cpp_generated/compare-runs.hpp
@@ -226,6 +295,7 @@ cpp_generated/connection.hpp
 cpp_generated/claude-proxy-openai.test.cpp
 cpp_generated/config-utils.cpp
 cpp_generated/cdpUser.hpp
+cpp_generated/runtime-integration.cpp
 cpp_generated/media-type.hpp
 cpp_generated/getProfile.hpp
 cpp_generated/autocoder-plugin-check.test.hpp
@@ -233,23 +303,33 @@ cpp_generated/eliza.cpp
 cpp_generated/timeout.cpp
 cpp_generated/search-file.cpp
 cpp_generated/file-watcher.cpp
+cpp_generated/audio-actions.cpp
 cpp_generated/test-utils.test.hpp
+cpp_generated/update.cpp
+cpp_generated/agent-export-import-simple.hpp
+cpp_generated/forms-integration-flow.hpp
 cpp_generated/use-mev-protection.hpp
 cpp_generated/getContractAddress.hpp
 cpp_generated/plugin-creation-service.test.hpp
 cpp_generated/checkBalance.cpp
 cpp_generated/participant-seed.cpp
 cpp_generated/packageNames.cpp
+cpp_generated/agent-export-import-e2e.cpp
+cpp_generated/claude-proxy-simple.hpp
 cpp_generated/TypeScriptFileIdentifier.cpp
+cpp_generated/sam-audio.hpp
 cpp_generated/segmentation.cpp
 cpp_generated/spa-routing-fix.test.cpp
 cpp_generated/sticker-item-object.cpp
+cpp_generated/error-handling.cpp
 cpp_generated/projects-provider.cpp
 cpp_generated/utils.test.cpp
 cpp_generated/updateTodo.cpp
 cpp_generated/messaging.hpp
 cpp_generated/default-reaction-object.hpp
 cpp_generated/adapter.test.hpp
+cpp_generated/matching-logic.glob.hpp
+cpp_generated/bus-eventemitter-compatibility.cpp
 cpp_generated/trading.cpp
 cpp_generated/jobs.cpp
 cpp_generated/route.segment.config.hpp
@@ -257,6 +337,7 @@ cpp_generated/JsDocGenerator.hpp
 cpp_generated/birdeyeTrending.cpp
 cpp_generated/commands.hpp
 cpp_generated/cli-prompts.cpp
+cpp_generated/test-agent.hpp
 cpp_generated/matching-logic.glob.test.cpp
 cpp_generated/base_strategy.hpp
 cpp_generated/creators.cpp
@@ -264,17 +345,21 @@ cpp_generated/installPluginFromRegistry.test.cpp
 cpp_generated/checkConfig.cpp
 cpp_generated/getChain.cpp
 cpp_generated/causal-inference.cpp
+cpp_generated/spa-routing-fix.hpp
 cpp_generated/teamMemberUpdate.cpp
 cpp_generated/form.type.cpp
 cpp_generated/agent-portability-bun.test.hpp
 cpp_generated/base.hpp
+cpp_generated/price-validation.hpp
 cpp_generated/audio-actions.test.hpp
+cpp_generated/errors.cpp
 cpp_generated/message-activity-object.hpp
 cpp_generated/tsk_sentiment-signal.cpp
 cpp_generated/ProjectManagerTestSuite.hpp
 cpp_generated/inference-integration.test.hpp
 cpp_generated/bus-eventemitter-compatibility.test.hpp
 cpp_generated/pluginKnowledgeProvider.hpp
+cpp_generated/self-modification.hpp
 cpp_generated/tokenUpdateQuery.hpp
 cpp_generated/view-image.hpp
 cpp_generated/security.cpp
@@ -282,6 +367,8 @@ cpp_generated/manager.cpp
 cpp_generated/pluginConfigurationEvaluator.hpp
 cpp_generated/view-image.cpp
 cpp_generated/progressionTracker.cpp
+cpp_generated/test-flake8-utils.cpp
+cpp_generated/utils-extra.hpp
 cpp_generated/thread-metadata.cpp
 cpp_generated/initAutofun.cpp
 cpp_generated/cli-integration.test.cpp
@@ -302,6 +389,7 @@ cpp_generated/character-evolution-evaluator.hpp
 cpp_generated/services-by-type.test.hpp
 cpp_generated/validator.cpp
 cpp_generated/error-handling.test.hpp
+cpp_generated/backup-restore.hpp
 cpp_generated/raydium-config.cpp
 cpp_generated/CodeGenerationService.test.cpp
 cpp_generated/experienceRAG.cpp
@@ -319,7 +407,12 @@ cpp_generated/port-validation.test.hpp
 cpp_generated/matching-logic.string.test.cpp
 cpp_generated/agents.cpp
 cpp_generated/nlp-analyzer.hpp
+cpp_generated/sessions-client.cpp
+cpp_generated/cypress.hpp
+cpp_generated/models.cpp
+cpp_generated/matching-logic.string.cpp
 cpp_generated/use.cpp
+cpp_generated/comprehensive-auth-tests.cpp
 cpp_generated/initRayVault.cpp
 cpp_generated/plugin-test-isolation.test.hpp
 cpp_generated/DocumentationGenerator.cpp
@@ -340,11 +433,14 @@ cpp_generated/createRaydiumPool.hpp
 cpp_generated/simple-compatibility.test.hpp
 cpp_generated/rate-limit.cpp
 cpp_generated/vision-runtime.cpp
+cpp_generated/otc.hpp
 cpp_generated/shell-basic.hpp
 cpp_generated/ai16z.hpp
 cpp_generated/directory-utils.cpp
+cpp_generated/cypress.cpp
 cpp_generated/agent-integration.test.cpp
 cpp_generated/shaw.hpp
+cpp_generated/character-file-manager.cpp
 cpp_generated/test-parsing.test.hpp
 cpp_generated/ambiguity-handling.test.cpp
 cpp_generated/analyzeTrade.cpp
@@ -364,22 +460,26 @@ cpp_generated/sidebars.hpp
 cpp_generated/abstract.cpp
 cpp_generated/response-utils.hpp
 cpp_generated/migration-service.hpp
+cpp_generated/emoji-handler.hpp
 cpp_generated/TypeScriptParser.hpp
 cpp_generated/theme.hpp
 cpp_generated/sentiment.cpp
 cpp_generated/screen-vision.hpp
 cpp_generated/claude-code-integration.test.hpp
 cpp_generated/yaml.cpp
+cpp_generated/database-operations.hpp
 cpp_generated/server-manager.test.hpp
 cpp_generated/hello-world.cy.cpp
 cpp_generated/use-mev-protection.cpp
 cpp_generated/env.test.cpp
 cpp_generated/email.cpp
+cpp_generated/basic-functionality.cpp
 cpp_generated/project.cpp
 cpp_generated/claude-proxy.test.hpp
 cpp_generated/mockCharacter.cpp
 cpp_generated/sendTransaction.hpp
 cpp_generated/package-managers.hpp
+cpp_generated/experienceService.hpp
 cpp_generated/entities.hpp
 cpp_generated/chat.cpp
 cpp_generated/tokenSecurity.hpp
@@ -398,6 +498,7 @@ cpp_generated/bun.test.hpp
 cpp_generated/audioUtils.hpp
 cpp_generated/route.cpp
 cpp_generated/e2e-simple.test.cpp
+cpp_generated/04-knowledge-management.hpp
 cpp_generated/vitest.config.hpp
 cpp_generated/file-watcher.hpp
 cpp_generated/choice.hpp
@@ -406,28 +507,39 @@ cpp_generated/project.test.cpp
 cpp_generated/test-fixtures.cpp
 cpp_generated/post.cpp
 cpp_generated/scoring.cpp
+cpp_generated/pipeline.cpp
 cpp_generated/02-chat-functionality.cy.hpp
 cpp_generated/parsing.test.hpp
 cpp_generated/service.hpp
+cpp_generated/bun-exec.hpp
 cpp_generated/claude-proxy.hpp
 cpp_generated/claude-proxy-simple.test.hpp
 cpp_generated/forms-provider.cpp
 cpp_generated/reaction.cpp
+cpp_generated/getHistoricalPrice.hpp
 cpp_generated/visualization.cpp
 cpp_generated/standalone-test.cy.cpp
 cpp_generated/utils.test.hpp
+cpp_generated/playwright.hpp
 cpp_generated/defi.hpp
 cpp_generated/primitives.cpp
+cpp_generated/agent-integration.hpp
 cpp_generated/ignore.hpp
 cpp_generated/purge-types.cpp
+cpp_generated/ambiguity-handling.cpp
+cpp_generated/natural-language.cpp
 cpp_generated/act_menu.cpp
+cpp_generated/real-integration.hpp
 cpp_generated/state.hpp
 cpp_generated/index.cpp
 cpp_generated/fsHelpers.hpp
 cpp_generated/matching-logic.glob.test.hpp
 cpp_generated/acceptAuthority.cpp
+cpp_generated/drizzle.cpp
 cpp_generated/sellSignal.cpp
 cpp_generated/theme.cpp
+cpp_generated/loader-sync-async.hpp
+cpp_generated/todoDataService.hpp
 cpp_generated/plugin-creation-actions.test.hpp
 cpp_generated/validation.test.cpp
 cpp_generated/test-utils.cpp
@@ -435,18 +547,23 @@ cpp_generated/character-updater.test.hpp
 cpp_generated/sentiment.hpp
 cpp_generated/unloadPlugin.cpp
 cpp_generated/use-sol-price-context.hpp
+cpp_generated/update.hpp
 cpp_generated/autocoder-agent.test.cpp
 cpp_generated/plugin-creation-providers.cpp
+cpp_generated/personality-resistance-runtime.hpp
 cpp_generated/act_reg_delete.hpp
 cpp_generated/actions.hpp
 cpp_generated/preprocessContent.test.hpp
 cpp_generated/migrate.cpp
 cpp_generated/build.hpp
+cpp_generated/buyer.hpp
 cpp_generated/plugin.hpp
+cpp_generated/runtime-integration.hpp
 cpp_generated/pdas.cpp
 cpp_generated/dataService.cpp
 cpp_generated/automated-reports.hpp
 cpp_generated/filter-name.cpp
+cpp_generated/natural-language.hpp
 cpp_generated/capabilities.hpp
 cpp_generated/examplePlugin.cpp
 cpp_generated/components.cpp
@@ -462,6 +579,7 @@ cpp_generated/loader-sync-async.test.hpp
 cpp_generated/captcha-handler.cpp
 cpp_generated/package-managers.cpp
 cpp_generated/system.cpp
+cpp_generated/tailwind.cpp
 cpp_generated/validation.cpp
 cpp_generated/checkInList.cpp
 cpp_generated/getCategoriesList.action.cpp
@@ -476,6 +594,7 @@ cpp_generated/reflection.hpp
 cpp_generated/message-category.cpp
 cpp_generated/relationship.test.hpp
 cpp_generated/docs-loader.hpp
+cpp_generated/personality-resistance-runtime.cpp
 cpp_generated/assert.cpp
 cpp_generated/generation.test.hpp
 cpp_generated/starter-plugin.test.cpp
@@ -488,14 +607,18 @@ cpp_generated/ai16z.cpp
 cpp_generated/service.test.hpp
 cpp_generated/progression-e2e.test.hpp
 cpp_generated/port-utils.hpp
+cpp_generated/simple-test.cpp
 cpp_generated/envStatus.cpp
 cpp_generated/env.test.hpp
 cpp_generated/channel-type.hpp
+cpp_generated/autocoder-agent.hpp
+cpp_generated/sessions-client.hpp
 cpp_generated/mock-runtime.hpp
 cpp_generated/record-experience.cpp
 cpp_generated/use-dm-slice.cpp
 cpp_generated/prompts.cpp
 cpp_generated/auth.hpp
+cpp_generated/getMatcherFunction.cpp
 cpp_generated/changeVaultExec.hpp
 cpp_generated/working-test.cy.hpp
 cpp_generated/sayAloud.cpp
@@ -503,9 +626,12 @@ cpp_generated/recentExperiences.cpp
 cpp_generated/embed.hpp
 cpp_generated/resolved-data-object.hpp
 cpp_generated/synpress.config.hpp
+cpp_generated/todosProvider.cpp
 cpp_generated/initAutofun.hpp
 cpp_generated/getNFTCollectionStats.action.cpp
 cpp_generated/generation.test.cpp
+cpp_generated/test-models.cpp
+cpp_generated/createTodoAction.cpp
 cpp_generated/playwright.config.hpp
 cpp_generated/vision-basic.hpp
 cpp_generated/serialization.hpp
@@ -513,7 +639,10 @@ cpp_generated/search-dir.hpp
 cpp_generated/plugin-creation-actions.hpp
 cpp_generated/devRel.test.hpp
 cpp_generated/settings.hpp
+cpp_generated/test-agent.cpp
+cpp_generated/plugin-creation-service.hpp
 cpp_generated/sellSignal.hpp
+cpp_generated/registryIntegration.hpp
 cpp_generated/cache.hpp
 cpp_generated/anomaly-detection.cpp
 cpp_generated/checkTransactionConfirmation.action.hpp
@@ -523,6 +652,8 @@ cpp_generated/real-time-monitor.hpp
 cpp_generated/CodeFormatter.cpp
 cpp_generated/xml-parser.hpp
 cpp_generated/memory.hpp
+cpp_generated/test-tools.hpp
+cpp_generated/base-client.cpp
 cpp_generated/useColorScheme.hpp
 cpp_generated/state.cpp
 cpp_generated/playwright-installer.cpp
@@ -531,8 +662,10 @@ cpp_generated/use-elevenlabs-voices.cpp
 cpp_generated/search.hpp
 cpp_generated/matching-logic.string.test.hpp
 cpp_generated/status.hpp
+cpp_generated/form.cpp
 cpp_generated/DocumentOrganizer.hpp
 cpp_generated/solana.hpp
+cpp_generated/test-run-replay.hpp
 cpp_generated/migration-service.cpp
 cpp_generated/system.test.cpp
 cpp_generated/multichain-wallet.cpp
@@ -545,17 +678,23 @@ cpp_generated/services-by-type.test.cpp
 cpp_generated/xml-parser.test.cpp
 cpp_generated/cypress.config.hpp
 cpp_generated/error-handling.test.cpp
+cpp_generated/basic.cpp
 cpp_generated/messaging.test.cpp
+cpp_generated/database-operations.cpp
 cpp_generated/swap.cpp
+cpp_generated/agent-chat.hpp
+cpp_generated/export-import-demo.cpp
 cpp_generated/metadata.cpp
 cpp_generated/confirmGoal.cpp
 cpp_generated/channels.hpp
 cpp_generated/ai16z-price-agent-sse.cpp
+cpp_generated/progression-e2e.hpp
 cpp_generated/tauri-utils.hpp
 cpp_generated/extract-pred.cpp
 cpp_generated/logic.test.hpp
 cpp_generated/autocoder-plugin-check.test.cpp
 cpp_generated/JsDocGenerator.cpp
+cpp_generated/matching-logic.regex.hpp
 cpp_generated/filter-type.hpp
 cpp_generated/gamification.cpp
 cpp_generated/settings.cpp
@@ -565,7 +704,12 @@ cpp_generated/typeHelpers.hpp
 cpp_generated/update-form.hpp
 cpp_generated/projectManager.test.cpp
 cpp_generated/user-workflow.cy.cpp
+cpp_generated/pluginProtection.hpp
+cpp_generated/agent-export-import-e2e.hpp
+cpp_generated/rules.hpp
 cpp_generated/getTokenPriceChart.action.hpp
+cpp_generated/sql-plugin-exclusion.hpp
+cpp_generated/test.hpp
 cpp_generated/int_users.hpp
 cpp_generated/tsk_price-delta-signal.hpp
 cpp_generated/inference-integration.test.cpp
@@ -575,8 +719,10 @@ cpp_generated/claude-proxy-openai.test.hpp
 cpp_generated/experienceEvaluator.cpp
 cpp_generated/voice-manager.hpp
 cpp_generated/message.cpp
+cpp_generated/seller.hpp
 cpp_generated/format-number.cpp
 cpp_generated/startPluginConfiguration.cpp
+cpp_generated/test-quick-stats.cpp
 cpp_generated/experiments.hpp
 cpp_generated/demo-interactive.hpp
 cpp_generated/create-token.hpp
@@ -586,6 +732,8 @@ cpp_generated/directory.cpp
 cpp_generated/model-pricing.cpp
 cpp_generated/goals.hpp
 cpp_generated/reply.cpp
+cpp_generated/export-import-demo.hpp
+cpp_generated/06-ui-navigation.cpp
 cpp_generated/creators.hpp
 cpp_generated/export-types.hpp
 cpp_generated/general.cpp
@@ -593,6 +741,7 @@ cpp_generated/default.cpp
 cpp_generated/token-search-symbol.hpp
 cpp_generated/plugin.test.cpp
 cpp_generated/progress.hpp
+cpp_generated/getProtocolSlug.cpp
 cpp_generated/storage-integration.test.hpp
 cpp_generated/dm-types.cpp
 cpp_generated/xml-parser.test.hpp
@@ -608,7 +757,9 @@ cpp_generated/port-handling.cpp
 cpp_generated/autofun.hpp
 cpp_generated/build.cpp
 cpp_generated/example.hpp
+cpp_generated/price-validation.cpp
 cpp_generated/welcome-screen-object.cpp
+cpp_generated/01-setup-and-configuration.cpp
 cpp_generated/create.test.hpp
 cpp_generated/sql-plugin-exclusion.test.cpp
 cpp_generated/capsolver.test.cpp
@@ -620,12 +771,17 @@ cpp_generated/confirmTodo.cpp
 cpp_generated/character.test.cpp
 cpp_generated/security.test.cpp
 cpp_generated/test-models.test.cpp
+cpp_generated/test-run-hooks.hpp
+cpp_generated/test-parsing.hpp
 cpp_generated/confirmGoal.hpp
 cpp_generated/monitoring.cpp
 cpp_generated/int_tokens.hpp
 cpp_generated/character.test.hpp
+cpp_generated/claude-proxy-openai.hpp
 cpp_generated/mutations.hpp
 cpp_generated/database-operations.test.hpp
+cpp_generated/logic.hpp
+cpp_generated/user-workflow.hpp
 cpp_generated/getYieldRates.action.cpp
 cpp_generated/act_wallet_list.cpp
 cpp_generated/completeTodo.hpp
@@ -637,23 +793,30 @@ cpp_generated/modify-character.hpp
 cpp_generated/tokenHoldersQuery.cpp
 cpp_generated/runtime-integration.test.hpp
 cpp_generated/tokenData.cpp
+cpp_generated/full-project-flow.cpp
 cpp_generated/pca.test.hpp
+cpp_generated/agent-portability.hpp
+cpp_generated/claude-proxy-full-flow.hpp
+cpp_generated/getProtocolTvl.hpp
 cpp_generated/notifications.hpp
 cpp_generated/real-integration.test.hpp
 cpp_generated/codeAreaHelpers.cpp
 cpp_generated/runtime-integration.test.cpp
+cpp_generated/01-setup-and-configuration.hpp
 cpp_generated/basic.setup.cpp
 cpp_generated/thread-types.cpp
 cpp_generated/token-registration-listener-solana.hpp
 cpp_generated/memory.test.cpp
 cpp_generated/storage-integration.test.cpp
 cpp_generated/token-metadata-service.hpp
+cpp_generated/synpress.hpp
 cpp_generated/starter-plugin.cpp
 cpp_generated/room-seed.hpp
 cpp_generated/act_reg_start.cpp
 cpp_generated/sessions.cpp
 cpp_generated/render-tracker.hpp
 cpp_generated/todoDataService.test.hpp
+cpp_generated/getTokenPriceChart.hpp
 cpp_generated/BaseTradeService.hpp
 cpp_generated/tokenData.hpp
 cpp_generated/use-channel-slice.hpp
@@ -670,6 +833,7 @@ cpp_generated/sort-direction.hpp
 cpp_generated/agent-chat.cy.cpp
 cpp_generated/filter-name.hpp
 cpp_generated/run-bun.hpp
+cpp_generated/getTokenPriceChart.cpp
 cpp_generated/environment.cpp
 cpp_generated/test-all-endpoints.cpp
 cpp_generated/adminAddresses.cpp
@@ -681,20 +845,24 @@ cpp_generated/instrumentation-index.test.hpp
 cpp_generated/scenarios.hpp
 cpp_generated/cache.cpp
 cpp_generated/blockOldMessages.cpp
+cpp_generated/services-by-type.hpp
 cpp_generated/trader.hpp
 cpp_generated/self-modification.test.hpp
 cpp_generated/agent.cpp
 cpp_generated/completeTodo.cpp
 cpp_generated/query-string-param.hpp
 cpp_generated/raydiumVault.hpp
+cpp_generated/base-client.hpp
 cpp_generated/agent-server-interaction.test.hpp
 cpp_generated/validators.hpp
+cpp_generated/tailwind.hpp
 cpp_generated/getYieldHistory.action.cpp
 cpp_generated/updateTodo.hpp
 cpp_generated/providers.test.hpp
 cpp_generated/copy-client-dist.hpp
 cpp_generated/jwt.hpp
 cpp_generated/natural-language.test.hpp
+cpp_generated/migration.hpp
 cpp_generated/mcap.hpp
 cpp_generated/use-slippage.hpp
 cpp_generated/BaseTradeService.cpp
@@ -718,11 +886,13 @@ cpp_generated/agent-runtime.cpp
 cpp_generated/fonts.cpp
 cpp_generated/provider.cpp
 cpp_generated/pca.hpp
+cpp_generated/action-handlers.hpp
 cpp_generated/rate-limit.hpp
 cpp_generated/next.config.cpp
 cpp_generated/cancelTodo.hpp
 cpp_generated/code-generation.test.hpp
 cpp_generated/task.hpp
+cpp_generated/utils-extra.cpp
 cpp_generated/types.hpp
 cpp_generated/mutations.cpp
 cpp_generated/guild-types.cpp
@@ -731,6 +901,7 @@ cpp_generated/signalCalculation.hpp
 cpp_generated/todosProvider.test.hpp
 cpp_generated/merge-predictions.cpp
 cpp_generated/json-parser.hpp
+cpp_generated/checkTransactionConfirmation.hpp
 cpp_generated/act_wallet_delete.hpp
 cpp_generated/repo.hpp
 cpp_generated/sam-audio.test.cpp
@@ -743,6 +914,7 @@ cpp_generated/profileTypes.hpp
 cpp_generated/assert.hpp
 cpp_generated/matchPatterns.test.cpp
 cpp_generated/generation.hpp
+cpp_generated/spartan.hpp
 cpp_generated/changeClaimer.cpp
 cpp_generated/experienceService.test.cpp
 cpp_generated/twitterParser.hpp
@@ -753,7 +925,9 @@ cpp_generated/embedding-seed.cpp
 cpp_generated/security.test.hpp
 cpp_generated/action.hpp
 cpp_generated/cli-integration.test.hpp
+cpp_generated/devRel.hpp
 cpp_generated/birdeyeTrending.hpp
+cpp_generated/directory-detection.cpp
 cpp_generated/plugin-templates.cpp
 cpp_generated/TokenValidationService.hpp
 cpp_generated/real-integration.test.cpp
@@ -768,8 +942,11 @@ cpp_generated/integration.test.cpp
 cpp_generated/use-agent-tab-state.cpp
 cpp_generated/demo-reminders.cpp
 cpp_generated/matchPatterns.hpp
+cpp_generated/routes.hpp
+cpp_generated/getTrendingTokens.hpp
 cpp_generated/base-client.test.cpp
 cpp_generated/personality-resistance-runtime.test.hpp
+cpp_generated/pipeline.hpp
 cpp_generated/hello-world-plugin.hpp
 cpp_generated/plugin-creation-actions.test.cpp
 cpp_generated/plugin-self-modification.cpp
@@ -778,6 +955,8 @@ cpp_generated/mockCharacter.hpp
 cpp_generated/instrumentation-index.test.cpp
 cpp_generated/tools.cpp
 cpp_generated/adminAddresses.hpp
+cpp_generated/test.cpp
+cpp_generated/error-handling.hpp
 cpp_generated/handle-error.test.hpp
 cpp_generated/experiments.cpp
 cpp_generated/embed-image-object.hpp
@@ -785,6 +964,7 @@ cpp_generated/interactive-dummy.cpp
 cpp_generated/getProtocolSlug.action.hpp
 cpp_generated/DirectoryTraversal.cpp
 cpp_generated/mcap.cpp
+cpp_generated/e2e-browser.hpp
 cpp_generated/strategy_copy.hpp
 cpp_generated/cancelTodo.cpp
 cpp_generated/swap.hpp
@@ -794,9 +974,12 @@ cpp_generated/resumeMigrationsOnStart.hpp
 cpp_generated/constants.cpp
 cpp_generated/getCategoriesWithMarketData.action.cpp
 cpp_generated/florence2-local.hpp
+cpp_generated/loader-sync-async.cpp
 cpp_generated/registryPluginsProvider.cpp
 cpp_generated/trustScore.hpp
+cpp_generated/communityManager.hpp
 cpp_generated/fonts.hpp
+cpp_generated/autocoder-plugin-check.hpp
 cpp_generated/docs-loader.cpp
 cpp_generated/room-seed.cpp
 cpp_generated/getAllTokens.cpp
@@ -807,20 +990,26 @@ cpp_generated/entities-extra.test.hpp
 cpp_generated/knowledge.hpp
 cpp_generated/export-type.cpp
 cpp_generated/schema.test.cpp
+cpp_generated/reminder-rolodex.hpp
 cpp_generated/sidebar.hpp
 cpp_generated/claude-proxy.cpp
 cpp_generated/preprocessContent.test.cpp
 cpp_generated/act_wallet_create.hpp
+cpp_generated/cli-integration.cpp
 cpp_generated/getMatcherFunction.test.hpp
 cpp_generated/llm-formatter.cpp
 cpp_generated/scoring.hpp
 cpp_generated/module-loader.test.cpp
+cpp_generated/getMatcherFunction.hpp
 cpp_generated/forms-plugin.test.cpp
 cpp_generated/common.hpp
+cpp_generated/rules.cpp
 cpp_generated/walk_randomly.hpp
 cpp_generated/agent-runtime.hpp
 cpp_generated/knowledge.cpp
+cpp_generated/forms-integration-flow.cpp
 cpp_generated/changeVaultManager.cpp
+cpp_generated/bun.cpp
 cpp_generated/loader.hpp
 cpp_generated/spa-routing-fix.test.hpp
 cpp_generated/registryIntegration.e2e.cpp
@@ -840,17 +1029,23 @@ cpp_generated/taskService.cpp
 cpp_generated/message-types.hpp
 cpp_generated/AIService.cpp
 cpp_generated/agents.hpp
+cpp_generated/real-integration.cpp
+cpp_generated/sam-audio.cpp
 cpp_generated/posthog.cpp
+cpp_generated/todoDataService.cpp
 cpp_generated/setup.cpp
 cpp_generated/websocket.cpp
 cpp_generated/testSolSniffer.cpp
 cpp_generated/file-utils.cpp
 cpp_generated/generation.cpp
+cpp_generated/pluginInstallation.cpp
 cpp_generated/walk_randomly.cpp
 cpp_generated/metrics.hpp
 cpp_generated/service.cpp
+cpp_generated/postgres-adapter.cpp
 cpp_generated/timeout-manager.test.hpp
 cpp_generated/timeout-manager.cpp
+cpp_generated/user-workflow.cpp
 cpp_generated/forum-tag-object.hpp
 cpp_generated/extract-pred.hpp
 cpp_generated/startPluginConfiguration.hpp
@@ -865,6 +1060,7 @@ cpp_generated/character-evolution-evaluator.cpp
 cpp_generated/autofun.cpp
 cpp_generated/use-outside-clickdetection.cpp
 cpp_generated/services.test.cpp
+cpp_generated/elizaos-runtime.hpp
 cpp_generated/inspector-cli.hpp
 cpp_generated/config.hpp
 cpp_generated/testing.hpp
@@ -886,20 +1082,27 @@ cpp_generated/agent-portability-bun.test.cpp
 cpp_generated/voice-models.cpp
 cpp_generated/queries.cpp
 cpp_generated/status.cpp
+cpp_generated/actionExample.hpp
 cpp_generated/test-agent.test.hpp
 cpp_generated/thread-types.hpp
+cpp_generated/route.segment.cpp
 cpp_generated/action-handlers.test.hpp
+cpp_generated/reminder-rolodex.cpp
 cpp_generated/build-manager.cpp
+cpp_generated/publish.cpp
 cpp_generated/claim.hpp
 cpp_generated/time.cpp
 cpp_generated/chat-message.hpp
 cpp_generated/webSearch.hpp
 cpp_generated/env-file.service.test.hpp
 cpp_generated/time.hpp
+cpp_generated/autocoder-plugin-check.cpp
 cpp_generated/test-problem-statement-multimodal.test.cpp
+cpp_generated/retry.cpp
 cpp_generated/forms-provider.hpp
 cpp_generated/port-validation.hpp
 cpp_generated/utils-extra.test.hpp
+cpp_generated/test-flake8-utils.hpp
 cpp_generated/env-file.service.test.cpp
 cpp_generated/events.hpp
 cpp_generated/settings.test.hpp
@@ -909,14 +1112,17 @@ cpp_generated/postgres-adapter.test.cpp
 cpp_generated/neural-architecture-search.hpp
 cpp_generated/agent.hpp
 cpp_generated/price-validation.test.hpp
+cpp_generated/hello-world.hpp
 cpp_generated/use-thread-slice.cpp
 cpp_generated/pluginInstallation.test.hpp
+cpp_generated/getNFTCollectionStats.hpp
 cpp_generated/sam-audio.test.hpp
 cpp_generated/changeVaultManager.hpp
 cpp_generated/act_wallet_setstrategy.hpp
 cpp_generated/index.test.hpp
 cpp_generated/create-form.cpp
 cpp_generated/interactive-test.hpp
+cpp_generated/pluginProtection.cpp
 cpp_generated/config.test.cpp
 cpp_generated/context.cpp
 cpp_generated/create-project.cpp
@@ -934,10 +1140,16 @@ cpp_generated/updateFormat.hpp
 cpp_generated/world.hpp
 cpp_generated/user-workflow.cy.hpp
 cpp_generated/scheduleForm.cpp
+cpp_generated/registryIntegration.cpp
 cpp_generated/plugin-utils.hpp
 cpp_generated/has-type.hpp
 cpp_generated/service-interfaces.cpp
+cpp_generated/test-tools.cpp
+cpp_generated/sql-plugin-exclusion.cpp
 cpp_generated/lifecycle.hpp
+cpp_generated/devRel.cpp
+cpp_generated/projectManager.hpp
+cpp_generated/next.cpp
 cpp_generated/abstract.hpp
 cpp_generated/entities.cpp
 cpp_generated/embed-author-object.hpp
@@ -968,14 +1180,22 @@ cpp_generated/character-updater.test.cpp
 cpp_generated/sticker-item-object.hpp
 cpp_generated/provider.test.cpp
 cpp_generated/hooks.cpp
+cpp_generated/working-test.cpp
 cpp_generated/setupTests.cpp
+cpp_generated/getCategoriesList.cpp
 cpp_generated/auto-install-bun.hpp
 cpp_generated/schema.cpp
 cpp_generated/role-subscription-data-object.cpp
+cpp_generated/06-ui-navigation.hpp
 cpp_generated/analyticsService.cpp
+cpp_generated/test-run-replay.cpp
 cpp_generated/act_reg_confirmemail.cpp
+cpp_generated/getTrendingSearch.cpp
 cpp_generated/socialMediaManager.test.hpp
+cpp_generated/agent-chat.cpp
+cpp_generated/getCategoriesList.hpp
 cpp_generated/neural-architecture-search.cpp
+cpp_generated/vite.hpp
 cpp_generated/template.cpp
 cpp_generated/forms-service.test.cpp
 cpp_generated/message-regex.hpp
@@ -988,12 +1208,14 @@ cpp_generated/captcha-handler.hpp
 cpp_generated/06-ui-navigation.cy.hpp
 cpp_generated/port-handling.hpp
 cpp_generated/server-manager.hpp
+cpp_generated/instrumentation.hpp
 cpp_generated/search.cpp
 cpp_generated/getProfile.cpp
 cpp_generated/index.test.cpp
 cpp_generated/time-series-decomposition.cpp
 cpp_generated/packageNames.hpp
 cpp_generated/utils-extra.test.cpp
+cpp_generated/bun.hpp
 cpp_generated/prisma.cpp
 cpp_generated/database.cpp
 cpp_generated/chart.hpp
@@ -1003,12 +1225,14 @@ cpp_generated/migration-service.test.cpp
 cpp_generated/reflection.cpp
 cpp_generated/test-all-endpoints.hpp
 cpp_generated/buySignal.hpp
+cpp_generated/postgres-adapter.hpp
 cpp_generated/cypress.config.cpp
 cpp_generated/use-thread-slice.hpp
 cpp_generated/transfer.hpp
 cpp_generated/componentService.hpp
 cpp_generated/teamMemberUpdate.hpp
 cpp_generated/auto-install-bun.cpp
+cpp_generated/buyer.cpp
 cpp_generated/real-time-monitor.cpp
 cpp_generated/buyService.hpp
 cpp_generated/otc-helpers.hpp
@@ -1017,23 +1241,29 @@ cpp_generated/character-file-size-regression.test.hpp
 cpp_generated/emote-manager.cpp
 cpp_generated/format.cpp
 cpp_generated/media.hpp
+cpp_generated/socialMediaManager.cpp
 cpp_generated/int_wallets.hpp
 cpp_generated/version.cpp
 cpp_generated/vision-runtime.hpp
+cpp_generated/character-file-manager.hpp
 cpp_generated/chrome-service.hpp
 cpp_generated/userHoldings.cpp
 cpp_generated/welcome-screen-channel-object.cpp
 cpp_generated/tailwind.config.cpp
 cpp_generated/getPointsSummary.hpp
 cpp_generated/plugin.test.hpp
+cpp_generated/seller.cpp
+cpp_generated/CodeGenerationService.cpp
 cpp_generated/use-sol-price-context.cpp
 cpp_generated/reconciliation.hpp
+cpp_generated/agent-portability-bun.hpp
 cpp_generated/role-subscription-data-object.hpp
 cpp_generated/remove.cpp
 cpp_generated/embed-provider-object.cpp
 cpp_generated/github-service.cpp
 cpp_generated/tests.cpp
 cpp_generated/screenCapture.cpp
+cpp_generated/e2e-browser.cpp
 cpp_generated/changeVaultExec.cpp
 cpp_generated/devfix.hpp
 cpp_generated/guards.cpp
@@ -1041,9 +1271,12 @@ cpp_generated/s3Client.hpp
 cpp_generated/selection.cpp
 cpp_generated/ambiguity-handling.test.hpp
 cpp_generated/registryPluginsProvider.hpp
+cpp_generated/route.segment.hpp
 cpp_generated/plugins.cpp
+cpp_generated/self-modification.cpp
 cpp_generated/full-project-flow.test.hpp
 cpp_generated/claude-proxy-full-flow.test.cpp
+cpp_generated/claude-proxy-simple.cpp
 cpp_generated/action-helpers.cpp
 cpp_generated/embed.cpp
 cpp_generated/confirmTodo.hpp
@@ -1051,12 +1284,18 @@ cpp_generated/none.hpp
 cpp_generated/welcome-screen-object.hpp
 cpp_generated/DocumentOrganizer.cpp
 cpp_generated/multi-step.cpp
+cpp_generated/communityManager.cpp
 cpp_generated/bus-eventemitter-compatibility.test.cpp
 cpp_generated/serverAgent.hpp
+cpp_generated/AgentImportService.hpp
 cpp_generated/simple-test.cy.hpp
+cpp_generated/retry.hpp
 cpp_generated/projectUtils.hpp
 cpp_generated/birdeyeWallet.cpp
+cpp_generated/vitest.cpp
+cpp_generated/test-tools-integration.hpp
 cpp_generated/seller.setup.hpp
+cpp_generated/getYieldRates.cpp
 cpp_generated/loader.test.hpp
 cpp_generated/cdp.cpp
 cpp_generated/run-all-tests.cpp
@@ -1065,6 +1304,7 @@ cpp_generated/use-relationship-slice.hpp
 cpp_generated/useGithubReleases.cpp
 cpp_generated/agents.test.hpp
 cpp_generated/component-object.hpp
+cpp_generated/simple-test.hpp
 cpp_generated/index.hpp
 cpp_generated/logic.test.cpp
 cpp_generated/useTauriChat.cpp
@@ -1076,16 +1316,20 @@ cpp_generated/timeout-manager.hpp
 cpp_generated/use-channel-slice.cpp
 cpp_generated/projectUtils.cpp
 cpp_generated/authMiddleware.cpp
+cpp_generated/standalone-test.hpp
 cpp_generated/knowledge-helpers.hpp
 cpp_generated/config.test.hpp
 cpp_generated/examples.hpp
 cpp_generated/install-params-object.cpp
 cpp_generated/vision-basic.cpp
 cpp_generated/agent-portfolio-provider.cpp
+cpp_generated/room.hpp
 cpp_generated/worker-logger.cpp
 cpp_generated/claimFees.hpp
+cpp_generated/inference-integration.cpp
 cpp_generated/trending.cpp
 cpp_generated/cancelGoal.cpp
+cpp_generated/errors.hpp
 cpp_generated/dashboard.cy.cpp
 cpp_generated/session.cpp
 cpp_generated/LiasionTestSuite.cpp
@@ -1107,6 +1351,7 @@ cpp_generated/swap.test.hpp
 cpp_generated/enhance-prompt.hpp
 cpp_generated/working-test.cy.cpp
 cpp_generated/room.test.hpp
+cpp_generated/spartan.cpp
 cpp_generated/use-app-slice.hpp
 cpp_generated/getCategoriesList.action.hpp
 cpp_generated/interactive-test.cpp
@@ -1136,6 +1381,7 @@ cpp_generated/simple-api-test.cy.cpp
 cpp_generated/serverAgent.cpp
 cpp_generated/twitterParser.cpp
 cpp_generated/system.hpp
+cpp_generated/file-structure.cpp
 cpp_generated/schemas.cpp
 cpp_generated/personality-resistance-runtime.test.cpp
 cpp_generated/rules.test.cpp
@@ -1143,6 +1389,10 @@ cpp_generated/embed-type.cpp
 cpp_generated/context.hpp
 cpp_generated/plugin-creation-providers.hpp
 cpp_generated/task-seed.hpp
+cpp_generated/integration.hpp
+cpp_generated/simple-compatibility.cpp
+cpp_generated/monorepo.cpp
+cpp_generated/liaison.hpp
 cpp_generated/priceProtection.cpp
 cpp_generated/createRaydiumPool.cpp
 cpp_generated/mocks.hpp
@@ -1154,19 +1404,26 @@ cpp_generated/thread-member-object.cpp
 cpp_generated/plugin-test-isolation.test.cpp
 cpp_generated/tsup.config.cpp
 cpp_generated/build.config.hpp
+cpp_generated/capsolver.hpp
 cpp_generated/cmcMarket.hpp
+cpp_generated/code-generation.cpp
+cpp_generated/env-file.service.cpp
 cpp_generated/pca.cpp
 cpp_generated/act_reg_start.hpp
+cpp_generated/getYieldHistory.hpp
 cpp_generated/attachments.test.hpp
 cpp_generated/bignumber.hpp
+cpp_generated/04-knowledge-management.cpp
 cpp_generated/filter-type.cpp
 cpp_generated/coreExtensions.cpp
 cpp_generated/environment-utils.hpp
+cpp_generated/form.hpp
 cpp_generated/facts.cpp
 cpp_generated/01-home-page.cy.cpp
 cpp_generated/evaluators.cpp
 cpp_generated/searchPluginAction.cpp
 cpp_generated/provider.test.hpp
+cpp_generated/reminderService.cpp
 cpp_generated/pipeline.config.cpp
 cpp_generated/upload.hpp
 cpp_generated/uuid.cpp
@@ -1181,6 +1438,7 @@ cpp_generated/publisher.hpp
 cpp_generated/useGithubReleases.hpp
 cpp_generated/playwright.config.cpp
 cpp_generated/guild.cpp
+cpp_generated/progression-e2e.cpp
 cpp_generated/standalone-test.cy.hpp
 cpp_generated/chat.hpp
 cpp_generated/comprehensive-auth-tests.test.cpp
@@ -1200,21 +1458,27 @@ cpp_generated/bundle.cpp
 cpp_generated/capabilities.cpp
 cpp_generated/media.cpp
 cpp_generated/deploy.cpp
+cpp_generated/instrumentation-index.cpp
+cpp_generated/logic.cpp
 cpp_generated/form.type.hpp
 cpp_generated/test-run-single-helpers.hpp
+cpp_generated/directory-detection.hpp
 cpp_generated/token-search-symbol.cpp
 cpp_generated/use-dm-slice.hpp
 cpp_generated/embed-footer-object.hpp
+cpp_generated/comprehensive-auth-tests.hpp
 cpp_generated/server.cpp
 cpp_generated/transfer.cpp
 cpp_generated/oracle-finder-solana.hpp
 cpp_generated/tailwind.config.hpp
 cpp_generated/basic-functionality.test.hpp
 cpp_generated/token.hpp
+cpp_generated/05-messaging-and-websocket.cpp
 cpp_generated/tests.hpp
 cpp_generated/full-project-flow.test.cpp
 cpp_generated/thread-metadata.hpp
 cpp_generated/reportGenerate.hpp
+cpp_generated/agent-server-interaction.cpp
 cpp_generated/strategy_llm.cpp
 cpp_generated/use-agent-tab-state.hpp
 cpp_generated/helpers.test.cpp
@@ -1222,10 +1486,15 @@ cpp_generated/media.test.cpp
 cpp_generated/todosProvider.test.cpp
 cpp_generated/generate-unit-tests.cpp
 cpp_generated/04-knowledge-management.cy.cpp
+cpp_generated/AgentExportService.hpp
 cpp_generated/constants.hpp
+cpp_generated/otc.cpp
 cpp_generated/ocr-integration.test.cpp
 cpp_generated/acceptAuthority.hpp
+cpp_generated/test-models.hpp
 cpp_generated/gamification.hpp
+cpp_generated/module-loader.hpp
+cpp_generated/getNFTCollectionStats.cpp
 cpp_generated/arrayHelpers.cpp
 cpp_generated/predictor.hpp
 cpp_generated/channels.cpp
@@ -1236,6 +1505,7 @@ cpp_generated/progress.cpp
 cpp_generated/messaging.test.hpp
 cpp_generated/autocoder-agent.test.hpp
 cpp_generated/DirectoryTraversal.hpp
+cpp_generated/simple.hpp
 cpp_generated/envStatus.hpp
 cpp_generated/reportGenerate.cpp
 cpp_generated/agent-export-import-e2e.test.hpp
@@ -1244,8 +1514,11 @@ cpp_generated/screen-vision.cpp
 cpp_generated/npm-publish.cpp
 cpp_generated/use.hpp
 cpp_generated/action.test.cpp
+cpp_generated/action-handlers.cpp
 cpp_generated/coreExtensions.hpp
 cpp_generated/emoji.hpp
+cpp_generated/standalone-test.cpp
+cpp_generated/liaison.cpp
 cpp_generated/modify-character.cpp
 cpp_generated/version.hpp
 cpp_generated/render-tracker.cpp
@@ -1260,11 +1533,13 @@ cpp_generated/registry.cpp
 cpp_generated/route.hpp
 cpp_generated/cmcMarket.cpp
 cpp_generated/updateGoal.hpp
+cpp_generated/elizaos-runtime.cpp
 cpp_generated/CLIAuthCommands.hpp
 cpp_generated/middleware.hpp
 cpp_generated/tokenPrice.hpp
 cpp_generated/entity-tracker.cpp
 cpp_generated/application-object.hpp
+cpp_generated/postgres-init.hpp
 cpp_generated/tables.cpp
 cpp_generated/walletService.hpp
 cpp_generated/getContractAddress.cpp
@@ -1273,28 +1548,36 @@ cpp_generated/relationship-seed.hpp
 cpp_generated/actions.test.cpp
 cpp_generated/user.hpp
 cpp_generated/spartan.test.hpp
+cpp_generated/room.cpp
 cpp_generated/session-manager.cpp
 cpp_generated/Colors.cpp
 cpp_generated/general.hpp
 cpp_generated/test-setup.cpp
+cpp_generated/plugin-init.hpp
 cpp_generated/getUsers.hpp
 cpp_generated/pluginProtection.test.cpp
 cpp_generated/self-modification.test.cpp
 cpp_generated/act_menu.hpp
 cpp_generated/use-sidebar-state.cpp
 cpp_generated/shouldRespond.cpp
+cpp_generated/character-validation.cpp
 cpp_generated/selection.test.cpp
 cpp_generated/wait-for-server.hpp
 cpp_generated/wallet.hpp
 cpp_generated/quick-stats.cpp
 cpp_generated/test-run-replay.test.cpp
 cpp_generated/use-message-slice.cpp
+cpp_generated/agent-server-interaction.hpp
 cpp_generated/system.test.hpp
 cpp_generated/use-slippage.cpp
+cpp_generated/hello-world.cpp
 cpp_generated/migration.test.cpp
+cpp_generated/getYieldRates.hpp
 cpp_generated/file-structure.test.cpp
 cpp_generated/logger.hpp
 cpp_generated/service.test.cpp
+cpp_generated/forms-plugin.hpp
+cpp_generated/getProtocolSlug.hpp
 cpp_generated/embed-field-object.cpp
 cpp_generated/matching-logic.regex.test.cpp
 cpp_generated/int_positions.hpp
@@ -1304,13 +1587,17 @@ cpp_generated/relationship-types.hpp
 cpp_generated/trading.hpp
 cpp_generated/algolia.hpp
 cpp_generated/test-run-single-helpers.cpp
+cpp_generated/matching-logic.string.hpp
 cpp_generated/shell-advanced.cpp
 cpp_generated/install-params-object.hpp
 cpp_generated/manager.test.hpp
 cpp_generated/synpress.config.cpp
+cpp_generated/AgentExportService.cpp
 cpp_generated/act_reg_query.cpp
 cpp_generated/use-user-slice.hpp
+cpp_generated/test-run-hooks.cpp
 cpp_generated/experienceRAG.hpp
+cpp_generated/matching-logic.regex.cpp
 cpp_generated/none.cpp
 cpp_generated/e2e.cpp
 cpp_generated/LiasionTestSuite.hpp
@@ -1318,11 +1605,16 @@ cpp_generated/store.cpp
 cpp_generated/forms-integration-flow.test.hpp
 cpp_generated/SocialMediaManagerTestSuite.cpp
 cpp_generated/liaison.test.hpp
+cpp_generated/full-project-flow.hpp
 cpp_generated/reaction-count-details-object.hpp
+cpp_generated/agent-portability.cpp
+cpp_generated/audio-actions.hpp
 cpp_generated/character-updater.cpp
 cpp_generated/getPointsSummary.cpp
 cpp_generated/embed-footer-object.cpp
+cpp_generated/vitest.hpp
 cpp_generated/useDeploymentValidation.cpp
+cpp_generated/getHistoricalPrice.cpp
 cpp_generated/hello-world-plugin.cpp
 cpp_generated/swapUtils.hpp
 cpp_generated/vite.config.cypress.hpp
@@ -1330,10 +1622,13 @@ cpp_generated/taskService.hpp
 cpp_generated/project-overview.hpp
 cpp_generated/goals.cpp
 cpp_generated/remove-unfinished.hpp
+cpp_generated/create.cpp
+cpp_generated/socketio-message-flow.hpp
 cpp_generated/vitest.config.cpp
 cpp_generated/plugin-templates.hpp
 cpp_generated/team-object.hpp
 cpp_generated/routes.test.cpp
+cpp_generated/basic-functionality.hpp
 cpp_generated/resumeMigrationsOnStart.cpp
 cpp_generated/experienceProvider.cpp
 cpp_generated/basic.test.cpp
@@ -1360,17 +1655,20 @@ cpp_generated/plugin-utils.cpp
 cpp_generated/retry.test.cpp
 cpp_generated/welcome-screen-channel-object.hpp
 cpp_generated/publisher.cpp
+cpp_generated/character-file-size-regression.cpp
 cpp_generated/buyer.setup.cpp
 cpp_generated/reminder-rolodex.test.hpp
 cpp_generated/demo-interactive.cpp
 cpp_generated/cdpUser.cpp
 cpp_generated/testSolSniffer.hpp
 cpp_generated/birdeye.test.hpp
+cpp_generated/getTrendingTokens.cpp
 cpp_generated/predictor.cpp
 cpp_generated/cache-seed.hpp
 cpp_generated/claimFees.cpp
 cpp_generated/generate-unit-tests.hpp
 cpp_generated/package-manager.hpp
+cpp_generated/plugin-test-isolation.hpp
 cpp_generated/AIService.hpp
 cpp_generated/export-types.cpp
 cpp_generated/starter-plugin.hpp
@@ -1379,6 +1677,7 @@ cpp_generated/getDaoTrades.hpp
 cpp_generated/run-traj-to-demo.cpp
 cpp_generated/hello.cpp
 cpp_generated/base.cpp
+cpp_generated/e2e-simple.hpp
 cpp_generated/elizaos-runtime.test.cpp
 cpp_generated/use-relationship-slice.cpp
 cpp_generated/token-utils.cpp
@@ -1387,6 +1686,7 @@ cpp_generated/socketio-message-flow.test.cpp
 cpp_generated/find-file.hpp
 cpp_generated/daoHoldings.cpp
 cpp_generated/search-analytics.hpp
+cpp_generated/pluginInstallation.hpp
 cpp_generated/run-all-tests.hpp
 cpp_generated/tasks.cpp
 cpp_generated/tokenUpdateQuery.cpp
@@ -1400,16 +1700,20 @@ cpp_generated/next.config.hpp
 cpp_generated/tauri-utils.cpp
 cpp_generated/webSearch.cpp
 cpp_generated/anomaly-detection.hpp
+cpp_generated/env-file.service.hpp
 cpp_generated/migration.test.hpp
 cpp_generated/channelParticipant.cpp
+cpp_generated/messages.cpp
 cpp_generated/file-operations.hpp
 cpp_generated/authMiddleware.hpp
 cpp_generated/user-types.cpp
 cpp_generated/experienceEvaluator.hpp
 cpp_generated/pluginConfigurationEvaluator.cpp
+cpp_generated/simple-api-test.cpp
 cpp_generated/websocket-client.cpp
 cpp_generated/role-tags.hpp
 cpp_generated/action-message-utils.hpp
+cpp_generated/integration.cpp
 cpp_generated/e2e-simple.test.hpp
 cpp_generated/relationship.cpp
 cpp_generated/AgentExportService.test.hpp
@@ -1423,6 +1727,9 @@ cpp_generated/monitoring.hpp
 cpp_generated/solana-admin.hpp
 cpp_generated/roles.hpp
 cpp_generated/launchToken.hpp
+cpp_generated/test-parsing.cpp
+cpp_generated/ocr-integration.cpp
+cpp_generated/plugin-init.cpp
 cpp_generated/audio-capture-stream.hpp
 cpp_generated/memory.test.hpp
 cpp_generated/feature-engineering.hpp
@@ -1430,6 +1737,7 @@ cpp_generated/act_reg_query.hpp
 cpp_generated/experienceFormatter.cpp
 cpp_generated/action-audio.cpp
 cpp_generated/sessions.hpp
+cpp_generated/bun-exec.cpp
 cpp_generated/arrayHelpers.hpp
 cpp_generated/json-parser.cpp
 cpp_generated/codeAreaHelpers.hpp
@@ -1445,8 +1753,10 @@ cpp_generated/elizaos-runtime.test.hpp
 cpp_generated/socialMediaManager.test.cpp
 cpp_generated/channel-type.cpp
 cpp_generated/ctx-embeddings.cpp
+cpp_generated/file-structure.hpp
 cpp_generated/message-types.cpp
 cpp_generated/01-setup-and-configuration.cy.cpp
+cpp_generated/agent-integration.cpp
 cpp_generated/templates.cpp
 cpp_generated/pluginConfiguration.test.hpp
 cpp_generated/search-analytics.cpp
@@ -1457,11 +1767,15 @@ cpp_generated/segmentation.hpp
 cpp_generated/AgentExportService.test.cpp
 cpp_generated/agent-templates.cpp
 cpp_generated/search-file.hpp
+cpp_generated/playwright.cpp
+cpp_generated/attachments.cpp
 cpp_generated/yaml.hpp
 cpp_generated/getYieldHistory.action.hpp
 cpp_generated/tsk_price-delta-signal.cpp
 cpp_generated/eliza-paths.hpp
 cpp_generated/status-provider.cpp
+cpp_generated/postgres-init.cpp
+cpp_generated/instrumentation-index.hpp
 cpp_generated/tokenSecurity.cpp
 cpp_generated/directory-detection.test.cpp
 cpp_generated/suite.hpp
@@ -1471,6 +1785,7 @@ cpp_generated/role.cpp
 cpp_generated/character-updater.hpp
 cpp_generated/media.test.hpp
 cpp_generated/create-project.hpp
+cpp_generated/simple-compatibility.hpp
 cpp_generated/getYieldRates.action.hpp
 cpp_generated/handle-error.hpp
 cpp_generated/build-project.test.hpp
@@ -1480,13 +1795,18 @@ cpp_generated/price-validation.test.cpp
 cpp_generated/tee.cpp
 cpp_generated/embed-thumbnail-object.cpp
 cpp_generated/JSDocValidator.cpp
+cpp_generated/autocoder-agent.cpp
 cpp_generated/component.cpp
 cpp_generated/wallet.cpp
 cpp_generated/reminder-rolodex.test.cpp
+cpp_generated/forms-service.hpp
 cpp_generated/checkBalance.hpp
 cpp_generated/selection.test.hpp
 cpp_generated/build-manager.hpp
 cpp_generated/metrics.cpp
+cpp_generated/createTodoAction.hpp
+cpp_generated/01-home-page.cpp
+cpp_generated/getProtocolTvl.cpp
 cpp_generated/test-setup.hpp
 cpp_generated/loadPlugin.cpp
 cpp_generated/action-helpers.hpp
@@ -1494,6 +1814,7 @@ cpp_generated/phala-wrapper.hpp
 cpp_generated/timeouts.hpp
 cpp_generated/room.test.cpp
 cpp_generated/generate-code.cpp
+cpp_generated/module-loader.cpp
 cpp_generated/florence2-model.cpp
 cpp_generated/int_users.cpp
 cpp_generated/metadata.hpp
@@ -1503,19 +1824,23 @@ cpp_generated/export-import-demo.test.cpp
 cpp_generated/runPipeline.hpp
 cpp_generated/component.hpp
 cpp_generated/ignore.cpp
+cpp_generated/projectManager.cpp
 cpp_generated/port-utils.cpp
 cpp_generated/audio-actions.test.cpp
 cpp_generated/media-type.cpp
 cpp_generated/generate-code.hpp
 cpp_generated/logger.test.cpp
 cpp_generated/uuid.test.cpp
+cpp_generated/tsup.hpp
 cpp_generated/AgentImportService.test.cpp
 cpp_generated/test-flake8-utils.test.hpp
 cpp_generated/tokenQuery.hpp
 cpp_generated/overwrite-object.cpp
 cpp_generated/scenarios.cpp
+cpp_generated/actionExample.cpp
 cpp_generated/partners.cpp
 cpp_generated/manager.hpp
+cpp_generated/ocr-integration.hpp
 cpp_generated/use-view-mode.cpp
 cpp_generated/bun-installation-helper.hpp
 cpp_generated/guild-types.hpp
@@ -1523,6 +1848,8 @@ cpp_generated/discrub-setting.hpp
 cpp_generated/test-windowed-file.test.cpp
 cpp_generated/sidebar.cpp
 cpp_generated/entities-extra.test.cpp
+cpp_generated/character-validation.hpp
+cpp_generated/emoji-handler.cpp
 cpp_generated/claude-code-integration.test.cpp
 cpp_generated/suite.cpp
 cpp_generated/token.cpp
@@ -1537,8 +1864,10 @@ cpp_generated/getDaoTrades.cpp
 cpp_generated/connection.cpp
 cpp_generated/unmuteRoom.cpp
 cpp_generated/sticker-object.cpp
+cpp_generated/code-generation.hpp
 cpp_generated/strategy_llm.hpp
 cpp_generated/getAllTokens.hpp
+cpp_generated/next.hpp
 cpp_generated/handle-error.cpp
 cpp_generated/knowledge-helpers.cpp
 cpp_generated/integration.test.hpp
@@ -1547,6 +1876,7 @@ cpp_generated/channel.hpp
 cpp_generated/config-utils.hpp
 cpp_generated/local-cli-delegation.test.hpp
 cpp_generated/hooks.hpp
+cpp_generated/agent-portability-bun.cpp
 cpp_generated/walletService.cpp
 cpp_generated/predictive.hpp
 cpp_generated/sellService.cpp
@@ -1576,11 +1906,13 @@ cpp_generated/pointsProvider.cpp
 cpp_generated/templates.hpp
 cpp_generated/run-traj-to-demo.hpp
 cpp_generated/trustScore.cpp
+cpp_generated/test-windowed-file.cpp
 cpp_generated/component-seed.cpp
 cpp_generated/unuse.cpp
 cpp_generated/int_wallets.cpp
 cpp_generated/buyer.setup.hpp
 cpp_generated/use-pause.hpp
+cpp_generated/AgentImportService.cpp
 cpp_generated/dateTime.hpp
 cpp_generated/hello-world.cy.hpp
 cpp_generated/getLeaderboard.hpp
@@ -1589,35 +1921,45 @@ cpp_generated/runtime.cpp
 cpp_generated/entityId.cpp
 cpp_generated/installPluginFromRegistry.cpp
 cpp_generated/logging.hpp
+cpp_generated/routes.cpp
 cpp_generated/services.test.hpp
 cpp_generated/trending.hpp
+cpp_generated/forms-service.cpp
 cpp_generated/vite.config.cypress.cpp
+cpp_generated/create.hpp
 cpp_generated/installPluginFromRegistry.hpp
 cpp_generated/dateTime.cpp
 cpp_generated/url-utils.hpp
 cpp_generated/primitives.hpp
+cpp_generated/test-problem-statement-multimodal.cpp
 cpp_generated/tag.hpp
 cpp_generated/tauri-integration-runner.hpp
+cpp_generated/plugin-test-isolation.cpp
 cpp_generated/drizzle.config.hpp
 cpp_generated/github-service.hpp
 cpp_generated/instrumentation.test.hpp
 cpp_generated/messaging.cpp
 cpp_generated/TypeScriptFileIdentifier.hpp
+cpp_generated/test-quick-stats.hpp
 cpp_generated/dbCompatibility.hpp
 cpp_generated/action.test.hpp
 cpp_generated/updateState.hpp
 cpp_generated/partners.hpp
 cpp_generated/claude-proxy-full-flow.test.hpp
+cpp_generated/drizzle.hpp
 cpp_generated/readmeUtils.hpp
 cpp_generated/analyticsService.hpp
 cpp_generated/shaw.cpp
+cpp_generated/01-home-page.hpp
 cpp_generated/rooms.cpp
 cpp_generated/websocket-client.hpp
+cpp_generated/entities-extra.hpp
 cpp_generated/use-sol-price.hpp
 cpp_generated/cache.test.hpp
 cpp_generated/shared.hpp
 cpp_generated/deposit.hpp
 cpp_generated/example.cpp
+cpp_generated/checkTransactionConfirmation.cpp
 cpp_generated/prisma.hpp
 cpp_generated/SocialMediaManagerTestSuite.hpp
 cpp_generated/loader.cpp
@@ -1625,18 +1967,22 @@ cpp_generated/cdp-tx-explorer-link.hpp
 cpp_generated/migrateToken.cpp
 cpp_generated/getTrendingSearch.action.hpp
 cpp_generated/file-operations.cpp
+cpp_generated/vite.cpp
 cpp_generated/team-member-object.hpp
 cpp_generated/roles.cpp
 cpp_generated/forms-integration-flow.test.cpp
+cpp_generated/agent-export-import-simple.cpp
 cpp_generated/analytics.cpp
 cpp_generated/use-outside-clickdetection.hpp
 cpp_generated/publish.test.cpp
 cpp_generated/getUsers.cpp
 cpp_generated/create.test.cpp
+cpp_generated/capsolver.cpp
 cpp_generated/create-token.cpp
 cpp_generated/channel.cpp
 cpp_generated/tags.hpp
 cpp_generated/component-seed.hpp
+cpp_generated/monorepo.hpp
 cpp_generated/test-tools.test.hpp
 cpp_generated/axios.cpp
 cpp_generated/uuid-utils.cpp
@@ -1659,7 +2005,9 @@ cpp_generated/contentQuality.cpp
 cpp_generated/memory-seed.hpp
 cpp_generated/app-types.cpp
 cpp_generated/find-file.cpp
+cpp_generated/getCategoriesWithMarketData.hpp
 cpp_generated/task-seed.cpp
+cpp_generated/matching-logic.glob.cpp
 cpp_generated/raydium_vault.cpp
 cpp_generated/plugin-creation-service.test.cpp
 cpp_generated/TokenValidationService.cpp
@@ -1672,6 +2020,7 @@ cpp_generated/chrome-service.cpp
 cpp_generated/priceProtection.hpp
 cpp_generated/processing.hpp
 cpp_generated/experienceFormatter.hpp
+cpp_generated/socketio-message-flow.cpp
 cpp_generated/voice-models.hpp
 cpp_generated/channel-mention-object.hpp
 cpp_generated/llm-formatter.hpp
@@ -1692,7 +2041,9 @@ cpp_generated/PluginDocumentationGenerator.hpp
 cpp_generated/profileTypes.cpp
 cpp_generated/services.hpp
 cpp_generated/ProjectManagerTestSuite.cpp
+cpp_generated/e2e-simple.cpp
 cpp_generated/timeouts.cpp
+cpp_generated/claude-code-integration.hpp
 cpp_generated/resolution-type.cpp
 cpp_generated/screenCapture.hpp
 cpp_generated/checkInForm.cpp
@@ -1703,6 +2054,7 @@ cpp_generated/plugins.hpp
 cpp_generated/raydium-config.hpp
 cpp_generated/playwright-installer.hpp
 cpp_generated/communityManager.test.hpp
+cpp_generated/forms-plugin.cpp
 cpp_generated/db.cpp
 cpp_generated/database-operations.test.cpp
 cpp_generated/test-quick-stats.test.hpp
@@ -1716,16 +2068,20 @@ cpp_generated/rules.test.hpp
 cpp_generated/message-call-object.cpp
 cpp_generated/birdeye.cpp
 cpp_generated/bignumber.cpp
+cpp_generated/test-windowed-file.hpp
 cpp_generated/example-usage.cpp
 cpp_generated/agent-integration.test.hpp
 cpp_generated/githubUrlsJson.cpp
+cpp_generated/02-chat-functionality.cpp
 cpp_generated/runPipeline.cpp
 cpp_generated/fsHelpers.cpp
 cpp_generated/handle-error.test.cpp
 cpp_generated/componentService.cpp
 cpp_generated/export-import-demo.test.hpp
 cpp_generated/06-ui-navigation.cy.cpp
+cpp_generated/ambiguity-handling.hpp
 cpp_generated/useDashboard.hpp
+cpp_generated/claude-proxy-openai.cpp
 cpp_generated/evaluators.hpp
 cpp_generated/use-purge-slice.cpp
 cpp_generated/technicalAnalysis.cpp
@@ -1733,33 +2089,45 @@ cpp_generated/providers.hpp
 cpp_generated/agent-portfolio-provider.hpp
 cpp_generated/agent-portability.test.cpp
 cpp_generated/thread-member-object.hpp
+cpp_generated/pluginConfiguration.hpp
 cpp_generated/messages.test.cpp
 cpp_generated/sessions-client.test.hpp
 cpp_generated/e2e-browser.test.cpp
 cpp_generated/useColorScheme.web.hpp
+cpp_generated/instrumentation.cpp
 cpp_generated/default-reaction-object.cpp
 cpp_generated/timeout.hpp
+cpp_generated/migration.cpp
 cpp_generated/cache.test.cpp
 cpp_generated/claude-proxy-simple.test.cpp
 cpp_generated/preprocessContent.cpp
+cpp_generated/capability-progression.hpp
+cpp_generated/storage-integration.cpp
 cpp_generated/attachment.hpp
 cpp_generated/pluginProtection.test.hpp
+cpp_generated/claude-proxy-full-flow.cpp
 cpp_generated/helpers.hpp
 cpp_generated/use-sidebar-state.hpp
+cpp_generated/storage-integration.hpp
+cpp_generated/getCategoriesWithMarketData.cpp
 cpp_generated/components.hpp
 cpp_generated/test-timeouts.hpp
+cpp_generated/attachments.hpp
 cpp_generated/use-pause.cpp
 cpp_generated/chains.hpp
 cpp_generated/projects-provider.hpp
+cpp_generated/simple-api-test.hpp
 cpp_generated/email.hpp
 cpp_generated/agent-seed.hpp
 cpp_generated/client.test.cpp
+cpp_generated/capability-progression.cpp
 cpp_generated/guild-member-object.hpp
 cpp_generated/checkTransactionConfirmation.action.cpp
 cpp_generated/getProtocolTvl.action.cpp
 cpp_generated/AuthenticationService.hpp
 cpp_generated/port-validation.cpp
 cpp_generated/audio.cpp
+cpp_generated/02-chat-functionality.hpp
 cpp_generated/relationship-seed.cpp
 cpp_generated/config.cpp
 cpp_generated/agent-export-import-e2e.test.cpp
@@ -1781,12 +2149,14 @@ cpp_generated/dependency-resolver.hpp
 cpp_generated/AgentImportService.test.hpp
 cpp_generated/health.cpp
 cpp_generated/sticker-object.hpp
+cpp_generated/CodeGenerationService.hpp
 cpp_generated/registry.hpp
 cpp_generated/reply.hpp
 cpp_generated/sidebars.cpp
 cpp_generated/environment-utils.cpp
 cpp_generated/emote.cpp
 cpp_generated/display.hpp
+cpp_generated/getTrendingSearch.hpp
 cpp_generated/module-loader.test.hpp
 ```
 
@@ -1799,5 +2169,5 @@ cpp_generated/module-loader.test.hpp
 
 ---
 
-*Generated by multi-transpiler system v1.0*
+*Generated by multi-transpiler system v1.1 (with refinement)*
 *Repository: https://github.com/o9nn/elizaos-cpp*

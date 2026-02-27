@@ -3,7 +3,7 @@
 std::shared_ptr<Promise<void>> TauriIntegrationRunner::runAll()
 {
     console->log(std::string("🚀 Starting Tauri Integration Test Runner"));
-    console->log(std::string("=========================================="));
+    console->log(std::string("============================"));
     {
         utils::finally __finally1197_1233([&]() mutable
         {
@@ -287,7 +287,7 @@ std::shared_ptr<Promise<void>> TauriIntegrationRunner::runIntegrationTests()
     ); });
     console->log(std::string("\
 📊 Test Results Summary:"));
-    console->log(std::string("========================"));
+    console->log(std::string("================"));
     shared passed = 0;
     shared failed = 0;
     this->results->forEach([=](auto result) mutable

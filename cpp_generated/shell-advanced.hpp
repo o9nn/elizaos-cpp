@@ -159,7 +159,7 @@ line3" | grep line2")}
                         object::pair{std::string("id"), createUniqueUuid(runtime, std::string("workflow-2"))}, 
                         object::pair{std::string("entityId"), runtime->agentId}, 
                         object::pair{std::string("content"), object{
-                            object::pair{std::string("text"), std::string("echo "console.log('Hello');" > src/index.js && echo "export default {};" > src/config.js")}
+                            object::pair{std::string("text"), std::string("echo "std::cout << 'Hello' << std::endl;" > src/index.js && echo "{};" > src/config.js")}
                         }}, 
                         object::pair{std::string("agentId"), runtime->agentId}, 
                         object::pair{std::string("roomId"), std::string("roomId")}, 

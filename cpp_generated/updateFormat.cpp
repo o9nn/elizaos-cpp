@@ -33,7 +33,7 @@ std::shared_ptr<Action> updatesFormatAction = object{
     {
         try
         {
-            logger->info(std::string("=== UPDATES-FORMAT HANDLER START ==="));
+            logger->info(std::string("== UPDATES-FORMAT HANDLER START =="));
             if (!state) return false;
             if (!callback) {
                 logger->warn(std::string("No callback function provided"));
@@ -128,13 +128,13 @@ You don't have any specific update format fields defined. Please use the standar
             std::async([=]() { callback(object{
                 object::pair{std::string("text"), responseText}
             }, array<any>()); });
-            logger->info(std::string("=== UPDATES-FORMAT HANDLER END ==="));
+            logger->info(std::string("== UPDATES-FORMAT HANDLER END =="));
             return true;
         }
         catch (const any& error)
         {
             auto err = as<std::shared_ptr<Error>>(error);
-            logger->error(std::string("=== UPDATES-FORMAT HANDLER ERROR ==="));
+            logger->error(std::string("== UPDATES-FORMAT HANDLER ERROR =="));
             logger->error(std::string("Error processing updates format request: ") + err + string_empty);
             logger->error(std::string("Error stack: ") + (OR((err->stack), (std::string("No stack trace available")))) + string_empty);
             if (callback) {

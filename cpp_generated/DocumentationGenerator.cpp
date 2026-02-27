@@ -227,7 +227,7 @@ std::shared_ptr<Promise<object>> DocumentationGenerator::generatePRContent(doubl
         if (OR((jsonStart == -1), (jsonEnd == -1))) {
             throw any(std::make_shared<Error>(std::string("No valid JSON object found in response")));
         }
-        auto jsonStr = response->slice(jsonStart, jsonEnd)->replace((new RegExp(std::string("```json"))), string_empty)->replace((new RegExp(std::string("```"))), string_empty)->trim();
+        auto jsonStr = response->slice(jsonStart, jsonEnd)->replace((new RegExp(std::string(""""json"))), string_empty)->replace((new RegExp(std::string("""""))), string_empty)->trim();
         auto content = JSON->parse(jsonStr);
         if (OR((OR((OR((!content["title"]), (!content["body"]))), (type_of(content["title"]) != std::string("string")))), (type_of(content["body"]) != std::string("string")))) {
             throw any(std::make_shared<Error>(std::string("Invalid JSON structure")));
@@ -252,7 +252,7 @@ string DocumentationGenerator::generateDefaultPRBody()
 {
     auto changes = Array->from(this->fileContents->keys())->map([=](auto filePath) mutable
     {
-        return std::string("- Added JSDoc documentation to `") + filePath + std::string("`");
+        return std::string("- Added JSDoc documentation to "") + filePath + std::string(""");
     }
     )->join(std::string("\
 "));

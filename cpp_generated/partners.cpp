@@ -47,42 +47,42 @@ any handler(std::shared_ptr<NextApiRequest> req, std::shared_ptr<NextApiResponse
 
 array<std::shared_ptr<Partner>> mockPartners = array<std::shared_ptr<Partner>>{ object{
     object::pair{std::string("owner"), std::string("7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU")}, 
-    object::pair{std::string("displayAddress"), std::string("7xKX...gAsU")}, 
+    object::pair{std::string("displayAddress"), std::string("7xKX/* spread: gAsU */")}, 
     object::pair{std::string("amount"), 2500000}, 
     object::pair{std::string("trustScore"), 95.5}
 }, object{
     object::pair{std::string("owner"), std::string("9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM")}, 
-    object::pair{std::string("displayAddress"), std::string("9WzD...AWWM")}, 
+    object::pair{std::string("displayAddress"), std::string("9WzD/* spread: AWWM */")}, 
     object::pair{std::string("amount"), 1800000}, 
     object::pair{std::string("trustScore"), 87.2}
 }, object{
     object::pair{std::string("owner"), std::string("CuieVDEDtLo7FypA9SbLM9saXFdb1dsshEkyErMqkRQq")}, 
-    object::pair{std::string("displayAddress"), std::string("Cuie...kRQq")}, 
+    object::pair{std::string("displayAddress"), std::string("Cuie/* spread: kRQq */")}, 
     object::pair{std::string("amount"), 1500000}, 
     object::pair{std::string("trustScore"), 82.7}
 }, object{
     object::pair{std::string("owner"), std::string("8sLbNZoA1cfnvMJLPfp98ZLAnFSYCFApfJKMbiXNLwxj")}, 
-    object::pair{std::string("displayAddress"), std::string("8sLb...Lwxj")}, 
+    object::pair{std::string("displayAddress"), std::string("8sLb/* spread: Lwxj */")}, 
     object::pair{std::string("amount"), 1200000}, 
     object::pair{std::string("trustScore"), 79.3}
 }, object{
     object::pair{std::string("owner"), std::string("B1aLAAe4vW8nSQCetXnYqJfRxzTjnbooczwkUJAr7yMS")}, 
-    object::pair{std::string("displayAddress"), std::string("B1aL...7yMS")}, 
+    object::pair{std::string("displayAddress"), std::string("B1aL/* spread: 7yMS */")}, 
     object::pair{std::string("amount"), 950000}, 
     object::pair{std::string("trustScore"), 75.8}
 }, object{
     object::pair{std::string("owner"), std::string("DjVE6JNiYqPL2QXyCUEh73933aNBRXS4vqB2AF2H2H6x")}, 
-    object::pair{std::string("displayAddress"), std::string("DjVE...H2H6x")}, 
+    object::pair{std::string("displayAddress"), std::string("DjVE/* spread: H2H6x */")}, 
     object::pair{std::string("amount"), 800000}, 
     object::pair{std::string("trustScore"), 71.4}
 }, object{
     object::pair{std::string("owner"), std::string("F1Y2pYf4N2LvZgBGqVjYa3d4JcR4YqNtZx1mQzLk8RjZ")}, 
-    object::pair{std::string("displayAddress"), std::string("F1Y2...8RjZ")}, 
+    object::pair{std::string("displayAddress"), std::string("F1Y2/* spread: 8RjZ */")}, 
     object::pair{std::string("amount"), 650000}, 
     object::pair{std::string("trustScore"), 68.9}
 }, object{
     object::pair{std::string("owner"), std::string("H7ySQ9b3Rx4BfGvE6Qw2K8LpJ9sA5rR4WnZx7mK2VgLt")}, 
-    object::pair{std::string("displayAddress"), std::string("H7yS...VgLt")}, 
+    object::pair{std::string("displayAddress"), std::string("H7yS/* spread: VgLt */")}, 
     object::pair{std::string("amount"), 550000}, 
     object::pair{std::string("trustScore"), 65.1}
 } };

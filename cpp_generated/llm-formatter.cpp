@@ -14,17 +14,17 @@ string formatDataForLLM(std::shared_ptr<IntervalMetrics> metrics, any summaryCon
 {
     shared parts = array<string>();
     parts->push(std::string("## Metadata"));
-    parts->push(std::string("```json"));
+    parts->push(std::string(""""json"));
     parts->push(std::string("{"));
     parts->push(std::string("  "interval_type": "") + metrics->interval->intervalType + std::string("","));
     parts->push(std::string("  "start_date": "") + metrics->interval->intervalStart + std::string("","));
     parts->push(std::string("  "end_date": "") + metrics->interval->intervalEnd + std::string("""));
     parts->push(std::string("}"));
-    parts->push(std::string("```"));
+    parts->push(std::string("""""));
     parts->push(string_empty);
     if (options->includeStats) {
         parts->push(std::string("## Statistics"));
-        parts->push(std::string("```json"));
+        parts->push(std::string(""""json"));
         parts->push(std::string("{"));
         parts->push(std::string("  "pull_requests": {"));
         parts->push(std::string("    "new": ") + metrics->pullRequests->new + std::string(","));
@@ -46,7 +46,7 @@ string formatDataForLLM(std::shared_ptr<IntervalMetrics> metrics, any summaryCon
         parts->push(std::string("    "lines_deleted": ") + metrics->codeChanges->deletions->toLocaleString() + string_empty);
         parts->push(std::string("  }"));
         parts->push(std::string("}"));
-        parts->push(std::string("```"));
+        parts->push(std::string("""""));
         parts->push(string_empty);
     }
     if (AND((options->includeSummary), (summaryContent))) {
@@ -56,7 +56,7 @@ string formatDataForLLM(std::shared_ptr<IntervalMetrics> metrics, any summaryCon
     }
     if (AND((metrics->topContributors), (metrics->topContributors->length > 0))) {
         parts->push(std::string("## Top Contributors"));
-        parts->push(std::string("```json"));
+        parts->push(std::string(""""json"));
         parts->push(std::string("/* Top contributors for this period */"));
         parts->push(std::string("["));
         metrics->topContributors->forEach([=](auto contributor, auto index) mutable
@@ -69,7 +69,7 @@ string formatDataForLLM(std::shared_ptr<IntervalMetrics> metrics, any summaryCon
         }
         );
         parts->push(std::string("]"));
-        parts->push(std::string("```"));
+        parts->push(std::string("""""));
         parts->push(string_empty);
     }
     if (AND((AND((options->includeDetailedContributorSummaries), (metrics->detailedContributorSummaries))), (Object->keys(metrics->detailedContributorSummaries)->get_length() > 0))) {
@@ -93,7 +93,7 @@ string formatDataForLLM(std::shared_ptr<IntervalMetrics> metrics, any summaryCon
     }
     if (AND((AND((options->includePrData), (metrics->topPullRequests))), (metrics->topPullRequests->length > 0))) {
         parts->push(std::string("## Pull Requests"));
-        parts->push(std::string("```json"));
+        parts->push(std::string(""""json"));
         parts->push(std::string("["));
         metrics->topPullRequests->forEach([=](auto pr, auto index) mutable
         {
@@ -109,12 +109,12 @@ string formatDataForLLM(std::shared_ptr<IntervalMetrics> metrics, any summaryCon
         }
         );
         parts->push(std::string("]"));
-        parts->push(std::string("```"));
+        parts->push(std::string("""""));
         parts->push(string_empty);
     }
     if (AND((AND((options->includeIssueData), (metrics->topIssues))), (metrics->topIssues->length > 0))) {
         parts->push(std::string("## Issues"));
-        parts->push(std::string("```json"));
+        parts->push(std::string(""""json"));
         parts->push(std::string("["));
         metrics->topIssues->forEach([=](auto issue, auto index) mutable
         {
@@ -131,7 +131,7 @@ string formatDataForLLM(std::shared_ptr<IntervalMetrics> metrics, any summaryCon
         }
         );
         parts->push(std::string("]"));
-        parts->push(std::string("```"));
+        parts->push(std::string("""""));
         parts->push(string_empty);
     }
     return parts->join(std::string("\

@@ -12,7 +12,7 @@ std::function<string(string, string, std::shared_ptr<Record<string, any>>)> gene
   type ActionExample\
 } from "@elizaos/core";\
 \
-export const ") + camelCaseName + std::string("Action: Action = {\
+const ") + camelCaseName + std::string("Action: Action = {\
   name: "") + name + std::string("",\
   description: "") + description + std::string("",\
   similes: [\
@@ -61,7 +61,7 @@ export const ") + camelCaseName + std::string("Action: Action = {\
       const result = "Successfully executed ") + name + std::string("";\
       \
       if (callback) {\
-        await callback({\
+        callback({\
           text: result,\
           type: "text"\
         });\
@@ -69,9 +69,9 @@ export const ") + camelCaseName + std::string("Action: Action = {\
       \
       return result;\
     } catch (error) {\
-      const errorMessage = `Failed to execute ") + name + std::string(": ${error.message}`;\
+      const errorMessage = "Failed to execute ") + name + std::string(": " + (error.message) + "";\
       if (callback) {\
-        await callback({\
+        callback({\
           text: errorMessage,\
           type: "error"\
         });\
@@ -93,7 +93,7 @@ std::function<string(string, string, std::shared_ptr<Record<string, any>>)> gene
   ProviderResult\
 } from "@elizaos/core";\
 \
-export const ") + camelCaseName + std::string("Provider: Provider = {\
+const ") + camelCaseName + std::string("Provider: Provider = {\
   name: "") + name + std::string("",\
   description: "") + description + std::string("",\
   get: async (\
@@ -114,12 +114,12 @@ export const ") + camelCaseName + std::string("Provider: Provider = {\
       };\
       \
       return {\
-        text: `") + name + std::string(" data: ${JSON.stringify(data)}`,\
+        text: "") + name + std::string(" data: " + (JSON.stringify(data)) + "",\
         data: data\
       };\
     } catch (error) {\
       return {\
-        text: `") + name + std::string(" provider error: ${error.message}`,\
+        text: "") + name + std::string(" provider error: " + (error.message) + "",\
         data: { error: error.message }\
       };\
     }\
@@ -139,7 +139,7 @@ declare module "@elizaos/core" {\
   }\
 }\
 \
-export class ") + className + std::string(" extends Service {\
+class ") + className + std::string(" extends Service {\
   static serviceType: "") + name->toLowerCase() + std::string("" = "") + name->toLowerCase() + std::string("";\
   \
   public readonly capabilityDescription: string = "") + description + std::string("";\
@@ -149,28 +149,28 @@ export class ") + className + std::string(" extends Service {\
   }\
   \
   async stop(): Promise<void> {\
-    logger.info(`Stopping ") + className + std::string("`);\
+    logger.info("Stopping ") + className + std::string("");\
     // TODO: Clean up resources\
   }\
   \
   static async start(runtime: IAgentRuntime): Promise<") + className + std::string("> {\
     const service = new ") + className + std::string("(runtime);\
-    await service.initialize(runtime);\
+    service.initialize(runtime);\
     return service;\
   }\
   \
   async initialize(runtime: IAgentRuntime): Promise<void> {\
     this.runtime = runtime;\
-    logger.info(`Initializing ") + className + std::string("`);\
+    logger.info("Initializing ") + className + std::string("");\
     // TODO: Initialize service resources\
   }\
   \
   ") + (methods) ? any(methods->map([=](auto method) mutable
     {
         return std::string("\
-  async ") + method + std::string("(...args: any[]): Promise<any> {\
+  async ") + method + std::string("(/* spread: args */: any[]): Promise<any> {\
     // TODO: Implement ") + method + std::string("\
-    logger.info(`") + className + std::string(".") + method + std::string(" called`);\
+    logger.info("") + className + std::string(".") + method + std::string(" called");\
     return null;\
   }\
   ");
@@ -193,7 +193,7 @@ std::function<string(string, string, array<string>)> generateEvaluatorCode = [=]
   logger\
 } from "@elizaos/core";\
 \
-export const ") + camelCaseName + std::string("Evaluator: Evaluator = {\
+const ") + camelCaseName + std::string("Evaluator: Evaluator = {\
   name: "") + name + std::string("",\
   description: "") + description + std::string("",\
   similes: [\
@@ -231,7 +231,7 @@ export const ") + camelCaseName + std::string("Evaluator: Evaluator = {\
     state?: State\
   ): Promise<string> => {\
     try {\
-      logger.info(`Running ") + name + std::string(" evaluator`);\
+      logger.info("Running ") + name + std::string(" evaluator");\
       \
       // TODO: Implement evaluation logic\
       const content = message.content.text;\
@@ -245,10 +245,10 @@ export const ") + camelCaseName + std::string("Evaluator: Evaluator = {\
       \
       // Create new memories or trigger actions if needed\
       \
-      return `") + name + std::string(" evaluation complete: ${JSON.stringify(result)}`;\
+      return "") + name + std::string(" evaluation complete: " + (JSON.stringify(result)) + "";\
     } catch (error) {\
-      logger.error(`") + name + std::string(" evaluator error:`, error);\
-      return `") + name + std::string(" evaluation failed: ${error.message}`;\
+      logger.error("") + name + std::string(" evaluator error:", error);\
+      return "") + name + std::string(" evaluation failed: " + (error.message) + "";\
     }\
   }\
 };\
@@ -299,7 +299,7 @@ std::function<string(string, any)> generatePluginIndex = [=](auto pluginName, au
 ") + imports->join(std::string("\
 ")) + std::string("\
 \
-export const ") + pluginClassName + std::string(": Plugin = {\
+const ") + pluginClassName + std::string(": Plugin = {\
   name: "") + pluginName + std::string("",\
   description: "") + specification["description"] + std::string("",\
   ") + (specification["actions"]["length"]) ? any(std::string("\
@@ -341,13 +341,13 @@ export const ") + pluginClassName + std::string(": Plugin = {\
 };\
 \
 // Export individual components for direct use\
-export {\
+{\
   ") + exports->join(std::string(",\
   ")) + std::string("\
 };\
 \
 // Default export\
-export default ") + pluginClassName + std::string(";\
+") + pluginClassName + std::string(";\
 ");
 };
 std::function<string(string, string)> generateTestCode = [=](auto componentName, auto componentType) mutable
@@ -366,7 +366,7 @@ const createMockRuntime = (): IAgentRuntime => {\
     providers: new Map(),\
     actions: new Map(),\
     evaluators: new Map()\
-  } as any;\
+  };\
 };\
 \
 // Mock memory\
@@ -379,84 +379,84 @@ const createMockMemory = (text: string): Memory => ({\
   createdAt: Date.now()\
 } as Memory);\
 \
-describe('") + componentName + string_empty + componentType + std::string("', () => {\
+describe('") + componentName + string_empty + componentType + std::string("', [&]() {\
   let mockRuntime: IAgentRuntime;\
   let mockState: State;\
   \
-  beforeEach(() => {\
+  beforeEach([&]() {\
     mockRuntime = createMockRuntime();\
     mockState = { values: {}, data: {}, text: "" };\
     vi.clearAllMocks();\
   });\
   \
-  it('should be properly defined', () => {\
+  it('should be properly defined', [&]() {\
     expect(") + camelCaseName + string_empty + componentType + std::string(").toBeDefined();\
     expect(") + camelCaseName + string_empty + componentType + std::string(".name).toBe('") + componentName + std::string("');\
   });\
   \
   ") + (componentType == std::string("Action")) ? any(std::string("\
-  describe('validate', () => {\
-    it('should validate valid input', async () => {\
+  describe('validate', [&]() {\
+    it('should validate valid input', async [&]() {\
       const message = createMockMemory('test input');\
-      const result = await ") + camelCaseName + string_empty + componentType + std::string(".validate(mockRuntime, message, mockState);\
+      const result = ") + camelCaseName + string_empty + componentType + std::string(".validate(mockRuntime, message, mockState);\
       expect(result).toBe(true);\
     });\
     \
-    it('should reject empty input', async () => {\
+    it('should reject empty input', async [&]() {\
       const message = createMockMemory('');\
-      const result = await ") + camelCaseName + string_empty + componentType + std::string(".validate(mockRuntime, message, mockState);\
+      const result = ") + camelCaseName + string_empty + componentType + std::string(".validate(mockRuntime, message, mockState);\
       expect(result).toBe(false);\
     });\
   });\
   \
-  describe('handler', () => {\
-    it('should handle valid request', async () => {\
+  describe('handler', [&]() {\
+    it('should handle valid request', async [&]() {\
       const message = createMockMemory('test request');\
-      const result = await ") + camelCaseName + string_empty + componentType + std::string(".handler(mockRuntime, message, mockState);\
+      const result = ") + camelCaseName + string_empty + componentType + std::string(".handler(mockRuntime, message, mockState);\
       expect(result).toContain('Successfully');\
     });\
     \
-    it('should handle errors gracefully', async () => {\
+    it('should handle errors gracefully', async [&]() {\
       const message = createMockMemory('trigger error');\
       // TODO: Mock error condition\
-      const result = await ") + camelCaseName + string_empty + componentType + std::string(".handler(mockRuntime, message, mockState);\
+      const result = ") + camelCaseName + string_empty + componentType + std::string(".handler(mockRuntime, message, mockState);\
       expect(typeof result).toBe('string');\
     });\
   });\
   ")) : any(string_empty) + std::string("\
   \
   ") + (componentType == std::string("Provider")) ? any(std::string("\
-  describe('get', () => {\
-    it('should provide data', async () => {\
+  describe('get', [&]() {\
+    it('should provide data', async [&]() {\
       const message = createMockMemory('test');\
-      const result = await ") + camelCaseName + string_empty + componentType + std::string(".get(mockRuntime, message, mockState);\
+      const result = ") + camelCaseName + string_empty + componentType + std::string(".get(mockRuntime, message, mockState);\
       expect(result).toBeDefined();\
       expect(result.text).toBeDefined();\
       expect(result.data).toBeDefined();\
     });\
     \
-    it('should handle errors', async () => {\
+    it('should handle errors', async [&]() {\
       // TODO: Mock error condition\
       const message = createMockMemory('test');\
-      const result = await ") + camelCaseName + string_empty + componentType + std::string(".get(mockRuntime, message, mockState);\
+      const result = ") + camelCaseName + string_empty + componentType + std::string(".get(mockRuntime, message, mockState);\
       expect(result.text).toBeDefined();\
     });\
   });\
   ")) : any(string_empty) + std::string("\
   \
   ") + (componentType == std::string("Evaluator")) ? any(std::string("\
-  describe('validate', () => {\
-    it('should validate when appropriate', async () => {\
+  describe('validate', [&]() {\
+    it('should validate when appropriate', async [&]() {\
       const message = createMockMemory('test evaluation');\
-      const result = await ") + camelCaseName + string_empty + componentType + std::string(".validate(mockRuntime, message, mockState);\
+      const result = ") + camelCaseName + string_empty + componentType + std::string(".validate(mockRuntime, message, mockState);\
       expect(typeof result).toBe('boolean');\
     });\
   });\
   \
-  describe('handler', () => {\
-    it('should evaluate messages', async () => {\
+  describe('handler', [&]() {\
+    it('should evaluate messages', async [&]() {\
       const message = createMockMemory('test evaluation');\
-      const result = await ") + camelCaseName + string_empty + componentType + std::string(".handler(mockRuntime, message, mockState);\
+      const result = ") + camelCaseName + string_empty + componentType + std::string(".handler(mockRuntime, message, mockState);\
       expect(result).toContain('evaluation');\
     });\
   });\

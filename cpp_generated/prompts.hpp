@@ -1,16 +1,7 @@
-#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CORE_SRC_SPECS_V2_PROMPTS_H
-#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CORE_SRC_SPECS_V2_PROMPTS_H
+#ifndef _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CORE_SRC___TESTS___PROMPTS_TEST_H
+#define _HOME_RUNNER_WORK_ELIZAOS-CPP_ELIZAOS-CPP_ELIZA_PACKAGES_CORE_SRC___TESTS___PROMPTS_TEST_H
 #include "core.h"
-#include "../../prompts.h"
-using coreShouldRespondTemplate = shouldRespondTemplate;
-using coreMessageHandlerTemplate = messageHandlerTemplate;
-using corePostCreationTemplate = postCreationTemplate;
-using coreBooleanFooter = booleanFooter;
-using coreImageDescriptionTemplate = imageDescriptionTemplate;
+#include "bun:test.h"
+#include "../prompts.h"
 
-extern string shouldRespondTemplate;
-extern string messageHandlerTemplate;
-extern string postCreationTemplate;
-extern string booleanFooter;
-extern string imageDescriptionTemplate;
 #endif

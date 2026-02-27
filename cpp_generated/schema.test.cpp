@@ -69,7 +69,7 @@ void Main(void)
         );
         describe(std::string("todoSchemaExport export"), [=]() mutable
         {
-            it(std::string("should export correct schema structure"), [=]() mutable
+            it(std::string("should correct schema structure"), [=]() mutable
             {
                 expect(todoSchemaExport)->toBeDefined();
                 expect(todoSchemaExport["todosTable"])->toBeDefined();

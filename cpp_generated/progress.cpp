@@ -26,7 +26,7 @@ void RunBatchProgressManager::updateExitStatusTable()
     }
     );
     console->log(std::string("\
-=== Exit Status Summary ==="));
+== Exit Status Summary =="));
     auto& __array1782_1987 = sorted;
     for (auto __indx1782_1987 = 0_N; __indx1782_1987 < __array1782_1987->get_length(); __indx1782_1987++)
     {
@@ -86,7 +86,7 @@ void RunBatchProgressManager::onUncaughtException(string instanceId, std::shared
 void RunBatchProgressManager::printReport()
 {
     console->log(std::string("\
-=== Final Report ==="));
+== Final Report =="));
     auto& __array3391_3616 = this->instancesByExitStatus->entries();
     for (auto __indx3391_3616 = 0_N; __indx3391_3616 < __array3391_3616->get_length(); __indx3391_3616++)
     {

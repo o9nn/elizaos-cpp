@@ -4,7 +4,7 @@ std::shared_ptr<Promise<array<std::shared_ptr<CheckInSchedule>>>> fetchCheckInSc
 {
     try
     {
-        logger->info(std::string("=== FETCH CHECK-IN SCHEDULES START ==="));
+        logger->info(std::string("== FETCH CHECK-IN SCHEDULES START =="));
         auto checkInSchedulesRoomId = createUniqueUuid(runtime, std::string("check-in-schedules"));
         logger->info(std::string("Generated check-in schedules room ID: ") + checkInSchedulesRoomId + string_empty);
         logger->info(std::string("Attempting to fetch memories from room..."));
@@ -53,16 +53,16 @@ std::shared_ptr<Promise<array<std::shared_ptr<CheckInSchedule>>>> fetchCheckInSc
         }
         );
         logger->info(std::string("Successfully extracted ") + schedules->length + std::string(" valid schedules"));
-        logger->info(std::string("=== FETCH CHECK-IN SCHEDULES END ==="));
-        logger->info(std::string("=== DETAILED SCHEDULES LOG ==="));
+        logger->info(std::string("== FETCH CHECK-IN SCHEDULES END =="));
+        logger->info(std::string("== DETAILED SCHEDULES LOG =="));
         logger->info(std::string("All schedules:"), JSON->stringify(schedules, nullptr, 2));
-        logger->info(std::string("=== END DETAILED SCHEDULES LOG ==="));
+        logger->info(std::string("== END DETAILED SCHEDULES LOG =="));
         return schedules;
     }
     catch (const any& error)
     {
         auto err = as<std::shared_ptr<Error>>(error);
-        logger->error(std::string("=== FETCH CHECK-IN SCHEDULES ERROR ==="));
+        logger->error(std::string("== FETCH CHECK-IN SCHEDULES ERROR =="));
         logger->error(std::string("Error details:"), object{
             object::pair{std::string("name"), OR((err->name), (std::string("Unknown error")))}, 
             object::pair{std::string("message"), OR((err->message), (std::string("No error message")))}, 
@@ -113,7 +113,7 @@ std::shared_ptr<Action> listCheckInSchedules = object{
     {
         try
         {
-            logger->info(std::string("=== LIST CHECK-IN SCHEDULES HANDLER START ==="));
+            logger->info(std::string("== LIST CHECK-IN SCHEDULES HANDLER START =="));
             logger->info(std::string("Handler details:"), object{
                 object::pair{std::string("messageId"), message->id}, 
                 object::pair{std::string("entityId"), message->entityId}, 
@@ -148,13 +148,13 @@ std::shared_ptr<Action> listCheckInSchedules = object{
             logger->info(std::string("Sending formatted schedules to callback"));
             std::async([=]() { callback(content, array<any>()); });
             logger->info(std::string("Successfully sent check-in schedules list"));
-            logger->info(std::string("=== LIST CHECK-IN SCHEDULES HANDLER END ==="));
+            logger->info(std::string("== LIST CHECK-IN SCHEDULES HANDLER END =="));
             return true;
         }
         catch (const any& error)
         {
             auto err = as<std::shared_ptr<Error>>(error);
-            logger->error(std::string("=== LIST CHECK-IN SCHEDULES HANDLER ERROR ==="));
+            logger->error(std::string("== LIST CHECK-IN SCHEDULES HANDLER ERROR =="));
             logger->error(std::string("Error details:"), object{
                 object::pair{std::string("name"), OR((err->name), (std::string("Unknown error")))}, 
                 object::pair{std::string("message"), OR((err->message), (std::string("No error message")))}, 

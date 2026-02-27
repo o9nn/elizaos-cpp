@@ -4,7 +4,7 @@ void Main(void)
 {
     describe(std::string("TodoPlugin"), [=]() mutable
     {
-        it(std::string("should export TodoPlugin with correct structure"), [=]() mutable
+        it(std::string("should TodoPlugin with correct structure"), [=]() mutable
         {
             expect(TodoPlugin)->toBeDefined();
             expect(TodoPlugin->name)->toBe(std::string("todo"));

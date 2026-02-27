@@ -3,7 +3,7 @@
 void runDemo()
 {
     console->log(std::string("🎬 Interactive Claude Code Test Demo"));
-    console->log(std::string("===================================\
+    console->log(std::string("========================\
 "));
     auto requiredKeys = array<string>{ std::string("ANTHROPIC_API_KEY") };
     auto missingKeys = requiredKeys->filter([=](auto key) mutable
@@ -21,7 +21,7 @@ void runDemo()
         console->log(std::string("\
 To run the demo:"));
         console->log(std::string("1. Set your Anthropic API key:"));
-        console->log(std::string("   export ANTHROPIC_API_KEY="your_api_key_here""));
+        console->log(std::string("   ANTHROPIC_API_KEY="your_api_key_here""));
         console->log(std::string("2. Run the demo:"));
         console->log(std::string("   bun run scripts/demo-interactive.ts"));
         console->log(std::string("\
@@ -55,7 +55,7 @@ To run the interactive test:"));
     console->log(std::string("   - Write files to sandbox"));
     console->log(std::string("   - Read files from sandbox"));
     console->log(std::string("   - List directory contents"));
-    console->log(std::string("   - Example: write src/index.ts console.log("hello")"));
+    console->log(std::string("   - Example: write src/index.ts std::cout << "hello" << std::endl"));
     console->log(string_empty);
     console->log(std::string("📚 Available Commands:"));
     console->log(std::string("   help                     - Show help message"));

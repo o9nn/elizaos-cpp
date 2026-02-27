@@ -64,19 +64,19 @@ std::shared_ptr<Promise<string>> generateTestContent(string sourcePath)
 // TODO: Import the functions/classes to test\
 // import { ") + (array<any>{ functions, classes, constants })->join(std::string(", ")) + std::string(" } from '") + importPath + std::string("';\
 \
-describe('") + basename(sourcePath)->replace(std::string(".ts"), string_empty) + std::string("', () => {\
-  beforeEach(() => {\
+describe('") + basename(sourcePath)->replace(std::string(".ts"), string_empty) + std::string("', [&]() {\
+  beforeEach([&]() {\
     mock.restore();\
   });\
 \
-  afterEach(() => {\
+  afterEach([&]() {\
     mock.restore();\
   });\
 ");
     for (auto& func : functions)
     {
         testContent += std::string("\
-  describe('") + func + std::string("', () => {\
+  describe('") + func + std::string("', [&]() {\
     it.todo('should ") + func + std::string(" correctly');\
     \
     it.todo('should handle errors in ") + func + std::string("');\
@@ -86,7 +86,7 @@ describe('") + basename(sourcePath)->replace(std::string(".ts"), string_empty) +
     for (auto& cls : classes)
     {
         testContent += std::string("\
-  describe('") + cls + std::string("', () => {\
+  describe('") + cls + std::string("', [&]() {\
     it.todo('should create instance of ") + cls + std::string("');\
     \
     it.todo('should test ") + cls + std::string(" methods');\
@@ -96,8 +96,8 @@ describe('") + basename(sourcePath)->replace(std::string(".ts"), string_empty) +
     for (auto& cnst : constants)
     {
         testContent += std::string("\
-  describe('") + cnst + std::string("', () => {\
-    it.todo('should export ") + cnst + std::string(" correctly');\
+  describe('") + cnst + std::string("', [&]() {\
+    it.todo('should ") + cnst + std::string(" correctly');\
   });\
 ");
     }

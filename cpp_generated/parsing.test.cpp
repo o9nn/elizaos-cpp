@@ -31,9 +31,9 @@ void Main(void)
         {
             it(std::string("should parse JSON object from code block"), [=]() mutable
             {
-                auto input = std::string("```json\
+                auto input = std::string(""""json\
 {"key": "value", "number": 42}\
-```");
+"""");
                 expect(parseJSONObjectFromText(input))->toEqual(object{
                     object::pair{std::string("key"), std::string("value")}, 
                     object::pair{std::string("number"), std::string("42")}
@@ -59,9 +59,9 @@ void Main(void)
             );
             it(std::string("should handle empty objects"), [=]() mutable
             {
-                expect(parseJSONObjectFromText(std::string("```json\
+                expect(parseJSONObjectFromText(std::string(""""json\
 {}\
-```")))->toEqual(object{});
+"""")))->toEqual(object{});
                 expect(parseJSONObjectFromText(std::string("{}")))->toEqual(object{});
             }
             );
@@ -69,9 +69,9 @@ void Main(void)
             {
                 expect(parseJSONObjectFromText(std::string("invalid")))->toBe(nullptr);
                 expect(parseJSONObjectFromText(std::string("{invalid}")))->toBe(nullptr);
-                expect(parseJSONObjectFromText(std::string("```json\
+                expect(parseJSONObjectFromText(std::string(""""json\
 {invalid}\
-```")))->toBe(nullptr);
+"""")))->toBe(nullptr);
             }
             );
         }

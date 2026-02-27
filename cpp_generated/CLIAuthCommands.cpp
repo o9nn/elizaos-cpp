@@ -73,7 +73,7 @@ std::shared_ptr<Promise<void>> CLIAuthCommands::handleAuthStatus()
             console->log(string_empty);
         }
         if (status->overall == std::string("failed")) {
-            console->log(std::string("⚠️  No valid API keys configured. Use `elizaos auth:setup` to configure keys."));
+            console->log(std::string("⚠️  No valid API keys configured. Use "elizaos auth:setup" to configure keys."));
         } else if (status->overall == std::string("degraded")) {
             console->log(std::string("⚠️  Some providers are not configured. Consider adding more API keys for redundancy."));
         } else {
@@ -178,7 +178,7 @@ std::shared_ptr<Promise<void>> CLIAuthCommands::handleTestKeys()
         auto provider = name->replace(std::string("_TEST_KEY"), string_empty)->toLowerCase();
         console->log(string_empty + provider->toUpperCase() + std::string(":"));
         console->log(std::string("  Key: ") + key + string_empty);
-        console->log(std::string("  Usage: export ") + name->replace(std::string("_TEST_KEY"), std::string("_API_KEY")) + std::string("="") + key + std::string("""));
+        console->log(std::string("  Usage: ") + name->replace(std::string("_TEST_KEY"), std::string("_API_KEY")) + std::string("="") + key + std::string("""));
         console->log(string_empty);
     }
     console->log(std::string("💡 Test keys provide simulated responses without real API costs."));
@@ -234,10 +234,10 @@ std::shared_ptr<Promise<void>> CLIAuthCommands::handleSetup()
     console->log(std::string("   OPENAI_API_KEY=sk-..."));
     console->log(std::string("   GROQ_API_KEY=gsk_..."));
     console->log(std::string("   ANTHROPIC_API_KEY=sk-ant-..."));
-    console->log(std::string("3. Run `elizaos auth:status` to verify configuration"));
+    console->log(std::string("3. Run "elizaos auth:status" to verify configuration"));
     console->log(string_empty);
     console->log(std::string("🧪 For Development/Testing:"));
-    console->log(std::string("Use `elizaos auth:test-keys` to see test keys that work without real API costs."));
+    console->log(std::string("Use "elizaos auth:test-keys" to see test keys that work without real API costs."));
     return std::shared_ptr<Promise<void>>();
 }
 

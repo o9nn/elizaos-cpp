@@ -1,58 +1,83 @@
-#include "/home/runner/work/elizaos-cpp/elizaos-cpp/SWEagent/src/agent/tools/parsing.h"
+#include "/home/runner/work/elizaos-cpp/elizaos-cpp/eliza/packages/core/src/__tests__/parsing.test.h"
 
-string FunctionCallingParser::formatErrorMessage(object error)
+void Main(void)
 {
-    if (error["errorCode"] == std::string("missing")) {
-        return std::string("The model did not use any tool calls");
+    describe(std::string("Parsing Module"), [=]() mutable
+    {
+        describe(std::string("parseBooleanFromText"), [=]() mutable
+        {
+            it(std::string("should parse exact YES/NO matches"), [=]() mutable
+            {
+                expect(parseBooleanFromText(std::string("YES")))->toBe(true);
+                expect(parseBooleanFromText(std::string("NO")))->toBe(false);
+            }
+            );
+            it(std::string("should handle case insensitive input"), [=]() mutable
+            {
+                expect(parseBooleanFromText(std::string("yes")))->toBe(true);
+                expect(parseBooleanFromText(std::string("no")))->toBe(false);
+            }
+            );
+            it(std::string("should return null for invalid input"), [=]() mutable
+            {
+                expect(parseBooleanFromText(string_empty))->toBe(false);
+                expect(parseBooleanFromText(std::string("maybe")))->toBe(false);
+                expect(parseBooleanFromText(std::string("YES NO")))->toBe(false);
+            }
+            );
+        }
+        );
+        describe(std::string("parseJSONObjectFromText"), [=]() mutable
+        {
+            it(std::string("should parse JSON object from code block"), [=]() mutable
+            {
+                auto input = std::string(""""json\
+{"key": "value", "number": 42}\
+"""");
+                expect(parseJSONObjectFromText(input))->toEqual(object{
+                    object::pair{std::string("key"), std::string("value")}, 
+                    object::pair{std::string("number"), std::string("42")}
+                });
+            }
+            );
+            it(std::string("should parse JSON object without code block"), [=]() mutable
+            {
+                auto input = std::string("{"key": "value", "number": 42}");
+                expect(parseJSONObjectFromText(input))->toEqual(object{
+                    object::pair{std::string("key"), std::string("value")}, 
+                    object::pair{std::string("number"), std::string("42")}
+                });
+            }
+            );
+            it(std::string("should parse JSON objects containing array values"), [=]() mutable
+            {
+                auto input = std::string("{"key": ["item1", "item2", "item3"]}");
+                expect(parseJSONObjectFromText(input))->toEqual(object{
+                    object::pair{std::string("key"), array<string>{ std::string("item1"), std::string("item2"), std::string("item3") }}
+                });
+            }
+            );
+            it(std::string("should handle empty objects"), [=]() mutable
+            {
+                expect(parseJSONObjectFromText(std::string(""""json\
+{}\
+"""")))->toEqual(object{});
+                expect(parseJSONObjectFromText(std::string("{}")))->toEqual(object{});
+            }
+            );
+            it(std::string("should return null for invalid JSON"), [=]() mutable
+            {
+                expect(parseJSONObjectFromText(std::string("invalid")))->toBe(nullptr);
+                expect(parseJSONObjectFromText(std::string("{invalid}")))->toBe(nullptr);
+                expect(parseJSONObjectFromText(std::string(""""json\
+{invalid}\
+"""")))->toBe(nullptr);
+            }
+            );
+        }
+        );
     }
-    return OR((error["message"]), (std::string("Unknown error")));
+    );
 }
 
-std::shared_ptr<AbstractParseFunction> getParser(string parserName)
-{
-    static switch_type __switch11968_12730 = {
-        { any(std::string("identity")), 1 },
-        { any(std::string("thought_action")), 2 },
-        { any(std::string("action_only")), 3 },
-        { any(std::string("xml_thought_action")), 4 },
-        { any(std::string("edit_format")), 5 },
-        { any(std::string("function_calling")), 6 },
-        { any(std::string("single_bash_code_block")), 7 },
-        { any(std::string("multiple_bash_code_blocks")), 8 },
-        { any(std::string("last_line")), 9 },
-        { any(std::string("identity")), 10 }
-    };
-    switch (__switch11968_12730[parserName])
-    {
-    case 1:
-        return std::make_shared<Identity>();
-    case 2:
-        return std::make_shared<ThoughtActionParser>();
-    case 3:
-        return std::make_shared<ActionOnlyParser>();
-    case 4:
-        return std::make_shared<XMLThoughtActionParser>();
-    case 5:
-        return std::make_shared<EditFormatParser>();
-    case 6:
-        return std::make_shared<FunctionCallingParser>();
-    case 7:
-        return std::make_shared<SingleBashCodeBlockParser>();
-    case 8:
-        return std::make_shared<MultipleBashCodeBlocksParser>();
-    case 9:
-        return std::make_shared<LastLineParser>();
-    case 10:
-        return std::make_shared<IdentityParser>();
-    default:
-        throw any(std::make_shared<Error>(std::string("Unknown parser: ") + parserName + string_empty));
-    }
-};
-
-
-std::shared_ptr<AbstractParseFunction> createParser(string type)
-{
-    return getParser(type);
-};
-
-
+MAIN

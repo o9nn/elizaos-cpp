@@ -71,7 +71,7 @@ Would you like me to show details for any of these plugins or help you install o
     object::pair{std::string("validate"), [=](auto runtime, auto message) mutable
     {
         shared text = OR((message->content->text->toLowerCase()), (string_empty));
-        auto searchPatterns = array<std::shared_ptr<RegExp>>{ (new RegExp(std::string("search.*plugins?"))), (new RegExp(std::string("find.*plugins?"))), (new RegExp(std::string("look.*for.*plugins?"))), (new RegExp(std::string("discover.*plugins?"))), (new RegExp(std::string("plugins?.*(for|that|to)"))), (new RegExp(std::string("need.*plugins?"))), (new RegExp(std::string("show.*plugins?"))), (new RegExp(std::string("list.*plugins?"))) };
+        auto searchPatterns = array<std::shared_ptr<RegExp>>{ (new RegExp(std::string("search.*plugins?"))), (new RegExp(std::string("find.*plugins?"))), (new RegExp(std::string("look.*for.*plugins?"))), (new RegExp(std::string("discover.*plugins?"))), (new RegExp(std::string("plugins.*(for|that|to)"))), (new RegExp(std::string("need.*plugins?"))), (new RegExp(std::string("show.*plugins?"))), (new RegExp(std::string("list.*plugins?"))) };
         return searchPatterns->some([=](auto pattern) mutable
         {
             return pattern->test(text);

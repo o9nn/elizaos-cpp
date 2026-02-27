@@ -3,7 +3,7 @@
 #include "core.h"
 #include "next-auth.h"
 #include "next.h"
-#include "../auth/[...nextauth].h"
+#include "../auth/[/* spread: nextauth */].h"
 
 any handler(std::shared_ptr<NextApiRequest> req, std::shared_ptr<NextApiResponse> res);
 

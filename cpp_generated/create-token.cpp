@@ -69,9 +69,9 @@ any createTokenPrompt(any validatedData)
         - prompt: A detailed prompt for image generation that will create a visual representation of the concept\
         \
         Example format:\
-        ```json\
+        """json\
         ") + const_(exampleFormats)[Math->floor(Math->random() * exampleFormats->get_length())] + std::string("\
-        ```\
+        """\
         \
         Only provide the JSON object. Do not include any other text, explanation, or formatting.");
     return content;

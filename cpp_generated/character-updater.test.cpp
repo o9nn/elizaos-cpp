@@ -147,7 +147,7 @@ void Main(void)
                 expect(validateCharacterStructure(validCharacter))->toBe(true);
             }
             );
-            it(std::string("should accept bio as string or array"), [=]() mutable
+            it(std::string("should accept bio or array"), [=]() mutable
             {
                 auto withStringBio = object{
                     object::pair{std::string("name"), std::string("Agent")}, 
