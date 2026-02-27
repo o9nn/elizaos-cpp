@@ -165,7 +165,7 @@ jobs:
       
       - name: Run post-transpilation refinement
         id: refinement
-        if: steps.check_generated.outputs.has_changes == 'true' && (github.event.inputs.run_refinement == 'true' || github.event.inputs.run_refinement == '')
+        if: steps.check_generated.outputs.has_changes == 'true' && github.event.inputs.run_refinement != 'false'
         run: |
           OUTPUT_DIR="${{ github.event.inputs.output_directory || 'cpp_generated' }}"
           

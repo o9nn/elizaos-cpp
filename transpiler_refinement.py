@@ -60,8 +60,10 @@ class TranspilerRefinement:
             (r'===', r'==', '=== -> =='),
             (r'!==', r'!=', '!== -> !='),
             
-            # Nullish coalescing and optional chaining (simplified)
-            (r'\?\?', r'||', '?? -> ||'),
+            # Nullish coalescing and optional chaining
+            # Note: ?? -> || is a simplification that may change semantics for falsy values (0, "", false)
+            # This is flagged as a known limitation - manual review recommended
+            (r'\?\?', r'/* ?? */ ||', '?? -> || (semantic change)'),
             (r'\?\.', r'.', '?. -> .'),
             
             # Type assertions (remove remaining ones)
@@ -74,16 +76,17 @@ class TranspilerRefinement:
             # Await expressions
             (r'\bawait\s+', r'', 'await removal'),
             
-            # Promise handling
-            (r'\.then\s*\(\s*\(([^)]*)\)\s*=>\s*\{', r'/* .then( */ {', '.then arrow -> block'),
-            (r'\.catch\s*\(\s*\(([^)]*)\)\s*=>\s*\{', r'/* .catch( */ try { } catch(const std::exception& \1) {', '.catch -> try/catch'),
+            # Promise handling - mark for manual review instead of incorrect auto-fix
+            (r'\.then\s*\(\s*\(([^)]*)\)\s*=>\s*\{', r'/* TODO: .then() callback - needs manual async conversion */ {', '.then -> TODO'),
+            (r'\.catch\s*\(\s*\(([^)]*)\)\s*=>\s*\{', r'/* TODO: .catch() error handler - needs manual try/catch wrapping */ {', '.catch -> TODO'),
             
             # Arrow functions in certain contexts (simple cases)
             (r'\(\s*\)\s*=>\s*\{', r'[&]() {', 'arrow fn -> lambda'),
             (r'\((\w+)\)\s*=>\s*\{', r'[&](auto \1) {', 'arrow fn with param -> lambda'),
             
-            # Template literals remnants
-            (r'`([^`]*)`', lambda m: '"' + re.sub(r'\$\{([^}]+)\}', r'" + std::to_string(\1) + "', m.group(1)) + '"', 'template literal -> string concat'),
+            # Template literals remnants - use generic string concatenation
+            # Note: Uses + for concatenation; may need manual type handling for non-strings
+            (r'`([^`]*)`', lambda m: '"' + re.sub(r'\$\{([^}]+)\}', r'" + (\1) + "', m.group(1)) + '"', 'template literal -> string concat'),
             
             # Remaining typeof
             (r'\btypeof\s+(\w+)\s*===?\s*["\'](\w+)["\']', r'/* typeof \1 == "\2" */', 'typeof check -> comment'),
@@ -97,9 +100,6 @@ class TranspilerRefinement:
             
             # Fix double semicolons
             (r';;', r';', 'double semicolon fix'),
-            
-            # Fix incorrect nullptr usage with strings
-            (r'(\w+)\s*==\s*nullptr\s*\|\|\s*\1\.empty\(\)', r'\1.empty()', 'nullptr || empty() -> empty()'),
         ]
         
         # Additional validation patterns (things to flag but not auto-fix)
@@ -116,6 +116,9 @@ class TranspilerRefinement:
             (r'\bsetTimeout\s*\(', 'setTimeout needs manual conversion'),
             (r'\bsetInterval\s*\(', 'setInterval needs manual conversion'),
             (r'\bPromise\.(all|race|resolve|reject)\s*\(', 'Promise methods need manual conversion'),
+            (r'/\* \?\? \*/', 'Nullish coalescing (??) converted - review for falsy value handling'),
+            (r'TODO: \.then\(\)', '.then() callback needs async conversion'),
+            (r'TODO: \.catch\(\)', '.catch() error handler needs try/catch wrapping'),
         ]
     
     def log(self, message: str, level: str = "INFO"):
