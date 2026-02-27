@@ -1,0 +1,33 @@
+{
+  "name": "eliza-runescape",
+  "private": true,
+  "workspaces": [
+    "engine",
+    "gateway",
+    "webclient",
+    "sdk",
+    "vendor/rsmod-pathfinder"
+  ],
+  "scripts": {
+    "dev": "bun run --filter engine-ts dev & bun run --filter bot-agent gateway & bun run --watch run.ts",
+    "start": "bun run run.ts",
+    "gateway": "bun run --filter bot-agent gateway",
+    "engine": "bun run --filter engine-ts dev"
+  },
+  "dependencies": {
+    "@elizaos/core": "^2.0.0-alpha.3",
+    "@elizaos/plugin-anthropic": "^2.0.0-alpha.3",
+    "@elizaos/plugin-groq": "^1.0.4",
+    "@elizaos/plugin-sql": "^2.0.0-alpha.3",
+    "@inquirer/prompts": "^7.5.3",
+    "dotenv": "^16.4.7",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/uuid": "^10.0.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
