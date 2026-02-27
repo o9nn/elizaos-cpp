@@ -9,7 +9,7 @@
 // Using alias removed (invalid transpilation)
 #include "helmet.hpp"
 // Using alias removed (invalid transpilation)
-#include "node:http.h"
+// Node.js module removed - use C++ filesystem
 // Using alias removed (invalid transpilation)
 #include "path-to-regexp.h"
 #include "socket.io.h"

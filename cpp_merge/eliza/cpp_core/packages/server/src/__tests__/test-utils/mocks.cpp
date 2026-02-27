@@ -68,7 +68,7 @@ IAgentRuntime createMockAgentRuntime(std::optional<std::optional<IAgentRuntime>>
                 stop: jest.fn[&](() { return Promise.resolve()),
                 addEmbeddingToMemory: jest.fn[&]((memory: Memory) { return Promise.resolve(memory)),
                 createRunId: jest.fn[&](() { return "123e4567-e89b-12d3-a456-426614174000"),
-                startRun: jest.fn(() => "123e4567-e89b-12d3-a456-426614174000"),
+                startRun: jest.fn[&](() { return "123e4567-e89b-12d3-a456-426614174000"),
                 endRun: jest.fn(),
                 getCurrentRunId: jest.fn(() => "123e4567-e89b-12d3-a456-426614174000"),
                 getEntityById: jest.fn(() => Promise.resolve(nullptr)),
@@ -153,7 +153,7 @@ IAgentRuntime createMockAgentRuntime(std::optional<std::optional<IAgentRuntime>>
                 getMemoriesByWorldId: jest.fn(() => Promise.resolve([])),
 
                 ...overrides,
-                }; }; }; }; }; }; }; }; };
+                }; }; }; }; }; }; }; }; }; };
 
                 return baseRuntime;
 

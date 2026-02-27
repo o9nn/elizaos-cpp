@@ -2,9 +2,9 @@
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_SERVER_SRC_UPLOAD_H
 #include "core.hpp"
 #include <string>
-#include "node:fs.h"
+// Node.js module removed - use C++ filesystem
 // Using alias removed (invalid transpilation)
-#include "node:path.h"
+// Node.js module removed - use C++ filesystem
 // Using alias removed (invalid transpilation)
 #include "multer.hpp"
 // Using alias removed (invalid transpilation)

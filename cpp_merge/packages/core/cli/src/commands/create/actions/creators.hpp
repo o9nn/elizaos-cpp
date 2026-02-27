@@ -5,7 +5,7 @@
 // External dependency removed
 using copyTemplateUtil = copyTemplate;
 #include "path.hpp"
-#include "node:fs/promises.h"
+// Node.js module removed - use C++ filesystem
 // Using alias removed (invalid transpilation)
 // External dependency removed
 #include "yoctocolors.hpp"

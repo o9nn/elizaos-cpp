@@ -2,8 +2,8 @@
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_CLI_SRC_UTILS_TESTING_TEST_HEALTH_MONITOR_H
 #include "core.hpp"
 #include <string>
-#include "node:fs.h"
-#include "node:path.h"
+// Node.js module removed - use C++ filesystem
+// Node.js module removed - use C++ filesystem
 // Using alias removed (invalid transpilation)
 
 class TestResult;

@@ -3,7 +3,7 @@
 #include "core.hpp"
 // External dependency removed
 // External dependency removed
-#include "node:assert.h"
+// Node.js module removed - use C++ filesystem
 using assert = strict;
 #include "../lp/service.h"
 #include "../tokenData/service.h"

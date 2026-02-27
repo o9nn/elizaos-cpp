@@ -1,8 +1,8 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_CREATE_ACTIONS_SETUP_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_CREATE_ACTIONS_SETUP_H
 #include "core.hpp"
-#include "node:fs.h"
-#include "node:fs/promises.h"
+// Node.js module removed - use C++ filesystem
+// Node.js module removed - use C++ filesystem
 // Using alias removed (invalid transpilation)
 // External dependency removed
 

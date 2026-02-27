@@ -3,6 +3,6 @@
 #include "core.hpp"
 #include "bun:test.h"
 #include "../../utils.h"
-#include "node:path.h"
+// Node.js module removed - use C++ filesystem
 
 #endif

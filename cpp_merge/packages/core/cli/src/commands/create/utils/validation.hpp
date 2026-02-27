@@ -1,8 +1,8 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_CREATE_UTILS_VALIDATION_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_CREATE_UTILS_VALIDATION_H
 #include "core.hpp"
-#include "node:fs.h"
-#include "node:fs/promises.h"
+// Node.js module removed - use C++ filesystem
+// Node.js module removed - use C++ filesystem
 // Using alias removed (invalid transpilation)
 #include "zod.hpp"
 #include "../types.h"

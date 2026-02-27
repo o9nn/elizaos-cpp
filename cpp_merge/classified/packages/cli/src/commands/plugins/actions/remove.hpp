@@ -5,8 +5,8 @@
 // External dependency removed
 // External dependency removed
 #include "../../../utils/bun-exec.js.h"
-#include "node:fs.h"
-#include "node:path.h"
+// Node.js module removed - use C++ filesystem
+// Node.js module removed - use C++ filesystem
 // Using alias removed (invalid transpilation)
 #include "../utils/naming.h"
 #include "../utils/directory.h"

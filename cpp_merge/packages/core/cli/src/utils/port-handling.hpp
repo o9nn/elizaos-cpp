@@ -1,7 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_CLI_SRC_UTILS_PORT_HANDLING_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_CLI_SRC_UTILS_PORT_HANDLING_H
 #include "core.hpp"
-#include "node:net.h"
+// Node.js module removed - use C++ filesystem
 // Using alias removed (invalid transpilation)
 
 std::shared_ptr<Promise<boolean>> isPortFree(double port);

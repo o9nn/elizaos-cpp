@@ -4,7 +4,7 @@
 // External dependency removed
 using coreGetWavHeader = getWavHeader;
 using corePrependWavHeader = prependWavHeader;
-#include "node:stream.h"
+// Node.js module removed - use C++ filesystem
 
 std::shared_ptr<Buffer> getWavHeader(double audioLength, double sampleRate, double channelCount = 1, double bitsPerSample = 16);
 

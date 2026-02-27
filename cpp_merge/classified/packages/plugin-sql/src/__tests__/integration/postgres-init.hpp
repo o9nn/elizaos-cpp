@@ -4,7 +4,7 @@
 #include "bun:test.h"
 #include "../../index.h"
 // External dependency removed
-#include "node:os.h"
-#include "node:path.h"
+// Node.js module removed - use C++ filesystem
+// Node.js module removed - use C++ filesystem
 
 #endif

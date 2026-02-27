@@ -16,9 +16,9 @@ namespace elizaos {
  * Converted from sweagent/types.py
  */
 
-// ====
+// ===
 // CORE TYPE DEFINITIONS (moved here to be available for interfaces below)
-// ====
+// ===
 
 /**
  * Tool call structure for LLM std::function calling
@@ -145,9 +145,9 @@ struct AgentRunResult {
     Trajectory trajectory;
 };
 
-// ====
+// ===
 // ADDITIONAL TYPE DEFINITIONS TO REPLACE 'any' TYPES
-// ====
+// ===
 
 /**
  * Model response from LLM

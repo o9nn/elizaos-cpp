@@ -20,15 +20,15 @@ namespace elizaos {
 
 // Re-from plugin types
 
-//====
+//===
 // CHAIN TYPES
-//====
+//===
 
 using EVMChain = std::variant<"base", "bsc">;
 
-//====
+//===
 // OTC CONTRACT TYPES
-//====
+//===
 
 /**
  * OTC Offer structure (matches Solidity contract)
@@ -105,9 +105,9 @@ struct QuoteAccepted {
     std::string txHash;
 };
 
-//====
+//===
 // DATABASE TYPES
-//====
+//===
 
 /**
  * Token in database
@@ -190,9 +190,9 @@ struct ConsignmentDeal {
     "pending" | "executed" | "failed" status;
 };
 
-//====
+//===
 // USER SESSION TYPES
-//====
+//===
 
 /**
  * User session memory
@@ -209,9 +209,9 @@ struct UserSessionMemory {
     double updatedAt;
 };
 
-//====
+//===
 // UTILITY TYPES
-//====
+//===
 
 /**
  * Token with balance information

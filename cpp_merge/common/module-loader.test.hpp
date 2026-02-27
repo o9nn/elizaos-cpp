@@ -3,7 +3,7 @@
 #include "core.hpp"
 #include "vitest.hpp"
 #include "./module-loader.h"
-#include "node:path.h"
+// Node.js module removed - use C++ filesystem
 // Using alias removed (invalid transpilation)
 
 #endif

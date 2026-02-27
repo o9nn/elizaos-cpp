@@ -1,7 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_DEV_TYPES_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_DEV_TYPES_H
 #include "core.hpp"
-#include "node:child_process.h"
+// Node.js module removed - use C++ filesystem
 
 class DevOptions;
 class ServerProcess;

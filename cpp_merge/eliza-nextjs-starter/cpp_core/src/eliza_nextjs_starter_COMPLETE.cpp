@@ -13,9 +13,9 @@
 namespace elizaos {
 namespace nextjs_starter {
 
-// ====
+// ===
 // TEMPLATE GENERATOR
-// ====
+// ===
 
 class NextJSTemplateGenerator {
 public:
@@ -308,9 +308,9 @@ a {
     }
 };
 
-// ====
+// ===
 // EXPORTED API
-// ====
+// ===
 
 bool generateNextJSProject(const std::string& projectPath, const std::string& projectName) {
     return NextJSTemplateGenerator::generateProject(projectPath, projectName);

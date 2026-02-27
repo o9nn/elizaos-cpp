@@ -1,7 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTO_FUN_PACKAGES_AUTODOC_SRC_TYPESCRIPTPARSER_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTO_FUN_PACKAGES_AUTODOC_SRC_TYPESCRIPTPARSER_H
 #include "core.hpp"
-#include "node:fs.h"
+// Node.js module removed - use C++ filesystem
 // Using alias removed (invalid transpilation)
 // External dependency removed
 #include "./types.h"

@@ -16,7 +16,7 @@ namespace elizaos {
 
 /**
  * E2E (End-to-End) Test Suite for ElizaOS Plugins
- * ===
+ * ==
  *
  * This file contains end-to-end tests that run within a real ElizaOS runtime environment.
  * Unlike unit tests that test individual components in isolation, e2e tests validate

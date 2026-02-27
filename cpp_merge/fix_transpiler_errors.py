@@ -255,6 +255,12 @@ def fix_absolute_include_paths(content: str) -> str:
         '// External dependency removed',
         content
     )
+    # Fix Node.js module imports like node:fs
+    content = re.sub(
+        r'#include\s+"node:[^"]+\.h(?:pp)?"',
+        '// Node.js module removed - use C++ filesystem',
+        content
+    )
     # Fix includes for .h -> .hpp
     content = re.sub(
         r'#include\s+"(\w+)\.h"',

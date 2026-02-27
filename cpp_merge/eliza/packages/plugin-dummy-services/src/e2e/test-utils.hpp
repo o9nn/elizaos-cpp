@@ -4,7 +4,7 @@
 // External dependency removed
 #include "uuid.hpp"
 using uuid = v4;
-#include "node:assert.h"
+// Node.js module removed - use C++ filesystem
 using assert = strict;
 
 std::shared_ptr<Promise<object>> setupScenario(std::shared_ptr<IAgentRuntime> runtime);

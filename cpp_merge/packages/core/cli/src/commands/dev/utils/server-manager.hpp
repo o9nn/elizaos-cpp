@@ -1,8 +1,8 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_DEV_UTILS_SERVER_MANAGER_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_CLI_SRC_COMMANDS_DEV_UTILS_SERVER_MANAGER_H
 #include "core.hpp"
-#include "node:child_process.h"
-#include "node:child_process.h"
+// Node.js module removed - use C++ filesystem
+// Node.js module removed - use C++ filesystem
 #include "../types.h"
 
 class DevServerManager;

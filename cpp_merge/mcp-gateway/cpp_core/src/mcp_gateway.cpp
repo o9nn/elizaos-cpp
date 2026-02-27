@@ -413,9 +413,9 @@ void MCPServer::stopListening() {
     // Placeholder: Would stop request handler
 }
 
-// ====
+// ===
 // Transport Layer Implementations
-// ====
+// ===
 
 /**
  * Transport base class for MCP protocol communication

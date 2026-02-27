@@ -3,7 +3,7 @@
 #include "core.hpp"
 // External dependency removed
 // Using alias removed (invalid transpilation)
-#include "node:path.h"
+// Node.js module removed - use C++ filesystem
 // Using alias removed (invalid transpilation)
 #include "vite.hpp"
 #include "vite-plugin-node-polyfills.h"

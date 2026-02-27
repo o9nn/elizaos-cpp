@@ -3,8 +3,8 @@
 #include "core.hpp"
 // External dependency removed
 // External dependency removed
-#include "node:fs.h"
-#include "node:path.h"
+// Node.js module removed - use C++ filesystem
+// Node.js module removed - use C++ filesystem
 // Using alias removed (invalid transpilation)
 #include "../types.h"
 

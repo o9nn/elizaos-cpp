@@ -3,9 +3,9 @@
 #include "core.hpp"
 #include "bun:test.h"
 #include "../utils/bun-test-helpers.h"
-#include "node:fs/promises.h"
-#include "node:path.h"
-#include "node:os.h"
+// Node.js module removed - use C++ filesystem
+// Node.js module removed - use C++ filesystem
+// Node.js module removed - use C++ filesystem
 #include "./test-utils.h"
 
 #endif

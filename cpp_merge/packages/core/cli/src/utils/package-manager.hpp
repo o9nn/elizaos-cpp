@@ -5,8 +5,8 @@
 #include "./user-environment.h"
 #include "./bun-installation-helper.h"
 #include "./run-bun.h"
-#include "node:fs.h"
-#include "node:path.h"
+// Node.js module removed - use C++ filesystem
+// Node.js module removed - use C++ filesystem
 // Using alias removed (invalid transpilation)
 #include "execa.hpp"
 

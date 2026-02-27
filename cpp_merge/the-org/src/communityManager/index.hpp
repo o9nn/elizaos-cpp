@@ -4,9 +4,9 @@
 // External dependency removed
 #include "dotenv.hpp"
 // Using alias removed (invalid transpilation)
-#include "node:fs.h"
+// Node.js module removed - use C++ filesystem
 // Using alias removed (invalid transpilation)
-#include "node:path.h"
+// Node.js module removed - use C++ filesystem
 // Using alias removed (invalid transpilation)
 #include "../init.h"
 #include "./plugins/communityManager.h"

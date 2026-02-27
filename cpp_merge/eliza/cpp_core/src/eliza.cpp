@@ -48,9 +48,9 @@ std::string trim(const std::string& str) {
     return str.substr(start, end - start + 1);
 }
 
-// ===
+// ==
 // ConversationTurn Implementation
-// ===
+// ==
 
 ConversationTurn::ConversationTurn(const std::string& input, const std::string& response)
     : input(input), response(response) {
@@ -59,9 +59,9 @@ ConversationTurn::ConversationTurn(const std::string& input, const std::string& 
     emotionalState = "neutral";
 }
 
-// ===
+// ==
 // ConversationContext Implementation
-// ===
+// ==
 
 ConversationContext::ConversationContext(const std::string& sessionId, const std::string& userId)
     : sessionId(sessionId), userId(userId) {
@@ -153,9 +153,9 @@ ConversationContext ConversationContext::fromJson(const JsonValue& json) {
     return context;
 }
 
-// ===
+// ==
 // ResponsePattern Implementation
-// ===
+// ==
 
 ResponsePattern::ResponsePattern(const std::string& pattern, const std::vector<std::string>& responses,
                                 const std::string& category)
@@ -250,9 +250,9 @@ ResponsePattern ResponsePattern::fromJson(const JsonValue& json) {
     return pattern;
 }
 
-// ===
+// ==
 // EmotionalStateTracker Implementation
-// ===
+// ==
 
 void EmotionalStateTracker::updateFromInput(const std::string& input) {
     auto emotionalWords = detectEmotionalWords(input);
@@ -413,9 +413,9 @@ std::vector<std::string> EmotionalStateTracker::detectEmotionalWords(const std::
     return emotionalWords;
 }
 
-// ===
+// ==
 // ResponseGenerator Implementation
-// ===
+// ==
 
 ResponseGenerator::ResponseGenerator() {
     loadDefaultPatterns();
@@ -603,9 +603,9 @@ std::unordered_map<std::string, std::string> ResponseGenerator::extractVariables
     return variables;
 }
 
-// ===
+// ==
 // ElizaCore Implementation
-// ===
+// ==
 
 ElizaCore::ElizaCore() {
     responseGenerator_ = std::make_shared<ResponseGenerator>();
@@ -1038,9 +1038,9 @@ void ElizaCore::trackConversationMetrics(const ConversationContext& context) {
                 " (turns: " + std::to_string(context.history.size()) + ")", "debug", "eliza");
 }
 
-// ===
+// ==
 // Utility Functions
-// ===
+// ==
 
 std::string normalizeInput(const std::string& input) {
     return trim(toLowercase(input));
@@ -1110,9 +1110,9 @@ bool isGoodbye(const std::string& input) {
            lowerInput.find("have a good") != std:::npos;
 }
 
-// ===
+// ==
 // Predefined Response Patterns
-// ===
+// ==
 
 namespace ElizaPatterns {
 

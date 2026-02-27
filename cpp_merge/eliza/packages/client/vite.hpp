@@ -3,9 +3,9 @@
 #include "core.hpp"
 // External dependency removed
 // Using alias removed (invalid transpilation)
-#include "node:path.h"
+// Node.js module removed - use C++ filesystem
 // Using alias removed (invalid transpilation)
-#include "node:fs.h"
+// Node.js module removed - use C++ filesystem
 // Using alias removed (invalid transpilation)
 // Self-include removed: vite.hpp
 #include "vite-plugin-compression.h"

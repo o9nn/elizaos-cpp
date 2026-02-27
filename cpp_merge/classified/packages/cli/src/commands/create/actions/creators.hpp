@@ -6,7 +6,7 @@
 // External dependency removed
 using copyTemplateUtil = copyTemplate;
 #include "path.hpp"
-#include "node:fs/promises.h"
+// Node.js module removed - use C++ filesystem
 // Using alias removed (invalid transpilation)
 // External dependency removed
 #include "yoctocolors.hpp"
@@ -14,7 +14,7 @@ using copyTemplateUtil = copyTemplate;
 #include "../utils.h"
 #include "./setup.h"
 // External dependency removed
-#include "node:fs.h"
+// Node.js module removed - use C++ filesystem
 // External dependency removed
 
 std::shared_ptr<Promise<void>> handleInteractiveConfiguration(string targetDir, string database, string aiModel, string embeddingModel = std::nullopt);

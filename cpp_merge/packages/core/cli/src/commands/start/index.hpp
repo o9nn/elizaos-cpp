@@ -9,8 +9,8 @@
 #include "commander.hpp"
 #include "./actions/server-start.h"
 #include "./types.h"
-#include "node:fs.h"
-#include "node:path.h"
+// Node.js module removed - use C++ filesystem
+// Node.js module removed - use C++ filesystem
 #include "./utils/config-utils.h"
 // External dependency removed
 

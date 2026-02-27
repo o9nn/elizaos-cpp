@@ -3,8 +3,8 @@
 #include "core.hpp"
 // External dependency removed
 #include "./bun-exec.h"
-#include "node:os.h"
-#include "node:path.h"
+// Node.js module removed - use C++ filesystem
+// Node.js module removed - use C++ filesystem
 
 extern double INSTALLATION_VERIFICATION_DELAY_MS;
 void updatePathForBun();
