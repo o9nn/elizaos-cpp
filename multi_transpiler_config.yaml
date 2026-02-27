@@ -97,3 +97,6 @@ strategies:
 
   ts2cpp_only:
     stage1: ts2cpp          # Type definitions only
+
+  python_only:
+    stage1: python          # Python transpiler only (fallback)
