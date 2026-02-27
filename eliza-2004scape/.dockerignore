@@ -1,0 +1,18 @@
+.git/
+node_modules/
+engine/node_modules/
+gateway/node_modules/
+webclient/node_modules/
+sdk/node_modules/
+
+# Dev/test files
+scripts/
+bot_arcs/
+bots/
+runs/
+docs/
+*.log
+**/.DS_Store
+
+# Large files not needed for production
+engine/screenshots/
