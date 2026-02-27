@@ -604,17 +604,33 @@ class MultiTranspiler:
 
         return rel_path
     
-    def write_output(self, result: TranspilationResult, output_dir: Path, ts_file: Path):
-        """Write transpilation result to output directory, preserving source directory structure"""
-        # Calculate relative path from input directory
+    def _compute_relative_path(self, ts_file: Path) -> Path:
+        """Compute relative path from input directory, resolving both paths to avoid format mismatches.
+        
+        Args:
+            ts_file: The TypeScript file path to compute relative path for
+            
+        Returns:
+            Relative path from input_path, or just filename if computation fails
+        """
+        resolved_ts_file = ts_file.resolve()
+        
         if self.input_path is not None:
+            resolved_input_path = self.input_path.resolve()
             try:
-                rel_path = ts_file.relative_to(self.input_path)
+                return resolved_ts_file.relative_to(resolved_input_path)
             except ValueError:
                 # If ts_file is not relative to input_path, use just the filename
-                rel_path = Path(ts_file.name)
+                # This should rarely happen if paths are set up correctly
+                print(f"  Warning: Could not compute relative path for {resolved_ts_file} from {resolved_input_path}")
+                return Path(resolved_ts_file.name)
         else:
-            rel_path = Path(ts_file.name)
+            return Path(resolved_ts_file.name)
+    
+    def write_output(self, result: TranspilationResult, output_dir: Path, ts_file: Path):
+        """Write transpilation result to output directory, preserving source directory structure"""
+        # Calculate relative path from input directory using helper method
+        rel_path = self._compute_relative_path(ts_file)
         
         # Apply directory mapping if configured
         mapped_path = self.apply_directory_mapping(rel_path)
@@ -665,12 +681,9 @@ class MultiTranspiler:
         failure_count = 0
         
         for ts_file in ts_files:
-            # Show relative path to help understand structure
-            try:
-                rel_path = ts_file.relative_to(self.input_path)
-                print(f"Processing: {rel_path}")
-            except ValueError:
-                print(f"Processing: {ts_file.name}")
+            # Show relative path to help understand structure using helper method
+            rel_path = self._compute_relative_path(ts_file)
+            print(f"Processing: {rel_path}")
             
             # Select strategy
             if strategy:
