@@ -20,7 +20,7 @@ namespace elizaos {
  *
  * @param {IAgentRuntime} runtime The runtime instance.
  * @param {Relationship[]} relationships The relationships to be formatted.
- * @returns {Promise<string>} A formatted std: of the relationships.
+ * @returns {Promise<string>} A formatted std::string of the relationships.
  */
 std::future<void> formatRelationships(IAgentRuntime runtime, const std::vector<Relationship>& relationships);
 

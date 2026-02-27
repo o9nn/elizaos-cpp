@@ -1,4 +1,5 @@
 #include "componentService.hpp"
+#include <string>
 
 ComponentService::ComponentService(std::shared_ptr<IAgentRuntime> runtime_) : runtime(runtime_)  {
 }
@@ -13,7 +14,7 @@ std::shared_ptr<Promise<any>> ComponentService::getComponent(std::shared_ptr<UUI
     }
     catch (const any& error)
     {
-        logger->error(std:("[ComponentService] Error getting component:"), error);
+        logger->error(std::string("[ComponentService] Error getting component:"), error);
         return nullptr;
     }
 }
@@ -27,7 +28,7 @@ std::shared_ptr<Promise<boolean>> ComponentService::createComponent(object param
     }
     catch (const any& error)
     {
-        logger->error(std:("[ComponentService] Error creating component:"), error);
+        logger->error(std::string("[ComponentService] Error creating component:"), error);
         return false;
     }
 }
@@ -41,7 +42,7 @@ std::shared_ptr<Promise<boolean>> ComponentService::updateComponent(object param
     }
     catch (const any& error)
     {
-        logger->error(std:("[ComponentService] Error updating component:"), error);
+        logger->error(std::string("[ComponentService] Error updating component:"), error);
         return false;
     }
 }
@@ -51,7 +52,7 @@ std::shared_ptr<Component> ComponentService::normalizeComponent(std::shared_ptr<
     if (component->data) {
         component->data = OR((dbCompat->parseJson(as<any>(component->data))), (object{}));
     }
-    if (AND((component->data), (type_of(component->data) == std:("object")))) {
+    if (AND((component->data), (type_of(component->data) == std::string("object")))) {
         this->normalizeBooleans(component->data);
     }
     if (component->id) {
@@ -77,14 +78,14 @@ std::shared_ptr<Component> ComponentService::normalizeComponent(std::shared_ptr<
 
 void ComponentService::normalizeBooleans(any obj)
 {
-    if (OR((!obj), (type_of(obj) != std:("object")))) return;
+    if (OR((!obj), (type_of(obj) != std::string("object")))) return;
     for (auto& key : keys_(obj))
     {
         if (obj["hasOwnProperty"](key)) {
             auto value = const_(obj)[key];
-            if (AND((type_of(value) == std:("number")), ((OR((value == 0), (value == 1)))))) {
+            if (AND((type_of(value) == std::string("number")), ((OR((value == 0), (value == 1)))))) {
                 obj[key] = dbCompat->parseBoolean(value);
-            } else if (type_of(value) == std:("object")) {
+            } else if (type_of(value) == std::string("object")) {
                 this->normalizeBooleans(value);
             }
         }

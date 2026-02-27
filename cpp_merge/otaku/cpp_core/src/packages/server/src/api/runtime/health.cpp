@@ -1,4 +1,5 @@
 #include "health.hpp"
+#include <string>
 #include <cstdlib>
 #include <optional>
 #include <iostream>
@@ -20,7 +21,7 @@ express::Router createHealthRouter(ElizaOS elizaOS, AgentServer serverInstance) 
         router.get[&]("/hello", (_req, res) {
             std::cout << "Hello endpoint hit" << std::endl;
             res.setHeader("Content-Type", "application/json");
-            res.send(/* JSON.stringify */ std:({ message: "Hello World!" }));
+            res.send(/* JSON.stringify */ std::string({ message: "Hello World!" }));
             });
 
             // System status endpoint

@@ -28,22 +28,22 @@ namespace elizaos {
  */
 class SweBenchEvaluate {
 public:
-    SweBenchEvaluate(std::optional<std:> params);
-    std: runId() const;
-    std::vector<std::string> getSbCall(const std:& predsPath, bool submitOnly = false);
+    SweBenchEvaluate(std::optional<std::string> params);
+    std::string runId() const;
+    std::vector<std::string> getSbCall(const std::string& predsPath, bool submitOnly = false);
     void checkRunningCalls();
-    void onInstanceCompleted(const std:& _params);
+    void onInstanceCompleted(const std::string& _params);
     void moveSbCliReport();
     void onEnd();
 
 private:
-    std: outputDir_;
-    std: subset_;
-    std: split_;
+    std::string outputDir_;
+    std::string subset_;
+    std::string split_;
     double continuousSubmissionEvery_;
     double lastEvaluationTime_;
     double evaluationInterval_;
-    std: timeSuffix_;
+    std::string timeSuffix_;
 };
 
 

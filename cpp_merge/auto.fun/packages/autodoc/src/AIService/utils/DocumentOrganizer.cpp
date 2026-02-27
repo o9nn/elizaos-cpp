@@ -1,17 +1,18 @@
 #include "DocumentOrganizer.hpp"
+#include <string>
 
 std::shared_ptr<OrganizedDocs> DocumentOrganizer::organizeDocumentation(array<std::shared_ptr<ASTQueueItem>> docs)
 {
     return docs->reduce([=](auto acc, auto doc) mutable
     {
         static switch_type __switch675_1360 = {
-            { any(std:("ClassDeclaration")), 1 },
-            { any(std:("MethodDefinition")), 2 },
-            { any(std:("TSMethodSignature")), 3 },
-            { any(std:("TSInterfaceDeclaration")), 4 },
-            { any(std:("TSTypeAliasDeclaration")), 5 },
-            { any(std:("FunctionDeclaration")), 6 },
-            { any(std:("VariableDeclaration")), 7 }
+            { any(std::string("ClassDeclaration")), 1 },
+            { any(std::string("MethodDefinition")), 2 },
+            { any(std::string("TSMethodSignature")), 3 },
+            { any(std::string("TSInterfaceDeclaration")), 4 },
+            { any(std::string("TSTypeAliasDeclaration")), 5 },
+            { any(std::string("FunctionDeclaration")), 6 },
+            { any(std::string("VariableDeclaration")), 7 }
         };
         switch (__switch675_1360[doc->nodeType])
         {
@@ -38,12 +39,12 @@ std::shared_ptr<OrganizedDocs> DocumentOrganizer::organizeDocumentation(array<st
         return acc;
     }
     , object{
-        object::pair{std:("classes"), array<any>()}, 
-        object::pair{std:("methods"), array<any>()}, 
-        object::pair{std:("interfaces"), array<any>()}, 
-        object::pair{std:("types"), array<any>()}, 
-        object::pair{std:("functions"), array<any>()}, 
-        object::pair{std:("variables"), array<any>()}
+        object::pair{std::string("classes"), array<any>()}, 
+        object::pair{std::string("methods"), array<any>()}, 
+        object::pair{std::string("interfaces"), array<any>()}, 
+        object::pair{std::string("types"), array<any>()}, 
+        object::pair{std::string("functions"), array<any>()}, 
+        object::pair{std::string("variables"), array<any>()}
     });
 }
 
@@ -58,33 +59,33 @@ array<std::shared_ptr<FileDocsGroup>> DocumentOrganizer::groupDocsByFile(std::sh
     return Array->from(filePaths)->map([=](auto filePath) mutable
     {
         return object{
-            object::pair{std:("filePath"), std:("filePath")}, 
-            object::pair{std:("classes"), docs->classes->filter([=](auto c) mutable
+            object::pair{std::string("filePath"), std::string("filePath")}, 
+            object::pair{std::string("classes"), docs->classes->filter([=](auto c) mutable
             {
                 return c->filePath == filePath;
             }
             )}, 
-            object::pair{std:("methods"), docs->methods->filter([=](auto m) mutable
+            object::pair{std::string("methods"), docs->methods->filter([=](auto m) mutable
             {
                 return m->filePath == filePath;
             }
             )}, 
-            object::pair{std:("interfaces"), docs->interfaces->filter([=](auto i) mutable
+            object::pair{std::string("interfaces"), docs->interfaces->filter([=](auto i) mutable
             {
                 return i->filePath == filePath;
             }
             )}, 
-            object::pair{std:("types"), docs->types->filter([=](auto t) mutable
+            object::pair{std::string("types"), docs->types->filter([=](auto t) mutable
             {
                 return t->filePath == filePath;
             }
             )}, 
-            object::pair{std:("functions"), docs->functions->filter([=](auto f) mutable
+            object::pair{std::string("functions"), docs->functions->filter([=](auto f) mutable
             {
                 return f->filePath == filePath;
             }
             )}, 
-            object::pair{std:("variables"), docs->variables->filter([=](auto v) mutable
+            object::pair{std::string("variables"), docs->variables->filter([=](auto v) mutable
             {
                 return v->filePath == filePath;
             }

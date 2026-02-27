@@ -1,4 +1,5 @@
 #include "chat-price-chart.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -10,7 +11,7 @@ void ChatPriceChart() {
     const auto [activeChartType, setActiveChartType] = useState<ChartType>("price");
 
     // Base formatting std::function used by graph values (Y-axis, tooltips)
-    const auto formatValue = (value, includeSymbol = false): std: => {;
+    const auto formatValue = (value, includeSymbol = false): std::string => {;
         const auto prefix = includeSymbol ? "$" : "";
 
         if (value == 0) return '';
@@ -24,7 +25,7 @@ void ChatPriceChart() {
         };
 
         // Header formatting std::function - only abbreviates for values >= 1M
-        const auto formatHeaderValue = (value, includeSymbol = false): std: => {;
+        const auto formatHeaderValue = (value, includeSymbol = false): std::string => {;
             const auto prefix = includeSymbol ? "$" : "";
 
             if (value == 0) return '';
@@ -37,9 +38,9 @@ void ChatPriceChart() {
             return prefix + std::to_string(value.toFixed(8));
             };
 
-            const auto formatPrice = (price): std: => formatHeaderValue(price, false);
-            const auto formatYAxisValue = (value): std: => formatValue(value, true);
-            const auto formatMarketCap = (value): std: => formatHeaderValue(value, true);
+            const auto formatPrice = (price): std::string => formatHeaderValue(price, false);
+            const auto formatYAxisValue = (value): std::string => formatValue(value, true);
+            const auto formatMarketCap = (value): std::string => formatHeaderValue(value, true);
 
             const auto getEvenlySpacedTimeTicks = (dataPoints: PriceDataPoint[] | MarketCapDataPoint[], count)[] => {;
                 if (dataPoints.size() == 0) return [];

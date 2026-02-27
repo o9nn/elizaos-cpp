@@ -1,4 +1,5 @@
 #include "callback.hpp"
+#include <string>
 #include <map>
 #include <iostream>
 #include <stdexcept>
@@ -9,8 +10,8 @@ void CallbackPage() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const auto [error, setError] = useState<std: | nullptr>(nullptr);
-        const auto [debugInfo, setDebugInfo] = useState<{ [key: std:]: std: }>({});
+        const auto [error, setError] = useState<std::string | nullptr>(nullptr);
+        const auto [debugInfo, setDebugInfo] = useState<{ [key: std::string]: std::string }>({});
 
         useEffect[&](() {
             const auto processCallback = std::async [&]() {;
@@ -89,7 +90,7 @@ void CallbackPage() {
                                         oauth1TokenSecret: data.oauth1_token_secret,
                                         };
 
-                                        localStorage.setItem(STORAGE_KEY, /* JSON.stringify */ std:(credentials));
+                                        localStorage.setItem(STORAGE_KEY, /* JSON.stringify */ std::string(credentials));
 
                                         // Redirect back to original page
                                         redirectToOrigin();
@@ -146,8 +147,8 @@ void CallbackPage() {
                                                     std::cout << "OAuth 2.0 tokens received << fetching profile..." << std::endl;
 
                                                     // --- Fetch Profile Details ---
-                                                    auto username: std: | std::nullopt;
-                                                    auto profileImageUrl: std: | std::nullopt;
+                                                    auto username: std::string | std::nullopt;
+                                                    auto profileImageUrl: std::string | std::nullopt;
                                                     try {
                                                         const auto profileApiResponse = fetch(;
                                                         env.apiUrl + "/api/share/twitter-user"
@@ -199,9 +200,9 @@ void CallbackPage() {
 
                                                                                 console.log(
                                                                                 "Saving complete credentials to localStorage:",
-                                                                                /* JSON.stringify */ std:(credentials, nullptr, 2),
+                                                                                /* JSON.stringify */ std::string(credentials, nullptr, 2),
                                                                                 );
-                                                                                localStorage.setItem(STORAGE_KEY, /* JSON.stringify */ std:(credentials));
+                                                                                localStorage.setItem(STORAGE_KEY, /* JSON.stringify */ std::string(credentials));
                                                                                 redirectToOrigin(); // Redirect after saving complete data;
                                                                                 } else {
                                                                                     console.error(
@@ -211,7 +212,7 @@ void CallbackPage() {
                                                                                     setDebugInfo((prev) => ({
                                                                                         ...prev,
                                                                                         tokenMissing: "true",
-                                                                                        receivedTokenData: /* JSON.stringify */ std:(tokenData),
+                                                                                        receivedTokenData: /* JSON.stringify */ std::string(tokenData),
                                                                                         })); // Add received data to debug;
                                                                                         throw new Error(
                                                                                         "Incomplete token data received (missing access_token, refresh_token, or user_id)",

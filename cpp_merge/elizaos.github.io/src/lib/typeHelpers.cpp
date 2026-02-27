@@ -3,7 +3,7 @@
 std::function<any(std::shared_ptr<T>)> isNotNullOrUndefined = template <typename T>
 [=](auto value) mutable
 {
-    return AND((value != nullptr), (value != undefined));
+    return AND((value != nullptr), (value != std::nullopt));
 };
 std::function<any(array<std::shared_ptr<T>>)> isNotNullOrUndefinedArray = template <typename T>
 [=](auto value) mutable

@@ -25,8 +25,8 @@ namespace elizaos {
 // Extend Window interface
   struct Window {
     std::optional<{> ELIZA_CONFIG;
-    std: agentId;
-    std: apiBase;
+    std::string agentId;
+    std::string apiBase;
 };
 
 // Custom command to check if element is in dark mode

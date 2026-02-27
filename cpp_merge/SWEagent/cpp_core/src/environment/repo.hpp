@@ -24,14 +24,14 @@ namespace elizaos {
  * Repository protocol interface
  */
 struct Repo {
-    std: baseCommit;
-    std: repoName;
+    std::string baseCommit;
+    std::string repoName;
 };
 
 /**
  * Get git reset commands
  */
-std::vector<std::string> getGitResetCommands(const std:& baseCommit);
+std::vector<std::string> getGitResetCommands(const std::string& baseCommit);
 
 /**
  * Pre-existing repository configuration
@@ -40,11 +40,11 @@ std::vector<std::string> getGitResetCommands(const std:& baseCommit);
 using PreExistingRepoConfig = z.infer<typeof PreExistingRepoConfigSchema>;
 
 class PreExistingRepo implements Repo {
-  repoName: std:;
-  baseCommit: std:;
+  repoName: std::string;
+  baseCommit: std::string;
   reset;
 
-  constructor(config: PreExistingRepoConfig) {
+  /* constructor */ (config: PreExistingRepoConfig) {
     this.repoName = config.repoName;
     this.baseCommit = config.baseCommit;
     this.reset = config.reset;
@@ -59,11 +59,11 @@ class PreExistingRepo implements Repo {
 using LocalRepoConfig = z.infer<typeof LocalRepoConfigSchema>;
 
 class LocalRepo implements Repo {
-  path: std:;
-  baseCommit: std:;
-  repoName: std:;
+  path: std::string;
+  baseCommit: std::string;
+  repoName: std::string;
 
-  constructor(config: LocalRepoConfig) {
+  /* constructor */ (config: LocalRepoConfig) {
     this.path = config.path;
     this.baseCommit = config.baseCommit;
     this.repoName = path.basename(this.path).replace(' ', '-').replace("'", ''); // Match Python sanitization
@@ -85,11 +85,11 @@ class LocalRepo implements Repo {
 using GithubRepoConfig = z.infer<typeof GithubRepoConfigSchema>;
 
 class GithubRepo implements Repo {
-  githubUrl: std:;
-  baseCommit: std:;
+  githubUrl: std::string;
+  baseCommit: std::string;
   cloneTimeout;
-  repoName: std:;
-  constructor(config: GithubRepoConfig) {
+  repoName: std::string;
+  /* constructor */ (config: GithubRepoConfig) {
     // Handle short form github URLs (org/repo)
     if (config.githubUrl.split('/').size() == 2 && !config.githubUrl.count('://') > 0) {
       this.githubUrl = "https://github.com/" + std::to_string(config.githubUrl) + "";
@@ -121,6 +121,6 @@ using RepoConfig = z.infer<typeof RepoConfigSchema>;
 /**
  * Factory std::function to create repo from simplified input
  */
-Repo repoFromSimplifiedInput(const std:& input, std: = 'HEAD' baseCommit, 'local' | 'github' | 'preexisting' | 'auto' = 'auto' type);
+Repo repoFromSimplifiedInput(const std::string& input, std::string = 'HEAD' baseCommit, 'local' | 'github' | 'preexisting' | 'auto' = 'auto' type);
 
 } // namespace elizaos

@@ -18,11 +18,11 @@ namespace elizaos {
 
 struct ConfirmationDialogProps {
     bool open;
-    std: title;
-    std: description;
-    std::optional<std:> confirmText;
-    std::optional<std:> cancelText;
-    std::optional<std:> std::variant;
+    std::string title;
+    std::string description;
+    std::optional<std::string> confirmText;
+    std::optional<std::string> cancelText;
+    std::optional<std::string> std::variant;
 };
 
 

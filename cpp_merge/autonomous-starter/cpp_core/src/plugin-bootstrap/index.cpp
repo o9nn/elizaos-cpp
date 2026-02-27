@@ -1,4 +1,5 @@
 #include "index.hpp"
+#include <string>
 #include <vector>
 #include <future>
 #include <map>
@@ -7,7 +8,7 @@
 
 namespace elizaos {
 
-std: escapeForJson(const std:& input) {
+std::string escapeForJson(const std::string& input) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return input.replace(/\\/g, "\\\\").replace(/"/g, "\\"").replace(/\n/g, "\\n");
@@ -15,7 +16,7 @@ std: escapeForJson(const std:& input) {
 
 }
 
-std: sanitizeJson(const std:& rawJson) {
+std::string sanitizeJson(const std::string& rawJson) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

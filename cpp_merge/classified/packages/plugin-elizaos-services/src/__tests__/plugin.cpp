@@ -1,4 +1,5 @@
 #include "plugin.test.h"
+#include <string>
 
 any createRealRuntime()
 {
@@ -7,62 +8,62 @@ any createRealRuntime()
     {
         if (serviceType == ElizaOSService::serviceType) {
             return std::make_shared<ElizaOSService>(as<any>(object{
-                object::pair{std:("character"), object{
-                    object::pair{std:("name"), std:("Test Character")}, 
-                    object::pair{std:("system"), std:("You are a helpful assistant for testing.")}
+                object::pair{std::string("character"), object{
+                    object::pair{std::string("name"), std::string("Test Character")}, 
+                    object::pair{std::string("system"), std::string("You are a helpful assistant for testing.")}
                 }}
             }));
         }
         return nullptr;
     };
     return object{
-        object::pair{std:("character"), object{
-            object::pair{std:("name"), std:("Test Character")}, 
-            object::pair{std:("system"), std:("You are a helpful assistant for testing.")}, 
-            object::pair{std:("plugins"), array<any>()}, 
-            object::pair{std:("settings"), object{}}
+        object::pair{std::string("character"), object{
+            object::pair{std::string("name"), std::string("Test Character")}, 
+            object::pair{std::string("system"), std::string("You are a helpful assistant for testing.")}, 
+            object::pair{std::string("plugins"), array<any>()}, 
+            object::pair{std::string("settings"), object{}}
         }}, 
-        object::pair{std:("getSetting"), [=](auto key) mutable
+        object::pair{std::string("getSetting"), [=](auto key) mutable
         {
             return nullptr;
         }
         }, 
-        object::pair{std:("models"), elizaOSServicesPlugin->models}, 
-        object::pair{std:("db"), object{
-            object::pair{std:("get"), [=](auto key) mutable
+        object::pair{std::string("models"), elizaOSServicesPlugin->models}, 
+        object::pair{std::string("db"), object{
+            object::pair{std::string("get"), [=](auto key) mutable
             {
                 return nullptr;
             }
             }, 
-            object::pair{std:("set"), [=](auto key, auto value) mutable
+            object::pair{std::string("set"), [=](auto key, auto value) mutable
             {
                 return true;
             }
             }, 
-            object::pair{std:("delete"), [=](auto key) mutable
+            object::pair{std::string("delete"), [=](auto key) mutable
             {
                 return true;
             }
             }, 
-            object::pair{std:("getKeys"), [=](auto pattern) mutable
+            object::pair{std::string("getKeys"), [=](auto pattern) mutable
             {
                 return array<any>();
             }
             }
         }}, 
-        object::pair{std:("getService"), [=](auto serviceType) mutable
+        object::pair{std::string("getService"), [=](auto serviceType) mutable
         {
-            logger->debug(std:("Requesting service: ") + serviceType + string_empty);
+            logger->debug(std::string("Requesting service: ") + serviceType + string_empty);
             if (!services->has(serviceType)) {
-                logger->debug(std:("Creating new service: ") + serviceType + string_empty);
+                logger->debug(std::string("Creating new service: ") + serviceType + string_empty);
                 services->set(serviceType, createService(serviceType));
             }
             return services->get(serviceType);
         }
         }, 
-        object::pair{std:("registerService"), [=](auto serviceType, auto service) mutable
+        object::pair{std::string("registerService"), [=](auto serviceType, auto service) mutable
         {
-            logger->debug(std:("Registering service: ") + serviceType + string_empty);
+            logger->debug(std::string("Registering service: ") + serviceType + string_empty);
             services->set(serviceType, service);
         }
         }
@@ -76,31 +77,31 @@ void Main(void)
     dotenv->config();
     beforeAll([=]() mutable
     {
-        spyOn(logger, std:("info"));
-        spyOn(logger, std:("error"));
-        spyOn(logger, std:("warn"));
-        spyOn(logger, std:("debug"));
+        spyOn(logger, std::string("info"));
+        spyOn(logger, std::string("error"));
+        spyOn(logger, std::string("warn"));
+        spyOn(logger, std::string("debug"));
     }
     );
     afterAll([=]() mutable
     {
     }
     );
-    describe(std:("Plugin Configuration"), [=]() mutable
+    describe(std::string("Plugin Configuration"), [=]() mutable
     {
-        it(std:("should have correct plugin metadata"), [=]() mutable
+        it(std::string("should have correct plugin metadata"), [=]() mutable
         {
-            expect(elizaOSServicesPlugin->name)->toBe(std:("elizaos-services"));
-            expect(elizaOSServicesPlugin->description)->toBe(std:("ElizaOS hosted services for AI inference and storage"));
+            expect(elizaOSServicesPlugin->name)->toBe(std::string("elizaos-services"));
+            expect(elizaOSServicesPlugin->description)->toBe(std::string("ElizaOS hosted services for AI inference and storage"));
             expect(elizaOSServicesPlugin->config)->toBeDefined();
         }
         );
-        it(std:("should include the EXAMPLE_PLUGIN_VARIABLE in config"), [=]() mutable
+        it(std::string("should include the EXAMPLE_PLUGIN_VARIABLE in config"), [=]() mutable
         {
-            expect(elizaOSServicesPlugin->config)->toHaveProperty(std:("ELIZAOS_API_KEY"));
+            expect(elizaOSServicesPlugin->config)->toHaveProperty(std::string("ELIZAOS_API_KEY"));
         }
         );
-        it(std:("should initialize properly"), [=]() mutable
+        it(std::string("should initialize properly"), [=]() mutable
         {
             auto originalEnv = process->env->ELIZAOS_API_KEY;
             {
@@ -110,11 +111,11 @@ void Main(void)
                 });
                 try
                 {
-                    process->env->ELIZAOS_API_KEY = std:("test-value");
+                    process->env->ELIZAOS_API_KEY = std::string("test-value");
                     auto runtime = createRealRuntime();
                     if (elizaOSServicesPlugin->init) {
                         std::async([=]() { elizaOSServicesPlugin->init(object{
-                            object::pair{std:("ELIZAOS_API_KEY"), std:("test-value")}
+                            object::pair{std::string("ELIZAOS_API_KEY"), std::string("test-value")}
                         }, as<any>(runtime)); });
                         expect(true)->toBe(true);
                     }
@@ -126,51 +127,51 @@ void Main(void)
             }
         }
         );
-        it(std:("should have a valid config"), [=]() mutable
+        it(std::string("should have a valid config"), [=]() mutable
         {
             expect(elizaOSServicesPlugin->config)->toBeDefined();
             if (elizaOSServicesPlugin->config) {
-                expect(Object->keys(elizaOSServicesPlugin->config))->toContain(std:("ELIZAOS_API_KEY"));
+                expect(Object->keys(elizaOSServicesPlugin->config))->toContain(std::string("ELIZAOS_API_KEY"));
             }
         }
         );
     }
     );
-    describe(std:("Plugin Models"), [=]() mutable
+    describe(std::string("Plugin Models"), [=]() mutable
     {
-        it(std:("should have TEXT_SMALL model defined"), [=]() mutable
+        it(std::string("should have TEXT_SMALL model defined"), [=]() mutable
         {
             expect(const_(elizaOSServicesPlugin->models)[ModelType->TEXT_SMALL])->toBeDefined();
             if (elizaOSServicesPlugin->models) {
-                expect(type_of(const_(elizaOSServicesPlugin->models)[ModelType->TEXT_SMALL]))->toBe(std:("function"));
+                expect(type_of(const_(elizaOSServicesPlugin->models)[ModelType->TEXT_SMALL]))->toBe(std::string("function"));
             }
         }
         );
-        it(std:("should have TEXT_LARGE model defined"), [=]() mutable
+        it(std::string("should have TEXT_LARGE model defined"), [=]() mutable
         {
             expect(const_(elizaOSServicesPlugin->models)[ModelType->TEXT_LARGE])->toBeDefined();
             if (elizaOSServicesPlugin->models) {
-                expect(type_of(const_(elizaOSServicesPlugin->models)[ModelType->TEXT_LARGE]))->toBe(std:("function"));
+                expect(type_of(const_(elizaOSServicesPlugin->models)[ModelType->TEXT_LARGE]))->toBe(std::string("function"));
             }
         }
         );
-        it(std:("should return a response from TEXT_SMALL model when API is available"), [=]() mutable
+        it(std::string("should return a response from TEXT_SMALL model when API is available"), [=]() mutable
         {
             if (const_(elizaOSServicesPlugin->models)[ModelType->TEXT_SMALL]) {
                 auto runtime = createRealRuntime();
                 try
                 {
                     auto result = std::async([=]() { const_(elizaOSServicesPlugin->models)[ModelType->TEXT_SMALL](as<any>(runtime), object{
-                        object::pair{std:("prompt"), std:("test")}
+                        object::pair{std::string("prompt"), std::string("test")}
                     }); });
                     expect(result)->toBeTruthy();
-                    expect(type_of(result))->toBe(std:("string"));
+                    expect(type_of(result))->toBe(std::string("string"));
                     expect(result->length)->toBeGreaterThan(10);
                 }
                 catch (const any& error)
                 {
-                    if (AND((is<Error>(error)), ((OR((OR((OR((error->message->includes(std:("No API provider available"))), (error->message->includes(std:("API error"))))), (error->message->includes(std:("invalid_api_key"))))), (error->message->includes(std:("Incorrect API key")))))))) {
-                        console->log(std:("Skipping test - API provider not available or not configured in test environment"));
+                    if (AND((is<Error>(error)), ((OR((OR((OR((error->message->includes(std::string("No API provider available"))), (error->message->includes(std::string("API error"))))), (error->message->includes(std::string("invalid_api_key"))))), (error->message->includes(std::string("Incorrect API key")))))))) {
+                        console->log(std::string("Skipping test - API provider not available or not configured in test environment"));
                         expect(error->message)->toBeTruthy();
                     } else {
                         throw any(error);
@@ -181,28 +182,28 @@ void Main(void)
         );
     }
     );
-    describe(std:("ElizaOSService"), [=]() mutable
+    describe(std::string("ElizaOSService"), [=]() mutable
     {
-        it(std:("should start the service"), [=]() mutable
+        it(std::string("should start the service"), [=]() mutable
         {
             auto runtime = createRealRuntime();
             auto startResult = std::async([=]() { ElizaOSService::start(as<any>(runtime)); });
             expect(startResult)->toBeDefined();
-            expect(startResult->constructor->name)->toBe(std:("ElizaOSService"));
-            expect(type_of(std::bind(&ElizaOSService::stop, startResult)))->toBe(std:("function"));
+            expect(startResult->constructor->name)->toBe(std::string("ElizaOSService"));
+            expect(type_of(std::bind(&ElizaOSService::stop, startResult)))->toBe(std::string("function"));
         }
         );
-        it(std:("should stop the service"), [=]() mutable
+        it(std::string("should stop the service"), [=]() mutable
         {
             auto runtime = createRealRuntime();
             auto service = std::make_shared<ElizaOSService>(as<any>(runtime));
             runtime["registerService"](ElizaOSService::serviceType, service);
-            auto stopSpy = spyOn(service, std:("stop"));
+            auto stopSpy = spyOn(service, std::string("stop"));
             std::async([=]() { ElizaOSService::stop(as<any>(runtime)); });
             expect(stopSpy)->toHaveBeenCalled();
         }
         );
-        it(std:("should throw an error when stopping a non-existent service"), [=]() mutable
+        it(std::string("should throw an error when stopping a non-existent service"), [=]() mutable
         {
             auto runtime = createRealRuntime();
             auto originalGetService = runtime["getService"];
@@ -210,7 +211,7 @@ void Main(void)
             {
                 return nullptr;
             };
-            std::async([=]() { expect(ElizaOSService::stop(as<any>(runtime)))->rejects->toThrow(std:("ElizaOS service not found")); });
+            std::async([=]() { expect(ElizaOSService::stop(as<any>(runtime)))->rejects->toThrow(std::string("ElizaOS service not found")); });
             runtime["getService"] = originalGetService;
         }
         );

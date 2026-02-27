@@ -31,19 +31,19 @@ struct OpenPRConfig {
  * Format trajectory for markdown PR description
  */
 struct TrajectoryStep {
-    std::optional<std:> response;
-    std::optional<std:> observation;
+    std::optional<std::string> response;
+    std::optional<std::string> observation;
 };
 
-std: formatTrajectoryMarkdown(const std::vector<TrajectoryStep>& trajectory, std::optional<double> charLimit);
+std::string formatTrajectoryMarkdown(const std::vector<TrajectoryStep>& trajectory, std::optional<double> charLimit);
 
 /**
  * Create PR to repository
  */
 struct GitHubIssue {
     double number;
-    std: title;
-    std: state;
+    std::string title;
+    std::string state;
     std::optional<unknown> assignee;
     bool locked;
 };
@@ -52,16 +52,17 @@ struct GitHubIssue {
  * This hook opens a PR if the issue is solved and the user has enabled the option
  */
 struct ProblemStatementWithGithubUrl {
-    std: githubUrl;
+    std::string githubUrl;
 };
 
-class OpenPRHook extends AbstractRunHook {
+class OpenPRHook : public AbstractRunHook {
   private config: OpenPRConfig;
   private env?: SWEEnv;
-  private token: std: = '';
+private:
+    std::string token = '';
   private problemStatement?: ProblemStatementWithGithubUrl;
 
-  constructor(config: OpenPRConfig = Config{skipIfCommitsReferenceIssue = true}) {
+  /* constructor */ (config: OpenPRConfig = Config{skipIfCommitsReferenceIssue = true}) {
     super();
     this.config = config;
   }

@@ -25,6 +25,6 @@ bool validatePrompt(Memory message);
 /**
  * Validates if text looks like a JSON specification
  */
-bool isValidJsonSpecification(const std:& text);
+bool isValidJsonSpecification(const std::string& text);
 
 } // namespace elizaos

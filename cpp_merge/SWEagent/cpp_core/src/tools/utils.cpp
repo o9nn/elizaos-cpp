@@ -8,7 +8,7 @@
 
 namespace elizaos {
 
-bool shouldQuote(const std:& value, Command command) {
+bool shouldQuote(const std::string& value, Command command) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (typeof value != 'string') {
@@ -31,7 +31,7 @@ bool shouldQuote(const std:& value, Command command) {
 
 }
 
-std: getSignature(Command cmd) {
+std::string getSignature(Command cmd) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (cmd.signature) {
@@ -56,7 +56,7 @@ std: getSignature(Command cmd) {
 
 }
 
-std: generateCommandDocs(const std::vector<Command>& commands, const std::vector<std::string>& subroutineTypes, const std::unordered_map<std:, std:>& _kwargs) {
+std::string generateCommandDocs(const std::vector<Command>& commands, const std::vector<std::string>& subroutineTypes, const std::unordered_map<std::string, std::string>& _kwargs) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::vector<std::string> docs = [];
@@ -108,7 +108,7 @@ std: generateCommandDocs(const std::vector<Command>& commands, const std::vector
 
 }
 
-std: formatCommand(Command cmd) {
+std::string formatCommand(Command cmd) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::vector<std::string> lines = [];

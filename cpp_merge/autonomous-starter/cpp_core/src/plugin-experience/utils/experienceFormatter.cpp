@@ -8,7 +8,7 @@
 
 namespace elizaos {
 
-std: formatExperienceForDisplay(Experience experience) {
+std::string formatExperienceForDisplay(Experience experience) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto typeEmoji = getTypeEmoji(experience.type);
@@ -24,7 +24,7 @@ std: formatExperienceForDisplay(Experience experience) {
 
 }
 
-std: formatExperienceSummary(Experience experience) {
+std::string formatExperienceSummary(Experience experience) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto typeEmoji = getTypeEmoji(experience.type);
@@ -32,7 +32,7 @@ std: formatExperienceSummary(Experience experience) {
 
 }
 
-std: formatExperienceList(const std::vector<Experience>& experiences) {
+std::string formatExperienceList(const std::vector<Experience>& experiences) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (experiences.size() == 0) {
@@ -44,7 +44,7 @@ std: formatExperienceList(const std::vector<Experience>& experiences) {
 
 }
 
-std: formatPatternSummary(const std:& pattern) {
+std::string formatPatternSummary(const std::string& pattern) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto significanceEmoji =;
@@ -58,10 +58,10 @@ std: formatPatternSummary(const std:& pattern) {
 
 }
 
-std::unordered_map<std:, std::vector<Experience>> groupExperiencesByDomain(const std::vector<Experience>& experiences) {
+std::unordered_map<std::string, std::vector<Experience>> groupExperiencesByDomain(const std::vector<Experience>& experiences) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto groups = new Map<std:, Experience[]>();
+    const auto groups = new Map<std::string, Experience[]>();
 
     experiences.forEach[&]((exp) {
         const auto group = groups.get(exp.domain) || [];
@@ -79,14 +79,14 @@ void getExperienceStats(const std::vector<Experience>& experiences) {
     total;
     byType: Record<ExperienceType, number>;
     byOutcome: Record<OutcomeType, number>;
-    byDomain: Record<std:, number>;
+    byDomain: Record<std::string, number>;
     averageConfidence;
     averageImportance;
     successRate;
 
 }
 
-std: getTypeEmoji(ExperienceType type) {
+std::string getTypeEmoji(ExperienceType type) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto emojiMap = {;
@@ -104,7 +104,7 @@ std: getTypeEmoji(ExperienceType type) {
 
 }
 
-std: formatExperienceForRAG(Experience experience) {
+std::string formatExperienceForRAG(Experience experience) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Format for knowledge storage and retrieval

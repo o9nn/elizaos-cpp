@@ -1,6 +1,7 @@
 #include "queries.hpp"
+#include <string>
 
-string Q_MARKETS = std:("\
+string Q_MARKETS = std::string("\
   query Markets($chainIds: [Int!], $first: Int!) {\
     markets(\
       first: $first\
@@ -18,7 +19,7 @@ string Q_MARKETS = std:("\
     }\
   }\
 ");
-string Q_VAULTS = std:("\
+string Q_VAULTS = std::string("\
   query Vaults($chainIds: [Int!], $first: Int!) {\
     vaults(\
       first: $first\
@@ -44,7 +45,7 @@ string Q_VAULTS = std:("\
     }\
   }\
 ");
-string Q_VAULT_BY_ADDRESS = std:("\
+string Q_VAULT_BY_ADDRESS = std::string("\
   query OneVault($address: String!, $chainId: Int!) {\
     vaultByAddress(address: $address, chainId: $chainId) {\
       address\
@@ -69,7 +70,7 @@ string Q_VAULT_BY_ADDRESS = std:("\
     }\
   }\
 ");
-string Q_USER_MARKET_POSITIONS = std:("\
+string Q_USER_MARKET_POSITIONS = std::string("\
   query UserPositions($chainId: Int!, $address: String!) {\
     userByAddress(chainId: $chainId, address: $address) {\
       marketPositions {\
@@ -78,7 +79,7 @@ string Q_USER_MARKET_POSITIONS = std:("\
     }\
   }\
 ");
-string Q_USER_VAULT_POSITIONS = std:("\
+string Q_USER_VAULT_POSITIONS = std::string("\
   query UserVaultPositions($chainId: Int!, $address: String!) {\
     userByAddress(chainId: $chainId, address: $address) {\
       vaultPositions {\
@@ -94,7 +95,7 @@ string Q_USER_VAULT_POSITIONS = std:("\
     }\
   }\
 ");
-string Q_MARKET_SUMMARY = std:("\
+string Q_MARKET_SUMMARY = std::string("\
   query MarketSummary($uniqueKey: String!, $chainId: Int!) {\
     marketByUniqueKey(uniqueKey: $uniqueKey, chainId: $chainId) {\
       uniqueKey\

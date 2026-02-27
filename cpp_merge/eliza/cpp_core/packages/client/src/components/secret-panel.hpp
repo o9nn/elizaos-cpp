@@ -19,12 +19,12 @@ using EnvVariable = {
 
 struct SecretPanelProps {
     Agent characterValue;
-    std::optional<[&](secrets: Record<std:, std: | null>) { return void> onChange; };
+    std::optional<[&](secrets: Record<std::string, std::string | null>) { return void> onChange; };
 };
 
 struct SecretPanelRef {
-    [&]() { return Record<std:, std: | null> getSecrets; };
-    [&]() { isValid; missingSecrets: std:[] } validateSecrets;
+    [&]() { return Record<std::string, std::string | null> getSecrets; };
+    [&]() { isValid; missingSecrets: std::string[] } validateSecrets;
 
     // Raw editor modal state
 
@@ -122,7 +122,7 @@ struct SecretPanelRef {
         // Also check for secrets that should be removed
         // Get all env names that are currently in the list
 
-        // Check if there are std: secrets in the character settings that are no longer in our envs
+        // Check if there are std::string secrets in the character settings that are no longer in our envs
         // This happens when a plugin is removed and its required secrets are cleaned up
             // Mark this secret for deletion
 
@@ -137,7 +137,7 @@ struct SecretPanelRef {
 
           // Sort: required secrets first, then alphabetically
 
-      // Close std: other editing
+      // Close std::string other editing
 
       // Show the secret when editing
 

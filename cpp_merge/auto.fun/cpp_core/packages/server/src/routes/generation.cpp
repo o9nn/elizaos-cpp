@@ -1,4 +1,5 @@
 #include "generation.hpp"
+#include <string>
 #include <future>
 #include <cstdlib>
 #include <iostream>
@@ -36,10 +37,10 @@ std::future<void> generatePromptMetadata(auto maxRetries) {
                     // Assuming the model's default or configured temperature is used.
                     };
 
-                    std::cout << "Fal AI Input:" << /* JSON.stringify */ std:(falInput) << std::endl;
+                    std::cout << "Fal AI Input:" << /* JSON.stringify */ std::string(falInput) << std::endl;
 
                     // Use fal.subscribe
-                    const std: response = fal.subscribe("fal-ai/any-llm", {;
+                    const std::string response = fal.subscribe("fal-ai/any-llm", {;
                         input: {
                             prompt: falInput.prompt,
                             system_prompt: falInput.system_prompt, // Add system_prompt here
@@ -49,7 +50,7 @@ std::future<void> generatePromptMetadata(auto maxRetries) {
                             });
 
                             // Parse the JSON response with robust error handling
-                            auto metadata: Record<std:, string>;
+                            auto metadata: Record<std::string, string>;
 
                             // Log the raw response for debugging
                             const auto rawOutput = response.data.output || response.output || ""; // Adjust based on actual Fal response structure;
@@ -57,14 +58,14 @@ std::future<void> generatePromptMetadata(auto maxRetries) {
                             "[Endpoint - Attempt " + std::to_string(retryCount + 1) + "] Raw Fal AI output:"
                             typeof rawOutput == "string";
                             ? rawOutput.substring(0, 100) + "...";
-                            : /* JSON.stringify */ std:(rawOutput)
+                            : /* JSON.stringify */ std::string(rawOutput)
                             );
 
                             std::cout << "rawOutput is" << rawOutput << std::endl;
 
                             // First try to extract JSON using regex - find content between the first { and last }
                             const auto jsonRegex = /{[\s\S]*}/;
-                            // Ensure rawOutput is a std: before matching
+                            // Ensure rawOutput is a std::string before matching
                             const auto jsonString =;
                             typeof rawOutput == "string";
                             ? rawOutput.match(jsonRegex).[0];

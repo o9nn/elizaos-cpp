@@ -1,4 +1,5 @@
 #include "pool-finder-solana.hpp"
+#include <string>
 #include <vector>
 #include <future>
 #include <optional>
@@ -7,7 +8,7 @@
 
 namespace elizaos {
 
-bool isRateLimitError(const std:& error) {
+bool isRateLimitError(const std::string& error) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (error instanceof Error) {
@@ -29,7 +30,7 @@ std::future<void> delay(double ms) {
 
 }
 
-std::future<std::optional<SolanaPoolInfo>> findBestSolanaPool(const std:& tokenMint, std: cluster = "mainnet", std::optional<Connection> rpcConnection) {
+std::future<std::optional<SolanaPoolInfo>> findBestSolanaPool(const std::string& tokenMint, std::string cluster = "mainnet", std::optional<Connection> rpcConnection) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -122,7 +123,7 @@ std::future<std::optional<SolanaPoolInfo>> findBestSolanaPool(const std:& tokenM
     }
 }
 
-std::future<std::vector<SolanaPoolInfo>> findPumpSwapPools(Connection connection, PublicKey mint, const std:& cluster, bool strict = false) {
+std::future<std::vector<SolanaPoolInfo>> findPumpSwapPools(Connection connection, PublicKey mint, const std::string& cluster, bool strict = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -196,7 +197,7 @@ std::future<std::vector<SolanaPoolInfo>> findPumpSwapPools(Connection connection
                                     const auto poolQuoteTokenAccount = readPubkey(171);
 
                                     // PumpSwap typically pairs with WSOL (SOL)
-                                    std: baseToken = nullptr;
+                                    std::string baseToken = nullptr;
                                     std::optional<PublicKey> otherMint = nullptr;
 
                                     if (quoteMint.equals(USDC_MINT) || baseMint.equals(USDC_MINT)) {
@@ -332,7 +333,7 @@ std::future<std::vector<SolanaPoolInfo>> findPumpSwapPools(Connection connection
     }
 }
 
-std::future<std::vector<SolanaPoolInfo>> findRaydiumPools(Connection connection, PublicKey mint, const std:& cluster, bool strict = false) {
+std::future<std::vector<SolanaPoolInfo>> findRaydiumPools(Connection connection, PublicKey mint, const std::string& cluster, bool strict = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -399,7 +400,7 @@ std::future<std::vector<SolanaPoolInfo>> findRaydiumPools(Connection connection,
                             const auto coinMint = readPubkey(400);
                             const auto pcMint = readPubkey(432);
 
-                            std: baseToken = nullptr;
+                            std::string baseToken = nullptr;
                             std::optional<PublicKey> otherMint = nullptr;
 
                             if (coinMint.equals(USDC_MINT) || pcMint.equals(USDC_MINT)) {
@@ -442,7 +443,7 @@ std::future<std::vector<SolanaPoolInfo>> findRaydiumPools(Connection connection,
                                         // Optimization: To get price, we must fetch the other vault too.
                                         // This adds RPC calls.
                                         // We can fetch it in parallel?
-                                        // Or leave priceUsd undefined for Raydium if we want to save calls, but then validation fails.
+                                        // Or leave priceUsd std::nullopt for Raydium if we want to save calls, but then validation fails.
                                         // Let's fetch it.
 
                                         auto priceUsd = 0;

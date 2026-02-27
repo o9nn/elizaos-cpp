@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SPARTAN_SRC_PLUGINS_DEGENTRADER_UTILS_CACHEMANAGER_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SPARTAN_SRC_PLUGINS_DEGENTRADER_UTILS_CACHEMANAGER_H
 #include "core.hpp"
+#include <string>
 
 template <typename T>
 class CacheEntry;
@@ -48,9 +49,9 @@ template <typename T>
 std::shared_ptr<Promise<void>> CacheManager::set(string key, T value, double ttl)
 {
     auto entry = object{
-        object::pair{std:("value"), std:("value")}, 
-        object::pair{std:("timestamp"), Date->now()}, 
-        object::pair{std:("expiry"), Date->now() + ttl}
+        object::pair{std::string("value"), std::string("value")}, 
+        object::pair{std::string("timestamp"), Date->now()}, 
+        object::pair{std::string("expiry"), Date->now() + ttl}
     };
     this->cache->set(key, entry);
     return std::shared_ptr<Promise<void>>();

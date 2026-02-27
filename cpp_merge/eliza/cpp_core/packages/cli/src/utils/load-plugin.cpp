@@ -1,4 +1,5 @@
 #include "load-plugin.hpp"
+#include <string>
 #include <vector>
 #include <future>
 #include <filesystem>
@@ -8,7 +9,7 @@
 
 namespace elizaos {
 
-std: getGlobalNodeModulesPath() {
+std::string getGlobalNodeModulesPath() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // process.execPath gives us the path to the node executable
@@ -24,14 +25,14 @@ std: getGlobalNodeModulesPath() {
 
 }
 
-std: resolveNodeModulesPath(const std:& repository) {
+std::string resolveNodeModulesPath(const std::string& repository) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return path.resolve(std::filesystem::current_path().string(), "node_modules", repository, ...segments);
 
 }
 
-std::future<std::optional<PackageJson>> readPackageJson(const std:& repository) {
+std::future<std::optional<PackageJson>> readPackageJson(const std::string& repository) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto packageJsonPath = resolveNodeModulesPath(repository, "package.json");
@@ -46,7 +47,7 @@ std::future<std::optional<PackageJson>> readPackageJson(const std:& repository) 
 
 }
 
-std::future<std::optional<std:>> tryImporting(const std:& importPath, const std:& strategy, const std:& repository) {
+std::future<std::optional<std::string>> tryImporting(const std::string& importPath, const std::string& strategy, const std::string& repository) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -60,14 +61,14 @@ std::future<std::optional<std:>> tryImporting(const std:& importPath, const std:
 
 }
 
-bool isElizaOSPackageName(const std:& repository) {
+bool isElizaOSPackageName(const std::string& repository) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return repository.substr(0, "@elizaos/") || repository.substr(0, "@elizaos-plugins/");
 
 }
 
-std::vector<ImportStrategy> getStrategiesForPlugin(const std:& repository) {
+std::vector<ImportStrategy> getStrategiesForPlugin(const std::string& repository) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto isElizaOS = isElizaOSPackageName(repository);
@@ -87,7 +88,7 @@ std::vector<ImportStrategy> getStrategiesForPlugin(const std:& repository) {
 
 }
 
-std::future<std::optional<std:>> loadPluginModule(const std:& repository) {
+std::future<std::optional<std::string>> loadPluginModule(const std::string& repository) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto isElizaOS = isElizaOSPackageName(repository);

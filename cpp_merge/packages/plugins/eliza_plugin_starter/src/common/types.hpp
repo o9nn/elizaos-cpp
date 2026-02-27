@@ -39,7 +39,7 @@ public:
 class SearchProvider : public object, public std::enable_shared_from_this<SearchProvider> {
 public:
     using std::enable_shared_from_this<SearchProvider>::shared_from_this;
-    virtual std::shared_ptr<Promise<array<std::shared_ptr<SearchResult>>>> search(string query, std::shared_ptr<SearchOptions> options = undefined) = 0;
+    virtual std::shared_ptr<Promise<array<std::shared_ptr<SearchResult>>>> search(string query, std::shared_ptr<SearchOptions> options = std::nullopt) = 0;
 };
 
 class SearchPluginConfig : public object, public std::enable_shared_from_this<SearchPluginConfig> {

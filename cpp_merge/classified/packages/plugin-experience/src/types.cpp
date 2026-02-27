@@ -1,9 +1,10 @@
 #include "types.hpp"
+#include <string>
 
 namespace @elizaos/core {
 }
 object ExperienceServiceType = object{
-    object::pair{std:("EXPERIENCE"), as<std::shared_ptr<const>>(std:("EXPERIENCE"))}
+    object::pair{std::string("EXPERIENCE"), as<std::shared_ptr<const>>(std::string("EXPERIENCE"))}
 }, satisfies, Partial;
 
 void Main(void)

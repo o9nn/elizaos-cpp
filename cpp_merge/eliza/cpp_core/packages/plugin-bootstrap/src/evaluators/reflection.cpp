@@ -1,4 +1,5 @@
 #include "reflection.hpp"
+#include <string>
 #include <vector>
 #include <future>
 #include <optional>
@@ -76,8 +77,8 @@ std::future<void> handler(IAgentRuntime runtime, Memory message, std::optional<S
                     ...(state.values || {}),
                     knownFacts: formatFacts(knownFacts),
                     roomType: message.content.channelType,
-                    entitiesInRoom: /* JSON.stringify */ std:(entities),
-                    existingRelationships: /* JSON.stringify */ std:(existingRelationships),
+                    entitiesInRoom: /* JSON.stringify */ std::string(entities),
+                    existingRelationships: /* JSON.stringify */ std::string(existingRelationships),
                     senderId: message.entityId,
                     },
                     template: runtime.character.templates.reflectionTemplate || reflectionTemplate,

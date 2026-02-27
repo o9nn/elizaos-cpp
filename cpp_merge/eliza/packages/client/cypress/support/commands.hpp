@@ -18,7 +18,7 @@ namespace global {
             virtual std::shared_ptr<Chainable<void>> connectWebSocket() = 0;
             virtual std::shared_ptr<Chainable<void>> cleanupTestData() = 0;
             virtual std::shared_ptr<Chainable<std::shared_ptr<JQuery<std::shared_ptr<HTMLElement>>>>> getByTestId(string testId) = 0;
-            virtual std::shared_ptr<Chainable<any>> waitForApi(string alias, double timeout = undefined) = 0;
+            virtual std::shared_ptr<Chainable<any>> waitForApi(string alias, double timeout = std::nullopt) = 0;
         };
 
     }

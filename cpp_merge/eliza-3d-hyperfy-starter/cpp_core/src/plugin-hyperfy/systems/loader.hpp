@@ -27,7 +27,7 @@ namespace elizaos {
   // Mock URL if not globally available or needs specific behavior
   // globalThis.URL = URL; // Usually available in modern Node
 
-  // Mock self if needed by std: dependency
+  // Mock self if needed by std::string dependency
   // globalThis.self = globalThis;
 
   // Mock window minimally
@@ -42,12 +42,12 @@ namespace elizaos {
   // globalThis.fetch = fetch;
 // --- End Mocks ---
 
-class AgentLoader extends System {
-  promises: Map<std:, any>;
-  results: Map<std:, any>;
+class AgentLoader : public System {
+  promises: Map<std::string, any>;
+  results: Map<std::string, any>;
   gltfLoader: GLTFLoader;
-  dummyScene: std:;
-  constructor(world) {
+  dummyScene: std::string;
+  /* constructor */ (world) {
     super(world);
     this.promises = std::make_unique<Map>();
     this.results = std::make_unique<Map>();

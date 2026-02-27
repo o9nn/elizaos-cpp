@@ -40,9 +40,9 @@ std::future<double> fetchSOLPriceFromPyth();
 /**
  * Calculate token market data using SOL price
  */
-std::future<std:> calculateTokenMarketData(const std:& token, double solPrice);
+std::future<std::string> calculateTokenMarketData(const std::string& token, double solPrice);
 
-std::future<void> calculateRaydiumTokenMarketData(const std:& token);
+std::future<void> calculateRaydiumTokenMarketData(const std::string& token);
 
 // Export metrics for monitoring - simplified without queue information
 void getMarketDataMetrics();

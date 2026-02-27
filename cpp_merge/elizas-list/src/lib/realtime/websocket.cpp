@@ -1,8 +1,9 @@
 #include "websocket.hpp"
+#include <string>
 
 RealtimeService::RealtimeService(std::shared_ptr<HTTPServer> server) {
     this->wss = std::make_shared<WebSocketServer>(object{
-        object::pair{std:("server"), std:("server")}
+        object::pair{std::string("server"), std::string("server")}
     });
     this->clients = std::make_shared<Map>();
     this->setupWebSocket();
@@ -11,15 +12,15 @@ RealtimeService::RealtimeService(std::shared_ptr<HTTPServer> server) {
 
 void RealtimeService::setupWebSocket()
 {
-    this->wss->on(std:("connection"), [=](auto ws, auto req) mutable
+    this->wss->on(std::string("connection"), [=](auto ws, auto req) mutable
     {
-        shared projectId = ((std::make_shared<URL>(req["url"], std:("http://") + req["headers"]["host"] + string_empty)))->searchParams->get(std:("projectId"));
+        shared projectId = ((std::make_shared<URL>(req["url"], std::string("http://") + req["headers"]["host"] + string_empty)))->searchParams->get(std::string("projectId"));
         if (projectId) {
             if (!this->clients->has(projectId)) {
                 this->clients->set(projectId, std::make_shared<Set>());
             }
             this->clients->get(projectId)->add(ws);
-            ws["on"](std:("close"), [=]() mutable
+            ws["on"](std::string("close"), [=]() mutable
             {
                 this->clients->get(projectId)->delete(ws);
             }
@@ -31,8 +32,8 @@ void RealtimeService::setupWebSocket()
 
 void RealtimeService::setupRedisSubscriber()
 {
-    subClient->subscribe(std:("project-events"));
-    subClient->on(std:("message"), [=](auto channel, auto message) mutable
+    subClient->subscribe(std::string("project-events"));
+    subClient->on(std::string("message"), [=](auto channel, auto message) mutable
     {
         auto event = JSON->parse(message);
         this->broadcastToProject(event["projectId"], event);
@@ -56,11 +57,11 @@ void RealtimeService::broadcastToProject(string projectId, any data)
 
 void RealtimeService::publishEvent(string projectId, string eventType, any data)
 {
-    std::async([=]() { pubClient->publish(std:("project-events"), JSON->stringify(object{
-        object::pair{std:("projectId"), std:("projectId")}, 
-        object::pair{std:("type"), eventType}, 
-        object::pair{std:("data"), std:("data")}, 
-        object::pair{std:("timestamp"), std::make_shared<Date>()}
+    std::async([=]() { pubClient->publish(std::string("project-events"), JSON->stringify(object{
+        object::pair{std::string("projectId"), std::string("projectId")}, 
+        object::pair{std::string("type"), eventType}, 
+        object::pair{std::string("data"), std::string("data")}, 
+        object::pair{std::string("timestamp"), std::make_shared<Date>()}
     })); });
 }
 

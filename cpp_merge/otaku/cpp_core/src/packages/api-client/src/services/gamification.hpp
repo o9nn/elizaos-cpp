@@ -17,12 +17,12 @@ namespace elizaos {
 
 struct LeaderboardEntry {
     double rank;
-    std: userId;
+    std::string userId;
     double points;
     double level;
-    std: levelName;
-    std::optional<std:> username;
-    std::optional<std:> avatar;
+    std::string levelName;
+    std::optional<std::string> username;
+    std::optional<std::string> avatar;
 };
 
 struct LeaderboardResponse {
@@ -33,17 +33,17 @@ struct LeaderboardResponse {
 };
 
 struct UserSummary {
-    std: userId;
+    std::string userId;
     double allTimePoints;
     double weeklyPoints;
     double streakDays;
     double level;
-    std: levelName;
+    std::string levelName;
     std::optional<{> nextMilestone;
     double level;
-    std: levelName;
+    std::string levelName;
     double pointsNeeded;
-    std: | null lastLoginDate;
+    std::string | null lastLoginDate;
     std::optional<double> swapsCompleted;
 };
 
@@ -54,12 +54,12 @@ struct ReferralStats {
 };
 
 struct ReferralCodeResponse {
-    std: code;
+    std::string code;
     ReferralStats stats;
-    std: referralLink;
+    std::string referralLink;
 };
 
-class GamificationService extends BaseApiClient {
+class GamificationService : public BaseApiClient {
   /**
    * Get leaderboard data
    * @param agentId Agent ID to route the request to
@@ -73,7 +73,7 @@ class GamificationService extends BaseApiClient {
     limit = 50,
     userId?: UUID
   ): Promise<LeaderboardResponse> {
-    const params: Record<std:, string> = {
+    const params: Record<std::string, string> = {
       scope,
       limit: limit.toString(),
     };

@@ -32,7 +32,7 @@ void setupCLI() {
                 program.command("list").description("List all registry entries");
                 .action[&](() {
                     const auto all = registry.getAll();
-                    std::cout << /* JSON.stringify */ std:(all, nullptr, 2) << std::endl;
+                    std::cout << /* JSON.stringify */ std::string(all, nullptr, 2) << std::endl;
                     });
 
                     program.parse(std::vector<std::string>());

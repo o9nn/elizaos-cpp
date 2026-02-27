@@ -20,7 +20,7 @@ namespace elizaos {
 
 struct UseSocketChatProps {
     UUID channelId;
-    std: currentUserId;
+    std::string currentUserId;
     UUID contextId;
     std::variant<ChannelType::DM, ChannelType::GROUP> chatType;
     std::vector<Agent> allAgents;

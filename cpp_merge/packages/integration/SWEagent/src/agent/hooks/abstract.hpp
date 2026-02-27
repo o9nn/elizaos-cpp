@@ -36,7 +36,7 @@ public:
     using std::enable_shared_from_this<CombinedAgentHook>::shared_from_this;
     array<std::shared_ptr<AbstractAgentHook>> hooks = array<std::shared_ptr<AbstractAgentHook>>();
 
-    CombinedAgentHook(array<std::shared_ptr<AbstractAgentHook>> hooks = undefined);
+    CombinedAgentHook(array<std::shared_ptr<AbstractAgentHook>> hooks = std::nullopt);
     virtual void addHook(std::shared_ptr<AbstractAgentHook> hook);
     virtual array<std::shared_ptr<AbstractAgentHook>> get_allHooks();
     virtual void onInit(std::shared_ptr<DefaultAgent> _agent);

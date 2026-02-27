@@ -1,4 +1,5 @@
 #include "plugin-groq.hpp"
+#include <string>
 #include <vector>
 #include <future>
 #include <cstdlib>
@@ -8,7 +9,7 @@
 
 namespace elizaos {
 
-std: getBaseURL(const std:& runtime) {
+std::string getBaseURL(const std::string& runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -28,7 +29,7 @@ TiktokenModel findModelName(ModelTypeName model) {
 
 }
 
-std::future<void> tokenizeText(ModelTypeName model, const std:& prompt) {
+std::future<void> tokenizeText(ModelTypeName model, const std::string& prompt) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto encoding = encodingForModel(findModelName(model));
@@ -46,7 +47,7 @@ std::future<void> detokenizeText(ModelTypeName model, const std::vector<double>&
 
 }
 
-std::future<void> generateGroqText(ReturnType<typeof createGroq> groq, const std:& model, std::optional<std:> params) {
+std::future<void> generateGroqText(ReturnType<typeof createGroq> groq, const std::string& model, std::optional<std::string> params) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { text: groqResponse } = generateText({;
@@ -63,7 +64,7 @@ std::future<void> generateGroqText(ReturnType<typeof createGroq> groq, const std
 
 }
 
-std::future<void> generateGroqObject(ReturnType<typeof createGroq> groq, const std:& model, ObjectGenerationParams params) {
+std::future<void> generateGroqObject(ReturnType<typeof createGroq> groq, const std::string& model, ObjectGenerationParams params) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { object } = generateObject({;

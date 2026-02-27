@@ -1,4 +1,5 @@
 #include "client.hpp"
+#include <string>
 
 ElizaClient::ElizaClient(std::shared_ptr<ApiClientConfig> config) {
     this->agents = std::make_shared<AgentsService>(config);
@@ -22,7 +23,7 @@ void ElizaClient::setAuthToken(string token)
 {
     for (auto& service : this->services)
     {
-        if (AND((service), (type_of(service["setAuthToken"]) == std:("function")))) {
+        if (AND((service), (type_of(service["setAuthToken"]) == std::string("function")))) {
             service["setAuthToken"](token);
         }
     }
@@ -32,7 +33,7 @@ void ElizaClient::clearAuthToken()
 {
     for (auto& service : this->services)
     {
-        if (AND((service), (type_of(service["clearAuthToken"]) == std:("function")))) {
+        if (AND((service), (type_of(service["clearAuthToken"]) == std::string("function")))) {
             service["clearAuthToken"]();
         }
     }

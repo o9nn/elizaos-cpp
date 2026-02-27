@@ -20,6 +20,6 @@ namespace elizaos {
 
 
 
-std::future<std:> claimFees(PublicKey nftMint, PublicKey poolId, Connection connection, PublicKey claimer, WebSocketClient websocket, Token token);
+std::future<std::string> claimFees(PublicKey nftMint, PublicKey poolId, Connection connection, PublicKey claimer, WebSocketClient websocket, Token token);
 
 } // namespace elizaos

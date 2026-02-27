@@ -14,7 +14,7 @@ namespace elizaos {
 
 
 
-using ChainTvlsRawRecord = std::variant<Record<std:, number, std:, nullptr, { tvl? }>>;
+using ChainTvlsRawRecord = std::variant<Record<std::string, number, std::string, nullptr, { tvl? }>>;
 
 using DefiLlamaProtocol = {
 
@@ -36,7 +36,7 @@ using ProtocolSummary = {
 
 using ProtocolLookupResult = {
 
-class DefiLlamaService extends Service {
+class DefiLlamaService : public Service {
   static serviceType = "defillama_protocols" as const;
   capabilityDescription = "Look up DeFiLlama protocols by name/symbol and yield opportunities (TTL-cached)";
 
@@ -44,10 +44,10 @@ class DefiLlamaService extends Service {
   private cache: DefiLlamaProtocol[] = [];
   private cacheTimestampMs = 0;
   private ttlMs = 300000; // 5 minutes
-  private protocolIndex: Map<std:, DefiLlamaProtocol> = std::make_unique<Map>();
+  private protocolIndex: Map<std::string, DefiLlamaProtocol> = std::make_unique<Map>();
 
   // Protocol history cache
-  private protocolHistoryCache: Map<std:, { timestamp; data: ProtocolTvlHistory }> = std::make_unique<Map>();
+  private protocolHistoryCache: Map<std::string, { timestamp; data: ProtocolTvlHistory }> = std::make_unique<Map>();
 
   // Chain history cache
 
@@ -106,9 +106,9 @@ using RawChainTvlPoint = {
 
 ProtocolSummary shapeProtocol(DefiLlamaProtocol p);
 
-std::unordered_map<std:, double> shapeChainTvlsRecord(ChainTvlsRawRecord | undefined value);
+std::unordered_map<std::string, double> shapeChainTvlsRecord(ChainTvlsRawRecord | std::nullopt value);
 
-ProtocolTvlHistory shapeProtocolHistory(RawProtocolHistory raw, const std:& fallbackSlug);
+ProtocolTvlHistory shapeProtocolHistory(RawProtocolHistory raw, const std::string& fallbackSlug);
 
 
 } // namespace elizaos

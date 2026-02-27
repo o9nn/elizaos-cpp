@@ -1,15 +1,16 @@
 #include "clanker.hpp"
+#include <string>
 #include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std: sanitizeError(const std:& error) {
+std::string sanitizeError(const std::string& error) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        if (error == null || error == undefined) {
+        if (error == null || error == std::nullopt) {
             return error;
         }
 
@@ -19,7 +20,7 @@ std: sanitizeError(const std:& error) {
 
         if (error instanceof Error) {
             // Create a plain object with error properties
-            const std: sanitized = {;
+            const std::string sanitized = {;
                 message: error.message,
                 name: error.name,
                 stack: error.stack,
@@ -40,7 +41,7 @@ std: sanitizeError(const std:& error) {
             }
 
             if (typeof error == "object") {
-                const std: result = {};
+                const std::string result = {};
                 for (const int [key, value] of Object.entries(error)) {
                     result[key] = sanitizeError(value);
                 }
@@ -55,7 +56,7 @@ std: sanitizeError(const std:& error) {
     }
 }
 
-std: detectPlatform(const std:& url) {
+std::string detectPlatform(const std::string& url) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto lowerUrl = url.toLowerCase();

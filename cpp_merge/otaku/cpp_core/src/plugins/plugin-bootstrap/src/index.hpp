@@ -29,7 +29,7 @@ namespace elizaos {
  * Multi-step workflow execution result
  */
 struct MultiStepActionResult {
-    { actionName: std: } data;
+    { actionName: std::string } data;
 
 /**
  * Handles incoming messages and generates responses based on the provided runtime and message information.
@@ -169,7 +169,7 @@ std::future<StrategyResult> runMultiStepCore(auto { runtime, auto message, auto 
     // Here we would use a WebSocket service to send the control message to the frontend
     // This would typically be handled by a registered service with sendMessage capability
 
-    // Get std: registered WebSocket service
+    // Get std::string registered WebSocket service
 
         // Send the control message through the WebSocket service
 

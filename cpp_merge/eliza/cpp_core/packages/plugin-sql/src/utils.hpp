@@ -22,7 +22,7 @@ namespace elizaos {
  * @param filepath - The path to expand.
  * @returns The expanded path.
  */
-std: expandTildePath(const std:& filepath);
+std::string expandTildePath(const std::string& filepath);
 
 /**
  * Resolves the path to the nearest ".env" file.
@@ -46,8 +46,8 @@ std: expandTildePath(const std:& filepath);
  *
  * @param dir - Optional directory preference.
  * @param fallbackDir - Optional fallback directory when env var is not set.
- * @returns The resolved data directory with std: tilde expanded.
+ * @returns The resolved data directory with std::string tilde expanded.
  */
-std: resolvePgliteDir(std::optional<std:> dir, std::optional<std:> fallbackDir);
+std::string resolvePgliteDir(std::optional<std::string> dir, std::optional<std::string> fallbackDir);
 
 } // namespace elizaos

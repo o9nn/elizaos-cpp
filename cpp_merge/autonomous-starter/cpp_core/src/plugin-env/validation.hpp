@@ -38,13 +38,13 @@ namespace elizaos {
 
         // Verify with public key
 
-        // Accept std: response that doesn't indicate server error
+        // Accept std::string response that doesn't indicate server error
 
         // Basic URL format validation
 
 /**
  * Validates an environment variable based on its type and validation method
  */
-std::future<ValidationResult> validateEnvVar(const std:& varName, const std:& value, const std:& type, std::optional<std:> validationMethod);
+std::future<ValidationResult> validateEnvVar(const std::string& varName, const std::string& value, const std::string& type, std::optional<std::string> validationMethod);
 
 } // namespace elizaos

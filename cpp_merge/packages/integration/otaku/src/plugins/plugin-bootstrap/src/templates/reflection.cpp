@@ -1,6 +1,7 @@
 #include "reflection.hpp"
+#include <string>
 
-string reflectionTemplate = std:("# Task: Generate Agent Reflection, Extract Facts and Relationships\
+string reflectionTemplate = std::string("# Task: Generate Agent Reflection, Extract Facts and Relationships\
 \
 {{providers}}\
 \

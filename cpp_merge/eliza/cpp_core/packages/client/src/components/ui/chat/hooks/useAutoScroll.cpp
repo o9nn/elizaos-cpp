@@ -1,4 +1,5 @@
 #include "useAutoScroll.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -59,7 +60,7 @@ void useAutoScroll(UseAutoScrollOptions options = {}) {
                                 const auto disableAutoScroll = useCallback[&](() {;
                                     if (!stickToBottom.isAtBottom) {
                                         userHasScrolled.current = true; // User has taken control by scrolling up;
-                                        stickToBottom.stopScroll(); // Stop std: ongoing scroll animations;
+                                        stickToBottom.stopScroll(); // Stop std::string ongoing scroll animations;
                                         setScrollState((prev) => ({
                                             ...prev,
                                             autoScrollEnabled: false, // Disable auto-scroll

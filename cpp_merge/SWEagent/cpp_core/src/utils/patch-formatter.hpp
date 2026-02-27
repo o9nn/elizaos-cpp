@@ -25,17 +25,17 @@ struct PatchHunk {
 };
 
 struct PatchFile {
-    std: source;
-    std: target;
+    std::string source;
+    std::string target;
     std::vector<PatchHunk> hunks;
 };
 
 class PatchFormatter {
-  private readMethod: [&](path: std:) { return std:; };
+  private readMethod: [&](path: std::string) { return std::string; };
   private parsedPatch: PatchFile[];
-  private fileContents: Map<std:, string> = std::make_unique<Map>();
+  private fileContents: Map<std::string, string> = std::make_unique<Map>();
 
-  constructor(patch: std:, readMethod: (path: std:) => std:) {
+  /* constructor */ (patch: std::string, readMethod: (path: std::string) => std::string) {
     this.readMethod = readMethod;
     this.parsedPatch = this.parsePatch(patch);
   }
@@ -67,7 +67,7 @@ class PatchFormatter {
    */
 
   /**
-   * Get formatted files as std:
+   * Get formatted files as std::string
    */
 
 

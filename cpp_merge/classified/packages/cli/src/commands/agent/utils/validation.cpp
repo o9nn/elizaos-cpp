@@ -1,11 +1,12 @@
 #include "validation.hpp"
+#include <string>
 
 std::shared_ptr<Promise<array<std::shared_ptr<AgentBasic>>>> getAgents(std::shared_ptr<OptionValues> opts)
 {
     auto baseUrl = getAgentsBaseUrl(opts);
     auto response = std::async([=]() { fetch(baseUrl); });
     if (!response->ok) {
-        throw any(std::make_shared<Error>(std:("Failed to fetch agents list: ") + response->statusText + string_empty));
+        throw any(std::make_shared<Error>(std::string("Failed to fetch agents list: ") + response->statusText + string_empty));
     }
     auto rawData = std::async([=]() { response->json(); });
     auto validatedData = AgentsListResponseSchema->parse(rawData);
@@ -38,19 +39,19 @@ std::shared_ptr<Promise<string>> resolveAgentId(string idOrNameOrIndex, std::sha
             return indexAgent->id;
         }
     }
-    throw any(std::make_shared<Error>(std:("AGENT_NOT_FOUND:") + idOrNameOrIndex + string_empty));
+    throw any(std::make_shared<Error>(std::string("AGENT_NOT_FOUND:") + idOrNameOrIndex + string_empty));
 };
 
 
 any AgentBasicSchema = z->object(object{
-    object::pair{std:("id"), z->string()}, 
-    object::pair{std:("name"), z->string()}, 
-    object::pair{std:("status"), z->string()->optional()}
+    object::pair{std::string("id"), z->string()}, 
+    object::pair{std::string("name"), z->string()}, 
+    object::pair{std::string("status"), z->string()->optional()}
 })->passthrough();
 any AgentsListResponseSchema = z->object(object{
-    object::pair{std:("success"), z->boolean()}, 
-    object::pair{std:("data"), z->object(object{
-        object::pair{std:("agents"), z->array(AgentBasicSchema)}
+    object::pair{std::string("success"), z->boolean()}, 
+    object::pair{std::string("data"), z->object(object{
+        object::pair{std::string("agents"), z->array(AgentBasicSchema)}
     })->optional()}
 });
 

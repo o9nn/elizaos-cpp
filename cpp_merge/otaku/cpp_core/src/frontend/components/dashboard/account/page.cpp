@@ -1,4 +1,5 @@
 #include "page.hpp"
+#include <string>
 #include <future>
 #include <map>
 #include <iostream>
@@ -6,7 +7,7 @@
 
 namespace elizaos {
 
-std::future<std:> compressImage(File file, double maxSizeKB = 500) {
+std::future<std::string> compressImage(File file, double maxSizeKB = 500) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -138,9 +139,9 @@ void AccountPage(auto userProfile, auto onUpdateProfile, auto agentId) {
                 }
                 try {
                     return elizaClient.gamification.getUserSummary(agentId, userId);
-                    } catch (err: std:) {
+                    } catch (err: std::string) {
                         std::cerr << "[AccountPage] Error fetching user summary:" << err << std::endl;
-                        // If 404, return null (user might not have std: points yet)
+                        // If 404, return null (user might not have std::string points yet)
                         if (err.response.status == 404 || err.status == 404) {
                             return nullptr;
                         }
@@ -232,7 +233,7 @@ void AccountPage(auto userProfile, auto onUpdateProfile, auto agentId) {
                                                 }
                                                 };
 
-                                                const auto handleSelectPredefinedAvatar = std::async [&](avatarUrl: std:) {;
+                                                const auto handleSelectPredefinedAvatar = std::async [&](avatarUrl: std::string) {;
                                                     try {
                                                         showLoading("Processing...", "Changing avatar...", loadingPanelId);
 

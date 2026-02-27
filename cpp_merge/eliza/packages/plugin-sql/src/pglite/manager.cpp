@@ -1,11 +1,12 @@
 #include "manager.hpp"
+#include <string>
 
 PGliteClientManager::PGliteClientManager(std::shared_ptr<PGliteOptions> options) {
     this->client = std::make_shared<PGlite>(utils::assign(object{
         , 
-        object::pair{std:("extensions"), object{
-            object::pair{std:("vector"), std:("vector")}, 
-            object::pair{std:("fuzzystrmatch"), std:("fuzzystrmatch")}
+        object::pair{std::string("extensions"), object{
+            object::pair{std::string("vector"), std::string("vector")}, 
+            object::pair{std::string("fuzzystrmatch"), std::string("fuzzystrmatch")}
         }}
     }, options));
     this->setupShutdownHandlers();

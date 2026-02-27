@@ -1,4 +1,5 @@
 #include "log.hpp"
+#include <string>
 #include <cstdlib>
 #include <unordered_map>
 #include <iostream>
@@ -6,14 +7,14 @@
 
 namespace elizaos {
 
-AgentLogger getLogger(const std:& name, std: emoji = "") {
+AgentLogger getLogger(const std::string& name, std::string emoji = "") {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto key = name + "-" + emoji;
     if (!loggers.has(key)) {
         // Map specific logger names to emojis if not provided
         if (!emoji) {
-            const std::unordered_map<std:, std:> emojiMap = {;
+            const std::unordered_map<std::string, std::string> emojiMap = {;
                 agent: "🤖",
                 model: "🧠",
                 config: "🔧",
@@ -38,21 +39,21 @@ AgentLogger getLogger(const std:& name, std: emoji = "") {
 
 }
 
-void setThreadName(const std:& name) {
+void setThreadName(const std::string& name) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     threadNames.std::set(process.std::to_string(pid), name);
 
 }
 
-std: getThreadName() {
+std::string getThreadName() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return threadNames.get(process.std::to_string(pid)) || "";
 
 }
 
-void setLogLevel(const std:& level) {
+void setLogLevel(const std::string& level) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     std::getenv("LOG_LEVEL") = level;
@@ -65,7 +66,7 @@ void setLogLevel(const std:& level) {
 
 }
 
-void addFileHandler(const std:& _logFile) {
+void addFileHandler(const std::string& _logFile) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // In pino, file logging is handled via transport configuration
@@ -73,7 +74,7 @@ void addFileHandler(const std:& _logFile) {
 
 }
 
-void removeFileHandler(const std:& _logFile) {
+void removeFileHandler(const std::string& _logFile) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // No-op for compatibility
@@ -87,21 +88,21 @@ void addLoggerNamesToStreamHandlers() {
 
 }
 
-void registerThreadName(const std:& name) {
+void registerThreadName(const std::string& name) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     setThreadName(name);
 
 }
 
-void setStreamHandlerLevels(const std:& level) {
+void setStreamHandlerLevels(const std::string& level) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     setLogLevel(level);
 
 }
 
-void log(const std:& message, std: level = "info") {
+void log(const std::string& message, std::string level = "info") {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto logger = getLogger("default");

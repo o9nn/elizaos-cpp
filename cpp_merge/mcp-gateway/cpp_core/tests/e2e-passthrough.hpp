@@ -18,7 +18,7 @@ namespace elizaos {
  */
 
 class PassthroughE2ETestRunner {
-  private testResults: Array<{ name: std:; passed; duration; error?: std: }> = [];
+  private testResults: Array<{ name: std::string; passed; duration; error?: std::string }> = [];
 
   /**
    * Test 1: Passthrough mode configuration

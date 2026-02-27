@@ -1,4 +1,5 @@
 #include "commands.hpp"
+#include <string>
 
 namespace global {
 }
@@ -9,12 +10,12 @@ namespace global {
 
 void Main(void)
 {
-    Cypress->Commands->add(std:("shouldBeDarkMode"), [=]() mutable
+    Cypress->Commands->add(std::string("shouldBeDarkMode"), [=]() mutable
     {
-        cy->get(std:("html"))->should(std:("have.class"), std:("dark"));
+        cy->get(std::string("html"))->should(std::string("have.class"), std::string("dark"));
     }
     );
-    Cypress->Commands->add(std:("setElizaConfig"), [=](auto config) mutable
+    Cypress->Commands->add(std::string("setElizaConfig"), [=](auto config) mutable
     {
         cy->window()->then([=](auto win) mutable
         {

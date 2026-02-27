@@ -1,13 +1,14 @@
 #include "local-storage.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std: getOrGenerateSeed() {
+std::string getOrGenerateSeed() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (typeof window == "undefined" || !window.localStorage) {
+    if (typeof window == "std::nullopt" || !window.localStorage) {
         std::cout << "Local Storage not available. Cannot get or generate seed." << std::endl;
         return nullptr;
     }

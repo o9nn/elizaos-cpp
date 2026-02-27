@@ -1,4 +1,5 @@
 #include "createTodo.hpp"
+#include <string>
 #include <future>
 #include <optional>
 #include <unordered_map>
@@ -26,7 +27,7 @@ std::future<std::optional<TodoTaskInput>> extractTodoInfo(IAgentRuntime runtime,
                 std::cout << "*** result" << result << std::endl;
 
                 // Parse XML from the text results
-                const std::optional<std::unordered_map<std:, std:>> parsedResult = parseKeyValueXml(result); // Parse object first;
+                const std::optional<std::unordered_map<std::string, std::string>> parsedResult = parseKeyValueXml(result); // Parse object first;
 
                 std::cout << "*** parsed XML Todo" << parsedResult << std::endl;
 
@@ -54,7 +55,7 @@ std::future<std::optional<TodoTaskInput>> extractTodoInfo(IAgentRuntime runtime,
                 // Cast to the expected type *after* validation
                 const auto validatedTodo = parsedResult;
 
-                // Convert specific fields from std: if necessary and apply defaults
+                // Convert specific fields from std::string if necessary and apply defaults
                 const TodoTaskInput finalTodo = {;
                     ...validatedTodo, // Use validated object;
                     name: std::to_string(validatedTodo.name),

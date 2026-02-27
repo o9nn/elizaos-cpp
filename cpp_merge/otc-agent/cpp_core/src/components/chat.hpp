@@ -18,7 +18,7 @@ namespace elizaos {
 
 
 struct ChatProps {
-    std::optional<std:> roomId;
+    std::optional<std::string> roomId;
     std::optional<Token> token;
     std::optional<std::optional<TokenMarketData>> marketData;
 };
@@ -26,12 +26,12 @@ struct ChatProps {
 // --- Consolidated Chat State ---
 struct ChatState {
     std::vector<ChatMessage> messages;
-    std: input;
+    std::string input;
     bool inputDisabled;
-    std: roomId;
+    std::string roomId;
     bool isLoadingHistory;
     bool isAgentThinking;
-    std: entityId;
+    std::string entityId;
     bool showConnectOverlay;
     std::optional<OTCQuote> currentQuote;
     bool showAcceptModal;
@@ -45,15 +45,15 @@ ChatState chatReducer(ChatState state, ChatAction action);
 
 // Raw message format from API
 struct RawRoomMessage {
-    std::optional<std:> id;
-    std::optional<std:> entityId;
-    std::optional<std:> agentId;
-    std::optional<std::variant<double, std:>> createdAt;
-    std::optional<std:> text;
+    std::optional<std::string> id;
+    std::optional<std::string> entityId;
+    std::optional<std::string> agentId;
+    std::optional<std::variant<double, std::string>> createdAt;
+    std::optional<std::string> text;
 };
 
 // --- Helper: Parse room message into ChatMessage format ---
-std::optional<ChatMessage> parseRoomMessage(RawRoomMessage msg, const std:& roomId);
+std::optional<ChatMessage> parseRoomMessage(RawRoomMessage msg, const std::string& roomId);
 
   // --- Consolidated State ---
 

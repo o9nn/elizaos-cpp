@@ -1,10 +1,11 @@
 #include "validation.hpp"
+#include <string>
 
 std::function<any(std::shared_ptr<Map<any, any>>, any)> getRuntime = [=](auto agents, auto agentId) mutable
 {
     auto runtime = agents->get(agentId);
     if (!runtime) {
-        throw any(std::make_shared<Error>(std:("Agent not found: ") + agentId + string_empty));
+        throw any(std::make_shared<Error>(std::string("Agent not found: ") + agentId + string_empty));
     }
     return runtime;
 };
@@ -16,16 +17,16 @@ std::function<any(string)> validateRoomId = [=](auto roomId) mutable
 {
     return validateUuid(roomId);
 };
-std::function<any(string, string)> validateChannelId = [=](auto channelId, auto clientIp = undefined) mutable
+std::function<any(string, string)> validateChannelId = [=](auto channelId, auto clientIp = std::nullopt) mutable
 {
     auto validatedUuid = validateUuid(channelId);
     if (!validatedUuid) {
         if (clientIp) {
-            logger->warn(std:("[SECURITY] Invalid channel ID attempted from ") + clientIp + std:(": ") + channelId + string_empty);
+            logger->warn(std::string("[SECURITY] Invalid channel ID attempted from ") + clientIp + std::string(": ") + channelId + string_empty);
         }
         return nullptr;
     }
-    auto suspiciousPatterns = array<string>{ std:(".."), std:("<"), std:(">"), std:("""), std:("'"), std:("\"), std:("/") };
+    auto suspiciousPatterns = array<string>{ std::string(".."), std::string("<"), std::string(">"), std::string("""), std::string("'"), std::string("\"), std::string("/") };
     auto hasSuspiciousPattern = suspiciousPatterns->some([=](auto pattern) mutable
     {
         return channelId->includes(pattern);
@@ -33,7 +34,7 @@ std::function<any(string, string)> validateChannelId = [=](auto channelId, auto 
     );
     if (hasSuspiciousPattern) {
         if (clientIp) {
-            logger->warn(std:("[SECURITY] Suspicious channel ID pattern from ") + clientIp + std:(": ") + channelId + string_empty);
+            logger->warn(std::string("[SECURITY] Suspicious channel ID pattern from ") + clientIp + std::string(": ") + channelId + string_empty);
         }
         return nullptr;
     }

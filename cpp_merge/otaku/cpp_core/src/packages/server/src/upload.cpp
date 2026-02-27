@@ -1,20 +1,21 @@
 #include "upload.hpp"
+#include <string>
 #include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std: generateSecureFilename(const std:& originalName) {
+std::string generateSecureFilename(const std::string& originalName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto uniqueSuffix = std::to_string(Date.now()) + "-" + std::to_string(Math.round(Math.random() * 1e9));
+    const auto uniqueSuffix = std::to_string(Date.now()) + "-" + std::to_string(Math.round(((double)rand() / RAND_MAX) * 1e9));
     const auto sanitizedName = sanitizeFilename(originalName);
     return uniqueSuffix + "-" + sanitizedName;
 
 }
 
-std: ensureUploadDir(const std:& id, const std:& type) {
+std::string ensureUploadDir(const std::string& id, const std::string& type) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -51,9 +52,9 @@ bool validateMediaFile(Express.Multer.File file) {
 
 }
 
-std::future<> processUploadedFile(Express.Multer.File file, const std:& targetId, const std:& type) {
+std::future<> processUploadedFile(Express.Multer.File file, const std::string& targetId, const std::string& type) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    filename: std:; path: std:; url: std:
+    filename: std::string; path: std::string; url: std::string
 }
 
 } // namespace elizaos

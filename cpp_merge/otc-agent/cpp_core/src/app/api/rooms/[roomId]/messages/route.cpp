@@ -1,4 +1,5 @@
 #include "route.hpp"
+#include <string>
 #include <future>
 #include <map>
 #include <iostream>
@@ -6,7 +7,7 @@
 
 namespace elizaos {
 
-std::future<void> POST(const std:& request, RouteContext ctx) {
+std::future<void> POST(const std::string& request, RouteContext ctx) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { roomId } = ctx.params;
@@ -66,7 +67,7 @@ std::future<void> POST(const std:& request, RouteContext ctx) {
 
 }
 
-std::future<void> GET(const std:& request, RouteContext ctx) {
+std::future<void> GET(const std::string& request, RouteContext ctx) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { roomId } = ctx.params;

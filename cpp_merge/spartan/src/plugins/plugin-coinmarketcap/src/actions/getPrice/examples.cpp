@@ -1,36 +1,37 @@
 #include "examples.hpp"
+#include <string>
 
 array<array<std::shared_ptr<ActionExample>>> priceExamples = array<array<std::shared_ptr<ActionExample>>>{ array<object>{ object{
-    object::pair{std:("user"), std:("{{user1}}")}, 
-    object::pair{std:("content"), object{
-        object::pair{std:("text"), std:("What's the current price of Bitcoin?")}
+    object::pair{std::string("user"), std::string("{{user1}}")}, 
+    object::pair{std::string("content"), object{
+        object::pair{std::string("text"), std::string("What's the current price of Bitcoin?")}
     }}
 }, object{
-    object::pair{std:("user"), std:("{{agent}}")}, 
-    object::pair{std:("content"), object{
-        object::pair{std:("text"), std:("Let me check the current Bitcoin price for you.")}, 
-        object::pair{std:("action"), std:("GET_PRICE")}
+    object::pair{std::string("user"), std::string("{{agent}}")}, 
+    object::pair{std::string("content"), object{
+        object::pair{std::string("text"), std::string("Let me check the current Bitcoin price for you.")}, 
+        object::pair{std::string("action"), std::string("GET_PRICE")}
     }}
 }, object{
-    object::pair{std:("user"), std:("{{agent}}")}, 
-    object::pair{std:("content"), object{
-        object::pair{std:("text"), std:("The current price of BTC is 65,432.21 USD")}
+    object::pair{std::string("user"), std::string("{{agent}}")}, 
+    object::pair{std::string("content"), object{
+        object::pair{std::string("text"), std::string("The current price of BTC is 65,432.21 USD")}
     }}
 } }, array<object>{ object{
-    object::pair{std:("user"), std:("{{user1}}")}, 
-    object::pair{std:("content"), object{
-        object::pair{std:("text"), std:("Check ETH price in EUR")}
+    object::pair{std::string("user"), std::string("{{user1}}")}, 
+    object::pair{std::string("content"), object{
+        object::pair{std::string("text"), std::string("Check ETH price in EUR")}
     }}
 }, object{
-    object::pair{std:("user"), std:("{{agent}}")}, 
-    object::pair{std:("content"), object{
-        object::pair{std:("text"), std:("I'll check the current Ethereum price in EUR.")}, 
-        object::pair{std:("action"), std:("GET_PRICE")}
+    object::pair{std::string("user"), std::string("{{agent}}")}, 
+    object::pair{std::string("content"), object{
+        object::pair{std::string("text"), std::string("I'll check the current Ethereum price in EUR.")}, 
+        object::pair{std::string("action"), std::string("GET_PRICE")}
     }}
 }, object{
-    object::pair{std:("user"), std:("{{agent}}")}, 
-    object::pair{std:("content"), object{
-        object::pair{std:("text"), std:("The current price of ETH is 2,345.67 EUR")}
+    object::pair{std::string("user"), std::string("{{agent}}")}, 
+    object::pair{std::string("content"), object{
+        object::pair{std::string("text"), std::string("The current price of ETH is 2,345.67 EUR")}
     }}
 } } };
 

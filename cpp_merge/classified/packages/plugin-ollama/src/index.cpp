@@ -1,35 +1,36 @@
 #include "index.test.h"
+#include <string>
 
 void Main(void)
 {
-    describe(std:("ollamaPlugin"), [=]() mutable
+    describe(std::string("ollamaPlugin"), [=]() mutable
     {
-        it(std:("should ollamaPlugin"), [=]() mutable
+        it(std::string("should ollamaPlugin"), [=]() mutable
         {
             expect(ollamaPlugin)->toBeDefined();
         }
         );
-        it(std:("should have the correct name"), [=]() mutable
+        it(std::string("should have the correct name"), [=]() mutable
         {
-            expect(ollamaPlugin->name)->toBe(std:("ollama"));
+            expect(ollamaPlugin->name)->toBe(std::string("ollama"));
         }
         );
-        it(std:("should have an init method"), [=]() mutable
+        it(std::string("should have an init method"), [=]() mutable
         {
             expect(ollamaPlugin->init)->toBeDefined();
-            expect(type_of(ollamaPlugin->init))->toBe(std:("function"));
+            expect(type_of(ollamaPlugin->init))->toBe(std::string("function"));
         }
         );
-        it(std:("should have a description"), [=]() mutable
+        it(std::string("should have a description"), [=]() mutable
         {
             expect(ollamaPlugin->description)->toBeDefined();
-            expect(type_of(ollamaPlugin->description))->toBe(std:("string"));
+            expect(type_of(ollamaPlugin->description))->toBe(std::string("string"));
         }
         );
-        it(std:("should have config"), [=]() mutable
+        it(std::string("should have config"), [=]() mutable
         {
             expect(ollamaPlugin->config)->toBeDefined();
-            expect(type_of(ollamaPlugin->config))->toBe(std:("object"));
+            expect(type_of(ollamaPlugin->config))->toBe(std::string("object"));
         }
         );
     }

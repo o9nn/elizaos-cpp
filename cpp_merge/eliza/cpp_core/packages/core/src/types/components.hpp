@@ -21,19 +21,19 @@ namespace elizaos {
  * Example content with associated user for demonstration purposes
  */
 struct ActionExample {
-    std: name;
+    std::string name;
     Content content;
 };
 
 /**
  * Callback std::function type for handlers
  */
-using HandlerCallback = std::function<std::future<std::vector<Memory>>(Content, std:)>;
+using HandlerCallback = std::function<std::future<std::vector<Memory>>(Content, std::string)>;
 
 /**
  * Handler std::function type for processing messages
  */
-using Handler = std::function<std::future<std:>(IAgentRuntime, Memory, State, std:, HandlerCallback, std::vector<Memory>)>;
+using Handler = std::function<std::future<std::string>(IAgentRuntime, Memory, State, std::string, HandlerCallback, std::vector<Memory>)>;
 
 /**
  * Validator std::function type for actions/evaluators
@@ -45,10 +45,10 @@ using Validator = std::function<std::future<bool>(IAgentRuntime, Memory, State)>
  */
 struct Action {
     std::optional<std::vector<std::string>> similes;
-    std: description;
+    std::string description;
     std::optional<std::vector<std::vector<ActionExample>>> examples;
     Handler handler;
-    std: name;
+    std::string name;
     Validator validate;
 };
 
@@ -56,9 +56,9 @@ struct Action {
  * Example for evaluating agent behavior
  */
 struct EvaluationExample {
-    std: prompt;
+    std::string prompt;
     std::vector<ActionExample> messages;
-    std: outcome;
+    std::string outcome;
 };
 
 /**
@@ -66,24 +66,24 @@ struct EvaluationExample {
  */
 struct Evaluator {
     std::optional<bool> alwaysRun;
-    std: description;
+    std::string description;
     std::optional<std::vector<std::string>> similes;
     std::vector<EvaluationExample> examples;
     Handler handler;
-    std: name;
+    std::string name;
     Validator validate;
 };
 
 struct ProviderResult {
-    std::optional<std:> text;
+    std::optional<std::string> text;
 };
 
 /**
  * Provider for external data/services
  */
 struct Provider {
-    std: name;
-    std::optional<std:> description;
+    std::string name;
+    std::optional<std::string> description;
     std::optional<bool> dynamic;
     std::optional<double> position;
     std::optional<bool> private;

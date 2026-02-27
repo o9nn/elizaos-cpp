@@ -1,4 +1,5 @@
 #include "use-agent-update.hpp"
+#include <string>
 #include <optional>
 #include <unordered_map>
 #include <iostream>
@@ -10,7 +11,7 @@ void useAgentUpdate(Agent initialAgent) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Keep reference to the initial state for comparison
-    const auto initialAgentRef = useRef<Agent>(/* JSON::parse */ /* JSON.stringify */ std:(initialAgent));
+    const auto initialAgentRef = useRef<Agent>(/* JSON::parse */ /* JSON.stringify */ std::string(initialAgent));
 
     const auto {;
         value: agent,
@@ -21,7 +22,7 @@ void useAgentUpdate(Agent initialAgent) {
         updateSettings,
         } = usePartialUpdate(initialAgent);
 
-        // === Template Import Function ===
+        // == Template Import Function ==
         /**
         * Imports a full agent template - overwrites all fields
         *
@@ -56,7 +57,7 @@ void useAgentUpdate(Agent initialAgent) {
                                     [agent.settings, updateField, updateSettings];
                                     );
 
-                                    // === Basic Info Tab ===
+                                    // == Basic Info Tab ==
                                     /**
                                     * Updates a field in the Agent's settings object
                                     *
@@ -64,7 +65,7 @@ void useAgentUpdate(Agent initialAgent) {
                                     * @param value New value
                                     */
                                     const auto updateSetting = useCallback[&](;
-                                    <T>(path: std:, value: T) {
+                                    <T>(path: std::string, value: T) {
                                         "updateField(" + "settings." + path;
                                         },
                                         [updateField];
@@ -76,7 +77,7 @@ void useAgentUpdate(Agent initialAgent) {
                                         * @param settings The new settings object
                                         */
                                         const auto setSettings = useCallback(;
-                                        [&](settings: std:) {
+                                        [&](settings: std::string) {
                                             updateSettings(settings);
                                             },
                                             [updateSettings];
@@ -88,13 +89,13 @@ void useAgentUpdate(Agent initialAgent) {
                                             * @param systemPrompt The new system prompt
                                             */
                                             const auto updateSystemPrompt = useCallback(;
-                                            [&](systemPrompt: std:) {
+                                            [&](systemPrompt: std::string) {
                                                 updateField("system", systemPrompt);
                                                 },
                                                 [updateField];
                                                 );
 
-                                                // === Secrets Tab ===
+                                                // == Secrets Tab ==
                                                 /**
                                                 * Updates a secret in the Agent's settings.secrets object
                                                 *
@@ -102,7 +103,7 @@ void useAgentUpdate(Agent initialAgent) {
                                                 * @param value Secret value
                                                 */
                                                 const auto updateSecret = useCallback(;
-                                                [&](key: std:, value: std:) {
+                                                [&](key: std::string, value: std::string) {
                                                     // Handle nested secrets object properly
                                                     const auto currentSettings = agent.settings || {};
                                                     const auto currentSecrets = currentSettings.secrets || {};
@@ -127,7 +128,7 @@ void useAgentUpdate(Agent initialAgent) {
                                                             * @param key Secret key to remove
                                                             */
                                                             const auto removeSecret = useCallback(;
-                                                            [&](key: std:) {
+                                                            [&](key: std::string) {
                                                                 // Get the current secrets object
                                                                 const auto currentSettings = agent.settings || {};
                                                                 const auto currentSecrets = currentSettings.secrets || {};
@@ -148,7 +149,7 @@ void useAgentUpdate(Agent initialAgent) {
                                                                     [agent.settings, updateSettings];
                                                                     );
 
-                                                                    // === Content Tab ===
+                                                                    // == Content Tab ==
                                                                     /**
                                                                     * Adds an item to a content array (bio, topics, adjectives)
                                                                     *
@@ -156,7 +157,7 @@ void useAgentUpdate(Agent initialAgent) {
                                                                     * @param item The item to add
                                                                     */
                                                                     const auto addContentItem = useCallback(;
-                                                                    [&](arrayName: "bio" | "topics" | "adjectives", item: std:) {
+                                                                    [&](arrayName: "bio" | "topics" | "adjectives", item: std::string) {
                                                                         addArrayItem(arrayName, item);
                                                                         },
                                                                         [addArrayItem];
@@ -183,13 +184,13 @@ void useAgentUpdate(Agent initialAgent) {
                                                                             * @param value The new value
                                                                             */
                                                                             const auto updateContentItem = useCallback(;
-                                                                            [&](arrayName: "bio" | "topics" | "adjectives", index, value: std:) {
+                                                                            [&](arrayName: "bio" | "topics" | "adjectives", index, value: std::string) {
                                                                                 "updateField(" + arrayName + "." + index;
                                                                                 },
                                                                                 [updateField];
                                                                                 );
 
-                                                                                // === Style Tab ===
+                                                                                // == Style Tab ==
                                                                                 /**
                                                                                 * Adds a style rule to one of the style arrays
                                                                                 *
@@ -197,7 +198,7 @@ void useAgentUpdate(Agent initialAgent) {
                                                                                 * @param rule The style rule to add
                                                                                 */
                                                                                 const auto addStyleRule = useCallback(;
-                                                                                [&](styleType: "all" | "chat" | "post", rule: std:) {
+                                                                                [&](styleType: "all" | "chat" | "post", rule: std::string) {
                                                                                     "addArrayItem(" + "style." + styleType;
                                                                                     },
                                                                                     [addArrayItem];
@@ -224,7 +225,7 @@ void useAgentUpdate(Agent initialAgent) {
                                                                                         * @param value The new rule value
                                                                                         */
                                                                                         const auto updateStyleRule = useCallback(;
-                                                                                        [&](styleType: "all" | "chat" | "post", index, value: std:) {
+                                                                                        [&](styleType: "all" | "chat" | "post", index, value: std::string) {
                                                                                             "updateField(" + "style." + styleType + "." + index;
                                                                                             },
                                                                                             [updateField];
@@ -237,20 +238,20 @@ void useAgentUpdate(Agent initialAgent) {
                                                                                             * @param values Array of style values
                                                                                             */
                                                                                             const auto setStyleArray = useCallback(;
-                                                                                            [&](styleType: "all" | "chat" | "post", values: std:[]) {
+                                                                                            [&](styleType: "all" | "chat" | "post", values: std::string[]) {
                                                                                                 "updateField(" + "style." + styleType;
                                                                                                 },
                                                                                                 [updateField];
                                                                                                 );
 
-                                                                                                // === Plugins Tab ===
+                                                                                                // == Plugins Tab ==
                                                                                                 /**
                                                                                                 * Adds a plugin to the agent's plugins array
                                                                                                 *
                                                                                                 * @param pluginId The plugin ID to add
                                                                                                 */
                                                                                                 const auto addPlugin = useCallback(;
-                                                                                                [&](pluginId: std:) {
+                                                                                                [&](pluginId: std::string) {
                                                                                                     addArrayItem("plugins", pluginId);
                                                                                                     },
                                                                                                     [addArrayItem];
@@ -274,20 +275,20 @@ void useAgentUpdate(Agent initialAgent) {
                                                                                                         * @param plugins Array of plugin IDs
                                                                                                         */
                                                                                                         const auto setPlugins = useCallback(;
-                                                                                                        [&](plugins: std:[]) {
+                                                                                                        [&](plugins: std::string[]) {
                                                                                                             updateField("plugins", plugins);
                                                                                                             },
                                                                                                             [updateField];
                                                                                                             );
 
-                                                                                                            // === Avatar Tab ===
+                                                                                                            // == Avatar Tab ==
                                                                                                             /**
                                                                                                             * Updates the agent's avatar
                                                                                                             *
                                                                                                             * @param avatarUrl The URL of the avatar image
                                                                                                             */
                                                                                                             const auto updateAvatar = useCallback(;
-                                                                                                            [&](avatarUrl: std:) {
+                                                                                                            [&](avatarUrl: std::string) {
                                                                                                                 updateSetting("avatar", avatarUrl);
                                                                                                                 },
                                                                                                                 [updateSetting];
@@ -340,7 +341,7 @@ void useAgentUpdate(Agent initialAgent) {
                                                                                                                         const auto initialSettings = initial.settings || {};
                                                                                                                         const auto currentSettings = current.settings || {};
 
-                                                                                                                        // Check if std: settings changed
+                                                                                                                        // Check if std::string settings changed
                                                                                                                         if (nlohmann::json().dump(currentSettings) != nlohmann::json().dump(initialSettings)) {
                                                                                                                             // Create a partial settings object with only changed fields
                                                                                                                             changedFields.settings = {}
@@ -361,7 +362,7 @@ void useAgentUpdate(Agent initialAgent) {
                                                                                                                                 const auto currentSecrets = currentSettings.secrets || {};
 
                                                                                                                                 // Only include secrets that were added or modified
-                                                                                                                                const std::unordered_map<std:, std:> changedSecrets = {};
+                                                                                                                                const std::unordered_map<std::string, std::string> changedSecrets = {};
                                                                                                                                 auto hasSecretChanges = false;
 
                                                                                                                                 // Find added or modified secrets
@@ -374,7 +375,7 @@ void useAgentUpdate(Agent initialAgent) {
 
                                                                                                                                     // Find deleted secrets (null values indicate deletion)
                                                                                                                                     Object.keys(initialSecrets).forEach[&]((key) {
-                                                                                                                                        if (currentSecrets[key] == undefined) {
+                                                                                                                                        if (currentSecrets[key] == std::nullopt) {
                                                                                                                                             changedSecrets[key] = nullptr;
                                                                                                                                             hasSecretChanges = true;
                                                                                                                                         }

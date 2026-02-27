@@ -21,7 +21,7 @@ namespace elizaos {
 /**
  * Build a single package
  */
-std::future<BuildResult> buildPackage(const std:& packagePath, bool isPlugin);
+std::future<BuildResult> buildPackage(const std::string& packagePath, bool isPlugin);
 
 /**
  * Build core packages in a monorepo
@@ -42,6 +42,6 @@ std::future<void> performInitialBuild(DevContext context);
 /**
  * Create development context from current working directory
  */
-DevContext createDevContext(const std:& cwd);
+DevContext createDevContext(const std::string& cwd);
 
 } // namespace elizaos

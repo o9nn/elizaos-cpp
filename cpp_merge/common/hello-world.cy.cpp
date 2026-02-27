@@ -1,39 +1,40 @@
 #include "hello-world.cy.h"
+#include <string>
 
 void Main(void)
 {
-    describe(std:("Plugin Starter Hello World"), [=]() mutable
+    describe(std::string("Plugin Starter Hello World"), [=]() mutable
     {
-        it(std:("should verify the server is running"), [=]() mutable
+        it(std::string("should verify the server is running"), [=]() mutable
         {
-            cy->visit(std:("/"), object{
-                object::pair{std:("failOnStatusCode"), false}
+            cy->visit(std::string("/"), object{
+                object::pair{std::string("failOnStatusCode"), false}
             });
-            cy->get(std:("body"))->should(std:("exist"));
+            cy->get(std::string("body"))->should(std::string("exist"));
         }
         );
-        it(std:("should check server response"), [=]() mutable
+        it(std::string("should check server response"), [=]() mutable
         {
             cy->request(object{
-                object::pair{std:("url"), std:("/")}, 
-                object::pair{std:("failOnStatusCode"), false}
+                object::pair{std::string("url"), std::string("/")}, 
+                object::pair{std::string("failOnStatusCode"), false}
             })->then([=](auto response) mutable
             {
-                expect(response)->to->have->property(std:("status"));
-                cy->log(std:("Server responded with status: ") + response["status"] + string_empty);
+                expect(response)->to->have->property(std::string("status"));
+                cy->log(std::string("Server responded with status: ") + response["status"] + string_empty);
             }
             );
         }
         );
-        it(std:("should verify API endpoint"), [=]() mutable
+        it(std::string("should verify API endpoint"), [=]() mutable
         {
             cy->request(object{
-                object::pair{std:("method"), std:("GET")}, 
-                object::pair{std:("url"), std:("/api/health")}, 
-                object::pair{std:("failOnStatusCode"), false}
+                object::pair{std::string("method"), std::string("GET")}, 
+                object::pair{std::string("url"), std::string("/api/health")}, 
+                object::pair{std::string("failOnStatusCode"), false}
             })->then([=](auto response) mutable
             {
-                cy->log(std:("API health check status: ") + response["status"] + string_empty);
+                cy->log(std::string("API health check status: ") + response["status"] + string_empty);
                 expect(response["status"])->to->be->oneOf(array<double>{ 200, 404 });
             }
             );

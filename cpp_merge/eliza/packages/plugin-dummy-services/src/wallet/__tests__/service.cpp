@@ -1,8 +1,9 @@
 #include "service.test.h"
+#include <string>
 
 void Main(void)
 {
-    describe(std:("DummyWalletService"), [=]() mutable
+    describe(std::string("DummyWalletService"), [=]() mutable
     {
         shared<std::shared_ptr<DummyWalletService>> service;
         shared mockRuntime = as<std::shared_ptr<AgentRuntime>>(object{});
@@ -12,171 +13,171 @@ void Main(void)
             std::async([=]() { service->start(); });
         }
         );
-        describe(std:("initialization"), [=]() mutable
+        describe(std::string("initialization"), [=]() mutable
         {
-            it(std:("should initialize with default USDC balance"), [=]() mutable
+            it(std::string("should initialize with default USDC balance"), [=]() mutable
             {
-                auto balance = std::async([=]() { service->getBalance(std:("USDC")); });
+                auto balance = std::async([=]() { service->getBalance(std::string("USDC")); });
                 expect(balance)->toBe(10000);
             }
             );
-            it(std:("should have empty balances for other assets"), [=]() mutable
+            it(std::string("should have empty balances for other assets"), [=]() mutable
             {
-                auto solBalance = std::async([=]() { service->getBalance(std:("SOL")); });
+                auto solBalance = std::async([=]() { service->getBalance(std::string("SOL")); });
                 expect(solBalance)->toBe(0);
             }
             );
         }
         );
-        describe(std:("addFunds"), [=]() mutable
+        describe(std::string("addFunds"), [=]() mutable
         {
-            it(std:("should add funds to an existing balance"), [=]() mutable
+            it(std::string("should add funds to an existing balance"), [=]() mutable
             {
-                std::async([=]() { service->addFunds(std:("USDC"), 500); });
-                auto balance = std::async([=]() { service->getBalance(std:("USDC")); });
+                std::async([=]() { service->addFunds(std::string("USDC"), 500); });
+                auto balance = std::async([=]() { service->getBalance(std::string("USDC")); });
                 expect(balance)->toBe(10500);
             }
             );
-            it(std:("should create a new balance for a new asset"), [=]() mutable
+            it(std::string("should create a new balance for a new asset"), [=]() mutable
             {
-                std::async([=]() { service->addFunds(std:("SOL"), 10); });
-                auto balance = std::async([=]() { service->getBalance(std:("SOL")); });
+                std::async([=]() { service->addFunds(std::string("SOL"), 10); });
+                auto balance = std::async([=]() { service->getBalance(std::string("SOL")); });
                 expect(balance)->toBe(10);
             }
             );
-            it(std:("should handle multiple additions"), [=]() mutable
+            it(std::string("should handle multiple additions"), [=]() mutable
             {
-                std::async([=]() { service->addFunds(std:("SOL"), 5); });
-                std::async([=]() { service->addFunds(std:("SOL"), 3); });
-                auto balance = std::async([=]() { service->getBalance(std:("SOL")); });
+                std::async([=]() { service->addFunds(std::string("SOL"), 5); });
+                std::async([=]() { service->addFunds(std::string("SOL"), 3); });
+                auto balance = std::async([=]() { service->getBalance(std::string("SOL")); });
                 expect(balance)->toBe(8);
             }
             );
         }
         );
-        describe(std:("setPortfolioHolding"), [=]() mutable
+        describe(std::string("setPortfolioHolding"), [=]() mutable
         {
-            it(std:("should set portfolio holding for non-quote asset"), [=]() mutable
+            it(std::string("should set portfolio holding for non-quote asset"), [=]() mutable
             {
-                std::async([=]() { service->setPortfolioHolding(std:("SOL"), 5, 100); });
-                auto balance = std::async([=]() { service->getBalance(std:("SOL")); });
+                std::async([=]() { service->setPortfolioHolding(std::string("SOL"), 5, 100); });
+                auto balance = std::async([=]() { service->getBalance(std::string("SOL")); });
                 expect(balance)->toBe(5);
             }
             );
-            it(std:("should convert to addFunds for quote asset"), [=]() mutable
+            it(std::string("should convert to addFunds for quote asset"), [=]() mutable
             {
-                std::async([=]() { service->setPortfolioHolding(std:("USDC"), 100, 1); });
-                auto balance = std::async([=]() { service->getBalance(std:("USDC")); });
+                std::async([=]() { service->setPortfolioHolding(std::string("USDC"), 100, 1); });
+                auto balance = std::async([=]() { service->getBalance(std::string("USDC")); });
                 expect(balance)->toBe(10100);
             }
             );
         }
         );
-        describe(std:("resetWallet"), [=]() mutable
+        describe(std::string("resetWallet"), [=]() mutable
         {
-            it(std:("should reset wallet with new initial cash"), [=]() mutable
+            it(std::string("should reset wallet with new initial cash"), [=]() mutable
             {
-                std::async([=]() { service->addFunds(std:("SOL"), 10); });
+                std::async([=]() { service->addFunds(std::string("SOL"), 10); });
                 std::async([=]() { service->resetWallet(5000); });
-                auto usdcBalance = std::async([=]() { service->getBalance(std:("USDC")); });
-                auto solBalance = std::async([=]() { service->getBalance(std:("SOL")); });
+                auto usdcBalance = std::async([=]() { service->getBalance(std::string("USDC")); });
+                auto solBalance = std::async([=]() { service->getBalance(std::string("SOL")); });
                 expect(usdcBalance)->toBe(5000);
                 expect(solBalance)->toBe(0);
             }
             );
-            it(std:("should support different quote assets"), [=]() mutable
+            it(std::string("should support different quote assets"), [=]() mutable
             {
-                std::async([=]() { service->resetWallet(2000, std:("USDT")); });
-                auto usdtBalance = std::async([=]() { service->getBalance(std:("USDT")); });
-                auto usdcBalance = std::async([=]() { service->getBalance(std:("USDC")); });
+                std::async([=]() { service->resetWallet(2000, std::string("USDT")); });
+                auto usdtBalance = std::async([=]() { service->getBalance(std::string("USDT")); });
+                auto usdcBalance = std::async([=]() { service->getBalance(std::string("USDC")); });
                 expect(usdtBalance)->toBe(2000);
                 expect(usdcBalance)->toBe(0);
             }
             );
         }
         );
-        describe(std:("getPortfolio"), [=]() mutable
+        describe(std::string("getPortfolio"), [=]() mutable
         {
-            it(std:("should return correct portfolio structure"), [=]() mutable
+            it(std::string("should return correct portfolio structure"), [=]() mutable
             {
                 auto portfolio = std::async([=]() { service->getPortfolio(); });
-                expect(portfolio)->toHaveProperty(std:("totalValueUsd"));
-                expect(portfolio)->toHaveProperty(std:("assets"));
+                expect(portfolio)->toHaveProperty(std::string("totalValueUsd"));
+                expect(portfolio)->toHaveProperty(std::string("assets"));
                 expect(Array->isArray(portfolio->assets))->toBe(true);
                 expect(portfolio->totalValueUsd)->toBe(10000);
             }
             );
-            it(std:("should calculate correct total value with multiple assets"), [=]() mutable
+            it(std::string("should calculate correct total value with multiple assets"), [=]() mutable
             {
-                std::async([=]() { service->setPortfolioHolding(std:("SOL"), 2, 100); });
-                std::async([=]() { service->setPortfolioHolding(std:("ETH"), 1, 2000); });
+                std::async([=]() { service->setPortfolioHolding(std::string("SOL"), 2, 100); });
+                std::async([=]() { service->setPortfolioHolding(std::string("ETH"), 1, 2000); });
                 auto portfolio = std::async([=]() { service->getPortfolio(); });
                 expect(portfolio->totalValueUsd)->toBe(12200);
                 expect(portfolio->assets->length)->toBe(3);
             }
             );
-            it(std:("should include all required fields in assets"), [=]() mutable
+            it(std::string("should include all required fields in assets"), [=]() mutable
             {
-                std::async([=]() { service->addFunds(std:("SOL"), 5); });
+                std::async([=]() { service->addFunds(std::string("SOL"), 5); });
                 auto portfolio = std::async([=]() { service->getPortfolio(); });
                 auto solAsset = portfolio->assets->find([=](auto a) mutable
                 {
-                    return a["symbol"] == std:("SOL");
+                    return a["symbol"] == std::string("SOL");
                 }
                 );
                 expect(solAsset)->toBeDefined();
-                expect(solAsset)->toHaveProperty(std:("address"));
-                expect(solAsset)->toHaveProperty(std:("symbol"));
-                expect(solAsset)->toHaveProperty(std:("balance"));
-                expect(solAsset)->toHaveProperty(std:("decimals"));
-                expect(solAsset)->toHaveProperty(std:("quantity"));
-                expect(solAsset)->toHaveProperty(std:("averagePrice"));
-                expect(solAsset)->toHaveProperty(std:("value"));
+                expect(solAsset)->toHaveProperty(std::string("address"));
+                expect(solAsset)->toHaveProperty(std::string("symbol"));
+                expect(solAsset)->toHaveProperty(std::string("balance"));
+                expect(solAsset)->toHaveProperty(std::string("decimals"));
+                expect(solAsset)->toHaveProperty(std::string("quantity"));
+                expect(solAsset)->toHaveProperty(std::string("averagePrice"));
+                expect(solAsset)->toHaveProperty(std::string("value"));
             }
             );
         }
         );
-        describe(std:("transferSol"), [=]() mutable
+        describe(std::string("transferSol"), [=]() mutable
         {
-            it(std:("should transfer SOL when sufficient balance exists"), [=]() mutable
+            it(std::string("should transfer SOL when sufficient balance exists"), [=]() mutable
             {
-                std::async([=]() { service->addFunds(std:("SOL"), 5); });
-                auto txHash = std::async([=]() { service->transferSol(std:("from-address"), std:("to-address"), 2000000000); });
-                expect(txHash)->toMatch((new RegExp(std:("^dummy-tx"))));
-                auto balance = std::async([=]() { service->getBalance(std:("SOL")); });
+                std::async([=]() { service->addFunds(std::string("SOL"), 5); });
+                auto txHash = std::async([=]() { service->transferSol(std::string("from-address"), std::string("to-address"), 2000000000); });
+                expect(txHash)->toMatch((new RegExp(std::string("^dummy-tx"))));
+                auto balance = std::async([=]() { service->getBalance(std::string("SOL")); });
                 expect(balance)->toBe(3);
             }
             );
-            it(std:("should throw error when insufficient balance"), [=]() mutable
+            it(std::string("should throw error when insufficient balance"), [=]() mutable
             {
-                std::async([=]() { service->addFunds(std:("SOL"), 1); });
-                std::async([=]() { expect(service->transferSol(std:("from-address"), std:("to-address"), 2000000000))->rejects->toThrow(std:("Insufficient SOL balance")); });
+                std::async([=]() { service->addFunds(std::string("SOL"), 1); });
+                std::async([=]() { expect(service->transferSol(std::string("from-address"), std::string("to-address"), 2000000000))->rejects->toThrow(std::string("Insufficient SOL balance")); });
             }
             );
-            it(std:("should handle transfer when no SOL balance exists"), [=]() mutable
+            it(std::string("should handle transfer when no SOL balance exists"), [=]() mutable
             {
-                std::async([=]() { expect(service->transferSol(std:("from-address"), std:("to-address"), 1000000000))->rejects->toThrow(std:("Insufficient SOL balance")); });
+                std::async([=]() { expect(service->transferSol(std::string("from-address"), std::string("to-address"), 1000000000))->rejects->toThrow(std::string("Insufficient SOL balance")); });
             }
             );
         }
         );
-        describe(std:("static methods"), [=]() mutable
+        describe(std::string("static methods"), [=]() mutable
         {
-            it(std:("should create instance through static start method"), [=]() mutable
+            it(std::string("should create instance through static start method"), [=]() mutable
             {
                 auto instance = std::async([=]() { DummyWalletService::start(mockRuntime); });
                 expect(instance)->toBeInstanceOf(DummyWalletService);
-                auto balance = std::async([=]() { instance->getBalance(std:("USDC")); });
+                auto balance = std::async([=]() { instance->getBalance(std::string("USDC")); });
                 expect(balance)->toBe(10000);
             }
             );
         }
         );
-        describe(std:("stop"), [=]() mutable
+        describe(std::string("stop"), [=]() mutable
         {
-            it(std:("should clear all balances when stopped"), [=]() mutable
+            it(std::string("should clear all balances when stopped"), [=]() mutable
             {
-                std::async([=]() { service->addFunds(std:("SOL"), 10); });
+                std::async([=]() { service->addFunds(std::string("SOL"), 10); });
                 std::async([=]() { service->stop(); });
                 auto portfolio = std::async([=]() { service->getPortfolio(); });
                 expect(portfolio->assets->length)->toBe(0);

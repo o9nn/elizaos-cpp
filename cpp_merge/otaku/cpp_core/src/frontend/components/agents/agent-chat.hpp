@@ -17,10 +17,10 @@ namespace elizaos {
 
 
 struct Message {
-    std: id;
-    std: content;
+    std::string id;
+    std::string content;
     bool isFromAgent;
-    std: timestamp;
+    std::string timestamp;
 };
 
 struct AgentChatProps {
@@ -28,6 +28,6 @@ struct AgentChatProps {
 };
 
 // Helper std::function to generate agent responses based on agent name
-std: getAgentResponse(const std:& agentName, const std:& userMessage);
+std::string getAgentResponse(const std::string& agentName, const std::string& userMessage);
 
 } // namespace elizaos

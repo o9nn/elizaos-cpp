@@ -1,36 +1,37 @@
 #include "experienceFormatter.hpp"
+#include <string>
 
 string formatExperienceForDisplay(std::shared_ptr<Experience> experience)
 {
     auto typeEmoji = getTypeEmoji(experience->type);
     auto timestamp = ((std::make_shared<Date>(experience->createdAt)))->toLocaleString();
-    return string_empty + typeEmoji + std:(" ") + experience->type::toUpperCase() + std:(" - ") + timestamp + std:("\
-Action: ") + experience->action + std:("\
-Learning: ") + experience->learning + std:("\
-Confidence: ") + Math->round(experience->confidence * 100) + std:("%\
-Importance: ") + Math->round(experience->importance * 100) + std:("%\
-Domain: ") + experience->domain + std:("\
-Tags: ") + experience->tags->join(std:(", ")) + string_empty;
+    return string_empty + typeEmoji + std::string(" ") + experience->type::toUpperCase() + std::string(" - ") + timestamp + std::string("\
+Action: ") + experience->action + std::string("\
+Learning: ") + experience->learning + std::string("\
+Confidence: ") + Math->round(experience->confidence * 100) + std::string("%\
+Importance: ") + Math->round(experience->importance * 100) + std::string("%\
+Domain: ") + experience->domain + std::string("\
+Tags: ") + experience->tags->join(std::string(", ")) + string_empty;
 };
 
 
 string formatExperienceSummary(std::shared_ptr<Experience> experience)
 {
     auto typeEmoji = getTypeEmoji(experience->type);
-    return string_empty + typeEmoji + std:(" ") + experience->learning + std:(" (") + Math->round(experience->confidence * 100) + std:("% confidence)");
+    return string_empty + typeEmoji + std::string(" ") + experience->learning + std::string(" (") + Math->round(experience->confidence * 100) + std::string("% confidence)");
 };
 
 
 string formatExperienceList(array<std::shared_ptr<Experience>> experiences)
 {
     if (experiences->get_length() == 0) {
-        return std:("No experiences found.");
+        return std::string("No experiences found.");
     }
     return experiences->map([=](auto exp, auto index) mutable
     {
-        return string_empty + (index + 1) + std:(". ") + formatExperienceSummary(exp) + string_empty;
+        return string_empty + (index + 1) + std::string(". ") + formatExperienceSummary(exp) + string_empty;
     }
-    )->join(std:("\
+    )->join(std::string("\
 "));
 };
 
@@ -38,11 +39,11 @@ string formatExperienceList(array<std::shared_ptr<Experience>> experiences)
 string formatPatternSummary(object pattern)
 {
     auto significanceEmoji = OR((const_(object{
-        object::pair{std:("high"), std:("🔴")}, 
-        object::pair{std:("medium"), std:("🟡")}, 
-        object::pair{std:("low"), std:("🟢")}
-    })[pattern["significance"]]), (std:("⚪")));
-    return string_empty + significanceEmoji + std:(" ") + pattern["description"] + std:(" (observed ") + pattern["frequency"] + std:(" times)");
+        object::pair{std::string("high"), std::string("🔴")}, 
+        object::pair{std::string("medium"), std::string("🟡")}, 
+        object::pair{std::string("low"), std::string("🟢")}
+    })[pattern["significance"]]), (std::string("⚪")));
+    return string_empty + significanceEmoji + std::string(" ") + pattern["description"] + std::string(" (observed ") + pattern["frequency"] + std::string(" times)");
 };
 
 
@@ -63,13 +64,13 @@ std::shared_ptr<Map<string, array<std::shared_ptr<Experience>>>> groupExperience
 object getExperienceStats(array<std::shared_ptr<Experience>> experiences)
 {
     shared stats = object{
-        object::pair{std:("total"), experiences->get_length()}, 
-        object::pair{std:("byType"), as<Record<ExperienceType, double>>(object{})}, 
-        object::pair{std:("byOutcome"), as<Record<OutcomeType, double>>(object{})}, 
-        object::pair{std:("byDomain"), as<Record<string, double>>(object{})}, 
-        object::pair{std:("averageConfidence"), 0}, 
-        object::pair{std:("averageImportance"), 0}, 
-        object::pair{std:("successRate"), 0}
+        object::pair{std::string("total"), experiences->get_length()}, 
+        object::pair{std::string("byType"), as<Record<ExperienceType, double>>(object{})}, 
+        object::pair{std::string("byOutcome"), as<Record<OutcomeType, double>>(object{})}, 
+        object::pair{std::string("byDomain"), as<Record<string, double>>(object{})}, 
+        object::pair{std::string("averageConfidence"), 0}, 
+        object::pair{std::string("averageImportance"), 0}, 
+        object::pair{std::string("successRate"), 0}
     };
     if (experiences->get_length() == 0) return stats;
     Object->values(ExperienceType)->forEach([=](auto type) mutable
@@ -127,29 +128,29 @@ object getExperienceStats(array<std::shared_ptr<Experience>> experiences)
 string getTypeEmoji(ExperienceType type)
 {
     auto emojiMap = object{
-        object::pair{ExperienceType::SUCCESS, std:("✅")}, 
-        object::pair{ExperienceType::FAILURE, std:("❌")}, 
-        object::pair{ExperienceType::DISCOVERY, std:("💡")}, 
-        object::pair{ExperienceType::CORRECTION, std:("🔄")}, 
-        object::pair{ExperienceType::LEARNING, std:("📚")}, 
-        object::pair{ExperienceType::HYPOTHESIS, std:("🤔")}, 
-        object::pair{ExperienceType::VALIDATION, std:("✔️")}, 
-        object::pair{ExperienceType::WARNING, std:("⚠️")}
+        object::pair{ExperienceType::SUCCESS, std::string("✅")}, 
+        object::pair{ExperienceType::FAILURE, std::string("❌")}, 
+        object::pair{ExperienceType::DISCOVERY, std::string("💡")}, 
+        object::pair{ExperienceType::CORRECTION, std::string("🔄")}, 
+        object::pair{ExperienceType::LEARNING, std::string("📚")}, 
+        object::pair{ExperienceType::HYPOTHESIS, std::string("🤔")}, 
+        object::pair{ExperienceType::VALIDATION, std::string("✔️")}, 
+        object::pair{ExperienceType::WARNING, std::string("⚠️")}
     };
-    return OR((const_(emojiMap)[type]), (std:("📝")));
+    return OR((const_(emojiMap)[type]), (std::string("📝")));
 };
 
 
 string formatExperienceForRAG(std::shared_ptr<Experience> experience)
 {
-    auto parts = array<string>{ std:("Experience Type: ") + experience->type + string_empty, std:("Outcome: ") + experience->outcome + string_empty, std:("Domain: ") + experience->domain + string_empty, std:("Action: ") + experience->action + string_empty, std:("Context: ") + experience->context + string_empty, std:("Result: ") + experience->result + string_empty, std:("Learning: ") + experience->learning + string_empty, std:("Confidence: ") + experience->confidence + string_empty, std:("Importance: ") + experience->importance + string_empty, std:("Tags: ") + experience->tags->join(std:(", ")) + string_empty };
+    auto parts = array<string>{ std::string("Experience Type: ") + experience->type + string_empty, std::string("Outcome: ") + experience->outcome + string_empty, std::string("Domain: ") + experience->domain + string_empty, std::string("Action: ") + experience->action + string_empty, std::string("Context: ") + experience->context + string_empty, std::string("Result: ") + experience->result + string_empty, std::string("Learning: ") + experience->learning + string_empty, std::string("Confidence: ") + experience->confidence + string_empty, std::string("Importance: ") + experience->importance + string_empty, std::string("Tags: ") + experience->tags->join(std::string(", ")) + string_empty };
     if (experience->previousBelief) {
-        parts->push(std:("Previous Belief: ") + experience->previousBelief + string_empty);
+        parts->push(std::string("Previous Belief: ") + experience->previousBelief + string_empty);
     }
     if (experience->correctedBelief) {
-        parts->push(std:("Corrected Belief: ") + experience->correctedBelief + string_empty);
+        parts->push(std::string("Corrected Belief: ") + experience->correctedBelief + string_empty);
     }
-    return parts->join(std:("\
+    return parts->join(std::string("\
 "));
 };
 
@@ -162,7 +163,7 @@ array<string> extractKeywords(std::shared_ptr<Experience> experience)
         return keywords->add(tag->toLowerCase());
     }
     );
-    auto learningWords = experience->learning->toLowerCase()->split((new RegExp(std:("\W"))))->filter([=](auto word) mutable
+    auto learningWords = experience->learning->toLowerCase()->split((new RegExp(std::string("\W"))))->filter([=](auto word) mutable
     {
         return word->get_length() > 3;
     }
@@ -172,7 +173,7 @@ array<string> extractKeywords(std::shared_ptr<Experience> experience)
         return keywords->add(word);
     }
     );
-    auto actionParts = experience->action->split((new RegExp(std:("[_\-\s]"))))->filter([=](auto part) mutable
+    auto actionParts = experience->action->split((new RegExp(std::string("[_\-\s]"))))->filter([=](auto part) mutable
     {
         return part->get_length() > 2;
     }

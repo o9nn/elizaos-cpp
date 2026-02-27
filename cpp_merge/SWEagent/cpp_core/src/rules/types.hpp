@@ -23,20 +23,20 @@ namespace elizaos {
  * Rule definition structure matching Cursor IDE rules format
  */
 struct Rule {
-    std: name;
-    std::optional<std:> description;
+    std::string name;
+    std::optional<std::string> description;
     std::optional<std::vector<std::string>> globs;
     bool alwaysApply;
-    std::variant<std:, RuleContent> content;
+    std::variant<std::string, RuleContent> content;
 };
 
 /**
  * Structured rule content
  */
 struct RuleContent {
-    std::optional<std:> title;
+    std::optional<std::string> title;
     std::optional<std::vector<std::string>> guidelines;
-    std::optional<std:> overview;
+    std::optional<std::string> overview;
     std::optional<ProjectStructure> projectStructure;
 };
 
@@ -52,51 +52,51 @@ struct ProjectStructure {
 };
 
 struct EntryPoint {
-    std: path;
-    std: description;
-    std: type;
+    std::string path;
+    std::string description;
+    std::string type;
 };
 
 struct ClassInfo {
-    std: name;
-    std: path;
-    std: description;
+    std::string name;
+    std::string path;
+    std::string description;
 };
 
 struct ExecutionEnvironment {
-    std: type;
-    std: description;
+    std::string type;
+    std::string description;
     std::optional<ClassInfo> interfaceClass;
-    std::optional<std:> interfaceProject;
+    std::optional<std::string> interfaceProject;
 };
 
 struct ToolsInfo {
-    std: location;
-    std: organization;
-    std: deployment;
+    std::string location;
+    std::string organization;
+    std::string deployment;
 };
 
 struct Inspector {
-    std: name;
-    std: path;
-    std: type;
-    std: description;
+    std::string name;
+    std::string path;
+    std::string type;
+    std::string description;
 };
 
 /**
  * Coding guidelines configuration
  */
 struct CodingGuidelines {
-    std: language;
-    std: version;
+    std::string language;
+    std::string version;
     std::vector<CodingRule> rules;
 };
 
 struct CodingRule {
-    std: id;
-    std: category;
-    std: rule;
-    std::optional<std:> enforcement;
+    std::string id;
+    std::string category;
+    std::string rule;
+    std::optional<std::string> enforcement;
     std::optional<std::vector<std::string>> alternatives;
 };
 

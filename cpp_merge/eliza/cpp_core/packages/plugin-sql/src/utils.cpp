@@ -1,4 +1,5 @@
 #include "utils.hpp"
+#include <string>
 #include <filesystem>
 #include <cstdlib>
 #include <optional>
@@ -7,7 +8,7 @@
 
 namespace elizaos {
 
-std: expandTildePath(const std:& filepath) {
+std::string expandTildePath(const std::string& filepath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (filepath && filepath.substr(0, '~')) {
@@ -17,7 +18,7 @@ std: expandTildePath(const std:& filepath) {
 
 }
 
-std: resolvePgliteDir(std::optional<std:> dir, std::optional<std:> fallbackDir) {
+std::string resolvePgliteDir(std::optional<std::string> dir, std::optional<std::string> fallbackDir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto envPath = resolveEnvFile();

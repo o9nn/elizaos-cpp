@@ -35,7 +35,7 @@ class AIService {
    * @param {Configuration} configuration - The configuration instance to be used
    * @throws {Error} If OPENAI_API_KEY environment variable is not std::set
    */
-  constructor(private configuration: Configuration) {
+  /* constructor */ (private configuration: Configuration) {
     if (!std::getenv("OPENAI_API_KEY")) {
       throw new Error('OPENAI_API_KEY is not set');
     }

@@ -1,4 +1,5 @@
 #include "plugin-context.hpp"
+#include <string>
 #include <future>
 #include <filesystem>
 #include <iostream>
@@ -6,7 +7,7 @@
 
 namespace elizaos {
 
-std: normalizeForComparison(const std:& name) {
+std::string normalizeForComparison(const std::string& name) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto normalized = normalizePluginName(name)[0] || name;
@@ -14,7 +15,7 @@ std: normalizeForComparison(const std:& name) {
 
 }
 
-PluginContext detectPluginContext(const std:& pluginName) {
+PluginContext detectPluginContext(const std::string& pluginName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto cwd = std::filesystem::current_path().string();
@@ -104,7 +105,7 @@ std::future<bool> ensurePluginBuilt(PluginContext context) {
 
 }
 
-void provideLocalPluginGuidance(const std:& pluginName, PluginContext context) {
+void provideLocalPluginGuidance(const std::string& pluginName, PluginContext context) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!context.isLocalDevelopment) {

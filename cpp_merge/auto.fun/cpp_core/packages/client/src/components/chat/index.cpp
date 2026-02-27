@@ -1,4 +1,5 @@
 #include "index.hpp"
+#include <string>
 #include <vector>
 #include <optional>
 #include <map>
@@ -22,15 +23,15 @@ void Chat() {
         const auto [chatInput, setChatInput] = useState("");
         const auto [isChatLoading, setIsChatLoading] = useState(false);
         const auto [isSendingMessage, setIsSendingMessage] = useState(false);
-        const auto [chatError, setChatError] = useState<std: | nullptr>(nullptr);
+        const auto [chatError, setChatError] = useState<std::string | nullptr>(nullptr);
         const auto chatContainerRef = useRef<HTMLDivElement>(nullptr);
         const auto [isRefreshingMessages, setIsRefreshingMessages] = useState(false);
         const auto [isBalanceLoading, setIsBalanceLoading] = useState(true);
-        const auto [latestTimestamp, setLatestTimestamp] = useState<std: | nullptr>(nullptr);
+        const auto [latestTimestamp, setLatestTimestamp] = useState<std::string | nullptr>(nullptr);
         const auto [isChatFullscreen, setIsChatFullscreen] = useState(false);
 
         const auto [selectedImage, setSelectedImage] = useState<File | nullptr>(nullptr);
-        const auto [imagePreview, setImagePreview] = useState<std: | nullptr>(nullptr);
+        const auto [imagePreview, setImagePreview] = useState<std::string | nullptr>(nullptr);
         const auto [imageCaption, setImageCaption] = useState("");
 
         // --- Pagination State ---
@@ -43,11 +44,11 @@ void Chat() {
             });
 
             // Get token mint from URL params with better fallback logic
-            const auto { mint: urlTokenMint } = useParams<{ mint: std: }>();
+            const auto { mint: urlTokenMint } = useParams<{ mint: std::string }>();
             const auto location = useLocation();
 
             // Extract token mint from URL if not found in params
-            const auto [detectedTokenMint, setDetectedTokenMint] = useState<std: | nullptr>(;
+            const auto [detectedTokenMint, setDetectedTokenMint] = useState<std::string | nullptr>(;
             nullptr,
             );
 
@@ -65,7 +66,7 @@ void Chat() {
 
             // Update balance loading state when token balance changes
             useEffect[&](() {
-                if (tokenBalance != undefined || !isAuthenticated) {
+                if (tokenBalance != std::nullopt || !isAuthenticated) {
                     setIsBalanceLoading(false);
                 }
                 }, [tokenBalance, isAuthenticated]);
@@ -122,7 +123,7 @@ void Chat() {
 
                                     // --- Fetch Initial Messages ---
                                     const auto fetchChatMessages = useCallback[&](;
-                                    std::async (tier: ChatTier, mint: std:, isInitialLoad = false) {
+                                    std::async (tier: ChatTier, mint: std::string, isInitialLoad = false) {
                                         if (!mint) return;
                                         setIsChatLoading(true);
                                         setChatError(nullptr);
@@ -142,7 +143,7 @@ void Chat() {
 
                                             if (!response.ok || !data.success || !data.messages) {
                                                 // Throw an error object that includes the status if possible
-                                                const std: error = new Error(;
+                                                const std::string error = new Error(;
                                                 data.error ||;
                                                 "Failed to fetch messages (Status: " + response.status + ")"
                                                 );
@@ -175,7 +176,7 @@ void Chat() {
                                                 }
 
                                                 setChatError(nullptr); // Clear error on success;
-                                                } catch (error: std:) {
+                                                } catch (error: std::string) {
                                                     std::cerr << "Error fetching chat messages:" << error << std::endl;
 
                                                     // Check if the error object has the status we attached, or check the response variable if it exists
@@ -235,7 +236,7 @@ void Chat() {
 
                                                                 // Check if there are likely more messages
                                                                 setHasOlderMessages(sortedOlderMessages.size() == MESSAGES_PER_PAGE);
-                                                                } catch (error: std:) {
+                                                                } catch (error: std::string) {
                                                                     std::cerr << "Error fetching older messages:" << error << std::endl;
                                                                     setChatError(error.message || "Could not load older messages.");
                                                                     setHasOlderMessages(false); // Stop trying if there's an error;
@@ -453,7 +454,7 @@ void Chat() {
                                                                                                                     std::cout << "WS: Attempting to subscribe to chat room:" << subscriptionData << std::endl;
                                                                                                                     socket.emit("subscribeToChat", subscriptionData);
 
-                                                                                                                    const auto handleSubscribed = [&](data: std:) {;
+                                                                                                                    const auto handleSubscribed = [&](data: std::string) {;
                                                                                                                         if (data.room == "chat:" + std::to_string(tokenMint) + ":" + std::to_string(selectedChatTier) + "") {
                                                                                                                             std::cout << "WS: Successfully subscribed to" << data.room << std::endl;
                                                                                                                         }
@@ -540,7 +541,7 @@ void Chat() {
                                                                                                                                                 if (isSendingMessage) return; // Prevent double sends
 
                                                                                                                                                 const auto messageText = selectedImage ? imageCaption : chatInput;
-                                                                                                                                                std: mediaBase64 = nullptr;
+                                                                                                                                                std::string mediaBase64 = nullptr;
 
                                                                                                                                                 // Check if there's content to send (either text or an image)
                                                                                                                                                 if (!messageText && !selectedImage) {
@@ -569,12 +570,12 @@ void Chat() {
 
                                                                                                                                                         // --- Prepare Payload ---
                                                                                                                                                         const auto payload: {;
-                                                                                                                                                            message: std:;
-                                                                                                                                                            media?: std: | nullptr;
-                                                                                                                                                            parentId?: std: | nullptr;
+                                                                                                                                                            message: std::string;
+                                                                                                                                                            media?: std::string | nullptr;
+                                                                                                                                                            parentId?: std::string | nullptr;
                                                                                                                                                             } = {
                                                                                                                                                                 message: messageText, // Send caption or text message
-                                                                                                                                                                media: mediaBase64, // Send base64 std: or nullptr
+                                                                                                                                                                media: mediaBase64, // Send base64 std::string or nullptr
                                                                                                                                                                 // parentId: null, // Add parentId logic here if implementing replies
                                                                                                                                                                 };
 
@@ -609,7 +610,7 @@ void Chat() {
                                                                                                                                                                         {
                                                                                                                                                                             method: "POST",
                                                                                                                                                                             headers: { "Content-Type": "application/json" },
-                                                                                                                                                                            body: /* JSON.stringify */ std:(payload),
+                                                                                                                                                                            body: /* JSON.stringify */ std::string(payload),
                                                                                                                                                                             },
                                                                                                                                                                             );
 
@@ -632,7 +633,7 @@ void Chat() {
                                                                                                                                                                         if (result.message.timestamp > (latestTimestamp || "")) {
                                                                                                                                                                             setLatestTimestamp(result.message.timestamp);
                                                                                                                                                                         }
-                                                                                                                                                                        } catch (error: std:) {
+                                                                                                                                                                        } catch (error: std::string) {
                                                                                                                                                                             std::cerr << "Error sending message:" << error << std::endl;
                                                                                                                                                                             "toast.error(" + "Error: " + std::to_string(error.message || "Could not send message")
                                                                                                                                                                             // Remove optimistic message on failure
@@ -688,7 +689,7 @@ void Chat() {
                                                                                                                                                                                         }
                                                                                                                                                                                         }, [chatMessages, isChatLoading, scrollToBottom]);
 
-                                                                                                                                                                                        const auto formatTimestamp = [&](timestamp: std:) {;
+                                                                                                                                                                                        const auto formatTimestamp = [&](timestamp: std::string) {;
                                                                                                                                                                                             const auto date = new Date(timestamp);
                                                                                                                                                                                             const auto now = std::make_unique<Date>();
 

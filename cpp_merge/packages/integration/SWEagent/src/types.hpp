@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SWEAGENT_SRC_TYPES_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SWEAGENT_SRC_TYPES_H
 #include "core.hpp"
+#include <string>
 
 typedef array<std::shared_ptr<TrajectoryStep>> Trajectory;
 
@@ -389,14 +390,14 @@ template <typename RET>
 RET StepOutputImpl::toTemplateFormatDict()
 {
     return object{
-        object::pair{std:("thought"), this->thought}, 
-        object::pair{std:("action"), this->action}, 
-        object::pair{std:("output"), this->output}, 
-        object::pair{std:("observation"), this->observation}, 
-        object::pair{std:("executionTime"), this->executionTime}, 
-        object::pair{std:("done"), this->done}, 
-        object::pair{std:("exitStatus"), this->exitStatus}, 
-        object::pair{std:("submission"), this->submission}
+        object::pair{std::string("thought"), this->thought}, 
+        object::pair{std::string("action"), this->action}, 
+        object::pair{std::string("output"), this->output}, 
+        object::pair{std::string("observation"), this->observation}, 
+        object::pair{std::string("executionTime"), this->executionTime}, 
+        object::pair{std::string("done"), this->done}, 
+        object::pair{std::string("exitStatus"), this->exitStatus}, 
+        object::pair{std::string("submission"), this->submission}
     };
 }
 

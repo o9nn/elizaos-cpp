@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SPARTAN_SRC_PLUGINS_AUTOFUNTRADER_TYPES_INDEX_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SPARTAN_SRC_PLUGINS_AUTOFUNTRADER_TYPES_INDEX_H
 #include "core.hpp"
+#include <string>
 // External dependency removed
 
 enum struct ServiceTypes;
@@ -12,7 +13,7 @@ class PortfolioStatus;
 class TradePerformanceData;
 
 enum struct ServiceTypes {
-    AUTOFUN_TRADING = std:("AUTOFUN_TRADING")
+    AUTOFUN_TRADING = std::string("AUTOFUN_TRADING")
 };
 class TokenSignal : public object, public std::enable_shared_from_this<TokenSignal> {
 public:

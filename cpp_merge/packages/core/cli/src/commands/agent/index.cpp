@@ -1,24 +1,25 @@
 #include "index.hpp"
+#include <string>
 
-any agent = ((std::make_shared<Command>()))->name(std:("agent"))->description(std:("Manage ElizaOS agents"));
+any agent = ((std::make_shared<Command>()))->name(std::string("agent"))->description(std::string("Manage ElizaOS agents"));
 
 void Main(void)
 {
-    agent->command(std:("list"))->alias(std:("ls"))->description(std:("List available agents"))->option(std:("-j, --json"), std:("output as JSON"))->option(std:("-r, --remote-url <url>"), std:("URL of the remote agent runtime"))->option(std:("-p, --port <port>"), std:("Port to listen on"), [=](auto val) mutable
+    agent->command(std::string("list"))->alias(std::string("ls"))->description(std::string("List available agents"))->option(std::string("-j, --json"), std::string("output as JSON"))->option(std::string("-r, --remote-url <url>"), std::string("URL of the remote agent runtime"))->option(std::string("-p, --port <port>"), std::string("Port to listen on"), [=](auto val) mutable
     {
         return Number->parseInt(val);
     }
     )->action(listAgents);
-    agent->command(std:("get"))->alias(std:("g"))->description(std:("Get agent details"))->requiredOption(std:("-n, --name <name>"), std:("agent id, name, or index number from list"))->option(std:("-j, --json"), std:("display agent configuration as JSON in the console"))->option(std:("-o, --output [file]"), std:("save agent config to JSON (defaults to {name}.json)"))->option(std:("-r, --remote-url <url>"), std:("URL of the remote agent runtime"))->option(std:("-p, --port <port>"), std:("Port to listen on"), [=](auto val) mutable
+    agent->command(std::string("get"))->alias(std::string("g"))->description(std::string("Get agent details"))->requiredOption(std::string("-n, --name <name>"), std::string("agent id, name, or index number from list"))->option(std::string("-j, --json"), std::string("display agent configuration as JSON in the console"))->option(std::string("-o, --output [file]"), std::string("save agent config to JSON (defaults to {name}.json)"))->option(std::string("-r, --remote-url <url>"), std::string("URL of the remote agent runtime"))->option(std::string("-p, --port <port>"), std::string("Port to listen on"), [=](auto val) mutable
     {
         return Number->parseInt(val);
     }
     )->action(getAgent);
-    agent->command(std:("start"))->alias(std:("s"))->description(std:("Start an agent with a character profile"))->option(std:("-n, --name <name>"), std:("Name of an existing agent to start"))->option(std:("--path <path>"), std:("Path to local character JSON file"))->option(std:("--remote-character <url>"), std:("URL to remote character JSON file"))->option(std:("-r, --remote-url <url>"), std:("URL of the remote agent runtime"))->option(std:("-p, --port <port>"), std:("Port to listen on"), [=](auto val) mutable
+    agent->command(std::string("start"))->alias(std::string("s"))->description(std::string("Start an agent with a character profile"))->option(std::string("-n, --name <name>"), std::string("Name of an existing agent to start"))->option(std::string("--path <path>"), std::string("Path to local character JSON file"))->option(std::string("--remote-character <url>"), std::string("URL to remote character JSON file"))->option(std::string("-r, --remote-url <url>"), std::string("URL of the remote agent runtime"))->option(std::string("-p, --port <port>"), std::string("Port to listen on"), [=](auto val) mutable
     {
         return Number->parseInt(val);
     }
-    )->addHelpText(std:("after"), std:("\
+    )->addHelpText(std::string("after"), std::string("\
 Examples:\
   $ elizaos agent start -n "Agent Name"     Start an existing agent by name\
   $ elizaos agent start --path ./char.json  Start with a local character file\
@@ -39,18 +40,18 @@ Required configuration:\
         {
             if (is<Error>(error)) {
                 auto errorMsg = error->message;
-                if (errorMsg == std:("MISSING_CHARACTER_CONFIG")) {
+                if (errorMsg == std::string("MISSING_CHARACTER_CONFIG")) {
                     auto cmd = agent->commands->find([=](auto cmd) mutable
                     {
-                        return cmd["name"]() == std:("start");
+                        return cmd["name"]() == std::string("start");
                     }
                     );
                     cmd->help();
                     process->exit(1);
-                } else if (errorMsg == std:("AGENT_NOT_FOUND_WITH_HELP")) {
+                } else if (errorMsg == std::string("AGENT_NOT_FOUND_WITH_HELP")) {
                     auto cmd = agent->commands->find([=](auto cmd) mutable
                     {
-                        return cmd["name"]() == std:("start");
+                        return cmd["name"]() == std::string("start");
                     }
                     );
                     cmd->help();
@@ -61,22 +62,22 @@ Required configuration:\
         }
     }
     );
-    agent->command(std:("stop"))->alias(std:("st"))->description(std:("Stop an agent"))->option(std:("-n, --name <name>"), std:("agent id, name, or index number from list"))->option(std:("--all"), std:("stop all running agents"))->option(std:("-r, --remote-url <url>"), std:("URL of the remote agent runtime"))->option(std:("-p, --port <port>"), std:("Port to listen on"), [=](auto val) mutable
+    agent->command(std::string("stop"))->alias(std::string("st"))->description(std::string("Stop an agent"))->option(std::string("-n, --name <name>"), std::string("agent id, name, or index number from list"))->option(std::string("--all"), std::string("stop all running agents"))->option(std::string("-r, --remote-url <url>"), std::string("URL of the remote agent runtime"))->option(std::string("-p, --port <port>"), std::string("Port to listen on"), [=](auto val) mutable
     {
         return Number->parseInt(val);
     }
     )->action(stopAgent);
-    agent->command(std:("remove"))->alias(std:("rm"))->description(std:("Remove an agent"))->requiredOption(std:("-n, --name <name>"), std:("agent id, name, or index number from list"))->option(std:("-r, --remote-url <url>"), std:("URL of the remote agent runtime"))->option(std:("-p, --port <port>"), std:("Port to listen on"), [=](auto val) mutable
+    agent->command(std::string("remove"))->alias(std::string("rm"))->description(std::string("Remove an agent"))->requiredOption(std::string("-n, --name <name>"), std::string("agent id, name, or index number from list"))->option(std::string("-r, --remote-url <url>"), std::string("URL of the remote agent runtime"))->option(std::string("-p, --port <port>"), std::string("Port to listen on"), [=](auto val) mutable
     {
         return Number->parseInt(val);
     }
     )->action(removeAgent);
-    agent->command(std:("set"))->description(std:("Update agent configuration"))->requiredOption(std:("-n, --name <name>"), std:("agent id, name, or index number from list"))->option(std:("-c, --config <json>"), std:("agent configuration as JSON string"))->option(std:("-f, --file <path>"), std:("path to agent configuration JSON file"))->option(std:("-r, --remote-url <url>"), std:("URL of the remote agent runtime"))->option(std:("-p, --port <port>"), std:("Port to listen on"), [=](auto val) mutable
+    agent->command(std::string("set"))->description(std::string("Update agent configuration"))->requiredOption(std::string("-n, --name <name>"), std::string("agent id, name, or index number from list"))->option(std::string("-c, --config <json>"), std::string("agent configuration as JSON string"))->option(std::string("-f, --file <path>"), std::string("path to agent configuration JSON file"))->option(std::string("-r, --remote-url <url>"), std::string("URL of the remote agent runtime"))->option(std::string("-p, --port <port>"), std::string("Port to listen on"), [=](auto val) mutable
     {
         return Number->parseInt(val);
     }
     )->action(setAgentConfig);
-    agent->command(std:("clear-memories"))->alias(std:("clear"))->description(std:("Clear all memories for an agent"))->requiredOption(std:("-n, --name <name>"), std:("agent id, name, or index number from list"))->option(std:("-r, --remote-url <url>"), std:("URL of the remote agent runtime"))->option(std:("-p, --port <port>"), std:("Port to listen on"), [=](auto val) mutable
+    agent->command(std::string("clear-memories"))->alias(std::string("clear"))->description(std::string("Clear all memories for an agent"))->requiredOption(std::string("-n, --name <name>"), std::string("agent id, name, or index number from list"))->option(std::string("-r, --remote-url <url>"), std::string("URL of the remote agent runtime"))->option(std::string("-p, --port <port>"), std::string("Port to listen on"), [=](auto val) mutable
     {
         return Number->parseInt(val);
     }

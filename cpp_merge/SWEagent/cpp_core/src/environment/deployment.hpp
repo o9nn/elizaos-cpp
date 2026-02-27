@@ -31,18 +31,18 @@ namespace elizaos {
 using DockerDeploymentConfig = z.infer<typeof DockerDeploymentConfigSchema>;
 
 // Type aliases for Docker types
-using DockerContainer = std:; // Docker.Container type not exported properly
-using DockerExec = std:; // Docker.Exec type not exported properly
+using DockerContainer = std::string; // Docker.Container type not exported properly
+using DockerExec = std::string; // Docker.Exec type not exported properly
 
 /**
  * Docker runtime implementation
  */
-class DockerRuntime extends AbstractRuntime {
+class DockerRuntime : public AbstractRuntime {
   private container?: DockerContainer;
-  private sessionStream?: std:;
+  private sessionStream?: std::string;
   private sessionExec?: DockerExec;
 
-  constructor(_docker: Docker) {
+  /* constructor */ (_docker: Docker) {
     super();
   }
 
@@ -81,13 +81,13 @@ class DockerRuntime extends AbstractRuntime {
 /**
  * Docker-based deployment
  */
-class DockerDeployment extends AbstractDeployment {
+class DockerDeployment : public AbstractDeployment {
   private docker: Docker;
   private container?: DockerContainer;
   private config: DockerDeploymentConfig;
   runtime: DockerRuntime;
 
-  constructor(config: DockerDeploymentConfig) {
+  /* constructor */ (config: DockerDeploymentConfig) {
     super();
     this.config = DockerDeploymentConfigSchema.parse(config);
     this.docker = std::make_unique<Docker>();

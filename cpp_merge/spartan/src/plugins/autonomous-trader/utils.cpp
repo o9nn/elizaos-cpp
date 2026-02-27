@@ -1,11 +1,12 @@
 #include "utils.hpp"
+#include <string>
 
 any acquireService(std::shared_ptr<IAgentRuntime> runtime, any serviceType, string asking, double retries)
 {
     auto service = as<any>(runtime->getService(serviceType));
     while (!service)
     {
-        console->log(asking, std:("waiting for"), serviceType, std:("service..."));
+        console->log(asking, std::string("waiting for"), serviceType, std::string("service..."));
         service = as<any>(runtime->getService(serviceType));
         if (!service) {
             std::async([=]() { std::make_shared<Promise>([=](auto waitResolve) mutable
@@ -14,7 +15,7 @@ any acquireService(std::shared_ptr<IAgentRuntime> runtime, any serviceType, stri
             }
             ); });
         } else {
-            console->log(asking, std:("Acquired"), serviceType, std:("service..."));
+            console->log(asking, std::string("Acquired"), serviceType, std::string("service..."));
         }
     }
     return service;
@@ -44,16 +45,16 @@ any askLlmObject(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<Object>
     {
         auto response = std::async([=]() { runtime->useModel(ModelType->TEXT_LARGE, utils::assign(object{
             , 
-            object::pair{std:("temperature"), 0.2}, 
-            object::pair{std:("maxTokens"), 4096}, 
-            object::pair{std:("object"), true}
+            object::pair{std::string("temperature"), 0.2}, 
+            object::pair{std::string("maxTokens"), 4096}, 
+            object::pair{std::string("object"), true}
         }, ask)); });
-        console->log(std:("trader::utils:askLlmObject - response"), response);
+        console->log(std::string("trader::utils:askLlmObject - response"), response);
         responseContent = as<any>(parseJSONObjectFromText(response));
         retries++;
         good = checkRequired(responseContent);
         if (!good) {
-            logger->warn(std:("*** Missing required fields"), responseContent, std:("needs"), requiredFields, std:(", retrying... ***"));
+            logger->warn(std::string("*** Missing required fields"), responseContent, std::string("needs"), requiredFields, std::string(", retrying... ***"));
         }
     }
     return responseContent;
@@ -63,13 +64,13 @@ any askLlmObject(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<Object>
 any messageReply(any runtime, any message, any reply, any responses)
 {
     auto roomDetails = std::async([=]() { runtime["getRoom"](message["roomId"]); });
-    if (message["content"]["source"] == std:("discord")) {
-        auto discordService = runtime["getService"](std:("discord"));
+    if (message["content"]["source"] == std::string("discord")) {
+        auto discordService = runtime["getService"](std::string("discord"));
         if (!discordService) {
-            logger->warn(std:("no discord Service"));
+            logger->warn(std::string("no discord Service"));
             return std::shared_ptr<Promise<boolean>>();
         }
-        auto isDM = roomDetails["type"] == std:("dm");
+        auto isDM = roomDetails["type"] == std::string("dm");
         if (isDM) {
             discordService["sendDM"](message["metadata"]["authorId"], reply);
             responses["length"] = 0;
@@ -77,35 +78,35 @@ any messageReply(any runtime, any message, any reply, any responses)
             responses["length"] = 0;
             auto entityId = createUniqueUuid(runtime, message["metadata"]["authorId"]);
             responses["push"](object{
-                object::pair{std:("entityId"), std:("entityId")}, 
-                object::pair{std:("agentId"), runtime["agentId"]}, 
-                object::pair{std:("roomId"), message["roomId"]}, 
-                object::pair{std:("content"), object{
-                    object::pair{std:("text"), reply}, 
-                    object::pair{std:("attachments"), array<any>()}, 
-                    object::pair{std:("inReplyTo"), createUniqueUuid(runtime, message["id"])}
+                object::pair{std::string("entityId"), std::string("entityId")}, 
+                object::pair{std::string("agentId"), runtime["agentId"]}, 
+                object::pair{std::string("roomId"), message["roomId"]}, 
+                object::pair{std::string("content"), object{
+                    object::pair{std::string("text"), reply}, 
+                    object::pair{std::string("attachments"), array<any>()}, 
+                    object::pair{std::string("inReplyTo"), createUniqueUuid(runtime, message["id"])}
                 }}
             });
         }
         return true;
     }
-    logger->warn(std:("unknown platform"), message["content"]["source"]);
+    logger->warn(std::string("unknown platform"), message["content"]["source"]);
     return false;
 };
 
 
 any takeItPrivate(any runtime, any message, any reply)
 {
-    if (message["content"]["source"] == std:("discord")) {
-        auto discordService = runtime["getService"](std:("discord"));
+    if (message["content"]["source"] == std::string("discord")) {
+        auto discordService = runtime["getService"](std::string("discord"));
         if (!discordService) {
-            logger->warn(std:("no discord Service"));
+            logger->warn(std::string("no discord Service"));
             return boolean();
         }
         discordService["sendDM"](message["metadata"]["authorId"], reply);
         return true;
     }
-    logger->warn(std:("unknown platform"), message["content"]["source"]);
+    logger->warn(std::string("unknown platform"), message["content"]["source"]);
     return false;
 };
 

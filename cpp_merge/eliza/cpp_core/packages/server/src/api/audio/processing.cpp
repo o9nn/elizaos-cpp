@@ -1,4 +1,5 @@
 #include "processing.hpp"
+#include <string>
 #include <filesystem>
 #include <unordered_map>
 #include <iostream>
@@ -6,7 +7,7 @@
 
 namespace elizaos {
 
-std: validateSecureFilePath(const std:& filePath) {
+std::string validateSecureFilePath(const std::string& filePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -14,7 +15,7 @@ std: validateSecureFilePath(const std:& filePath) {
             throw std::runtime_error('File path is required');
         }
 
-        // Normalize and resolve the path to handle std: ".." or other path issues
+        // Normalize and resolve the path to handle std::string ".." or other path issues
         const auto normalizedPath = path.normalize(filePath);
         const auto resolvedPath = path.resolve(normalizedPath);
 

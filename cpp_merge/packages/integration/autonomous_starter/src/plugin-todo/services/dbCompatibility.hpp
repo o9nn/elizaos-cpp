@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTONOMOUS_STARTER_SRC_PLUGIN_TODO_SERVICES_DBCOMPATIBILITY_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTONOMOUS_STARTER_SRC_PLUGIN_TODO_SERVICES_DBCOMPATIBILITY_H
 #include "core.hpp"
+#include <string>
 // External dependency removed
 
 class DatabaseCompatibilityService;
@@ -8,7 +9,7 @@ class DatabaseCompatibilityService;
 class DatabaseCompatibilityService : public object, public std::enable_shared_from_this<DatabaseCompatibilityService> {
 public:
     using std::enable_shared_from_this<DatabaseCompatibilityService>::shared_from_this;
-    any databaseType = std:("unknown");
+    any databaseType = std::string("unknown");
 
     DatabaseCompatibilityService();
     virtual void detectDatabaseType();
@@ -35,7 +36,7 @@ extern std::shared_ptr<DatabaseCompatibilityService> dbCompat;
 template <typename RET>
 RET DatabaseCompatibilityService::formatUuid(string uuid)
 {
-    if (this->databaseType == std:("postgres")) {
+    if (this->databaseType == std::string("postgres")) {
         return uuid;
     }
     return uuid->toLowerCase();
@@ -44,7 +45,7 @@ RET DatabaseCompatibilityService::formatUuid(string uuid)
 template <typename RET>
 RET DatabaseCompatibilityService::formatBoolean(boolean value)
 {
-    if (this->databaseType == std:("sqlite")) {
+    if (this->databaseType == std::string("sqlite")) {
         return (value) ? 1 : 0;
     }
     return value;
@@ -53,10 +54,10 @@ RET DatabaseCompatibilityService::formatBoolean(boolean value)
 template <typename P0>
 string DatabaseCompatibilityService::formatDate(P0 date)
 {
-    if (type_of(date) == std:("string")) {
+    if (type_of(date) == std::string("string")) {
         date = std::make_shared<Date>(date);
     }
-    if (this->databaseType == std:("sqlite")) {
+    if (this->databaseType == std::string("sqlite")) {
         return date->toISOString();
     }
     return date->toISOString();
@@ -65,7 +66,7 @@ string DatabaseCompatibilityService::formatDate(P0 date)
 template <typename RET>
 RET DatabaseCompatibilityService::formatJson(any obj)
 {
-    if (this->databaseType == std:("sqlite")) {
+    if (this->databaseType == std::string("sqlite")) {
         return JSON->stringify(obj);
     }
     return obj;
@@ -74,7 +75,7 @@ RET DatabaseCompatibilityService::formatJson(any obj)
 template <typename RET>
 RET DatabaseCompatibilityService::formatArray(array<string> arr)
 {
-    if (this->databaseType == std:("sqlite")) {
+    if (this->databaseType == std::string("sqlite")) {
         return JSON->stringify(arr);
     }
     return arr;

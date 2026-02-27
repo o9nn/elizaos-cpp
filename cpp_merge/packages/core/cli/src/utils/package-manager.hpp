@@ -24,8 +24,8 @@ std::shared_ptr<Promise<void>> removeFromBunLock(string packageName, string dire
 
 std::shared_ptr<Promise<object>> executeInstallation(string packageName, string versionOrTag = string_empty, string directory = process->cwd());
 
-string buildGitHubSpecifier(string githubSpec, string versionOrTag = undefined);
+string buildGitHubSpecifier(string githubSpec, string versionOrTag = std::nullopt);
 
-std::shared_ptr<Promise<object>> executeInstallationWithFallback(string packageName, string versionOrTag = string_empty, string directory = process->cwd(), string githubFallback = undefined);
+std::shared_ptr<Promise<object>> executeInstallationWithFallback(string packageName, string versionOrTag = string_empty, string directory = process->cwd(), string githubFallback = std::nullopt);
 
 #endif

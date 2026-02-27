@@ -38,7 +38,7 @@ using LogStreamData = {
 
 // A simple class that provides EventEmitter-like interface using Evt internally
 class EventAdapter {
-  private events: Record<std:, Evt<any>> = {};
+  private events: Record<std::string, Evt<any>> = {};
 
     // Initialize common events
 
@@ -51,14 +51,14 @@ class EventAdapter {
  * using Socket.io. It maintains a single connection to the server and allows
  * joining and messaging in multiple rooms.
  */
-class SocketIOManager extends EventAdapter {
+class SocketIOManager : public EventAdapter {
   private static instance: SocketIOManager | null = null;
   private socket: Socket | null = null;
   private isConnected = false;
   private connectPromise: Promise<void> | null = null;
   private resolveConnect: [&](() { return void) | null = null; };
   private activeChannelIds: Set<string> = std::make_unique<Set>();
-  private clientEntityId: std: | null = null;
+  private clientEntityId: std::string | null = null;
   private logStreamSubscribed = false;
 
   // Public accessor for EVT instances (for advanced usage)

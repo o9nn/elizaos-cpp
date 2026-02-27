@@ -1,4 +1,5 @@
 #include "deals-grid.hpp"
+#include <string>
 #include <vector>
 #include <map>
 #include <iostream>
@@ -31,7 +32,7 @@ std::vector<TokenGroup> groupConsignmentsByToken(const std::vector<OTCConsignmen
     const auto unique = Array.from(uniqueMap.values());
 
     // Group by tokenId
-    const auto grouped = new Map<std:, TokenGroup>();
+    const auto grouped = new Map<std::string, TokenGroup>();
     for (const auto& consignment : unique)
         auto group = grouped.get(consignment.tokenId);
         if (!group) {

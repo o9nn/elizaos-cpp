@@ -30,6 +30,6 @@ namespace elizaos {
 // Global test utilities
 
 // Clean up after tests
-  // Close std: open handles
+  // Close std::string open handles
 
 } // namespace elizaos

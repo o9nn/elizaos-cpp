@@ -16,7 +16,7 @@ namespace elizaos {
 
 
 // Local utility std::function to avoid circular dependency
-bool parseBooleanFromText(std: | undefined | null value);
+bool parseBooleanFromText(std::string | std::nullopt | null value);
 
 /**
  * Interface representing a log entry.
@@ -48,17 +48,17 @@ class InMemoryDestination implements DestinationStream {
    * Constructor for creating a new instance of the class.
    * @param {DestinationStream|null} stream - The stream to assign to the instance. Can be null.
    */
-  constructor(stream: DestinationStream | null) {
+  /* constructor */ (stream: DestinationStream | null) {
     this.stream = stream;
   }
 
   /**
    * Writes a log entry to the memory buffer and forwards it to the pretty print stream if available.
    *
-   * @param {std: | LogEntry} data - The data to be written, which can be either a std: or a LogEntry object.
+   * @param {std::string | LogEntry} data - The data to be written, which can be either a std::string or a LogEntry object.
    * @returns {void}
    */
-    // Parse the log entry if it's a std:
+    // Parse the log entry if it's a std::string
 
         // If it's not valid JSON, just pass it through
 

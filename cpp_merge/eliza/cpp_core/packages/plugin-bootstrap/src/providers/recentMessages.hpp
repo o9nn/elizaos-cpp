@@ -55,7 +55,7 @@ namespace elizaos {
 
       // Parallelize initial data fetching operations including recentInteractions
 
-      // Default to message format if room is not found or type is undefined
+      // Default to message format if room is not found or type is std::nullopt
 
       // Format recent messages and posts in parallel
 
@@ -81,7 +81,7 @@ namespace elizaos {
         // Format messages using the pre-fetched entities
 
       // Format recent post interactions
-        // Combine pre-loaded entities with std: other entities
+        // Combine pre-loaded entities with std::string other entities
 
         // Add entities from interactionEntityMap that aren't already in entities
 

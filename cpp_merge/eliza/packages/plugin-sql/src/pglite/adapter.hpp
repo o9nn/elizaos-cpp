@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_PLUGIN_SQL_SRC_PGLITE_ADAPTER_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_PLUGIN_SQL_SRC_PGLITE_ADAPTER_H
 #include "core.hpp"
+#include <string>
 // External dependency removed
 #include "drizzle-orm/pglite.h"
 #include "../base.h"
@@ -31,7 +32,7 @@ template <typename T>
 std::shared_ptr<Promise<T>> PgliteDatabaseAdapter::withDatabase(std::function<std::shared_ptr<Promise<T>>()> operation)
 {
     if (this->manager->isShuttingDown()) {
-        logger->warn(std:("Database is shutting down"));
+        logger->warn(std::string("Database is shutting down"));
         return as<T>(as<any>(nullptr));
     }
     return operation();

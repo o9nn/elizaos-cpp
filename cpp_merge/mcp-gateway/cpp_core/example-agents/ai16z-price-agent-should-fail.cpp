@@ -1,4 +1,5 @@
 #include "ai16z-price-agent-should-fail.hpp"
+#include <string>
 #include <future>
 #include <unordered_map>
 #include <iostream>
@@ -41,7 +42,7 @@ std::future<void> main() {
 
                 // Transform tool names to replace colons with underscores (OpenAI requirement)
                 // OpenAI tool names must match: ^[a-zA-Z0-9_-]+$
-                const std::unordered_map<std:, typeof mcpTools[keyof typeof mcpTools]> tools = {};
+                const std::unordered_map<std::string, typeof mcpTools[keyof typeof mcpTools]> tools = {};
                 for (const int [name, tool] of Object.entries(mcpTools)) {
                     const auto transformedName = name.replace(/:/g, "_");
                     tools[transformedName] = tool;

@@ -1,143 +1,144 @@
 #include "agent-chat.cy.h"
+#include <string>
 
 void Main(void)
 {
-    describe(std:("Agent Chat E2E Tests"), [=]() mutable
+    describe(std::string("Agent Chat E2E Tests"), [=]() mutable
     {
         beforeEach([=]() mutable
         {
-            cy->visit(std:("/"));
-            cy->get(std:("a[href*="chat"], a[href*="agent"], button:contains("chat"), button:contains("agent")"), object{
-                object::pair{std:("timeout"), 5000}
+            cy->visit(std::string("/"));
+            cy->get(std::string("a[href*="chat"], a[href*="agent"], button:contains("chat"), button:contains("agent")"), object{
+                object::pair{std::string("timeout"), 5000}
             })->first()->click(object{
-                object::pair{std:("force"), true}
+                object::pair{std::string("force"), true}
             });
         }
         );
-        describe(std:("Chat Interface"), [=]() mutable
+        describe(std::string("Chat Interface"), [=]() mutable
         {
-            it(std:("should display the chat interface"), [=]() mutable
+            it(std::string("should display the chat interface"), [=]() mutable
             {
-                cy->get(std:("[data-testid="chat-container"], .chat-container, #chat, [role="main"]"))->should(std:("be.visible"));
+                cy->get(std::string("[data-testid="chat-container"], .chat-container, #chat, [role="main"]"))->should(std::string("be.visible"));
             }
             );
-            it(std:("should have a message input field"), [=]() mutable
+            it(std::string("should have a message input field"), [=]() mutable
             {
-                cy->get(std:("input[type="text"], textarea, [contenteditable="true"]"))->filter(std:(":visible"))->first()->should(std:("be.visible"))->should(std:("not.be.disabled"));
+                cy->get(std::string("input[type="text"], textarea, [contenteditable="true"]"))->filter(std::string(":visible"))->first()->should(std::string("be.visible"))->should(std::string("not.be.disabled"));
             }
             );
-            it(std:("should have a send button"), [=]() mutable
+            it(std::string("should have a send button"), [=]() mutable
             {
-                cy->get(std:("button"))->filter(std:(":contains("Send"), :contains("send"), [aria-label*="send"]"))->should(std:("be.visible"))->should(std:("not.be.disabled"));
+                cy->get(std::string("button"))->filter(std::string(":contains("Send"), :contains("send"), [aria-label*="send"]"))->should(std::string("be.visible"))->should(std::string("not.be.disabled"));
             }
             );
         }
         );
-        describe(std:("Sending Messages"), [=]() mutable
+        describe(std::string("Sending Messages"), [=]() mutable
         {
-            it(std:("should send a message when typing and clicking send"), [=]() mutable
+            it(std::string("should send a message when typing and clicking send"), [=]() mutable
             {
-                auto testMessage = std:("Hello, this is a test message");
-                cy->get(std:("input[type="text"], textarea, [contenteditable="true"]"))->filter(std:(":visible"))->first()->type(testMessage);
-                cy->get(std:("button"))->filter(std:(":contains("Send"), :contains("send"), [aria-label*="send"]"))->first()->click();
+                auto testMessage = std::string("Hello, this is a test message");
+                cy->get(std::string("input[type="text"], textarea, [contenteditable="true"]"))->filter(std::string(":visible"))->first()->type(testMessage);
+                cy->get(std::string("button"))->filter(std::string(":contains("Send"), :contains("send"), [aria-label*="send"]"))->first()->click();
                 cy->contains(testMessage, object{
-                    object::pair{std:("timeout"), 10000}
-                })->should(std:("be.visible"));
+                    object::pair{std::string("timeout"), 10000}
+                })->should(std::string("be.visible"));
             }
             );
-            it(std:("should send a message when pressing Enter"), [=]() mutable
+            it(std::string("should send a message when pressing Enter"), [=]() mutable
             {
-                auto testMessage = std:("Test message with Enter key");
-                cy->get(std:("input[type="text"], textarea, [contenteditable="true"]"))->filter(std:(":visible"))->first()->type(string_empty + testMessage + std:("{enter}"));
+                auto testMessage = std::string("Test message with Enter key");
+                cy->get(std::string("input[type="text"], textarea, [contenteditable="true"]"))->filter(std::string(":visible"))->first()->type(string_empty + testMessage + std::string("{enter}"));
                 cy->contains(testMessage, object{
-                    object::pair{std:("timeout"), 10000}
-                })->should(std:("be.visible"));
+                    object::pair{std::string("timeout"), 10000}
+                })->should(std::string("be.visible"));
             }
             );
-            it(std:("should clear input after sending"), [=]() mutable
+            it(std::string("should clear input after sending"), [=]() mutable
             {
-                auto testMessage = std:("Message to clear");
-                auto input = cy->get(std:("input[type="text"], textarea, [contenteditable="true"]"))->filter(std:(":visible"))->first();
+                auto testMessage = std::string("Message to clear");
+                auto input = cy->get(std::string("input[type="text"], textarea, [contenteditable="true"]"))->filter(std::string(":visible"))->first();
                 input->type(testMessage);
-                cy->get(std:("button"))->filter(std:(":contains("Send"), :contains("send"), [aria-label*="send"]"))->first()->click();
-                input->should(std:("have.value"), string_empty);
+                cy->get(std::string("button"))->filter(std::string(":contains("Send"), :contains("send"), [aria-label*="send"]"))->first()->click();
+                input->should(std::string("have.value"), string_empty);
             }
             );
         }
         );
-        describe(std:("Agent Responses"), [=]() mutable
+        describe(std::string("Agent Responses"), [=]() mutable
         {
-            it(std:("should receive a response from the agent"), [=]() mutable
+            it(std::string("should receive a response from the agent"), [=]() mutable
             {
-                cy->get(std:("input[type="text"], textarea, [contenteditable="true"]"))->filter(std:(":visible"))->first()->type(std:("Hello agent{enter}"));
-                cy->get(std:("[data-testid*="agent"], [class*="agent"], [role="article"]"), object{
-                    object::pair{std:("timeout"), 15000}
-                })->should(std:("have.size().greaterThan"), 0);
+                cy->get(std::string("input[type="text"], textarea, [contenteditable="true"]"))->filter(std::string(":visible"))->first()->type(std::string("Hello agent{enter}"));
+                cy->get(std::string("[data-testid*="agent"], [class*="agent"], [role="article"]"), object{
+                    object::pair{std::string("timeout"), 15000}
+                })->should(std::string("have.size().greaterThan"), 0);
             }
             );
-            it(std:("should show typing indicator while agent is responding"), [=]() mutable
+            it(std::string("should show typing indicator while agent is responding"), [=]() mutable
             {
-                cy->get(std:("input[type="text"], textarea, [contenteditable="true"]"))->filter(std:(":visible"))->first()->type(std:("Tell me about yourself{enter}"));
-                cy->get(std:("[data-testid="typing"], [class*="typing"], [aria-label*="typing"]"), object{
-                    object::pair{std:("timeout"), 5000}
-                })->should(std:("be.visible"));
-                cy->get(std:("[data-testid="typing"], [class*="typing"], [aria-label*="typing"]"), object{
-                    object::pair{std:("timeout"), 15000}
-                })->should(std:("not.exist"));
+                cy->get(std::string("input[type="text"], textarea, [contenteditable="true"]"))->filter(std::string(":visible"))->first()->type(std::string("Tell me about yourself{enter}"));
+                cy->get(std::string("[data-testid="typing"], [class*="typing"], [aria-label*="typing"]"), object{
+                    object::pair{std::string("timeout"), 5000}
+                })->should(std::string("be.visible"));
+                cy->get(std::string("[data-testid="typing"], [class*="typing"], [aria-label*="typing"]"), object{
+                    object::pair{std::string("timeout"), 15000}
+                })->should(std::string("not.exist"));
             }
             );
         }
         );
-        describe(std:("Chat History"), [=]() mutable
+        describe(std::string("Chat History"), [=]() mutable
         {
-            it(std:("should maintain chat history"), [=]() mutable
+            it(std::string("should maintain chat history"), [=]() mutable
             {
-                auto messages = array<string>{ std:("First message"), std:("Second message"), std:("Third message") };
+                auto messages = array<string>{ std::string("First message"), std::string("Second message"), std::string("Third message") };
                 messages->forEach([=](auto msg, auto index) mutable
                 {
-                    cy->get(std:("input[type="text"], textarea, [contenteditable="true"]"))->filter(std:(":visible"))->first()->type(string_empty + msg + std:("{enter}"));
+                    cy->get(std::string("input[type="text"], textarea, [contenteditable="true"]"))->filter(std::string(":visible"))->first()->type(string_empty + msg + std::string("{enter}"));
                     cy->wait(1000);
                 }
                 );
                 messages->forEach([=](auto msg) mutable
                 {
-                    cy->contains(msg)->should(std:("be.visible"));
+                    cy->contains(msg)->should(std::string("be.visible"));
                 }
                 );
             }
             );
-            it(std:("should scroll to latest message"), [=]() mutable
+            it(std::string("should scroll to latest message"), [=]() mutable
             {
                 for (auto i = 0; i < 10; i++)
                 {
-                    cy->get(std:("input[type="text"], textarea, [contenteditable="true"]"))->filter(std:(":visible"))->first()->type(std:("Message number ") + i + std:("{enter}"));
+                    cy->get(std::string("input[type="text"], textarea, [contenteditable="true"]"))->filter(std::string(":visible"))->first()->type(std::string("Message number ") + i + std::string("{enter}"));
                     cy->wait(500);
                 }
-                cy->contains(std:("Message number 9"))->should(std:("be.visible"));
+                cy->contains(std::string("Message number 9"))->should(std::string("be.visible"));
             }
             );
         }
         );
-        describe(std:("Error Handling"), [=]() mutable
+        describe(std::string("Error Handling"), [=]() mutable
         {
-            it(std:("should handle network errors gracefully"), [=]() mutable
+            it(std::string("should handle network errors gracefully"), [=]() mutable
             {
-                cy->intercept(std:("POST"), std:("**/api/chat/**"), object{
-                    object::pair{std:("statusCode"), 500}, 
-                    object::pair{std:("body"), object{
-                        object::pair{std:("error"), std:("Server error")}
+                cy->intercept(std::string("POST"), std::string("**/api/chat/**"), object{
+                    object::pair{std::string("statusCode"), 500}, 
+                    object::pair{std::string("body"), object{
+                        object::pair{std::string("error"), std::string("Server error")}
                     }}
-                })->as(std:("chatError"));
-                cy->get(std:("input[type="text"], textarea, [contenteditable="true"]"))->filter(std:(":visible"))->first()->type(std:("This will fail{enter}"));
-                cy->contains((new RegExp(std:("error|failed|try again"))), object{
-                    object::pair{std:("timeout"), 10000}
-                })->should(std:("be.visible"));
+                })->as(std::string("chatError"));
+                cy->get(std::string("input[type="text"], textarea, [contenteditable="true"]"))->filter(std::string(":visible"))->first()->type(std::string("This will fail{enter}"));
+                cy->contains((new RegExp(std::string("error|failed|try again"))), object{
+                    object::pair{std::string("timeout"), 10000}
+                })->should(std::string("be.visible"));
             }
             );
-            it(std:("should prevent sending empty messages"), [=]() mutable
+            it(std::string("should prevent sending empty messages"), [=]() mutable
             {
-                cy->get(std:("button"))->filter(std:(":contains("Send"), :contains("send"), [aria-label*="send"]"))->first()->click();
-                cy->get(std:("[data-testid*="message"], [class*="message"]"))->should(std:("have.size()"), 0);
+                cy->get(std::string("button"))->filter(std::string(":contains("Send"), :contains("send"), [aria-label*="send"]"))->first()->click();
+                cy->get(std::string("[data-testid*="message"], [class*="message"]"))->should(std::string("have.size()"), 0);
             }
             );
         }

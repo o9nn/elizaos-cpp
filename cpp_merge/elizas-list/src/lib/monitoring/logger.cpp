@@ -1,17 +1,18 @@
 #include "logger.hpp"
+#include <string>
 
 object logger = object{
-    object::pair{std:("error"), [=](auto message, auto error = undefined) mutable
+    object::pair{std::string("error"), [=](auto message, auto error = std::nullopt) mutable
     {
         console->error(message, error);
     }
     }, 
-    object::pair{std:("info"), [=](auto message, auto data = undefined) mutable
+    object::pair{std::string("info"), [=](auto message, auto data = std::nullopt) mutable
     {
         console->log(message, data);
     }
     }, 
-    object::pair{std:("warn"), [=](auto message, auto data = undefined) mutable
+    object::pair{std::string("warn"), [=](auto message, auto data = std::nullopt) mutable
     {
         console->warn(message, data);
     }

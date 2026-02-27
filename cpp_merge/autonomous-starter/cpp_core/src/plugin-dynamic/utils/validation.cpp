@@ -1,4 +1,5 @@
 #include "validation.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -17,7 +18,7 @@ bool validatePrompt(Memory message) {
 
 }
 
-bool isValidJsonSpecification(const std:& text) {
+bool isValidJsonSpecification(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {

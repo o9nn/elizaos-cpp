@@ -25,7 +25,7 @@ class EmoteManager {
 public:
     EmoteManager(auto runtime);
     void uploadEmotes();
-    void playEmote(const std:& name);
+    void playEmote(const std::string& name);
     void clearEmote(auto player);
     void clearTimers();
     void getService();

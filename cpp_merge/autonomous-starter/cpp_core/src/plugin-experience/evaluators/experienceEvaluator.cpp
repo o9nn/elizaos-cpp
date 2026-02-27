@@ -1,4 +1,5 @@
 #include "experienceEvaluator.hpp"
+#include <string>
 #include <vector>
 #include <future>
 #include <map>
@@ -7,7 +8,7 @@
 
 namespace elizaos {
 
-std: extractContext(const std::vector<Memory>& messages) {
+std::string extractContext(const std::vector<Memory>& messages) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!messages || messages.size() == 0) return "Unknown context";
@@ -19,7 +20,7 @@ std: extractContext(const std::vector<Memory>& messages) {
 
 }
 
-std: extractAction(const std:& text) {
+std::string extractAction(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Common action patterns
@@ -40,7 +41,7 @@ std: extractAction(const std:& text) {
 
 }
 
-std: extractError(const std:& text) {
+std::string extractError(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto errorMatch = text.match(/error:?\s*(.+?)(?:\.|$)/i);
@@ -53,7 +54,7 @@ std: extractError(const std:& text) {
 
 }
 
-std: extractDiscovery(const std:& text) {
+std::string extractDiscovery(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto patterns = [;
@@ -72,7 +73,7 @@ std: extractDiscovery(const std:& text) {
 
 }
 
-std: extractLearning(const std:& text, const std:& type) {
+std::string extractLearning(const std::string& text, const std::string& type) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Try to extract explicit learnings
@@ -98,7 +99,7 @@ std: extractLearning(const std:& text, const std:& type) {
 
 }
 
-std: extractHypothesis(const std:& text) {
+std::string extractHypothesis(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto patterns = [;
@@ -116,7 +117,7 @@ std: extractHypothesis(const std:& text) {
 
 }
 
-std: detectDomain(const std:& text) {
+std::string detectDomain(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto domains = {;

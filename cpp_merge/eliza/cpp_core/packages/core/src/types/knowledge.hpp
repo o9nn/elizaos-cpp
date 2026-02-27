@@ -53,7 +53,7 @@ enum CacheKeyPrefix {
  * - "shared": An std::optional boolean (defaults to false) indicating if the knowledge from this directory is considered shared or private.
  */
 struct DirectoryItem {
-    std: directory;
+    std::string directory;
     std::optional<bool> shared;
 };
 
@@ -64,7 +64,7 @@ struct DirectoryItem {
  * It might be used when splitting large documents into smaller, manageable pieces for embedding or analysis.
  */
 struct ChunkRow {
-    std: id;
+    std::string id;
 };
 
 

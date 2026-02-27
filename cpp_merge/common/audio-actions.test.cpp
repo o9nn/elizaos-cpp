@@ -1,8 +1,9 @@
 #include "audio-actions.test.h"
+#include <string>
 
 void Main(void)
 {
-    describe(std:("Audio Actions"), [=]() mutable
+    describe(std::string("Audio Actions"), [=]() mutable
     {
         shared<std::shared_ptr<IAgentRuntime>> mockRuntime;
         shared<any> mockVisionService;
@@ -16,7 +17,7 @@ void Main(void)
             transcribeResult = nullptr;
             recordAndTranscribeCalled = false;
             mockAudioCapture = object{
-                object::pair{std:("recordAndTranscribe"), [=]() mutable
+                object::pair{std::string("recordAndTranscribe"), [=]() mutable
                 {
                     recordAndTranscribeCalled = true;
                     return Promise->resolve(transcribeResult);
@@ -26,15 +27,15 @@ void Main(void)
             shared startCalled = false;
             shared stopCalled = false;
             mockStreamingAudioCapture = object{
-                object::pair{std:("isCapturing"), false}, 
-                object::pair{std:("start"), [=]() mutable
+                object::pair{std::string("isCapturing"), false}, 
+                object::pair{std::string("start"), [=]() mutable
                 {
                     startCalled = true;
                     mockStreamingAudioCapture["isCapturing"] = true;
                     return Promise->resolve();
                 }
                 }, 
-                object::pair{std:("stop"), [=]() mutable
+                object::pair{std::string("stop"), [=]() mutable
                 {
                     stopCalled = true;
                     mockStreamingAudioCapture["isCapturing"] = false;
@@ -44,28 +45,28 @@ void Main(void)
                 , 
             };
             mockVisionService = object{
-                object::pair{std:("isActive"), [=]() mutable
+                object::pair{std::string("isActive"), [=]() mutable
                 {
                     return true;
                 }
                 }, 
-                object::pair{std:("audioCapture"), mockAudioCapture}, 
-                object::pair{std:("streamingAudioCapture"), mockStreamingAudioCapture}
+                object::pair{std::string("audioCapture"), mockAudioCapture}, 
+                object::pair{std::string("streamingAudioCapture"), mockStreamingAudioCapture}
             };
             mockSettings = object{
-                object::pair{std:("ENABLE_MICROPHONE"), std:("true")}, 
-                object::pair{std:("VISION_MICROPHONE_ENABLED"), std:("true")}, 
-                object::pair{std:("USE_STREAMING_AUDIO"), std:("true")}
+                object::pair{std::string("ENABLE_MICROPHONE"), std::string("true")}, 
+                object::pair{std::string("VISION_MICROPHONE_ENABLED"), std::string("true")}, 
+                object::pair{std::string("USE_STREAMING_AUDIO"), std::string("true")}
             };
             mockRuntime = as<any>(object{
-                object::pair{std:("getSetting"), [=](auto key) mutable
+                object::pair{std::string("getSetting"), [=](auto key) mutable
                 {
-                    return OR((const_(mockSettings)[key]), (undefined));
+                    return OR((const_(mockSettings)[key]), (std::nullopt));
                 }
                 }, 
-                object::pair{std:("getService"), [=](auto name) mutable
+                object::pair{std::string("getService"), [=](auto name) mutable
                 {
-                    if (name == std:("VISION")) {
+                    if (name == std::string("VISION")) {
                         return mockVisionService;
                     }
                     return nullptr;
@@ -74,105 +75,105 @@ void Main(void)
             });
         }
         );
-        describe(std:("transcribeAudioAction"), [=]() mutable
+        describe(std::string("transcribeAudioAction"), [=]() mutable
         {
-            it(std:("should validate when microphone is enabled"), [=]() mutable
+            it(std::string("should validate when microphone is enabled"), [=]() mutable
             {
                 auto isValid = std::async([=]() { transcribeAudioAction->validate(mockRuntime, as<std::shared_ptr<Memory>>(object{})); });
                 expect(isValid)->toBe(true);
             }
             );
-            it(std:("should not validate when microphone is disabled"), [=]() mutable
+            it(std::string("should not validate when microphone is disabled"), [=]() mutable
             {
-                mockSettings[std:("ENABLE_MICROPHONE")] = std:("false");
-                mockSettings[std:("VISION_MICROPHONE_ENABLED")] = std:("false");
+                mockSettings[std::string("ENABLE_MICROPHONE")] = std::string("false");
+                mockSettings[std::string("VISION_MICROPHONE_ENABLED")] = std::string("false");
                 auto isValid = std::async([=]() { transcribeAudioAction->validate(mockRuntime, as<std::shared_ptr<Memory>>(object{})); });
                 expect(isValid)->toBe(false);
             }
             );
-            it(std:("should successfully transcribe audio"), [=]() mutable
+            it(std::string("should successfully transcribe audio"), [=]() mutable
             {
-                auto testTranscription = std:("Hello, this is a test transcription");
+                auto testTranscription = std::string("Hello, this is a test transcription");
                 transcribeResult = testTranscription;
-                auto result = std::async([=]() { transcribeAudioAction->handler(mockRuntime, as<std::shared_ptr<Memory>>(object{}), undefined, undefined, undefined); });
+                auto result = std::async([=]() { transcribeAudioAction->handler(mockRuntime, as<std::shared_ptr<Memory>>(object{}), std::nullopt, std::nullopt, std::nullopt); });
                 expect(result)->toBeDefined();
                 expect(result->success)->toBe(true);
                 expect(result->data)->toEqual(object{
-                    object::pair{std:("transcription"), testTranscription}, 
-                    object::pair{std:("timestamp"), expect->any(String)}
+                    object::pair{std::string("transcription"), testTranscription}, 
+                    object::pair{std::string("timestamp"), expect->any(String)}
                 });
                 expect(recordAndTranscribeCalled)->toBe(true);
             }
             );
-            it(std:("should handle transcription failure"), [=]() mutable
+            it(std::string("should handle transcription failure"), [=]() mutable
             {
                 transcribeResult = nullptr;
-                auto result = std::async([=]() { transcribeAudioAction->handler(mockRuntime, as<std::shared_ptr<Memory>>(object{}), undefined, undefined, undefined); });
+                auto result = std::async([=]() { transcribeAudioAction->handler(mockRuntime, as<std::shared_ptr<Memory>>(object{}), std::nullopt, std::nullopt, std::nullopt); });
                 expect(result)->toBeDefined();
                 expect(result->success)->toBe(false);
-                expect(result->error)->toBe(std:("No speech detected or transcription failed"));
+                expect(result->error)->toBe(std::string("No speech detected or transcription failed"));
             }
             );
-            it(std:("should handle missing audio capture service"), [=]() mutable
+            it(std::string("should handle missing audio capture service"), [=]() mutable
             {
                 mockVisionService["audioCapture"] = nullptr;
                 mockVisionService["streamingAudioCapture"] = nullptr;
-                auto result = std::async([=]() { transcribeAudioAction->handler(mockRuntime, as<std::shared_ptr<Memory>>(object{}), undefined, undefined, undefined); });
+                auto result = std::async([=]() { transcribeAudioAction->handler(mockRuntime, as<std::shared_ptr<Memory>>(object{}), std::nullopt, std::nullopt, std::nullopt); });
                 expect(result)->toBeDefined();
                 expect(result->success)->toBe(false);
-                expect(result->error)->toBe(std:("Audio capture not initialized. Please enable microphone in settings."));
+                expect(result->error)->toBe(std::string("Audio capture not initialized. Please enable microphone in settings."));
             }
             );
         }
         );
-        describe(std:("toggleStreamingAudioAction"), [=]() mutable
+        describe(std::string("toggleStreamingAudioAction"), [=]() mutable
         {
-            it(std:("should validate when microphone and streaming are enabled"), [=]() mutable
+            it(std::string("should validate when microphone and streaming are enabled"), [=]() mutable
             {
                 auto isValid = std::async([=]() { toggleStreamingAudioAction->validate(mockRuntime, as<std::shared_ptr<Memory>>(object{})); });
                 expect(isValid)->toBe(true);
             }
             );
-            it(std:("should not validate when streaming is disabled"), [=]() mutable
+            it(std::string("should not validate when streaming is disabled"), [=]() mutable
             {
-                mockSettings[std:("USE_STREAMING_AUDIO")] = std:("false");
+                mockSettings[std::string("USE_STREAMING_AUDIO")] = std::string("false");
                 auto isValid = std::async([=]() { toggleStreamingAudioAction->validate(mockRuntime, as<std::shared_ptr<Memory>>(object{})); });
                 expect(isValid)->toBe(false);
             }
             );
-            it(std:("should start streaming when not capturing"), [=]() mutable
+            it(std::string("should start streaming when not capturing"), [=]() mutable
             {
                 mockStreamingAudioCapture["isCapturing"] = false;
-                auto result = std::async([=]() { toggleStreamingAudioAction->handler(mockRuntime, as<std::shared_ptr<Memory>>(object{}), undefined, undefined, undefined); });
+                auto result = std::async([=]() { toggleStreamingAudioAction->handler(mockRuntime, as<std::shared_ptr<Memory>>(object{}), std::nullopt, std::nullopt, std::nullopt); });
                 expect(result)->toBeDefined();
                 expect(result->success)->toBe(true);
                 expect(result->data)->toEqual(object{
-                    object::pair{std:("streaming"), true}, 
-                    object::pair{std:("message"), std:("Streaming audio capture started")}
+                    object::pair{std::string("streaming"), true}, 
+                    object::pair{std::string("message"), std::string("Streaming audio capture started")}
                 });
                 expect(mockStreamingAudioCapture["startCalled"])->toBe(true);
             }
             );
-            it(std:("should stop streaming when capturing"), [=]() mutable
+            it(std::string("should stop streaming when capturing"), [=]() mutable
             {
                 mockStreamingAudioCapture["isCapturing"] = true;
-                auto result = std::async([=]() { toggleStreamingAudioAction->handler(mockRuntime, as<std::shared_ptr<Memory>>(object{}), undefined, undefined, undefined); });
+                auto result = std::async([=]() { toggleStreamingAudioAction->handler(mockRuntime, as<std::shared_ptr<Memory>>(object{}), std::nullopt, std::nullopt, std::nullopt); });
                 expect(result)->toBeDefined();
                 expect(result->success)->toBe(true);
                 expect(result->data)->toEqual(object{
-                    object::pair{std:("streaming"), false}, 
-                    object::pair{std:("message"), std:("Streaming audio capture stopped")}
+                    object::pair{std::string("streaming"), false}, 
+                    object::pair{std::string("message"), std::string("Streaming audio capture stopped")}
                 });
                 expect(mockStreamingAudioCapture["stopCalled"])->toBe(true);
             }
             );
-            it(std:("should handle missing streaming audio service"), [=]() mutable
+            it(std::string("should handle missing streaming audio service"), [=]() mutable
             {
                 mockVisionService["streamingAudioCapture"] = nullptr;
-                auto result = std::async([=]() { toggleStreamingAudioAction->handler(mockRuntime, as<std::shared_ptr<Memory>>(object{}), undefined, undefined, undefined); });
+                auto result = std::async([=]() { toggleStreamingAudioAction->handler(mockRuntime, as<std::shared_ptr<Memory>>(object{}), std::nullopt, std::nullopt, std::nullopt); });
                 expect(result)->toBeDefined();
                 expect(result->success)->toBe(false);
-                expect(result->error)->toBe(std:("Streaming audio not initialized. Enable USE_STREAMING_AUDIO in settings."));
+                expect(result->error)->toBe(std::string("Streaming audio not initialized. Enable USE_STREAMING_AUDIO in settings."));
             }
             );
         }

@@ -18,12 +18,12 @@ namespace elizaos {
 
 
 struct VersionInfo {
-    std: version;
-    std: source;
-    std: timestamp;
-    std: environment;
+    std::string version;
+    std::string source;
+    std::string timestamp;
+    std::string environment;
     double uptime;
-    std::optional<std:> error;
+    std::optional<std::string> error;
 };
 
 /**

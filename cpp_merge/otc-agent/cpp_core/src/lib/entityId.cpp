@@ -1,10 +1,11 @@
 #include "entityId.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-bool isSolanaAddress(const std:& address) {
+bool isSolanaAddress(const std::string& address) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Solana addresses are Base58 (no 0x prefix, typically 32-44 chars)
@@ -15,7 +16,7 @@ bool isSolanaAddress(const std:& address) {
 
 }
 
-std: walletToEntityId(const std:& address) {
+std::string walletToEntityId(const std::string& address) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto trimmed = address;

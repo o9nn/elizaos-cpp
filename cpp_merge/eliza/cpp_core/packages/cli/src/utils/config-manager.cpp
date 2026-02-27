@@ -1,4 +1,5 @@
 #include "config-manager.hpp"
+#include <string>
 #include <future>
 #include <unordered_map>
 #include <iostream>
@@ -6,7 +7,7 @@
 
 namespace elizaos {
 
-std::future<std:> getConfigFilePath() {
+std::future<std::string> getConfigFilePath() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto envInfo = UserEnvironment.getInstanceInfo();
@@ -14,7 +15,7 @@ std::future<std:> getConfigFilePath() {
 
 }
 
-std::future<bool> fileExists(const std:& p) {
+std::future<bool> fileExists(const std::string& p) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -67,7 +68,7 @@ std::future<void> saveConfig(AgentConfig config) {
         config.lastUpdated = std::make_unique<Date>().toISOString();
 
         // Write config to file
-        fs.writeFile(configPath, /* JSON.stringify */ std:(config, nullptr, 2), "utf8");
+        fs.writeFile(configPath, /* JSON.stringify */ std::string(config, nullptr, 2), "utf8");
         std::cout << "Configuration saved to " + configPath << std::endl;
         } catch (error) {
             std::cerr << "Error saving configuration: " + error << std::endl;
@@ -75,15 +76,15 @@ std::future<void> saveConfig(AgentConfig config) {
 
 }
 
-std::future<> checkPluginRequirements(const std:& pluginName) {
+std::future<> checkPluginRequirements(const std::string& pluginName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     valid;
-    message: std:;
+    message: std::string;
 
 }
 
-std::future<std::unordered_map<std:, bool>> getPluginStatus() {
+std::future<std::unordered_map<std::string, bool>> getPluginStatus() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto configPath = getConfigFilePath();
@@ -94,7 +95,7 @@ std::future<std::unordered_map<std:, bool>> getPluginStatus() {
     try {
         const auto configContent = fs.readFile(configPath, "utf-8");
         const auto config = /* JSON::parse */ configContent;
-        const std::unordered_map<std:, bool> status = {};
+        const std::unordered_map<std::string, bool> status = {};
 
         // Check each plugin's environment variables
         for (const auto& plugin : Object.keys(config.plugins || {})

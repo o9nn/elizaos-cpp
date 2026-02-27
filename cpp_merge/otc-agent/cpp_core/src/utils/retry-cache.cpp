@@ -1,4 +1,5 @@
 #include "retry-cache.hpp"
+#include <string>
 #include <future>
 #include <optional>
 #include <iostream>
@@ -12,13 +13,13 @@ double calculateDelay(double attempt) {
     // Exponential backoff: 1s, 2s, 4s, ...
     const auto exponentialDelay = BASE_DELAY_MS * Math.pow(2, attempt);
     // Add jitter (±25%)
-    const auto jitter = exponentialDelay * 0.25 * (Math.random() * 2 - 1);
+    const auto jitter = exponentialDelay * 0.25 * (((double)rand() / RAND_MAX) * 2 - 1);
     const auto delay = Math.min(exponentialDelay + jitter, MAX_DELAY_MS);
     return Math.max(delay, BASE_DELAY_MS);
 
 }
 
-bool isRetryableError(const std:& error) {
+bool isRetryableError(const std::string& error) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (error instanceof Error) {
@@ -37,7 +38,7 @@ bool isRetryableError(const std:& error) {
 
 }
 
-std::future<std:> fetchWithRetry(const std:& url, std::optional<RequestInit> options, std::optional<std:> retryOptions) {
+std::future<std::string> fetchWithRetry(const std::string& url, std::optional<RequestInit> options, std::optional<std::string> retryOptions) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

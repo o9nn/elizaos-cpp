@@ -21,7 +21,7 @@ namespace elizaos {
  * Provides database-agnostic interface for both SQLite and PostgreSQL
  */
 class CharacterModificationDatabaseAdapter {
-  constructor(private adapter: IDatabaseAdapter) {}
+  /* constructor */ (private adapter: IDatabaseAdapter) {}
 
   /**
    * Get database type to handle SQL differences
@@ -122,7 +122,7 @@ class CharacterModificationDatabaseAdapter {
       //   diffXml: row.diff_xml,
       //   reasoning: row.reasoning,
       //   appliedAt: new Date(row.applied_at),
-      //   rolledBackAt: row.rolled_back_at ? new Date(row.rolled_back_at) : undefined,
+      //   rolledBackAt: row.rolled_back_at ? new Date(row.rolled_back_at) : std::nullopt,
       //   createdAt: new Date(row.created_at)
       // }));
 

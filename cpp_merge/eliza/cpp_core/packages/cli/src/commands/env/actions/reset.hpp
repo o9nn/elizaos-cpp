@@ -24,7 +24,7 @@ namespace elizaos {
  * Resolve the PGLite database directory path
  * @returns The path to the PGLite database directory
  */
-std::future<std:> resolvePgliteDir();
+std::future<std::string> resolvePgliteDir();
 
 /**
  * Reset environment variables and selected folders

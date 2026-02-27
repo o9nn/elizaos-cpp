@@ -1,13 +1,14 @@
 #include "file-utils.h"
+#include <string>
 
 string sanitizeFilename(string filename)
 {
     if (!filename) {
-        return std:("unnamed");
+        return std::string("unnamed");
     }
-    auto sanitized = filename->replace((new RegExp(std:("[/\\:*?"<>|]"))), std:("_"))->replace((new RegExp(std:("\0"))), string_empty)->replace((new RegExp(std:("\.+"))), std:("."))->trim();
-    if (OR((!sanitized), (sanitized == std:(".")))) {
-        return std:("unnamed");
+    auto sanitized = filename->replace((new RegExp(std::string("[/\\:*?"<>|]"))), std::string("_"))->replace((new RegExp(std::string("\0"))), string_empty)->replace((new RegExp(std::string("\.+"))), std::string("."))->trim();
+    if (OR((!sanitized), (sanitized == std::string(".")))) {
+        return std::string("unnamed");
     }
     auto maxLength = 255;
     if (sanitized->get_length() > maxLength) {
@@ -27,12 +28,12 @@ std::function<void(string)> cleanupFile = [=](auto filePath) mutable
         if (AND((filePath), (fs->existsSync(filePath)))) {
             auto normalizedPath = path->normalize(filePath);
             fs->unlinkSync(normalizedPath);
-            logger->debug(std:("[FILE] Successfully cleaned up file: ") + normalizedPath + string_empty);
+            logger->debug(std::string("[FILE] Successfully cleaned up file: ") + normalizedPath + string_empty);
         }
     }
     catch (const any& error)
     {
-        logger->error(std:("Error cleaning up file ") + filePath + std:(":"), error);
+        logger->error(std::string("Error cleaning up file ") + filePath + std::string(":"), error);
     }
 };
 std::function<void(array<any>)> cleanupFiles = [=](auto files) mutable
@@ -40,14 +41,14 @@ std::function<void(array<any>)> cleanupFiles = [=](auto files) mutable
     if (files) {
         files->forEach([=](auto file) mutable
         {
-            logger->debug(std:("[FILE] Multer file ") + file->originalname + std:(" in memory, no cleanup needed"));
+            logger->debug(std::string("[FILE] Multer file ") + file->originalname + std::string(" in memory, no cleanup needed"));
         }
         );
     }
 };
 std::function<void(any)> cleanupUploadedFile = [=](auto file) mutable
 {
-    logger->debug(std:("[FILE] Multer file ") + file->originalname + std:(" in memory, no cleanup needed"));
+    logger->debug(std::string("[FILE] Multer file ") + file->originalname + std::string(" in memory, no cleanup needed"));
 };
 
 void Main(void)

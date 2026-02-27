@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SWEAGENT_TESTS_TEST_UTILS_TEST_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SWEAGENT_TESTS_TEST_UTILS_TEST_H
 #include "core.hpp"
+#include <string>
 // External dependency removed
 #include "path.hpp"
 #include "../src/utils/config.h"
@@ -48,7 +49,7 @@ array<T> removeDuplicates(array<T> array)
 template <typename T>
 T deepClone(T obj)
 {
-    if (OR((obj == nullptr), (type_of(obj) != std:("object")))) {
+    if (OR((obj == nullptr), (type_of(obj) != std::string("object")))) {
         return obj;
     }
     if (is<Date>(obj)) {

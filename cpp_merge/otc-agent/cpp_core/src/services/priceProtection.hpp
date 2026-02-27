@@ -26,13 +26,13 @@ struct ValidationResult {
     double deviation;
     double deviationBps;
     double maxAllowedDeviationBps;
-    std::optional<std:> reason;
+    std::optional<std::string> reason;
 };
 
 class PriceProtectionService {
 public:
     PriceProtectionService();
-    std::future<ValidationResult> validateQuotePrice(const std:& tokenId, const std:& tokenAddress, Chain chain, double priceAtQuote, double maxDeviationBps);
+    std::future<ValidationResult> validateQuotePrice(const std::string& tokenId, const std::string& tokenAddress, Chain chain, double priceAtQuote, double maxDeviationBps);
 
 private:
     MarketDataService marketDataService_;

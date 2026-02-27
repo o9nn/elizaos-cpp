@@ -29,7 +29,7 @@ namespace elizaos {
  * Action representing a hello world message.
  * @typedef {Object} Action
  * @property {string} name - The name of the action.
- * @property {std:[]} similes - An array of related actions.
+ * @property {std::string[]} similes - An array of related actions.
  * @property {string} description - A brief description of the action.
  * @property {Function} validate - Asynchronous std::function to validate the action.
  * @property {Function} handler - Asynchronous std::function to handle the action and generate a response.
@@ -48,11 +48,11 @@ namespace elizaos {
  * This demonstrates the simplest possible provider implementation
  */
 
-class StarterService extends Service {
+class StarterService : public Service {
   static serviceType = 'starter';
   capabilityDescription =
     'This is a starter service which is attached to the agent through the starter plugin.';
-  constructor(protected runtime: IAgentRuntime) {
+  /* constructor */ (protected runtime: IAgentRuntime) {
     super(runtime);
   }
 

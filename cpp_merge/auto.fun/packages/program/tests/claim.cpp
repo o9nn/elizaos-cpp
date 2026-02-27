@@ -1,8 +1,9 @@
 #include "claim.hpp"
+#include <string>
 
 void Main(void)
 {
-    describe(std:("raydium_vault"), [=]() mutable
+    describe(std::string("raydium_vault"), [=]() mutable
     {
         auto provider = anchor->AnchorProvider->env();
         anchor->setProvider(provider);
@@ -10,14 +11,14 @@ void Main(void)
         auto nodeWallet = as<std::shared_ptr<NodeWallet>>(provider->wallet);
         shared signerWallet = anchor->web3->Keypair->fromSecretKey(nodeWallet->payer->secretKey);
         shared program = as<std::shared_ptr<Program<std::shared_ptr<RaydiumVault>>>>(anchor->workspace->RaydiumVault);
-        it(std:("Claim Rewards"), [=]() mutable
+        it(std::string("Claim Rewards"), [=]() mutable
         {
             auto isDev = isDevnet(connection);
             auto position_nft = getNftAddress(isDev);
-            auto locking_program = std::make_shared<anchor->web3->PublicKey>(std:("LockrWmn6K5twhz3y9w1dQERbmgSaRkfnTeTKbpofwE"));
-            auto LOCK_CP_AUTH_SEED = std:("lock_cp_authority_seed");
-            auto LOCKED_CP_LIQUIDITY_SEED = std:("locked_liquidity");
-            auto CPSWAP_AUTH_SEED = Buffer::from(anchor->utils->bytes->utf8->encode(std:("vault_and_lp_mint_auth_seed")));
+            auto locking_program = std::make_shared<anchor->web3->PublicKey>(std::string("LockrWmn6K5twhz3y9w1dQERbmgSaRkfnTeTKbpofwE"));
+            auto LOCK_CP_AUTH_SEED = std::string("lock_cp_authority_seed");
+            auto LOCKED_CP_LIQUIDITY_SEED = std::string("locked_liquidity");
+            auto CPSWAP_AUTH_SEED = Buffer::from(anchor->utils->bytes->utf8->encode(std::string("vault_and_lp_mint_auth_seed")));
             auto [locked_authority] = anchor->web3->PublicKey->findProgramAddressSync(array<std::shared_ptr<Buffer>>{ Buffer::from(LOCK_CP_AUTH_SEED) }, locking_program);
             auto [nft_token_faucet] = anchor->web3->PublicKey->findProgramAddressSync(array<std::shared_ptr<Buffer>>{ Buffer::from(nftFaucetSeed), position_nft["toBuffer"]() }, program->programId);
             auto [vault_config] = anchor->web3->PublicKey->findProgramAddressSync(array<std::shared_ptr<Buffer>>{ Buffer::from(vaultConfigSeed) }, program->programId);
@@ -27,16 +28,16 @@ void Main(void)
             auto cpmm_program = CREATE_CPMM_POOL_PROGRAM;
             auto [cp_authority] = anchor->web3->PublicKey->findProgramAddressSync(array<std::shared_ptr<Buffer>>{ CPSWAP_AUTH_SEED }, cpmm_program);
             auto raydium = std::async([=]() { Raydium->load(object{
-                object::pair{std:("owner"), signerWallet}, 
-                object::pair{std:("connection"), std:("connection")}, 
-                object::pair{std:("cluster"), std:("mainnet")}, 
-                object::pair{std:("disableFeatureCheck"), true}, 
-                object::pair{std:("disableLoadToken"), false}, 
-                object::pair{std:("blockhashCommitment"), std:("finalized")}
+                object::pair{std::string("owner"), signerWallet}, 
+                object::pair{std::string("connection"), std::string("connection")}, 
+                object::pair{std::string("cluster"), std::string("mainnet")}, 
+                object::pair{std::string("disableFeatureCheck"), true}, 
+                object::pair{std::string("disableLoadToken"), false}, 
+                object::pair{std::string("blockhashCommitment"), std::string("finalized")}
             }); });
-            auto poolId = std::make_shared<anchor->web3->PublicKey>(std:("CExPZUmwAdu6dDZFGQmkxM8UFu1zVkGwk3tDVHWMifR9"));
+            auto poolId = std::make_shared<anchor->web3->PublicKey>(std::string("CExPZUmwAdu6dDZFGQmkxM8UFu1zVkGwk3tDVHWMifR9"));
             auto poolInfo = const_((std::async([=]() { raydium->api->fetchPoolById(object{
-                object::pair{std:("ids"), poolId->toString()}
+                object::pair{std::string("ids"), poolId->toString()}
             }); })))[0];
             auto poolInfoJson = JSON->parse(JSON->stringify(poolInfo));
             auto pool_state = std::make_shared<anchor->web3->PublicKey>(poolId->toString());
@@ -53,29 +54,29 @@ void Main(void)
             auto locked_lp_vault = spl->getAssociatedTokenAddressSync(lp_mint, locked_authority, true, spl->TOKEN_PROGRAM_ID);
             auto [user_position] = anchor->web3->PublicKey->findProgramAddressSync(array<std::shared_ptr<Buffer>>{ Buffer::from(positionSeed), position_nft["toBuffer"]() }, program->programId);
             std::async([=]() { program->rpc->claim(object{
-                object::pair{std:("accounts"), object{
-                    object::pair{std:("authority"), signerWallet->publicKey}, 
-                    object::pair{std:("vaultConfig"), vault_config}, 
-                    object::pair{std:("userPosition"), user_position}, 
-                    object::pair{std:("lockingProgram"), locking_program}, 
-                    object::pair{std:("lockedAuthority"), locked_authority}, 
-                    object::pair{std:("feeNftOwner"), fee_nft_owner}, 
-                    object::pair{std:("feeNftAccount"), fee_nft_account}, 
-                    object::pair{std:("lockedLiquidity"), locked_liquidity}, 
-                    object::pair{std:("cpmmProgram"), cpmm_program}, 
-                    object::pair{std:("cpAuthority"), cp_authority}, 
-                    object::pair{std:("poolState"), pool_state}, 
-                    object::pair{std:("lpMint"), lp_mint}, 
-                    object::pair{std:("recipientToken0Account"), recv_token0_account}, 
-                    object::pair{std:("recipientToken1Account"), recv_token1_account}, 
-                    object::pair{std:("token0Vault"), token0_vault}, 
-                    object::pair{std:("token1Vault"), token1_vault}, 
-                    object::pair{std:("vault0Mint"), vault0_mint}, 
-                    object::pair{std:("vault1Mint"), vault1_mint}, 
-                    object::pair{std:("lockedLpVault"), locked_lp_vault}, 
-                    object::pair{std:("tokenProgram"), spl->TOKEN_PROGRAM_ID}, 
-                    object::pair{std:("tokenProgram2022"), spl->TOKEN_2022_PROGRAM_ID}, 
-                    object::pair{std:("memoProgram"), raydium_api->MEMO_PROGRAM_ID}
+                object::pair{std::string("accounts"), object{
+                    object::pair{std::string("authority"), signerWallet->publicKey}, 
+                    object::pair{std::string("vaultConfig"), vault_config}, 
+                    object::pair{std::string("userPosition"), user_position}, 
+                    object::pair{std::string("lockingProgram"), locking_program}, 
+                    object::pair{std::string("lockedAuthority"), locked_authority}, 
+                    object::pair{std::string("feeNftOwner"), fee_nft_owner}, 
+                    object::pair{std::string("feeNftAccount"), fee_nft_account}, 
+                    object::pair{std::string("lockedLiquidity"), locked_liquidity}, 
+                    object::pair{std::string("cpmmProgram"), cpmm_program}, 
+                    object::pair{std::string("cpAuthority"), cp_authority}, 
+                    object::pair{std::string("poolState"), pool_state}, 
+                    object::pair{std::string("lpMint"), lp_mint}, 
+                    object::pair{std::string("recipientToken0Account"), recv_token0_account}, 
+                    object::pair{std::string("recipientToken1Account"), recv_token1_account}, 
+                    object::pair{std::string("token0Vault"), token0_vault}, 
+                    object::pair{std::string("token1Vault"), token1_vault}, 
+                    object::pair{std::string("vault0Mint"), vault0_mint}, 
+                    object::pair{std::string("vault1Mint"), vault1_mint}, 
+                    object::pair{std::string("lockedLpVault"), locked_lp_vault}, 
+                    object::pair{std::string("tokenProgram"), spl->TOKEN_PROGRAM_ID}, 
+                    object::pair{std::string("tokenProgram2022"), spl->TOKEN_2022_PROGRAM_ID}, 
+                    object::pair{std::string("memoProgram"), raydium_api->MEMO_PROGRAM_ID}
                 }}
             }); });
         }

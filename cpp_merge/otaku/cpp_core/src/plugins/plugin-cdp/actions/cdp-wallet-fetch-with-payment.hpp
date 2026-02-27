@@ -61,7 +61,7 @@ namespace elizaos {
 /**
  * Helper std::function to format and truncate response data
  */
-std: formatResponseData(const std:& responseData, double maxLength = 500);
+std::string formatResponseData(const std::string& responseData, double maxLength = 500);
 
       // Check if CDP service is available
 
@@ -91,7 +91,7 @@ std: formatResponseData(const std:& responseData, double maxLength = 500);
       // Convert maxPayment from USDC to base units (USDC has 6 decimals)
 
       // Wrap fetch with payment capability
-      // Cast to std: to bypass type incompatibility - walletClient is a valid SignerWallet
+      // Cast to std::string to bypass type incompatibility - walletClient is a valid SignerWallet
 
       // Prepare fetch options
 

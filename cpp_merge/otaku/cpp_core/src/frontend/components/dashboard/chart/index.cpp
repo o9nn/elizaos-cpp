@@ -1,4 +1,5 @@
 #include "index.hpp"
+#include <string>
 #include <map>
 #include <iostream>
 #include <stdexcept>
@@ -10,15 +11,14 @@ void DashboardChart() {
 
     const auto [activeTab, setActiveTab] = React.useState<TimePeriod>("week");
 
-    const auto handleTabChange = [&](value: std:) {;
+    const auto handleTabChange = [&](value: std::string) {;
         if (value == "week" || value == "month" || value == "year") {
             setActiveTab(value);
         }
         };
 
         const auto formatYAxisValue = [&](value) {;
-            // Hide the "0" value by returning empty std:
-            if (value == 0) {
+            // Hide the "0" value by returning empty std::string if (value == 0) {
                 return "";
             }
 

@@ -16,27 +16,27 @@ namespace elizaos {
  * Converted from sweagent/types.py
  */
 
-// ========
+// ====
 // CORE TYPE DEFINITIONS (moved here to be available for interfaces below)
-// ========
+// ====
 
 /**
  * Tool call structure for LLM std::function calling
  */
 struct ToolCall {
-    std::optional<std:> id;
+    std::optional<std::string> id;
     std::optional<'function'> type;
     { std::function;
-    std: name;
-    std: | Record<std:, unknown> arguments;
+    std::string name;
+    std::string | Record<std::string, unknown> arguments;
 };
 
 /**
  * Query object in step output
  */
 struct QueryObject {
-    std::optional<std:> type;
-    std::optional<std:> content;
+    std::optional<std::string> type;
+    std::optional<std::string> content;
 };
 
 /**
@@ -44,7 +44,7 @@ struct QueryObject {
  */
 struct ThinkingBlock {
     'thinking' type;
-    std: content;
+    std::string content;
     std::optional<double> startTime;
     std::optional<double> endTime;
 };
@@ -63,19 +63,19 @@ struct CacheControl {
  */
 struct StepOutput {
     std::vector<QueryObject> query;
-    std: thought;
-    std: action;
-    std: output;
-    std: observation;
+    std::string thought;
+    std::string action;
+    std::string output;
+    std::string observation;
     double executionTime;
     bool done;
-    std::optional<number | std: | null> exitStatus;
-    std::optional<std: | null> submission;
-    std::unordered_map<std:, std:> state;
+    std::optional<number | std::string | null> exitStatus;
+    std::optional<std::string | null> submission;
+    std::unordered_map<std::string, std::string> state;
     std::optional<ToolCall[] | null> toolCalls;
-    std::optional<std:[] | null> toolCallIds;
+    std::optional<std::string[] | null> toolCallIds;
     std::optional<ThinkingBlock[] | null> thinkingBlocks;
-    std::unordered_map<std:, unknown> extraInfo;
+    std::unordered_map<std::string, unknown> extraInfo;
 };
 
 /**
@@ -88,14 +88,14 @@ class StepOutputImpl implements StepOutput {
  * A single step in the agent's trajectory
  */
 struct TrajectoryStep {
-    std: action;
-    std: observation;
-    std: response;
-    std::unordered_map<std:, std:> state;
-    std: thought;
+    std::string action;
+    std::string observation;
+    std::string response;
+    std::unordered_map<std::string, std::string> state;
+    std::string thought;
     double executionTime;
     std::vector<QueryObject> query;
-    std::unordered_map<std:, unknown> extraInfo;
+    std::unordered_map<std::string, unknown> extraInfo;
 };
 
 /**
@@ -107,8 +107,8 @@ using Trajectory = std::vector<TrajectoryStep>;
  * Base history item interface
  */
 struct BaseHistoryItem {
-    std: role;
-    std: | Array<{ type: std:; text?: std:; [key: std:]: unknown }> content;
+    std::string role;
+    std::string | Array<{ type: std::string; text?: std::string; [key: std::string]: unknown }> content;
 
 /**
  * Extended history item with std::optional fields
@@ -123,18 +123,18 @@ using History = std::vector<HistoryItem>;
  * Agent information dictionary
  */
 struct AgentInfo {
-    std::optional<std::unordered_map<std:, double>> modelStats;
-    std::optional<std: | null> exitStatus;
-    std::optional<std: | null> submission;
-    std::optional<std::unordered_map<std:, unknown>> review;
-    std::optional<std:> editedFiles30;
-    std::optional<std:> editedFiles50;
-    std::optional<std:> editedFiles70;
-    std::optional<std::unordered_map<std:, unknown>> summarizer;
-    std::optional<std:> sweAgentHash;
-    std::optional<std:> sweAgentVersion;
-    std::optional<std:> sweRexVersion;
-    std::optional<std:> sweRexHash;
+    std::optional<std::unordered_map<std::string, double>> modelStats;
+    std::optional<std::string | null> exitStatus;
+    std::optional<std::string | null> submission;
+    std::optional<std::unordered_map<std::string, unknown>> review;
+    std::optional<std::string> editedFiles30;
+    std::optional<std::string> editedFiles50;
+    std::optional<std::string> editedFiles70;
+    std::optional<std::unordered_map<std::string, unknown>> summarizer;
+    std::optional<std::string> sweAgentHash;
+    std::optional<std::string> sweAgentVersion;
+    std::optional<std::string> sweRexVersion;
+    std::optional<std::string> sweRexHash;
 };
 
 /**
@@ -145,29 +145,29 @@ struct AgentRunResult {
     Trajectory trajectory;
 };
 
-// ========
+// ====
 // ADDITIONAL TYPE DEFINITIONS TO REPLACE 'any' TYPES
-// ========
+// ====
 
 /**
  * Model response from LLM
  */
 struct ModelResponse {
-    std: message;
+    std::string message;
     std::optional<std::vector<ToolCall>> toolCalls;
     std::optional<std::vector<ToolCall>> tool_calls;
-    std::optional<std:> role;
-    std::optional<std: | Array<{ type: std:; text?: std:; [key: std:]: unknown }>> content;
+    std::optional<std::string> role;
+    std::optional<std::string | Array<{ type: std::string; text?: std::string; [key: std::string]: unknown }>> content;
 
 /**
  * Environment variable configuration
  */
-using EnvVariables = std::variant<Record<std:, std:, double, boolean>>;
+using EnvVariables = std::variant<Record<std::string, std::string, double, boolean>>;
 
 /**
  * Registry variables configuration
  */
-using RegistryVariables = std::variant<Record<std:, std:, double, boolean>>;
+using RegistryVariables = std::variant<Record<std::string, std::string, double, boolean>>;
 
 /**
  * Parsed command arguments
@@ -180,13 +180,13 @@ struct ParsedArguments {
  */
 struct TrajectoryData {
     Array<{ trajectory;
-    std::optional<std:> thought;
-    std::optional<std:> action;
-    std::optional<std:> observation;
-    std::optional<std:> response;
+    std::optional<std::string> thought;
+    std::optional<std::string> action;
+    std::optional<std::string> observation;
+    std::optional<std::string> response;
     std::optional<double> execution_time;
-    std::optional<std::unordered_map<std:, std:>> state;
-    std::unordered_map<std:, unknown> info;
+    std::optional<std::unordered_map<std::string, std::string>> state;
+    std::unordered_map<std::string, unknown> info;
     std::optional<std::vector<HistoryItem>> history;
     std::optional<ReplayConfig> replay_config;
 };
@@ -195,27 +195,27 @@ struct TrajectoryData {
  * Replay configuration
  */
 struct ReplayConfig {
-    std::optional<std::unordered_map<std:, unknown>> environment;
-    std::optional<std::unordered_map<std:, unknown>> agent;
-    std::optional<std::unordered_map<std:, unknown>> tools;
+    std::optional<std::unordered_map<std::string, unknown>> environment;
+    std::optional<std::unordered_map<std::string, unknown>> agent;
+    std::optional<std::unordered_map<std::string, unknown>> tools;
 };
 
 /**
  * Spinner task state
  */
 struct SpinnerTask {
-    std: status;
+    std::string status;
     double startTime;
-    std::optional<std:> instanceId;
-    std::optional<std:> message;
+    std::optional<std::string> instanceId;
+    std::optional<std::string> message;
 };
 
 /**
  * Instance statistics
  */
 struct InstanceStats {
-    std: | null exitStatus;
-    std::optional<std:> result;
+    std::string | null exitStatus;
+    std::optional<std::string> result;
     std::optional<double> cost;
     std::optional<double> apiCalls;
 };
@@ -224,18 +224,18 @@ struct InstanceStats {
  * Command property for std::function calling tools
  */
 struct CommandProperty {
-    std: type;
-    std: description;
+    std::string type;
+    std::string description;
     std::optional<std::vector<std::string>> enum;
-    std::optional<std::unordered_map<std:, std:>> items;
+    std::optional<std::unordered_map<std::string, std::string>> items;
 };
 
 /**
  * Run hook context
  */
 struct RunContext {
-    std: outputDir;
-    std::optional<std::unordered_map<std:, unknown>> config;
+    std::string outputDir;
+    std::optional<std::unordered_map<std::string, unknown>> config;
     std::optional<double> instanceCount;
 };
 
@@ -243,8 +243,8 @@ struct RunContext {
  * Patch file info
  */
 struct PatchInfo {
-    std: source;
-    std: target;
+    std::string source;
+    std::string target;
     Array<{ hunks;
     double sourceStart;
     double sourceLines;
@@ -256,33 +256,33 @@ struct PatchInfo {
 /**
  * File data type that can be JSON, YAML, or raw text
  */
-using FileData = std::variant<std::unordered_map<std:, unknown>, std:, std::vector<unknown>>;
+using FileData = std::variant<std::unordered_map<std::string, unknown>, std::string, std::vector<unknown>>;
 
 /**
  * GitHub API issue response
  */
 struct GithubIssue {
-    std: title;
-    std: | null body;
+    std::string title;
+    std::string | null body;
     double number;
-    std: state;
-    std: created_at;
-    std: updated_at;
+    std::string state;
+    std::string created_at;
+    std::string updated_at;
     { user;
-    std: login;
-    std: avatar_url;
+    std::string login;
+    std::string avatar_url;
     Array<{ labels;
-    std: name;
-    std: color;
+    std::string name;
+    std::string color;
 };
 
 /**
  * GitHub API event response
  */
 struct GithubEvent {
-    std: event;
-    std::optional<std:> commit_id;
-    std: created_at;
+    std::string event;
+    std::optional<std::string> commit_id;
+    std::string created_at;
 };
 
 /**
@@ -293,12 +293,12 @@ using TemplateContext = std::variant<Record<
 /**
  * Serializable data structure
  */
-using SerializableData = std::variant<, std:, double, bool, nullptr, std::nullopt, std::vector<SerializableData>, { [key: std:]: SerializableData }>;
+using SerializableData = std::variant<, std::string, double, bool, nullptr, std::nullopt, std::vector<SerializableData>, { [key: std::string]: SerializableData }>;
 
 /**
  * Command line argument value
  */
-using ArgValue = std::variant<std:, double, bool, std::vector<std::string>, std::nullopt>;
+using ArgValue = std::variant<std::string, double, bool, std::vector<std::string>, std::nullopt>;
 
 /**
  * Parsed command line arguments

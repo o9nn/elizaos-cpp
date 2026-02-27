@@ -1,11 +1,12 @@
 #include "publisher.hpp"
+#include <string>
 #include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<bool> testPublishToNpm(const std:& cwd) {
+std::future<bool> testPublishToNpm(const std::string& cwd) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -34,7 +35,7 @@ std::future<bool> testPublishToNpm(const std:& cwd) {
 
 }
 
-std::future<bool> testPublishToGitHub(PackageJson packageJson, const std:& username) {
+std::future<bool> testPublishToGitHub(PackageJson packageJson, const std::string& username) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -126,7 +127,7 @@ std::future<bool> testPublishToGitHub(PackageJson packageJson, const std:& usern
             username,
             registryRepo,
             testPath,
-            /* JSON.stringify */ std:({ test: true, timestamp: std::make_unique<Date>().toISOString() }),
+            /* JSON.stringify */ std::string({ test: true, timestamp: std::make_unique<Date>().toISOString() }),
             "Test file update",
             branchName // Use the test branch instead of main;
             );
@@ -144,7 +145,7 @@ std::future<bool> testPublishToGitHub(PackageJson packageJson, const std:& usern
 
 }
 
-std::future<bool> publishToNpm(const std:& cwd) {
+std::future<bool> publishToNpm(const std::string& cwd) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -167,9 +168,9 @@ std::future<bool> publishToNpm(const std:& cwd) {
 
 }
 
-std::future<bool> publishToGitHub(const std:& cwd, PackageJson packageJson, const std:& username, auto skipRegistry, auto isTest) {
+std::future<bool> publishToGitHub(const std::string& cwd, PackageJson packageJson, const std::string& username, auto skipRegistry, auto isTest) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    success; prUrl?: std:
+    success; prUrl?: std::string
 }
 
 } // namespace elizaos

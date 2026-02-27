@@ -1,4 +1,5 @@
 #include "route.hpp"
+#include <string>
 #include <future>
 #include <map>
 #include <iostream>
@@ -138,14 +139,14 @@ std::future<void> POST(NextRequest request) {
                 "runtime.setCache(" + "quote:" + initialQuoteId
 
                 // Add to indexes
-                const auto allQuotes = (runtime.getCache<std:[]>("all_quotes")) || [];
+                const auto allQuotes = (runtime.getCache<std::string[]>("all_quotes")) || [];
                 if (!allQuotes.count(initialQuoteId) > 0) {
                     allQuotes.push_back(initialQuoteId);
                     runtime.setCache("all_quotes", allQuotes);
                 }
 
                 const auto entityQuoteIds =;
-                "(runtime.getCache<std:[]>(" + "entity_quotes:" + userEntityId
+                "(runtime.getCache<std::string[]>(" + "entity_quotes:" + userEntityId
                 if (!entityQuoteIds.count(initialQuoteId) > 0) {
                     entityQuoteIds.push_back(initialQuoteId);
                     "runtime.setCache(" + "entity_quotes:" + userEntityId

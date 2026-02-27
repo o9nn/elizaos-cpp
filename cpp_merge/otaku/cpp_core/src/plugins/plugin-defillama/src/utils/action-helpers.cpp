@@ -1,4 +1,5 @@
 #include "action-helpers.hpp"
+#include <string>
 #include <future>
 #include <optional>
 #include <iostream>
@@ -22,7 +23,7 @@ double parsePositiveInteger(const std::optional<double>& value) {
 
 }
 
-std::future<ActionResult> respondWithError(HandlerCallback callback, const std:& messageText, const std:& errorCode, std::optional<std::variant<Record<std:, std:, double, null>>> details) {
+std::future<ActionResult> respondWithError(HandlerCallback callback, const std::string& messageText, const std::string& errorCode, std::optional<std::variant<Record<std::string, std::string, double, null>>> details) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (callback) {
@@ -41,7 +42,7 @@ std::future<ActionResult> respondWithError(HandlerCallback callback, const std:&
 
 }
 
-std: sanitizeChainName(const std:& value) {
+std::string sanitizeChainName(const std::string& value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!value) {
@@ -55,7 +56,7 @@ std: sanitizeChainName(const std:& value) {
 
 }
 
-std: sanitizeFilterSegment(const std:& value) {
+std::string sanitizeFilterSegment(const std::string& value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!value) {

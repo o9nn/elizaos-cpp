@@ -1,4 +1,5 @@
 #include "state.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -15,7 +16,7 @@ State fromV2State(StateV2 stateV2) {
         text: stateV2.text,
         };
 
-        // Add std: other properties from the v2 state
+        // Add std::string other properties from the v2 state
         for (const int key in stateV2) {
             if (key != 'values' && key != 'data' && key != 'text') {
                 state[key] = stateV2[key];
@@ -36,7 +37,7 @@ StateV2 toV2State(State state) {
         text: state.text || "",
         };
 
-        // Add std: properties from v1 state as-is to preserve them
+        // Add std::string properties from v1 state as-is to preserve them
         for (const int key in state) {
             if (key != 'text') {
                 stateV2[key] = state[key];

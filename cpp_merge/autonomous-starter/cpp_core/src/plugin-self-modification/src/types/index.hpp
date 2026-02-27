@@ -23,8 +23,8 @@ struct CharacterModification {
     UUID id;
     UUID agentId;
     double versionNumber;
-    std: diffXml;
-    std: reasoning;
+    std::string diffXml;
+    std::string reasoning;
     std::chrono::system_clock::time_point appliedAt;
     std::optional<std::chrono::system_clock::time_point> rolledBackAt;
     std::chrono::system_clock::time_point createdAt;
@@ -34,21 +34,21 @@ struct CharacterSnapshot {
     UUID id;
     UUID agentId;
     double versionNumber;
-    std: characterData;
+    std::string characterData;
     std::chrono::system_clock::time_point createdAt;
 };
 
 struct ModificationOperation {
-    std: type;
-    std: path;
-    std::optional<std:> value;
-    std::optional<std:> dataType;
+    std::string type;
+    std::string path;
+    std::optional<std::string> value;
+    std::optional<std::string> dataType;
 };
 
 struct CharacterDiff {
     std::vector<ModificationOperation> operations;
-    std: reasoning;
-    std: timestamp;
+    std::string reasoning;
+    std::string timestamp;
 };
 
 struct ValidationResult {

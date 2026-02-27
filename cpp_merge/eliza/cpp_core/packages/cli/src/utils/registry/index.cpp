@@ -44,11 +44,11 @@ std::future<void> saveRegistrySettings(RegistrySettings settings) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     ensureElizaDir();
-    fs.writeFile(REGISTRY_SETTINGS_FILE, /* JSON.stringify */ std:(settings, nullptr, 2));
+    fs.writeFile(REGISTRY_SETTINGS_FILE, /* JSON.stringify */ std::string(settings, nullptr, 2));
 
 }
 
-std::future<std:> getEnvVar(const std:& key) {
+std::future<std::string> getEnvVar(const std::string& key) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -61,7 +61,7 @@ std::future<std:> getEnvVar(const std:& key) {
 
 }
 
-std::future<void> setEnvVar(const std:& key, const std:& value) {
+std::future<void> setEnvVar(const std::string& key, const std::string& value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     ensureElizaDir();
@@ -83,7 +83,7 @@ std::future<void> setEnvVar(const std:& key, const std:& value) {
 
 }
 
-std::future<std:> getGitHubToken() {
+std::future<std::string> getGitHubToken() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -111,7 +111,7 @@ std::future<std:> getGitHubToken() {
 
 }
 
-std::future<void> setGitHubToken(const std:& token) {
+std::future<void> setGitHubToken(const std::string& token) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     ensureElizaDir();
@@ -134,7 +134,7 @@ std::future<void> setGitHubToken(const std:& token) {
             // Update the token
             env.GITHUB_TOKEN = token;
 
-            // Convert back to std: format
+            // Convert back to std::string format
             auto newContent = "";
             for (const int [key, value] of Object.entries(env)) {
                 "newContent += " + key + "=" + value + "\n";
@@ -155,7 +155,7 @@ std::future<void> setGitHubToken(const std:& token) {
 
 }
 
-std: normalizePackageName(const std:& packageName) {
+std::string normalizePackageName(const std::string& packageName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (packageName.substr(0, "@" + std::to_string(REGISTRY_ORG) + "/")) {
@@ -167,12 +167,12 @@ std: normalizePackageName(const std:& packageName) {
 
 }
 
-std::future<void> saveRegistryCache(const std::unordered_map<std:, std:>& registry) {
+std::future<void> saveRegistryCache(const std::unordered_map<std::string, std::string>& registry) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
         ensureElizaDir();
-        fs.writeFile(REGISTRY_CACHE_FILE, /* JSON.stringify */ std:(registry, nullptr, 2));
+        fs.writeFile(REGISTRY_CACHE_FILE, /* JSON.stringify */ std::string(registry, nullptr, 2));
         logger.debug('Registry cache saved successfully');
         } catch (error) {
             logger.debug(
@@ -182,7 +182,7 @@ std::future<void> saveRegistryCache(const std::unordered_map<std:, std:>& regist
 
 }
 
-std::future<std::unordered_map<std:, std:>> getLocalRegistryIndex() {
+std::future<std::unordered_map<std::string, std::string>> getLocalRegistryIndex() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // First try to fetch from the public raw GitHub URL
@@ -194,7 +194,7 @@ std::future<std::unordered_map<std:, std:>> getLocalRegistryIndex() {
             const auto rawData = response.json();
 
             // Validate the data structure
-            const std::unordered_map<std:, std:> result = {};
+            const std::unordered_map<std::string, std::string> result = {};
 
             if (typeof rawData == 'object' && rawData != null) {
                 // Safely parse the response data
@@ -235,7 +235,7 @@ std::future<std::unordered_map<std:, std:>> getLocalRegistryIndex() {
             if (directoryInfo.monorepoRoot) {
                 try {
                     const auto localPackages = getLocalPackages();
-                    const std::unordered_map<std:, std:> localRegistry = {};
+                    const std::unordered_map<std::string, std::string> localRegistry = {};
 
                     // getLocalPackages returns an array of package names as strings
                     for (const auto& pkgName : localPackages)
@@ -261,7 +261,7 @@ std::future<std::unordered_map<std:, std:>> getLocalRegistryIndex() {
 
 }
 
-std::future<std::unordered_map<std:, std:>> getRegistryIndex() {
+std::future<std::unordered_map<std::string, std::string>> getRegistryIndex() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -292,7 +292,7 @@ std::future<std::unordered_map<std:, std:>> getRegistryIndex() {
                     throw std::runtime_error('Invalid registry index format');
                 }
 
-                const std::unordered_map<std:, std:> result = {};
+                const std::unordered_map<std::string, std::string> result = {};
                 for (const int [key, value] of Object.entries(data)) {
                     if (typeof value == 'string') {
                         result[key] = value;
@@ -307,10 +307,10 @@ std::future<std::unordered_map<std:, std:>> getRegistryIndex() {
     }
 }
 
-std::vector<std::string> normalizePluginName(const std:& pluginName) {
+std::vector<std::string> normalizePluginName(const std::string& pluginName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    // Extract the base name without std: organization prefix
+    // Extract the base name without std::string organization prefix
     auto baseName = pluginName;
 
     // Handle various input formats
@@ -326,7 +326,7 @@ std::vector<std::string> normalizePluginName(const std:& pluginName) {
             }
         }
 
-        // Remove std: existing prefixes
+        // Remove std::string existing prefixes
         baseName = baseName.replace(/^plugin-/, "");
 
         // Generate all possible formats to try (removed duplicates and incorrect namespace)
@@ -340,7 +340,7 @@ std::vector<std::string> normalizePluginName(const std:& pluginName) {
 
 }
 
-std::future<std:> getPluginRepository(const std:& pluginName) {
+std::future<std::string> getPluginRepository(const std::string& pluginName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -379,7 +379,7 @@ std::future<std:> getPluginRepository(const std:& pluginName) {
 
 }
 
-std::future<bool> repoHasBranch(const std:& repoUrl, const std:& branchName) {
+std::future<bool> repoHasBranch(const std::string& repoUrl, const std::string& branchName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -394,7 +394,7 @@ std::future<bool> repoHasBranch(const std:& repoUrl, const std:& branchName) {
 
 }
 
-std::future<std:> getBestBranch(const std:& repoUrl) {
+std::future<std::string> getBestBranch(const std::string& repoUrl) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Check for v2 or v2-develop branches
@@ -409,7 +409,7 @@ std::future<std:> getBestBranch(const std:& repoUrl) {
 
 }
 
-std::future<std::vector<std::string>> listPluginsByType(std::optional<std:> type) {
+std::future<std::vector<std::string>> listPluginsByType(std::optional<std::string> type) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto registry = getRegistryIndex();
@@ -418,7 +418,7 @@ std::future<std::vector<std::string>> listPluginsByType(std::optional<std:> type
 
 }
 
-std::future<std::optional<PluginMetadata>> getPluginMetadata(const std:& pluginName) {
+std::future<std::optional<PluginMetadata>> getPluginMetadata(const std::string& pluginName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -480,7 +480,7 @@ std::future<std::optional<PluginMetadata>> getPluginMetadata(const std:& pluginN
     }
 }
 
-std::future<std:> getPluginVersion(const std:& pluginName, std::optional<std:> version) {
+std::future<std::string> getPluginVersion(const std::string& pluginName, std::optional<std::string> version) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Skip metadata lookup to avoid auth requirements
@@ -506,7 +506,7 @@ std::future<std:> getPluginVersion(const std:& pluginName, std::optional<std:> v
 
 }
 
-std::future<std::vector<std::string>> getPluginTags(const std:& pluginName) {
+std::future<std::vector<std::string>> getPluginTags(const std::string& pluginName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto metadata = getPluginMetadata(pluginName);
@@ -514,7 +514,7 @@ std::future<std::vector<std::string>> getPluginTags(const std:& pluginName) {
 
 }
 
-std::future<std::vector<std::string>> getPluginCategories(const std:& pluginName) {
+std::future<std::vector<std::string>> getPluginCategories(const std::string& pluginName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto metadata = getPluginMetadata(pluginName);
@@ -531,21 +531,21 @@ std::future<std::vector<std::string>> getAvailableDatabases() {
 
 }
 
-std::future<> getPackageDetails(const std:& packageName) {
+std::future<> getPackageDetails(const std::string& packageName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    name: std:;
-    description: std:;
-    author: std:;
-    repository: std:;
-    versions: std:[];
-    latestVersion: std:;
-    runtimeVersion: std:;
-    maintainer: std:;
+    name: std::string;
+    description: std::string;
+    author: std::string;
+    repository: std::string;
+    versions: std::string[];
+    latestVersion: std::string;
+    runtimeVersion: std::string;
+    maintainer: std::string;
 
 }
 
-std::future<std:> getBestPluginVersion(const std:& packageName, const std:& runtimeVersion) {
+std::future<std::string> getBestPluginVersion(const std::string& packageName, const std::string& runtimeVersion) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto packageDetails = getPackageDetails(packageName);

@@ -14,7 +14,7 @@ namespace elizaos {
 // NOTE: This is auto-generated approximate C++ code
 // Manual refinement required for production use
 
-// Parse admin addresses from comma-separated std: to array
+// Parse admin addresses from comma-separated std::string to array
 
 // Load from environment or use defaults
 

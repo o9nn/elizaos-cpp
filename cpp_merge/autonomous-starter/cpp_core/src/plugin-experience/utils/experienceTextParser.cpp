@@ -1,10 +1,11 @@
 #include "experienceTextParser.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std: detectDomain(const std:& text, std: defaultDomain = "general") {
+std::string detectDomain(const std::string& text, std::string defaultDomain = "general") {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto domains = {;

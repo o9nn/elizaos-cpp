@@ -11,6 +11,6 @@ void handleProgramLogs(std::shared_ptr<Logs> logs);
 
 void parseRegisterTokenTransaction(std::shared_ptr<VersionedTransactionResponse> tx);
 
-void backfillSolanaEvents(array<string> signatures = undefined);
+void backfillSolanaEvents(array<string> signatures = std::nullopt);
 
 #endif

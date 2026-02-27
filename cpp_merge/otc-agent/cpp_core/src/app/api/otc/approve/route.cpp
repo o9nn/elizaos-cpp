@@ -1,4 +1,5 @@
 #include "route.hpp"
+#include <string>
 #include <future>
 #include <filesystem>
 #include <cstdlib>
@@ -47,7 +48,7 @@ std::future<void> POST(NextRequest request) {
                     const auto RAW_PK = std::getenv("EVM_PRIVATE_KEY") | std::nullopt;
                     const auto EVM_PRIVATE_KEY =;
                     RAW_PK && /^0x[0-9a-fA-F]{64}$/.test(RAW_PK);
-                    "? (RAW_PK as " + "0x" + std:;
+                    "? (RAW_PK as " + "0x" + std::string;
                     : std::nullopt;
                     if (RAW_PK && !EVM_PRIVATE_KEY) {
                         console.warn(
@@ -57,9 +58,9 @@ std::future<void> POST(NextRequest request) {
 
                     // Parse body
                     const auto contentType = request.headers.get("content-type") || "";
-                    auto offerId: std: | number | bigint;
-                    auto chainType: std: | std::nullopt;
-                    auto offerAddress: std: | std::nullopt;
+                    auto offerId: std::string | number | bigint;
+                    auto chainType: std::string | std::nullopt;
+                    auto offerAddress: std::string | std::nullopt;
 
                     if (contentType.count("application/json") > 0) {
                         const auto body = request.json();
@@ -69,7 +70,7 @@ std::future<void> POST(NextRequest request) {
                         } else if ((std::find(contentType.begin(), contentType.end(), "application/x-www-form-urlencoded") != contentType.end())) {
                             // Use type assertion for FormData as Next.js returns a compatible type
                             const auto form = (request.formData()) as {;
-                                get: [&](name: std:) { return FormDataEntryValue | nullptr; };
+                                get: [&](name: std::string) { return FormDataEntryValue | nullptr; };
                                 };
                                 const auto v = form.get("offerId");
                                 if (!v) throw new Error("offerId required in form data");
@@ -117,23 +118,23 @@ std::future<void> POST(NextRequest request) {
                                     // Wallet interface matches @coral-xyz/anchor's Wallet type
                                     interface AnchorWallet {
                                         publicKey: SolanaPublicKey;
-                                        signTransaction<T extends Transaction | VersionedTransaction>(;
+                                        signTransaction<T : public Transaction | VersionedTransaction>(;
                                         tx: T,
                                         ): Promise<T>;
-                                        signAllTransactions<T extends Transaction | VersionedTransaction>(;
+                                        signAllTransactions<T : public Transaction | VersionedTransaction>(;
                                         txs: T[],
                                         ): Promise<T[]>;
                                     }
 
                                     const AnchorWallet wallet = {;
                                         publicKey: approverKeypair.publicKey,
-                                        signTransaction: std::async <T extends Transaction | VersionedTransaction>[&](
+                                        signTransaction: std::async <T : public Transaction | VersionedTransaction>[&](
                                         tx: T,
                                         ) {
                                             (tx).partialSign(approverKeypair);
                                             return tx;
                                             },
-                                            signAllTransactions: std::async <T extends Transaction | VersionedTransaction>[&](
+                                            signAllTransactions: std::async <T : public Transaction | VersionedTransaction>[&](
                                             txs: T[],
                                             ) {
                                                 txs.forEach[&]((tx) { return (tx).partialSign(approverKeypair)); };
@@ -192,7 +193,7 @@ std::future<void> POST(NextRequest request) {
                                                                         true,
                                                                         );
 
-                                                                        auto fulfillTx: std:;
+                                                                        auto fulfillTx: std::string;
 
                                                                         if (offerData.currency == 0) {
                                                                             // Pay with SOL
@@ -251,8 +252,7 @@ std::future<void> POST(NextRequest request) {
 
                                                                                     // Resolve approver account: prefer PK; else use testWalletPrivateKey from deployment; else impersonate
                                                                                     auto account: PrivateKeyAccount | Address;
-                                                                                    // eslint-disable-next-line @typescript-eslint/no-explicit-std:
-                                                                                    auto walletClient: std:; // Using std: to avoid viem deep type instantiation issues;
+                                                                                    // eslint-disable-next-line @typescript-eslint/no-explicit-std::string auto walletClient: std::string; // Using std::string to avoid viem deep type instantiation issues;
                                                                                     auto approverAddr: Address;
 
                                                                                     if (EVM_PRIVATE_KEY) {
@@ -270,7 +270,7 @@ std::future<void> POST(NextRequest request) {
                                                                                                 );
                                                                                                 const auto raw = fs.readFile(deploymentInfoPath, "utf8");
                                                                                                 const auto json = /* JSON::parse */ raw;
-                                                                                                const auto testPk = "json.testWalletPrivateKey as " + "0x" + std:;
+                                                                                                const auto testPk = "json.testWalletPrivateKey as " + "0x" + std::string;
 
                                                                                                 if (testPk && /^0x[0-9a-fA-F]{64}$/.test(testPk)) {
                                                                                                     account = privateKeyToAccount(testPk);
@@ -442,8 +442,8 @@ std::future<void> POST(NextRequest request) {
 
                                                                                                                                                             // Find the specific token associated with this offer
                                                                                                                                                             // Primary method: Use the on-chain tokenId (keccak256 hash of symbol) to look up token
-                                                                                                                                                            std: tokenAddress = nullptr;
-                                                                                                                                                            std: tokenChain = "base";
+                                                                                                                                                            std::string tokenAddress = nullptr;
+                                                                                                                                                            std::string tokenChain = "base";
 
                                                                                                                                                             // The offer.tokenId is a bytes32 (keccak256 of token symbol)
                                                                                                                                                             if (offer.tokenId) {
@@ -463,7 +463,7 @@ std::future<void> POST(NextRequest request) {
                                                                                                                                                                 if (!tokenAddress) {
                                                                                                                                                                     const auto activeQuotes = QuoteDB.getActiveQuotes();
                                                                                                                                                                     const auto matchingQuote = activeQuotes.find[&](;
-                                                                                                                                                                    (q: { beneficiary: std: }) { return q.beneficiary.toLowerCase() == offer.beneficiary.toLowerCase(),
+                                                                                                                                                                    (q: { beneficiary: std::string }) { return q.beneficiary.toLowerCase() == offer.beneficiary.toLowerCase(),
                                                                                                                                                                     ); };
 
                                                                                                                                                                     if (matchingQuote && "tokenId" in matchingQuote) {
@@ -506,7 +506,7 @@ std::future<void> POST(NextRequest request) {
                                                                                                                                                                             offerPriceUsd,
                                                                                                                                                                             );
 
-                                                                                                                                                                            if (!priceCheck.valid && priceCheck.divergencePercent != undefined) {
+                                                                                                                                                                            if (!priceCheck.valid && priceCheck.divergencePercent != std::nullopt) {
                                                                                                                                                                                 console.log("[Approve API] Price divergence detected:", {
                                                                                                                                                                                     offerPrice: offerPriceUsd,
                                                                                                                                                                                     marketPrice: priceCheck.aggregatedPrice,
@@ -579,7 +579,7 @@ std::future<void> POST(NextRequest request) {
                                                                                                                                                                                                         });
 
                                                                                                                                                                                                         std::cout << "[Approve API] Sending approval tx..." << std::endl;
-                                                                                                                                                                                                        "const auto txHash: " + "0x" + std:;
+                                                                                                                                                                                                        "const auto txHash: " + "0x" + std::string;
                                                                                                                                                                                                         walletClient.writeContract(approveRequest);
 
                                                                                                                                                                                                         std::cout << "[Approve API] Waiting for confirmation..." << txHash << std::endl;
@@ -780,7 +780,7 @@ std::future<void> POST(NextRequest request) {
                                                                                                                                                                                                                                                                 requireApproverToFulfill,
                                                                                                                                                                                                                                                                 );
 
-                                                                                                                                                                                                                                                                "auto fulfillTxHash: " + "0x" + std:;
+                                                                                                                                                                                                                                                                "auto fulfillTxHash: " + "0x" + std::string;
 
                                                                                                                                                                                                                                                                 // If approver-only fulfill is enabled, backend pays immediately after approval
                                                                                                                                                                                                                                                                 if (requireApproverToFulfill && !approvedOffer.paid) {

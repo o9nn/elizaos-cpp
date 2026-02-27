@@ -9,7 +9,7 @@
 
 namespace elizaos {
 
-std::future<void> copyDir(const std:& src, const std:& dest, std::vector<std::string> exclude = {}) {
+std::future<void> copyDir(const std::string& src, const std::string& dest, std::vector<std::string> exclude = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Ensure paths are properly resolved as absolute paths
@@ -78,7 +78,7 @@ std::future<void> copyDir(const std:& src, const std:& dest, std::vector<std::st
 
 }
 
-std: getPackageName(const std:& templateType) {
+std::string getPackageName(const std::string& templateType) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     switch (templateType) {
@@ -94,7 +94,7 @@ std: getPackageName(const std:& templateType) {
 
 }
 
-std::future<void> copyTemplate(const std:& templateType, const std:& targetDir) {
+std::future<void> copyTemplate(const std::string& templateType, const std::string& targetDir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -123,7 +123,7 @@ std::future<void> copyTemplate(const std:& templateType, const std:& targetDir) 
         path.resolve(__dirname, "..", "..", "templates", packageName),
         ];
 
-        std: templateDir = nullptr;
+        std::string templateDir = nullptr;
         for (const auto& possiblePath : possibleTemplatePaths)
             if (existsSync(possiblePath)) {
                 templateDir = possiblePath;
@@ -197,7 +197,7 @@ std::future<void> copyTemplate(const std:& templateType, const std:& targetDir) 
             }
 
             // Write the updated package.json (dependency versions and plugin name changed)
-            fs.writeFile(packageJsonPath, /* JSON.stringify */ std:(packageJson, nullptr, 2));
+            fs.writeFile(packageJsonPath, /* JSON.stringify */ std::string(packageJson, nullptr, 2));
             logger.debug('Updated package.json with latest dependency versions');
             } catch (error) {
                 std::cerr << "Error updating package.json: " + error << std::endl;
@@ -211,7 +211,7 @@ std::future<void> copyTemplate(const std:& templateType, const std:& targetDir) 
     }
 }
 
-std::future<void> replacePluginNameInFiles(const std:& targetDir, const std:& pluginName) {
+std::future<void> replacePluginNameInFiles(const std::string& targetDir, const std::string& pluginName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto filesToProcess = [;

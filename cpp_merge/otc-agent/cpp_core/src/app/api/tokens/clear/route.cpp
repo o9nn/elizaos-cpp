@@ -1,4 +1,5 @@
 #include "route.hpp"
+#include <string>
 #include <future>
 #include <cstdlib>
 #include <iostream>
@@ -21,7 +22,7 @@ std::future<void> POST() {
         const auto runtime = agentRuntime.getRuntime();
 
         // Get all token IDs
-        const auto allTokenIds = (runtime.getCache<std:[]>("all_tokens")) || [];
+        const auto allTokenIds = (runtime.getCache<std::string[]>("all_tokens")) || [];
 
         // Delete each token
         for (const auto& tokenId : allTokenIds)

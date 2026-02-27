@@ -68,7 +68,7 @@ public:
     double priceUsd;
 };
 
-any getLatestCandle(string tokenMint, any swap, any tokenInfo = undefined);
+any getLatestCandle(string tokenMint, any swap, any tokenInfo = std::nullopt);
 
 any fetchPriceChartData(double start, double end, double range, string tokenMint);
 

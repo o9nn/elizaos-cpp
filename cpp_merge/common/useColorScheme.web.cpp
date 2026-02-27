@@ -1,8 +1,9 @@
 #include "useColorScheme.web.h"
+#include <string>
 
 any useColorScheme()
 {
-    return std:("light");
+    return std::string("light");
 };
 
 

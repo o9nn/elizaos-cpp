@@ -452,7 +452,7 @@ void SidebarMenuSkeleton(auto showIcon) {
 
     // Random width between 50 to 90%.
     const auto width = React.useMemo[&](() {;
-        return std::to_string(Math.floor(Math.random() * 40) + 50) + "%";
+        return std::to_string(Math.floor(((double)rand() / RAND_MAX) * 40) + 50) + "%";
         }, []);
 
         return (;

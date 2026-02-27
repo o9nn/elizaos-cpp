@@ -22,7 +22,7 @@ namespace elizaos {
  */
 
 struct State {
-    std::optional<std:> diff;
+    std::optional<std::string> diff;
 };
 
 State loadState();
@@ -33,7 +33,7 @@ void updateDiffState();
 
 void clearDiff();
 
-std: getDiff();
+std::string getDiff();
 
 // CLI if run directly
 

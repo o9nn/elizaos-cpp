@@ -28,17 +28,17 @@ IAgentRuntime createMockAgentRuntime(std::optional<std::optional<IAgentRuntime>>
 /**
  * Creates a mock DatabaseAdapter with message server methods
  */
-DatabaseAdapter createMockDatabaseAdapter(std::optional<std:> overrides);
+DatabaseAdapter createMockDatabaseAdapter(std::optional<std::string> overrides);
 
 /**
  * Creates a mock Express Request
  */
-std: createMockRequest(std::optional<std::optional<std:>> overrides);
+std::string createMockRequest(std::optional<std::optional<std::string>> overrides);
 
 /**
  * Creates a mock Express Response
  */
-std: createMockResponse();
+std::string createMockResponse();
 
 /**
  * Creates a mock Express NextFunction

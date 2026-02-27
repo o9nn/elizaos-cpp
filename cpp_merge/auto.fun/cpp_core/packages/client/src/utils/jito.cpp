@@ -1,4 +1,5 @@
 #include "jito.hpp"
+#include <string>
 #include <future>
 #include <iostream>
 #include <stdexcept>
@@ -26,7 +27,7 @@ std::future<void> sendTxUsingJito(auto region) {
             };
             const auto res = "fetch(" + rpcEndpoint + "?bundleOnly=true";
                 method: "POST",
-                body: /* JSON.stringify */ std:(payload),
+                body: /* JSON.stringify */ std::string(payload),
                 headers: { "Content-Type": "application/json" },
                 });
                 const auto json = (res.json());

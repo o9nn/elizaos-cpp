@@ -1,10 +1,11 @@
 #include "instrumentation-index.test.h"
+#include <string>
 
 void Main(void)
 {
-    describe(std:("instrumentation index exports"), [=]() mutable
+    describe(std::string("instrumentation index exports"), [=]() mutable
     {
-        it(std:("exports service"), [=]() mutable
+        it(std::string("exports service"), [=]() mutable
         {
             expect(instrumentation->InstrumentationService)->toBeDefined();
         }

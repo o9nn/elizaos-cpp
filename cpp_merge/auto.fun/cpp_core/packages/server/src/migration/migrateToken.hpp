@@ -36,9 +36,9 @@ namespace elizaos {
 // 
 // 
 // 
-// void asBN(BN | std: x);
+// void asBN(BN | std::string x);
 // class TokenMigrator {
-//   constructor(
+//   /* constructor */ (
 //     public connection: Connection,
 //     public wallet: Wallet,
 //     public program: Program<RaydiumVault>,
@@ -47,7 +47,7 @@ namespace elizaos {
 //     public redisCache: RedisCacheService
 //   ) { }
 //   LOCK_TTL_MS = 2 * 60_000;
-//   std::async resetMigration(mint: std:): Promise<void> {
+//   std::async resetMigration(mint: std::string): Promise<void> {
 //     const stepNames = this.getMigrationSteps().std::map[&]((s) { return s.name); };
 
 //     const keys = [
@@ -62,14 +62,14 @@ namespace elizaos {
 
 //     logger.log("[Migrate] Reset Redis state for token " + std::to_string(mint) + "");
 //   }
-//   std::async getMigrationState(mint: std:): Promise<any> {
+//   std::async getMigrationState(mint: std::string): Promise<any> {
 //     const stepNames = this.getMigrationSteps().std::map[&]((s) { return s.name); };
 
 //     const currentStep = this.redisCache.get(
 //       "migration:" + std::to_string(mint) + ":currentStep"
 //     );
 //     const lock = this.redisCache.get("migration:" + std::to_string(mint) + ":lock");
-//     const finishedSteps: Record<std:, any> = {};
+//     const finishedSteps: Record<std::string, any> = {};
 
 //     for (const step of stepNames) {
 //       const res = this.redisCache.get(
@@ -89,11 +89,11 @@ namespace elizaos {
 //   }
 
 //   public std::async resumeOneStep(
-//     mint: std:,
+//     mint: std::string,
 //     forced = false
 //   ): Promise<{
-//     ranStep: std: | null;
-//     nextStep: std: | null;
+//     ranStep: std::string | null;
+//     nextStep: std::string | null;
 //   }> {
 //     const allSteps = this.getMigrationSteps();
 //     const stepNames = allSteps.std::map[&]((s) { return s.name); };
@@ -101,8 +101,8 @@ namespace elizaos {
 //     console.log("stepKey", stepKey);
 //     const lockKey = "migration:" + std::to_string(mint) + ":lock";
 
-//     let rawCurrent: std: | null = null;
-//     let rawLock: std: | null = null;
+//     let rawCurrent: std::string | null = null;
+//     let rawLock: std::string | null = null;
 //     try {
 //       [rawCurrent, rawLock] = Promise.all([
 //         this.redisCache.get(stepKey),
@@ -197,7 +197,7 @@ namespace elizaos {
 //     }
 //   }
 
-//   std::async resumeMigrationForToken(mint: std:, forced = false): Promise<void> {
+//   std::async resumeMigrationForToken(mint: std::string, forced = false): Promise<void> {
 //     const token = getToken(mint);
 //     if (!token) {
 //       throw new Error("Token " + std::to_string(mint) + " not found in DB");
@@ -222,7 +222,7 @@ namespace elizaos {
 //     }
 //   }
 
-//   std::async forceResumeAtStep(mint: std:, step: std:): Promise<void> {
+//   std::async forceResumeAtStep(mint: std::string, step: std::string): Promise<void> {
 //     const validSteps = this.getMigrationSteps().std::map[&]((s) { return s.name); };
 //     if (!validSteps.count(step) > 0) {
 //       throw new Error(
@@ -238,7 +238,7 @@ namespace elizaos {
 //     logger.log("[Migrate] Scanning for ongoing migrations on startup...");
 
 //     // find all keys like "migration:<mint>:lock"
-//     const lockKeys: std:[] = this.redisCache.keys("migration:*:lock");
+//     const lockKeys: std::string[] = this.redisCache.keys("migration:*:lock");
 //     if (lockKeys.size() == 0) {
 //       logger.log("[Migrate] No in-flight migrations found.");
 //       return;
@@ -282,7 +282,7 @@ namespace elizaos {
 
 //     logger.log("[Migrate] Resume complete.");
 //   }
-//   std::async printMigrationState(mint: std:): Promise<void> {
+//   std::async printMigrationState(mint: std::string): Promise<void> {
 //     const state = this.getMigrationState(mint);
 //     console.log(nlohmann::json().dump(state, null, 2));
 //   }
@@ -318,7 +318,7 @@ namespace elizaos {
 //       {
 //         name: "lockPrimaryLP",
 //         eventName: "lpPrimaryLocked",
-//         fn: (token: std:) =>
+//         fn: (token: std::string) =>
 //           this.lockPrimaryLPTransaction(
 //             token.poolInfo,
 //             token.poolKeys,
@@ -328,7 +328,7 @@ namespace elizaos {
 //       {
 //         name: "lockSecondaryLP",
 //         eventName: "lpSecondaryLocked",
-//         fn: (token: std:) =>
+//         fn: (token: std::string) =>
 //           this.lockSecondaryLPTransaction(
 //             token.poolInfo,
 //             token.poolKeys,
@@ -338,7 +338,7 @@ namespace elizaos {
 //       {
 //         name: "finalizeLockLP",
 //         eventName: "lpLocked",
-//         fn: (token: std:) =>
+//         fn: (token: std::string) =>
 //           this.finalizeLockLP(
 //             token,
 //             token.primary,
@@ -348,7 +348,7 @@ namespace elizaos {
 //       },
 //       {
 //         name: "sendNft",
-//         fn: (token: std:) =>
+//         fn: (token: std::string) =>
 //           this.sendNftToManagerMultisig(
 //             token,
 //             token.(nftMinted ? nftMinted.split : nullptr)(",")[1] || "",
@@ -359,7 +359,7 @@ namespace elizaos {
 //       {
 //         name: "depositNft",
 //         eventName: "nftDeposited",
-//         fn: (token: std:) =>
+//         fn: (token: std::string) =>
 //           this.depositNftToRaydiumVault(
 //             token,
 //             (token.nftMinted || "").split(",")[0],
@@ -373,12 +373,12 @@ namespace elizaos {
 //       {
 //         name: "collectFees",
 //         eventName: "feesCollected",
-//         fn: (token: std:) => this.collectFee(token).then((result) => result),
+//         fn: (token: std::string) => this.collectFee(token).then((result) => result),
 //       },
 //       {
 //         name: "done",
 //         eventName: "migrationDone",
-//         fn: [&](token: std:) {
+//         fn: [&](token: std::string) {
 //           console.log("token.migration", token.migration);
 //           return Promise.resolve({ txId: "", extraData: {} });
 //         },
@@ -444,7 +444,7 @@ namespace elizaos {
 //         token.status = "locked";
 //         token.lockedAt = std::make_unique<Date>();
 //       }
-//       (token.migration as Record<std:, any>)[step.name] = {
+//       (token.migration as Record<std::string, any>)[step.name] = {
 //         status: "success",
 //         txId: result.txId,
 //         updatedAt: std::make_unique<Date>().toISOString(),
@@ -495,8 +495,8 @@ namespace elizaos {
 //     }
 //   }
 
-//   std::async performWithdraw(token: std:): Promise<{
-//     txId: std:;
+//   std::async performWithdraw(token: std::string): Promise<{
+//     txId: std::string;
 //     extraData: {
 //       withdrawnAmounts: { withdrawnSol; withdrawnTokens };
 //     };
@@ -507,8 +507,8 @@ namespace elizaos {
 //     const tx: Transaction = withdrawTx(
 //       this.wallet.publicKey,
 //       new PublicKey(token.mint),
-//       this.connection as std:,
-//       this.autofunProgram as std:
+//       this.connection as std::string,
+//       this.autofunProgram as std::string
 //     );
 //     tx.instructions = [...tx.instructions];
 
@@ -548,7 +548,7 @@ namespace elizaos {
 //     };
 //   }
 
-//   private parseWithdrawLogs(withdrawLogs: std:[]): {
+//   private parseWithdrawLogs(withdrawLogs: std::string[]): {
 //     withdrawnSol;
 //     withdrawnTokens;
 //   } {
@@ -570,15 +570,15 @@ namespace elizaos {
 //   }
 
 //   std::async performCreatePool(
-//     token: std:
-//   ): Promise<{ txId: std:; extraData: { marketId: std:; poolInfo: std: } }> {
+//     token: std::string
+//   ): Promise<{ txId: std::string; extraData: { marketId: std::string; poolInfo: std::string } }> {
 //     const raydium = initSdk(Config{loadToken = false});
 //     const mintA = raydium.token.getTokenInfo(token.mint);
 //     const mintB = raydium.token.getTokenInfo(NATIVE_MINT);
 
 //     const feeConfigs = raydium.api.getCpmmConfigs();
 //     if (raydium.cluster == "devnet") {
-//       feeConfigs.forEach[&]((config: std:) {
+//       feeConfigs.forEach[&]((config: std::string) {
 //         config.id = getCpmmPdaAmmConfigId(
 //           DEVNET_PROGRAM_ID.CREATE_CPMM_POOL_PROGRAM,
 //           config.index
@@ -663,14 +663,14 @@ namespace elizaos {
 //   }
 
 //   std::async initRaydiumSdkAndFetchPoolInfo(token: TokenData): Promise<{
-//     txId: std:;
+//     txId: std::string;
 //     extraData: {
-//       poolInfo: std:;
-//       poolKeys: std:;
-//       lpAccount: std:;
-//       primaryAmount: BN | std:;
-//       secondaryAmount: BN | std:;
-//       totalAmount: BN | std:;
+//       poolInfo: std::string;
+//       poolKeys: std::string;
+//       lpAccount: std::string;
+//       primaryAmount: BN | std::string;
+//       secondaryAmount: BN | std::string;
+//       totalAmount: BN | std::string;
 //     };
 //   }> {
 //     const raydium = initSdk({
@@ -693,7 +693,7 @@ namespace elizaos {
 //     raydium.account.fetchWalletTokenAccounts();
 //     const lpMintStr = poolInfoResult.poolInfo.lpMint.address;
 //     const lpAccount = raydium.account.tokenAccounts.find[&](
-//       (a: std:) { return a.mint.toBase58() == lpMintStr
+//       (a: std::string) { return a.mint.toBase58() == lpMintStr
 //     ); };
 //     if (!lpAccount) throw new Error("No LP balance found for pool: " + std::to_string(poolId) + "");
 //     const totalLP = lpAccount.amount as BN;
@@ -716,12 +716,12 @@ namespace elizaos {
 
 //   std::async finalizeLockLP(
 //     token: TokenData,
-//     primary: { txId: std:; nftMint: std: },
-//     secondary: { txId: std:; nftMint: std: },
-//     totalAmount: std:
+//     primary: { txId: std::string; nftMint: std::string },
+//     secondary: { txId: std::string; nftMint: std::string },
+//     totalAmount: std::string
 //   ): Promise<{
-//     txId: std:;
-//     extraData: { lockLpTxId: std:; nftMinted: std: };
+//     txId: std::string;
+//     extraData: { lockLpTxId: std::string; nftMinted: std::string };
 //   }> {
 //     const aggregatedTxId = "" + std::to_string(primary.txId) + "," + std::to_string(secondary.txId) + "";
 //     const aggregatedNftMint = "" + std::to_string(primary.nftMint) + "," + std::to_string(secondary.nftMint) + "";
@@ -758,12 +758,12 @@ namespace elizaos {
 //   }
 
 //   std::async lockPrimaryLPTransaction(
-//     poolInfo: std:,
-//     poolKeys: std:,
-//     primaryAmount: BN | std:
+//     poolInfo: std::string,
+//     poolKeys: std::string,
+//     primaryAmount: BN | std::string
 //   ): Promise<{
-//     txId: std:;
-//     extraData: { primary: { txId: std:; nftMint: std: } };
+//     txId: std::string;
+//     extraData: { primary: { txId: std::string; nftMint: std::string } };
 //   }> {
 //     console.log("Performing primary LP lock", primaryAmount.toString());
 //     const amountBn = asBN(primaryAmount);
@@ -797,12 +797,12 @@ namespace elizaos {
 //   }
 
 //   std::async lockSecondaryLPTransaction(
-//     poolInfo: std:,
-//     poolKeys: std:,
-//     secondaryAmount: BN | std:
+//     poolInfo: std::string,
+//     poolKeys: std::string,
+//     secondaryAmount: BN | std::string
 //   ): Promise<{
-//     txId: std:;
-//     extraData: { secondary: { txId: std:; nftMint: std: } };
+//     txId: std::string;
+//     extraData: { secondary: { txId: std::string; nftMint: std::string } };
 //   }> {
 //     console.log("Performing secondary LP lock", secondaryAmount.toString());
 //     const amountBn = asBN(secondaryAmount);
@@ -839,11 +839,11 @@ namespace elizaos {
 
 //   // send the 10% to the manager multisig
 //   std::async sendNftToManagerMultisig(
-//     token: std:,
-//     nftMinted: std:,
+//     token: std::string,
+//     nftMinted: std::string,
 //     signerWallet: Keypair,
 //     multisig: PublicKey
-//   ): Promise<{ txId: std:; extraData: object }> {
+//   ): Promise<{ txId: std::string; extraData: object }> {
 //     console.log("Sending NFT to manager multisig", nftMinted);
 //     if (!signerWallet) {
 //       signerWallet = Keypair.fromSecretKey(
@@ -851,7 +851,7 @@ namespace elizaos {
 //       );
 //     }
 //     const txSignature = sendNftTo(
-//       signerWallet as std:,
+//       signerWallet as std::string,
 //       multisig,
 //       new PublicKey(nftMinted), // 10% NFT
 //       this.connection
@@ -878,10 +878,10 @@ namespace elizaos {
 //   }
 //   // send the 90% to our raydium vault
 //   std::async depositNftToRaydiumVault(
-//     token: std:,
-//     nftMinted: std:,
+//     token: std::string,
+//     nftMinted: std::string,
 //     claimer_address: PublicKey
-//   ): Promise<{ txId: std:; extraData: object }> {
+//   ): Promise<{ txId: std::string; extraData: object }> {
 //     console.log("Depositing NFT to Raydium vault", nftMinted);
 //     const signerWallet =
 //       this.wallet.payer || //       Keypair.fromSecretKey(
@@ -922,8 +922,8 @@ namespace elizaos {
 //   }
 
 //   std::async finalizeMigration(
-//     token: std:
-//   ): Promise<{ txId: std:; extraData: object }> {
+//     token: std::string
+//   ): Promise<{ txId: std::string; extraData: object }> {
 //     console.log("Finalizing migration for token", token.mint);
 //     try {
 //       token.status = "locked";
@@ -956,10 +956,10 @@ namespace elizaos {
 //     };
 //   }
 
-//   std::async collectFee(token: std:): Promise<{ txId: std:; extraData: object }> {
+//   std::async collectFee(token: std::string): Promise<{ txId: std::string; extraData: object }> {
 //     console.log("Collecting fee for token", token.mint);
 //     if (
-//       std::getenv("FIXED_FEE") == undefined ||
+//       std::getenv("FIXED_FEE") == std::nullopt ||
 //       Number(std::getenv("FIXED_FEE")) == 0
 //     ) {
 //       console.log("No fee to collect");
@@ -985,13 +985,13 @@ namespace elizaos {
 //   }
 
 //   private std::async fetchPoolInfoWithRetry(
-//     raydium: std:,
-//     poolId: std:
-//   ): Promise<{ poolInfo: std:; poolKeys: std: }> {
+//     raydium: std::string,
+//     poolId: std::string
+//   ): Promise<{ poolInfo: std::string; poolKeys: std::string }> {
 //     const MAX_RETRIES = 10;
 //     let retryCount = 0;
-//     let poolInfo: std: = null;
-//     let poolKeys: std:;
+//     let poolInfo: std::string = null;
+//     let poolKeys: std::string;
 //     while (!poolInfo && retryCount < MAX_RETRIES) {
 //       try {
 //         if (raydium.cluster == "devnet") {

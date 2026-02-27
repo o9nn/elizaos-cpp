@@ -20,17 +20,17 @@ namespace elizaos {
 struct DirectoryInfo {
     bool hasPackageJson;
     bool hasElizaOSDependencies;
-    std::optional<std:> packageName;
+    std::optional<std::string> packageName;
     double elizaPackageCount;
-    std::optional<std:> monorepoRoot;
+    std::optional<std::string> monorepoRoot;
 };
 
 struct PackageJson {
-    std::optional<std:> name;
+    std::optional<std::string> name;
     std::optional<std::vector<std::string>> keywords;
-    std::optional<std:> main;
-    std::optional<std:> packageType;
-    std::optional<std:> pluginType;
+    std::optional<std::string> main;
+    std::optional<std::string> packageType;
+    std::optional<std::string> pluginType;
 };
 
 /**
@@ -38,7 +38,7 @@ struct PackageJson {
  * @param dir The directory path to analyze
  * @returns DirectoryInfo object with detection results
  */
-DirectoryInfo detectDirectoryType(const std:& dir);
+DirectoryInfo detectDirectoryType(const std::string& dir);
 
 /**
  * Checks if a package.json indicates an ElizaOS plugin
@@ -48,7 +48,7 @@ bool isElizaOSPlugin(PackageJson packageJson);
 /**
  * Checks if a package.json and directory structure indicates an ElizaOS project
  */
-bool isElizaOSProject(PackageJson packageJson, const std:& dir, std::optional<std:> monorepoRoot);
+bool isElizaOSProject(PackageJson packageJson, const std::string& dir, std::optional<std::string> monorepoRoot);
 
 /**
  * Checks if the directory is suitable for ElizaOS package updates

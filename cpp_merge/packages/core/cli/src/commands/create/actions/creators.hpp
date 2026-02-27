@@ -17,8 +17,8 @@ std::shared_ptr<Promise<void>> createPlugin(string pluginName, string targetDir,
 
 std::shared_ptr<Promise<void>> createAgent(string agentName, string targetDir, boolean isNonInteractive = false);
 
-std::shared_ptr<Promise<void>> createTEEProject(string projectName, string targetDir, string database, string aiModel, string embeddingModel = undefined, boolean isNonInteractive = false);
+std::shared_ptr<Promise<void>> createTEEProject(string projectName, string targetDir, string database, string aiModel, string embeddingModel = std::nullopt, boolean isNonInteractive = false);
 
-std::shared_ptr<Promise<void>> createProject(string projectName, string targetDir, string database, string aiModel, string embeddingModel = undefined, boolean isNonInteractive = false);
+std::shared_ptr<Promise<void>> createProject(string projectName, string targetDir, string database, string aiModel, string embeddingModel = std::nullopt, boolean isNonInteractive = false);
 
 #endif

@@ -1,34 +1,35 @@
 #include "plugin.test.h"
+#include <string>
 
 void documentTestResult(string testName, any result, any error)
 {
-    logger->info(std:("✓ Testing: ") + testName + string_empty);
+    logger->info(std::string("✓ Testing: ") + testName + string_empty);
     if (error) {
-        logger->error(std:("✗ Error: ") + error->message + string_empty);
+        logger->error(std::string("✗ Error: ") + error->message + string_empty);
         if (error->stack) {
-            logger->error(std:("Stack: ") + error->stack + string_empty);
+            logger->error(std::string("Stack: ") + error->stack + string_empty);
         }
         return;
     }
     if (result) {
-        if (type_of(result) == std:("string")) {
+        if (type_of(result) == std::string("string")) {
             if (AND((result->trim()), (result->get_length() > 0))) {
-                auto preview = (result->get_length() > 60) ? string_empty + result->substring(0, 60) + std:("...") : result;
-                logger->info(std:("  → ") + preview + string_empty);
+                auto preview = (result->get_length() > 60) ? string_empty + result->substring(0, 60) + std::string("...") : result;
+                logger->info(std::string("  → ") + preview + string_empty);
             }
-        } else if (type_of(result) == std:("object")) {
+        } else if (type_of(result) == std::string("object")) {
             try
             {
                 auto keys = Object->keys(result);
                 if (keys->get_length() > 0) {
-                    auto preview = keys->slice(0, 3)->join(std:(", "));
-                    auto more = (keys->get_length() > 3) ? any(std:(" +") + (keys->get_length() - 3) + std:(" more")) (string_empty);
-                    logger->info(std:("  → {") + preview + string_empty + more + std:("}"));
+                    auto preview = keys->slice(0, 3)->join(std::string(", "));
+                    auto more = (keys->get_length() > 3) ? any(std::string(" +") + (keys->get_length() - 3) + std::string(" more")) (string_empty);
+                    logger->info(std::string("  → {") + preview + string_empty + more + std::string("}"));
                 }
             }
             catch (const any& e)
             {
-                logger->info(std:("  → [Complex object]"));
+                logger->info(std::string("  → [Complex object]"));
             }
         }
     }
@@ -42,50 +43,50 @@ any createRealRuntime()
     {
         if (serviceType == StarterService::serviceType) {
             return std::make_shared<StarterService>(as<any>(object{
-                object::pair{std:("character"), object{
-                    object::pair{std:("name"), std:("Test Character")}, 
-                    object::pair{std:("system"), std:("You are a helpful assistant for testing.")}
+                object::pair{std::string("character"), object{
+                    object::pair{std::string("name"), std::string("Test Character")}, 
+                    object::pair{std::string("system"), std::string("You are a helpful assistant for testing.")}
                 }}
             }));
         }
         return nullptr;
     };
     return object{
-        object::pair{std:("character"), object{
-            object::pair{std:("name"), std:("Test Character")}, 
-            object::pair{std:("system"), std:("You are a helpful assistant for testing.")}, 
-            object::pair{std:("plugins"), array<any>()}, 
-            object::pair{std:("settings"), object{}}
+        object::pair{std::string("character"), object{
+            object::pair{std::string("name"), std::string("Test Character")}, 
+            object::pair{std::string("system"), std::string("You are a helpful assistant for testing.")}, 
+            object::pair{std::string("plugins"), array<any>()}, 
+            object::pair{std::string("settings"), object{}}
         }}, 
-        object::pair{std:("getSetting"), [=](auto key) mutable
+        object::pair{std::string("getSetting"), [=](auto key) mutable
         {
             return nullptr;
         }
         }, 
-        object::pair{std:("models"), plugin->models}, 
-        object::pair{std:("db"), object{
-            object::pair{std:("get"), [=](auto key) mutable
+        object::pair{std::string("models"), plugin->models}, 
+        object::pair{std::string("db"), object{
+            object::pair{std::string("get"), [=](auto key) mutable
             {
                 return nullptr;
             }
             }, 
-            object::pair{std:("set"), [=](auto key, auto value) mutable
+            object::pair{std::string("set"), [=](auto key, auto value) mutable
             {
                 return true;
             }
             }, 
-            object::pair{std:("delete"), [=](auto key) mutable
+            object::pair{std::string("delete"), [=](auto key) mutable
             {
                 return true;
             }
             }, 
-            object::pair{std:("getKeys"), [=](auto pattern) mutable
+            object::pair{std::string("getKeys"), [=](auto pattern) mutable
             {
                 return array<any>();
             }
             }
         }}, 
-        object::pair{std:("getService"), [=](auto serviceType) mutable
+        object::pair{std::string("getService"), [=](auto serviceType) mutable
         {
             if (!services->has(serviceType)) {
                 services->set(serviceType, createService(serviceType));
@@ -93,7 +94,7 @@ any createRealRuntime()
             return services->get(serviceType);
         }
         }, 
-        object::pair{std:("registerService"), [=](auto serviceType, auto service) mutable
+        object::pair{std::string("registerService"), [=](auto serviceType, auto service) mutable
         {
             services->set(serviceType, service);
         }
@@ -108,40 +109,40 @@ void Main(void)
     dotenv->config();
     beforeAll([=]() mutable
     {
-        spyOn(logger, std:("info"));
-        spyOn(logger, std:("error"));
-        spyOn(logger, std:("warn"));
-        spyOn(logger, std:("debug"));
+        spyOn(logger, std::string("info"));
+        spyOn(logger, std::string("error"));
+        spyOn(logger, std::string("warn"));
+        spyOn(logger, std::string("debug"));
     }
     );
     afterAll([=]() mutable
     {
     }
     );
-    describe(std:("Plugin Configuration"), [=]() mutable
+    describe(std::string("Plugin Configuration"), [=]() mutable
     {
-        it(std:("should have correct plugin metadata"), [=]() mutable
+        it(std::string("should have correct plugin metadata"), [=]() mutable
         {
-            expect(plugin->name)->toBe(std:("starter"));
-            expect(plugin->description)->toBe(std:("A starter plugin for Eliza"));
+            expect(plugin->name)->toBe(std::string("starter"));
+            expect(plugin->description)->toBe(std::string("A starter plugin for Eliza"));
             expect(plugin->config)->toBeDefined();
-            documentTestResult(std:("Plugin metadata check"), object{
-                object::pair{std:("name"), plugin->name}, 
-                object::pair{std:("description"), plugin->description}, 
-                object::pair{std:("hasConfig"), !!plugin->config}
+            documentTestResult(std::string("Plugin metadata check"), object{
+                object::pair{std::string("name"), plugin->name}, 
+                object::pair{std::string("description"), plugin->description}, 
+                object::pair{std::string("hasConfig"), !!plugin->config}
             });
         }
         );
-        it(std:("should include the EXAMPLE_PLUGIN_VARIABLE in config"), [=]() mutable
+        it(std::string("should include the EXAMPLE_PLUGIN_VARIABLE in config"), [=]() mutable
         {
-            expect(plugin->config)->toHaveProperty(std:("EXAMPLE_PLUGIN_VARIABLE"));
-            documentTestResult(std:("Plugin config check"), object{
-                object::pair{std:("hasExampleVariable"), (plugin->config) ? any(in(std:("EXAMPLE_PLUGIN_VARIABLE"), plugin->config)) (false)}, 
-                object::pair{std:("configKeys"), Object->keys(OR((plugin->config), (object{})))}
+            expect(plugin->config)->toHaveProperty(std::string("EXAMPLE_PLUGIN_VARIABLE"));
+            documentTestResult(std::string("Plugin config check"), object{
+                object::pair{std::string("hasExampleVariable"), (plugin->config) ? any(in(std::string("EXAMPLE_PLUGIN_VARIABLE"), plugin->config)) (false)}, 
+                object::pair{std::string("configKeys"), Object->keys(OR((plugin->config), (object{})))}
             });
         }
         );
-        it(std:("should initialize properly"), [=]() mutable
+        it(std::string("should initialize properly"), [=]() mutable
         {
             auto originalEnv = process->env->EXAMPLE_PLUGIN_VARIABLE;
             {
@@ -151,24 +152,24 @@ void Main(void)
                 });
                 try
                 {
-                    process->env->EXAMPLE_PLUGIN_VARIABLE = std:("test-value");
+                    process->env->EXAMPLE_PLUGIN_VARIABLE = std::string("test-value");
                     auto runtime = createRealRuntime();
                     auto error = nullptr;
                     try
                     {
                         std::async([=]() { plugin->init(object{
-                            object::pair{std:("EXAMPLE_PLUGIN_VARIABLE"), std:("test-value")}
+                            object::pair{std::string("EXAMPLE_PLUGIN_VARIABLE"), std::string("test-value")}
                         }, as<any>(runtime)); });
                         expect(true)->toBe(true);
                     }
                     catch (const any& e)
                     {
                         error = as<std::shared_ptr<Error>>(e);
-                        logger->error(std:("Plugin initialization error:"), e);
+                        logger->error(std::string("Plugin initialization error:"), e);
                     }
-                    documentTestResult(std:("Plugin initialization"), object{
-                        object::pair{std:("success"), !error}, 
-                        object::pair{std:("configValue"), process->env->EXAMPLE_PLUGIN_VARIABLE}
+                    documentTestResult(std::string("Plugin initialization"), object{
+                        object::pair{std::string("success"), !error}, 
+                        object::pair{std::string("configValue"), process->env->EXAMPLE_PLUGIN_VARIABLE}
                     }, error);
                 }
                 catch (...)
@@ -178,7 +179,7 @@ void Main(void)
             }
         }
         );
-        it(std:("should throw an error on invalid config"), [=]() mutable
+        it(std::string("should throw an error on invalid config"), [=]() mutable
         {
             if (plugin->init) {
                 auto runtime = createRealRuntime();
@@ -186,7 +187,7 @@ void Main(void)
                 try
                 {
                     std::async([=]() { plugin->init(object{
-                        object::pair{std:("EXAMPLE_PLUGIN_VARIABLE"), string_empty}
+                        object::pair{std::string("EXAMPLE_PLUGIN_VARIABLE"), string_empty}
                     }, as<any>(runtime)); });
                     expect(true)->toBe(false);
                 }
@@ -195,50 +196,50 @@ void Main(void)
                     error = as<std::shared_ptr<Error>>(e);
                     expect(error)->toBeTruthy();
                 }
-                documentTestResult(std:("Plugin invalid config"), object{
-                    object::pair{std:("errorThrown"), !!error}, 
-                    object::pair{std:("errorMessage"), OR((error->message), (std:("No error message")))}
+                documentTestResult(std::string("Plugin invalid config"), object{
+                    object::pair{std::string("errorThrown"), !!error}, 
+                    object::pair{std::string("errorMessage"), OR((error->message), (std::string("No error message")))}
                 }, error);
             }
         }
         );
-        it(std:("should have a valid config"), [=]() mutable
+        it(std::string("should have a valid config"), [=]() mutable
         {
             expect(plugin->config)->toBeDefined();
             if (plugin->config) {
-                expect(Object->keys(plugin->config))->toContain(std:("EXAMPLE_PLUGIN_VARIABLE"));
+                expect(Object->keys(plugin->config))->toContain(std::string("EXAMPLE_PLUGIN_VARIABLE"));
             }
         }
         );
     }
     );
-    describe(std:("Plugin Models"), [=]() mutable
+    describe(std::string("Plugin Models"), [=]() mutable
     {
-        it(std:("should have TEXT_SMALL model defined"), [=]() mutable
+        it(std::string("should have TEXT_SMALL model defined"), [=]() mutable
         {
             if (plugin->models) {
                 expect(plugin->models)->toHaveProperty(ModelType->TEXT_SMALL);
-                expect(type_of(const_(plugin->models)[ModelType->TEXT_SMALL]))->toBe(std:("function"));
-                documentTestResult(std:("TEXT_SMALL model check"), object{
-                    object::pair{std:("defined"), in(ModelType->TEXT_SMALL, plugin->models)}, 
-                    object::pair{std:("isFunction"), type_of(const_(plugin->models)[ModelType->TEXT_SMALL]) == std:("function")}
+                expect(type_of(const_(plugin->models)[ModelType->TEXT_SMALL]))->toBe(std::string("function"));
+                documentTestResult(std::string("TEXT_SMALL model check"), object{
+                    object::pair{std::string("defined"), in(ModelType->TEXT_SMALL, plugin->models)}, 
+                    object::pair{std::string("isFunction"), type_of(const_(plugin->models)[ModelType->TEXT_SMALL]) == std::string("function")}
                 });
             }
         }
         );
-        it(std:("should have TEXT_LARGE model defined"), [=]() mutable
+        it(std::string("should have TEXT_LARGE model defined"), [=]() mutable
         {
             if (plugin->models) {
                 expect(plugin->models)->toHaveProperty(ModelType->TEXT_LARGE);
-                expect(type_of(const_(plugin->models)[ModelType->TEXT_LARGE]))->toBe(std:("function"));
-                documentTestResult(std:("TEXT_LARGE model check"), object{
-                    object::pair{std:("defined"), in(ModelType->TEXT_LARGE, plugin->models)}, 
-                    object::pair{std:("isFunction"), type_of(const_(plugin->models)[ModelType->TEXT_LARGE]) == std:("function")}
+                expect(type_of(const_(plugin->models)[ModelType->TEXT_LARGE]))->toBe(std::string("function"));
+                documentTestResult(std::string("TEXT_LARGE model check"), object{
+                    object::pair{std::string("defined"), in(ModelType->TEXT_LARGE, plugin->models)}, 
+                    object::pair{std::string("isFunction"), type_of(const_(plugin->models)[ModelType->TEXT_LARGE]) == std::string("function")}
                 });
             }
         }
         );
-        it(std:("should return a response from TEXT_SMALL model"), [=]() mutable
+        it(std::string("should return a response from TEXT_SMALL model"), [=]() mutable
         {
             if (AND((plugin->models), (const_(plugin->models)[ModelType->TEXT_SMALL]))) {
                 auto runtime = createRealRuntime();
@@ -246,52 +247,52 @@ void Main(void)
                 auto error = nullptr;
                 try
                 {
-                    logger->info(std:("Using OpenAI for TEXT_SMALL model"));
+                    logger->info(std::string("Using OpenAI for TEXT_SMALL model"));
                     result = std::async([=]() { const_(plugin->models)[ModelType->TEXT_SMALL](as<any>(runtime), object{
-                        object::pair{std:("prompt"), std:("test")}
+                        object::pair{std::string("prompt"), std::string("test")}
                     }); });
                     expect(result)->toBeTruthy();
-                    expect(type_of(result))->toBe(std:("string"));
+                    expect(type_of(result))->toBe(std::string("string"));
                     expect(result->get_length())->toBeGreaterThan(10);
                 }
                 catch (const any& e)
                 {
                     error = as<std::shared_ptr<Error>>(e);
-                    logger->error(std:("TEXT_SMALL model test failed:"), e);
+                    logger->error(std::string("TEXT_SMALL model test failed:"), e);
                 }
-                documentTestResult(std:("TEXT_SMALL model plugin test"), result, error);
+                documentTestResult(std::string("TEXT_SMALL model plugin test"), result, error);
             }
         }
         );
     }
     );
-    describe(std:("StarterService"), [=]() mutable
+    describe(std::string("StarterService"), [=]() mutable
     {
-        it(std:("should start the service"), [=]() mutable
+        it(std::string("should start the service"), [=]() mutable
         {
             auto runtime = createRealRuntime();
             any startResult;
             auto error = nullptr;
             try
             {
-                logger->info(std:("Using OpenAI for TEXT_SMALL model"));
+                logger->info(std::string("Using OpenAI for TEXT_SMALL model"));
                 startResult = std::async([=]() { StarterService::start(as<any>(runtime)); });
                 expect(startResult)->toBeDefined();
-                expect(startResult["constructor"]["name"])->toBe(std:("StarterService"));
-                expect(type_of(startResult["stop"]))->toBe(std:("function"));
+                expect(startResult["constructor"]["name"])->toBe(std::string("StarterService"));
+                expect(type_of(startResult["stop"]))->toBe(std::string("function"));
             }
             catch (const any& e)
             {
                 error = as<std::shared_ptr<Error>>(e);
-                logger->error(std:("Service start error:"), e);
+                logger->error(std::string("Service start error:"), e);
             }
-            documentTestResult(std:("StarterService start"), object{
-                object::pair{std:("success"), !!startResult}, 
-                object::pair{std:("serviceType"), startResult["constructor"]["name"]}
+            documentTestResult(std::string("StarterService start"), object{
+                object::pair{std::string("success"), !!startResult}, 
+                object::pair{std::string("serviceType"), startResult["constructor"]["name"]}
             }, error);
         }
         );
-        it(std:("should throw an error on startup if the service is already registered"), [=]() mutable
+        it(std::string("should throw an error on startup if the service is already registered"), [=]() mutable
         {
             auto runtime = createRealRuntime();
             auto result1 = std::async([=]() { StarterService::start(as<any>(runtime)); });
@@ -307,13 +308,13 @@ void Main(void)
                 startupError = as<std::shared_ptr<Error>>(e);
                 expect(e)->toBeTruthy();
             }
-            documentTestResult(std:("StarterService double start"), object{
-                object::pair{std:("errorThrown"), !!startupError}, 
-                object::pair{std:("errorMessage"), OR((startupError->message), (std:("No error message")))}
+            documentTestResult(std::string("StarterService double start"), object{
+                object::pair{std::string("errorThrown"), !!startupError}, 
+                object::pair{std::string("errorMessage"), OR((startupError->message), (std::string("No error message")))}
             }, startupError);
         }
         );
-        it(std:("should stop the service"), [=]() mutable
+        it(std::string("should stop the service"), [=]() mutable
         {
             auto runtime = createRealRuntime();
             auto error = nullptr;
@@ -321,21 +322,21 @@ void Main(void)
             {
                 auto service = std::make_shared<StarterService>(as<any>(runtime));
                 runtime["registerService"](StarterService::serviceType, service);
-                auto stopSpy = spyOn(service, std:("stop"));
+                auto stopSpy = spyOn(service, std::string("stop"));
                 std::async([=]() { StarterService::stop(as<any>(runtime)); });
                 expect(stopSpy)->toHaveBeenCalled();
             }
             catch (const any& e)
             {
                 error = as<std::shared_ptr<Error>>(e);
-                logger->error(std:("Service stop error:"), e);
+                logger->error(std::string("Service stop error:"), e);
             }
-            documentTestResult(std:("StarterService stop"), object{
-                object::pair{std:("success"), !error}
+            documentTestResult(std::string("StarterService stop"), object{
+                object::pair{std::string("success"), !error}
             }, error);
         }
         );
-        it(std:("should throw an error when stopping a non-existent service"), [=]() mutable
+        it(std::string("should throw an error when stopping a non-existent service"), [=]() mutable
         {
             auto runtime = createRealRuntime();
             auto error = nullptr;
@@ -354,16 +355,16 @@ void Main(void)
                 error = as<std::shared_ptr<Error>>(e);
                 expect(error)->toBeTruthy();
                 if (is<Error>(error)) {
-                    expect(error->message)->toContain(std:("Starter service not found"));
+                    expect(error->message)->toContain(std::string("Starter service not found"));
                 }
             }
-            documentTestResult(std:("StarterService non-existent stop"), object{
-                object::pair{std:("errorThrown"), !!error}, 
-                object::pair{std:("errorMessage"), OR((error->message), (std:("No error message")))}
+            documentTestResult(std::string("StarterService non-existent stop"), object{
+                object::pair{std::string("errorThrown"), !!error}, 
+                object::pair{std::string("errorMessage"), OR((error->message), (std::string("No error message")))}
             }, error);
         }
         );
-        it(std:("should stop a registered service"), [=]() mutable
+        it(std::string("should stop a registered service"), [=]() mutable
         {
             auto runtime = createRealRuntime();
             auto startResult = std::async([=]() { StarterService::start(as<any>(runtime)); });
@@ -380,10 +381,10 @@ void Main(void)
                 stopError = e;
                 expect(true)->toBe(false);
             }
-            documentTestResult(std:("StarterService stop"), object{
-                object::pair{std:("success"), stopSuccess}, 
-                object::pair{std:("errorThrown"), !!stopError}, 
-                object::pair{std:("errorMessage"), (is<Error>(stopError)) ? stopError->message : String(stopError)}
+            documentTestResult(std::string("StarterService stop"), object{
+                object::pair{std::string("success"), stopSuccess}, 
+                object::pair{std::string("errorThrown"), !!stopError}, 
+                object::pair{std::string("errorMessage"), (is<Error>(stopError)) ? stopError->message : String(stopError)}
             }, (is<Error>(stopError)) ? any(stopError) (nullptr));
         }
         );

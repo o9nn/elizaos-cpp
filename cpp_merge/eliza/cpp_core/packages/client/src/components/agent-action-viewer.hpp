@@ -32,17 +32,17 @@ using ActionCardProps = {
 using AgentActionViewerProps = {
 
 // Helper functions
-std: getModelUsageType(const std:& modelType);
+std::string getModelUsageType(const std::string& modelType);
 
-void formatDate(number | undefined timestamp);
+void formatDate(number | std::nullopt timestamp);
 
 void getModelIcon(auto modelType = '');
 
-void formatTokenUsage(const std:& usage);
+void formatTokenUsage(const std::string& usage);
 
-void truncateText(const std:& text, auto maxLength = 100);
+void truncateText(const std::string& text, auto maxLength = 100);
 
-void copyToClipboard(const std:& text);
+void copyToClipboard(const std::string& text);
 
 void groupActionsByDate(const std::vector<AgentLog>& actions);
 

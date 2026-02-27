@@ -1,4 +1,5 @@
 #include "env-settings.hpp"
+#include <string>
 #include <map>
 #include <iostream>
 #include <stdexcept>
@@ -14,7 +15,7 @@ void EnvSettings() {
     const auto [openIndex, setOpenIndex] = useState<number | nullptr>(nullptr);
     const auto [editingIndex, setEditingIndex] = useState<number | nullptr>(nullptr);
     const auto [editedValue, setEditedValue] = useState("");
-    const auto [localEnvs, setLocalEnvs] = useState<Record<std:, string>>({});
+    const auto [localEnvs, setLocalEnvs] = useState<Record<std::string, string>>({});
     const auto dropdownRef = useRef<HTMLDivElement>(nullptr);
     const auto [isUpdating, setIsUpdating] = useState(false);
     const auto [isApiKeyDialogOpen, setIsApiKeyDialogOpen] = useState(false);
@@ -52,20 +53,20 @@ void EnvSettings() {
                             setValue("");
                             };
 
-                            const auto handleEdit = [&](key: std:) {;
+                            const auto handleEdit = [&](key: std::string) {;
                                 setEditingIndex(openIndex);
                                 setEditedValue(localEnvs[key]);
                                 setOpenIndex(nullptr);
                                 };
 
-                                const auto handleRemove = [&](key: std:) {;
+                                const auto handleRemove = [&](key: std::string) {;
                                     const auto updatedData = { ...localEnvs };
                                     delete updatedData[key];
                                     setLocalEnvs(updatedData);
                                     setOpenIndex(nullptr);
                                     };
 
-                                    const auto saveEdit = [&](key: std:) {;
+                                    const auto saveEdit = [&](key: std::string) {;
                                         setLocalEnvs({
                                             ...localEnvs,
                                             [key]: editedValue,

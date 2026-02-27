@@ -22,10 +22,10 @@ namespace elizaos {
 
 
 struct VaultTransferParams {
-    std: intent;
-    std: vault;
-    std: assets;
-    std::optional<std:> chain;
+    std::string intent;
+    std::string vault;
+    std::string assets;
+    std::optional<std::string> chain;
 };
 
 using VaultTransferInput = {

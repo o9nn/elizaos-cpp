@@ -1,14 +1,15 @@
 #include "cdpUser.hpp"
+#include <string>
 #include <optional>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std: extractEmailFromCdpUser(CdpUser user, bool isSignedIn) {
+std::string extractEmailFromCdpUser(CdpUser user, bool isSignedIn) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (!user) return undefined;
+    if (!user) return std::nullopt;
     return (;
     user.authenticationMethods.email.email ||;
     user.authenticationMethods.oauth.email ||;
@@ -19,10 +20,10 @@ std: extractEmailFromCdpUser(CdpUser user, bool isSignedIn) {
 
 }
 
-std: extractUsernameFromCdpUser(CdpUser user, std::optional<std:> emailForFallback) {
+std::string extractUsernameFromCdpUser(CdpUser user, std::optional<std::string> emailForFallback) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (!user) return emailForFallback ? emailForFallback.split("@")[0] : undefined;
+    if (!user) return emailForFallback ? emailForFallback.split("@")[0] : std::nullopt;
     return (;
     user.authenticationMethods.oauth.name ||;
     user.authenticationMethods.google.name ||;
@@ -34,29 +35,29 @@ std: extractUsernameFromCdpUser(CdpUser user, std::optional<std:> emailForFallba
 
 }
 
-std: extractPhoneFromCdpUser(CdpUser user) {
+std::string extractPhoneFromCdpUser(CdpUser user) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (!user) return undefined;
+    if (!user) return std::nullopt;
     const auto sms = user.authenticationMethods.sms;
-    if (!sms) return undefined;
+    if (!sms) return std::nullopt;
     const auto raw = sms.phoneNumber;
     const auto cc = sms.countryCode;
     // Prefer provided E.164; otherwise compose from countryCode + local number
     const auto combined = "raw.substr(0, "+") ? raw : (raw && cc ? " + cc + raw;
-    if (!combined) return undefined;
+    if (!combined) return std::nullopt;
     // Normalize to E.164 (+digits only)
     const auto digits = combined.replace(/[^0-9]/g, "");
     return "digits ? " + "+" + digits;
 
 }
 
-std: generateEmailFromPhone(const std:& phone) {
+std::string generateEmailFromPhone(const std::string& phone) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (!phone) return undefined;
+    if (!phone) return std::nullopt;
     const auto digits = phone.replace(/[^0-9]/g, "");
-    if (!digits) return undefined;
+    if (!digits) return std::nullopt;
     return "p" + digits + "@cdp.local";
 
 }

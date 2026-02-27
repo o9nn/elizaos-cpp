@@ -1,4 +1,5 @@
 #include "api-client-config.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -18,7 +19,7 @@ ApiClientConfig createApiClientConfig() {
             },
             };
 
-            // Only include apiKey if it exists (don't pass undefined)
+            // Only include apiKey if it exists (don't pass std::nullopt)
             if (apiKey) {
                 config.apiKey = apiKey;
             }
@@ -51,7 +52,7 @@ void resetElizaClient() {
 
 }
 
-void updateApiClientApiKey(const std:& newApiKey) {
+void updateApiClientApiKey(const std::string& newApiKey) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto getLocalStorageApiKey = "[&]() { return " + "eliza-api-key-" + window.location.origin; };

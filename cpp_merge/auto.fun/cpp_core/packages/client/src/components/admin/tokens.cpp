@@ -1,4 +1,5 @@
 #include "tokens.hpp"
+#include <string>
 #include <map>
 #include <unordered_map>
 #include <iostream>
@@ -70,7 +71,7 @@ void AdminTokensList() {
 
                     // Mutation for toggling hidden status for a specific token
                     const auto toggleHiddenMutation = useMutation[&]({;
-                        mutationFn: std::async (tokenAddress: std:) {
+                        mutationFn: std::async (tokenAddress: std::string) {
                             const auto token = tokensPagination.items.find(;
                             [&](t) { return t.mint == tokenAddress,; }
                             );
@@ -101,7 +102,7 @@ void AdminTokensList() {
 
                                             // --- NEW: Mutation for deleting a token ---
                                             const auto deleteTokenMutation = useMutation[&]({;
-                                                mutationFn: std::async (tokenAddress: std:) {
+                                                mutationFn: std::async (tokenAddress: std::string) {
                                                     return "fetcher[&](" + "/api/admin/tokens/" + tokenAddress;
                                                     },
                                                     onSuccess: (_, tokenAddress) {
@@ -418,7 +419,7 @@ void AdminTokenDetails() {
 
             // State for the new image upload
             const auto [selectedImageFile, setSelectedImageFile] = useState<File | nullptr>(nullptr);
-            const auto [selectedImageBase64, setSelectedImageBase64] = useState<std: | nullptr>(;
+            const auto [selectedImageBase64, setSelectedImageBase64] = useState<std::string | nullptr>(;
             nullptr,
             );
             const auto fileInputRef = useRef<HTMLInputElement>(nullptr); // Ref for file input;
@@ -428,7 +429,7 @@ void AdminTokenDetails() {
             const auto [originalMetadataContent, setOriginalMetadataContent] =;
             useState<string>("");
             const auto [isLoadingMetadata, setIsLoadingMetadata] = useState<boolean>(false);
-            const auto [metadataError, setMetadataError] = useState<std: | nullptr>(nullptr);
+            const auto [metadataError, setMetadataError] = useState<std::string | nullptr>(nullptr);
             const auto [isMetadataJsonValid, setIsMetadataJsonValid] = useState<boolean>(true);
 
             // Fetch token data using the getToken std::function
@@ -518,7 +519,7 @@ void AdminTokenDetails() {
                                                 // Basic check if it looks like JSON before pretty printing
                                                 auto formattedContent = textContent;
                                                 try {
-                                                    formattedContent = /* JSON.stringify */ std:(/* JSON::parse */ textContent, nullptr, 2);
+                                                    formattedContent = /* JSON.stringify */ std::string(/* JSON::parse */ textContent, nullptr, 2);
                                                     } catch (e) {
                                                         // If parsing fails, use the raw text but mark as invalid
                                                         std::cout << "Fetched metadata content is not valid JSON." << std::endl;
@@ -668,11 +669,11 @@ void AdminTokenDetails() {
                                                                                                                                                         // Mutation for updating token details (name, ticker, image, url)
                                                                                                                                                         const auto updateTokenDetailsMutation = useMutation[&]({;
                                                                                                                                                             mutationFn: std::async (details: {
-                                                                                                                                                                name: std:;
-                                                                                                                                                                ticker: std:;
-                                                                                                                                                                image: std:;
-                                                                                                                                                                url: std:;
-                                                                                                                                                                description: std:;
+                                                                                                                                                                name: std::string;
+                                                                                                                                                                ticker: std::string;
+                                                                                                                                                                image: std::string;
+                                                                                                                                                                url: std::string;
+                                                                                                                                                                description: std::string;
                                                                                                                                                                 }) {
                                                                                                                                                                     // Add description to type
                                                                                                                                                                     return fetcher(;
@@ -711,12 +712,11 @@ void AdminTokenDetails() {
 
                                                                                                                                                                                 // --- NEW: Mutation for updating metadata JSON ---
                                                                                                                                                                                 const auto updateMetadataMutation = useMutation[&]({;
-                                                                                                                                                                                    mutationFn: std::async (newMetadataString: std:) {
-                                                                                                                                                                                        // Use fetch directly to send raw std: body
+                                                                                                                                                                                    mutationFn: std::async (newMetadataString: std::string) {
+                                                                                                                                                                                        // Use fetch directly to send raw std::string body
                                                                                                                                                                                         const auto authToken = localStorage.getItem("authToken");
-                                                                                                                                                                                        const std::unordered_map<std:, std:> headers = {;
-                                                                                                                                                                                            "Content-Type": "application/json", // Backend expects JSON std:
-                                                                                                                                                                                            Accept: "application/json",
+                                                                                                                                                                                        const std::unordered_map<std::string, std::string> headers = {;
+                                                                                                                                                                                            "Content-Type": "application/json", // Backend expects JSON std::string Accept: "application/json",
                                                                                                                                                                                             };
                                                                                                                                                                                             if (authToken) {
                                                                                                                                                                                                 "headers[\"Authorization\"] = " + "Bearer " + std::to_string(/* JSON::parse */ authToken);
@@ -727,8 +727,7 @@ void AdminTokenDetails() {
                                                                                                                                                                                             {
                                                                                                                                                                                                 method: "POST",
                                                                                                                                                                                                 headers,
-                                                                                                                                                                                                body: newMetadataString, // Send the raw std:
-                                                                                                                                                                                                credentials: "include",
+                                                                                                                                                                                                body: newMetadataString, // Send the raw std::string credentials: "include",
                                                                                                                                                                                                 },
                                                                                                                                                                                                 );
 
@@ -744,10 +743,10 @@ void AdminTokenDetails() {
                                                                                                                                                                                             onSuccess: [&](data) {
                                                                                                                                                                                                 toast.success(data.message || "Metadata updated successfully!");
                                                                                                                                                                                                 // Update original content to prevent immediate re-save
-                                                                                                                                                                                                // Re-format potentially un-prettified input std: before saving as original
+                                                                                                                                                                                                // Re-format potentially un-prettified input std::string before saving as original
                                                                                                                                                                                                 auto savedContent = metadataContent;
                                                                                                                                                                                                 try {
-                                                                                                                                                                                                    savedContent = /* JSON.stringify */ std:(/* JSON::parse */ metadataContent, nullptr, 2);
+                                                                                                                                                                                                    savedContent = /* JSON.stringify */ std::string(/* JSON::parse */ metadataContent, nullptr, 2);
                                                                                                                                                                                                     setMetadataContent(savedContent); // Update editor content to formatted version;
                                                                                                                                                                                                     } catch (e) {
                                                                                                                                                                                                         /* Keep raw content if formatting fails */
@@ -765,7 +764,7 @@ void AdminTokenDetails() {
 
                                                                                                                                                                                                         // --- NEW: Mutation for uploading token image ---
                                                                                                                                                                                                         const auto uploadImageMutation = useMutation[&]({;
-                                                                                                                                                                                                            mutationFn: std::async (imageBase64: std:) {
+                                                                                                                                                                                                            mutationFn: std::async (imageBase64: std::string) {
                                                                                                                                                                                                                 if (!imageBase64) throw new Error("No image data provided");
                                                                                                                                                                                                                 return fetcher(;
                                                                                                                                                                                                                 "/api/admin/tokens/" + address + "/image"

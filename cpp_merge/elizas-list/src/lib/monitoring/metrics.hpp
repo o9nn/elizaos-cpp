@@ -10,7 +10,7 @@ public:
     static Record<string, double> metrics;
 
     static void recordApiLatency(string path, double latency);
-    static void recordProjectView(string projectId, string userId = undefined);
+    static void recordProjectView(string projectId, string userId = std::nullopt);
     static any getMetrics();
 };
 

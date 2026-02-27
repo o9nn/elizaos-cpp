@@ -19,14 +19,14 @@ namespace elizaos {
 
 // Define the PartnerType interface
 struct PartnerType {
-    std: title;
-    std: description;
-    std: preview;
+    std::string title;
+    std::string description;
+    std::string preview;
     std::vector<std::string> tags;
-    std::optional<std:> twitter;
-    std::optional<std:> discord;
-    std::optional<std:> telegram;
-    std: slug;
+    std::optional<std::string> twitter;
+    std::optional<std::string> discord;
+    std::optional<std::string> telegram;
+    std::string slug;
 };
 
 // Memoized partner card component to prevent unnecessary re-renders

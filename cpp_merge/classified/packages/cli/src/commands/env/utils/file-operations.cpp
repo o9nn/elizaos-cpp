@@ -1,4 +1,5 @@
 #include "file-operations.h"
+#include <string>
 
 std::shared_ptr<Promise<string>> getGlobalEnvPath()
 {
@@ -9,7 +10,7 @@ std::shared_ptr<Promise<string>> getGlobalEnvPath()
 
 std::shared_ptr<Promise<any>> getLocalEnvPath()
 {
-    auto localEnvPath = path->join(process->cwd(), std:(".env"));
+    auto localEnvPath = path->join(process->cwd(), std::string(".env"));
     return (existsSync(localEnvPath)) ? any(localEnvPath) (nullptr);
 };
 
@@ -25,8 +26,8 @@ std::shared_ptr<Promise<void>> writeEnvFile(string filePath, EnvVars envVars)
 {
     auto service = createEnvFileService(filePath);
     std::async([=]() { service->write(envVars, object{
-        object::pair{std:("preserveComments"), true}, 
-        object::pair{std:("updateProcessEnv"), true}
+        object::pair{std::string("preserveComments"), true}, 
+        object::pair{std::string("updateProcessEnv"), true}
     }); });
     return std::shared_ptr<Promise<void>>();
 };
@@ -51,14 +52,14 @@ std::shared_ptr<Promise<boolean>> resetEnvFile(string filePath)
         }
         , as<EnvVars>(object{}));
         std::async([=]() { service->write(resetVars, object{
-            object::pair{std:("preserveComments"), true}, 
-            object::pair{std:("updateProcessEnv"), false}
+            object::pair{std::string("preserveComments"), true}, 
+            object::pair{std::string("updateProcessEnv"), false}
         }); });
         return true;
     }
     catch (const any& error)
     {
-        console->error(std:("Error resetting environment file: ") + (is<Error>(error)) ? error->message : String(error) + string_empty);
+        console->error(std::string("Error resetting environment file: ") + (is<Error>(error)) ? error->message : String(error) + string_empty);
         return false;
     }
 };

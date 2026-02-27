@@ -1,4 +1,5 @@
 #include "upgrade.hpp"
+#include <string>
 #include <future>
 #include <cstdlib>
 #include <iostream>
@@ -6,7 +7,7 @@
 
 namespace elizaos {
 
-std::future<void> upgradePlugin(const std:& pluginPath, UpgradePluginOptions opts) {
+std::future<void> upgradePlugin(const std::string& pluginPath, UpgradePluginOptions opts) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

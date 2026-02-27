@@ -20,38 +20,38 @@ namespace elizaos {
 
 class InvalidGithubURL {
 public:
-    InvalidGithubURL(const std:& message);
+    InvalidGithubURL(const std::string& message);
 };
 
 /**
  * Check if URL is a GitHub repository URL
  */
-bool isGithubRepoUrl(const std:& dataPath);
+bool isGithubRepoUrl(const std::string& dataPath);
 
 /**
  * Check if URL is a GitHub issue URL
  */
-bool isGithubIssueUrl(const std:& dataPath);
+bool isGithubIssueUrl(const std::string& dataPath);
 
 /**
  * Parse GitHub issue URL
  */
-void parseGhIssueUrl(const std:& issueUrl); {
+void parseGhIssueUrl(const std::string& issueUrl); {
 
 /**
  * Parse GitHub repository URL
  */
-void parseGhRepoUrl(const std:& repoUrl); {
+void parseGhRepoUrl(const std::string& repoUrl); {
 
 /**
  * Get GitHub issue data
  */
-std::future<std:> getGhIssueData(const std:& issueUrl, std: = '' token);
+std::future<std::string> getGhIssueData(const std::string& issueUrl, std::string = '' token);
 
 /**
  * Get problem statement from GitHub issue
  */
-std::future<std:> getProblemStatementFromGithubIssue(const std:& owner, const std:& repo, const std:& issueNumber, std: = '' token);
+std::future<std::string> getProblemStatementFromGithubIssue(const std::string& owner, const std::string& repo, const std::string& issueNumber, std::string = '' token);
 
 /**
  * Get associated commit URLs for an issue

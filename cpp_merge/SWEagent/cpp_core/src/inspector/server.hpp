@@ -22,10 +22,10 @@ namespace elizaos {
  */
 
 struct TrajectoryStep {
-    std: thought;
-    std: action;
-    std: response;
-    std: observation;
+    std::string thought;
+    std::string action;
+    std::string response;
+    std::string observation;
 };
 
 struct ModelStats {
@@ -38,10 +38,10 @@ struct ModelStats {
 
 struct TrajectoryContent {
     std::vector<TrajectoryStep> trajectory;
-    std::optional<std:> exitStatus;
-    std::optional<std:> submission;
+    std::optional<std::string> exitStatus;
+    std::optional<std::string> submission;
     std::optional<ModelStats> modelStats;
-    std::optional<std:> environment;
+    std::optional<std::string> environment;
 };
 
 /**
@@ -63,12 +63,12 @@ TrajectoryContent addModelStats(TrajectoryContent content);
 /**
  * Parse and augment trajectory file
  */
-std::optional<TrajectoryContent> getTrajectory(const std:& filePath);
+std::optional<TrajectoryContent> getTrajectory(const std::string& filePath);
 
 /**
  * Create and start the inspector server
  */
-void startInspectorServer(std::optional<std:> options);
+void startInspectorServer(std::optional<std::string> options);
 
 /**
  * CLI entry point

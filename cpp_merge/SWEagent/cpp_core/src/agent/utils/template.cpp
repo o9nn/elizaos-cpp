@@ -1,4 +1,5 @@
 #include "template.hpp"
+#include <string>
 #include <map>
 #include <unordered_map>
 #include <iostream>
@@ -6,13 +7,13 @@
 
 namespace elizaos {
 
-std: renderTemplate(const std:& template, const std::unordered_map<std:, std:>& context) {
+std::string renderTemplate(const std::string& template, const std::unordered_map<std::string, std::string>& context) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return template.replace(/\{\{([^}]+)\}\;
 }
 
-std: renderAdvancedTemplate(const std:& template, const std::unordered_map<std:, std:>& context) {
+std::string renderAdvancedTemplate(const std::string& template, const std::unordered_map<std::string, std::string>& context) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     auto result = template;
@@ -53,11 +54,11 @@ std: renderAdvancedTemplate(const std:& template, const std::unordered_map<std:,
 
 }
 
-bool evaluateCondition(const std:& condition, const std::unordered_map<std:, std:>& context) {
+bool evaluateCondition(const std::string& condition, const std::unordered_map<std::string, std::string>& context) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Handle simple variable checks
-    if (context[condition] != undefined) {
+    if (context[condition] != std::nullopt) {
         return !!context[condition];
     }
 

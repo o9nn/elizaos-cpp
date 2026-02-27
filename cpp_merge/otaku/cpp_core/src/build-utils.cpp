@@ -27,7 +27,7 @@ void getTimer() {
 
 }
 
-BunPlugin createPathAliasPlugin(const std:& rootDir) {
+BunPlugin createPathAliasPlugin(const std::string& rootDir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return {

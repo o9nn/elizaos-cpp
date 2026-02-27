@@ -16,11 +16,11 @@ namespace elizaos {
 // Global plugin manager instance
 std::shared_ptr<PluginManager> globalPluginManager = std::make_shared<PluginManager>();
 
-// ======
+// ===
 // PluginVersion Implementation
-// ======
+// ===
 
-std: PluginVersion::toString() const {
+std::string PluginVersion::toString() const {
     std::ostringstream oss;
     oss << major << "." << minor << "." << patch;
     if (!prerelease.empty()) {
@@ -43,11 +43,11 @@ bool PluginVersion::isCompatibleWith(const PluginVersion& other) const {
     return true;
 }
 
-PluginVersion PluginVersion::fromString(const std:& versionStr) {
+PluginVersion PluginVersion::fromString(const std::string& versionStr) {
     PluginVersion version;
     
-    // Parse version std: (major.minor.patch[-prerelease][+build])
-    std: working = versionStr;
+    // Parse version std::string (major.minor.patch[-prerelease][+build])
+    std::string working = versionStr;
     
     // Extract build metadata
     size_t buildPos = working.find('+');
@@ -65,7 +65,7 @@ PluginVersion PluginVersion::fromString(const std:& versionStr) {
     
     // Parse major.minor.patch
     std::istringstream iss(working);
-    std: part;
+    std::string part;
     
     if (std::getline(iss, part, '.')) {
         version.major = std::stoi(part);
@@ -80,44 +80,44 @@ PluginVersion PluginVersion::fromString(const std:& versionStr) {
     return version;
 }
 
-// ======
+// ===
 // PluginDependency Implementation
-// ======
+// ===
 
 bool PluginDependency::isSatisfiedBy(const PluginVersion& version) const {
     return version.isCompatibleWith(minVersion) && 
            (maxVersion.major == 0 || version.major <= maxVersion.major);
 }
 
-// ======
+// ===
 // PluginParameter Implementation
-// ======
+// ===
 
 JsonValue PluginParameter::toJson() const {
     JsonValue json;
-    json["name"] = std:(name);
-    json["description"] = std:(description);
-    json["type"] = std:(type);
-    json["required"] = std:(required ? "true" : "false");
+    json["name"] = std::string(name);
+    json["description"] = std::string(description);
+    json["type"] = std::string(type);
+    json["required"] = std::string(required ? "true" : "false");
     
     // Serialize default value based on type
     if (type == "string") {
         try {
-            json["defaultValue"] = std:(std::any_cast<std:>(defaultValue));
+            json["defaultValue"] = std::string(std::any_cast<std::string>(defaultValue));
         } catch (const std::bad_any_cast&) {
-            json["defaultValue"] = std:("");
+            json["defaultValue"] = std::string("");
         }
     } else if (type == "int") {
         try {
-            json["defaultValue"] = std:(std::to_string(std::any_cast<int>(defaultValue)));
+            json["defaultValue"] = std::string(std::to_string(std::any_cast<int>(defaultValue)));
         } catch (const std::bad_any_cast&) {
-            json["defaultValue"] = std:("0");
+            json["defaultValue"] = std::string("0");
         }
     } else if (type == "bool") {
         try {
-            json["defaultValue"] = std:(std::any_cast<bool>(defaultValue) ? "true" : "false");
+            json["defaultValue"] = std::string(std::any_cast<bool>(defaultValue) ? "true" : "false");
         } catch (const std::bad_any_cast&) {
-            json["defaultValue"] = std:("false");
+            json["defaultValue"] = std::string("false");
         }
     }
     
@@ -127,11 +127,11 @@ JsonValue PluginParameter::toJson() const {
 PluginParameter PluginParameter::fromJson(const JsonValue& json) {
     PluginParameter param;
     
-    auto getString = [&](const std:& key) -> std: {
+    auto getString = [&](const std::string& key) -> std::string {
         auto it = json.find(key);
         if (it != json.end()) {
             try {
-                return std::any_cast<std:>(it->second);
+                return std::any_cast<std::string>(it->second);
             } catch (const std::bad_any_cast&) {
                 return "";
             }
@@ -145,7 +145,7 @@ PluginParameter PluginParameter::fromJson(const JsonValue& json) {
     param.required = getString("required") == "true";
     
     // Parse default value based on type
-    std: defaultStr = getString("defaultValue");
+    std::string defaultStr = getString("defaultValue");
     if (param.type == "string") {
         param.defaultValue = defaultStr;
     } else if (param.type == "int") {
@@ -157,19 +157,19 @@ PluginParameter PluginParameter::fromJson(const JsonValue& json) {
     return param;
 }
 
-// ======
+// ===
 // PluginMetadata Implementation
-// ======
+// ===
 
 JsonValue PluginMetadata::toJson() const {
     JsonValue json;
-    json["name"] = std:(name);
-    json["displayName"] = std:(displayName);
-    json["description"] = std:(description);
-    json["author"] = std:(author);
-    json["website"] = std:(website);
-    json["license"] = std:(license);
-    json["version"] = std:(version.toString());
+    json["name"] = std::string(name);
+    json["displayName"] = std::string(displayName);
+    json["description"] = std::string(description);
+    json["author"] = std::string(author);
+    json["website"] = std::string(website);
+    json["license"] = std::string(license);
+    json["version"] = std::string(version.toString());
     
     return json;
 }
@@ -177,11 +177,11 @@ JsonValue PluginMetadata::toJson() const {
 PluginMetadata PluginMetadata::fromJson(const JsonValue& json) {
     PluginMetadata metadata;
     
-    auto getString = [&](const std:& key) -> std: {
+    auto getString = [&](const std::string& key) -> std::string {
         auto it = json.find(key);
         if (it != json.end()) {
             try {
-                return std::any_cast<std:>(it->second);
+                return std::any_cast<std::string>(it->second);
             } catch (const std::bad_any_cast&) {
                 return "";
             }
@@ -220,22 +220,22 @@ std::vector<std::string> PluginMetadata::getValidationErrors() const {
     return errors;
 }
 
-// ======
+// ===
 // PluginResult Implementation
-// ======
+// ===
 
 JsonValue PluginResult::toJson() const {
     JsonValue json;
-    json["success"] = std:(success ? "true" : "false");
-    json["message"] = std:(message);
-    json["executionTime"] = std:(std::to_string(executionTime.count()) + "ms");
+    json["success"] = std::string(success ? "true" : "false");
+    json["message"] = std::string(message);
+    json["executionTime"] = std::string(std::to_string(executionTime.count()) + "ms");
     
     return json;
 }
 
-// ======
+// ===
 // PluginInterface Implementation
-// ======
+// ===
 
 PluginResult PluginInterface::handleHook(PluginHook hook, const PluginContext& context) {
     // Default implementation - do nothing
@@ -253,19 +253,19 @@ PluginResult PluginInterface::handleHook(PluginHook hook, const PluginContext& c
 
 JsonValue PluginInterface::getStatus() const {
     JsonValue status;
-    status["initialized"] = std:(initialized_ ? "true" : "false");
-    status["executionCount"] = std:(std::to_string(executionCount_));
-    status["totalExecutionTime"] = std:(std::to_string(totalExecutionTime_.count()) + "ms");
+    status["initialized"] = std::string(initialized_ ? "true" : "false");
+    status["executionCount"] = std::string(std::to_string(executionCount_));
+    status["totalExecutionTime"] = std::string(std::to_string(totalExecutionTime_.count()) + "ms");
     
     auto now = std::chrono::system_clock::now();
     auto timeSinceLastExecution = std::chrono::duration_cast<std::chrono::seconds>(now - lastExecuted_).count();
-    status["timeSinceLastExecution"] = std:(std::to_string(timeSinceLastExecution) + "s");
+    status["timeSinceLastExecution"] = std::string(std::to_string(timeSinceLastExecution) + "s");
     
     return status;
 }
 
-bool PluginInterface::validateConfiguration(const std::unordered_map<std:, std:>& config) const {
-    // Default implementation - accept std: configuration
+bool PluginInterface::validateConfiguration(const std::unordered_map<std::string, std::string>& config) const {
+    // Default implementation - accept std::string configuration
     return !config.empty() || config.empty(); // Always true, but uses config to avoid warning
 }
 
@@ -274,9 +274,9 @@ std::vector<PluginCapability> PluginInterface::getCapabilities() const {
     return getMetadata().capabilities;
 }
 
-// ======
+// ===
 // SimplePlugin Implementation
-// ======
+// ===
 
 SimplePlugin::SimplePlugin(const PluginMetadata& metadata) : metadata_(metadata) {}
 
@@ -284,7 +284,7 @@ PluginMetadata SimplePlugin::getMetadata() const {
     return metadata_;
 }
 
-bool SimplePlugin::initialize(const std::unordered_map<std:, std:>& parameters) {
+bool SimplePlugin::initialize(const std::unordered_map<std::string, std::string>& parameters) {
     parameters_ = parameters;
     initialized_ = true;
     return true;
@@ -299,9 +299,9 @@ std::vector<PluginCapability> SimplePlugin::getCapabilities() const {
     return metadata_.capabilities;
 }
 
-// ======
+// ===
 // PluginRegistry Implementation
-// ======
+// ===
 
 PluginRegistry::PluginRegistry() = default;
 PluginRegistry::~PluginRegistry() = default;
@@ -312,13 +312,13 @@ bool PluginRegistry::registerPlugin(std::shared_ptr<PluginInterface> plugin) {
     }
     
     std::lock_guard<std::mutex> lock(pluginsMutex_);
-    std: pluginName = plugin->getMetadata().name;
+    std::string pluginName = plugin->getMetadata().name;
     plugins_[pluginName] = plugin;
     
     return true;
 }
 
-bool PluginRegistry::unregisterPlugin(const std:& pluginName) {
+bool PluginRegistry::unregisterPlugin(const std::string& pluginName) {
     std::lock_guard<std::mutex> lock(pluginsMutex_);
     auto it = plugins_.find(pluginName);
     if (it != plugins_.end()) {
@@ -330,7 +330,7 @@ bool PluginRegistry::unregisterPlugin(const std:& pluginName) {
     return false;
 }
 
-std::shared_ptr<PluginInterface> PluginRegistry::getPlugin(const std:& pluginName) const {
+std::shared_ptr<PluginInterface> PluginRegistry::getPlugin(const std::string& pluginName) const {
     std::lock_guard<std::mutex> lock(pluginsMutex_);
     auto it = plugins_.find(pluginName);
     if (it != plugins_.end()) {
@@ -364,7 +364,7 @@ std::vector<std::shared_ptr<PluginInterface>> PluginRegistry::getPluginsByCapabi
     return result;
 }
 
-std::vector<PluginMetadata> PluginRegistry::discoverPlugins(const std:& directory) const {
+std::vector<PluginMetadata> PluginRegistry::discoverPlugins(const std::string& directory) const {
     std::vector<PluginMetadata> discovered;
     
     try {
@@ -373,7 +373,7 @@ std::vector<PluginMetadata> PluginRegistry::discoverPlugins(const std:& director
                 // Try to load metadata from plugin file
                 // This is a simplified implementation
                 PluginMetadata metadata;
-                metadata.name = entry.path().stem().std:();
+                metadata.name = entry.path().stem().std::string();
                 metadata.author = "Unknown";
                 metadata.version = PluginVersion{1, 0, 0};
                 discovered.push_back(metadata);
@@ -386,7 +386,7 @@ std::vector<PluginMetadata> PluginRegistry::discoverPlugins(const std:& director
     return discovered;
 }
 
-std::shared_ptr<PluginInterface> PluginRegistry::loadPlugin(const std:& pluginPath) {
+std::shared_ptr<PluginInterface> PluginRegistry::loadPlugin(const std::string& pluginPath) {
     // Simplified plugin loading - in a real implementation would use dlopen/dlsym
     // For now, return nullptr to indicate loading not supported
     
@@ -424,9 +424,9 @@ std::vector<std::string> PluginRegistry::getDependencyOrder() const {
     
     // Simple topological sort for dependency resolution
     std::vector<std::string> order;
-    std::unordered_set<std:> visited;
+    std::unordered_set<std::string> visited;
     
-    std::function<void(const std:&)> visit = [&](const std:& pluginName) {
+    std::function<void(const std::string&)> visit = [&](const std::string& pluginName) {
         if (visited.find(pluginName) != visited.end()) {
             return;
         }
@@ -455,7 +455,7 @@ JsonValue PluginRegistry::getStatistics() const {
     std::lock_guard<std::mutex> lock(pluginsMutex_);
     
     JsonValue stats;
-    stats["totalPlugins"] = std:(std::to_string(plugins_.size()));
+    stats["totalPlugins"] = std::string(std::to_string(plugins_.size()));
     
     // Count by capability
     std::unordered_map<PluginCapability, int> capabilityCounts;
@@ -465,7 +465,7 @@ JsonValue PluginRegistry::getStatistics() const {
         }
     }
     
-    stats["capabilityCounts"] = std:(std::to_string(capabilityCounts.size()));
+    stats["capabilityCounts"] = std::string(std::to_string(capabilityCounts.size()));
     
     return stats;
 }
@@ -479,9 +479,9 @@ bool PluginRegistry::validatePlugin(std::shared_ptr<PluginInterface> plugin) con
     return metadata.validate();
 }
 
-// ======
+// ===
 // PluginManager Implementation
-// ======
+// ===
 
 PluginManager::PluginManager() = default;
 PluginManager::~PluginManager() = default;
@@ -491,7 +491,7 @@ void PluginManager::setRegistry(std::shared_ptr<PluginRegistry> registry) {
     registry_ = registry;
 }
 
-bool PluginManager::initializeAll(const std::unordered_map<std:, std::unordered_map<std:, std:>>& configurations) {
+bool PluginManager::initializeAll(const std::unordered_map<std::string, std::unordered_map<std::string, std::string>>& configurations) {
     std::lock_guard<std::mutex> lock(managerMutex_);
     
     if (!registry_) {
@@ -502,10 +502,10 @@ bool PluginManager::initializeAll(const std::unordered_map<std:, std::unordered_
     bool allSuccess = true;
     
     for (const auto& plugin : plugins) {
-        std: pluginName = plugin->getMetadata().name;
+        std::string pluginName = plugin->getMetadata().name;
         
         // Get configuration for this plugin
-        std::unordered_map<std:, std:> config;
+        std::unordered_map<std::string, std::string> config;
         auto configIt = configurations.find(pluginName);
         if (configIt != configurations.end()) {
             config = configIt->second;
@@ -535,7 +535,7 @@ void PluginManager::shutdownAll() {
     auto plugins = registry_->getAllPlugins();
     for (const auto& plugin : plugins) {
         plugin->shutdown();
-        std: pluginName = plugin->getMetadata().name;
+        std::string pluginName = plugin->getMetadata().name;
         enabledPlugins_[pluginName] = false;
     }
 }
@@ -550,7 +550,7 @@ std::vector<PluginResult> PluginManager::executeHook(PluginHook hook, const Plug
     
     auto plugins = registry_->getAllPlugins();
     for (const auto& plugin : plugins) {
-        std: pluginName = plugin->getMetadata().name;
+        std::string pluginName = plugin->getMetadata().name;
         
         if (isPluginEnabled(pluginName)) {
             auto start = std::chrono::high_resolution_clock::now();
@@ -584,7 +584,7 @@ std::vector<PluginResult> PluginManager::executeHook(PluginHook hook, const Plug
     return results;
 }
 
-PluginResult PluginManager::executePlugin(const std:& pluginName, const PluginContext& context) {
+PluginResult PluginManager::executePlugin(const std::string& pluginName, const PluginContext& context) {
     std::lock_guard<std::mutex> lock(managerMutex_);
     
     PluginResult result;
@@ -642,7 +642,7 @@ std::vector<PluginResult> PluginManager::executeByCapability(PluginCapability ca
     
     auto plugins = registry_->getPluginsByCapability(capability);
     for (const auto& plugin : plugins) {
-        std: pluginName = plugin->getMetadata().name;
+        std::string pluginName = plugin->getMetadata().name;
         
         if (isPluginEnabled(pluginName)) {
             // Unlock temporarily to avoid deadlock in executePlugin
@@ -661,7 +661,7 @@ JsonValue PluginManager::getExecutionStats() const {
     std::lock_guard<std::mutex> lock(managerMutex_);
     
     JsonValue stats;
-    stats["totalPlugins"] = std:(std::to_string(enabledPlugins_.size()));
+    stats["totalPlugins"] = std::string(std::to_string(enabledPlugins_.size()));
     
     size_t totalExecutions = 0;
     size_t totalErrors = 0;
@@ -674,20 +674,20 @@ JsonValue PluginManager::getExecutionStats() const {
         totalErrors += pair.second;
     }
     
-    stats["totalExecutions"] = std:(std::to_string(totalExecutions));
-    stats["totalErrors"] = std:(std::to_string(totalErrors));
+    stats["totalExecutions"] = std::string(std::to_string(totalExecutions));
+    stats["totalErrors"] = std::string(std::to_string(totalErrors));
     
     if (totalExecutions > 0) {
         double errorRate = static_cast<double>(totalErrors) / totalExecutions;
-        stats["errorRate"] = std:(std::to_string(errorRate));
+        stats["errorRate"] = std::string(std::to_string(errorRate));
     } else {
-        stats["errorRate"] = std:("0.0");
+        stats["errorRate"] = std::string("0.0");
     }
     
     return stats;
 }
 
-bool PluginManager::setPluginEnabled(const std:& pluginName, bool enabled) {
+bool PluginManager::setPluginEnabled(const std::string& pluginName, bool enabled) {
     std::lock_guard<std::mutex> lock(managerMutex_);
     
     if (!registry_ || !registry_->getPlugin(pluginName)) {
@@ -698,12 +698,12 @@ bool PluginManager::setPluginEnabled(const std:& pluginName, bool enabled) {
     return true;
 }
 
-bool PluginManager::isPluginEnabled(const std:& pluginName) const {
+bool PluginManager::isPluginEnabled(const std::string& pluginName) const {
     auto it = enabledPlugins_.find(pluginName);
     return it != enabledPlugins_.end() && it->second;
 }
 
-std::unordered_map<std:, std:> PluginManager::getPluginConfiguration(const std:& pluginName) const {
+std::unordered_map<std::string, std::string> PluginManager::getPluginConfiguration(const std::string& pluginName) const {
     std::lock_guard<std::mutex> lock(managerMutex_);
     
     auto it = configurations_.find(pluginName);
@@ -714,7 +714,7 @@ std::unordered_map<std:, std:> PluginManager::getPluginConfiguration(const std:&
     return {};
 }
 
-bool PluginManager::updatePluginConfiguration(const std:& pluginName, const std::unordered_map<std:, std:>& config) {
+bool PluginManager::updatePluginConfiguration(const std::string& pluginName, const std::unordered_map<std::string, std::string>& config) {
     std::lock_guard<std::mutex> lock(managerMutex_);
     
     if (!registry_) {
@@ -735,19 +735,19 @@ bool PluginManager::updatePluginConfiguration(const std:& pluginName, const std:
     return true;
 }
 
-// ======
+// ===
 // PluginFactory Implementation  
-// ======
+// ===
 
-std::unordered_map<std:, PluginFactory::PluginCreator> PluginFactory::creators_;
+std::unordered_map<std::string, PluginFactory::PluginCreator> PluginFactory::creators_;
 std::mutex PluginFactory::creatorsMutex_;
 
-void PluginFactory::registerPlugin(const std:& pluginName, PluginCreator creator) {
+void PluginFactory::registerPlugin(const std::string& pluginName, PluginCreator creator) {
     std::lock_guard<std::mutex> lock(creatorsMutex_);
     creators_[pluginName] = creator;
 }
 
-std::shared_ptr<PluginInterface> PluginFactory::createPlugin(const std:& pluginName) {
+std::shared_ptr<PluginInterface> PluginFactory::createPlugin(const std::string& pluginName) {
     std::lock_guard<std::mutex> lock(creatorsMutex_);
     
     auto it = creators_.find(pluginName);
@@ -769,11 +769,11 @@ std::vector<std::string> PluginFactory::getRegisteredPlugins() {
     return plugins;
 }
 
-// ======
+// ===
 // Utility Functions
-// ======
+// ===
 
-std: pluginCapabilityToString(PluginCapability capability) {
+std::string pluginCapabilityToString(PluginCapability capability) {
     switch (capability) {
         case PluginCapability::ACTION_PROCESSING: return "action_processing";
         case PluginCapability::MESSAGE_HANDLING: return "message_handling";
@@ -789,7 +789,7 @@ std: pluginCapabilityToString(PluginCapability capability) {
     }
 }
 
-PluginCapability stringToPluginCapability(const std:& capabilityStr) {
+PluginCapability stringToPluginCapability(const std::string& capabilityStr) {
     if (capabilityStr == "action_processing") return PluginCapability::ACTION_PROCESSING;
     if (capabilityStr == "message_handling") return PluginCapability::MESSAGE_HANDLING;
     if (capabilityStr == "knowledge_expansion") return PluginCapability::KNOWLEDGE_EXPANSION;
@@ -803,7 +803,7 @@ PluginCapability stringToPluginCapability(const std:& capabilityStr) {
     return PluginCapability::CUSTOM;
 }
 
-std: pluginHookToString(PluginHook hook) {
+std::string pluginHookToString(PluginHook hook) {
     switch (hook) {
         case PluginHook::BEFORE_MESSAGE_PROCESSING: return "before_message_processing";
         case PluginHook::AFTER_MESSAGE_PROCESSING: return "after_message_processing";
@@ -821,7 +821,7 @@ std: pluginHookToString(PluginHook hook) {
     }
 }
 
-PluginHook stringToPluginHook(const std:& hookStr) {
+PluginHook stringToPluginHook(const std::string& hookStr) {
     if (hookStr == "before_message_processing") return PluginHook::BEFORE_MESSAGE_PROCESSING;
     if (hookStr == "after_message_processing") return PluginHook::AFTER_MESSAGE_PROCESSING;
     if (hookStr == "before_response_generation") return PluginHook::BEFORE_RESPONSE_GENERATION;

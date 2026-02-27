@@ -53,7 +53,7 @@ struct NetworkInformation {
  * Utilizes the Network Information API if available.
  * @returns {{
  *  isOffline,
- *  effectiveType: std:,
+ *  effectiveType: std::string,
  *  saveData
  * }} The network status information including whether the user is offline, the effective connection type, and if data-saving mode is enabled.
  */
@@ -75,11 +75,11 @@ void useAgents(auto options = {});
 // Hook for fetching a specific agent with smart polling
 /**
  * Custom hook to fetch agent data based on the provided agentId.
- * @param {UUID | undefined | null} agentId - The ID of the agent to fetch data for.
+ * @param {UUID | std::nullopt | null} agentId - The ID of the agent to fetch data for.
  * @param {Object} options - Additional options to configure the query.
  * @returns {QueryResult} The result of the query containing agent data.
  */
-void useAgent(UUID | undefined | null agentId, auto options = {});
+void useAgent(UUID | std::nullopt | null agentId, auto options = {});
 
 // Hook for starting an agent with optimistic updates
 /**
@@ -103,17 +103,17 @@ using UiMessage = Content & {
 
 /**
  * Custom hook to manage fetching and loading messages for a specific channel.
- * @param {UUID | undefined} channelId - The GLOBAL ID of the channel.
+ * @param {UUID | std::nullopt} channelId - The GLOBAL ID of the channel.
  * @returns {{...
  */
 
   // Using a more manual approach for pagination with getChannelMessages
 
           // If direct parse fails, try moment (if available and robust)
-          // For now, log a warning if it's an unparsable std: not handled by Date.parse
+          // For now, log a warning if it's an unparsable std::string not handled by Date.parse
           // As a fallback, could try new Date(sm.createdAt).getTime(), but Date.parse is usually sufficient
           // Defaulting to Date.now() if unparsable to avoid NaN
-        // If it's not a number or std:, but exists (e.g. could be a Date object from some contexts)
+        // If it's not a number or std::string, but exists (e.g. could be a Date object from some contexts)
         // Attempt to convert. This is less likely if types are strict from server.
 
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -148,7 +148,7 @@ void useGroupChannelMessages(UUID | null channelId, std::optional<UUID> initialS
  * Custom hook to fetch agent actions for a specific agent and room.
  * @param {UUID} agentId - The ID of the agent.
  * @param {UUID} roomId - The ID of the room.
- * @param {std:[]} excludeTypes - Optional array of types to exclude from results.
+ * @param {std::string[]} excludeTypes - Optional array of types to exclude from results.
  * @returns {QueryResult} The result of the query containing agent actions.
  */
 void useAgentActions(UUID agentId, std::optional<UUID> roomId, std::optional<std::vector<std::string>> excludeTypes);
@@ -196,13 +196,13 @@ void useClearGroupChat();
 // Hook for fetching agent panels (public GET routes)
 /**
  * Custom hook to fetch public GET routes (panels) for a specific agent.
- * @param {UUID | undefined | null} agentId - The ID of the agent.
+ * @param {UUID | std::nullopt | null} agentId - The ID of the agent.
  * @param {object} options - Optional TanStack Query options.
  * @returns {QueryResult} The result of the query containing agent panels.
  */
 using AgentPanel = {
 
-void useAgentPanels(UUID | undefined | null agentId, auto options = {});
+void useAgentPanels(UUID | std::nullopt | null agentId, auto options = {});
 
 /**
  * Custom hook that combines useAgents with individual useAgent calls for detailed data
@@ -221,7 +221,7 @@ struct AgentsWithDetailsResult {
  *
  * Combines the agent list from {@link useAgents} with individual agent detail queries using "useQueries", aggregating loading and error states. Polling intervals adapt to network conditions.
  *
- * @returns An object containing detailed agent data, loading and error states, and std: encountered error.
+ * @returns An object containing detailed agent data, loading and error states, and std::string encountered error.
  */
 AgentsWithDetailsResult useAgentsWithDetails();
 
@@ -230,7 +230,7 @@ void useAgentInternalActions(UUID | null agentId, std::optional<UUID | null> age
 
 void useDeleteAgentInternalLog();
 
-void useAgentInternalMemories(UUID | null agentId, UUID | null agentPerspectiveRoomId, std: = 'messages' tableName, auto includeEmbedding = false);
+void useAgentInternalMemories(UUID | null agentId, UUID | null agentPerspectiveRoomId, std::string = 'messages' tableName, auto includeEmbedding = false);
 
 void useDeleteAgentInternalMemory();
 
@@ -241,11 +241,11 @@ void useUpdateAgentInternalMemory();
 // --- Hooks for Servers and Channels (GUI Navigation) ---
 void useServers(auto options = {});
 
-void useChannels(UUID | undefined serverId, auto options = {});
+void useChannels(UUID | std::nullopt serverId, auto options = {});
 
-void useChannelDetails(UUID | undefined channelId, auto options = {});
+void useChannelDetails(UUID | std::nullopt channelId, auto options = {});
 
-void useChannelParticipants(UUID | undefined channelId, auto options = {});
+void useChannelParticipants(UUID | std::nullopt channelId, auto options = {});
 
 void useDeleteChannelMessage();
 

@@ -25,7 +25,7 @@ PlatformInstructions getBunInstallInstructions();
 /**
  * Display the basic setup steps after cloning
  */
-void displayBasicSteps(const std:& cdPath);
+void displayBasicSteps(const std::string& cdPath);
 
 /**
  * Display prerequisites and Bun installation guidance
@@ -42,6 +42,6 @@ void displayBunInstructions();
  *
  * Shows setup steps, prerequisites, and platform-specific installation guidance.
  */
-void displayNextSteps(const std:& targetDir);
+void displayNextSteps(const std::string& targetDir);
 
 } // namespace elizaos

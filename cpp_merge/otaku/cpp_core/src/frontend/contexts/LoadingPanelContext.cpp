@@ -1,4 +1,5 @@
 #include "LoadingPanelContext.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -15,7 +16,7 @@ void LoadingPanelProvider() {
         id: nullptr,
         });
 
-        const auto showLoading = useCallback[&]((title: std:, messages: std: | std:[], id?: std:) {;
+        const auto showLoading = useCallback[&]((title: std::string, messages: std::string | std::string[], id?: std::string) {;
             setState({
                 isVisible: true,
                 type: "loading",
@@ -26,9 +27,9 @@ void LoadingPanelProvider() {
                 }, []);
 
                 const auto showSuccess = useCallback[&]((;
-                title: std:,
-                messages: std: | std:[],
-                id?: std:,
+                title: std::string,
+                messages: std::string | std::string[],
+                id?: std::string,
                 autoClose = true
                 ) {
                     setState({
@@ -53,7 +54,7 @@ void LoadingPanelProvider() {
                                 }
                                 }, []);
 
-                                const auto showError = useCallback[&]((title: std:, messages: std: | std:[], id?: std:) {;
+                                const auto showError = useCallback[&]((title: std::string, messages: std::string | std::string[], id?: std::string) {;
                                     setState({
                                         isVisible: true,
                                         type: "error",
@@ -63,7 +64,7 @@ void LoadingPanelProvider() {
                                         });
                                         }, []);
 
-                                        const auto hide = useCallback[&]((id?: std:) {;
+                                        const auto hide = useCallback[&]((id?: std::string) {;
                                             setState(prev => {
                                                 // If an ID is provided, only hide if it matches the current ID
                                                 // This prevents race conditions where one component hides another's panel
@@ -101,7 +102,7 @@ void useLoadingPanel() {
     try {
 
         const auto context = useContext(LoadingPanelContext);
-        if (context == undefined) {
+        if (context == std::nullopt) {
             throw std::runtime_error('useLoadingPanel must be used within a LoadingPanelProvider');
         }
         return context;

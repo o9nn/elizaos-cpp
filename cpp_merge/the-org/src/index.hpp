@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_THE_ORG_SRC_INDEX_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_THE_ORG_SRC_INDEX_H
 #include "core.hpp"
+#include <string>
 #include "dotenv.hpp"
 // Using alias removed (invalid transpilation)
 // External dependency removed
@@ -28,8 +29,8 @@ extern object project;
 template <typename P0>
 boolean hasRequiredEnvVars(P0 agent)
 {
-    auto usesDiscord = agent["character"]["plugins"]["includes"](std:("@elizaos/plugin-discord"));
-    auto usesTelegram = agent["character"]["plugins"]["includes"](std:("@elizaos/plugin-telegram"));
+    auto usesDiscord = agent["character"]["plugins"]["includes"](std::string("@elizaos/plugin-discord"));
+    auto usesTelegram = agent["character"]["plugins"]["includes"](std::string("@elizaos/plugin-telegram"));
     if (AND((!usesDiscord), (!usesTelegram))) return true;
     auto hasValidPlatform = false;
     if (usesDiscord) {
@@ -37,18 +38,18 @@ boolean hasRequiredEnvVars(P0 agent)
         auto discordToken = agent["character"]["settings"]["secrets"]["DISCORD_API_TOKEN"];
         if (AND((discordId), (discordToken))) {
             hasValidPlatform = true;
-            logger->debug(std:("Agent "") + (OR((agent["character"]["name"]), (std:("Unknown")))) + std:("" has Discord configuration"));
+            logger->debug(std::string("Agent "") + (OR((agent["character"]["name"]), (std::string("Unknown")))) + std::string("" has Discord configuration"));
         }
     }
     if (usesTelegram) {
         auto telegramToken = agent["character"]["settings"]["secrets"]["TELEGRAM_BOT_TOKEN"];
         if (telegramToken) {
             hasValidPlatform = true;
-            logger->debug(std:("Agent "") + (OR((agent["character"]["name"]), (std:("Unknown")))) + std:("" has Telegram configuration"));
+            logger->debug(std::string("Agent "") + (OR((agent["character"]["name"]), (std::string("Unknown")))) + std::string("" has Telegram configuration"));
         }
     }
     if (!hasValidPlatform) {
-        logger->warn(std:("Agent "") + (OR((agent["character"]["name"]), (std:("Unknown")))) + std:("" disabled - missing platform configuration"));
+        logger->warn(std::string("Agent "") + (OR((agent["character"]["name"]), (std::string("Unknown")))) + std::string("" disabled - missing platform configuration"));
     }
     return hasValidPlatform;
 };

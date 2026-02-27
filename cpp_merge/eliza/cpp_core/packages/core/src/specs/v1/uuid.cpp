@@ -1,10 +1,11 @@
 #include "uuid.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-UUID asUUID(const std:& id) {
+UUID asUUID(const std::string& id) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -20,7 +21,7 @@ UUID asUUID(const std:& id) {
     }
 }
 
-UUID generateUuidFromString(const std:& input) {
+UUID generateUuidFromString(const std::string& input) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return stringToUuid(input);

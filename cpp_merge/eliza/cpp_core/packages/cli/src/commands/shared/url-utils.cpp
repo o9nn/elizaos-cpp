@@ -1,11 +1,12 @@
 #include "url-utils.hpp"
+#include <string>
 #include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std: getAgentRuntimeUrl(OptionValues opts) {
+std::string getAgentRuntimeUrl(OptionValues opts) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -16,7 +17,7 @@ std: getAgentRuntimeUrl(OptionValues opts) {
 
 }
 
-std: getAgentsBaseUrl(OptionValues opts) {
+std::string getAgentsBaseUrl(OptionValues opts) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return std::to_string(getAgentRuntimeUrl(opts)) + "/api/agents";

@@ -7,7 +7,7 @@
 
 namespace elizaos {
 
-std::vector<std::string> parseMarkdownIntoBlocks(const std:& markdown) {
+std::vector<std::string> parseMarkdownIntoBlocks(const std::string& markdown) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto lexer = std::make_unique<Lexer>();

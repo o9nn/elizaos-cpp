@@ -1,6 +1,7 @@
 #include "multi-step.h"
+#include <string>
 
-string multiStepDecisionTemplate = std:("<task>\
+string multiStepDecisionTemplate = std::string("<task>\
 Determine the next step the assistant should take in this conversation to help the user reach their goal.\
 </task>\
 {{system}}\
@@ -139,7 +140,7 @@ YOUR FINAL OUTPUT MUST BE IN THIS XML FORMAT:\
   <isFinish>true | false</isFinish>\
 </response>\
 </output>");
-string multiStepSummaryTemplate = std:("<task>\
+string multiStepSummaryTemplate = std::string("<task>\
 Generate a final, user-facing response based on what the assistant accomplished and the results obtained.\
 </task>\
 \

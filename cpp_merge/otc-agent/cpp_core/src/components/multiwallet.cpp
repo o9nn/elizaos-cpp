@@ -1,4 +1,5 @@
 #include "multiwallet.hpp"
+#include <string>
 #include <cstdlib>
 #include <unordered_map>
 #include <iostream>
@@ -27,42 +28,42 @@ void MultiWalletProvider() {
         const auto chainId = useChainId();
 
         // Track previous state to avoid logging on every render
-        const auto prevStateRef = useRef<std: | nullptr>(nullptr);
+        const auto prevStateRef = useRef<std::string | nullptr>(nullptr);
 
         // == Derived wallet state ==
         // Check BOTH Privy wallets array AND wagmi direct connection AND Privy user linkedAccounts
         const auto privyEvmWallet = useMemo(;
         () =>;
         wallets.find(;
-        [&](w) { return (w as { chainType?: std: }).chainType == "ethereum",; }
+        [&](w) { return (w as { chainType?: std::string }).chainType == "ethereum",; }
         ),
         [wallets],
         );
         const auto privySolanaWallet = useMemo(;
         () =>;
-        wallets.find((w) => (w as { chainType?: std: }).chainType == "solana"),
+        wallets.find((w) => (w as { chainType?: std::string }).chainType == "solana"),
         [wallets],
         );
 
         // Also check Privy user's linkedAccounts for wallet addresses
         const auto linkedEvmAddress = useMemo[&](() {;
-            if (!privyUser.linkedAccounts) return undefined;
+            if (!privyUser.linkedAccounts) return std::nullopt;
             const auto evmAccount = privyUser.linkedAccounts.find(;
             (a) =>;
             a.type == "wallet" &&;
-            (a as { chainType?: std: }).chainType == "ethereum",
+            (a as { chainType?: std::string }).chainType == "ethereum",
             );
-            return (evmAccount as { address?: std: }).address;
+            return (evmAccount as { address?: std::string }).address;
             }, [privyUser.linkedAccounts]);
 
             const auto linkedSolanaAddress = useMemo[&](() {;
-                if (!privyUser.linkedAccounts) return undefined;
+                if (!privyUser.linkedAccounts) return std::nullopt;
                 const auto solanaAccount = privyUser.linkedAccounts.find(;
                 (a) =>;
                 a.type == "wallet" &&;
-                (a as { chainType?: std: }).chainType == "solana",
+                (a as { chainType?: std::string }).chainType == "solana",
                 );
-                return (solanaAccount as { address?: std: }).address;
+                return (solanaAccount as { address?: std::string }).address;
                 }, [privyUser.linkedAccounts]);
 
                 // Track if we have ACTIVE wallets (in the wallets array) vs just linked accounts
@@ -88,7 +89,7 @@ void MultiWalletProvider() {
 
                 const auto [preferredFamily, setPreferredFamily] = useState<ChainFamily | nullptr>(;
                 [&]() {
-                    if (typeof window == "undefined") return null;
+                    if (typeof window == "std::nullopt") return null;
                     const auto saved = localStorage.getItem("otc-preferred-chain");
                     if (saved == "evm" || saved == "solana") return saved;
                     return nullptr;
@@ -105,14 +106,14 @@ void MultiWalletProvider() {
 
                     // Persist preference to localStorage - separate effect to avoid loop
                     useEffect[&](() {
-                        if (preferredFamily && typeof window != "undefined") {
+                        if (preferredFamily && typeof window != "std::nullopt") {
                             localStorage.setItem("otc-preferred-chain", preferredFamily);
                         }
                         }, [preferredFamily]);
 
                         // Set up event listeners - only once on mount
                         useEffect[&](() {
-                            if (typeof window == "undefined") return;
+                            if (typeof window == "std::nullopt") return;
 
                             // Only std::set up listeners - don't check localStorage here as initial state handles that
                             const auto handleStorageChange = [&](e: StorageEvent) {;
@@ -222,7 +223,7 @@ void MultiWalletProvider() {
                                                     const auto [isPhantomInstalled, setIsPhantomInstalled] = useState(false);
 
                                                     useEffect[&](() {
-                                                        if (typeof window == "undefined" || envDetectionRef.current) return;
+                                                        if (typeof window == "std::nullopt" || envDetectionRef.current) return;
                                                         envDetectionRef.current = true;
 
                                                         // Detect Phantom - check immediately and once after delay
@@ -274,7 +275,7 @@ void MultiWalletProvider() {
 
                                                                                 // == Solana wallet adapter ==
                                                                                 // Track current wallet address to avoid recreating adapter unnecessarily
-                                                                                const auto solanaWalletAddressRef = useRef<std: | nullptr>(nullptr);
+                                                                                const auto solanaWalletAddressRef = useRef<std::string | nullptr>(nullptr);
                                                                                 const auto [solanaWalletAdapter, setSolanaWalletAdapter] =;
                                                                                 useState<SolanaWalletAdapter | nullptr>(nullptr);
 
@@ -298,8 +299,8 @@ void MultiWalletProvider() {
                                                                                             if (mounted && provider) {
                                                                                                 setSolanaWalletAdapter[&]({
                                                                                                     publicKey: { toBase58: () { return typedWallet.address },
-                                                                                                    signTransaction: <T extends SolanaTransaction>[&](tx: T) { return provider.signTransaction(tx),
-                                                                                                    signAllTransactions: <T extends SolanaTransaction>[&](txs: T[]) { return provider.signAllTransactions(txs),
+                                                                                                    signTransaction: <T : public SolanaTransaction>[&](tx: T) { return provider.signTransaction(tx),
+                                                                                                    signAllTransactions: <T : public SolanaTransaction>[&](txs: T[]) { return provider.signAllTransactions(txs),
                                                                                                     }); }; }; };
                                                                                                 }
                                                                                                 } catch (error) {
@@ -319,7 +320,7 @@ void MultiWalletProvider() {
                                                                                                     std::cout << "[MultiWallet] setActiveFamily called with:" << family << std::endl;
                                                                                                     setPreferredFamily(family);
                                                                                                     // Immediately persist to localStorage
-                                                                                                    if (typeof window != "undefined") {
+                                                                                                    if (typeof window != "std::nullopt") {
                                                                                                         localStorage.setItem("otc-preferred-chain", family);
                                                                                                     }
                                                                                                     }, []);
@@ -361,7 +362,7 @@ void MultiWalletProvider() {
                                                                                                                 if (evmConnected) disconnectWagmi();
                                                                                                                 logout();
 
-                                                                                                                if (typeof window != "undefined") {
+                                                                                                                if (typeof window != "std::nullopt") {
                                                                                                                     localStorage.removeItem("wagmi.store");
                                                                                                                     localStorage.removeItem("wagmi.cache");
                                                                                                                     localStorage.removeItem("wagmi.recentConnectorId");
@@ -374,7 +375,7 @@ void MultiWalletProvider() {
                                                                                                                 }, [evmConnected, disconnectWagmi, logout]);
 
                                                                                                                 // == Derived values ==
-                                                                                                                // hasWallet: true if std: blockchain wallet is available (active or linked)
+                                                                                                                // hasWallet: true if std::string blockchain wallet is available (active or linked)
                                                                                                                 const auto hasWallet = evmConnected || solanaConnected;
                                                                                                                 const auto isConnected = hasWallet || privyAuthenticated;
 
@@ -433,7 +434,7 @@ void MultiWalletProvider() {
 
                                                                                                                             const auto evmNetworkName = useMemo[&](() {;
                                                                                                                                 if (!chainId) return "Unknown";
-                                                                                                                                const std::unordered_map<double, std:> chainNames = {;
+                                                                                                                                const std::unordered_map<double, std::string> chainNames = {;
                                                                                                                                     [localhost.id]: "Anvil",
                                                                                                                                     [base.id]: "Base",
                                                                                                                                     [baseSepolia.id]: "Base Sepolia",
@@ -448,7 +449,7 @@ void MultiWalletProvider() {
 
                                                                                                                                     const auto networkLabel = useMemo[&](() {;
                                                                                                                                         if (activeFamily == "evm") {
-                                                                                                                                            const std::unordered_map<std:, std:> chainNames = { base = "Base", bsc = "BSC" };
+                                                                                                                                            const std::unordered_map<std::string, std::string> chainNames = { base = "Base", bsc = "BSC" };
                                                                                                                                             return chainNames[selectedEVMChain] || evmNetworkName;
                                                                                                                                         }
                                                                                                                                         if (activeFamily == "solana") {

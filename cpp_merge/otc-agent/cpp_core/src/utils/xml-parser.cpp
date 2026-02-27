@@ -1,11 +1,12 @@
 #include "xml-parser.hpp"
+#include <string>
 #include <optional>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std: extractXMLFromMessage(const std:& messageText) {
+std::string extractXMLFromMessage(const std::string& messageText) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Try to find XML between comment markers first
@@ -36,7 +37,7 @@ std: extractXMLFromMessage(const std:& messageText) {
 
 }
 
-std::optional<OTCQuote> parseOTCQuoteXML(const std:& xmlString) {
+std::optional<OTCQuote> parseOTCQuoteXML(const std::string& xmlString) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto parser = std::make_unique<DOMParser>();
@@ -49,12 +50,12 @@ std::optional<OTCQuote> parseOTCQuoteXML(const std:& xmlString) {
         return nullptr;
     }
 
-    const auto getElementText = (tagName: std:): std: => {;
+    const auto getElementText = (tagName: std::string): std::string => {;
         const auto elem = xmlDoc.getElementsByTagName(tagName)[0];
         return elem ? elem.textContent || "" : "";
         };
 
-        const auto getElementNumber = [&](tagName: std:) {;
+        const auto getElementNumber = [&](tagName: std::string) {;
             const auto text = getElementText(tagName);
             return text ? parseFloat(text) : 0;
             };
@@ -99,7 +100,7 @@ std::optional<OTCQuote> parseOTCQuoteXML(const std:& xmlString) {
 
 }
 
-std::optional<QuoteAccepted> parseQuoteAcceptedXML(const std:& xmlString) {
+std::optional<QuoteAccepted> parseQuoteAcceptedXML(const std::string& xmlString) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto parser = std::make_unique<DOMParser>();
@@ -112,12 +113,12 @@ std::optional<QuoteAccepted> parseQuoteAcceptedXML(const std:& xmlString) {
         return nullptr;
     }
 
-    const auto getElementText = (tagName: std:): std: => {;
+    const auto getElementText = (tagName: std::string): std::string => {;
         const auto elem = xmlDoc.getElementsByTagName(tagName)[0];
         return elem ? elem.textContent || "" : "";
         };
 
-        const auto getElementNumber = [&](tagName: std:) {;
+        const auto getElementNumber = [&](tagName: std::string) {;
             const auto text = getElementText(tagName);
             return text ? parseFloat(text) : 0;
             };
@@ -143,7 +144,7 @@ std::optional<QuoteAccepted> parseQuoteAcceptedXML(const std:& xmlString) {
 
 }
 
-bool messageContainsQuote(const std:& messageText) {
+bool messageContainsQuote(const std::string& messageText) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return !!(;
@@ -155,7 +156,7 @@ bool messageContainsQuote(const std:& messageText) {
 
 }
 
-void parseMessageXML(const std:& messageText) {
+void parseMessageXML(const std::string& messageText) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     type: "otc_quote" | "quote_accepted" | nullptr;

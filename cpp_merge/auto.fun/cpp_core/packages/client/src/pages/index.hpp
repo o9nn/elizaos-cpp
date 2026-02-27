@@ -25,12 +25,12 @@ namespace elizaos {
  // Example icons
 
 // Define types for state
-using GridSortByType = std:;
+using GridSortByType = std::string;
 using VerifiedType = int;
-using TokenSourceType = std:;
-using BondingStatusType = std:;
+using TokenSourceType = std::string;
+using BondingStatusType = std::string;
 using TableSortByType = std::optional<keyof IToken>;
-using SortOrderType = std:;
+using SortOrderType = std::string;
 
 
 } // namespace elizaos

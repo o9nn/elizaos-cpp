@@ -1,4 +1,5 @@
 #include "use-elevenlabs-voices.hpp"
+#include <string>
 #include <vector>
 #include <map>
 #include <iostream>
@@ -9,7 +10,7 @@ namespace elizaos {
 void useElevenLabsVoices() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto [apiKey, setApiKey] = useState<std: | nullptr>(nullptr);
+    const auto [apiKey, setApiKey] = useState<std::string | nullptr>(nullptr);
 
     // Load API key from localStorage or another source
     useEffect[&](() {

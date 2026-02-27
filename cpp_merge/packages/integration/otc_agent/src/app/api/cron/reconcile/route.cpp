@@ -1,32 +1,33 @@
 #include "route.hpp"
+#include <string>
 
 any GET(std::shared_ptr<NextRequest> request)
 {
-    auto authHeader = request->headers->get(std:("authorization"));
-    if (AND((process->env->NODE_ENV == std:("production")), (!CRON_SECRET))) {
-        console->error(std:("[Reconciliation Cron] No CRON_SECRET configured in production"));
+    auto authHeader = request->headers->get(std::string("authorization"));
+    if (AND((process->env->NODE_ENV == std::string("production")), (!CRON_SECRET))) {
+        console->error(std::string("[Reconciliation Cron] No CRON_SECRET configured in production"));
         return NextResponse->json(object{
-            object::pair{std:("error"), std:("Server configuration error")}
+            object::pair{std::string("error"), std::string("Server configuration error")}
         }, object{
-            object::pair{std:("status"), 500}
+            object::pair{std::string("status"), 500}
         });
     }
-    if (AND((CRON_SECRET), (authHeader != std:("Bearer ") + CRON_SECRET + string_empty))) {
-        console->warn(std:("[Reconciliation Cron] Unauthorized access attempt"), object{
-            object::pair{std:("ip"), OR((request->headers->get(std:("x-forwarded-for"))), (request->headers->get(std:("x-real-ip"))))}, 
-            object::pair{std:("timestamp"), ((std::make_shared<Date>()))->toISOString()}
+    if (AND((CRON_SECRET), (authHeader != std::string("Bearer ") + CRON_SECRET + string_empty))) {
+        console->warn(std::string("[Reconciliation Cron] Unauthorized access attempt"), object{
+            object::pair{std::string("ip"), OR((request->headers->get(std::string("x-forwarded-for"))), (request->headers->get(std::string("x-real-ip"))))}, 
+            object::pair{std::string("timestamp"), ((std::make_shared<Date>()))->toISOString()}
         });
         return NextResponse->json(object{
-            object::pair{std:("error"), std:("Unauthorized")}
+            object::pair{std::string("error"), std::string("Unauthorized")}
         }, object{
-            object::pair{std:("status"), 401}
+            object::pair{std::string("status"), 401}
         });
     }
-    console->log(std:("[Reconciliation Cron] Starting reconciliation task..."));
+    console->log(std::string("[Reconciliation Cron] Starting reconciliation task..."));
     auto runtime = std::async([=]() { agentRuntime->getRuntime(); });
     auto maxRetries = 5;
     auto retries = 0;
-    auto quoteService = runtime->getService(std:("QuoteService"));
+    auto quoteService = runtime->getService(std::string("QuoteService"));
     while (AND((!quoteService), (retries < maxRetries)))
     {
         std::async([=]() { std::make_shared<Promise>([=](auto resolve) mutable
@@ -34,26 +35,26 @@ any GET(std::shared_ptr<NextRequest> request)
             return setTimeout(resolve, 200);
         }
         ); });
-        quoteService = runtime->getService(std:("QuoteService"));
+        quoteService = runtime->getService(std::string("QuoteService"));
         retries++;
     }
     if (!quoteService) {
-        console->error(std:("[Reconciliation Cron] QuoteService not available after initialization"));
+        console->error(std::string("[Reconciliation Cron] QuoteService not available after initialization"));
         return NextResponse->json(object{
-            object::pair{std:("error"), std:("QuoteService not registered. Please check plugin configuration.")}
+            object::pair{std::string("error"), std::string("QuoteService not registered. Please check plugin configuration.")}
         }, object{
-            object::pair{std:("status"), 503}
+            object::pair{std::string("status"), 503}
         });
     }
     auto startTime = Date->now();
     std::async([=]() { runReconciliationTask(); });
     auto duration = Date->now() - startTime;
-    console->log(std:("[Reconciliation Cron] Completed in ") + duration + std:("ms"));
+    console->log(std::string("[Reconciliation Cron] Completed in ") + duration + std::string("ms"));
     return NextResponse->json(object{
-        object::pair{std:("success"), true}, 
-        object::pair{std:("action"), std:("reconcile_all")}, 
-        object::pair{std:("duration"), std:("duration")}, 
-        object::pair{std:("timestamp"), ((std::make_shared<Date>()))->toISOString()}
+        object::pair{std::string("success"), true}, 
+        object::pair{std::string("action"), std::string("reconcile_all")}, 
+        object::pair{std::string("duration"), std::string("duration")}, 
+        object::pair{std::string("timestamp"), ((std::make_shared<Date>()))->toISOString()}
     });
 };
 

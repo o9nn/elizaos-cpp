@@ -1,4 +1,5 @@
 #include "cache.hpp"
+#include <string>
 
 any getCachedData()
 {
@@ -7,15 +8,15 @@ any getCachedData()
         if (!fs->existsSync(CACHE_FILE)) {
             return nullptr;
         }
-        auto data = JSON->parse(fs->readFileSync(CACHE_FILE, std:("utf-8")));
+        auto data = JSON->parse(fs->readFileSync(CACHE_FILE, std::string("utf-8")));
         return object{
-            object::pair{std:("holdings"), data["holdings"]}, 
-            object::pair{std:("lastUpdated"), std::make_shared<Date>(data["lastUpdated"])}
+            object::pair{std::string("holdings"), data["holdings"]}, 
+            object::pair{std::string("lastUpdated"), std::make_shared<Date>(data["lastUpdated"])}
         };
     }
     catch (const any& error)
     {
-        console->error(std:("Error reading cache:"), error);
+        console->error(std::string("Error reading cache:"), error);
         return nullptr;
     }
 };
@@ -28,17 +29,17 @@ void setCachedData(array<std::shared_ptr<TokenHolding>> holdings)
         auto dir = path->dirname(CACHE_FILE);
         if (!fs->existsSync(dir)) {
             fs->mkdirSync(dir, object{
-                object::pair{std:("recursive"), true}
+                object::pair{std::string("recursive"), true}
             });
         }
         fs->writeFileSync(CACHE_FILE, JSON->stringify(object{
-            object::pair{std:("holdings"), std:("holdings")}, 
-            object::pair{std:("lastUpdated"), std::make_shared<Date>()}
+            object::pair{std::string("holdings"), std::string("holdings")}, 
+            object::pair{std::string("lastUpdated"), std::make_shared<Date>()}
         }));
     }
     catch (const any& error)
     {
-        console->error(std:("Error writing cache:"), error);
+        console->error(std::string("Error writing cache:"), error);
     }
 };
 
@@ -52,7 +53,7 @@ boolean shouldRefreshCache()
 };
 
 
-any CACHE_FILE = path->join(process->cwd(), std:("data"), std:("cache.json"));
+any CACHE_FILE = path->join(process->cwd(), std::string("data"), std::string("cache.json"));
 double CACHE_DURATION = 60 * 1000;
 
 void Main(void)

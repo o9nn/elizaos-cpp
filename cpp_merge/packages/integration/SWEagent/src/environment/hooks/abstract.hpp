@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SWEAGENT_SRC_ENVIRONMENT_HOOKS_ABSTRACT_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SWEAGENT_SRC_ENVIRONMENT_HOOKS_ABSTRACT_H
 #include "core.hpp"
+#include <string>
 #include "../repo.h"
 
 class EnvironmentInstance;
@@ -58,7 +59,7 @@ void CombinedEnvHooks::onCopyRepoStarted(P0 repo)
         }
         catch (const any& error)
         {
-            console->error(std:("Hook error in onCopyRepoStarted:"), error);
+            console->error(std::string("Hook error in onCopyRepoStarted:"), error);
         }
     }
 }

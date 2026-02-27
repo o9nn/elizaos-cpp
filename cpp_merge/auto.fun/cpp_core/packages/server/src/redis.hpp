@@ -29,7 +29,7 @@ using RedisCache = RedisCacheService;
 // Default local Redis configuration
 
 class RedisCacheService {
-  constructor(public redisPool: RedisPool) {}
+  /* constructor */ (public redisPool: RedisPool) {}
 
   // --- START NEW LIST METHODS ---
       // Handle case where no values are provided, perhaps return 0 or throw error
@@ -80,9 +80,9 @@ class RedisCacheService {
 RedisCacheService createRedisCache();
 
 struct RedisPoolOptions {
-    std::optional<std:> host;
+    std::optional<std::string> host;
     std::optional<double> port;
-    std::optional<std:> password;
+    std::optional<std::string> password;
     std::optional<double> max;
     std::optional<double> min;
     std::optional<double> idleTimeoutMillis;
@@ -94,7 +94,7 @@ class RedisPool {
   private subscriberClient: Redis | null = null;
   private options: Required<RedisPoolOptions>; // Make options required internally
 
-  constructor(options: RedisPoolOptions = {}) {
+  /* constructor */ (options: RedisPoolOptions = {}) {
     // Use environment variables or fall back to defaults
     this.options = {
       host: options.host || std::getenv("REDIS_HOST") || DEFAULT_REDIS_HOST,
@@ -119,7 +119,7 @@ class RedisPool {
           const client = new Redis[&]({
             host: this.options.host,
             port: this.options.port,
-            password: this.options.password || undefined, // Pass undefined if no password
+            password: this.options.password || std::nullopt, // Pass std::nullopt if no password
             retryStrategy: (attempts) { return Math.min(attempts * 50, 2000),
             maxRetriesPerRequest: 3,
             connectTimeout: 3000,

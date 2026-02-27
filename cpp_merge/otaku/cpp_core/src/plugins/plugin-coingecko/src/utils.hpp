@@ -21,13 +21,13 @@ namespace elizaos {
 
 std::future<std::vector> fetchCoinsList(std::optional<AbortSignal> signal);>> {
 
-std::optional<double> usd(const std:& obj, const std::vector<std::string>& path);
+std::optional<double> usd(const std::string& obj, const std::vector<std::string>& path);
 
   // If caller hints a specific platform (e.g., resolved via contract endpoint), honor it first
 
-std: platformToNet(std::optional<std:> p);
+std::string platformToNet(std::optional<std::string> p);
 
-std: formatCoinMetadata(const std:& requestId, const std:& data, std::optional<std:> preferredPlatform);
+std::string formatCoinMetadata(const std::string& requestId, const std::string& data, std::optional<std::string> preferredPlatform);
 
 
 } // namespace elizaos

@@ -1,4 +1,5 @@
 #include "submission-step.hpp"
+#include <string>
 #include <optional>
 #include <map>
 #include <iostream>
@@ -13,7 +14,7 @@ void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamil
         const auto router = useRouter();
 
         // Use refs to avoid stale closure issues in std::async callbacks
-        const auto contractConsignmentIdRef = useRef<std: | nullptr>(nullptr);
+        const auto contractConsignmentIdRef = useRef<std::string | nullptr>(nullptr);
         const auto isProcessingRef = useRef(false);
         const auto hasStartedRef = useRef(false);
 
@@ -49,7 +50,7 @@ void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamil
                     ]);
 
                     const auto updateStepStatus = useCallback(;
-                    [&](stepId: std:, updates: Partial<StepState>) {
+                    [&](stepId: std::string, updates: Partial<StepState>) {
                         const auto step = stepsRef.current.find[&]((s) { return s.id == stepId); };
                         if (step) {
                             Object.assign(step, updates);
@@ -61,7 +62,7 @@ void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamil
 
                         // Retry transient errors with exponential backoff
                         const auto executeWithRetry = useCallback(;
-                        std::async <T,>(action: () => Promise<T>, stepId: std:): Promise<T> => {
+                        std::async <T,>(action: () => Promise<T>, stepId: std::string): Promise<T> => {
                             const auto MAX_RETRIES = 3;
                             const auto NON_RETRYABLE = ["rejected", "denied", "cancelled", "user"];
                             const auto RETRYABLE = ["network", "timeout", "fetch", "connection", "rate"];
@@ -100,7 +101,7 @@ void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamil
 
                                     const auto saveToDatabase = useCallback[&](std::async () {;
                                         // Convert human-readable amounts to raw amounts with decimals
-                                        const auto toRawAmount = (humanAmount: std:): std: => {;
+                                        const auto toRawAmount = (humanAmount: std::string): std::string => {;
                                             const auto parsed = parseFloat(humanAmount) || 0;
                                             const auto raw = BigInt(;
                                             Math.floor(parsed * Math.pow(10, selectedTokenDecimals)),
@@ -275,7 +276,7 @@ void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamil
                                                                                                         }, [processStep]);
 
                                                                                                         const auto retryStep = useCallback(;
-                                                                                                        [&](stepId: std:) {
+                                                                                                        [&](stepId: std::string) {
                                                                                                             if (isProcessingRef.current) {
                                                                                                                 std::cout << "[SubmissionStep] Already processing << ignoring retry" << std::endl;
                                                                                                                 return;
@@ -300,7 +301,7 @@ void SubmissionStepComponent(auto consignerAddress, auto chain, auto activeFamil
                                                                                                                     router.push_back("/my-deals");
                                                                                                                     };
 
-                                                                                                                    const auto formatAmount = [&](amount: std:) {;
+                                                                                                                    const auto formatAmount = [&](amount: std::string) {;
                                                                                                                         const auto num = parseFloat(amount) || 0;
                                                                                                                         return num.toLocaleString();
                                                                                                                         };

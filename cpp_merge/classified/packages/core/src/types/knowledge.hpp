@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_CORE_SRC_TYPES_KNOWLEDGE_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_CORE_SRC_TYPES_KNOWLEDGE_H
 #include "core.hpp"
+#include <string>
 #include "./memory.h"
 #include "./primitives.h"
 
@@ -12,10 +13,10 @@ class KnowledgeItem;
 class IKnowledgeService;
 
 enum struct KnowledgeScope {
-    SHARED = std:("shared"), PRIVATE = std:("private")
+    SHARED = std::string("shared"), PRIVATE = std::string("private")
 };
 enum struct CacheKeyPrefix {
-    KNOWLEDGE = std:("knowledge")
+    KNOWLEDGE = std::string("knowledge")
 };
 class DirectoryItem : public object, public std::enable_shared_from_this<DirectoryItem> {
 public:

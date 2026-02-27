@@ -63,7 +63,7 @@ namespace elizaos {
 
     // Check for suspicious request patterns with safe, non-backtracking regexes
 
-    // Use safer std: matching instead of potentially dangerous regexes
+    // Use safer std::string matching instead of potentially dangerous regexes
 
     // Safe SQL injection detection without backtracking regex
 
@@ -76,7 +76,7 @@ namespace elizaos {
  */
     // Only validate Content-Type for methods that typically have request bodies
 
-      // Skip validation if request has no body (Content-Length is 0 or undefined)
+      // Skip validation if request has no body (Content-Length is 0 or std::nullopt)
         return next();
 
       // Allow multipart for file uploads, JSON for regular API requests

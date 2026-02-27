@@ -15,21 +15,21 @@ namespace elizaos {
  * Package metadata interface for registry publication
  */
 struct PackageMetadata {
-    std: name;
-    std: version;
-    std: description;
-    std: type;
-    std: platform;
-    std: runtimeVersion;
-    std: repository;
+    std::string name;
+    std::string version;
+    std::string description;
+    std::string type;
+    std::string platform;
+    std::string runtimeVersion;
+    std::string repository;
     std::vector<std::string> maintainers;
-    std: publishedAt;
-    std: publishedBy;
-    std::unordered_map<std:, std:> dependencies;
+    std::string publishedAt;
+    std::string publishedBy;
+    std::unordered_map<std::string, std::string> dependencies;
     std::vector<std::string> tags;
-    std: license;
-    std::optional<std:> npmPackage;
-    std::optional<std:> githubRepo;
+    std::string license;
+    std::optional<std::string> npmPackage;
+    std::optional<std::string> githubRepo;
 };
 
 /**
@@ -46,15 +46,15 @@ struct PublishOptions {
  * Credentials interface
  */
 struct Credentials {
-    std: username;
-    std: token;
+    std::string username;
+    std::string token;
 };
 
 /**
  * Directory information from detection
  */
 struct DirectoryInfo {
-    std: type;
+    std::string type;
     bool hasPackageJson;
 };
 
@@ -62,41 +62,41 @@ struct DirectoryInfo {
  * Registry settings interface
  */
 struct RegistrySettings {
-    std: defaultRegistry;
+    std::string defaultRegistry;
     std::optional<{> publishConfig;
-    std: registry;
-    std: username;
+    std::string registry;
+    std::string username;
     bool useNpm;
-    std: platform;
+    std::string platform;
 };
 
 /**
  * Package.json structure with std::optional fields used in publishing
  */
 struct PackageJson {
-    std: name;
-    std: version;
-    std::optional<std:> description;
-    std::optional<std:> type;
+    std::string name;
+    std::string version;
+    std::optional<std::string> description;
+    std::optional<std::string> type;
     std::optional<'node' | 'browser' | 'universal'> platform;
     std::optional<{> repository;
-    std: type;
-    std: url;
+    std::string type;
+    std::string url;
     std::optional<std::vector<std::string>> maintainers;
-    std::optional<std::unordered_map<std:, std:>> dependencies;
+    std::optional<std::unordered_map<std::string, std::string>> dependencies;
     std::optional<std::vector<std::string>> keywords;
-    std::optional<std:> license;
-    std::optional<std:> author;
+    std::optional<std::string> license;
+    std::optional<std::string> author;
     std::optional<{> bugs;
-    std: url;
-    std::optional<std:> npmPackage;
-    std::optional<std:> githubRepo;
+    std::string url;
+    std::optional<std::string> npmPackage;
+    std::optional<std::string> githubRepo;
     std::optional<'plugin' | 'project'> packageType;
     std::optional<{> agentConfig;
-    std: pluginType;
-    std::unordered_map<std:, std:> pluginParameters;
+    std::string pluginType;
+    std::unordered_map<std::string, std::string> pluginParameters;
     std::optional<{> eliza;
-    std: type;
+    std::string type;
 };
 
 /**
@@ -110,6 +110,6 @@ struct PlaceholderReplacement {
 /**
  * Publish result from GitHub publishing
  */
-using PublishResult = std::variant<bool, { success>; prUrl?: std: };
+using PublishResult = std::variant<bool, { success>; prUrl?: std::string };
 
 } // namespace elizaos

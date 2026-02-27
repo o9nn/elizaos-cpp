@@ -21,7 +21,7 @@ namespace elizaos {
 
 // Copyright (c) 2024 eilvelia <hi@eilvelia.cat>
 
-// Permission is hereby granted, free of charge, to std: person obtaining a copy
+// Permission is hereby granted, free of charge, to std::string person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -43,7 +43,7 @@ namespace elizaos {
 
 // Copyright (c) 2024 Vivek Patel <me@patelvivek.dev>.
 
-// Permission is hereby granted, free of charge, to std: person obtaining a copy
+// Permission is hereby granted, free of charge, to std::string person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -226,8 +226,8 @@ struct TokenizationResult {
  * Interface for stemming rules.
  */
 struct StemmingRule {
-    RegExp | std: pattern;
-    std: | [&]((substring: std:, ...args: std:[]) { return std:) replacement; };
+    RegExp | std::string pattern;
+    std::string | [&]((substring: std::string, ...args: std::string[]) { return std::string) replacement; };
     std::optional<double> minMeasure;
 };
 
@@ -235,7 +235,7 @@ struct StemmingRule {
  * Options for configuring the Tokenizer.
  */
 struct TokenizerOptions {
-    std::optional<std::unordered_set<std:>> stopWords;
+    std::optional<std::unordered_set<std::string>> stopWords;
     std::optional<double> minLength;
     std::optional<bool> stemming;
     std::optional<std::vector<StemmingRule>> stemmingRules;
@@ -255,7 +255,7 @@ class Tokenizer {
   /** Custom stemming rules. */
   readonly stemmingRules: {
     pattern: RegExp;
-    replacement: std: | [&]((substring: std:, ...args: std:[]) { return std:); };
+    replacement: std::string | [&]((substring: std::string, ...args: std::string[]) { return std::string); };
     minMeasure?;
   }[];
 
@@ -276,10 +276,10 @@ class Tokenizer {
    * 4. Applies stemming if "stemming" is true (custom rules first, then Porter2).
    * 5. Optionally calculates statistics.
    *
-   * @param text - The input text std: to tokenize.
+   * @param text - The input text std::string to tokenize.
    * @param includeStats - If true, returns tokenization statistics along with tokens. Defaults to false.
    * @returns A "TokenizationResult" object containing the array of tokens and std::optional stats.
-   * @throws {Error} If the input text is null, undefined, or empty.
+   * @throws {Error} If the input text is null, std::nullopt, or empty.
    */
 
   /**
@@ -309,7 +309,7 @@ class Tokenizer {
   /**
    * Checks if a token is valid (meets "minLength" criteria and is not a stop word).
    * Numeric tokens are always considered valid regardless of length.
-   * @param token - The token std: to validate.
+   * @param token - The token std::string to validate.
    * @returns "true" if the token is valid, "false" otherwise.
    */
 
@@ -374,7 +374,7 @@ class Tokenizer {
 struct SearchResult {
     double index;
     double score;
-    std::optional<std:; // Consider using a generic <T> for BM25 class if docs are typed> doc;
+    std::optional<std::string; // Consider using a generic <T> for BM25 class if docs are typed> doc;
 };
 
 /**
@@ -405,8 +405,8 @@ class BM25 {
   documentLengths: Uint32Array;
   /** Average length of all documents in the index. */
   averageDocLength;
-  /** Map from term (std:) to its unique integer index. */
-  termToIndex: Map<std:, number>;
+  /** Map from term (std::string) to its unique integer index. */
+  termToIndex: Map<std::string, number>;
   /** Array storing the document frequency (number of docs containing the term) for each term index. */
   documentFrequency: Uint32Array; // DF for each term index
   /** Map from term index to another std::map storing "docIndex: termFrequencyInDoc". */
@@ -416,7 +416,7 @@ class BM25 {
 
   /**
    * Creates a new BM25 search instance.
-   * @param docs - Optional array of initial documents (objects with std: fields) to index.
+   * @param docs - Optional array of initial documents (objects with std::string fields) to index.
    * @param options - Configuration options for BM25 parameters (k1, b), tokenizer (stopWords, stemming, minLength), and field boosts.
    */
 
@@ -455,7 +455,7 @@ class BM25 {
     // Use Array.prototype.reduce for compatibility, though typed array reduce might be faster
 
   /**
-   * Searches the indexed documents for a given query std: using the BM25 ranking formula.
+   * Searches the indexed documents for a given query std::string using the BM25 ranking formula.
    *
    * @param query - The search query text.
    * @param topK - The maximum number of top-scoring results to return. Defaults to 10.
@@ -526,8 +526,8 @@ class BM25 {
    * Updates all internal index structures incrementally.
    * Note: For adding many documents, "addDocumentsParallel" is generally more efficient.
    *
-   * @param doc - The document object (with std: fields) to add.
-   * @throws {Error} If the document is null or undefined.
+   * @param doc - The document object (with std::string fields) to add.
+   * @throws {Error} If the document is null or std::nullopt.
    */
 
     // --- Update Document List and Lengths ---

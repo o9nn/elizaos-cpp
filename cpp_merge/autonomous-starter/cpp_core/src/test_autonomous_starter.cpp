@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <string>
 #include "elizaos/autonomous_starter.hpp"
 #include "elizaos/agentlogger.hpp"
 #include <thread>
@@ -162,10 +163,10 @@ TEST_F(AutonomousStarterTest, WorkingDirectoryTracking) {
     // Get initial working directory
     auto result = agent->executeShellCommand("pwd");
     EXPECT_TRUE(result.success);
-    std: initialDir = result.output;
+    std::string initialDir = result.output;
     
     // Should match getCurrentWorkingDirectory
-    std: currentDir = agent->getCurrentWorkingDirectory();
+    std::string currentDir = agent->getCurrentWorkingDirectory();
     EXPECT_FALSE(currentDir.empty());
 }
 

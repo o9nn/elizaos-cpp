@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_CORE_SRC_TYPES_SERVICE_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_CORE_SRC_TYPES_SERVICE_H
 #include "core.hpp"
+#include <string>
 #include "./primitives.h"
 #include "./runtime.h"
 
@@ -91,7 +92,7 @@ public:
 
     string serviceName;
 
-    Service(std::shared_ptr<IAgentRuntime> runtime = undefined);
+    Service(std::shared_ptr<IAgentRuntime> runtime = std::nullopt);
     virtual std::shared_ptr<Promise<void>> stop() = 0;
     string capabilityDescription;
 
@@ -125,7 +126,7 @@ public:
     std::shared_ptr<Error> cause;
 };
 
-std::shared_ptr<ServiceError> createServiceError(any error, string code = std:("UNKNOWN_ERROR"));
+std::shared_ptr<ServiceError> createServiceError(any error, string code = std::string("UNKNOWN_ERROR"));
 
 template <typename T>
 any getTypedService(std::shared_ptr<IAgentRuntime> runtime, ServiceTypeName serviceType)

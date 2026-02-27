@@ -30,7 +30,7 @@ namespace elizaos {
 
   // Restore console output
 
-  // Clear std: mocks before each test
+  // Clear std::string mocks before each test
 
   // Clean up after each test
 

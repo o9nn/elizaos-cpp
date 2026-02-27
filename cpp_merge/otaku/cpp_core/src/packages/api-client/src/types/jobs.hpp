@@ -35,8 +35,8 @@ enum JobStatus {
 struct CreateJobRequest {
     std::optional<UUID> agentId;
     UUID userId;
-    std: content;
-    std::optional<std::unordered_map<std:, unknown>> metadata;
+    std::string content;
+    std::optional<std::unordered_map<std::string, unknown>> metadata;
     std::optional<double> timeoutMs;
 };
 
@@ -44,7 +44,7 @@ struct CreateJobRequest {
  * Response when creating a job
  */
 struct CreateJobResponse {
-    std: jobId;
+    std::string jobId;
     JobStatus status;
     double createdAt;
     double expiresAt;
@@ -56,10 +56,10 @@ struct CreateJobResponse {
 struct JobResult {
     { message;
     UUID id;
-    std: content;
+    std::string content;
     UUID authorId;
     double createdAt;
-    std::optional<std::unordered_map<std:, unknown>> metadata;
+    std::optional<std::unordered_map<std::string, unknown>> metadata;
     double processingTimeMs;
 };
 
@@ -67,16 +67,16 @@ struct JobResult {
  * Job details response
  */
 struct JobDetailsResponse {
-    std: jobId;
+    std::string jobId;
     JobStatus status;
     UUID agentId;
     UUID userId;
-    std: prompt;
+    std::string prompt;
     double createdAt;
     double expiresAt;
     std::optional<JobResult> result;
-    std::optional<std:> error;
-    std::optional<std::unordered_map<std:, unknown>> metadata;
+    std::optional<std::string> error;
+    std::optional<std::unordered_map<std::string, unknown>> metadata;
 };
 
 /**

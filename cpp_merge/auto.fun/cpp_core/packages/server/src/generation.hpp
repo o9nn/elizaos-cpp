@@ -96,7 +96,7 @@ enum MediaType {
  */
     // Connect to Solana
 
-    // Convert std: addresses to PublicKey objects
+    // Convert std::string addresses to PublicKey objects
 
     // Fetch token accounts with a simple RPC call
 
@@ -113,15 +113,15 @@ enum MediaType {
     // You may want to change this to false in production
 
 // Function definition moved earlier
-std::future<std:> generateLyrics(std::optional<std:> tokenMetadata, std::optional<std:> stylePrompt);
+std::future<std::string> generateLyrics(std::optional<std::string> tokenMetadata, std::optional<std::string> stylePrompt);
 
-std::future<std:> generateStylePrompt(const std:& userPrompt);
+std::future<std::string> generateStylePrompt(const std::string& userPrompt);
 
 // Function definition moved earlier
-std: formatLyricsForDiffrhythm(const std:& lyrics);
+std::string formatLyricsForDiffrhythm(const std::string& lyrics);
 
 // Helper to generate media using fal.ai or Cloudflare Workers
-std::future<void> generateMedia(std::optional<std:> data);
+std::future<void> generateMedia(std::optional<std::string> data);
 
 // Media generation validation schema
   // Video specific options
@@ -134,17 +134,17 @@ std::future<void> generateMedia(std::optional<std:> data);
 /**
  * Generate an image using Fal.ai API
  */
-std::future<MediaGeneration> generateImage(const std:& mint, const std:& prompt, std::optional<std:> negativePrompt, std::optional<std:> creator);
+std::future<MediaGeneration> generateImage(const std::string& mint, const std::string& prompt, std::optional<std::string> negativePrompt, std::optional<std::string> creator);
 
 /**
  * Generate a video using Fal.ai API
  */
-std::future<MediaGeneration> generateVideo(const std:& mint, const std:& prompt, std::optional<std:> negativePrompt, std::optional<std:> creator);
+std::future<MediaGeneration> generateVideo(const std::string& mint, const std::string& prompt, std::optional<std::string> negativePrompt, std::optional<std::string> creator);
 
 /**
  * Get daily generation count and update if needed
  */
-std::future<double> getDailyGenerationCount(const std:& db, const std:& mint, const std:& creator);
+std::future<double> getDailyGenerationCount(const std::string& db, const std::string& mint, const std::string& creator);
 
 // --- Define generateMetadata FIRST ---
 
@@ -159,8 +159,8 @@ std::future<void> generatePreGeneratedTokens();
 std::future<void> checkAndReplenishTokens(std::optional<double> threshold);
 
 // Helper std::function to generate an enhanced prompt using the token metadata
-std::future<std:> generateEnhancedPrompt(const std:& userPrompt, std::optional<std:> tokenMetadata, MediaType mediaType = MediaType.IMAGE);
+std::future<std::string> generateEnhancedPrompt(const std::string& userPrompt, std::optional<std::string> tokenMetadata, MediaType mediaType = MediaType.IMAGE);
 
 // Function to generate additional images for a token
-std::future<void> generateAdditionalTokenImages(const std:& tokenMint, const std:& description);
+std::future<void> generateAdditionalTokenImages(const std::string& tokenMint, const std::string& description);
 } // namespace elizaos

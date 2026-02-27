@@ -1,4 +1,5 @@
 #include "chat-interface.hpp"
+#include <string>
 #include <vector>
 #include <map>
 #include <iostream>
@@ -16,7 +17,7 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
         const auto [isCreatingChannel, setIsCreatingChannel] = useState(false);
         const auto [selectedPlugin, setSelectedPlugin] = useState<keyof typeof PLUGIN_ACTIONS | nullptr>(nullptr);
         const auto [isLoadingMessages, setIsLoadingMessages] = useState(false);
-        const auto [error, setError] = useState<std: | nullptr>(nullptr);
+        const auto [error, setError] = useState<std::string | nullptr>(nullptr);
         const auto [showDummyToolGroup, setShowDummyToolGroup] = useState(false);
         const auto [showPromptsModal, setShowPromptsModal] = useState(false);
         const auto messagesEndRef = useRef<HTMLDivElement>(nullptr);
@@ -153,7 +154,7 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
                                                                 isUserScrollingRef.current = false // User is not scrolling when loading messages;
                                                                 setTimeout[&](() { return scrollToBottom("smooth"), 0); };
                                                                 std::cout << " Loaded " + sortedMessages.size() + " messages" << std::endl;
-                                                                } catch (error: std:) {
+                                                                } catch (error: std::string) {
                                                                     std::cerr << " Failed to load messages:" << error << std::endl;
                                                                     } finally {
                                                                         setIsLoadingMessages(false);
@@ -166,9 +167,9 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
                                                                 // Listen for new messages (channel joining is handled in App.tsx)
                                                                 // Only depend on channelId to avoid re-subscribing when agent object changes
                                                                 useEffect[&](() {
-                                                                    if (!channelId) return undefined
+                                                                    if (!channelId) return std::nullopt
 
-                                                                    const auto handleNewMessage = [&](data: std:) {;
+                                                                    const auto handleNewMessage = [&](data: std::string) {;
                                                                         std::cout << " New message received:" << data << std::endl;
                                                                         std::cout << " agentIdRef.current" << agentIdRef.current << std::endl;
 
@@ -232,7 +233,7 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
 
                                                                                     // If it's an error message, also clear the local error state
                                                                                     if (isErrorMessage) {
-                                                                                        // The error is already shown in the message, so clear std: pending local errors
+                                                                                        // The error is already shown in the message, so clear std::string pending local errors
                                                                                         setError(nullptr);
                                                                                     }
                                                                                 }
@@ -257,7 +258,7 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
                                                                                 e.preventDefault();
                                                                                 if (!inputValue || isCreatingChannel) return
 
-                                                                                // Clear std: previous errors
+                                                                                // Clear std::string previous errors
                                                                                 setError(nullptr);
 
                                                                                 // If in new chat mode, create channel first with generated title
@@ -310,7 +311,7 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
                                                                                                         }, 100);
 
                                                                                                         setInputValue("");
-                                                                                                        } catch (error: std:) {
+                                                                                                        } catch (error: std::string) {
                                                                                                             std::cerr << " Failed to create channel:" << error << std::endl;
                                                                                                             const auto errorMessage = error.message || "Failed to create chat. Please try again.";
                                                                                                             setError(errorMessage);
@@ -355,7 +356,7 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
                                                                                                                 }, []) // Empty deps - scrollToBottom and isUserScrollingRef are stable;
 
                                                                                                                 // Handle prompt click - populate input instead of auto-sending
-                                                                                                                const auto handlePromptClick = [&](message: std:) {;
+                                                                                                                const auto handlePromptClick = [&](message: std::string) {;
                                                                                                                     if (!message) return
 
                                                                                                                     // Close modal if open
@@ -372,13 +373,13 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
                                                                                                                 }
 
                                                                                                                 // Legacy std::function for backward compatibility (if needed elsewhere)
-                                                                                                                const auto handleQuickPrompt = std::async [&](message: std:) {;
+                                                                                                                const auto handleQuickPrompt = std::async [&](message: std::string) {;
                                                                                                                     if (isTyping || !message || isCreatingChannel) return
 
                                                                                                                     // Close modal if open
                                                                                                                     setShowPromptsModal(false);
 
-                                                                                                                    // Clear std: previous errors
+                                                                                                                    // Clear std::string previous errors
                                                                                                                     setError(nullptr);
 
                                                                                                                     // If in new chat mode, create channel first with generated title
@@ -427,7 +428,7 @@ void ChatInterface(auto userId, auto serverId, auto channelId, auto isNewChatMod
                                                                                                                                             targetUserId: agent.id,
                                                                                                                                             });
                                                                                                                                             }, 100);
-                                                                                                                                            } catch (error: std:) {
+                                                                                                                                            } catch (error: std::string) {
                                                                                                                                                 std::cerr << " Failed to create channel:" << error << std::endl;
                                                                                                                                                 const auto errorMessage = error.message || "Failed to create chat. Please try again.";
                                                                                                                                                 setError(errorMessage);

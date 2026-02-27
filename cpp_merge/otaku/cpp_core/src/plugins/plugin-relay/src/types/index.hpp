@@ -36,16 +36,16 @@ using BridgeRequest = z.infer<typeof BridgeRequestSchema>;
 
 // Internal bridge request with resolved chain IDs
 struct ResolvedBridgeRequest {
-    std: user;
+    std::string user;
     double originChainId;
     double destinationChainId;
-    std:;  // Contract address on origin chain currency;
-    std::optional<std:;  // Contract address on destination chain> toCurrency;
-    std:; // in wei amount;
-    std::optional<std:> recipient;
+    std::string;  // Contract address on origin chain currency;
+    std::optional<std::string;  // Contract address on destination chain> toCurrency;
+    std::string; // in wei amount;
+    std::optional<std::string> recipient;
     std::optional<bool> useExactInput;
     std::optional<bool> useExternalLiquidity;
-    std::optional<std:> referrer;
+    std::optional<std::string> referrer;
 };
 
 // Execute call request schema
@@ -58,22 +58,22 @@ using StatusRequest = z.infer<typeof StatusRequestSchema>;
 
 // Transaction status
 struct RelayStatus {
-    std: id;
+    std::string id;
     "pending" | "success" | "failed" status;
-    std: user;
-    std: recipient;
-    std: createdAt;
-    std: updatedAt;
+    std::string user;
+    std::string recipient;
+    std::string createdAt;
+    std::string updatedAt;
     { data;
     { fees;
-    std::optional<std:> gas;
-    std::optional<std:> relayer;
+    std::optional<std::string> gas;
+    std::optional<std::string> relayer;
     Array<{ inTxs;
-    std: hash;
+    std::string hash;
     double chainId;
     double timestamp;
     Array<{ outTxs;
-    std: hash;
+    std::string hash;
     double chainId;
     double timestamp;
 };
@@ -84,18 +84,18 @@ struct RelayStatus {
 struct RelayExecuteResult {
     std::optional<{> data;
     std::optional<{> request;
-    std: id;
-    std::optional<std:> requestId;
+    std::string id;
+    std::optional<std::string> requestId;
 };
 
 // Chain information
 struct RelayChain {
     double id;
-    std: name;
-    std: displayName;
-    std: httpRpcUrl;
-    std::optional<std:> wsRpcUrl;
-    std: explorerUrl;
+    std::string name;
+    std::string displayName;
+    std::string httpRpcUrl;
+    std::optional<std::string> wsRpcUrl;
+    std::string explorerUrl;
     bool depositEnabled;
     bool withdrawEnabled;
 };
@@ -103,23 +103,23 @@ struct RelayChain {
 // Currency information
 struct RelayCurrencyInfo {
     { currency;
-    std: contract;
+    std::string contract;
     double decimals;
-    std: name;
-    std: symbol;
+    std::string name;
+    std::string symbol;
     double chainId;
     bool depositEnabled;
     bool withdrawEnabled;
-    std: minAmount;
-    std: maxAmount;
+    std::string minAmount;
+    std::string maxAmount;
 };
 
 // Plugin configuration
 struct RelayPluginConfig {
-    std::optional<std:> RELAY_API_URL;
-    std::optional<std:> RELAY_API_KEY;
-    std::optional<std:> DEFAULT_SLIPPAGE;
-    std::optional<std:> MAX_PRICE_IMPACT;
+    std::optional<std::string> RELAY_API_URL;
+    std::optional<std::string> RELAY_API_KEY;
+    std::optional<std::string> DEFAULT_SLIPPAGE;
+    std::optional<std::string> MAX_PRICE_IMPACT;
     std::optional<bool> ENABLE_TESTNET;
 };
 

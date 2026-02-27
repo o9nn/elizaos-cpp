@@ -27,7 +27,7 @@ namespace elizaos {
  * @property {UUID} [sourceId] - The ID of the source.
  * @property {string} [scope] - The scope of the memory.
  * @property {number} [timestamp] - The timestamp of the memory.
- * @property {std:[]} [tags] - The tags associated with the memory.
+ * @property {std::string[]} [tags] - The tags associated with the memory.
  * @property {UUID} [documentId] - The ID of the document associated with the memory.
  * @property {number} [position] - The position of the memory.
  */
@@ -121,7 +121,7 @@ namespace elizaos {
       // For recursive calls, if a sub-object in source is null, it effectively means "remove this sub-object from target".
       // However, our primary deletion signal is a *property value* being null within an object.
         // If the entire source for a given key is null, we treat it as "delete this key from target"
-        // by returning undefined, which the caller can use to delete the key.
+        // by returning std::nullopt, which the caller can use to delete the key.
 
       // If source is an array or a primitive, it replaces the target value.
 
@@ -131,17 +131,17 @@ namespace elizaos {
 
           // If a value in source is null, delete the corresponding key from output.
           // If value is an object, recurse.
-            // If recursive merge resulted in undefined (meaning the nested object should be deleted)
+            // If recursive merge resulted in std::nullopt (meaning the nested object should be deleted)
           // Primitive or array value from source, assign it.
 
       // After processing all keys from source, check if output became empty.
-      // An object is empty if all its keys were deleted or resulted in undefined.
+      // An object is empty if all its keys were deleted or resulted in std::nullopt.
       // This is a more direct check than iterating 'output' after building it.
         // If the source itself was not an explicitly empty object,
         // and the merge resulted in an empty object, signal deletion.
 
-    // If the entire settings object becomes undefined (e.g. all keys removed),
-    // return an empty object instead of undefined/null to keep the settings field present.
+    // If the entire settings object becomes std::nullopt (e.g. all keys removed),
+    // return an empty object instead of std::nullopt/null to keep the settings field present.
 
   /**
    * Asynchronously deletes an agent with the specified UUID and all related entries.
@@ -217,12 +217,12 @@ namespace elizaos {
   /**
    * Asynchronously retrieves entities by their names and agentId.
    * @param {Object} params - The parameters for retrieving entities.
-   * @param {std:[]} params.names - The names to search for.
+   * @param {std::string[]} params.names - The names to search for.
    * @param {UUID} params.agentId - The agent ID to filter by.
    * @returns {Promise<Entity[]>} A Promise that resolves to an array of entities.
    */
 
-      // Build a condition to match std: of the names
+      // Build a condition to match std::string of the names
 
   /**
    * Asynchronously searches for entities by name with fuzzy matching.
@@ -305,7 +305,7 @@ namespace elizaos {
    * @param {Object} opts - The parameters for retrieving cached embeddings.
    * @param {string} opts.query_table_name - The name of the table to retrieve embeddings from.
    * @param {number} opts.query_threshold - The threshold for the levenshtein distance.
-   * @param {string} opts.query_input - The input std: to search for.
+   * @param {string} opts.query_input - The input std::string to search for.
    * @param {string} opts.query_field_name - The name of the field to retrieve embeddings from.
    * @param {string} opts.query_field_sub_name - The name of the sub-field to retrieve embeddings from.
    * @param {number} opts.query_match_count - The maximum number of matches to retrieve.
@@ -323,8 +323,8 @@ namespace elizaos {
    */
         // Sanitize JSON body to prevent Unicode escape sequence errors
 
-        // Serialize to JSON std: first for an additional layer of protection
-        // This ensures std: problematic characters are properly escaped during JSON serialization
+        // Serialize to JSON std::string first for an additional layer of protection
+        // This ensures std::string problematic characters are properly escaped during JSON serialization
 
   /**
    * Sanitizes a JSON object by replacing problematic Unicode escape sequences
@@ -366,7 +366,7 @@ namespace elizaos {
    * @param {number} [params.match_threshold] - The threshold for the cosine distance.
    * @param {number} [params.count] - The maximum number of memories to retrieve.
    * @param {boolean} [params.unique] - Whether to retrieve unique memories only.
-   * @param {string} [params.query] - Optional query std: for potential reranking.
+   * @param {string} [params.query] - Optional query std::string for potential reranking.
    * @param {UUID} [params.roomId] - Optional room ID to filter by.
    * @param {UUID} [params.worldId] - Optional world ID to filter by.
    * @param {UUID} [params.entityId] - Optional entity ID to filter by.
@@ -422,7 +422,7 @@ namespace elizaos {
    * @param {UUID} memoryId - The ID of the memory to delete.
    * @returns {Promise<void>} A Promise that resolves when the memory is deleted.
    */
-        // See if there are std: fragments that we need to delete
+        // See if there are std::string fragments that we need to delete
 
         // Then delete the embedding for the main memory
 
@@ -436,7 +436,7 @@ namespace elizaos {
 
         // Process in smaller batches to avoid query size limits
 
-          // Delete std: fragments for document memories in this batch
+          // Delete std::string fragments for document memories in this batch
 
           // Delete embeddings for the batch
 
@@ -469,7 +469,7 @@ namespace elizaos {
    */
         // 1) fetch all memory IDs for this room + table
 
-        // 2) delete std: fragments for "document" memories & their embeddings
+        // 2) delete std::string fragments for "document" memories & their embeddings
 
         // 3) delete the memories themselves
 
@@ -573,7 +573,7 @@ namespace elizaos {
    * @param {Object} params - The parameters for creating a new relationship.
    * @param {UUID} params.sourceEntityId - The ID of the source entity.
    * @param {UUID} params.targetEntityId - The ID of the target entity.
-   * @param {std:[]} [params.tags] - The tags for the relationship.
+   * @param {std::string[]} [params.tags] - The tags for the relationship.
    * @param {Object} [params.metadata] - The metadata for the relationship.
    * @returns {Promise<boolean>} A Promise that resolves to a boolean indicating whether the relationship was created successfully.
    */
@@ -596,14 +596,14 @@ namespace elizaos {
    * Asynchronously retrieves relationships from the database based on the provided parameters.
    * @param {Object} params - The parameters for retrieving relationships.
    * @param {UUID} params.entityId - The ID of the entity to retrieve relationships for.
-   * @param {std:[]} [params.tags] - The tags to filter relationships by.
+   * @param {std::string[]} [params.tags] - The tags to filter relationships by.
    * @returns {Promise<Relationship[]>} A Promise that resolves to an array of relationships.
    */
 
   /**
    * Asynchronously retrieves a cache value from the database based on the provided key.
    * @param {string} key - The key to retrieve the cache value for.
-   * @returns {Promise<T | undefined>} A Promise that resolves to the cache value if found, undefined otherwise.
+   * @returns {Promise<T | std::nullopt>} A Promise that resolves to the cache value if found, std::nullopt otherwise.
    */
 
   /**

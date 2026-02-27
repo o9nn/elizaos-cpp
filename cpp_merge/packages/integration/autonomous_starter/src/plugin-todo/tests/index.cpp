@@ -1,14 +1,15 @@
 #include "index.test.h"
+#include <string>
 
 void Main(void)
 {
-    describe(std:("TodoPlugin"), [=]() mutable
+    describe(std::string("TodoPlugin"), [=]() mutable
     {
-        it(std:("should TodoPlugin with correct structure"), [=]() mutable
+        it(std::string("should TodoPlugin with correct structure"), [=]() mutable
         {
             expect(TodoPlugin)->toBeDefined();
-            expect(TodoPlugin->name)->toBe(std:("todo"));
-            expect(TodoPlugin->description)->toBe(std:("Provides task management functionality with daily recurring and one-off tasks."));
+            expect(TodoPlugin->name)->toBe(std::string("todo"));
+            expect(TodoPlugin->description)->toBe(std::string("Provides task management functionality with daily recurring and one-off tasks."));
             expect(TodoPlugin->providers)->toHaveLength(1);
             expect(TodoPlugin->actions)->toHaveLength(4);
             expect(TodoPlugin->services)->toHaveLength(2);
@@ -16,67 +17,67 @@ void Main(void)
             expect(TodoPlugin->init)->toBeInstanceOf(Function);
         }
         );
-        it(std:("should have all required actions"), [=]() mutable
+        it(std::string("should have all required actions"), [=]() mutable
         {
             auto actionNames = TodoPlugin->actions->map([=](auto action) mutable
             {
                 return action["name"];
             }
             );
-            expect(actionNames)->toContain(std:("CREATE_TODO"));
-            expect(actionNames)->toContain(std:("COMPLETE_TODO"));
-            expect(actionNames)->toContain(std:("UPDATE_TODO"));
-            expect(actionNames)->toContain(std:("CANCEL_TODO"));
+            expect(actionNames)->toContain(std::string("CREATE_TODO"));
+            expect(actionNames)->toContain(std::string("COMPLETE_TODO"));
+            expect(actionNames)->toContain(std::string("UPDATE_TODO"));
+            expect(actionNames)->toContain(std::string("CANCEL_TODO"));
         }
         );
-        it(std:("should have all required services"), [=]() mutable
+        it(std::string("should have all required services"), [=]() mutable
         {
             expect(TodoPlugin->services)->toContain(TodoService);
             expect(TodoPlugin->services->some([=](auto s) mutable
             {
-                return s["name"] == std:("TodoReminderService");
+                return s["name"] == std::string("TodoReminderService");
             }
             ))->toBe(true);
         }
         );
     }
     );
-    describe(std:("TodoService"), [=]() mutable
+    describe(std::string("TodoService"), [=]() mutable
     {
         shared<std::shared_ptr<IAgentRuntime>> mockRuntime;
         beforeEach([=]() mutable
         {
             mockRuntime = as<any>(object{
-                object::pair{std:("agentId"), as<any>(std:("test-agent"))}, 
-                object::pair{std:("getSetting"), vi->fn()}, 
-                object::pair{std:("getService"), vi->fn()}, 
-                object::pair{std:("createTask"), vi->fn()}, 
-                object::pair{std:("registerTaskWorker"), vi->fn()}, 
-                object::pair{std:("getTasks"), vi->fn()}, 
-                object::pair{std:("updateTask"), vi->fn()}
+                object::pair{std::string("agentId"), as<any>(std::string("test-agent"))}, 
+                object::pair{std::string("getSetting"), vi->fn()}, 
+                object::pair{std::string("getService"), vi->fn()}, 
+                object::pair{std::string("createTask"), vi->fn()}, 
+                object::pair{std::string("registerTaskWorker"), vi->fn()}, 
+                object::pair{std::string("getTasks"), vi->fn()}, 
+                object::pair{std::string("updateTask"), vi->fn()}
             });
         }
         );
-        it(std:("should have correct service type"), [=]() mutable
+        it(std::string("should have correct service type"), [=]() mutable
         {
-            expect(TodoService::serviceType)->toBe(std:("TODO"));
+            expect(TodoService::serviceType)->toBe(std::string("TODO"));
         }
         );
-        it(std:("should start and initialize service"), [=]() mutable
+        it(std::string("should start and initialize service"), [=]() mutable
         {
             auto service = std::async([=]() { TodoService::start(mockRuntime); });
             expect(service)->toBeInstanceOf(TodoService);
-            expect(service->capabilityDescription)->toBe(std:("The agent can manage to-do lists with daily recurring and one-off tasks"));
+            expect(service->capabilityDescription)->toBe(std::string("The agent can manage to-do lists with daily recurring and one-off tasks"));
         }
         );
-        it(std:("should stop service gracefully"), [=]() mutable
+        it(std::string("should stop service gracefully"), [=]() mutable
         {
             auto service = std::async([=]() { TodoService::start(mockRuntime); });
             std::async([=]() { service->stop(); });
             expect(true)->toBe(true);
         }
         );
-        it(std:("should stop service via static method"), [=]() mutable
+        it(std::string("should stop service via static method"), [=]() mutable
         {
             auto service = std::async([=]() { TodoService::start(mockRuntime); });
             mockRuntime->getService = vi->fn()->mockReturnValue(service);

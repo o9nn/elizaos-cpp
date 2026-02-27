@@ -1,4 +1,5 @@
 #include "settings.hpp"
+#include <string>
 #include <future>
 #include <optional>
 #include <unordered_map>
@@ -14,63 +15,63 @@ Setting createSettingFromConfig(Omit<Setting, "value"> configSetting) {
 
 }
 
-std: getSalt() {
+std::string getSalt() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return coreGetSalt();
 
 }
 
-std: encryptStringValue(const std:& value, const std:& salt) {
+std::string encryptStringValue(const std::string& value, const std::string& salt) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return coreEncryptStringValue(value, salt);
 
 }
 
-std: decryptStringValue(const std:& value, const std:& salt) {
+std::string decryptStringValue(const std::string& value, const std::string& salt) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return coreDecryptStringValue(value, salt);
 
 }
 
-Setting saltSettingValue(Setting setting, const std:& salt) {
+Setting saltSettingValue(Setting setting, const std::string& salt) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return coreSaltSettingValue(setting, salt);
 
 }
 
-Setting unsaltSettingValue(Setting setting, const std:& salt) {
+Setting unsaltSettingValue(Setting setting, const std::string& salt) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return coreUnsaltSettingValue(setting, salt);
 
 }
 
-WorldSettings saltWorldSettings(WorldSettings worldSettings, const std:& salt) {
+WorldSettings saltWorldSettings(WorldSettings worldSettings, const std::string& salt) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return coreSaltWorldSettings(worldSettings, salt);
 
 }
 
-WorldSettings unsaltWorldSettings(WorldSettings worldSettings, const std:& salt) {
+WorldSettings unsaltWorldSettings(WorldSettings worldSettings, const std::string& salt) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return coreUnsaltWorldSettings(worldSettings, salt);
 
 }
 
-std::future<bool> updateWorldSettings(IAgentRuntime runtime, const std:& serverId, WorldSettings worldSettings) {
+std::future<bool> updateWorldSettings(IAgentRuntime runtime, const std::string& serverId, WorldSettings worldSettings) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return coreUpdateWorldSettings(runtime, serverId, worldSettings);
 
 }
 
-std::future<std::optional<WorldSettings>> getWorldSettings(IAgentRuntime runtime, const std:& serverId) {
+std::future<std::optional<WorldSettings>> getWorldSettings(IAgentRuntime runtime, const std::string& serverId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return coreGetWorldSettings(runtime, serverId);
@@ -98,14 +99,14 @@ Character decryptedCharacter(Character character, IAgentRuntime runtime) {
 
 }
 
-std::unordered_map<std:, std:> encryptObjectValues(const std::unordered_map<std:, std:>& obj, const std:& salt) {
+std::unordered_map<std::string, std::string> encryptObjectValues(const std::unordered_map<std::string, std::string>& obj, const std::string& salt) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return coreEncryptObjectValues(obj, salt);
 
 }
 
-std::unordered_map<std:, std:> decryptObjectValues(const std::unordered_map<std:, std:>& obj, const std:& salt) {
+std::unordered_map<std::string, std::string> decryptObjectValues(const std::unordered_map<std::string, std::string>& obj, const std::string& salt) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return coreDecryptObjectValues(obj, salt);

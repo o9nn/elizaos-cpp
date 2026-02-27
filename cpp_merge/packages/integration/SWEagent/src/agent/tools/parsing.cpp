@@ -1,26 +1,27 @@
 #include "parsing.hpp"
+#include <string>
 
 string FunctionCallingParser::formatErrorMessage(object error)
 {
-    if (error["errorCode"] == std:("missing")) {
-        return std:("The model did not use any tool calls");
+    if (error["errorCode"] == std::string("missing")) {
+        return std::string("The model did not use any tool calls");
     }
-    return OR((error["message"]), (std:("Unknown error")));
+    return OR((error["message"]), (std::string("Unknown error")));
 }
 
 std::shared_ptr<AbstractParseFunction> getParser(string parserName)
 {
     static switch_type __switch11968_12730 = {
-        { any(std:("identity")), 1 },
-        { any(std:("thought_action")), 2 },
-        { any(std:("action_only")), 3 },
-        { any(std:("xml_thought_action")), 4 },
-        { any(std:("edit_format")), 5 },
-        { any(std:("function_calling")), 6 },
-        { any(std:("single_bash_code_block")), 7 },
-        { any(std:("multiple_bash_code_blocks")), 8 },
-        { any(std:("last_line")), 9 },
-        { any(std:("identity")), 10 }
+        { any(std::string("identity")), 1 },
+        { any(std::string("thought_action")), 2 },
+        { any(std::string("action_only")), 3 },
+        { any(std::string("xml_thought_action")), 4 },
+        { any(std::string("edit_format")), 5 },
+        { any(std::string("function_calling")), 6 },
+        { any(std::string("single_bash_code_block")), 7 },
+        { any(std::string("multiple_bash_code_blocks")), 8 },
+        { any(std::string("last_line")), 9 },
+        { any(std::string("identity")), 10 }
     };
     switch (__switch11968_12730[parserName])
     {
@@ -45,7 +46,7 @@ std::shared_ptr<AbstractParseFunction> getParser(string parserName)
     case 10:
         return std::make_shared<IdentityParser>();
     default:
-        throw any(std::make_shared<Error>(std:("Unknown parser: ") + parserName + string_empty));
+        throw any(std::make_shared<Error>(std::string("Unknown parser: ") + parserName + string_empty));
     }
 };
 

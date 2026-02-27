@@ -19,9 +19,9 @@ namespace elizaos {
 
 // ChatBubbleAvatar
 struct ChatBubbleAvatarProps {
-    std::optional<std:> src;
-    std::optional<std:> fallback;
-    std::optional<std:> className;
+    std::optional<std::string> src;
+    std::optional<std::string> fallback;
+    std::optional<std::string> className;
 };
 
 // ChatBubbleMessage

@@ -10,8 +10,8 @@ class RunsService;
 class RunsService : public BaseApiClient, public std::enable_shared_from_this<RunsService> {
 public:
     using std::enable_shared_from_this<RunsService>::shared_from_this;
-    virtual std::shared_ptr<Promise<object>> listRuns(std::shared_ptr<UUID> agentId, std::shared_ptr<ListRunsParams> params = undefined);
-    virtual std::shared_ptr<Promise<std::shared_ptr<RunDetail>>> getRun(std::shared_ptr<UUID> agentId, std::shared_ptr<UUID> runId, std::shared_ptr<UUID> roomId = undefined);
+    virtual std::shared_ptr<Promise<object>> listRuns(std::shared_ptr<UUID> agentId, std::shared_ptr<ListRunsParams> params = std::nullopt);
+    virtual std::shared_ptr<Promise<std::shared_ptr<RunDetail>>> getRun(std::shared_ptr<UUID> agentId, std::shared_ptr<UUID> runId, std::shared_ptr<UUID> roomId = std::nullopt);
     RunsService(std::shared_ptr<ApiClientConfig> config);
 };
 

@@ -1,10 +1,11 @@
 #include "port-validation.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-double validatePort(const std:& value) {
+double validatePort(const std::string& value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

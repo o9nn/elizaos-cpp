@@ -1,4 +1,5 @@
 #include "status.hpp"
+#include <string>
 
 SetStatusEnvironmentHook::SetStatusEnvironmentHook(string id, StatusCallback callable) : EnvHook() {
     this->id = id;
@@ -12,21 +13,21 @@ void SetStatusEnvironmentHook::update(string message)
 
 void SetStatusEnvironmentHook::onStartDeployment()
 {
-    this->update(std:("Starting deployment"));
+    this->update(std::string("Starting deployment"));
 }
 
 void SetStatusEnvironmentHook::onInstallEnvStarted()
 {
-    this->update(std:("Installing environment"));
+    this->update(std::string("Installing environment"));
 }
 
 void SetStatusEnvironmentHook::onEnvironmentStartup()
 {
-    this->update(std:("Starting environment"));
+    this->update(std::string("Starting environment"));
 }
 
 void SetStatusEnvironmentHook::onClose()
 {
-    this->update(std:("Closing environment"));
+    this->update(std::string("Closing environment"));
 }
 

@@ -19,28 +19,28 @@ namespace elizaos {
  // Added for path normalization
 
 struct ShellHistoryEntry {
-    std: command;
-    std: output;
-    std::optional<std:> error;
+    std::string command;
+    std::string output;
+    std::optional<std::string> error;
     number | null exitCode;
     double timestamp;
-    std: cwd;
+    std::string cwd;
 };
 
 // Interface for file operations
 struct FileOperationEntry {
     double timestamp;
-    std:; // e.g., "read", "write", "delete", "create_dir", "edit", "move", "copy" operationType;
-    std:; // The full command command;
-    std:; // The primary file or directory path involved target;
-    std::optional<std:; // For commands like mv, cp> secondaryTarget;
-    std: cwd;
+    std::string; // e.g., "read", "write", "delete", "create_dir", "edit", "move", "copy" operationType;
+    std::string; // The full command command;
+    std::string; // The primary file or directory path involved target;
+    std::optional<std::string; // For commands like mv, cp> secondaryTarget;
+    std::string cwd;
 };
 
 // Heuristic to identify file operation types and targets
 // This is a simplified parser and might need to be more robust for complex commands
 
-class ShellService extends Service {
+class ShellService : public Service {
   static override serviceType: ServiceTypeName = ShellServiceType.SHELL;
   override capabilityDescription =
     "Provides shell access to execute commands on the host system.";
@@ -49,10 +49,10 @@ class ShellService extends Service {
   private fileOperationHistory: FileOperationEntry[] = []; // Added
   private maxHistoryLength = 100; // Store the last 100 commands
   private maxFileOperationHistoryLength = 10; // Store last 10 file operations
+private:
+    std::string currentWorkingDirectory = std::filesystem::current_path().string();
 
-  private currentWorkingDirectory: std: = std::filesystem::current_path().string();
-
-  constructor(runtime: IAgentRuntime) {
+  /* constructor */ (runtime: IAgentRuntime) {
     super(runtime);
     logger.info("[ShellService] Initialized");
   }

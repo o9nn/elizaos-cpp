@@ -17,7 +17,7 @@ namespace elizaos {
 
 
 struct ChatPageProps {
-    std: sessionId;
+    std::string sessionId;
 };
 
 

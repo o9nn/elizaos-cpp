@@ -1,4 +1,5 @@
 #include "auth.hpp"
+#include <string>
 #include <future>
 #include <cstdlib>
 #include <iostream>
@@ -6,7 +7,7 @@
 
 namespace elizaos {
 
-std::future<std:> createJwtToken(const std:& publicKey) {
+std::future<std::string> createJwtToken(const std::string& publicKey) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

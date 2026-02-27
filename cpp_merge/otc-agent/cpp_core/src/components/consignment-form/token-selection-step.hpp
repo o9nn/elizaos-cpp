@@ -16,32 +16,32 @@ namespace elizaos {
 
 
 // Address detection helpers
-bool isSolanaAddress(const std:& address);
+bool isSolanaAddress(const std::string& address);
 
-bool isEvmAddress(const std:& address);
+bool isEvmAddress(const std::string& address);
 
-bool isContractAddress(const std:& query);
+bool isContractAddress(const std::string& query);
 
 // Minimum thresholds to filter obvious dust
 
 // Client-side token cache (15 minute TTL)
 struct CachedTokens {
     std::vector<TokenWithBalance> tokens;
-    std: walletAddress;
-    std: chain;
+    std::string walletAddress;
+    std::string chain;
     double cachedAt;
 };
 
-void setTokenCache(const std:& walletAddress, const std:& chain, const std::vector<TokenWithBalance>& tokens);
+void setTokenCache(const std::string& walletAddress, const std::string& chain, const std::vector<TokenWithBalance>& tokens);
 
-void clearTokenCache(std::optional<std:> walletAddress, std::optional<std:> chain);
+void clearTokenCache(std::optional<std::string> walletAddress, std::optional<std::string> chain);
 
 struct TokenSelectionProps {
-    { tokenId: std: } formData;
+    { tokenId: std::string } formData;
 
-std: formatBalance(const std:& balance, double decimals);
+std::string formatBalance(const std::string& balance, double decimals);
 
-std: formatUsd(double usd);
+std::string formatUsd(double usd);
 
 struct LoadingState {
     bool isLoading;

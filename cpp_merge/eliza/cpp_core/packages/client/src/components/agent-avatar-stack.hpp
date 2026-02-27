@@ -22,7 +22,7 @@ namespace elizaos {
 struct AgentAvatarStackProps {
     std::vector<UUID> agentIds;
     std::vector<std::string> agentNames;
-    std::optional<std:> size;
+    std::optional<std::string> size;
     std::optional<double> maxStack;
     std::optional<bool> showExtraTooltip;
 };

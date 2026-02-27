@@ -15,9 +15,9 @@ namespace global {
         class Chainable : public object, public std::enable_shared_from_this<Chainable> {
         public:
             using std::enable_shared_from_this<Chainable>::shared_from_this;
-            virtual std::shared_ptr<Chainable<void>> login(string username = undefined, string password = undefined) = 0;
+            virtual std::shared_ptr<Chainable<void>> login(string username = std::nullopt, string password = std::nullopt) = 0;
             virtual std::shared_ptr<Chainable<void>> waitForApp() = 0;
-            virtual std::shared_ptr<Chainable<void>> navigateToAgent(string agentId = undefined) = 0;
+            virtual std::shared_ptr<Chainable<void>> navigateToAgent(string agentId = std::nullopt) = 0;
             virtual std::shared_ptr<Chainable<void>> sendChatMessage(string message) = 0;
             virtual std::shared_ptr<Chainable<void>> clearAppData() = 0;
         };

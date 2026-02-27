@@ -21,16 +21,16 @@ using ClankerConfig = z.infer<typeof ClankerConfigSchema>;
 
 // Clanker SDK v4.0.0 Types
 struct ClankerTokenMetadata {
-    std::optional<std:> description;
+    std::optional<std::string> description;
     std::optional<std::vector<std::string>> socialMediaUrls;
     std::optional<std::vector<std::string>> auditUrls;
 };
 
 struct ClankerTokenContext {
-    std::optional<std:> interface;
-    std::optional<std:> platform;
-    std::optional<std:> messageId;
-    std::optional<std:> id;
+    std::optional<std::string> interface;
+    std::optional<std::string> platform;
+    std::optional<std::string> messageId;
+    std::optional<std::string> id;
 };
 
 struct PoolPosition {
@@ -40,7 +40,7 @@ struct PoolPosition {
 };
 
 struct PoolConfig {
-    std::optional<std:> pairedToken;
+    std::optional<std::string> pairedToken;
     std::optional<double> tickIfToken0IsClanker;
     std::optional<std::vector<PoolPosition>> positions;
 };
@@ -58,8 +58,8 @@ struct DynamicFeeConfig {
 using FeeConfig = std::variant<StaticFeeConfig, DynamicFeeConfig>;
 
 struct RewardRecipient {
-    std: recipient;
-    std: admin;
+    std::string recipient;
+    std::string admin;
     number; // basis points, sum must be 10000 (100%) bps;
     "Both" | "Paired" | "Clanker" token;
 };
@@ -75,11 +75,11 @@ struct VaultConfig {
 };
 
 struct PoolKey {
-    std: currency0;
-    std: currency1;
+    std::string currency0;
+    std::string currency1;
     double fee;
     double tickSpacing;
-    std: hooks;
+    std::string hooks;
 };
 
 struct DevBuyConfig {
@@ -90,11 +90,11 @@ struct DevBuyConfig {
 
 // Token deployment types for Clanker SDK v4.0.0
 struct TokenDeployParams {
-    std: name;
-    std: symbol;
-    std::optional<std:> tokenAdmin;
+    std::string name;
+    std::string symbol;
+    std::optional<std::string> tokenAdmin;
     std::optional<bool> vanity;
-    std::optional<std:> image;
+    std::optional<std::string> image;
     std::optional<ClankerTokenMetadata> metadata;
     std::optional<ClankerTokenContext> context;
     std::optional<PoolConfig> pool;
@@ -105,17 +105,17 @@ struct TokenDeployParams {
 };
 
 struct DeployResult {
-    std: contractAddress;
-    std: transactionHash;
-    std:; // String representation of wei (bigint converted to std: for JSON serialization) deploymentCost;
-    std::optional<std:> tokenId;
+    std::string contractAddress;
+    std::string transactionHash;
+    std::string; // String representation of wei (bigint converted to std::string for JSON serialization) deploymentCost;
+    std::optional<std::string> tokenId;
 };
 
 // Token information types
 struct TokenInfo {
-    std: address;
-    std: name;
-    std: symbol;
+    std::string address;
+    std::string name;
+    std::string symbol;
     double decimals;
     bigint totalSupply;
     std::optional<double> price;
@@ -125,13 +125,13 @@ struct TokenInfo {
     std::optional<double> liquidity;
     std::optional<double> marketCap;
     std::optional<double> createdAt;
-    std::optional<std:> creator;
+    std::optional<std::string> creator;
 };
 
 // Legacy types for backward compatibility (deprecated)
 struct LiquidityParams {
-    std: tokenA;
-    std: tokenB;
+    std::string tokenA;
+    std::string tokenB;
     BigNumberish amountA;
     BigNumberish amountB;
     std::optional<double> slippage;
@@ -139,7 +139,7 @@ struct LiquidityParams {
 };
 
 struct RemoveLiquidityParams {
-    std: lpToken;
+    std::string lpToken;
     BigNumberish liquidity;
     BigNumberish minAmountA;
     BigNumberish minAmountB;
@@ -148,30 +148,30 @@ struct RemoveLiquidityParams {
 
 struct LiquidityResult {
     bigint lpTokens;
-    std: transactionHash;
+    std::string transactionHash;
     [bigint, bigint] actualAmounts;
-    std::optional<std:> lpTokenAddress;
+    std::optional<std::string> lpTokenAddress;
 };
 
 // Swap types (deprecated - use external DEX)
 struct SwapParams {
-    std: fromToken;
-    std: toToken;
+    std::string fromToken;
+    std::string toToken;
     BigNumberish amount;
     std::optional<double> slippage;
-    std::optional<std:> recipient;
+    std::optional<std::string> recipient;
     std::optional<double> deadline;
 };
 
 struct SwapRoute {
-    std: token;
-    std: pool;
+    std::string token;
+    std::string pool;
     double fee;
 };
 
 struct SwapResult {
     bigint outputAmount;
-    std: transactionHash;
+    std::string transactionHash;
     std::vector<SwapRoute> route;
     double priceImpact;
     std::optional<bigint> gasUsed;
@@ -179,24 +179,24 @@ struct SwapResult {
 
 // Transaction types
 struct Transaction {
-    std: to;
-    std::optional<std:> from;
+    std::string to;
+    std::optional<std::string> from;
     std::optional<BigNumberish> value;
-    std::optional<std:> data;
+    std::optional<std::string> data;
     std::optional<BigNumberish> gasLimit;
     std::optional<BigNumberish> gasPrice;
     std::optional<double> nonce;
 };
 
 struct SignedTransaction {
-    std: hash;
-    std: raw;
+    std::string hash;
+    std::string raw;
 };
 
 struct TransactionReceipt {
-    std: hash;
+    std::string hash;
     double blockNumber;
-    std: blockHash;
+    std::string blockHash;
     bigint gasUsed;
     bool status;
     std::vector<std::string> logs;
@@ -204,9 +204,9 @@ struct TransactionReceipt {
 
 // Error types
 struct ErrorResponse {
-    std: code;
-    std: message;
-    std::optional<std:> details;
+    std::string code;
+    std::string message;
+    std::optional<std::string> details;
     std::optional<std::vector<std::string>> suggestions;
 };
 
@@ -225,19 +225,19 @@ enum ErrorCode {
 
 // Transaction monitoring
 struct TransactionStatus {
-    std: hash;
+    std::string hash;
     "pending" | "confirmed" | "failed" status;
     double confirmations;
-    std::optional<std:> error;
+    std::optional<std::string> error;
 };
 
 // Balance types
 struct TokenBalance {
-    std: token;
-    std: symbol;
+    std::string token;
+    std::string symbol;
     double decimals;
     bigint balance;
-    std: formattedBalance;
+    std::string formattedBalance;
     std::optional<double> priceUsd;
     std::optional<double> valueUsd;
 };

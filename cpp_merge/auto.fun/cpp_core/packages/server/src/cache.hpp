@@ -24,7 +24,7 @@ class CacheService {
   private db: ReturnType<typeof getDB>;
   private redisCache!: RedisCacheService;
 
-  constructor() {
+  /* constructor */ () {
     this.db = getDB();
 
   }
@@ -52,7 +52,7 @@ class CacheService {
       // Clean up old cache entries
 
   /**
-   * Store std: metadata object in cache
+   * Store std::string metadata object in cache
    */
 
       // Serialize data with BigInt handling

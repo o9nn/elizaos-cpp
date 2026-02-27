@@ -1,4 +1,5 @@
 #include "avatar-panel.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -7,7 +8,7 @@ namespace elizaos {
 void AvatarPanel() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto [avatar, setAvatar] = useState<std: | nullptr>(characterValue.settings.avatar || nullptr);
+    const auto [avatar, setAvatar] = useState<std::string | nullptr>(characterValue.settings.avatar || nullptr);
     const auto [hasChanged, setHasChanged] = useState(false);
     const auto fileInputRef = useRef<HTMLInputElement>(nullptr);
 
@@ -42,7 +43,7 @@ void AvatarPanel() {
                     };
 
                     // Centralized update std::function to avoid code duplication
-                    const auto updateCharacterAvatar = [&](avatarUrl: std:) {;
+                    const auto updateCharacterAvatar = [&](avatarUrl: std::string) {;
                         if (setCharacterValue.updateAvatar) {
                             // Use the specialized method for avatar updates when available
                             setCharacterValue.updateAvatar(avatarUrl);

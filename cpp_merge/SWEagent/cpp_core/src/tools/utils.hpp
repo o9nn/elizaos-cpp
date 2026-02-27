@@ -30,21 +30,21 @@ namespace elizaos {
 /**
  * Check if a value should be quoted
  */
-bool shouldQuote(const std:& value, Command command);
+bool shouldQuote(const std::string& value, Command command);
 
 /**
  * Get command signature
  */
-std: getSignature(Command cmd);
+std::string getSignature(Command cmd);
 
 /**
  * Generate command documentation
  */
-std: generateCommandDocs(const std::vector<Command>& commands, const std::vector<std::string>& subroutineTypes, const std::unordered_map<std:, std:>& _kwargs);
+std::string generateCommandDocs(const std::vector<Command>& commands, const std::vector<std::string>& subroutineTypes, const std::unordered_map<std::string, std::string>& _kwargs);
 
 /**
  * Format a single command for documentation
  */
-std: formatCommand(Command cmd);
+std::string formatCommand(Command cmd);
 
 } // namespace elizaos

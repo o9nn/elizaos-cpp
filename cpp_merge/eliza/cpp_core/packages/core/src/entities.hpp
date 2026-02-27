@@ -77,8 +77,7 @@ std::future<Entity | null> findEntityByName(IAgentRuntime runtime, Memory messag
   // Use a deterministic approach to generate a new UUID based on both IDs
   // This creates a unique ID for each user+agent combination while still being deterministic
 
-  // Create a namespace UUID (version 5) from the combined std:
-  return stringToUuid(combinedString);
+  // Create a namespace UUID (version 5) from the combined std::string return stringToUuid(combinedString);
 
 /**
  * Get details for a list of entities.
@@ -93,16 +92,16 @@ std::future<Entity | null> findEntityByName(IAgentRuntime runtime, Memory messag
  */
 
 /**
- * Format entities into a std:
+ * Format entities into a std::string
  * @param entities - list of entities
- * @returns std:
+ * @returns std::string
  */
 /**
- * Format the given entities into a std: representation.
+ * Format the given entities into a std::string representation.
  *
  * @param {Object} options - The options object.
  * @param {Entity[]} options.entities - The list of entities to format.
- * @returns {string} A formatted std: representing the entities.
+ * @returns {string} A formatted std::string representing the entities.
  */
 void formatEntities({ entities: Entity[] } { entities });
 

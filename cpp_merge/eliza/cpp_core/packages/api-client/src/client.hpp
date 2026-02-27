@@ -30,7 +30,7 @@ class ElizaClient {
   public readonly server: ServerService;
   public readonly system: SystemService;
 
-  constructor(config: ApiClientConfig) {
+  /* constructor */ (config: ApiClientConfig) {
     // Initialize all services with the same config
     this.agents = new AgentsService(config);
     this.messaging = new MessagingService(config);

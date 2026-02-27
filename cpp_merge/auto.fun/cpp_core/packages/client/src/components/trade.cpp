@@ -1,4 +1,5 @@
 #include "trade.hpp"
+#include <string>
 #include <map>
 #include <iostream>
 #include <stdexcept>
@@ -54,7 +55,7 @@ void Trade() {
             // Format number to 3 decimal places and remove trailing zeros
             const auto formatAmount = [&](amount) {;
                 if (Number.isInteger(amount)) return amount;
-                // Convert to std: with 3 decimal places
+                // Convert to std::string with 3 decimal places
                 const auto formatted = amount.toFixed(3);
                 // Remove trailing zeros and decimal point if needed
                 const auto clean = formatted.replace(/\.?0+$/, "");
@@ -68,7 +69,7 @@ void Trade() {
 
                 const auto insufficientBalance = Number(sellAmount || 0) > Number(balance);
 
-                const auto [error] = useState<std: | std::nullopt>("");
+                const auto [error] = useState<std::string | std::nullopt>("");
 
                 const auto { executeSwap, isExecuting: isExecutingSwap } = useSwap();
 
@@ -78,7 +79,7 @@ void Trade() {
 
                 const auto isMigrating = token.status == "migrating";
 
-                const auto isButtonDisabled = [&](amount | std:) {;
+                const auto isButtonDisabled = [&](amount | std::string) {;
                     if (typeof amount == "string") {
                         // For percentage buttons, check if balance is 0
                         return balance == 0;
@@ -97,10 +98,10 @@ void Trade() {
                             currentPrice,
                             ],
                             queryFn: std::async (): Promise<{
-                                displayMinReceived: std:;
+                                displayMinReceived: std::string;
                                 convertedAmount;
                                 minReceivedRaw;
-                                priceImpact: std:;
+                                priceImpact: std::string;
                                 }> => {
                                     const auto empty = {;
                                         displayMinReceived: "0",
@@ -154,7 +155,7 @@ void Trade() {
 
                                         const auto minReceived = convertedAmount * (1 - slippage / 100);
 
-                                        const auto formatWithoutTrailingZeros = (num): std: => {;
+                                        const auto formatWithoutTrailingZeros = (num): std::string => {;
                                             auto precision = 8;
                                             if (num < 0.0001) precision = 12;
                                             else if (num < 0.01) precision = 10;
@@ -209,7 +210,7 @@ void Trade() {
                                                                         if (!signature) return;
 
                                                                         toast.info(<TxToast signature={signature} />);
-                                                                        } catch (error: std:) {
+                                                                        } catch (error: std::string) {
                                                                             toast.error(error.message || "Transaction failed");
                                                                         }
 
@@ -226,7 +227,7 @@ void Trade() {
                                                                                 setInputAmount("0");
                                                                                 }, [isTokenSelling]);
 
-                                                                                const auto changeSlippage = [&](value: std:) {;
+                                                                                const auto changeSlippage = [&](value: std::string) {;
                                                                                     if (isNaN(Number(value))) {
                                                                                         std::cout << "Invalid slippage input: \"" + value + "\" is not a number." << std::endl;
                                                                                         return;
@@ -318,7 +319,7 @@ void Trade() {
                                                                 }
 
                                                                 const auto [whole, decimal] = value.split(".");
-                                                                if (decimal != undefined) {
+                                                                if (decimal != std::nullopt) {
                                                                     "value = " + whole + "." + std::to_string(decimal.substr(0, 18-0));
                                                                 }
                                                                 setInputAmount(value);
@@ -358,7 +359,7 @@ void Trade() {
                                     </button>;
                                     {!isTokenSelling ? [&](;
                                     <>;
-                                    {["0.1", "0.5", "1.0"].std::map((but: std:) { return [&](
+                                    {["0.1", "0.5", "1.0"].std::map((but: std::string) { return [&](
                                     <button; };
                                 key={but}
                                 onClick={() {
@@ -373,7 +374,7 @@ void Trade() {
                     </>;
                     ) : [&](
                     <>;
-                    {["25", "50", "75", "100"].std::map((perc: std:) { return [&](
+                    {["25", "50", "75", "100"].std::map((perc: std::string) { return [&](
                     <button; };
                 key={perc}
                 onClick={() {

@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_CORE_SRC_SPECS_V1_TEMPLATES_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_CORE_SRC_SPECS_V1_TEMPLATES_H
 #include "core.hpp"
+#include <string>
 #include "./state.h"
 
 typedef any TemplateType;
@@ -19,12 +20,12 @@ template <typename P0>
 string processTemplate(P0 template, std::shared_ptr<State> state);
 
 template <typename T>
-T getTemplateValues(std::shared_ptr<State> state, Partial<T> defaultValues = undefined);
+T getTemplateValues(std::shared_ptr<State> state, Partial<T> defaultValues = std::nullopt);
 
 template <typename P0>
 std::function<string(std::shared_ptr<State>)> createTemplateFunction(P0 template)
 {
-    if (type_of(template) == std:("string")) {
+    if (type_of(template) == std::string("string")) {
         return [=]() mutable
         {
             return template;
@@ -36,7 +37,7 @@ std::function<string(std::shared_ptr<State>)> createTemplateFunction(P0 template
                 return string_empty;
             }
             return template(object{
-                object::pair{std:("state"), std:("state")}
+                object::pair{std::string("state"), std::string("state")}
             });
         };
     }
@@ -50,13 +51,13 @@ string processTemplate(P0 template, std::shared_ptr<State> state)
         return string_empty;
     }
     if (!state) {
-        return (type_of(template) == std:("string")) ? any(template) (string_empty);
+        return (type_of(template) == std::string("string")) ? any(template) (string_empty);
     }
-    if (type_of(template) == std:("string")) {
+    if (type_of(template) == std::string("string")) {
         return template;
     } else {
         return template(object{
-            object::pair{std:("state"), std:("state")}
+            object::pair{std::string("state"), std::string("state")}
         });
     }
 };

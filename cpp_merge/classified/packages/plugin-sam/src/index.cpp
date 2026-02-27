@@ -1,10 +1,11 @@
 #include "index.hpp"
+#include <string>
 
 std::shared_ptr<Plugin> samPlugin = object{
-    object::pair{std:("name"), std:("@elizaos/plugin-sam")}, 
-    object::pair{std:("description"), std:("Retro text-to-speech using SAM Speech Synthesizer with hardware bridge integration")}, 
-    object::pair{std:("actions"), array<any>{ sayAloudAction }}, 
-    object::pair{std:("services"), array<SamTTSService>{ SamTTSService }}
+    object::pair{std::string("name"), std::string("@elizaos/plugin-sam")}, 
+    object::pair{std::string("description"), std::string("Retro text-to-speech using SAM Speech Synthesizer with hardware bridge integration")}, 
+    object::pair{std::string("actions"), array<any>{ sayAloudAction }}, 
+    object::pair{std::string("services"), array<SamTTSService>{ SamTTSService }}
 };
 
 void Main(void)

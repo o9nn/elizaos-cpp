@@ -28,8 +28,8 @@ public:
     any process;
 
     virtual std::shared_ptr<Promise<boolean>> stop() = 0;
-    virtual std::shared_ptr<Promise<void>> start(array<string> args = undefined) = 0;
-    virtual std::shared_ptr<Promise<void>> restart(array<string> args = undefined) = 0;
+    virtual std::shared_ptr<Promise<void>> start(array<string> args = std::nullopt) = 0;
+    virtual std::shared_ptr<Promise<void>> restart(array<string> args = std::nullopt) = 0;
     virtual boolean isRunning() = 0;
 };
 

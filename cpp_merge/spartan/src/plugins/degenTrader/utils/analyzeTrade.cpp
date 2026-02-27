@@ -1,4 +1,5 @@
 #include "analyzeTrade.hpp"
+#include <string>
 
 double calculateVolatility(array<double> priceHistory)
 {
@@ -27,7 +28,7 @@ double calculateDynamicSlippage(string amount, any quoteData)
     try
     {
         auto baseSlippage = 0.005;
-        auto priceImpact = Math->abs(parseFloat(OR((quoteData["priceImpactPct"]), (std:("0"))))) / 100;
+        auto priceImpact = Math->abs(parseFloat(OR((quoteData["priceImpactPct"]), (std::string("0"))))) / 100;
         auto amountNum = parseFloat(amount);
         auto decimals = OR((quoteData["inputDecimals"]), (9));
         auto amountInBase = amountNum / Math->pow(10, decimals);
@@ -49,13 +50,13 @@ double calculateDynamicSlippage(string amount, any quoteData)
     }
     catch (const any& error)
     {
-        logger->warn(std:("Error calculating dynamic slippage, using default:"), error);
+        logger->warn(std::string("Error calculating dynamic slippage, using default:"), error);
         return 0.01;
     }
 };
 
 
-string tradeAnalysisTemplate = std:("\
+string tradeAnalysisTemplate = std::string("\
 You are a trading assistant focused on managing SOL wallet balances and trade sizes. Your primary goal is to suggest appropriate trade amounts while maintaining safe reserves.\
 \
 <api_data>\

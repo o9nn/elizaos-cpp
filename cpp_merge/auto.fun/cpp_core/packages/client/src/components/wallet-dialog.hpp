@@ -18,13 +18,13 @@ namespace elizaos {
 
 struct WalletModalProviderProps {
     ReactNode children;
-    std::optional<std:> className;
-    std::optional<std:> container;
+    std::optional<std::string> className;
+    std::optional<std::string> container;
 };
 
 struct WalletModalProps {
-    std::optional<std:> className;
-    std::optional<std:> container;
+    std::optional<std::string> className;
+    std::optional<std::string> container;
 };
 
         // Store selection in localStorage
@@ -49,7 +49,7 @@ struct WalletModalProps {
 
           // Check adapter publicKey
 
-        // Convert window.solana.publicKey to std: if needed
+        // Convert window.solana.publicKey to std::string if needed
 
         /** Nonce generation */
 
@@ -73,9 +73,9 @@ struct WalletModalProps {
 
         // Define the expected response type
         struct AuthResponse {
-    std: token;
-    std: message;
-    std: address;
+    std::string token;
+    std::string message;
+    std::string address;
 };
 
         // Store the token using the new handler

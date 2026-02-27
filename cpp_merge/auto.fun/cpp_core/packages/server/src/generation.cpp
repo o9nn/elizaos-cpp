@@ -11,26 +11,25 @@
 
 namespace elizaos {
 
-std::future<> checkRateLimits(const std:& mint, MediaType type, std::optional<std:> publicKey) {
+std::future<> checkRateLimits(const std::string& mint, MediaType type, std::optional<std::string> publicKey) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    allowed; remaining; message?: std:
+    allowed; remaining; message?: std::string
 }
 
-std::future<> checkTokenOwnership(const std:& mint, const std:& publicKey, std: mode = "fast", MediaType mediaType = MediaType.IMAGE) {
+std::future<> checkTokenOwnership(const std::string& mint, const std::string& publicKey, std::string mode = "fast", MediaType mediaType = MediaType.IMAGE) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    allowed; message?: std:
+    allowed; message?: std::string
 }
 
-std::future<> checkBlockchainTokenBalance(const std:& mint, const std:& publicKey, double minimumRequired) {
+std::future<> checkBlockchainTokenBalance(const std::string& mint, const std::string& publicKey, double minimumRequired) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    allowed; message?: std:
+    allowed; message?: std::string
 }
 
-std::future<std:> generateLyrics(std::optional<std:> tokenMetadata, std::optional<std:> stylePrompt) {
+std::future<std::string> generateLyrics(std::optional<std::string> tokenMetadata, std::optional<std::string> stylePrompt) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
-        // Ensure it promises a std:
-        try {
+        // Ensure it promises a std::string try {
             if (!std::getenv("FAL_API_KEY")) {
                 throw new Error(
                 "FAL_API_KEY environment variable not std::set for lyrics generation.";
@@ -69,7 +68,7 @@ std::future<std:> generateLyrics(std::optional<std:> tokenMetadata, std::optiona
             // Temperature adjustment might need different handling with Fal
             };
 
-            const std: response = fal.subscribe("fal-ai/any-llm", {;
+            const std::string response = fal.subscribe("fal-ai/any-llm", {;
                 input: falInput,
                 logs: true, // Optional: for debugging
                 });
@@ -84,8 +83,7 @@ std::future<std:> generateLyrics(std::optional<std:> tokenMetadata, std::optiona
                     "Failed to generate valid lyrics structure from Fal AI. Response:",
                     lyrics;
                     );
-                    // Return a fallback std:
-                    return "[verse]\n[00:00.00] Song about " + tokenMetadata.name + "\n[00:03.00] Symbol " + tokenMetadata.symbol + "\n[chorus]\n[00:06.00] Based on: " + std::to_string(tokenMetadata.description.substring(0, 50)) + "...\n[00:09.00] Fal AI generation failed.";
+                    // Return a fallback std::string return "[verse]\n[00:00.00] Song about " + tokenMetadata.name + "\n[00:03.00] Symbol " + tokenMetadata.symbol + "\n[chorus]\n[00:06.00] Based on: " + std::to_string(tokenMetadata.description.substring(0, 50)) + "...\n[00:09.00] Fal AI generation failed.";
                 }
 
                 // Add section markers if they're missing (might be less necessary if prompt works well)
@@ -117,7 +115,7 @@ std::future<std:> generateLyrics(std::optional<std:> tokenMetadata, std::optiona
                 // Add timestamps if they're missing (less likely if prompt works)
                 const auto lines = lyrics.split("\n");
                 auto currentTime = 0;
-                const auto formattedLines = lines.std::map[&]((line: std:) {;
+                const auto formattedLines = lines.std::map[&]((line: std::string) {;
                     if (
                     line == "" ||;
                     (line.substr(0, "[") && !line.match(/\[\d{2}:\d{2}\.\d{2}\]/))
@@ -144,11 +142,11 @@ std::future<std:> generateLyrics(std::optional<std:> tokenMetadata, std::optiona
                         return line;
                         });
 
-                        return formattedLines.join("\n"); // Return the final std:;
+                        return formattedLines.join("\n"); // Return the final std::string;
 
                         } catch (error) {
                             std::cerr << "Error generating lyrics:" << error << std::endl;
-                            // Also return a fallback std: on catch
+                            // Also return a fallback std::string on catch
                             return "[verse]\n[00:00.00] Error generating lyrics for " + tokenMetadata.name + ".";
                             // OR re-throw if generateMedia should handle the error
                             // throw error;
@@ -160,7 +158,7 @@ std::future<std:> generateLyrics(std::optional<std:> tokenMetadata, std::optiona
     }
 }
 
-std::future<std:> generateStylePrompt(const std:& userPrompt) {
+std::future<std::string> generateStylePrompt(const std::string& userPrompt) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -181,7 +179,7 @@ std::future<std:> generateStylePrompt(const std:& userPrompt) {
             prompt: prompt,
             };
 
-            const std: response = fal.subscribe("fal-ai/any-llm", {;
+            const std::string response = fal.subscribe("fal-ai/any-llm", {;
                 input: falInput,
                 logs: true,
                 });
@@ -210,7 +208,7 @@ std::future<std:> generateStylePrompt(const std:& userPrompt) {
     }
 }
 
-std: formatLyricsForDiffrhythm(const std:& lyrics) {
+std::string formatLyricsForDiffrhythm(const std::string& lyrics) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Split lyrics into lines and clean up
@@ -276,7 +274,7 @@ std: formatLyricsForDiffrhythm(const std:& lyrics) {
 
 }
 
-std::future<void> generateMedia(std::optional<std:> data) {
+std::future<void> generateMedia(std::optional<std::string> data) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -308,23 +306,23 @@ std::future<void> generateMedia(std::optional<std:> data) {
                 const auto model = isProMode;
                 ? "fal-ai/flux-pro/v1.1-ultra";
                 : "fal-ai/flux/schnell";
-                const std: input = { prompt = data.prompt };
+                const std::string input = { prompt = data.prompt };
 
                 if (isProMode) {
                     std::cout << "Using Fal AI (" + model + ") for pro image generation..." << std::endl;
                     if (data.width) input.width = data.width;
                     if (data.height) input.height = data.height;
-                    // Add std: other pro-specific params here
+                    // Add std::string other pro-specific params here
                     } else {
                         std::cout << "Using Fal AI (" + model + ") for fast image generation..." << std::endl;
                         input.num_inference_steps = 4; // Schnell default/equivalent;
-                        // Add std: other schnell-specific params here
+                        // Add std::string other schnell-specific params here
                     }
 
                     generationPromise = fal.subscribe[&](model, {
                         input,
                         logs: true,
-                        onQueueUpdate: (update: std:) {
+                        onQueueUpdate: (update: std::string) {
                             if (update.status == "IN_PROGRESS") {
                                 std::cout << "Image generation progress:" << update.logs << std::endl;
                             }
@@ -346,7 +344,7 @@ std::future<void> generateMedia(std::optional<std:> data) {
                                     image_url: data.image_url,
                                     },
                                     logs: true,
-                                    onQueueUpdate: (update: std:) {
+                                    onQueueUpdate: (update: std::string) {
                                         if (update.status == "IN_PROGRESS") {
                                             std::cout << "Image-to-video generation progress:" << update.logs << std::endl;
                                         }
@@ -368,7 +366,7 @@ std::future<void> generateMedia(std::optional<std:> data) {
                                                     ...(data.height ? { height: data.height } : {}),
                                                     },
                                                     logs: true,
-                                                    onQueueUpdate: [&](update: std:) {
+                                                    onQueueUpdate: [&](update: std::string) {
                                                         if (update.status == "IN_PROGRESS") {
                                                             std::cout << "Video generation progress:" << update.logs << std::endl;
                                                         }
@@ -384,7 +382,7 @@ std::future<void> generateMedia(std::optional<std:> data) {
 
                                                         if (!data.lyrics) {
                                                             std::cout << "Generating lyrics for audio..." << std::endl;
-                                                            // generateLyrics now guarantees a std: return
+                                                            // generateLyrics now guarantees a std::string return
                                                             lyricsToUsePromise = generateLyrics(;
                                                             {
                                                                 name: data.prompt.split(":")[0] || "",
@@ -401,7 +399,7 @@ std::future<void> generateMedia(std::optional<std:> data) {
                                                                 throw std::runtime_error("No lyrics found");
                                                             }
 
-                                                            // lyricsToUse is now guaranteed to be a std: here
+                                                            // lyricsToUse is now guaranteed to be a std::string here
                                                             const auto formattedLyrics = formatLyricsForDiffrhythm(lyricsToUse); // Now safe to call;
 
                                                             // Check for existing audio context file in S3
@@ -440,12 +438,12 @@ std::future<void> generateMedia(std::optional<std:> data) {
                                                                             scheduler: data.scheduler || "euler",
                                                                             num_inference_steps: data.num_inference_steps || 32,
                                                                             };
-                                                                            std::cout << "DiffRhythm input:" << /* JSON.stringify */ std:(input, nullptr, 2) << std::endl;
+                                                                            std::cout << "DiffRhythm input:" << /* JSON.stringify */ std::string(input, nullptr, 2) << std::endl;
 
                                                                             generationPromise = fal.subscribe[&]("fal-ai/diffrhythm", {
                                                                                 input,
                                                                                 logs: true,
-                                                                                onQueueUpdate: (update: std:) {
+                                                                                onQueueUpdate: (update: std::string) {
                                                                                     if (update.status == "IN_PROGRESS") {
                                                                                         std::cout << "Music generation progress:" << update.logs << std::endl;
                                                                                     }
@@ -457,7 +455,7 @@ std::future<void> generateMedia(std::optional<std:> data) {
                                                                                     generationPromise,
                                                                                     timeoutPromise,
                                                                                     ]));
-                                                                                    std::cout << "Audio generation result:" << /* JSON.stringify */ std:(result, nullptr, 2) << std::endl;
+                                                                                    std::cout << "Audio generation result:" << /* JSON.stringify */ std::string(result, nullptr, 2) << std::endl;
 
                                                                                     const auto audioUrl = result.data.audio.url;
                                                                                     if (!audioUrl) {
@@ -488,7 +486,7 @@ std::future<void> generateMedia(std::optional<std:> data) {
     }
 }
 
-std::future<MediaGeneration> generateImage(const std:& mint, const std:& prompt, std::optional<std:> negativePrompt, std::optional<std:> creator) {
+std::future<MediaGeneration> generateImage(const std::string& mint, const std::string& prompt, std::optional<std::string> negativePrompt, std::optional<std::string> creator) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -528,7 +526,7 @@ std::future<MediaGeneration> generateImage(const std:& mint, const std:& prompt,
                     prompt,
                     mediaUrl: imageUrl,
                     negativePrompt: negativePrompt || "",
-                    seed: Math.floor(Math.random() * 1000000),
+                    seed: Math.floor(((double)rand() / RAND_MAX) * 1000000),
                     numInferenceSteps: 30,
                     creator: creator || "",
                     timestamp: std::make_unique<Date>().toISOString(),
@@ -546,7 +544,7 @@ std::future<MediaGeneration> generateImage(const std:& mint, const std:& prompt,
     }
 }
 
-std::future<MediaGeneration> generateVideo(const std:& mint, const std:& prompt, std::optional<std:> negativePrompt, std::optional<std:> creator) {
+std::future<MediaGeneration> generateVideo(const std::string& mint, const std::string& prompt, std::optional<std::string> negativePrompt, std::optional<std::string> creator) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -590,7 +588,7 @@ std::future<MediaGeneration> generateVideo(const std:& mint, const std:& prompt,
                     prompt,
                     mediaUrl: videoUrl,
                     negativePrompt: negativePrompt || "",
-                    seed: Math.floor(Math.random() * 1000000),
+                    seed: Math.floor(((double)rand() / RAND_MAX) * 1000000),
                     numInferenceSteps: 30,
                     numFrames: 24,
                     fps: 30,
@@ -612,7 +610,7 @@ std::future<MediaGeneration> generateVideo(const std:& mint, const std:& prompt,
     }
 }
 
-std::future<double> getDailyGenerationCount(const std:& db, const std:& mint, const std:& creator) {
+std::future<double> getDailyGenerationCount(const std::string& db, const std::string& mint, const std::string& creator) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -653,7 +651,7 @@ std::future<double> getDailyGenerationCount(const std:& db, const std:& mint, co
 
 }
 
-std::future<std::optional<std::unordered_map<std:, std:>>> generateMetadata(auto maxRetries) {
+std::future<std::optional<std::unordered_map<std::string, std::string>>> generateMetadata(auto maxRetries) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -671,7 +669,7 @@ std::future<std::optional<std::unordered_map<std:, std:>>> generateMetadata(auto
                     system_prompt: systemPromptContent,
                     prompt: "Generate the token metadata based on the system prompt.",
                     };
-                    const std: response = fal.subscribe("fal-ai/any-llm", {;
+                    const std::string response = fal.subscribe("fal-ai/any-llm", {;
                         input: {
                             prompt: falInput.prompt,
                             system_prompt: falInput.system_prompt,
@@ -680,7 +678,7 @@ std::future<std::optional<std::unordered_map<std:, std:>>> generateMetadata(auto
                             logs: true,
                             });
 
-                            std::optional<std::unordered_map<std:, std:>> metadata = nullptr;
+                            std::optional<std::unordered_map<std::string, std::string>> metadata = nullptr;
                             const auto rawOutput = response.data.output || response.output || "";
                             const auto jsonRegex = /{.*}/s; // Changed regex to be less greedy and handle newlines;
                             const auto jsonString = typeof rawOutput == "string" ? rawOutput.match(jsonRegex).[0] : nullptr;
@@ -724,7 +722,7 @@ std::future<std::optional<std::unordered_map<std:, std:>>> generateMetadata(auto
                                     std::cerr << "Failed to generate metadata after " + maxRetries + " attempts" << std::endl;
                                     // Return fallback or null
                                     if (std::getenv("NODE_ENV") == "development" || std::getenv("NODE_ENV") == "test") {
-                                        const auto randomNum = Math.floor(Math.random() * 1000);
+                                        const auto randomNum = Math.floor(((double)rand() / RAND_MAX) * 1000);
                                         std::cout << "Using fallback metadata in dev/test" << std::endl;
                                         return { name: "FallbackToken" + std::to_string(randomNum) + "", symbol: "FB" + std::to_string(randomNum % 100) + "", description: "Fallback", prompt: "Fallback" }
                                     }
@@ -740,8 +738,8 @@ std::future<> generateTokenOnDemand() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     success;
-    token?: { id: std:; name: std:; ticker: std:; description: std:; prompt: std:; image?: std:; createdAt: std:; used; };
-    error?: std:;
+    token?: { id: std::string; name: std::string; ticker: std::string; description: std::string; prompt: std::string; image?: std::string; createdAt: std::string; used; };
+    error?: std::string;
 
 }
 
@@ -834,7 +832,7 @@ std::future<void> checkAndReplenishTokens(std::optional<double> threshold) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Determine threshold from environment or default
-    if (threshold == undefined || threshold == null) {
+    if (threshold == std::nullopt || threshold == null) {
         threshold = parseInt(std::getenv("PREGENERATED_TOKENS_COUNT") || "3");
         } else {
             threshold = Number(threshold);
@@ -900,7 +898,7 @@ std::future<void> checkAndReplenishTokens(std::optional<double> threshold) {
 
 }
 
-std::future<std:> generateEnhancedPrompt(const std:& userPrompt, std::optional<std:> tokenMetadata, MediaType mediaType = MediaType.IMAGE) {
+std::future<std::string> generateEnhancedPrompt(const std::string& userPrompt, std::optional<std::string> tokenMetadata, MediaType mediaType = MediaType.IMAGE) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -935,7 +933,7 @@ std::future<std:> generateEnhancedPrompt(const std:& userPrompt, std::optional<s
                         // Temperature adjustment might need different handling with Fal
                         };
 
-                        const std: response = fal.subscribe("fal-ai/any-llm", {;
+                        const std::string response = fal.subscribe("fal-ai/any-llm", {;
                             input: {
                                 prompt: falInput.prompt,
                                 system_prompt: falInput.system_prompt,
@@ -977,7 +975,7 @@ std::future<std:> generateEnhancedPrompt(const std:& userPrompt, std::optional<s
     }
 }
 
-std::future<void> generateAdditionalTokenImages(const std:& tokenMint, const std:& description) {
+std::future<void> generateAdditionalTokenImages(const std::string& tokenMint, const std::string& description) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

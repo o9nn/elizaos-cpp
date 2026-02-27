@@ -1,4 +1,5 @@
 #include "use-version.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -10,7 +11,7 @@ void useVersion() {
 
         const auto { toast } = useToast();
 
-        std::async std::function getLatestRelease(repo: std:) {
+        std::async std::function getLatestRelease(repo: std::string) {
             const auto apiUrl = "https://api.github.com/repos/" + repo + "/releases/latest";
 
             try {

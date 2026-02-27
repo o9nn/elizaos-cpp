@@ -19,13 +19,13 @@ namespace elizaos {
 
 using Token = z::infer<typeof TokenSchema>;
 
-using SortOrderType = std:;
+using SortOrderType = std::string;
 
 struct UseTokensParams {
     keyof IToken sortBy;
     SortOrderType sortOrder;
     std::optional<double> hideImported;
-    std::optional<std:> status;
+    std::optional<std::string> status;
     std::optional<double> pageSize;
     std::optional<bool> enabled;
 };

@@ -24,7 +24,7 @@ class ControlsToken {
   private _isAborted = false;
   abort() { this._isAborted = true; }
 
-class AgentControls extends System {
+class AgentControls : public System {
   // Define expected control properties directly on the instance
   scrollDelta = { value: 0 };
 

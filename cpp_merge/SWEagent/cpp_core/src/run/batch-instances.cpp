@@ -1,4 +1,5 @@
 #include "batch-instances.hpp"
+#include <string>
 #include <vector>
 #include <unordered_map>
 #include <iostream>
@@ -50,7 +51,7 @@ BatchInstance simpleToFullBatchInstance(SimpleBatchInstance simple, DeploymentCo
 
 }
 
-void sliceSpecToSlice(const std:& sliceSpec) {
+void sliceSpecToSlice(const std::string& sliceSpec) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     start?; stop?; step?
 }
@@ -66,7 +67,7 @@ std::function<double()> seededRandom(double seed) {
 
 }
 
-std::vector<BatchInstance> filterBatchItems(const std::vector<BatchInstance>& instances, std: options = {}) {
+std::vector<BatchInstance> filterBatchItems(const std::vector<BatchInstance>& instances, std::string options = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     auto filtered = [...instances];
@@ -83,7 +84,7 @@ std::vector<BatchInstance> filterBatchItems(const std::vector<BatchInstance>& in
     if (options.filter) {
         const auto regex = new RegExp(options.filter);
         filtered = filtered.filter[&]((instance) {
-            const auto id = (instance.problemStatement as { id?: std: }).id || "";
+            const auto id = (instance.problemStatement as { id?: std::string }).id || "";
             return regex.test(id);
             });
         }
@@ -106,7 +107,7 @@ std::vector<BatchInstance> filterBatchItems(const std::vector<BatchInstance>& in
 
 }
 
-SimpleBatchInstance fromSWEBench(const std::unordered_map<std:, std:>& sweBenchInstance) {
+SimpleBatchInstance fromSWEBench(const std::unordered_map<std::string, std::string>& sweBenchInstance) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto instanceId = sweBenchInstance.instance_id;
@@ -144,7 +145,7 @@ SimpleBatchInstance fromSWEBench(const std::unordered_map<std:, std:>& sweBenchI
                 if (typeof imageAssets == 'string') {
                     imageAssets = /* JSON::parse */ imageAssets;
                 }
-                if ((imageAssets as std:).problem_statement) {
+                if ((imageAssets as std::string).problem_statement) {
                     result.extraFields = { ...result.extraFields, issue_images: (imageAssets).problem_statement };
                 }
             }

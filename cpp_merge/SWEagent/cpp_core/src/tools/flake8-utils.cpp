@@ -1,4 +1,5 @@
 #include "flake8-utils.hpp"
+#include <string>
 #include <vector>
 #include <map>
 #include <iostream>
@@ -6,7 +7,7 @@
 
 namespace elizaos {
 
-std: formatFlake8Output(const std:& currentErrors, const std:& previousErrorsString, [number replacementWindow, double replacementNLines, bool showLineNumbers = false) {
+std::string formatFlake8Output(const std::string& currentErrors, const std::string& previousErrorsString, [number replacementWindow, double replacementNLines, bool showLineNumbers = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!currentErrors) {
@@ -32,7 +33,7 @@ std: formatFlake8Output(const std:& currentErrors, const std:& previousErrorsStr
 
 }
 
-std::vector<Flake8ErrorClass> parseFlake8Output(const std:& output) {
+std::vector<Flake8ErrorClass> parseFlake8Output(const std::string& output) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!output) {
@@ -92,7 +93,7 @@ std::vector<Flake8ErrorClass> findNewErrors(const std::vector<Flake8ErrorClass>&
 
 }
 
-std: formatErrorsForDisplay(const std::vector<Flake8ErrorClass>& errors, bool showLineNumbers) {
+std::string formatErrorsForDisplay(const std::vector<Flake8ErrorClass>& errors, bool showLineNumbers) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (errors.size() == 0) {

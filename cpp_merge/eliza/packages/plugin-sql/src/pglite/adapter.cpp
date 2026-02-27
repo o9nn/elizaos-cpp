@@ -1,4 +1,5 @@
 #include "adapter.hpp"
+#include <string>
 
 PgliteDatabaseAdapter::PgliteDatabaseAdapter(std::shared_ptr<UUID> agentId, std::shared_ptr<PGliteClientManager> manager) : BaseDrizzleAdapter(agentId) {
     this->manager = manager;
@@ -7,13 +8,13 @@ PgliteDatabaseAdapter::PgliteDatabaseAdapter(std::shared_ptr<UUID> agentId, std:
 
 std::shared_ptr<Promise<void>> PgliteDatabaseAdapter::runMigrations()
 {
-    logger->debug(std:("PgliteDatabaseAdapter: Migrations are handled by the migration service"));
+    logger->debug(std::string("PgliteDatabaseAdapter: Migrations are handled by the migration service"));
     return std::shared_ptr<Promise<void>>();
 }
 
 std::shared_ptr<Promise<void>> PgliteDatabaseAdapter::init()
 {
-    logger->debug(std:("PGliteDatabaseAdapter initialized, skipping automatic migrations."));
+    logger->debug(std::string("PGliteDatabaseAdapter initialized, skipping automatic migrations."));
     return std::shared_ptr<Promise<void>>();
 }
 

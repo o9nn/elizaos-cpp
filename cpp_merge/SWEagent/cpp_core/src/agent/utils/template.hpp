@@ -21,7 +21,7 @@ namespace elizaos {
  */
 
 /**
- * Render a template std: with the given context
+ * Render a template std::string with the given context
  * Supports {{variable}} syntax
  */
 
@@ -37,23 +37,23 @@ namespace elizaos {
  * Render a template with loops and conditionals
  * Supports {% for %}, {% if %}, {% endif %}, {% endfor %}
  */
-std: renderAdvancedTemplate(const std:& template, const std::unordered_map<std:, std:>& context);
+std::string renderAdvancedTemplate(const std::string& template, const std::unordered_map<std::string, std::string>& context);
 
 /**
  * Simple condition evaluator for template conditionals
  */
-bool evaluateCondition(const std:& condition, const std::unordered_map<std:, std:>& context);
+bool evaluateCondition(const std::string& condition, const std::unordered_map<std::string, std::string>& context);
 
 /**
  * Template class for more complex rendering needs
  */
 class Template {
 public:
-    Template(const std:& template);
-    std: render(const std::unordered_map<std:, std:>& context);
+    Template(const std::string& template);
+    std::string render(const std::unordered_map<std::string, std::string>& context);
 
 private:
-    std: template_;
+    std::string template_;
 };
 
 

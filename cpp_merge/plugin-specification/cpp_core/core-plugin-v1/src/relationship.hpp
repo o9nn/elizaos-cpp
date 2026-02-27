@@ -27,7 +27,7 @@ using Relationship = RelationshipFromTypes;
  * Converts V2 Relationship to V1 compatible Relationship
  * Main differences:
  * - V2 uses sourceEntityId/targetEntityId, V1 uses userA/userB
- * - V2 has tags array and metadata object, V1 has status std:
+ * - V2 has tags array and metadata object, V1 has status std::string
  * - V1 has userId and roomId fields that don't exist in V2
  */
 Relationship fromV2Relationship(RelationshipV2 relationshipV2);
@@ -54,16 +54,16 @@ std::vector<RelationshipV2> toV2Relationships(const std::vector<Relationship>& r
  */
 
 /**
- * Converts V2 tags to V1 status std: with common mappings
+ * Converts V2 tags to V1 status std::string with common mappings
  * Provides more intelligent conversion than simple join
  */
-std: tagsToStatus(const std::vector<std::string>& tags);
+std::string tagsToStatus(const std::vector<std::string>& tags);
 
 /**
- * Converts V1 status std: to V2 tags array with common mappings
+ * Converts V1 status std::string to V2 tags array with common mappings
  * Provides more intelligent conversion than simple split
  */
-std::vector<std::string> statusToTags(const std:& status);
+std::vector<std::string> statusToTags(const std::string& status);
 
 /**
  * Enhanced conversion with intelligent status mapping
@@ -82,7 +82,7 @@ RelationshipV2 toV2RelationshipEnhanced(Relationship relationship, UUID agentId)
 /**
  * Creates a new V1 relationship with default values
  */
-Relationship createV1Relationship(UUID userA, UUID userB, std: status = RELATIONSHIP_STATUSES.UNKNOWN, std::optional<UUID> roomId);
+Relationship createV1Relationship(UUID userA, UUID userB, std::string status = RELATIONSHIP_STATUSES.UNKNOWN, std::optional<UUID> roomId);
 
 /**
  * Checks if two relationships represent the same connection (bidirectional)
@@ -92,7 +92,7 @@ bool areRelationshipsEquivalent(Relationship rel1, Relationship rel2);
 /**
  * Filters relationships by status
  */
-std::vector<Relationship> filterRelationshipsByStatus(const std::vector<Relationship>& relationships, const std:& status);
+std::vector<Relationship> filterRelationshipsByStatus(const std::vector<Relationship>& relationships, const std::string& status);
 
 /**
  * Gets all relationships for a specific user (where user is either userA or userB)

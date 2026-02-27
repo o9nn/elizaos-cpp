@@ -11,7 +11,7 @@
 
 namespace elizaos {
 
-std::future<std::unordered_map<std:, CachedTokenMetadata>> getBulkMetadataCache(const std:& chain) {
+std::future<std::unordered_map<std::string, CachedTokenMetadata>> getBulkMetadataCache(const std::string& chain) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -26,7 +26,7 @@ std::future<std::unordered_map<std:, CachedTokenMetadata>> getBulkMetadataCache(
 
 }
 
-std::future<void> setBulkMetadataCache(const std:& chain, const std::unordered_map<std:, CachedTokenMetadata>& metadata) {
+std::future<void> setBulkMetadataCache(const std::string& chain, const std::unordered_map<std::string, CachedTokenMetadata>& metadata) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -38,7 +38,7 @@ std::future<void> setBulkMetadataCache(const std:& chain, const std::unordered_m
 
 }
 
-std::future<std::optional<std::vector<TokenBalance>>> getCachedWalletBalances(const std:& chain, const std:& address) {
+std::future<std::optional<std::vector<TokenBalance>>> getCachedWalletBalances(const std::string& chain, const std::string& address) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -58,7 +58,7 @@ std::future<std::optional<std::vector<TokenBalance>>> getCachedWalletBalances(co
 
 }
 
-std::future<void> setCachedWalletBalances(const std:& chain, const std:& address, const std::vector<TokenBalance>& tokens) {
+std::future<void> setCachedWalletBalances(const std::string& chain, const std::string& address, const std::vector<TokenBalance>& tokens) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -73,7 +73,7 @@ std::future<void> setCachedWalletBalances(const std:& chain, const std:& address
 
 }
 
-std::future<std:> cacheImageToBlob(const std:& imageUrl) {
+std::future<std::string> cacheImageToBlob(const std::string& imageUrl) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!imageUrl) return null;
@@ -121,7 +121,7 @@ std::future<std:> cacheImageToBlob(const std:& imageUrl) {
 
 }
 
-std: getExtensionFromUrl(const std:& url) {
+std::string getExtensionFromUrl(const std::string& url) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -140,7 +140,7 @@ std: getExtensionFromUrl(const std:& url) {
 
 }
 
-std::future<std::unordered_map<std:, double>> getBulkPriceCache(const std:& chain) {
+std::future<std::unordered_map<std::string, double>> getBulkPriceCache(const std::string& chain) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -160,7 +160,7 @@ std::future<std::unordered_map<std:, double>> getBulkPriceCache(const std:& chai
 
 }
 
-std::future<void> setBulkPriceCache(const std:& chain, const std::unordered_map<std:, double>& prices) {
+std::future<void> setBulkPriceCache(const std::string& chain, const std::unordered_map<std::string, double>& prices) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -175,7 +175,7 @@ std::future<void> setBulkPriceCache(const std:& chain, const std::unordered_map<
 
 }
 
-std::future<std::vector<TokenBalance>> fetchAlchemyBalances(const std:& address, const std:& chain, const std:& apiKey) {
+std::future<std::vector<TokenBalance>> fetchAlchemyBalances(const std::string& address, const std::string& chain, const std::string& apiKey) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto config = CHAIN_CONFIG[chain];
@@ -219,7 +219,7 @@ std::future<std::vector<TokenBalance>> fetchAlchemyBalances(const std:& address,
 
                 // Filter non-zero balances
                 const auto nonZeroBalances = tokenBalances.filter(;
-                [&](t: { tokenBalance: std: }) {
+                [&](t: { tokenBalance: std::string }) {
                     const auto bal = t.tokenBalance;
                     return bal && bal != "0x0" && bal != "0x" && BigInt(bal) > 0n;
                     },
@@ -233,14 +233,14 @@ std::future<std::vector<TokenBalance>> fetchAlchemyBalances(const std:& address,
 
                     // Step 2: Get bulk metadata cache (single fast lookup)
                     const auto bulkCache = getBulkMetadataCache(chain);
-                    const std::unordered_map<std:, CachedTokenMetadata> cachedMetadata = {;
+                    const std::unordered_map<std::string, CachedTokenMetadata> cachedMetadata = {;
                         ...bulkCache,
                         };
                         const std::vector<std::string> needsMetadata = [];
 
                         for (const auto& t : nonZeroBalances)
                             const auto addr = (;
-                        t as { contractAddress: std: }
+                        t as { contractAddress: std::string }
                         ).contractAddress.toLowerCase();
                         if (!cachedMetadata[addr]) {
                             needsMetadata.push_back(addr);
@@ -318,7 +318,7 @@ std::future<std::vector<TokenBalance>> fetchAlchemyBalances(const std:& address,
 
                                                             // Step 4: Build token list
                                                             const std::vector<TokenBalance> tokens = nonZeroBalances.std::map(;
-                                                            [&](tokenData: { contractAddress: std:; tokenBalance: std: }) {
+                                                            [&](tokenData: { contractAddress: std::string; tokenBalance: std::string }) {
                                                                 const auto contractAddress = tokenData.contractAddress.toLowerCase();
                                                                 const auto balance = BigInt(tokenData.tokenBalance).toString();
                                                                 const auto metadata = cachedMetadata[contractAddress] || {;
@@ -346,7 +346,7 @@ std::future<std::vector<TokenBalance>> fetchAlchemyBalances(const std:& address,
 
 }
 
-std::future<std::unordered_map<std:, double>> fetchDeFiLlamaPrices(const std:& chain, const std::vector<std::string>& addresses) {
+std::future<std::unordered_map<std::string, double>> fetchDeFiLlamaPrices(const std::string& chain, const std::vector<std::string>& addresses) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (addresses.size() == 0) return {};
@@ -368,7 +368,7 @@ std::future<std::unordered_map<std:, double>> fetchDeFiLlamaPrices(const std:& c
         }
 
         const auto data = response.json();
-        const std::unordered_map<std:, double> prices = {};
+        const std::unordered_map<std::string, double> prices = {};
 
         // Response format: { coins: { "chain:address": { price, ... } } }
         if (data.coins) {
@@ -392,7 +392,7 @@ std::future<std::unordered_map<std:, double>> fetchDeFiLlamaPrices(const std:& c
 
 }
 
-std::future<std::unordered_map<std:, double>> fetchCoinGeckoPrices(const std:& chain, const std::vector<std::string>& addresses) {
+std::future<std::unordered_map<std::string, double>> fetchCoinGeckoPrices(const std::string& chain, const std::vector<std::string>& addresses) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (addresses.size() == 0) return {};
@@ -421,7 +421,7 @@ std::future<std::unordered_map<std:, double>> fetchCoinGeckoPrices(const std:& c
             if (!response.ok) return {};
 
             const auto data = response.json();
-            const std::unordered_map<std:, double> prices = {};
+            const std::unordered_map<std::string, double> prices = {};
 
             for (const int [address, priceData] of Object.entries(data)) {
                 const auto usd = (priceData as { usd? }).usd;
@@ -437,7 +437,7 @@ std::future<std::unordered_map<std:, double>> fetchCoinGeckoPrices(const std:& c
 
 }
 
-std::future<std::unordered_map<std:, double>> fetchPrices(const std:& chain, const std::vector<std::string>& addresses) {
+std::future<std::unordered_map<std::string, double>> fetchPrices(const std::string& chain, const std::vector<std::string>& addresses) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (addresses.size() == 0) return {};
@@ -513,7 +513,7 @@ std::future<void> GET(NextRequest request) {
                 // Apply cached prices first
                 for (const auto& token : tokensNeedingPrices)
                     const auto cachedPrice = cachedPrices[token.contractAddress.toLowerCase()];
-                    if (cachedPrice != undefined) {
+                    if (cachedPrice != std::nullopt) {
                         token.priceUsd = cachedPrice;
                         } else {
                             uncachedAddresses.push_back(token.contractAddress);

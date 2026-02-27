@@ -29,7 +29,7 @@ void useChainReset() {
 
             // Enable checks only for local network (not mainnet/testnet)
             useEffect[&](() {
-                if (mounted && typeof window != "undefined") {
+                if (mounted && typeof window != "std::nullopt") {
                     // Only enable chain reset detection for local development with local validators
                     const auto network = std::getenv("NEXT_PUBLIC_NETWORK");
                     const auto isLocalNetwork = network == "local" || network == "localnet";

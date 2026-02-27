@@ -23,11 +23,11 @@ namespace elizaos {
 /**
  * Calculate statistics from .traj files
  */
-std::future<std:> quickStats(std: directory = ".");
+std::future<std::string> quickStats(std::string directory = ".");
 
 /**
  * Recursively find all .traj files in a directory
  */
-std::vector<std::string> findTrajFiles(const std:& directory);
+std::vector<std::string> findTrajFiles(const std::string& directory);
 
 } // namespace elizaos

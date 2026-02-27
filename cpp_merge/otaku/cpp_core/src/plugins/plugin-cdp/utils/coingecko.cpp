@@ -1,4 +1,5 @@
 #include "coingecko.hpp"
+#include <string>
 #include <future>
 #include <cstdlib>
 #include <optional>
@@ -8,21 +9,21 @@
 
 namespace elizaos {
 
-std: getPlatformId(const std:& network) {
+std::string getPlatformId(const std::string& network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return NETWORK_TO_PLATFORM[network] || network;
 
 }
 
-std: getCacheKey(const std:& network, const std:& address) {
+std::string getCacheKey(const std::string& network, const std::string& address) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return network + ":" + std::to_string(address.toLowerCase());
 
 }
 
-bool isCacheValid(const std:& key) {
+bool isCacheValid(const std::string& key) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto timestamp = cacheTimestamps.get(key);
@@ -31,7 +32,7 @@ bool isCacheValid(const std:& key) {
 
 }
 
-std::future<std::optional<TokenMetadata>> getTokenMetadata(const std:& address, const std:& network) {
+std::future<std::optional<TokenMetadata>> getTokenMetadata(const std::string& address, const std::string& network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto normalizedAddress = address.toLowerCase();
@@ -100,7 +101,7 @@ std::future<std::optional<TokenMetadata>> getTokenMetadata(const std:& address, 
 
 }
 
-std::future<std:> resolveTokenSymbol(const std:& symbol, const std:& network) {
+std::future<std::string> resolveTokenSymbol(const std::string& symbol, const std::string& network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto lowerSymbol = symbol.toLowerCase();
@@ -174,12 +175,12 @@ std::future<std:> resolveTokenSymbol(const std:& symbol, const std:& network) {
 
 }
 
-std::future<`0x> resolveTokenToAddress(const std:& token, const std:& network) {
+std::future<`0x> resolveTokenToAddress(const std::string& token, const std::string& network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    std:;
+    std::string;
 }
 
-std::future<double> getTokenDecimals(const std:& address, const std:& network) {
+std::future<double> getTokenDecimals(const std::string& address, const std::string& network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto metadata = getTokenMetadata(address, network);
@@ -211,10 +212,10 @@ void clearTokenCache() {
 
 void getCacheStats() {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    size; entries: std:[]
+    size; entries: std::string[]
 }
 
-void addHardcodedTokenAddress(const std:& network, const std:& symbol, const std:& address) {
+void addHardcodedTokenAddress(const std::string& network, const std::string& symbol, const std::string& address) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!HARDCODED_TOKEN_ADDRESSES[network]) {
@@ -225,7 +226,7 @@ void addHardcodedTokenAddress(const std:& network, const std:& symbol, const std
 
 }
 
-std::unordered_map<std:, std:> getHardcodedTokens(const std:& network) {
+std::unordered_map<std::string, std::string> getHardcodedTokens(const std::string& network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return HARDCODED_TOKEN_ADDRESSES[network] || {};

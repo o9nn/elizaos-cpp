@@ -1,11 +1,12 @@
 #include "types.hpp"
+#include <string>
 #include <optional>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-UUID asUUID(const std:& id) {
+UUID asUUID(const std::string& id) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -90,14 +91,14 @@ memory is Memory & isFragmentMemory(Memory memory) {
     metadata: FragmentMetadata
 }
 
-std: getMemoryText(Memory memory, auto defaultValue) {
+std::string getMemoryText(Memory memory, auto defaultValue) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return memory.content.text || defaultValue;
 
 }
 
-ServiceError createServiceError(const std:& error, auto code) {
+ServiceError createServiceError(const std::string& error, auto code) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (error instanceof Error) {

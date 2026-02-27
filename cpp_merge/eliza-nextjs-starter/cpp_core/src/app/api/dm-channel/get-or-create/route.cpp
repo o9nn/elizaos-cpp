@@ -1,4 +1,5 @@
 #include "route.hpp"
+#include <string>
 #include <future>
 #include <iostream>
 #include <stdexcept>
@@ -36,7 +37,7 @@ std::future<void> POST(NextRequest request) {
                             const auto allChannels = channelsResponse.json();
 
                             // Look for existing channel with this EXACT session ID only
-                            const auto existingChannel = allChannels.find[&]((channel: std:) {;
+                            const auto existingChannel = allChannels.find[&]((channel: std::string) {;
                                 const auto metadata = channel.metadata || {};
                                 return channel.id == sessionId || metadata.sessionId == sessionId;
                                 });

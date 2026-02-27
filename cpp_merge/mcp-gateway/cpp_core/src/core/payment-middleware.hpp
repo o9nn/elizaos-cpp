@@ -15,28 +15,28 @@ namespace elizaos {
 
 struct PaymentVerificationResult {
     bool authorized;
-    std::optional<std:> error;
+    std::optional<std::string> error;
     std::optional<{> pricing;
-    std: amount;
+    std::string amount;
     'x402' | 'apiKey' | 'free' method;
 };
 
 struct PaymentRequirements {
     double x402Version;
     Array<{ accepts;
-    std: scheme;
-    std: network;
-    std: maxAmountRequired;
-    std: resource;
-    std: description;
-    std::optional<std:> mimeType;
-    std: payTo;
+    std::string scheme;
+    std::string network;
+    std::string maxAmountRequired;
+    std::string resource;
+    std::string description;
+    std::optional<std::string> mimeType;
+    std::string payTo;
     double maxTimeoutSeconds;
-    std: asset;
+    std::string asset;
     std::optional<{> extra;
-    std: name;
-    std: version;
-    std::optional<std:> error;
+    std::string name;
+    std::string version;
+    std::optional<std::string> error;
 };
 
 /**
@@ -45,13 +45,13 @@ struct PaymentRequirements {
  */
 class PaymentMiddleware {
   private config: GatewayConfig;
-  private apiKeyCache = new Map<std:, ApiKeyConfig>();
+  private apiKeyCache = new Map<std::string, ApiKeyConfig>();
   private logger: Console;
-  private verifyPaymentFunc: [&](payment: PaymentPayload, requirements: std:) { return Promise<any>; };
-  private settlePaymentFunc: [&](payment: PaymentPayload, requirements: std:) { return Promise<any>; };
+  private verifyPaymentFunc: [&](payment: PaymentPayload, requirements: std::string) { return Promise<any>; };
+  private settlePaymentFunc: [&](payment: PaymentPayload, requirements: std::string) { return Promise<any>; };
 
   // USDC contract addresses by network
-  private static readonly USDC_ADDRESSES: Record<std:, string> = {
+  private static readonly USDC_ADDRESSES: Record<std::string, string> = {
     'base-sepolia': '0x036CbD53842c5426634e7929541eC2318f3dCF7e',
     'base': '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
     'ethereum': '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',

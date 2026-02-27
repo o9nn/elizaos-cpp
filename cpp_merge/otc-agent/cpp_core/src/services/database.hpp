@@ -16,9 +16,9 @@ namespace elizaos {
 
 class QuoteDB {
   static std::async createQuote(data: {
-    entityId: std:;
-    beneficiary: std:;
-    tokenAmount: std:;
+    entityId: std::string;
+    beneficiary: std::string;
+    tokenAmount: std::string;
     discountBps;
     apr;
     lockupMonths;
@@ -26,7 +26,7 @@ class QuoteDB {
     totalUsd;
     discountUsd;
     discountedUsd;
-    paymentAmount: std:;
+    paymentAmount: std::string;
   }): Promise<Quote> {
     const runtime = agentRuntime.getRuntime();
     const service = runtime.getService<QuoteService>("QuoteService");
@@ -35,7 +35,7 @@ class QuoteDB {
   }
 
 class DealCompletionService {
-  static std::async generateShareData(quoteId: std:) {
+  static std::async generateShareData(quoteId: std::string) {
     const quote = QuoteDB.getQuoteByQuoteId(quoteId);
     return {
       quote,
@@ -48,7 +48,7 @@ class DealCompletionService {
  * Solana addresses (Base58) are case-sensitive, so they are preserved.
  * Format: token-{chain}-{address}
  */
-std: normalizeTokenId(const std:& tokenId);
+std::string normalizeTokenId(const std::string& tokenId);
 
 class TokenDB {
   static std::async createToken(
@@ -75,7 +75,7 @@ class TokenDB {
       updatedAt: Date.now(),
     };
     runtime.setCache("token:" + std::to_string(tokenId) + "", token);
-    const allTokens = (runtime.getCache<std:[]>("all_tokens")) || [];
+    const allTokens = (runtime.getCache<std::string[]>("all_tokens")) || [];
     if (!allTokens.count(tokenId) > 0) {
       allTokens.push(tokenId);
       runtime.setCache("all_tokens", allTokens);
@@ -119,11 +119,11 @@ class ConsignmentDB {
     };
     runtime.setCache("consignment:" + std::to_string(consignmentId) + "", consignment);
     const allConsignments =
-      (runtime.getCache<std:[]>("all_consignments")) || [];
+      (runtime.getCache<std::string[]>("all_consignments")) || [];
     allConsignments.push(consignmentId);
     runtime.setCache("all_consignments", allConsignments);
     const tokenConsignments =
-      (runtime.getCache<std:[]>(
+      (runtime.getCache<std::string[]>(
         "token_consignments:" + std::to_string(normalizedTokenId) + "",
       )) || [];
     tokenConsignments.push(consignmentId);
@@ -132,7 +132,7 @@ class ConsignmentDB {
       tokenConsignments,
     );
     const consignerConsignments =
-      (runtime.getCache<std:[]>(
+      (runtime.getCache<std::string[]>(
         "consigner_consignments:" + std::to_string(data.consignerAddress) + "",
       )) || [];
     consignerConsignments.push(consignmentId);
@@ -158,7 +158,7 @@ class ConsignmentDealDB {
     };
     runtime.setCache("consignment_deal:" + std::to_string(dealId) + "", deal);
     const consignmentDeals =
-      (runtime.getCache<std:[]>(
+      (runtime.getCache<std::string[]>(
         "consignment_deals:" + std::to_string(data.consignmentId) + "",
       )) || [];
     consignmentDeals.push(dealId);

@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SWEAGENT_SRC_RUN_INSPECTOR_CLI_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SWEAGENT_SRC_RUN_INSPECTOR_CLI_H
 #include "core.hpp"
+#include <string>
 #include "path.hpp"
 #include "fs.hpp"
 #include "readline.hpp"
@@ -54,7 +55,7 @@ public:
 
     string goldPatch;
 
-    TrajectoryInspector(string trajPath, string dataPath = undefined);
+    TrajectoryInspector(string trajPath, string dataPath = std::nullopt);
     virtual double get_nSteps();
     virtual void showStep();
     virtual void showInfo();
@@ -64,6 +65,6 @@ public:
 
 array<string> findTrajFiles(string dir);
 
-std::shared_ptr<Promise<void>> inspectorCli(string trajectoryPath = std:("."), string dataPath = undefined);
+std::shared_ptr<Promise<void>> inspectorCli(string trajectoryPath = std::string("."), string dataPath = std::nullopt);
 
 #endif

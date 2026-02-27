@@ -79,7 +79,7 @@ public:
 class TranslationService : public Service, public std::enable_shared_from_this<TranslationService> {
 public:
     using std::enable_shared_from_this<TranslationService>::shared_from_this;
-    virtual std::shared_ptr<Promise<std::shared_ptr<TranslationServiceResponse>>> translate(string text, string targetLang, string sourceLang = undefined) = 0;
+    virtual std::shared_ptr<Promise<std::shared_ptr<TranslationServiceResponse>>> translate(string text, string targetLang, string sourceLang = std::nullopt) = 0;
 };
 
 class TranslationServiceResponse : public object, public std::enable_shared_from_this<TranslationServiceResponse> {

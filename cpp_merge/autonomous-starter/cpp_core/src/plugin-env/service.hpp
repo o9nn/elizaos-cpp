@@ -19,7 +19,7 @@ namespace elizaos {
  * Environment Manager Service for handling environment variable configuration
  * Follows the same pattern as TaskService and other services in the codebase
  */
-class EnvManagerService extends Service {
+class EnvManagerService : public Service {
   static serviceType = "ENV_MANAGER";
   capabilityDescription =
     "The agent can manage environment variables for plugins, including auto-generation and validation";

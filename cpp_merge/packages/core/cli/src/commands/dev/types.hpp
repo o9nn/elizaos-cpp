@@ -28,8 +28,8 @@ public:
     any process;
 
     virtual std::shared_ptr<Promise<void>> stop() = 0;
-    virtual std::shared_ptr<Promise<void>> start(array<string> args = undefined) = 0;
-    virtual std::shared_ptr<Promise<void>> restart(array<string> args = undefined) = 0;
+    virtual std::shared_ptr<Promise<void>> start(array<string> args = std::nullopt) = 0;
+    virtual std::shared_ptr<Promise<void>> restart(array<string> args = std::nullopt) = 0;
 };
 
 class WatcherConfig : public object, public std::enable_shared_from_this<WatcherConfig> {

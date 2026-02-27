@@ -47,7 +47,7 @@ void AgentChat() {
                 }
                 setMessages[&]((prev) { return [...prev, agentMessage]); };
                 setIsLoading(false);
-                }, 1000 + Math.random() * 1000);
+                }, 1000 + ((double)rand() / RAND_MAX) * 1000);
             }
 
             return (;
@@ -109,10 +109,10 @@ void AgentChat() {
 
 }
 
-std: getAgentResponse(const std:& agentName, const std:& userMessage) {
+std::string getAgentResponse(const std::string& agentName, const std::string& userMessage) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const std::unordered_map<std:, std::vector<std::string>> responses = {;
+    const std::unordered_map<std::string, std::vector<std::string>> responses = {;
         KRIMSON: [
         "LET ME HELP YOU WITH THAT! ",
         "THAT"S A GREAT QUESTION! HERE"S WHAT I THINK...",
@@ -145,7 +145,7 @@ std: getAgentResponse(const std:& agentName, const std:& userMessage) {
     "I APPRECIATE YOU REACHING OUT. HERE'S MY TAKE...",
     ];
 
-    return agentResponses[Math.floor(Math.random() * agentResponses.size())];
+    return agentResponses[Math.floor(((double)rand() / RAND_MAX) * agentResponses.size())];
 
 }
 

@@ -7,6 +7,6 @@
 extern std::shared_ptr<TranslationServiceConfig> serviceConfig;
 extern std::shared_ptr<TranslationService> translationService;
 extern std::function<void(any)> initializeTranslationConfig;
-std::shared_ptr<Promise<object>> simulateTranslationAPI(string text, string targetLang, string sourceLang = undefined, object config = undefined);
+std::shared_ptr<Promise<object>> simulateTranslationAPI(string text, string targetLang, string sourceLang = std::nullopt, object config = std::nullopt);
 
 #endif

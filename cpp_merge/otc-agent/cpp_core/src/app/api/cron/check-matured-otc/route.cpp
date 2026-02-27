@@ -1,4 +1,5 @@
 #include "route.hpp"
+#include <string>
 #include <vector>
 #include <future>
 #include <cstdlib>
@@ -129,10 +130,10 @@ std::future<void> GET(NextRequest request) {
                         }
 
                         const auto result: {;
-                            maturedOffers: std:[];
-                            claimedOffers: std:[];
-                            failedOffers: { id: std:; error: std: }[];
-                            txHash?: std:;
+                            maturedOffers: std::string[];
+                            claimedOffers: std::string[];
+                            failedOffers: { id: std::string; error: std::string }[];
+                            txHash?: std::string;
                             } = {
                                 maturedOffers: maturedOffers.std::map(String),
                                 claimedOffers: [],

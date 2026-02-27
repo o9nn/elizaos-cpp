@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SWEAGENT_TESTS_TEST_RUN_SINGLE_HELPERS_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SWEAGENT_TESTS_TEST_RUN_SINGLE_HELPERS_H
 #include "core.hpp"
+#include <string>
 #include "../src/environment/deployment.h"
 
 class MockRuntime;
@@ -35,42 +36,42 @@ public:
 template <typename P0>
 std::shared_ptr<Promise<std::shared_ptr<BashActionResult>>> MockRuntime::runInSession(P0 action)
 {
-    if (AND((in(std:("type"), action)), (action->type == std:("interrupt")))) {
+    if (AND((in(std::string("type"), action)), (action->type == std::string("interrupt")))) {
         return object{
-            object::pair{std:("output"), string_empty}, 
-            object::pair{std:("exitCode"), 0}
+            object::pair{std::string("output"), string_empty}, 
+            object::pair{std::string("exitCode"), 0}
         };
     }
     auto bashAction = as<std::shared_ptr<BashAction>>(action);
-    if (bashAction->command->startsWith(std:("echo "))) {
-        auto text = bashAction->command->substring(5)->replace((new RegExp(std:("['"]"))), string_empty);
+    if (bashAction->command->startsWith(std::string("echo "))) {
+        auto text = bashAction->command->substring(5)->replace((new RegExp(std::string("['"]"))), string_empty);
         return object{
-            object::pair{std:("output"), text + std:("\
+            object::pair{std::string("output"), text + std::string("\
 ")}, 
-            object::pair{std:("exitCode"), 0}
+            object::pair{std::string("exitCode"), 0}
         };
     }
-    if (bashAction->command == std:("ls")) {
+    if (bashAction->command == std::string("ls")) {
         return object{
-            object::pair{std:("output"), std:("file1\
+            object::pair{std::string("output"), std::string("file1\
 file2\
 ")}, 
-            object::pair{std:("exitCode"), 0}
+            object::pair{std::string("exitCode"), 0}
         };
     }
-    if (bashAction->command->startsWith(std:("sleep "))) {
+    if (bashAction->command->startsWith(std::string("sleep "))) {
         auto seconds = parseFloat(bashAction->command->substring(6));
         if (AND((bashAction->timeout), (bashAction->timeout < seconds))) {
-            throw any(std::make_shared<Error>(std:("Command timeout")));
+            throw any(std::make_shared<Error>(std::string("Command timeout")));
         }
         return object{
-            object::pair{std:("output"), string_empty}, 
-            object::pair{std:("exitCode"), 0}
+            object::pair{std::string("output"), string_empty}, 
+            object::pair{std::string("exitCode"), 0}
         };
     }
     return object{
-        object::pair{std:("output"), this->sessionOutput}, 
-        object::pair{std:("exitCode"), 0}
+        object::pair{std::string("output"), this->sessionOutput}, 
+        object::pair{std::string("exitCode"), 0}
     };
 }
 

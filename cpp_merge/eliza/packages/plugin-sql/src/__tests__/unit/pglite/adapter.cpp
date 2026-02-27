@@ -1,24 +1,25 @@
 #include "adapter.test.h"
+#include <string>
 
 void Main(void)
 {
-    mock->module(std:("@elizaos/core"), [=]() mutable
+    mock->module(std::string("@elizaos/core"), [=]() mutable
     {
         return (object{
-            object::pair{std:("logger"), object{
-                object::pair{std:("debug"), mock()}, 
-                object::pair{std:("info"), mock()}, 
-                object::pair{std:("warn"), mock()}, 
-                object::pair{std:("error"), mock()}
+            object::pair{std::string("logger"), object{
+                object::pair{std::string("debug"), mock()}, 
+                object::pair{std::string("info"), mock()}, 
+                object::pair{std::string("warn"), mock()}, 
+                object::pair{std::string("error"), mock()}
             }}
         });
     }
     );
-    describe(std:("PgliteDatabaseAdapter"), [=]() mutable
+    describe(std::string("PgliteDatabaseAdapter"), [=]() mutable
     {
         shared<std::shared_ptr<PgliteDatabaseAdapter>> adapter;
         shared<any> mockManager;
-        shared agentId = std:("00000000-0000-0000-0000-000000000000");
+        shared agentId = std::string("00000000-0000-0000-0000-000000000000");
         beforeEach([=]() mutable
         {
             (as<any>(logger->debug))["mockClear"]();
@@ -26,58 +27,58 @@ void Main(void)
             (as<any>(logger->warn))["mockClear"]();
             (as<any>(logger->error))["mockClear"]();
             mockManager = object{
-                object::pair{std:("getConnection"), mock()->mockReturnValue(object{
-                    object::pair{std:("query"), mock()->mockResolvedValue(object{
-                        object::pair{std:("rows"), array<any>()}
+                object::pair{std::string("getConnection"), mock()->mockReturnValue(object{
+                    object::pair{std::string("query"), mock()->mockResolvedValue(object{
+                        object::pair{std::string("rows"), array<any>()}
                     })}, 
-                    object::pair{std:("close"), mock()->mockResolvedValue(undefined)}, 
-                    object::pair{std:("transaction"), mock()}
+                    object::pair{std::string("close"), mock()->mockResolvedValue(std::nullopt)}, 
+                    object::pair{std::string("transaction"), mock()}
                 })}, 
-                object::pair{std:("close"), mock()->mockResolvedValue(undefined)}, 
-                object::pair{std:("isShuttingDown"), mock()->mockReturnValue(false)}
+                object::pair{std::string("close"), mock()->mockResolvedValue(std::nullopt)}, 
+                object::pair{std::string("isShuttingDown"), mock()->mockReturnValue(false)}
             };
             adapter = std::make_shared<PgliteDatabaseAdapter>(agentId, mockManager);
         }
         );
-        describe(std:("constructor"), [=]() mutable
+        describe(std::string("constructor"), [=]() mutable
         {
-            it(std:("should initialize with correct agentId and manager"), [=]() mutable
+            it(std::string("should initialize with correct agentId and manager"), [=]() mutable
             {
                 expect(adapter)->toBeDefined();
                 expect((as<any>(adapter))["agentId"])->toBe(agentId);
                 expect((as<any>(adapter))["manager"])->toBe(mockManager);
             }
             );
-            it(std:("should set embeddingDimension to default 384"), [=]() mutable
+            it(std::string("should set embeddingDimension to default 384"), [=]() mutable
             {
-                expect((as<any>(adapter))["embeddingDimension"])->toBe(std:("dim384"));
+                expect((as<any>(adapter))["embeddingDimension"])->toBe(std::string("dim384"));
             }
             );
         }
         );
-        describe(std:("runMigrations"), [=]() mutable
+        describe(std::string("runMigrations"), [=]() mutable
         {
-            it(std:("should be a no-op"), [=]() mutable
+            it(std::string("should be a no-op"), [=]() mutable
             {
                 std::async([=]() { adapter->runMigrations(); });
-                expect(logger->debug)->toHaveBeenCalledWith(std:("PgliteDatabaseAdapter: Migrations are handled by the migration service"));
+                expect(logger->debug)->toHaveBeenCalledWith(std::string("PgliteDatabaseAdapter: Migrations are handled by the migration service"));
             }
             );
         }
         );
-        describe(std:("init"), [=]() mutable
+        describe(std::string("init"), [=]() mutable
         {
-            it(std:("should complete initialization"), [=]() mutable
+            it(std::string("should complete initialization"), [=]() mutable
             {
                 std::async([=]() { adapter->init(); });
-                expect(logger->debug)->toHaveBeenCalledWith(std:("PGliteDatabaseAdapter initialized, skipping automatic migrations."));
+                expect(logger->debug)->toHaveBeenCalledWith(std::string("PGliteDatabaseAdapter initialized, skipping automatic migrations."));
             }
             );
         }
         );
-        describe(std:("close"), [=]() mutable
+        describe(std::string("close"), [=]() mutable
         {
-            it(std:("should close the manager"), [=]() mutable
+            it(std::string("should close the manager"), [=]() mutable
             {
                 std::async([=]() { adapter->close(); });
                 expect(mockManager["close"])->toHaveBeenCalled();
@@ -85,16 +86,16 @@ void Main(void)
             );
         }
         );
-        describe(std:("isReady"), [=]() mutable
+        describe(std::string("isReady"), [=]() mutable
         {
-            it(std:("should return true when manager is not shutting down"), [=]() mutable
+            it(std::string("should return true when manager is not shutting down"), [=]() mutable
             {
                 mockManager["isShuttingDown"]["mockReturnValue"](false);
                 auto result = std::async([=]() { adapter->isReady(); });
                 expect(result)->toBe(true);
             }
             );
-            it(std:("should return false when manager is shutting down"), [=]() mutable
+            it(std::string("should return false when manager is shutting down"), [=]() mutable
             {
                 mockManager["isShuttingDown"]["mockReturnValue"](true);
                 auto result = std::async([=]() { adapter->isReady(); });
@@ -103,13 +104,13 @@ void Main(void)
             );
         }
         );
-        describe(std:("getConnection"), [=]() mutable
+        describe(std::string("getConnection"), [=]() mutable
         {
-            it(std:("should return the connection from manager"), [=]() mutable
+            it(std::string("should return the connection from manager"), [=]() mutable
             {
                 auto mockConnection = object{
-                    object::pair{std:("query"), mock()}, 
-                    object::pair{std:("close"), mock()}
+                    object::pair{std::string("query"), mock()}, 
+                    object::pair{std::string("close"), mock()}
                 };
                 mockManager["getConnection"]["mockReturnValue"](mockConnection);
                 auto result = std::async([=]() { adapter->getConnection(); });
@@ -119,9 +120,9 @@ void Main(void)
             );
         }
         );
-        describe(std:("database operations"), [=]() mutable
+        describe(std::string("database operations"), [=]() mutable
         {
-            it(std:("should use the connection from manager for operations"), [=]() mutable
+            it(std::string("should use the connection from manager for operations"), [=]() mutable
             {
                 auto mockConnection = mockManager["getConnection"]();
                 expect(mockConnection)->toBeDefined();
@@ -129,14 +130,14 @@ void Main(void)
                 expect(mockConnection["transaction"])->toBeDefined();
             }
             );
-            it(std:("should handle query errors gracefully"), [=]() mutable
+            it(std::string("should handle query errors gracefully"), [=]() mutable
             {
                 auto mockConnection = object{
-                    object::pair{std:("query"), mock()->mockRejectedValue(std::make_shared<Error>(std:("Query failed")))}
+                    object::pair{std::string("query"), mock()->mockRejectedValue(std::make_shared<Error>(std::string("Query failed")))}
                 };
                 mockManager["getConnection"]["mockReturnValue"](mockConnection);
                 auto connection = std::async([=]() { adapter->getConnection(); });
-                std::async([=]() { expect(connection->query(std:("SELECT 1")))->rejects->toThrow(std:("Query failed")); });
+                std::async([=]() { expect(connection->query(std::string("SELECT 1")))->rejects->toThrow(std::string("Query failed")); });
             }
             );
         }

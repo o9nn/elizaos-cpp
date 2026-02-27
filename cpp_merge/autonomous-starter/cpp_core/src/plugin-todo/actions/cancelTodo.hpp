@@ -20,8 +20,8 @@ namespace elizaos {
 
 // Interface for task cancellation properties
 struct TaskCancellation {
-    std: taskId;
-    std: taskName;
+    std::string taskId;
+    std::string taskName;
     bool isFound;
 };
 
@@ -38,7 +38,7 @@ std::future<TaskCancellation> extractTaskCancellation(IAgentRuntime runtime, Mem
  * The CANCEL_TODO action allows users to cancel/delete a task.
  */
 
-    // Simpler validation: Check if *std:* active TODOs exist
+    // Simpler validation: Check if *std::string* active TODOs exist
 
       // Get all active todos for this room
 

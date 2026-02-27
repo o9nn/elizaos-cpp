@@ -15,7 +15,7 @@ std::optional<Token> sanitizeTokenForWebSocket(const std::optional<Token>& token
     const auto clone = { ...token };
 
     // Helper to get byte size
-    const auto getSize = [&](obj: std:) { return Buffer.byteLength(/* JSON.stringify */ std:(obj), "utf8"); };
+    const auto getSize = [&](obj: std::string) { return Buffer.byteLength(/* JSON.stringify */ std::string(obj), "utf8"); };
 
     if (getSize(clone) <= maxBytes) return clone;
 
@@ -68,16 +68,16 @@ std::optional<TokenDBData> convertTokenDataToDBData(const std::optional<TokenDat
         lastUpdated: now,
         migration:
         tokenData.migration && typeof tokenData.migration != "string";
-        ? /* JSON.stringify */ std:(tokenData.migration);
+        ? /* JSON.stringify */ std::string(tokenData.migration);
         : tokenData.migration,
         withdrawnAmounts:
         tokenData.withdrawnAmounts &&;
         typeof tokenData.withdrawnAmounts != "string";
-        ? /* JSON.stringify */ std:(tokenData.withdrawnAmounts);
+        ? /* JSON.stringify */ std::string(tokenData.withdrawnAmounts);
         : tokenData.withdrawnAmounts,
         poolInfo:
         tokenData.poolInfo && typeof tokenData.poolInfo != "string";
-        ? /* JSON.stringify */ std:(tokenData.poolInfo);
+        ? /* JSON.stringify */ std::string(tokenData.poolInfo);
         : tokenData.poolInfo,
         };
 
@@ -95,16 +95,16 @@ std::future<Token> updateTokenInDB(const std::optional<TokenData>& tokenData) {
 
         // Convert nested objects to JSON strings if they're present and not already strings
         if (updateData.migration && typeof updateData.migration != "string") {
-            updateData.migration = /* JSON.stringify */ std:(updateData.migration);
+            updateData.migration = /* JSON.stringify */ std::string(updateData.migration);
         }
         if (
         updateData.withdrawnAmounts &&;
         typeof updateData.withdrawnAmounts != "string";
         ) {
-            updateData.withdrawnAmounts = /* JSON.stringify */ std:(updateData.withdrawnAmounts);
+            updateData.withdrawnAmounts = /* JSON.stringify */ std::string(updateData.withdrawnAmounts);
         }
         if (updateData.poolInfo && typeof updateData.poolInfo != "string") {
-            updateData.poolInfo = /* JSON.stringify */ std:(updateData.poolInfo);
+            updateData.poolInfo = /* JSON.stringify */ std::string(updateData.poolInfo);
         }
 
         // Ensure mint is defined
@@ -123,7 +123,7 @@ std::future<Token> updateTokenInDB(const std::optional<TokenData>& tokenData) {
             std::cout << "Updated token " + updateData.mint + " in database" << std::endl;
             } else {
                 std::cout << "not found existing token in DB" << std::endl;
-                std::cout << /* JSON.stringify */ std:(updateData, nullptr, 2) << std::endl;
+                std::cout << /* JSON.stringify */ std::string(updateData, nullptr, 2) << std::endl;
                 updatedTokens = db.insert(tokens).values([;
                 {
                     mint: updateData.mint,
@@ -159,7 +159,7 @@ std::future<Token> updateTokenInDB(const std::optional<TokenData>& tokenData) {
     }
 }
 
-std::future<ProcessResult> processTransactionLogs(const std::vector<std::string>& logs, const std:& signature, std::optional<WebSocketClient> wsClient) {
+std::future<ProcessResult> processTransactionLogs(const std::vector<std::string>& logs, const std::string& signature, std::optional<WebSocketClient> wsClient) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!wsClient) {
@@ -186,7 +186,7 @@ std::future<ProcessResult> processTransactionLogs(const std::vector<std::string>
 
 }
 
-std::future<HandlerResult> handleNewToken(const std::vector<std::string>& logs, const std:& signature, WebSocketClient wsClient) {
+std::future<HandlerResult> handleNewToken(const std::vector<std::string>& logs, const std::string& signature, WebSocketClient wsClient) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -272,7 +272,7 @@ std::future<HandlerResult> handleNewToken(const std::vector<std::string>& logs, 
     }
 }
 
-std::future<std::optional<HandlerResult>> handleSwap(const std::vector<std::string>& logs, const std:& signature, WebSocketClient wsClient) {
+std::future<std::optional<HandlerResult>> handleSwap(const std::vector<std::string>& logs, const std::string& signature, WebSocketClient wsClient) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto mintLog = logs.find[&]((log) { return (std::find(log.begin(), log.end(), "Mint:") != log.end())); };
@@ -479,7 +479,7 @@ std::future<std::optional<HandlerResult>> handleSwap(const std::vector<std::stri
 
 }
 
-std::future<HandlerResult> handleCurveComplete(const std::vector<std::string>& logs, const std:& signature, WebSocketClient wsClient) {
+std::future<HandlerResult> handleCurveComplete(const std::vector<std::string>& logs, const std::string& signature, WebSocketClient wsClient) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

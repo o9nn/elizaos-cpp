@@ -77,7 +77,7 @@ namespace elizaos {
       // Format messages using the pre-fetched entities
 
     // Format recent post interactions
-      // Combine pre-loaded entities with std: other entities
+      // Combine pre-loaded entities with std::string other entities
 
       // Add entities from interactionEntityMap that aren't already in entities
 

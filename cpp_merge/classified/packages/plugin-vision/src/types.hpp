@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_VISION_SRC_TYPES_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_VISION_SRC_TYPES_H
 #include "core.hpp"
+#include <string>
 
 namespace @elizaos/core {
     class ServiceTypeRegistry;
@@ -26,7 +27,7 @@ class FaceLibrary;
 class FaceProfile;
 class WorldState;
 
-namespace std:("@elizaos/core") {
+namespace std::string("@elizaos/core") {
     class ServiceTypeRegistry : public object, public std::enable_shared_from_this<ServiceTypeRegistry> {
     public:
         using std::enable_shared_from_this<ServiceTypeRegistry>::shared_from_this;
@@ -118,7 +119,7 @@ public:
 };
 
 enum struct VisionMode {
-    OFF = std:("OFF"), CAMERA = std:("CAMERA"), SCREEN = std:("SCREEN"), BOTH = std:("BOTH")
+    OFF = std::string("OFF"), CAMERA = std::string("CAMERA"), SCREEN = std::string("SCREEN"), BOTH = std::string("BOTH")
 };
 class ScreenCapture : public object, public std::enable_shared_from_this<ScreenCapture> {
 public:

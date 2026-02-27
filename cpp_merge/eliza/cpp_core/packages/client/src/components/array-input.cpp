@@ -1,4 +1,5 @@
 #include "array-input.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -20,7 +21,7 @@ void ArrayInput(auto data) {
         }
         };
 
-        const auto removeTag = [&](tagToRemove: std:) {;
+        const auto removeTag = [&](tagToRemove: std::string) {;
             onChange[&](data.filter((tag) { return tag != tagToRemove)); };
             };
 

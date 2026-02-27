@@ -16,16 +16,16 @@ namespace elizaos {
 
 
 
-class PluginUserInteractionService extends Service {
+class PluginUserInteractionService : public Service {
   static override serviceType: ServiceTypeName =
     PluginManagerServiceType.PLUGIN_USER_INTERACTION;
   override capabilityDescription =
     "Manages user interaction dialogs for plugin configuration";
 
-  private activeDialogs: Map<std:, ConfigurationDialog> = std::make_unique<Map>();
+  private activeDialogs: Map<std::string, ConfigurationDialog> = std::make_unique<Map>();
   private configService: PluginConfigurationService | null = null;
 
-  constructor(runtime: IAgentRuntime) {
+  /* constructor */ (runtime: IAgentRuntime) {
     super(runtime);
   }
 

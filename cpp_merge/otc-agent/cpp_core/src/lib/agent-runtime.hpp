@@ -35,7 +35,7 @@ class AgentRuntimeManager {
   private hasRunMigrations = false;
   private initializationPromise: Promise<AgentRuntime> | null = null;
 
-  private constructor() {
+  private /* constructor */ () {
     // Configure the elizaLogger to use console
     if (elizaLogger) {
       elizaLogger.log = console.log.bind(console);
@@ -43,7 +43,7 @@ class AgentRuntimeManager {
       elizaLogger.warn = console.warn.bind(console);
       elizaLogger.error = console.error.bind(console);
       elizaLogger.debug = console.debug.bind(console);
-      elizaLogger.success = [&](msg: std: | Record<std:, unknown> | Error) { return console.log("✓ " + std::to_string(typeof msg == "string" ? msg : nlohmann::json().dump(msg)) + ""); };
+      elizaLogger.success = [&](msg: std::string | Record<std::string, unknown> | Error) { return console.log("✓ " + std::to_string(typeof msg == "string" ? msg : nlohmann::json().dump(msg)) + ""); };
       // elizaLogger doesn't have notice in types but may be used at runtime
       const logger = elizaLogger as typeof elizaLogger & {
         notice?: typeof console.info;

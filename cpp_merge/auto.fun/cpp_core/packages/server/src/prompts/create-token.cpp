@@ -1,4 +1,5 @@
 #include "create-token.hpp"
+#include <string>
 #include <future>
 #include <cstdlib>
 #include <optional>
@@ -8,7 +9,7 @@
 
 namespace elizaos {
 
-std::future<void> createTokenPrompt(std::optional<std:> validatedData) {
+std::future<void> createTokenPrompt(std::optional<std::string> validatedData) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Customize AI prompt based on user input
@@ -20,15 +21,15 @@ std::future<void> createTokenPrompt(std::optional<std:> validatedData) {
         "Be creative but stay faithful to the concept.";
         } else {
             // Generate a random concept if user didn't provide one
-            const auto randomIdea = ideas[Math.floor(Math.random() * ideas.size())];
+            const auto randomIdea = ideas[Math.floor(((double)rand() / RAND_MAX) * ideas.size())];
             const auto randomAdjective =;
-            adjectives[Math.floor(Math.random() * adjectives.size())];
-            const auto randomNoun = nouns[Math.floor(Math.random() * nouns.size())];
+            adjectives[Math.floor(((double)rand() / RAND_MAX) * adjectives.size())];
+            const auto randomNoun = nouns[Math.floor(((double)rand() / RAND_MAX) * nouns.size())];
 
-            const auto randomIdea2 = ideas[Math.floor(Math.random() * ideas.size())];
+            const auto randomIdea2 = ideas[Math.floor(((double)rand() / RAND_MAX) * ideas.size())];
             const auto randomAdjective2 =;
-            adjectives[Math.floor(Math.random() * adjectives.size())];
-            const auto randomNoun2 = nouns[Math.floor(Math.random() * nouns.size())];
+            adjectives[Math.floor(((double)rand() / RAND_MAX) * adjectives.size())];
+            const auto randomNoun2 = nouns[Math.floor(((double)rand() / RAND_MAX) * nouns.size())];
 
             "userInstructions = " + "The token should be based on this concept: \"" + randomAdjective + " " + randomIdea + " " + randomNoun
             Alternatively, you can use the following concept: "${randomAdjective2} ${randomIdea2} ${randomNoun2}".
@@ -52,8 +53,8 @@ std::future<void> createTokenPrompt(std::optional<std:> validatedData) {
                     if (trendingTopicsResponse.ok) {
                         const auto trendingTopicsJson = trendingTopicsResponse.json();
                         trendingTopics = trendingTopicsJson.articles;
-                        .filter[&]((article: std:) { return article.title)
-                        .std::map[&]((article: std:) { return article.title.replace(/\s-\s.*$/, "")) // Remove source name
+                        .filter[&]((article: std::string) { return article.title)
+                        .std::map[&]((article: std::string) { return article.title.replace(/\s-\s.*$/, "")) // Remove source name
                         .substr(0, 5-0); }; }; // Take only top 5;
                     }
                     } catch (error) {
@@ -85,10 +86,10 @@ std::future<void> createTokenPrompt(std::optional<std:> validatedData) {
 
     Example format:
     "\" + "\" + "\";
-    ${exampleFormats[Math.floor(Math.random() * exampleFormats.size())]}
+    ${exampleFormats[Math.floor(((double)rand() / RAND_MAX) * exampleFormats.size())]}
     "\" + "\" + "\";
 
-    "Only provide the JSON object. Do not include std: other text, explanation, or formatting.";
+    "Only provide the JSON object. Do not include std::string other text, explanation, or formatting.";
 
     return content;
 

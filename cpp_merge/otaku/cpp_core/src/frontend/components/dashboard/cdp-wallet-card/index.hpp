@@ -26,52 +26,52 @@ namespace elizaos {
 
 
 struct Token {
-    std: symbol;
-    std: name;
-    std: balance;
-    std: balanceFormatted;
+    std::string symbol;
+    std::string name;
+    std::string balance;
+    std::string balanceFormatted;
     number | null usdValue;
     number | null usdPrice;
-    std: | null contractAddress;
-    std: chain;
+    std::string | null contractAddress;
+    std::string chain;
     double decimals;
-    std::optional<std:; // Token icon URL from CoinGecko> icon;
+    std::optional<std::string; // Token icon URL from CoinGecko> icon;
 };
 
 struct NFT {
-    std: chain;
-    std: contractAddress;
-    std: tokenId;
-    std: name;
-    std: description;
-    std: image;
-    std: contractName;
-    std: tokenType;
-    std::optional<std:; // For ERC1155> balance;
+    std::string chain;
+    std::string contractAddress;
+    std::string tokenId;
+    std::string name;
+    std::string description;
+    std::string image;
+    std::string contractName;
+    std::string tokenType;
+    std::optional<std::string; // For ERC1155> balance;
     std::optional<Array<{> attributes;
-    std: trait_type;
-    std: | number value;
+    std::string trait_type;
+    std::string | number value;
 };
 
 struct Transaction {
-    std: chain;
-    std: hash;
-    std: from;
-    std: to;
-    std: value;
-    std: asset;
-    std: category;
+    std::string chain;
+    std::string hash;
+    std::string from;
+    std::string to;
+    std::string value;
+    std::string asset;
+    std::string category;
     double timestamp;
-    std: blockNum;
-    std: explorerUrl;
+    std::string blockNum;
+    std::string explorerUrl;
     'sent' | 'received' direction;
-    std::optional<std: | null> icon;
-    std::optional<std: | null> contractAddress;
+    std::optional<std::string | null> icon;
+    std::optional<std::string | null> contractAddress;
 };
 
 struct CDPWalletCardProps {
-    std: userId;
-    std::optional<std:> walletAddress;
+    std::string userId;
+    std::optional<std::string> walletAddress;
     std::optional<[&](balance) { return void> onBalanceChange; };
     std::optional<[&]() { return void; }; // Optional callback to close parent container (Sheet/Sidebar)> onActionClick;
 };

@@ -1,4 +1,5 @@
 #include "mocks.hpp"
+#include <string>
 #include <optional>
 #include <iostream>
 #include <stdexcept>
@@ -43,7 +44,7 @@ IAgentRuntime createMockAgentRuntime(std::optional<std::optional<IAgentRuntime>>
                 registerService: jest.fn(() => Promise.resolve()),
                 registerDatabaseAdapter: jest.fn(),
                 setSetting: jest.fn(),
-                getSetting: jest.fn((key: std:) => overrides.character.settings.[key]),
+                getSetting: jest.fn((key: std::string) => overrides.character.settings.[key]),
                 getConversationLength: jest.fn(() => 10),
                 processActions: jest.fn(() => Promise.resolve()),
                 evaluate: jest.fn(() => Promise.resolve([][])),
@@ -65,8 +66,8 @@ IAgentRuntime createMockAgentRuntime(std::optional<std::optional<IAgentRuntime>>
                 registerTaskWorker: jest.fn(),
                 getTaskWorker: jest.fn[&](() { return std::nullopt),
                 stop: jest.fn[&](() { return Promise.resolve()),
-                addEmbeddingToMemory: jest.fn((memory: Memory) => Promise.resolve(memory)),
-                createRunId: jest.fn(() => "123e4567-e89b-12d3-a456-426614174000"),
+                addEmbeddingToMemory: jest.fn[&]((memory: Memory) { return Promise.resolve(memory)),
+                createRunId: jest.fn[&](() { return "123e4567-e89b-12d3-a456-426614174000"),
                 startRun: jest.fn(() => "123e4567-e89b-12d3-a456-426614174000"),
                 endRun: jest.fn(),
                 getCurrentRunId: jest.fn(() => "123e4567-e89b-12d3-a456-426614174000"),
@@ -152,13 +153,13 @@ IAgentRuntime createMockAgentRuntime(std::optional<std::optional<IAgentRuntime>>
                 getMemoriesByWorldId: jest.fn(() => Promise.resolve([])),
 
                 ...overrides,
-                }; }; }; }; }; }; };
+                }; }; }; }; }; }; }; }; };
 
                 return baseRuntime;
 
 }
 
-DatabaseAdapter createMockDatabaseAdapter(std::optional<std:> overrides) {
+DatabaseAdapter createMockDatabaseAdapter(std::optional<std::string> overrides) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto baseAdapter = {;
@@ -294,7 +295,7 @@ DatabaseAdapter createMockDatabaseAdapter(std::optional<std:> overrides) {
 
 }
 
-std: createMockRequest(std::optional<std::optional<std:>> overrides) {
+std::string createMockRequest(std::optional<std::optional<std::string>> overrides) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return {
@@ -307,8 +308,8 @@ std: createMockRequest(std::optional<std::optional<std:>> overrides) {
         url: "/test",
         path: "/test",
         ip: "127.0.0.1",
-        get: jest.fn((_header: std:) => ""),
-        header: jest.fn((_header: std:) => ""),
+        get: jest.fn((_header: std::string) => ""),
+        header: jest.fn((_header: std::string) => ""),
         accepts: jest.fn(),
         acceptsCharsets: jest.fn(),
         acceptsEncodings: jest.fn(),
@@ -319,7 +320,7 @@ std: createMockRequest(std::optional<std::optional<std:>> overrides) {
 
 }
 
-std: createMockResponse() {
+std::string createMockResponse() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto res = {;
@@ -337,7 +338,7 @@ std: createMockResponse() {
         cookie: jest.fn().mockReturnThis(),
         clearCookie: jest.fn().mockReturnThis(),
         attachment: jest.fn().mockReturnThis(),
-        sendFile: jest.fn[&]((_path: std:, options?: std:, callback?: std:) {
+        sendFile: jest.fn[&]((_path: std::string, options?: std::string, callback?: std::string) {
             if (typeof options == 'function') {
                 callback = options;
             }

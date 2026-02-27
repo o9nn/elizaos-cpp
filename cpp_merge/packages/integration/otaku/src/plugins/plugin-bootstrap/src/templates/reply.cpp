@@ -1,6 +1,7 @@
 #include "reply.hpp"
+#include <string>
 
-string replyTemplate = std:("# Task: Generate dialog for the character {{agentName}}.\
+string replyTemplate = std::string("# Task: Generate dialog for the character {{agentName}}.\
 \
 {{providers}}\
 \

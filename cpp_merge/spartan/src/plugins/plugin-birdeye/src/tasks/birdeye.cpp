@@ -1,24 +1,25 @@
 #include "birdeye.hpp"
+#include <string>
 
 string makeBulletpointList(array<string> array)
 {
     return array->map([=](auto a) mutable
     {
-        return std:(" - ") + a + string_empty;
+        return std::string(" - ") + a + string_empty;
     }
-    )->join(std:("\
+    )->join(std::string("\
 "));
 };
 
 
 Birdeye::Birdeye(std::shared_ptr<IAgentRuntime> runtime) {
-    auto apiKey = runtime->getSetting(std:("BIRDEYE_API_KEY"));
+    auto apiKey = runtime->getSetting(std::string("BIRDEYE_API_KEY"));
     if (!apiKey) {
-        throw any(std::make_shared<Error>(std:("Failed to initialize Birdeye provider due to missing API key.")));
+        throw any(std::make_shared<Error>(std::string("Failed to initialize Birdeye provider due to missing API key.")));
     }
     this->apiKey = apiKey;
-    this->sentimentRoomId = createUniqueUuid(runtime, std:("sentiment-analysis"));
-    this->twitterFeedRoomId = createUniqueUuid(runtime, std:("twitter-feed"));
+    this->sentimentRoomId = createUniqueUuid(runtime, std::string("sentiment-analysis"));
+    this->twitterFeedRoomId = createUniqueUuid(runtime, std::string("twitter-feed"));
     this->runtime = runtime;
 }
 
@@ -26,30 +27,30 @@ any Birdeye::syncWalletHistory()
 {
     try
     {
-        auto publicKey = OR((this->runtime->getSetting(std:("SOLANA_PUBLIC_KEY"))), (std:("BzsJQeZ7cvk3pTHmKeuvdhNDkDxcZ6uCXxW2rjwC7RTq")));
+        auto publicKey = OR((this->runtime->getSetting(std::string("SOLANA_PUBLIC_KEY"))), (std::string("BzsJQeZ7cvk3pTHmKeuvdhNDkDxcZ6uCXxW2rjwC7RTq")));
         auto options = object{
-            object::pair{std:("method"), std:("GET")}, 
-            object::pair{std:("headers"), object{
-                object::pair{std:("accept"), std:("application/json")}, 
-                object::pair{std:("x-chain"), std:("solana")}, 
-                object::pair{std:("X-API-KEY"), this->apiKey}
+            object::pair{std::string("method"), std::string("GET")}, 
+            object::pair{std::string("headers"), object{
+                object::pair{std::string("accept"), std::string("application/json")}, 
+                object::pair{std::string("x-chain"), std::string("solana")}, 
+                object::pair{std::string("X-API-KEY"), this->apiKey}
             }}
         };
-        auto res = std::async([=]() { fetch(std:("https://public-api.birdeye.so/v1/wallet/tx_list?wallet=") + publicKey + std:("&limit=100"), options); });
+        auto res = std::async([=]() { fetch(std::string("https://public-api.birdeye.so/v1/wallet/tx_list?wallet=") + publicKey + std::string("&limit=100"), options); });
         auto resp = std::async([=]() { res->json(); });
         auto birdeyeData = OR((resp["data"]["solana"]), (array<any>()));
         auto transactions = birdeyeData["map"]([=](auto tx) mutable
         {
             return (object{
-                object::pair{std:("txHash"), tx["txHash"]}, 
-                object::pair{std:("blockTime"), std::make_shared<Date>(tx["blockTime"])}, 
-                object::pair{std:("data"), tx}
+                object::pair{std::string("txHash"), tx["txHash"]}, 
+                object::pair{std::string("blockTime"), std::make_shared<Date>(tx["blockTime"])}, 
+                object::pair{std::string("data"), tx}
             });
         }
         );
         try
         {
-            auto cachedTxs = std::async([=]() { this->runtime->getCache<array<std::shared_ptr<TransactionHistory>>>(std:("transaction_history")); });
+            auto cachedTxs = std::async([=]() { this->runtime->getCache<array<std::shared_ptr<TransactionHistory>>>(std::string("transaction_history")); });
             if (AND((cachedTxs), (Array->isArray(cachedTxs)))) {
                 for (auto& cachedTx : cachedTxs)
                 {
@@ -65,11 +66,11 @@ any Birdeye::syncWalletHistory()
         }
         catch (const any& error)
         {
-            logger->debug(std:("Failed to get cached transactions, continuing with Birdeye data only"));
+            logger->debug(std::string("Failed to get cached transactions, continuing with Birdeye data only"));
         }
         for (auto& tx : transactions)
         {
-            if (type_of(tx->blockTime) == std:("string")) {
+            if (type_of(tx->blockTime) == std::string("string")) {
                 tx->blockTime = std::make_shared<Date>(tx->blockTime);
             }
         }
@@ -80,18 +81,18 @@ any Birdeye::syncWalletHistory()
         );
         try
         {
-            std::async([=]() { this->runtime->setCache<array<std::shared_ptr<TransactionHistory>>>(std:("transaction_history"), transactions); });
-            logger->debug(std:("Updated transaction history with ") + transactions->get_length() + std:(" transactions"));
+            std::async([=]() { this->runtime->setCache<array<std::shared_ptr<TransactionHistory>>>(std::string("transaction_history"), transactions); });
+            logger->debug(std::string("Updated transaction history with ") + transactions->get_length() + std::string(" transactions"));
         }
         catch (const any& error)
         {
-            logger->debug(std:("Failed to set transaction cache, continuing without caching"), error);
+            logger->debug(std::string("Failed to set transaction cache, continuing without caching"), error);
         }
         return transactions;
     }
     catch (const any& error)
     {
-        logger->error(std:("Failed to sync wallet history from Birdeye"), error);
+        logger->error(std::string("Failed to sync wallet history from Birdeye"), error);
         return array<any>();
     }
 }
@@ -99,20 +100,20 @@ any Birdeye::syncWalletHistory()
 void Birdeye::syncWalletPortfolio()
 {
     auto options = object{
-        object::pair{std:("method"), std:("GET")}, 
-        object::pair{std:("headers"), object{
-            object::pair{std:("accept"), std:("application/json")}, 
-            object::pair{std:("x-chain"), std:("solana")}, 
-            object::pair{std:("X-API-KEY"), this->apiKey}
+        object::pair{std::string("method"), std::string("GET")}, 
+        object::pair{std::string("headers"), object{
+            object::pair{std::string("accept"), std::string("application/json")}, 
+            object::pair{std::string("x-chain"), std::string("solana")}, 
+            object::pair{std::string("X-API-KEY"), this->apiKey}
         }}
     };
-    auto publicKey = OR((this->runtime->getSetting(std:("SOLANA_PUBLIC_KEY"))), (std:("BzsJQeZ7cvk3pTHmKeuvdhNDkDxcZ6uCXxW2rjwC7RTq")));
-    auto res = std::async([=]() { fetch(std:("https://public-api.birdeye.so/v1/wallet/token_list?wallet=") + publicKey + string_empty, options); });
+    auto publicKey = OR((this->runtime->getSetting(std::string("SOLANA_PUBLIC_KEY"))), (std::string("BzsJQeZ7cvk3pTHmKeuvdhNDkDxcZ6uCXxW2rjwC7RTq")));
+    auto res = std::async([=]() { fetch(std::string("https://public-api.birdeye.so/v1/wallet/token_list?wallet=") + publicKey + string_empty, options); });
     auto resp = std::async([=]() { res->json(); });
     auto data = resp["data"];
-    std::async([=]() { this->runtime->setCache<std::shared_ptr<Portfolio>>(std:("portfolio"), object{
-        object::pair{std:("key"), std:("PORTFOLIO")}, 
-        object::pair{std:("data"), std:("data")}
+    std::async([=]() { this->runtime->setCache<std::shared_ptr<Portfolio>>(std::string("portfolio"), object{
+        object::pair{std::string("key"), std::string("PORTFOLIO")}, 
+        object::pair{std::string("data"), std::string("data")}
     }); });
 }
 
@@ -123,8 +124,8 @@ any Birdeye::syncWallet()
     return true;
 }
 
-string rolePrompt = std:("You are a sentiment analyzer for cryptocurrency and market data.");
-string template = std:("Write a summary of what is happening in the tweets. The main topic is the cryptocurrency market.\
+string rolePrompt = std::string("You are a sentiment analyzer for cryptocurrency and market data.");
+string template = std::string("Write a summary of what is happening in the tweets. The main topic is the cryptocurrency market.\
 You will also be analyzing the tokens that occur in the tweet and tell us whether their sentiment is positive or negative.\
 \
 ## Analyze the followings tweets:\

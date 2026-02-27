@@ -7,9 +7,9 @@
 
 namespace elizaos {
 
-void getComponentByPath(const std:& path) {
+void getComponentByPath(const std::string& path) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    component: std:; description: std:
+    component: std::string; description: std::string
 }
 
 std::vector<std::string> getPythonModules() {

@@ -18,8 +18,8 @@ namespace elizaos {
 
 struct DashboardPageLayoutProps {
     ReactNode children;
-    std: title;
-    std::optional<std:> description;
+    std::string title;
+    std::optional<std::string> description;
 };
 
 

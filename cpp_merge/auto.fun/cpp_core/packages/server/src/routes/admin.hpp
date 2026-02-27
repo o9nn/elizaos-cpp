@@ -89,7 +89,7 @@ namespace elizaos {
     // Use the suspended field if it's std::set, otherwise fall back to the name check
 
     // Add empty arrays for tokensCreated, tokensHeld, and transactions if they don't exist
-    // This prevents "Cannot read properties of undefined (reading 'length')" errors
+    // This prevents "Cannot read properties of std::nullopt (reading 'length')" errors
 
 // Route to get admin statistics
 
@@ -168,7 +168,7 @@ namespace elizaos {
   // --- Apply Pagination ---
 
   // --- Execute Queries ---
-    // Cast to std:[] as a workaround for persistent Drizzle/TS type inference issues
+    // Cast to std::string[] as a workaround for persistent Drizzle/TS type inference issues
 
   // --- Process and Return ---
 
@@ -186,7 +186,7 @@ namespace elizaos {
     // Add description to destructuring
 
     // Basic validation (can be more sophisticated)
-    // Allow empty std: for image/url/description to clear the field
+    // Allow empty std::string for image/url/description to clear the field
 
     // Check if token exists
 

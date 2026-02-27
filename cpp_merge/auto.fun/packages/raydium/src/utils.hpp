@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTO_FUN_PACKAGES_RAYDIUM_SRC_UTILS_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_AUTO_FUN_PACKAGES_RAYDIUM_SRC_UTILS_H
 #include "core.hpp"
+#include <string>
 // External dependency removed
 // External dependency removed
 // External dependency removed
@@ -39,7 +40,7 @@ std::shared_ptr<Promise<T>> retryOperation(std::function<std::shared_ptr<Promise
             ); });
         }
     }
-    throw any(std::make_shared<Error>(std:("Unreachable")));
+    throw any(std::make_shared<Error>(std::string("Unreachable")));
 };
 
 

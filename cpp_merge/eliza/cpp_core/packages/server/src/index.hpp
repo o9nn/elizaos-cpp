@@ -28,9 +28,9 @@ namespace elizaos {
  * @param filepath - The path to expand.
  * @returns The expanded path.
  */
-std: expandTildePath(const std:& filepath);
+std::string expandTildePath(const std::string& filepath);
 
-std: resolvePgliteDir(std::optional<std:> dir, std::optional<std:> fallbackDir);
+std::string resolvePgliteDir(std::optional<std::string> dir, std::optional<std::string> fallbackDir);
 
 /**
  * Represents a std::function that acts as a server middleware.
@@ -50,8 +50,8 @@ using ServerMiddleware = [&](
  */
 struct ServerOptions {
     std::optional<std::vector<ServerMiddleware>> middlewares;
-    std::optional<std:> dataDir;
-    std::optional<std:> postgresUrl;
+    std::optional<std::string> dataDir;
+    std::optional<std::string> postgresUrl;
 };
 
 /**
@@ -70,7 +70,7 @@ class AgentServer {
 
   public startAgent!: (character: Character) { return Promise<IAgentRuntime>; };
   public stopAgent!: [&](runtime: IAgentRuntime) { return void; };
-  public loadCharacterTryPath!: [&](characterPath: std:) { return Promise<Character>; };
+  public loadCharacterTryPath!: [&](characterPath: std::string) { return Promise<Character>; };
   public jsonToCharacter!: [&](character: unknown) { return Promise<Character>; };
 
   /**
@@ -78,7 +78,7 @@ class AgentServer {
    *
    * @constructor
    */
-  constructor() {
+  /* constructor */ () {
     try {
       logger.debug('Initializing AgentServer (constructor)...');
       this.agents = std::make_unique<Map>();
@@ -131,7 +131,7 @@ class AgentServer {
    */
       // Initialize middleware and database
 
-      // Security headers first - before std: other middleware
+      // Security headers first - before std::string other middleware
           // Content Security Policy - environment-aware configuration
                 // Production CSP - includes upgrade-insecure-requests
                   // upgrade-insecure-requests is added by helmet automatically
@@ -211,8 +211,8 @@ class AgentServer {
    * Registers an agent with the provided runtime.
    *
    * @param {IAgentRuntime} runtime - The runtime object containing agent information.
-   * @throws {Error} if the runtime is null/undefined, if agentId is missing, if character configuration is missing,
-   * or if there are std: errors during registration.
+   * @throws {Error} if the runtime is null/std::nullopt, if agentId is missing, if character configuration is missing,
+   * or if there are std::string errors during registration.
    */
 
       // Auto-register the MessageBusConnector plugin
@@ -280,9 +280,9 @@ class AgentServer {
   // Optional: Method to remove a participant
     // Since we don't have a direct method for this, we'll need to handle it at the channel level
 
-  // ====
+  // ==
   // Server-Agent Association Methods
-  // ====
+  // ==
 
   /**
    * Add an agent to a server

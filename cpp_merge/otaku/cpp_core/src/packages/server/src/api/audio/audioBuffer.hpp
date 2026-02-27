@@ -21,16 +21,16 @@ namespace elizaos {
  * Detects WAV files by checking for the RIFF header signature.
  *
  * @param audioBuffer - The audio data buffer to check
- * @returns The appropriate MIME type std:
+ * @returns The appropriate MIME type std::string
  */
-std: getAudioMimeType(const std::vector<uint8_t>& audioBuffer);
+std::string getAudioMimeType(const std::vector<uint8_t>& audioBuffer);
 
 /**
  * Result of audio processing containing the buffer and MIME type
  */
 struct AudioProcessingResult {
     std::vector<uint8_t> buffer;
-    std: mimeType;
+    std::string mimeType;
 };
 
 

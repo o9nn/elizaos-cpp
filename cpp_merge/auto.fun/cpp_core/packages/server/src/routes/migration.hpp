@@ -33,7 +33,7 @@ namespace elizaos {
     //   connection,
     //   new Wallet(wallet),
     //   program,
-    //   autofunProgram as std:,
+    //   autofunProgram as std::string,
     //   provider,
     //   redisCache,
     // );

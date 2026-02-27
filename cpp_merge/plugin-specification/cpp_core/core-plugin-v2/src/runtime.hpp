@@ -17,7 +17,7 @@ namespace elizaos {
 
 class Semaphore {
   private _semphonre;
-  constructor(count) {
+  /* constructor */ (count) {
     this._semphonre = new coreSemaphore(count);
   }
 
@@ -38,7 +38,7 @@ class AgentRuntime implements IAgentRuntime {
   private _runtime;
 
   get services(): Map<ServiceTypeName, Service> {
-    return this._runtime.services as std:;
+    return this._runtime.services as std::string;
   }
 
     // If _runtime.events is already a Map, just cast it

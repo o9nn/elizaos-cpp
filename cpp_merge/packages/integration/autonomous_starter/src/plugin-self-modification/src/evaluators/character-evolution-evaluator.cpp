@@ -1,6 +1,7 @@
 #include "character-evolution-evaluator.h"
+#include <string>
 
-string evolutionAnalysisTemplate = std:("Analyze the recent conversation and determine if the agent's character should evolve based on what was learned.\
+string evolutionAnalysisTemplate = std::string("Analyze the recent conversation and determine if the agent's character should evolve based on what was learned.\
 \
 Current character state:\
 {{characterState}}\
@@ -16,74 +17,74 @@ Consider:\
 \
 Respond with whether character evolution is recommended and why.");
 std::shared_ptr<Evaluator> characterEvolutionEvaluator = object{
-    object::pair{std:("name"), std:("characterEvolution")}, 
-    object::pair{std:("description"), std:("Analyzes conversations to determine if character should evolve")}, 
-    object::pair{std:("validate"), [=](auto runtime) mutable
+    object::pair{std::string("name"), std::string("characterEvolution")}, 
+    object::pair{std::string("description"), std::string("Analyzes conversations to determine if character should evolve")}, 
+    object::pair{std::string("validate"), [=](auto runtime) mutable
     {
         auto modService = runtime->getService(CharacterModificationService::serviceName);
         return modService != nullptr;
     }
     }, 
-    object::pair{std:("handler"), [=](auto runtime, auto message, auto state) mutable
+    object::pair{std::string("handler"), [=](auto runtime, auto message, auto state) mutable
     {
         auto modService = as<std::shared_ptr<CharacterModificationService>>(runtime->getService(CharacterModificationService::serviceName));
         if (!modService) {
-            logger->warn(std:("Character modification service not available"));
+            logger->warn(std::string("Character modification service not available"));
             return std::shared_ptr<Promise<void>>();
         }
         auto recentMessages = std::async([=]() { runtime->getMemories(object{
-            object::pair{std:("roomId"), message->roomId}, 
-            object::pair{std:("count"), 10}, 
-            object::pair{std:("tableName"), std:("messages")}
+            object::pair{std::string("roomId"), message->roomId}, 
+            object::pair{std::string("count"), 10}, 
+            object::pair{std::string("tableName"), std::string("messages")}
         }); });
         if (OR((!recentMessages), (recentMessages->length < 5))) {
-            logger->debug(std:("Not enough messages for evolution analysis"));
+            logger->debug(std::string("Not enough messages for evolution analysis"));
             return std::shared_ptr<Promise<void>>();
         }
         try
         {
             auto prompt = composePromptFromState(object{
-                object::pair{std:("state"), object{
-                    object::pair{std:("values"), object{
-                        object::pair{std:("characterState"), JSON->stringify(runtime->character)}, 
-                        object::pair{std:("recentMessages"), recentMessages->map([=](auto m) mutable
+                object::pair{std::string("state"), object{
+                    object::pair{std::string("values"), object{
+                        object::pair{std::string("characterState"), JSON->stringify(runtime->character)}, 
+                        object::pair{std::string("recentMessages"), recentMessages->map([=](auto m) mutable
                         {
-                            return string_empty + m["entityId"] + std:(": ") + m["content"]->text + string_empty;
+                            return string_empty + m["entityId"] + std::string(": ") + m["content"]->text + string_empty;
                         }
-                        )->join(std:("\
+                        )->join(std::string("\
 "))}
                     }}, 
-                    object::pair{std:("data"), object{}}, 
-                    object::pair{std:("text"), string_empty}
+                    object::pair{std::string("data"), object{}}, 
+                    object::pair{std::string("text"), string_empty}
                 }}, 
-                object::pair{std:("template"), evolutionAnalysisTemplate}
+                object::pair{std::string("template"), evolutionAnalysisTemplate}
             });
             auto analysis = std::async([=]() { runtime->useModel(ModelType->TEXT_LARGE, object{
-                object::pair{std:("prompt"), std:("prompt")}
+                object::pair{std::string("prompt"), std::string("prompt")}
             }); });
-            auto shouldEvolve = AND((analysis), ((OR((OR((analysis->toLowerCase()->includes(std:("recommend"))), (analysis->toLowerCase()->includes(std:("should evolve"))))), (analysis->toLowerCase()->includes(std:("would benefit")))))));
+            auto shouldEvolve = AND((analysis), ((OR((OR((analysis->toLowerCase()->includes(std::string("recommend"))), (analysis->toLowerCase()->includes(std::string("should evolve"))))), (analysis->toLowerCase()->includes(std::string("would benefit")))))));
             if (shouldEvolve) {
-                logger->info(std:("Character evolution recommended based on conversation"));
+                logger->info(std::string("Character evolution recommended based on conversation"));
                 std::async([=]() { runtime->createTask(object{
-                    object::pair{std:("name"), std:("modifyCharacter")}, 
-                    object::pair{std:("description"), std:("Modify character based on recent conversation insights")}, 
-                    object::pair{std:("tags"), array<string>{ std:("character-evolution"), std:("auto-triggered") }}, 
-                    object::pair{std:("metadata"), object{
-                        object::pair{std:("focusAreas"), std:("recent conversation insights")}, 
-                        object::pair{std:("autoTrigger"), true}, 
-                        object::pair{std:("conversationId"), message->roomId}
+                    object::pair{std::string("name"), std::string("modifyCharacter")}, 
+                    object::pair{std::string("description"), std::string("Modify character based on recent conversation insights")}, 
+                    object::pair{std::string("tags"), array<string>{ std::string("character-evolution"), std::string("auto-triggered") }}, 
+                    object::pair{std::string("metadata"), object{
+                        object::pair{std::string("focusAreas"), std::string("recent conversation insights")}, 
+                        object::pair{std::string("autoTrigger"), true}, 
+                        object::pair{std::string("conversationId"), message->roomId}
                     }}, 
-                    object::pair{std:("roomId"), message->roomId}
+                    object::pair{std::string("roomId"), message->roomId}
                 }); });
             }
         }
         catch (const any& error)
         {
-            logger->error(std:("Error in character evolution evaluator:"), error);
+            logger->error(std::string("Error in character evolution evaluator:"), error);
         }
     }
     }, 
-    object::pair{std:("examples"), array<any>()}
+    object::pair{std::string("examples"), array<any>()}
 };
 
 void Main(void)

@@ -15,22 +15,22 @@ namespace elizaos {
 // Manual refinement required for production use
 
 struct ChatMessageAction {
-    std: type;
-    std::optional<std:> content;
+    std::string type;
+    std::optional<std::string> content;
 };
 
 struct ChatMessage {
-    std: id;
-    std: name;
-    std: text;
-    std: senderId;
-    std: roomId;
+    std::string id;
+    std::string name;
+    std::string text;
+    std::string senderId;
+    std::string roomId;
     double createdAt;
-    std: source;
+    std::string source;
     std::optional<bool> isLoading;
-    std::optional<std:> thought;
+    std::optional<std::string> thought;
     std::optional<bool> isUserMessage;
-    std::optional<std:> serverMessageId;
+    std::optional<std::string> serverMessageId;
     std::optional<std::vector<ChatMessageAction>> actions;
 };
 

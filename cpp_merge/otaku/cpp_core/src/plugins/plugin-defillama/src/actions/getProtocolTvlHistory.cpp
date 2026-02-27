@@ -1,4 +1,5 @@
 #include "getProtocolTvlHistory.hpp"
+#include <string>
 #include <vector>
 #include <unordered_map>
 #include <iostream>
@@ -6,7 +7,7 @@
 
 namespace elizaos {
 
-std: determineSlug(ProtocolSummary summary) {
+std::string determineSlug(ProtocolSummary summary) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (summary.slug && summary.slug) {
@@ -17,11 +18,11 @@ std: determineSlug(ProtocolSummary summary) {
 
 }
 
-std::unordered_map<std:, std::vector<ProtocolTvlPoint>> buildChainSeries(ProtocolTvlHistory history, const std:& chain, double limit) {
+std::unordered_map<std::string, std::vector<ProtocolTvlPoint>> buildChainSeries(ProtocolTvlHistory history, const std::string& chain, double limit) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const std::unordered_map<std:, std::vector<ProtocolTvlPoint>> chainSeries = {};
+        const std::unordered_map<std::string, std::vector<ProtocolTvlPoint>> chainSeries = {};
         if (!chain) {
             for (const int [chainName, series] of Object.entries(history.chainSeries)) {
                 chainSeries[chainName] = limitSeries(series, limit);

@@ -1,27 +1,28 @@
 #include "loader.test.h"
+#include <string>
 
-string TEST_MULTI_CHARACTER_URL = std:("https://raw.githubusercontent.com/elizaos/eliza/refs/heads/develop/packages/cli/tests/test-characters/multi-chars.json");
+string TEST_MULTI_CHARACTER_URL = std::string("https://raw.githubusercontent.com/elizaos/eliza/refs/heads/develop/packages/cli/tests/test-characters/multi-chars.json");
 any mockFs = as<any>(fs);
 
 void Main(void)
 {
-    mock->module(std:("node:fs"), [=]() mutable
+    mock->module(std::string("node:fs"), [=]() mutable
     {
         return (object{
-            object::pair{std:("existsSync"), mock([=]() mutable
+            object::pair{std::string("existsSync"), mock([=]() mutable
             {
                 return true;
             }
             )}, 
-            object::pair{std:("readFileSync"), mock([=]() mutable
+            object::pair{std::string("readFileSync"), mock([=]() mutable
             {
-                return std:("{}");
+                return std::string("{}");
             }
             )}, 
-            object::pair{std:("statSync"), mock([=]() mutable
+            object::pair{std::string("statSync"), mock([=]() mutable
             {
                 return (object{
-                    object::pair{std:("isDirectory"), [=]() mutable
+                    object::pair{std::string("isDirectory"), [=]() mutable
                     {
                         return true;
                     }
@@ -29,62 +30,62 @@ void Main(void)
                 });
             }
             )}, 
-            object::pair{std:("writeFileSync"), mock()}, 
-            object::pair{std:("promises"), object{
-                object::pair{std:("readFile"), mock([=]() mutable
+            object::pair{std::string("writeFileSync"), mock()}, 
+            object::pair{std::string("promises"), object{
+                object::pair{std::string("readFile"), mock([=]() mutable
                 {
-                    return std:("{}");
+                    return std::string("{}");
                 }
                 )}, 
-                object::pair{std:("writeFile"), mock()}, 
-                object::pair{std:("mkdir"), mock()}
+                object::pair{std::string("writeFile"), mock()}, 
+                object::pair{std::string("mkdir"), mock()}
             }}
         });
     }
     );
-    mock->module(std:("@elizaos/core"), [=]() mutable
+    mock->module(std::string("@elizaos/core"), [=]() mutable
     {
         return (object{
-            object::pair{std:("logger"), object{
-                object::pair{std:("error"), mock()}, 
-                object::pair{std:("warn"), mock()}, 
-                object::pair{std:("info"), mock()}, 
-                object::pair{std:("debug"), mock()}
+            object::pair{std::string("logger"), object{
+                object::pair{std::string("error"), mock()}, 
+                object::pair{std::string("warn"), mock()}, 
+                object::pair{std::string("info"), mock()}, 
+                object::pair{std::string("debug"), mock()}
             }}
         });
     }
     );
-    describe(std:("Character Loader"), [=]() mutable
+    describe(std::string("Character Loader"), [=]() mutable
     {
         shared validCharacter = object{
-            object::pair{std:("name"), std:("Test Character")}, 
-            object::pair{std:("bio"), std:("A test character for validation")}, 
-            object::pair{std:("messageExamples"), array<any>()}, 
-            object::pair{std:("postExamples"), array<any>()}, 
-            object::pair{std:("topics"), array<string>{ std:("AI"), std:("Testing") }}, 
-            object::pair{std:("adjectives"), array<string>{ std:("helpful"), std:("reliable") }}, 
-            object::pair{std:("knowledge"), array<any>()}, 
-            object::pair{std:("plugins"), array<any>()}, 
-            object::pair{std:("settings"), object{}}, 
-            object::pair{std:("style"), object{}}
+            object::pair{std::string("name"), std::string("Test Character")}, 
+            object::pair{std::string("bio"), std::string("A test character for validation")}, 
+            object::pair{std::string("messageExamples"), array<any>()}, 
+            object::pair{std::string("postExamples"), array<any>()}, 
+            object::pair{std::string("topics"), array<string>{ std::string("AI"), std::string("Testing") }}, 
+            object::pair{std::string("adjectives"), array<string>{ std::string("helpful"), std::string("reliable") }}, 
+            object::pair{std::string("knowledge"), array<any>()}, 
+            object::pair{std::string("plugins"), array<any>()}, 
+            object::pair{std::string("settings"), object{}}, 
+            object::pair{std::string("style"), object{}}
         };
-        describe(std:("tryLoadFile"), [=]() mutable
+        describe(std::string("tryLoadFile"), [=]() mutable
         {
-            test(std:("should load file content successfully"), [=]() mutable
+            test(std::string("should load file content successfully"), [=]() mutable
             {
-                shared fileContent = std:("test file content");
+                shared fileContent = std::string("test file content");
                 mockFs["readFileSync"]["mockImplementation"]([=]() mutable
                 {
                     return fileContent;
                 }
                 );
-                auto result = tryLoadFile(std:("/path/to/file.json"));
+                auto result = tryLoadFile(std::string("/path/to/file.json"));
                 expect(result)->toBe(fileContent);
             }
             );
-            test(std:("should throw error when file loading fails"), [=]() mutable
+            test(std::string("should throw error when file loading fails"), [=]() mutable
             {
-                shared error = std::make_shared<Error>(std:("File not found"));
+                shared error = std::make_shared<Error>(std::string("File not found"));
                 mockFs["readFileSync"]["mockImplementation"]([=]() mutable
                 {
                     throw any(error);
@@ -92,16 +93,16 @@ void Main(void)
                 );
                 expect([=]() mutable
                 {
-                    return tryLoadFile(std:("/nonexistent/file.json"));
+                    return tryLoadFile(std::string("/nonexistent/file.json"));
                 }
-                )->toThrow(std:("Error loading file /nonexistent/file.json: Error: File not found"));
+                )->toThrow(std::string("Error loading file /nonexistent/file.json: Error: File not found"));
             }
             );
         }
         );
-        describe(std:("loadCharacter"), [=]() mutable
+        describe(std::string("loadCharacter"), [=]() mutable
         {
-            test(std:("should load and validate character from file"), [=]() mutable
+            test(std::string("should load and validate character from file"), [=]() mutable
             {
                 shared characterJson = JSON->stringify(validCharacter);
                 mockFs["readFileSync"]["mockImplementation"]([=]() mutable
@@ -109,98 +110,98 @@ void Main(void)
                     return characterJson;
                 }
                 );
-                auto result = std::async([=]() { loadCharacter(std:("/path/to/character.json")); });
+                auto result = std::async([=]() { loadCharacter(std::string("/path/to/character.json")); });
                 expect(result)->toEqual(expect->objectContaining(validCharacter));
             }
             );
-            test(std:("should throw error for non-existent file"), [=]() mutable
+            test(std::string("should throw error for non-existent file"), [=]() mutable
             {
                 mockFs["readFileSync"]["mockImplementation"]([=]() mutable
                 {
-                    throw any(std::make_shared<Error>(std:("ENOENT: no such file or directory")));
+                    throw any(std::make_shared<Error>(std::string("ENOENT: no such file or directory")));
                 }
                 );
-                std::async([=]() { expect(loadCharacter(std:("/nonexistent/character.json")))->rejects->toThrow(std:("Error loading file /nonexistent/character.json")); });
+                std::async([=]() { expect(loadCharacter(std::string("/nonexistent/character.json")))->rejects->toThrow(std::string("Error loading file /nonexistent/character.json")); });
             }
             );
-            test(std:("should throw error for invalid JSON"), [=]() mutable
+            test(std::string("should throw error for invalid JSON"), [=]() mutable
             {
-                shared invalidJson = std:("{ "name": "Test", "bio": "Test" ");
+                shared invalidJson = std::string("{ "name": "Test", "bio": "Test" ");
                 mockFs["readFileSync"]["mockImplementation"]([=]() mutable
                 {
                     return invalidJson;
                 }
                 );
-                std::async([=]() { expect(loadCharacter(std:("/path/to/invalid.json")))->rejects->toThrow(std:("Invalid JSON")); });
+                std::async([=]() { expect(loadCharacter(std::string("/path/to/invalid.json")))->rejects->toThrow(std::string("Invalid JSON")); });
             }
             );
-            test(std:("should throw error for invalid character data"), [=]() mutable
+            test(std::string("should throw error for invalid character data"), [=]() mutable
             {
                 shared invalidCharacter = JSON->stringify(object{
-                    object::pair{std:("name"), string_empty}, 
-                    object::pair{std:("bio"), std:("Invalid")}
+                    object::pair{std::string("name"), string_empty}, 
+                    object::pair{std::string("bio"), std::string("Invalid")}
                 });
                 mockFs["readFileSync"]["mockImplementation"]([=]() mutable
                 {
                     return invalidCharacter;
                 }
                 );
-                std::async([=]() { expect(loadCharacter(std:("/path/to/invalid-character.json")))->rejects->toThrow(std:("Character validation failed")); });
+                std::async([=]() { expect(loadCharacter(std::string("/path/to/invalid-character.json")))->rejects->toThrow(std::string("Character validation failed")); });
             }
             );
-            test(std:("should throw error for missing required fields"), [=]() mutable
+            test(std::string("should throw error for missing required fields"), [=]() mutable
             {
                 shared incompleteCharacter = JSON->stringify(object{
-                    object::pair{std:("name"), std:("Test")}
+                    object::pair{std::string("name"), std::string("Test")}
                 });
                 mockFs["readFileSync"]["mockImplementation"]([=]() mutable
                 {
                     return incompleteCharacter;
                 }
                 );
-                std::async([=]() { expect(loadCharacter(std:("/path/to/incomplete.json")))->rejects->toThrow(std:("Character validation failed")); });
+                std::async([=]() { expect(loadCharacter(std::string("/path/to/incomplete.json")))->rejects->toThrow(std::string("Character validation failed")); });
             }
             );
         }
         );
-        describe(std:("jsonToCharacter"), [=]() mutable
+        describe(std::string("jsonToCharacter"), [=]() mutable
         {
-            test(std:("should validate and return character"), [=]() mutable
+            test(std::string("should validate and return character"), [=]() mutable
             {
                 auto result = std::async([=]() { jsonToCharacter(validCharacter); });
                 expect(result)->toEqual(expect->objectContaining(validCharacter));
             }
             );
-            test(std:("should throw error for invalid character data"), [=]() mutable
+            test(std::string("should throw error for invalid character data"), [=]() mutable
             {
                 auto invalidCharacter = object{
-                    object::pair{std:("name"), string_empty}, 
-                    object::pair{std:("bio"), std:("Invalid")}
+                    object::pair{std::string("name"), string_empty}, 
+                    object::pair{std::string("bio"), std::string("Invalid")}
                 };
-                std::async([=]() { expect(jsonToCharacter(invalidCharacter))->rejects->toThrow(std:("Character validation failed")); });
+                std::async([=]() { expect(jsonToCharacter(invalidCharacter))->rejects->toThrow(std::string("Character validation failed")); });
             }
             );
-            test(std:("should handle environment-based settings"), [=]() mutable
+            test(std::string("should handle environment-based settings"), [=]() mutable
             {
                 auto originalEnv = process->env;
                 process->env = utils::assign(object{
                     , 
-                    object::pair{std:("CHARACTER.TEST_CHARACTER.API_KEY"), std:("test-key")}, 
-                    object::pair{std:("CHARACTER.TEST_CHARACTER.DEBUG"), std:("true")}
+                    object::pair{std::string("CHARACTER.TEST_CHARACTER.API_KEY"), std::string("test-key")}, 
+                    object::pair{std::string("CHARACTER.TEST_CHARACTER.DEBUG"), std::string("true")}
                 }, originalEnv);
                 auto characterWithName = utils::assign(object{
                     , 
-                    object::pair{std:("name"), std:("Test Character")}
+                    object::pair{std::string("name"), std::string("Test Character")}
                 }, validCharacter);
                 auto result = std::async([=]() { jsonToCharacter(characterWithName); });
                 expect(result->secrets)->toEqual(expect->objectContaining(object{
-                    object::pair{std:("API_KEY"), std:("test-key")}, 
-                    object::pair{std:("DEBUG"), std:("true")}
+                    object::pair{std::string("API_KEY"), std::string("test-key")}, 
+                    object::pair{std::string("DEBUG"), std::string("true")}
                 }));
                 process->env = originalEnv;
             }
             );
-            test(std:("should handle character without environment settings"), [=]() mutable
+            test(std::string("should handle character without environment settings"), [=]() mutable
             {
                 auto originalEnv = process->env;
                 process->env = object{};
@@ -209,41 +210,41 @@ void Main(void)
                 process->env = originalEnv;
             }
             );
-            test(std:("should validate character with complex data structures"), [=]() mutable
+            test(std::string("should validate character with complex data structures"), [=]() mutable
             {
                 auto complexCharacter = object{
-                    object::pair{std:("name"), std:("Complex Character")}, 
-                    object::pair{std:("bio"), array<string>{ std:("Multi-line"), std:("bio description") }}, 
-                    object::pair{std:("messageExamples"), array<array<object>>{ array<object>{ object{
-                        object::pair{std:("name"), std:("user")}, 
-                        object::pair{std:("content"), object{
-                            object::pair{std:("text"), std:("Hello")}
+                    object::pair{std::string("name"), std::string("Complex Character")}, 
+                    object::pair{std::string("bio"), array<string>{ std::string("Multi-line"), std::string("bio description") }}, 
+                    object::pair{std::string("messageExamples"), array<array<object>>{ array<object>{ object{
+                        object::pair{std::string("name"), std::string("user")}, 
+                        object::pair{std::string("content"), object{
+                            object::pair{std::string("text"), std::string("Hello")}
                         }}
                     }, object{
-                        object::pair{std:("name"), std:("assistant")}, 
-                        object::pair{std:("content"), object{
-                            object::pair{std:("text"), std:("Hi there!")}
+                        object::pair{std::string("name"), std::string("assistant")}, 
+                        object::pair{std::string("content"), object{
+                            object::pair{std::string("text"), std::string("Hi there!")}
                         }}
                     } } }}, 
-                    object::pair{std:("knowledge"), array<string>{ std:("simple/path.txt"), object{
-                        object::pair{std:("path"), std:("complex/path.txt")}, 
-                        object::pair{std:("shared"), true}
+                    object::pair{std::string("knowledge"), array<string>{ std::string("simple/path.txt"), object{
+                        object::pair{std::string("path"), std::string("complex/path.txt")}, 
+                        object::pair{std::string("shared"), true}
                     }, object{
-                        object::pair{std:("directory"), std:("knowledge/dir")}, 
-                        object::pair{std:("shared"), false}
+                        object::pair{std::string("directory"), std::string("knowledge/dir")}, 
+                        object::pair{std::string("shared"), false}
                     } }}, 
-                    object::pair{std:("settings"), object{
-                        object::pair{std:("temperature"), 0.7}, 
-                        object::pair{std:("nested"), object{
-                            object::pair{std:("deeply"), object{
-                                object::pair{std:("value"), std:("test")}
+                    object::pair{std::string("settings"), object{
+                        object::pair{std::string("temperature"), 0.7}, 
+                        object::pair{std::string("nested"), object{
+                            object::pair{std::string("deeply"), object{
+                                object::pair{std::string("value"), std::string("test")}
                             }}
                         }}
                     }}, 
-                    object::pair{std:("style"), object{
-                        object::pair{std:("all"), array<string>{ std:("casual") }}, 
-                        object::pair{std:("chat"), array<string>{ std:("responsive") }}, 
-                        object::pair{std:("post"), array<string>{ std:("engaging") }}
+                    object::pair{std::string("style"), object{
+                        object::pair{std::string("all"), array<string>{ std::string("casual") }}, 
+                        object::pair{std::string("chat"), array<string>{ std::string("responsive") }}, 
+                        object::pair{std::string("post"), array<string>{ std::string("engaging") }}
                     }}
                 };
                 auto result = std::async([=]() { jsonToCharacter(complexCharacter); });
@@ -252,7 +253,7 @@ void Main(void)
             );
         }
         );
-        describe(std:("loadCharactersFromUrl"), [=]() mutable
+        describe(std::string("loadCharactersFromUrl"), [=]() mutable
         {
             shared mockFetch = mock();
             global->fetch = mockFetch;
@@ -261,33 +262,33 @@ void Main(void)
                 mockFetch;
             }
             );
-            test(std:("should load single character from URL"), [=]() mutable
+            test(std::string("should load single character from URL"), [=]() mutable
             {
                 auto mockResponse = object{
-                    object::pair{std:("ok"), true}, 
-                    object::pair{std:("status"), 200}, 
-                    object::pair{std:("json"), [=]() mutable
+                    object::pair{std::string("ok"), true}, 
+                    object::pair{std::string("status"), 200}, 
+                    object::pair{std::string("json"), [=]() mutable
                     {
                         return Promise->resolve(validCharacter);
                     }
                     }
                 };
                 mockFetch->mockResolvedValue(mockResponse);
-                auto result = std::async([=]() { loadCharactersFromUrl(std:("https://example.com/character.json")); });
+                auto result = std::async([=]() { loadCharactersFromUrl(std::string("https://example.com/character.json")); });
                 expect(result)->toHaveLength(1);
                 expect(const_(result)[0])->toEqual(expect->objectContaining(validCharacter));
             }
             );
-            test(std:("should load multiple characters from URL"), [=]() mutable
+            test(std::string("should load multiple characters from URL"), [=]() mutable
             {
                 shared characters = array<any>{ validCharacter, utils::assign(object{
                     , 
-                    object::pair{std:("name"), std:("Second Character")}
+                    object::pair{std::string("name"), std::string("Second Character")}
                 }, validCharacter) };
                 auto mockResponse = object{
-                    object::pair{std:("ok"), true}, 
-                    object::pair{std:("status"), 200}, 
-                    object::pair{std:("json"), [=]() mutable
+                    object::pair{std::string("ok"), true}, 
+                    object::pair{std::string("status"), 200}, 
+                    object::pair{std::string("json"), [=]() mutable
                     {
                         return Promise->resolve(characters);
                     }
@@ -297,87 +298,87 @@ void Main(void)
                 auto result = std::async([=]() { loadCharactersFromUrl(TEST_MULTI_CHARACTER_URL); });
                 expect(result)->toHaveLength(2);
                 expect(const_(result)[0])->toEqual(expect->objectContaining(validCharacter));
-                expect(const_(result)[1]->name)->toBe(std:("Second Character"));
+                expect(const_(result)[1]->name)->toBe(std::string("Second Character"));
             }
             );
-            test(std:("should handle HTTP errors"), [=]() mutable
+            test(std::string("should handle HTTP errors"), [=]() mutable
             {
                 auto mockResponse = object{
-                    object::pair{std:("ok"), false}, 
-                    object::pair{std:("status"), 404}, 
-                    object::pair{std:("statusText"), std:("Not Found")}
+                    object::pair{std::string("ok"), false}, 
+                    object::pair{std::string("status"), 404}, 
+                    object::pair{std::string("statusText"), std::string("Not Found")}
                 };
                 mockFetch->mockResolvedValue(mockResponse);
-                std::async([=]() { expect(loadCharactersFromUrl(std:("https://example.com/notfound.json")))->rejects->toThrow(std:("HTTP error 404: Not Found")); });
+                std::async([=]() { expect(loadCharactersFromUrl(std::string("https://example.com/notfound.json")))->rejects->toThrow(std::string("HTTP error 404: Not Found")); });
             }
             );
-            test(std:("should handle network errors"), [=]() mutable
+            test(std::string("should handle network errors"), [=]() mutable
             {
-                mockFetch->mockRejectedValue(std::make_shared<TypeError>(std:("Network error")));
-                std::async([=]() { expect(loadCharactersFromUrl(std:("https://example.com/character.json")))->rejects->toThrow(std:("Failed to fetch character from URL")); });
+                mockFetch->mockRejectedValue(std::make_shared<TypeError>(std::string("Network error")));
+                std::async([=]() { expect(loadCharactersFromUrl(std::string("https://example.com/character.json")))->rejects->toThrow(std::string("Failed to fetch character from URL")); });
             }
             );
-            test(std:("should handle invalid JSON response"), [=]() mutable
+            test(std::string("should handle invalid JSON response"), [=]() mutable
             {
                 auto mockResponse = object{
-                    object::pair{std:("ok"), true}, 
-                    object::pair{std:("status"), 200}, 
-                    object::pair{std:("json"), [=]() mutable
+                    object::pair{std::string("ok"), true}, 
+                    object::pair{std::string("status"), 200}, 
+                    object::pair{std::string("json"), [=]() mutable
                     {
-                        return Promise->reject(std::make_shared<SyntaxError>(std:("Unexpected token")));
+                        return Promise->reject(std::make_shared<SyntaxError>(std::string("Unexpected token")));
                     }
                     }
                 };
                 mockFetch->mockResolvedValue(mockResponse);
-                std::async([=]() { expect(loadCharactersFromUrl(std:("https://example.com/invalid.json")))->rejects->toThrow(std:("Invalid JSON response from URL")); });
+                std::async([=]() { expect(loadCharactersFromUrl(std::string("https://example.com/invalid.json")))->rejects->toThrow(std::string("Invalid JSON response from URL")); });
             }
             );
-            test(std:("should handle invalid character data from URL"), [=]() mutable
+            test(std::string("should handle invalid character data from URL"), [=]() mutable
             {
                 shared invalidCharacter = object{
-                    object::pair{std:("name"), string_empty}, 
-                    object::pair{std:("bio"), std:("Invalid")}
+                    object::pair{std::string("name"), string_empty}, 
+                    object::pair{std::string("bio"), std::string("Invalid")}
                 };
                 auto mockResponse = object{
-                    object::pair{std:("ok"), true}, 
-                    object::pair{std:("status"), 200}, 
-                    object::pair{std:("json"), [=]() mutable
+                    object::pair{std::string("ok"), true}, 
+                    object::pair{std::string("status"), 200}, 
+                    object::pair{std::string("json"), [=]() mutable
                     {
                         return Promise->resolve(invalidCharacter);
                     }
                     }
                 };
                 mockFetch->mockResolvedValue(mockResponse);
-                std::async([=]() { expect(loadCharactersFromUrl(std:("https://example.com/invalid-character.json")))->rejects->toThrow(std:("Invalid character data from URL")); });
+                std::async([=]() { expect(loadCharactersFromUrl(std::string("https://example.com/invalid-character.json")))->rejects->toThrow(std::string("Invalid character data from URL")); });
             }
             );
-            test(std:("should handle validation errors for array of characters"), [=]() mutable
+            test(std::string("should handle validation errors for array of characters"), [=]() mutable
             {
                 shared characters = array<any>{ validCharacter, object{
-                    object::pair{std:("name"), string_empty}, 
-                    object::pair{std:("bio"), std:("Invalid")}
+                    object::pair{std::string("name"), string_empty}, 
+                    object::pair{std::string("bio"), std::string("Invalid")}
                 } };
                 auto mockResponse = object{
-                    object::pair{std:("ok"), true}, 
-                    object::pair{std:("status"), 200}, 
-                    object::pair{std:("json"), [=]() mutable
+                    object::pair{std::string("ok"), true}, 
+                    object::pair{std::string("status"), 200}, 
+                    object::pair{std::string("json"), [=]() mutable
                     {
                         return Promise->resolve(characters);
                     }
                     }
                 };
                 mockFetch->mockResolvedValue(mockResponse);
-                std::async([=]() { expect(loadCharactersFromUrl(std:("https://example.com/mixed-characters.json")))->rejects->toThrow(std:("Character validation failed")); });
+                std::async([=]() { expect(loadCharactersFromUrl(std::string("https://example.com/mixed-characters.json")))->rejects->toThrow(std::string("Character validation failed")); });
             }
             );
         }
         );
-        describe(std:("Error handling and logging"), [=]() mutable
+        describe(std::string("Error handling and logging"), [=]() mutable
         {
-            test(std:("should provide detailed validation error messages"), [=]() mutable
+            test(std::string("should provide detailed validation error messages"), [=]() mutable
             {
                 shared characterMissingName = JSON->stringify(object{
-                    object::pair{std:("bio"), std:("No name")}
+                    object::pair{std::string("bio"), std::string("No name")}
                 });
                 mockFs["readFileSync"]["mockImplementation"]([=]() mutable
                 {
@@ -386,13 +387,13 @@ void Main(void)
                 );
                 try
                 {
-                    std::async([=]() { loadCharacter(std:("/path/to/no-name.json")); });
-                    expect->fail(std:("Should have thrown an error"));
+                    std::async([=]() { loadCharacter(std::string("/path/to/no-name.json")); });
+                    expect->fail(std::string("Should have thrown an error"));
                 }
                 catch (const any& error)
                 {
-                    expect(error["message"])->toContain(std:("Character validation failed"));
-                    expect(error["message"])->toContain(std:("name"));
+                    expect(error["message"])->toContain(std::string("Character validation failed"));
+                    expect(error["message"])->toContain(std::string("name"));
                 }
             }
             );

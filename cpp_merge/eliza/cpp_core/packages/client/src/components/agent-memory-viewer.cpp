@@ -1,4 +1,5 @@
 #include "agent-memory-viewer.hpp"
+#include <string>
 #include <vector>
 #include <map>
 #include <unordered_map>
@@ -131,7 +132,7 @@ void AgentMemoryViewer(auto agentName) {
                                                     return User;
                                                     };
 
-                                                    const auto copyToClipboard = std::async [&](text: std:) {;
+                                                    const auto copyToClipboard = std::async [&](text: std::string) {;
                                                         try {
                                                             navigator.clipboard.writeText(text);
                                                             } catch (error) {
@@ -141,7 +142,7 @@ void AgentMemoryViewer(auto agentName) {
 
                                                             // Group messages by date
                                                             const auto groupMessagesByDate = [&](messages: Memory[]) {;
-                                                                const std::unordered_map<std:, std::vector<Memory>> groups = {};
+                                                                const std::unordered_map<std::string, std::vector<Memory>> groups = {};
 
                                                                 for (const auto& memory : messages)
                                                                     const auto date = new Date(memory.createdAt || 0);
@@ -204,7 +205,7 @@ void AgentMemoryViewer(auto agentName) {
                                                                 <p className="text-muted-foreground max-w-md mb-4">;
                                                                 {searchQuery;
                                                                 "? " + "No memories match \"" + searchQuery + "\". Try adjusting your search or filter.";
-                                                            : "This agent hasn't created std: memories yet. Memories will appear here agent interacts."}
+                                                            : "This agent hasn't created std::string memories yet. Memories will appear here agent interacts."}
                                                             </p>;
                                                             {searchQuery && (;
                                                             <Button variant="outline" onClick={() { return setSearchQuery("")}>; };
@@ -347,7 +348,7 @@ void AgentMemoryViewer(auto agentName) {
     View metadata;
     </summary>;
     <div className="mt-2 p-2 bg-muted/30 rounded text-[10px] font-mono overflow-x-auto">;
-    <pre>{/* JSON.stringify */ std:(memory.metadata, nullptr, 2)}</pre>;
+    <pre>{/* JSON.stringify */ std::string(memory.metadata, nullptr, 2)}</pre>;
     </div>;
     </details>;
     )}

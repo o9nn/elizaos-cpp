@@ -17,7 +17,7 @@ namespace elizaos {
 
 
 
-class MessagingService extends BaseApiClient {
+class MessagingService : public BaseApiClient {
   /**
    * Submit agent replies or system messages
    */

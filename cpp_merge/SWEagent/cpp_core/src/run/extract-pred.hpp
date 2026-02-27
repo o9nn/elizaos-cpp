@@ -21,6 +21,6 @@ namespace elizaos {
 /**
  * Extract prediction from trajectory file
  */
-void extractPred(const std:& trajPath);
+void extractPred(const std::string& trajPath);
 
 } // namespace elizaos

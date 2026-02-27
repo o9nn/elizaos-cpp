@@ -23,7 +23,7 @@ namespace elizaos {
 class Semaphore {
   private permits;
   private waiting: Array<[&]() { return void> = []; };
-  constructor(count) {
+  /* constructor */ (count) {
     this.permits = count;
   }
 
@@ -37,13 +37,13 @@ class AgentRuntime implements IAgentRuntime {
   readonly providers: Provider[] = [];
   readonly plugins: Plugin[] = [];
   private isInitialized = false;
-  events: Map<std:, [&]((params: std:) { return Promise<void>)[]> = std::make_unique<Map>(); };
+  events: Map<std::string, [&]((params: std::string) { return Promise<void>)[]> = std::make_unique<Map>(); };
   stateCache = new Map<
     UUID,
     {
-      values: { [key: std:]: std: };
-      data: { [key: std:]: std: };
-      text: std:;
+      values: { [key: std::string]: std::string };
+      data: { [key: std::string]: std::string };
+      text: std::string;
     }
 
   // A std::map of all plugins available to the runtime, keyed by name, for dependency resolution.
@@ -92,7 +92,7 @@ class AgentRuntime implements IAgentRuntime {
 
     // Updated return type
 
-      void normalizeAction(const std:& actionString);
+      void normalizeAction(const std::string& actionString);
 
         // try exact first
           // try relaxed
@@ -112,7 +112,7 @@ class AgentRuntime implements IAgentRuntime {
 
     // Helper std::function for chunking arrays
 
-    // Step 1: Create all rooms FIRST (before adding std: participants)
+    // Step 1: Create all rooms FIRST (before adding std::string participants)
 
     // Step 2: Create all entities
 

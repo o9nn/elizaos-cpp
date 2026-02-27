@@ -1,4 +1,5 @@
 #include "build-utils.hpp"
+#include <string>
 #include <vector>
 #include <future>
 #include <cstdlib>
@@ -7,7 +8,7 @@
 
 namespace elizaos {
 
-std::future<BuildResult> buildPackage(const std:& packagePath, bool isPlugin) {
+std::future<BuildResult> buildPackage(const std::string& packagePath, bool isPlugin) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto startTime = Date.now();
@@ -23,7 +24,7 @@ std::future<BuildResult> buildPackage(const std:& packagePath, bool isPlugin) {
 
 }
 
-std::future<std::vector<BuildResult>> buildCorePackages(const std:& monorepoRoot) {
+std::future<std::vector<BuildResult>> buildCorePackages(const std::string& monorepoRoot) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto corePackages = [;
@@ -130,7 +131,7 @@ std::future<void> performInitialBuild(DevContext context) {
 
 }
 
-DevContext createDevContext(const std:& cwd) {
+DevContext createDevContext(const std::string& cwd) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

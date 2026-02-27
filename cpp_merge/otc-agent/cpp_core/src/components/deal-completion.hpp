@@ -15,9 +15,9 @@ namespace elizaos {
 
 // Extended Navigator type for Web Share API with files support
 struct ShareData {
-    std::optional<std:> text;
-    std::optional<std:> title;
-    std::optional<std:> url;
+    std::optional<std::string> text;
+    std::optional<std::string> title;
+    std::optional<std::string> url;
     std::optional<std::vector<File>> files;
 };
 
@@ -28,20 +28,20 @@ struct NavigatorWithShare {
 
 struct DealCompletionProps {
     { quote;
-    std: quoteId;
-    std: entityId;
-    std: beneficiary;
-    std: tokenAmount;
+    std::string quoteId;
+    std::string entityId;
+    std::string beneficiary;
+    std::string tokenAmount;
     double lockupMonths;
     double discountBps;
     double totalUsd;
     double discountUsd;
     double discountedUsd;
-    std: paymentAmount;
-    std: paymentCurrency;
-    std::optional<std:> transactionHash;
-    std::optional<std:> offerId;
-    std::optional<std:> status;
+    std::string paymentAmount;
+    std::string paymentCurrency;
+    std::optional<std::string> transactionHash;
+    std::optional<std::string> offerId;
+    std::optional<std::string> status;
     std::optional<"evm" | "solana"> chain;
 };
 

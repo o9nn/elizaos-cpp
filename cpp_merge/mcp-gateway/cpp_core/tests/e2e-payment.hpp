@@ -26,11 +26,11 @@ namespace elizaos {
  */
 
 struct TestResult {
-    std: name;
+    std::string name;
     bool passed;
-    std::optional<std:> error;
+    std::optional<std::string> error;
     double duration;
-    std::optional<std:> output;
+    std::optional<std::string> output;
 };
 
 class PaymentE2ETestRunner {

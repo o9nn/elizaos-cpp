@@ -19,18 +19,18 @@ namespace elizaos {
  */
 
 struct TrajectoryStep {
-    std::optional<std:> thought;
-    std::optional<std:> action;
-    std::optional<std:> observation;
-    std::optional<std:> response;
+    std::optional<std::string> thought;
+    std::optional<std::string> action;
+    std::optional<std::string> observation;
+    std::optional<std::string> response;
     std::optional<double> execution_time;
-    std::optional<std::unordered_map<std:, unknown>> state;
-    std::optional<std::vector<{ role: std:; content: std:; messageType?: std: }>> query;
+    std::optional<std::unordered_map<std::string, unknown>> state;
+    std::optional<std::vector<{ role: std::string; content: std::string; messageType?: std::string }>> query;
 
 struct TrajectoryData {
     std::vector<TrajectoryStep> trajectory;
-    std::unordered_map<std:, unknown> info;
-    std::optional<std::vector<{ role: std:; content: std: | Record<std:, unknown>; [key: std:]: unknown }>> history;
+    std::unordered_map<std::string, unknown> info;
+    std::optional<std::vector<{ role: std::string; content: std::string | Record<std::string, unknown>; [key: std::string]: unknown }>> history;
 
 /**
  * Inspector CLI class
@@ -39,10 +39,10 @@ class TrajectoryInspector {
   private trajData: TrajectoryData;
   private currentStep = -1;
   private showFull = false;
-  // private trajPath: std:;  // Currently unused
-  private goldPatch?: std:;
+  // private trajPath: std::string;  // Currently unused
+  private goldPatch?: std::string;
 
-  constructor(trajPath: std:, dataPath?: std:) {
+  /* constructor */ (trajPath: std::string, dataPath?: std::string) {
     // this.trajPath = trajPath;  // Currently unused
 
     // Load trajectory
@@ -55,7 +55,7 @@ class TrajectoryInspector {
 
     // Load gold patch if available
     if (dataPath) {
-      const data = loadFile(dataPath) as Record<std:, { patch?: std: }> | null;
+      const data = loadFile(dataPath) as Record<std::string, { patch?: std::string }> | null;
       const instanceId = path.basename(path.dirname(trajPath));
       this.goldPatch = data?.[instanceId]?.patch;
     }
@@ -77,11 +77,11 @@ class TrajectoryInspector {
 /**
  * Find trajectory files in a directory
  */
-std::vector<std::string> findTrajFiles(const std:& dir);
+std::vector<std::string> findTrajFiles(const std::string& dir);
 
 /**
  * Main std::function for inspector CLI
  */
-std::future<void> inspectorCli(std: = '.' trajectoryPath, std::optional<std:> dataPath);
+std::future<void> inspectorCli(std::string = '.' trajectoryPath, std::optional<std::string> dataPath);
 
 } // namespace elizaos

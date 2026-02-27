@@ -1,13 +1,14 @@
 #include "channels.hpp"
+#include <string>
 #include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<> saveUploadedFile(Express.Multer.File file, const std:& channelId) {
+std::future<> saveUploadedFile(Express.Multer.File file, const std::string& channelId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    filename: std:; url: std:
+    filename: std::string; url: std::string
 }
 
 express::Router createChannelMediaRouter() {
@@ -57,7 +58,7 @@ express::Router createChannelMediaRouter() {
                         size: req.file.size,
                         },
                         });
-                        } catch (error: std:) {
+                        } catch (error: std::string) {
                             logger.error(
                             "[Channel Media Upload] Error processing upload for channel " + channelId + ": " + error.message
                             error;

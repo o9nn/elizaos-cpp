@@ -21,7 +21,7 @@ struct ModelPricing {
     double outputCostPer1k;
     std::optional<double> maxInputTokens;
     std::optional<double> maxOutputTokens;
-    std: provider;
+    std::string provider;
 };
 
 /**
@@ -66,18 +66,18 @@ struct ModelPricing {
 /**
  * Calculate cost for a model based on token usage
  */
-double calculateCost(const std:& modelName, double inputTokens, double outputTokens);
+double calculateCost(const std::string& modelName, double inputTokens, double outputTokens);
 
 /**
  * Get model token limits
  */
-void getModelLimits(const std:& modelName); {
+void getModelLimits(const std::string& modelName); {
 
     // Try to find a base model
 
 /**
  * Check if a model supports a certain number of tokens
  */
-bool isWithinTokenLimit(const std:& modelName, double inputTokens, double outputTokens);
+bool isWithinTokenLimit(const std::string& modelName, double inputTokens, double outputTokens);
 
 } // namespace elizaos

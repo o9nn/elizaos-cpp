@@ -26,7 +26,7 @@ class Wallet {
 public:
     Wallet();
     void publicKey() const;
-    void signTransaction(const std:& tx);
+    void signTransaction(const std::string& tx);
     void signAllTransactions(const std::vector<std::string>& txs);
 
 private:

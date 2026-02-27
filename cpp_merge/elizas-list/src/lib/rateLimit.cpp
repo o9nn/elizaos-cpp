@@ -1,4 +1,5 @@
 #include "rateLimit.hpp"
+#include <string>
 
 std::shared_ptr<Promise<boolean>> RateLimiter::checkLimit(string key, double limit, double window)
 {
@@ -12,10 +13,10 @@ std::shared_ptr<Promise<boolean>> RateLimiter::checkLimit(string key, double lim
 std::shared_ptr<Promise<double>> RateLimiter::getRemainingLimit(string key)
 {
     auto current = std::async([=]() { rateLimitRedis->get(key); });
-    return 100 - (parseInt(OR((current), (std:("0")))));
+    return 100 - (parseInt(OR((current), (std::string("0")))));
 }
 
-any rateLimitRedis = std::make_shared<Redis>(OR((process->env->REDIS_URL), (std:("redis://localhost:6379"))));
+any rateLimitRedis = std::make_shared<Redis>(OR((process->env->REDIS_URL), (std::string("redis://localhost:6379"))));
 
 void Main(void)
 {

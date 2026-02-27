@@ -1,37 +1,38 @@
 #include "search-file.h"
+#include <string>
 
 void searchFile(string searchTerm, string filePath)
 {
     if (!filePath) {
-        filePath = String(registry->get(std:("CURRENT_FILE"), string_empty));
+        filePath = String(registry->get(std::string("CURRENT_FILE"), string_empty));
         if (!filePath) {
-            console->error(std:("No file open. Use the open command first or provide a file path."));
+            console->error(std::string("No file open. Use the open command first or provide a file path."));
             process->exit(1);
         }
     }
     if (!fs::existsSync(filePath)) {
-        console->error(std:("Error: File name ") + filePath + std:(" not found. Please provide a valid file name."));
+        console->error(std::string("Error: File name ") + filePath + std::string(" not found. Please provide a valid file name."));
         process->exit(1);
     }
     filePath = path->resolve(filePath);
     try
     {
-        shared content = fs::readFileSync(filePath, std:("utf-8"));
-        auto lines = content->split(std:("\
+        shared content = fs::readFileSync(filePath, std::string("utf-8"));
+        auto lines = content->split(std::string("\
 "));
         shared matches = array<object>();
         lines->forEach([=](auto line, auto index) mutable
         {
             if (line->includes(searchTerm)) {
                 matches->push(object{
-                    object::pair{std:("line"), index + 1}, 
-                    object::pair{std:("content"), line}
+                    object::pair{std::string("line"), index + 1}, 
+                    object::pair{std::string("content"), line}
                 });
             }
         }
         );
         if (matches->get_length() == 0) {
-            console->log(std:("No matches found for "") + searchTerm + std:("" in ") + filePath + string_empty);
+            console->log(std::string("No matches found for "") + searchTerm + std::string("" in ") + filePath + string_empty);
             return;
         }
         auto uniqueLines = std::make_shared<Set>(matches->map([=](auto m) mutable
@@ -40,20 +41,20 @@ void searchFile(string searchTerm, string filePath)
         }
         ));
         if (uniqueLines->size > 100) {
-            console->error(std:("More than ") + uniqueLines->size + std:(" lines matched for "") + searchTerm + std:("" in ") + filePath + std:(". Please narrow your search."));
+            console->error(std::string("More than ") + uniqueLines->size + std::string(" lines matched for "") + searchTerm + std::string("" in ") + filePath + std::string(". Please narrow your search."));
             return;
         }
-        console->log(std:("Found ") + matches->get_length() + std:(" matches for "") + searchTerm + std:("" in ") + filePath + std:(":"));
+        console->log(std::string("Found ") + matches->get_length() + std::string(" matches for "") + searchTerm + std::string("" in ") + filePath + std::string(":"));
         matches->forEach([=](auto match) mutable
         {
-            console->log(std:("Line ") + match["line"] + std:(":") + match["content"] + string_empty);
+            console->log(std::string("Line ") + match["line"] + std::string(":") + match["content"] + string_empty);
         }
         );
-        console->log(std:("End of matches for "") + searchTerm + std:("" in ") + filePath + string_empty);
+        console->log(std::string("End of matches for "") + searchTerm + std::string("" in ") + filePath + string_empty);
     }
     catch (const any& error)
     {
-        console->error(std:("Error reading file: ") + error + string_empty);
+        console->error(std::string("Error reading file: ") + error + string_empty);
         process->exit(1);
     }
 };
@@ -61,7 +62,7 @@ void searchFile(string searchTerm, string filePath)
 
 void setupCLI()
 {
-    program->name(std:("search-file"))->description(std:("Search for a term within a file"))->version(std:("1.0.0"))->argument(std:("<search-term>"), std:("The term to search for"))->argument(std:("[file]"), std:("The file to search in (if not provided, uses current open file)"))->action([=](auto searchTerm, auto file) mutable
+    program->name(std::string("search-file"))->description(std::string("Search for a term within a file"))->version(std::string("1.0.0"))->argument(std::string("<search-term>"), std::string("The term to search for"))->argument(std::string("[file]"), std::string("The file to search in (if not provided, uses current open file)"))->action([=](auto searchTerm, auto file) mutable
     {
         searchFile(searchTerm, file);
     }
@@ -73,7 +74,7 @@ void setupCLI()
 
 void Main(void)
 {
-    if (OR((require->main == module), (require->main->filename->endsWith(std:("/bin/search_file"))))) {
+    if (OR((require->main == module), (require->main->filename->endsWith(std::string("/bin/search_file"))))) {
         setupCLI();
     }
 }

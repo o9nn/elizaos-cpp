@@ -25,8 +25,8 @@ namespace elizaos {
  * @property {string} [description] - The description of the option (std::optional).
  */
 struct OptionObject {
-    std: name;
-    std::optional<std:> description;
+    std::string name;
+    std::optional<std::string> description;
 };
 
 /**

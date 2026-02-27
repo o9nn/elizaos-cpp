@@ -28,7 +28,7 @@ class GatewayServer {
   private logger: Console;
   private healthCheckInterval?: NodeJS.Timeout;
 
-  constructor(config: GatewayConfig, logger: Console = console) {
+  /* constructor */ (config: GatewayConfig, logger: Console = console) {
     this.config = config;
     this.logger = logger;
     this.serverManager = new ServerManager(logger);

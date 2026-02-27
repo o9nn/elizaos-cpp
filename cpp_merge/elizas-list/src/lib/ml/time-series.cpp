@@ -1,13 +1,14 @@
 #include "time-series.h"
+#include <string>
 
 TimeSeriesAnalyzer::TimeSeriesAnalyzer() {
     this->prophet = std::make_shared<Prophet>(object{
-        object::pair{std:("growth"), std:("linear")}, 
-        object::pair{std:("changepoints"), nullptr}, 
-        object::pair{std:("n_changepoints"), 25}, 
-        object::pair{std:("yearly_seasonality"), std:("auto")}, 
-        object::pair{std:("weekly_seasonality"), std:("auto")}, 
-        object::pair{std:("daily_seasonality"), std:("auto")}
+        object::pair{std::string("growth"), std::string("linear")}, 
+        object::pair{std::string("changepoints"), nullptr}, 
+        object::pair{std::string("n_changepoints"), 25}, 
+        object::pair{std::string("yearly_seasonality"), std::string("auto")}, 
+        object::pair{std::string("weekly_seasonality"), std::string("auto")}, 
+        object::pair{std::string("daily_seasonality"), std::string("auto")}
     });
 }
 
@@ -18,8 +19,8 @@ std::shared_ptr<Promise<object>> TimeSeriesAnalyzer::forecast(array<object> hist
         auto df = historicalData->map([=](auto d) mutable
         {
             return (object{
-                object::pair{std:("ds"), d["timestamp"]}, 
-                object::pair{std:("y"), d["value"]}
+                object::pair{std::string("ds"), d["timestamp"]}, 
+                object::pair{std::string("y"), d["value"]}
             });
         }
         );
@@ -29,18 +30,18 @@ std::shared_ptr<Promise<object>> TimeSeriesAnalyzer::forecast(array<object> hist
         auto arimaPredictions = std::async([=]() { this->getARIMAPredictions(historicalData, horizon); });
         auto ensemblePredictions = this->ensemblePredictions(forecast->yhat, lstmPredictions, arimaPredictions);
         return object{
-            object::pair{std:("predictions"), ensemblePredictions}, 
-            object::pair{std:("confidence"), object{
-                object::pair{std:("upper"), forecast->yhat_upper}, 
-                object::pair{std:("lower"), forecast->yhat_lower}
+            object::pair{std::string("predictions"), ensemblePredictions}, 
+            object::pair{std::string("confidence"), object{
+                object::pair{std::string("upper"), forecast->yhat_upper}, 
+                object::pair{std::string("lower"), forecast->yhat_lower}
             }}, 
-            object::pair{std:("seasonality"), std::async([=]() { this->prophet->get_seasonality(); })}, 
-            object::pair{std:("changepoints"), forecast->changepoints}
+            object::pair{std::string("seasonality"), std::async([=]() { this->prophet->get_seasonality(); })}, 
+            object::pair{std::string("changepoints"), forecast->changepoints}
         };
     }
     catch (const any& error)
     {
-        logger["error"](std:("Error in time series forecasting:"), error);
+        logger["error"](std::string("Error in time series forecasting:"), error);
         throw any(error);
     }
 }
@@ -66,29 +67,29 @@ void TimeSeriesAnalyzer::trainLSTM(array<object> historicalData)
 {
     auto sequences = this->prepareTrainingData(historicalData);
     this->lstmModel = tf->sequential(object{
-        object::pair{std:("layers"), array<any>{ tf->layers->lstm(object{
-            object::pair{std:("units"), 50}, 
-            object::pair{std:("returnSequences"), true}, 
-            object::pair{std:("inputShape"), array<double>{ 30, 1 }}
+        object::pair{std::string("layers"), array<any>{ tf->layers->lstm(object{
+            object::pair{std::string("units"), 50}, 
+            object::pair{std::string("returnSequences"), true}, 
+            object::pair{std::string("inputShape"), array<double>{ 30, 1 }}
         }), tf->layers->dropout(object{
-            object::pair{std:("rate"), 0.2}
+            object::pair{std::string("rate"), 0.2}
         }), tf->layers->lstm(object{
-            object::pair{std:("units"), 50}
+            object::pair{std::string("units"), 50}
         }), tf->layers->dense(object{
-            object::pair{std:("units"), 1}
+            object::pair{std::string("units"), 1}
         }) }}
     });
     this->lstmModel->compile(object{
-        object::pair{std:("optimizer"), tf->train->adam(0.001)}, 
-        object::pair{std:("loss"), std:("meanSquaredError")}
+        object::pair{std::string("optimizer"), tf->train->adam(0.001)}, 
+        object::pair{std::string("loss"), std::string("meanSquaredError")}
     });
     std::async([=]() { this->lstmModel->fit(sequences->inputs, sequences->outputs, object{
-        object::pair{std:("epochs"), 100}, 
-        object::pair{std:("validationSplit"), 0.2}, 
-        object::pair{std:("callbacks"), object{
-            object::pair{std:("onEpochEnd"), [=](auto epoch, auto logs) mutable
+        object::pair{std::string("epochs"), 100}, 
+        object::pair{std::string("validationSplit"), 0.2}, 
+        object::pair{std::string("callbacks"), object{
+            object::pair{std::string("onEpochEnd"), [=](auto epoch, auto logs) mutable
             {
-                logger["info"](std:("LSTM Epoch ") + epoch + std:(": loss = ") + logs["loss"] + string_empty);
+                logger["info"](std::string("LSTM Epoch ") + epoch + std::string(": loss = ") + logs["loss"] + string_empty);
             }
             }
         }}
@@ -103,10 +104,10 @@ std::shared_ptr<Promise<array<double>>> TimeSeriesAnalyzer::getARIMAPredictions(
     }
     );
     auto model = std::make_shared<arima>(object{
-        object::pair{std:("p"), 2}, 
-        object::pair{std:("d"), 1}, 
-        object::pair{std:("q"), 2}, 
-        object::pair{std:("verbose"), false}
+        object::pair{std::string("p"), 2}, 
+        object::pair{std::string("d"), 1}, 
+        object::pair{std::string("q"), 2}, 
+        object::pair{std::string("verbose"), false}
     });
     std::async([=]() { model->fit(values); });
     return model->predict(horizon);

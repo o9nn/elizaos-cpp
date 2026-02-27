@@ -1,11 +1,12 @@
 #include "price-validator.hpp"
+#include <string>
 #include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<PriceValidationResult> checkPriceDivergence(const std:& tokenAddress, Chain chain, double poolPriceUsd) {
+std::future<PriceValidationResult> checkPriceDivergence(const std::string& tokenAddress, Chain chain, double poolPriceUsd) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!poolPriceUsd || poolPriceUsd <= 0) {

@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_CORE_SRC_SPECS_V1_TYPES_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_CORE_SRC_SPECS_V1_TYPES_H
 #include "core.hpp"
+#include <string>
 #include "stream.hpp"
 
 typedef  UUID;
@@ -156,7 +157,7 @@ public:
 };
 
 enum struct GoalStatus {
-    DONE = std:("DONE"), FAILED = std:("FAILED"), IN_PROGRESS = std:("IN_PROGRESS")
+    DONE = std::string("DONE"), FAILED = std::string("FAILED"), IN_PROGRESS = std::string("IN_PROGRESS")
 };
 class Goal : public object, public std::enable_shared_from_this<Goal> {
 public:
@@ -175,10 +176,10 @@ public:
 };
 
 enum struct ModelClass {
-    SMALL = std:("small"), MEDIUM = std:("medium"), LARGE = std:("large"), EMBEDDING = std:("embedding"), IMAGE = std:("image")
+    SMALL = std::string("small"), MEDIUM = std::string("medium"), LARGE = std::string("large"), EMBEDDING = std::string("embedding"), IMAGE = std::string("image")
 };
 enum struct ModelProviderName {
-    OPENAI = std:("openai"), ETERNALAI = std:("eternalai"), ANTHROPIC = std:("anthropic"), GROK = std:("grok"), GROQ = std:("groq"), LLAMACLOUD = std:("llama_cloud"), TOGETHER = std:("together"), LLAMALOCAL = std:("llama_local"), LMSTUDIO = std:("lmstudio"), GOOGLE = std:("google"), MISTRAL = std:("mistral"), CLAUDE_VERTEX = std:("claude_vertex"), REDPILL = std:("redpill"), OPENROUTER = std:("openrouter"), OLLAMA = std:("ollama"), HEURIST = std:("heurist"), GALADRIEL = std:("galadriel"), FAL = std:("falai"), GAIANET = std:("gaianet"), ALI_BAILIAN = std:("ali_bailian"), VOLENGINE = std:("volengine"), NANOGPT = std:("nanogpt"), HYPERBOLIC = std:("hyperbolic"), VENICE = std:("venice"), NVIDIA = std:("nvidia"), NINETEEN_AI = std:("nineteen_ai"), AKASH_CHAT_API = std:("akash_chat_api"), LIVEPEER = std:("livepeer"), LETZAI = std:("letzai"), DEEPSEEK = std:("deepseek"), INFERA = std:("infera"), BEDROCK = std:("bedrock"), ATOMA = std:("atoma"), SECRETAI = std:("secret_ai"), NEARAI = std:("nearai")
+    OPENAI = std::string("openai"), ETERNALAI = std::string("eternalai"), ANTHROPIC = std::string("anthropic"), GROK = std::string("grok"), GROQ = std::string("groq"), LLAMACLOUD = std::string("llama_cloud"), TOGETHER = std::string("together"), LLAMALOCAL = std::string("llama_local"), LMSTUDIO = std::string("lmstudio"), GOOGLE = std::string("google"), MISTRAL = std::string("mistral"), CLAUDE_VERTEX = std::string("claude_vertex"), REDPILL = std::string("redpill"), OPENROUTER = std::string("openrouter"), OLLAMA = std::string("ollama"), HEURIST = std::string("heurist"), GALADRIEL = std::string("galadriel"), FAL = std::string("falai"), GAIANET = std::string("gaianet"), ALI_BAILIAN = std::string("ali_bailian"), VOLENGINE = std::string("volengine"), NANOGPT = std::string("nanogpt"), HYPERBOLIC = std::string("hyperbolic"), VENICE = std::string("venice"), NVIDIA = std::string("nvidia"), NINETEEN_AI = std::string("nineteen_ai"), AKASH_CHAT_API = std::string("akash_chat_api"), LIVEPEER = std::string("livepeer"), LETZAI = std::string("letzai"), DEEPSEEK = std::string("deepseek"), INFERA = std::string("infera"), BEDROCK = std::string("bedrock"), ATOMA = std::string("atoma"), SECRETAI = std::string("secret_ai"), NEARAI = std::string("nearai")
 };
 class State : public object, public std::enable_shared_from_this<State> {
 public:
@@ -444,7 +445,7 @@ public:
     virtual std::shared_ptr<Promise<boolean>> createAccount(std::shared_ptr<Account> account) = 0;
     virtual std::shared_ptr<Promise<array<std::shared_ptr<Memory>>>> getMemories(object params) = 0;
     virtual std::shared_ptr<Promise<any>> getMemoryById(UUID id) = 0;
-    virtual std::shared_ptr<Promise<array<std::shared_ptr<Memory>>>> getMemoriesByIds(array<UUID> ids, string tableName = undefined) = 0;
+    virtual std::shared_ptr<Promise<array<std::shared_ptr<Memory>>>> getMemoriesByIds(array<UUID> ids, string tableName = std::nullopt) = 0;
     virtual std::shared_ptr<Promise<array<std::shared_ptr<Memory>>>> getMemoriesByRoomIds(object params) = 0;
     virtual std::shared_ptr<Promise<array<object>>> getCachedEmbeddings(object params) = 0;
     virtual std::shared_ptr<Promise<void>> log(object params) = 0;
@@ -452,17 +453,17 @@ public:
     virtual std::shared_ptr<Promise<array<std::shared_ptr<Memory>>>> searchMemories(object params) = 0;
     virtual std::shared_ptr<Promise<void>> updateGoalStatus(object params) = 0;
     virtual std::shared_ptr<Promise<array<std::shared_ptr<Memory>>>> searchMemoriesByEmbedding(array<double> embedding, object params) = 0;
-    virtual std::shared_ptr<Promise<void>> createMemory(std::shared_ptr<Memory> memory, string tableName, boolean unique = undefined) = 0;
+    virtual std::shared_ptr<Promise<void>> createMemory(std::shared_ptr<Memory> memory, string tableName, boolean unique = std::nullopt) = 0;
     virtual std::shared_ptr<Promise<void>> removeMemory(UUID memoryId, string tableName) = 0;
     virtual std::shared_ptr<Promise<void>> removeAllMemories(UUID roomId, string tableName) = 0;
-    virtual std::shared_ptr<Promise<double>> countMemories(UUID roomId, boolean unique = undefined, string tableName = undefined) = 0;
+    virtual std::shared_ptr<Promise<double>> countMemories(UUID roomId, boolean unique = std::nullopt, string tableName = std::nullopt) = 0;
     virtual std::shared_ptr<Promise<array<std::shared_ptr<Goal>>>> getGoals(object params) = 0;
     virtual std::shared_ptr<Promise<void>> updateGoal(std::shared_ptr<Goal> goal) = 0;
     virtual std::shared_ptr<Promise<void>> createGoal(std::shared_ptr<Goal> goal) = 0;
     virtual std::shared_ptr<Promise<void>> removeGoal(UUID goalId) = 0;
     virtual std::shared_ptr<Promise<void>> removeAllGoals(UUID roomId) = 0;
     virtual std::shared_ptr<Promise<any>> getRoom(UUID roomId) = 0;
-    virtual std::shared_ptr<Promise<UUID>> createRoom(UUID roomId = undefined) = 0;
+    virtual std::shared_ptr<Promise<UUID>> createRoom(UUID roomId = std::nullopt) = 0;
     virtual std::shared_ptr<Promise<void>> removeRoom(UUID roomId) = 0;
     virtual std::shared_ptr<Promise<array<UUID>>> getRoomsForParticipant(UUID userId) = 0;
     virtual std::shared_ptr<Promise<array<UUID>>> getRoomsForParticipants(array<UUID> userIds) = 0;
@@ -480,7 +481,7 @@ public:
     virtual std::shared_ptr<Promise<array<std::shared_ptr<RAGKnowledgeItem>>>> searchKnowledge(object params) = 0;
     virtual std::shared_ptr<Promise<void>> createKnowledge(std::shared_ptr<RAGKnowledgeItem> knowledge) = 0;
     virtual std::shared_ptr<Promise<void>> removeKnowledge(UUID id) = 0;
-    virtual std::shared_ptr<Promise<void>> clearKnowledge(UUID agentId, boolean shared = undefined) = 0;
+    virtual std::shared_ptr<Promise<void>> clearKnowledge(UUID agentId, boolean shared = std::nullopt) = 0;
 };
 
 class IDatabaseCacheAdapter : public object, public std::enable_shared_from_this<IDatabaseCacheAdapter> {
@@ -506,10 +507,10 @@ public:
     virtual std::shared_ptr<Promise<any>> getMemoryById(UUID id) = 0;
     virtual std::shared_ptr<Promise<array<std::shared_ptr<Memory>>>> getMemoriesByRoomIds(object params) = 0;
     virtual std::shared_ptr<Promise<array<std::shared_ptr<Memory>>>> searchMemoriesByEmbedding(array<double> embedding, object opts) = 0;
-    virtual std::shared_ptr<Promise<void>> createMemory(std::shared_ptr<Memory> memory, boolean unique = undefined) = 0;
+    virtual std::shared_ptr<Promise<void>> createMemory(std::shared_ptr<Memory> memory, boolean unique = std::nullopt) = 0;
     virtual std::shared_ptr<Promise<void>> removeMemory(UUID memoryId) = 0;
     virtual std::shared_ptr<Promise<void>> removeAllMemories(UUID roomId) = 0;
-    virtual std::shared_ptr<Promise<double>> countMemories(UUID roomId, boolean unique = undefined) = 0;
+    virtual std::shared_ptr<Promise<double>> countMemories(UUID roomId, boolean unique = std::nullopt) = 0;
 };
 
 class IRAGKnowledgeManager : public object, public std::enable_shared_from_this<IRAGKnowledgeManager> {
@@ -523,14 +524,14 @@ public:
     virtual std::shared_ptr<Promise<void>> createKnowledge(std::shared_ptr<RAGKnowledgeItem> item) = 0;
     virtual std::shared_ptr<Promise<void>> removeKnowledge(UUID id) = 0;
     virtual std::shared_ptr<Promise<array<std::shared_ptr<RAGKnowledgeItem>>>> searchKnowledge(object params) = 0;
-    virtual std::shared_ptr<Promise<void>> clearKnowledge(boolean shared = undefined) = 0;
+    virtual std::shared_ptr<Promise<void>> clearKnowledge(boolean shared = std::nullopt) = 0;
     virtual std::shared_ptr<Promise<void>> processFile(object file) = 0;
     virtual std::shared_ptr<Promise<void>> cleanupDeletedKnowledgeFiles() = 0;
     virtual UUID generateScopedId(string path, boolean isShared) = 0;
 };
 
 enum struct CacheStore {
-    REDIS = std:("redis"), DATABASE = std:("database"), FILESYSTEM = std:("filesystem")
+    REDIS = std::string("redis"), DATABASE = std::string("database"), FILESYSTEM = std::string("filesystem")
 };
 class ICacheManager : public object, public std::enable_shared_from_this<ICacheManager> {
 public:
@@ -538,7 +539,7 @@ public:
     template <typename T>
     std::shared_ptr<Promise<any>> get(string key) = 0;
     template <typename T>
-    std::shared_ptr<Promise<void>> set(string key, T value, CacheOptions options = undefined) = 0;
+    std::shared_ptr<Promise<void>> set(string key, T value, CacheOptions options = std::nullopt) = 0;
     virtual std::shared_ptr<Promise<void>> delete(string key) = 0;
 };
 
@@ -609,15 +610,15 @@ public:
     virtual void registerService(std::shared_ptr<Service> service) = 0;
     virtual any getSetting(string key) = 0;
     virtual double getConversationLength() = 0;
-    virtual std::shared_ptr<Promise<void>> processActions(std::shared_ptr<Memory> message, array<std::shared_ptr<Memory>> responses, std::shared_ptr<State> state = undefined, HandlerCallback callback = undefined) = 0;
-    virtual std::shared_ptr<Promise<any>> evaluate(std::shared_ptr<Memory> message, std::shared_ptr<State> state = undefined, boolean didRespond = undefined, HandlerCallback callback = undefined) = 0;
+    virtual std::shared_ptr<Promise<void>> processActions(std::shared_ptr<Memory> message, array<std::shared_ptr<Memory>> responses, std::shared_ptr<State> state = std::nullopt, HandlerCallback callback = std::nullopt) = 0;
+    virtual std::shared_ptr<Promise<any>> evaluate(std::shared_ptr<Memory> message, std::shared_ptr<State> state = std::nullopt, boolean didRespond = std::nullopt, HandlerCallback callback = std::nullopt) = 0;
     virtual std::shared_ptr<Promise<void>> ensureParticipantExists(UUID userId, UUID roomId) = 0;
     virtual std::shared_ptr<Promise<void>> ensureUserExists(UUID userId, any userName, any name, any source) = 0;
     virtual void registerAction(std::shared_ptr<Action> action) = 0;
-    virtual std::shared_ptr<Promise<void>> ensureConnection(UUID userId, UUID roomId, string userName = undefined, string userScreenName = undefined, string source = undefined) = 0;
+    virtual std::shared_ptr<Promise<void>> ensureConnection(UUID userId, UUID roomId, string userName = std::nullopt, string userScreenName = std::nullopt, string source = std::nullopt) = 0;
     virtual std::shared_ptr<Promise<void>> ensureParticipantInRoom(UUID userId, UUID roomId) = 0;
     virtual std::shared_ptr<Promise<void>> ensureRoomExists(UUID roomId) = 0;
-    virtual std::shared_ptr<Promise<std::shared_ptr<State>>> composeState(std::shared_ptr<Memory> message, object additionalKeys = undefined) = 0;
+    virtual std::shared_ptr<Promise<std::shared_ptr<State>>> composeState(std::shared_ptr<Memory> message, object additionalKeys = std::nullopt) = 0;
     virtual std::shared_ptr<Promise<std::shared_ptr<State>>> updateRecentMessageState(std::shared_ptr<State> state) = 0;
 };
 
@@ -713,10 +714,10 @@ public:
 };
 
 enum struct IrysMessageType {
-    REQUEST = std:("REQUEST"), DATA_STORAGE = std:("DATA_STORAGE"), REQUEST_RESPONSE = std:("REQUEST_RESPONSE")
+    REQUEST = std::string("REQUEST"), DATA_STORAGE = std::string("DATA_STORAGE"), REQUEST_RESPONSE = std::string("REQUEST_RESPONSE")
 };
 enum struct IrysDataType {
-    FILE = std:("FILE"), IMAGE = std:("IMAGE"), OTHER = std:("OTHER")
+    FILE = std::string("FILE"), IMAGE = std::string("IMAGE"), OTHER = std::string("OTHER")
 };
 class IrysTimestamp : public object, public std::enable_shared_from_this<IrysTimestamp> {
 public:
@@ -742,10 +743,10 @@ public:
 };
 
 enum struct ServiceType {
-    IMAGE_DESCRIPTION = std:("image_description"), TRANSCRIPTION = std:("transcription"), VIDEO = std:("video"), TEXT_GENERATION = std:("text_generation"), BROWSER = std:("browser"), SPEECH_GENERATION = std:("speech_generation"), PDF = std:("pdf"), INTIFACE = std:("intiface"), AWS_S3 = std:("aws_s3"), BUTTPLUG = std:("buttplug"), SLACK = std:("slack"), VERIFIABLE_LOGGING = std:("verifiable_logging"), IRYS = std:("irys"), TEE_LOG = std:("tee_log"), GOPLUS_SECURITY = std:("goplus_security"), WEB_SEARCH = std:("web_search"), EMAIL_AUTOMATION = std:("email_automation"), NKN_CLIENT_SERVICE = std:("nkn_client_service"), DATABASE_MIGRATION = std:("database_migration")
+    IMAGE_DESCRIPTION = std::string("image_description"), TRANSCRIPTION = std::string("transcription"), VIDEO = std::string("video"), TEXT_GENERATION = std::string("text_generation"), BROWSER = std::string("browser"), SPEECH_GENERATION = std::string("speech_generation"), PDF = std::string("pdf"), INTIFACE = std::string("intiface"), AWS_S3 = std::string("aws_s3"), BUTTPLUG = std::string("buttplug"), SLACK = std::string("slack"), VERIFIABLE_LOGGING = std::string("verifiable_logging"), IRYS = std::string("irys"), TEE_LOG = std::string("tee_log"), GOPLUS_SECURITY = std::string("goplus_security"), WEB_SEARCH = std::string("web_search"), EMAIL_AUTOMATION = std::string("email_automation"), NKN_CLIENT_SERVICE = std::string("nkn_client_service"), DATABASE_MIGRATION = std::string("database_migration")
 };
 enum struct LoggingLevel {
-    DEBUG = std:("debug"), VERBOSE = std:("verbose"), NONE = std:("none")
+    DEBUG = std::string("debug"), VERBOSE = std::string("verbose"), NONE = std::string("none")
 };
 class RAGKnowledgeItem : public object, public std::enable_shared_from_this<RAGKnowledgeItem> {
 public:
@@ -784,19 +785,19 @@ public:
 };
 
 enum struct TokenizerType {
-    Auto = std:("auto"), TikToken = std:("tiktoken")
+    Auto = std::string("auto"), TikToken = std::string("tiktoken")
 };
 enum struct TranscriptionProvider {
-    OpenAI = std:("openai"), Deepgram = std:("deepgram"), Local = std:("local")
+    OpenAI = std::string("openai"), Deepgram = std::string("deepgram"), Local = std::string("local")
 };
 enum struct ActionTimelineType {
-    ForYou = std:("foryou"), Following = std:("following")
+    ForYou = std::string("foryou"), Following = std::string("following")
 };
 enum struct KnowledgeScope {
-    SHARED = std:("shared"), PRIVATE = std:("private")
+    SHARED = std::string("shared"), PRIVATE = std::string("private")
 };
 enum struct CacheKeyPrefix {
-    KNOWLEDGE = std:("knowledge")
+    KNOWLEDGE = std::string("knowledge")
 };
 class DirectoryItem : public object, public std::enable_shared_from_this<DirectoryItem> {
 public:

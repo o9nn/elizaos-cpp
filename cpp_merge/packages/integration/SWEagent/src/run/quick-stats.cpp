@@ -1,12 +1,13 @@
 #include "quick-stats.h"
+#include <string>
 
 std::shared_ptr<Promise<string>> quickStats(string directory)
 {
     auto dir = path->resolve(directory);
     auto trajFiles = findTrajFiles(dir);
     if (trajFiles->get_length() == 0) {
-        logger->warn(std:("No .traj files found in ") + dir + string_empty);
-        return std:("No .traj files found.");
+        logger->warn(std::string("No .traj files found in ") + dir + string_empty);
+        return std::string("No .traj files found.");
     }
     auto apiCalls = array<double>();
     auto filesByExitStatus = std::make_shared<Map<string, array<string>>>();
@@ -14,8 +15,8 @@ std::shared_ptr<Promise<string>> quickStats(string directory)
     {
         try
         {
-            auto data = JSON->parse(fs::readFileSync(filePath, std:("utf-8")));
-            if (data["info"]["model_stats"]["api_calls"] != undefined) {
+            auto data = JSON->parse(fs::readFileSync(filePath, std::string("utf-8")));
+            if (data["info"]["model_stats"]["api_calls"] != std::nullopt) {
                 apiCalls->push(data["info"]["model_stats"]["api_calls"]);
             }
             if (data["info"]["exit_status"]) {
@@ -28,7 +29,7 @@ std::shared_ptr<Promise<string>> quickStats(string directory)
         }
         catch (const any& error)
         {
-            logger->error(std:("Error processing ") + filePath + std:(": ") + error + string_empty);
+            logger->error(std::string("Error processing ") + filePath + std::string(": ") + error + string_empty);
         }
     }
     auto sortedStatuses = Array->from(filesByExitStatus->entries())->sort([=](auto a, auto b) mutable
@@ -37,16 +38,16 @@ std::shared_ptr<Promise<string>> quickStats(string directory)
     }
     );
     if (AND((sortedStatuses->get_length() == 0), (apiCalls->get_length() == 0))) {
-        logger->warn(std:("No valid api_calls data found in the .traj files"));
-        return std:("No valid api_calls data found in the .traj files.");
+        logger->warn(std::string("No valid api_calls data found in the .traj files"));
+        return std::string("No valid api_calls data found in the .traj files.");
     }
-    logger->info(std:("Exit statuses:"));
+    logger->info(std::string("Exit statuses:"));
     auto& __array1781_1882 = sortedStatuses;
     for (auto __indx1781_1882 = 0_N; __indx1781_1882 < __array1781_1882->get_length(); __indx1781_1882++)
     {
         auto& [status, files] = const_(__array1781_1882)[__indx1781_1882];
         {
-            logger->info(string_empty + status + std:(": ") + files->get_length() + string_empty);
+            logger->info(string_empty + status + std::string(": ") + files->get_length() + string_empty);
         }
     }
     if (apiCalls->get_length() > 0) {
@@ -55,7 +56,7 @@ std::shared_ptr<Promise<string>> quickStats(string directory)
             return a + b;
         }
         , 0) / apiCalls->get_length();
-        logger->info(std:("Avg api calls: ") + averageApiCalls + string_empty);
+        logger->info(std::string("Avg api calls: ") + averageApiCalls + string_empty);
     }
     auto result = array<string>();
     auto& __array2104_2405 = sortedStatuses;
@@ -63,17 +64,17 @@ std::shared_ptr<Promise<string>> quickStats(string directory)
     {
         auto& [status, files] = const_(__array2104_2405)[__indx2104_2405];
         {
-            result->push(std:("\
-## "") + status + std:("" - ") + files->get_length() + std:(" trajectories"));
+            result->push(std::string("\
+## "") + status + std::string("" - ") + files->get_length() + std::string(" trajectories"));
             auto subdirs = std::make_shared<Set>(files->map([=](auto file) mutable
             {
                 return path->dirname(file);
             }
             ));
-            result->push(Array->from(subdirs)->join(std:(" ")));
+            result->push(Array->from(subdirs)->join(std::string(" ")));
         }
     }
-    return result->join(std:("\
+    return result->join(std::string("\
 "));
 };
 
@@ -90,7 +91,7 @@ array<string> findTrajFiles(string directory)
             auto stat = fs::statSync(filePath);
             if (stat->isDirectory()) {
                 walk(filePath);
-            } else if (file->endsWith(std:(".traj"))) {
+            } else if (file->endsWith(std::string(".traj"))) {
                 results->push(filePath);
             }
         }
@@ -101,7 +102,7 @@ array<string> findTrajFiles(string directory)
 };
 
 
-std::shared_ptr<AgentLogger> logger = getLogger(std:("quick-stats"), std:("📊"));
+std::shared_ptr<AgentLogger> logger = getLogger(std::string("quick-stats"), std::string("📊"));
 
 void Main(void)
 {

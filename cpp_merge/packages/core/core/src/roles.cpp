@@ -1,4 +1,5 @@
 #include "roles.hpp"
+#include <string>
 
 std::shared_ptr<Promise<Role>> getUserServerRole(std::shared_ptr<IAgentRuntime> runtime, string entityId, string serverId)
 {
@@ -20,12 +21,12 @@ std::shared_ptr<Promise<Role>> getUserServerRole(std::shared_ptr<IAgentRuntime> 
 std::shared_ptr<Promise<any>> findWorldsForOwner(std::shared_ptr<IAgentRuntime> runtime, string entityId)
 {
     if (!entityId) {
-        logger->error(std:("User ID is required to find server"));
+        logger->error(std::string("User ID is required to find server"));
         return nullptr;
     }
     auto worlds = std::async([=]() { runtime->getAllWorlds(); });
     if (OR((!worlds), (worlds->get_length() == 0))) {
-        logger->info(std:("No worlds found for this agent"));
+        logger->info(std::string("No worlds found for this agent"));
         return nullptr;
     }
     auto ownerWorlds = array<any>();

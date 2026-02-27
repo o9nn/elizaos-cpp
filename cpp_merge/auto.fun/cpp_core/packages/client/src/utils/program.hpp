@@ -16,7 +16,7 @@ namespace elizaos {
 
 
 
-    // Use the imported IDL for typing, cast to std: to bypass potential strict type mismatch
+    // Use the imported IDL for typing, cast to std::string to bypass potential strict type mismatch
 
 
 } // namespace elizaos

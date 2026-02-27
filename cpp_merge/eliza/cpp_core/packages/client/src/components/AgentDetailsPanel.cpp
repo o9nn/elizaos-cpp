@@ -1,4 +1,5 @@
 #include "AgentDetailsPanel.hpp"
+#include <string>
 #include <map>
 #include <iostream>
 #include <stdexcept>
@@ -103,7 +104,7 @@ void AgentDetailsPanel() {
     <div key={key} className="text-xs">;
     <span className="text-muted-foreground">{key}:</span>{" "}
     <span className="font-mono">;
-    {typeof value == "object" ? /* JSON.stringify */ std:(value)  = std::to_string(value)}
+    {typeof value == "object" ? /* JSON.stringify */ std::string(value)  = std::to_string(value)}
     </span>;
     </div>;
     ))}

@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_CORE_SRC_TYPES_MESSAGE_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_CORE_SRC_TYPES_MESSAGE_H
 #include "core.hpp"
+#include <string>
 #include "./service.h"
 #include "./primitives.h"
 
@@ -184,10 +185,10 @@ public:
 
     string serviceType = ServiceType["MESSAGE"];
 
-    string capabilityDescription = std:("Message sending, receiving, and management capabilities");
+    string capabilityDescription = std::string("Message sending, receiving, and management capabilities");
 
-    virtual std::shared_ptr<Promise<std::shared_ptr<UUID>>> sendMessage(std::shared_ptr<UUID> channelId, std::shared_ptr<MessageContent> content, std::shared_ptr<MessageSendOptions> options = undefined) = 0;
-    virtual std::shared_ptr<Promise<array<std::shared_ptr<MessageInfo>>>> getMessages(std::shared_ptr<UUID> channelId, std::shared_ptr<MessageSearchOptions> options = undefined) = 0;
+    virtual std::shared_ptr<Promise<std::shared_ptr<UUID>>> sendMessage(std::shared_ptr<UUID> channelId, std::shared_ptr<MessageContent> content, std::shared_ptr<MessageSendOptions> options = std::nullopt) = 0;
+    virtual std::shared_ptr<Promise<array<std::shared_ptr<MessageInfo>>>> getMessages(std::shared_ptr<UUID> channelId, std::shared_ptr<MessageSearchOptions> options = std::nullopt) = 0;
     virtual std::shared_ptr<Promise<std::shared_ptr<MessageInfo>>> getMessage(std::shared_ptr<UUID> messageId) = 0;
     virtual std::shared_ptr<Promise<void>> editMessage(std::shared_ptr<UUID> messageId, std::shared_ptr<MessageContent> content) = 0;
     virtual std::shared_ptr<Promise<void>> deleteMessage(std::shared_ptr<UUID> messageId) = 0;
@@ -197,9 +198,9 @@ public:
     virtual std::shared_ptr<Promise<void>> unpinMessage(std::shared_ptr<UUID> messageId) = 0;
     virtual std::shared_ptr<Promise<array<std::shared_ptr<MessageChannel>>>> getChannels() = 0;
     virtual std::shared_ptr<Promise<std::shared_ptr<MessageChannel>>> getChannel(std::shared_ptr<UUID> channelId) = 0;
-    virtual std::shared_ptr<Promise<std::shared_ptr<UUID>>> createChannel(string name, any type, object options = undefined) = 0;
-    virtual std::shared_ptr<Promise<array<std::shared_ptr<MessageInfo>>>> searchMessages(string query, std::shared_ptr<MessageSearchOptions> options = undefined) = 0;
-    IMessageService(std::shared_ptr<IAgentRuntime> runtime = undefined);
+    virtual std::shared_ptr<Promise<std::shared_ptr<UUID>>> createChannel(string name, any type, object options = std::nullopt) = 0;
+    virtual std::shared_ptr<Promise<array<std::shared_ptr<MessageInfo>>>> searchMessages(string query, std::shared_ptr<MessageSearchOptions> options = std::nullopt) = 0;
+    IMessageService(std::shared_ptr<IAgentRuntime> runtime = std::nullopt);
 };
 
 #endif

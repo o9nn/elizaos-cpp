@@ -1,4 +1,5 @@
 #include "cli-bun-migration.hpp"
+#include <string>
 #include <future>
 #include <iostream>
 #include <stdexcept>
@@ -45,7 +46,7 @@ std::future<void> removeNpmInstallation() {
 
 }
 
-std::future<void> installCliWithBun(const std:& version) {
+std::future<void> installCliWithBun(const std::string& version) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     std::cout << "Installing CLI with bun..." << std::endl;
@@ -53,7 +54,7 @@ std::future<void> installCliWithBun(const std:& version) {
 
 }
 
-std::future<bool> verifyCliInstallation(const std:& expectedVersion) {
+std::future<bool> verifyCliInstallation(const std::string& expectedVersion) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -81,7 +82,7 @@ std::future<bool> verifyCliInstallation(const std:& expectedVersion) {
 
 }
 
-std::future<void> migrateCliToBun(const std:& targetVersion) {
+std::future<void> migrateCliToBun(const std::string& targetVersion) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

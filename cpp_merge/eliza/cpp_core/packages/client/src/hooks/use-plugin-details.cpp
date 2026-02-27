@@ -30,7 +30,7 @@ std::future<std::optional<RegistryResponse>> fetchPluginRegistry() {
     }
 }
 
-std: getRegistryPluginName(const std:& pluginName) {
+std::string getRegistryPluginName(const std::string& pluginName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // If already in @elizaos-plugins format, return as is
@@ -42,14 +42,14 @@ std: getRegistryPluginName(const std:& pluginName) {
 
 }
 
-bool isCorePlugin(const std:& pluginName) {
+bool isCorePlugin(const std::string& pluginName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (std::find(CORE_PLUGINS.begin(), CORE_PLUGINS.end(), pluginName) != CORE_PLUGINS.end());
 
 }
 
-std: getGitHubRepoPath(const std:& pluginName, const std::optional<RegistryResponse>& registryData) {
+std::string getGitHubRepoPath(const std::string& pluginName, const std::optional<RegistryResponse>& registryData) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Skip core plugins
@@ -102,7 +102,7 @@ std: getGitHubRepoPath(const std:& pluginName, const std::optional<RegistryRespo
         }
 
         // Extract owner/repo from the git URL
-        auto ownerRepo: std:;
+        auto ownerRepo: std::string;
 
         const auto repoMatch = pluginInfo.git.repo.match(/github\.com[:/]([^/]+\/[^/.]+)(\.git)?$/);
         if (repoMatch) {
@@ -129,7 +129,7 @@ std: getGitHubRepoPath(const std:& pluginName, const std::optional<RegistryRespo
 
 }
 
-std::future<std::optional<PluginPackageJson>> fetchPluginPackageJson(const std:& pluginName, const std:& repoPath) {
+std::future<std::optional<PluginPackageJson>> fetchPluginPackageJson(const std::string& pluginName, const std::string& repoPath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Skip core plugins
@@ -201,15 +201,15 @@ std::future<std::optional<PluginPackageJson>> fetchPluginPackageJson(const std:&
                 }
             }
 
-            // If we couldn't find package.json in std: location, log a warning but don't throw
+            // If we couldn't find package.json in std::string location, log a warning but don't throw
             clientLogger.warn(;
-            "Could not find package.json for " + pluginName + " in std: of the expected locations";
+            "Could not find package.json for " + pluginName + " in std::string of the expected locations";
             );
             return nullptr;
 
 }
 
-std::vector<PluginSecret> extractRequiredSecrets(const std:& pluginName, const std::optional<PluginPackageJson>& packageJson) {
+std::vector<PluginSecret> extractRequiredSecrets(const std::string& pluginName, const std::optional<PluginPackageJson>& packageJson) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Core plugins don't have required secrets
@@ -245,7 +245,7 @@ std::vector<PluginSecret> extractRequiredSecrets(const std:& pluginName, const s
             return packageJson.elizaos.secrets.filter[&]((secret) { return secret.required); };
         }
 
-        // Legacy format - convert std: array to PluginSecret array
+        // Legacy format - convert std::string array to PluginSecret array
         if (packageJson.elizaos.requiredSecrets) {
             return packageJson.elizaos.requiredSecrets.std::map((secretName) => ({;
                 name: secretName,
@@ -354,7 +354,7 @@ void useRequiredSecrets(const std::vector<std::string>& pluginNames) {
                     });
                     return acc;
                     },
-                    [] as (PluginSecret & { plugin: std: })[]
+                    [] as (PluginSecret & { plugin: std::string })[]
                     );
                     }, [pluginDetails]);
 
@@ -366,9 +366,9 @@ void useRequiredSecrets(const std::vector<std::string>& pluginNames) {
 
 }
 
-void validateRequiredSecrets(const std::vector<PluginSecret>& requiredSecrets, const std::variant<Record<std:, std:, null>>& providedSecrets) {
+void validateRequiredSecrets(const std::vector<PluginSecret>& requiredSecrets, const std::variant<Record<std::string, std::string, null>>& providedSecrets) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    isValid; missingSecrets: std:[]
+    isValid; missingSecrets: std::string[]
 }
 
 } // namespace elizaos

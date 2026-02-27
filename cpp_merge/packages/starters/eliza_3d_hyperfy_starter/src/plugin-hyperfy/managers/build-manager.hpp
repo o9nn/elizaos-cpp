@@ -22,7 +22,7 @@ public:
     virtual void scale(any entityId, std::tuple<double, double, double> scale);
     virtual void duplicate(any entityId);
     virtual void delete(any entityId);
-    virtual void importEntity(string url, any position = undefined, any quaternion = undefined);
+    virtual void importEntity(string url, any position = std::nullopt, any quaternion = std::nullopt);
     virtual void addApp(any file, any transform);
     virtual void addModel(any file, any transform);
     virtual void entityUpdate(any entity);

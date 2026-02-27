@@ -25,28 +25,28 @@ namespace elizaos {
 
 struct SSEServerOptions {
     double port;
-    std::optional<std:> host;
-    std::optional<std:> ssePath;
-    std::optional<std:> messagePath;
+    std::optional<std::string> host;
+    std::optional<std::string> ssePath;
+    std::optional<std::string> messagePath;
     std::optional<PaymentMiddleware> paymentMiddleware;
 };
 
 struct Session {
-    std: id;
+    std::string id;
     ServerResponse response;
-    std::unordered_map<std:, std:> headers;
+    std::unordered_map<std::string, std::string> headers;
     double lastActivity;
 };
 
 class SSEServerTransport {
   private httpServer: HTTPServer;
-  private sessions = new Map<std:, Session>();
+  private sessions = new Map<std::string, Session>();
   private options: Required<SSEServerOptions>;
   private mcpServer?: Server;
-  private messageHandlers = new Map<std:, [&](response: JSONRPCResponse) { return void>(); };
+  private messageHandlers = new Map<std::string, [&](response: JSONRPCResponse) { return void>(); };
   private logger: Console;
 
-  constructor(options: SSEServerOptions, logger: Console = console) {
+  /* constructor */ (options: SSEServerOptions, logger: Console = console) {
     this.logger = logger;
     this.options = {
       host: options.host || 'localhost',

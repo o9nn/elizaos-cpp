@@ -34,7 +34,7 @@ namespace elizaos {
  * @method close
  * @return {void} - A Promise that resolves when the database is closed.
  */
-class PgliteDatabaseAdapter extends BaseDrizzleAdapter {
+class PgliteDatabaseAdapter : public BaseDrizzleAdapter {
   private manager: PGliteClientManager;
   protected embeddingDimension: EmbeddingDimensionColumn = DIMENSION_MAP[384];
 
@@ -43,10 +43,10 @@ class PgliteDatabaseAdapter extends BaseDrizzleAdapter {
    * @param {UUID} agentId - The unique identifier for the agent.
    * @param {PGliteClientManager} manager - The manager for the Pglite client.
    */
-  constructor(agentId: UUID, manager: PGliteClientManager) {
+  /* constructor */ (agentId: UUID, manager: PGliteClientManager) {
     super(agentId);
     this.manager = manager;
-    this.db = drizzle(this.manager.getConnection() as std:);
+    this.db = drizzle(this.manager.getConnection() as std::string);
   }
 
   /**

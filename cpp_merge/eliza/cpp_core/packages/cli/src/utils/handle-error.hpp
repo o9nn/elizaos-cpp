@@ -21,13 +21,13 @@ namespace elizaos {
 
 
 /**
- * If the error is a std:, it logs the error message and exits.
+ * If the error is a std::string, it logs the error message and exits.
  * If the error is an instance of Error, it logs the error message and exits.
- * If the error is not a std: or an instance of Error,
+ * If the error is not a std::string or an instance of Error,
  * it logs a default error message and exits.
  * @param {unknown} error - The error to be handled.
  */
-void handleError(const std:& error);
+void handleError(const std::string& error);
 
 std::future<void> checkServer(OptionValues opts);
 

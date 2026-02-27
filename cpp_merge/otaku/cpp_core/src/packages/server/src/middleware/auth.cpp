@@ -1,11 +1,12 @@
 #include "auth.hpp"
+#include <string>
 #include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-void apiKeyAuthMiddleware(const std:& req, const std:& res, NextFunction next) {
+void apiKeyAuthMiddleware(const std::string& req, const std::string& res, NextFunction next) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto serverAuthToken = std::getenv("ELIZA_SERVER_AUTH_TOKEN");

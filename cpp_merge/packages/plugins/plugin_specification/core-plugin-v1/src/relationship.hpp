@@ -26,7 +26,7 @@ Relationship fromV2RelationshipEnhanced(std::shared_ptr<RelationshipV2> relation
 
 std::shared_ptr<RelationshipV2> toV2RelationshipEnhanced(Relationship relationship, std::shared_ptr<UUID> agentId);
 
-Relationship createV1Relationship(std::shared_ptr<UUID> userA, std::shared_ptr<UUID> userB, string status = RELATIONSHIP_STATUSES["UNKNOWN"], std::shared_ptr<UUID> roomId = undefined);
+Relationship createV1Relationship(std::shared_ptr<UUID> userA, std::shared_ptr<UUID> userB, string status = RELATIONSHIP_STATUSES["UNKNOWN"], std::shared_ptr<UUID> roomId = std::nullopt);
 
 boolean areRelationshipsEquivalent(Relationship rel1, Relationship rel2);
 

@@ -1,17 +1,18 @@
 #include "index.hpp"
+#include <string>
 
 std::shared_ptr<Plugin> TodoPlugin = object{
-    object::pair{std:("name"), std:("todo")}, 
-    object::pair{std:("description"), std:("Provides task management functionality with daily recurring and one-off tasks.")}, 
-    object::pair{std:("providers"), array<any>{ todosProvider }}, 
-    object::pair{std:("dependencies"), array<string>{ std:("@elizaos/plugin-sql") }}, 
-    object::pair{std:("testDependencies"), array<string>{ std:("@elizaos/plugin-sql") }}, 
-    object::pair{std:("actions"), array<any>{ createTodoAction, completeTodoAction, confirmTodoAction, updateTodoAction, cancelTodoAction }}, 
-    object::pair{std:("services"), array<TodoService>{ TodoService, TodoReminderService }}, 
-    object::pair{std:("routes"), std:("routes")}, 
-    object::pair{std:("schema"), todoSchemaExport}, 
-    object::pair{std:("tests"), e2eTestSuites}, 
-    object::pair{std:("init"), [=](auto _config, auto _runtime) mutable
+    object::pair{std::string("name"), std::string("todo")}, 
+    object::pair{std::string("description"), std::string("Provides task management functionality with daily recurring and one-off tasks.")}, 
+    object::pair{std::string("providers"), array<any>{ todosProvider }}, 
+    object::pair{std::string("dependencies"), array<string>{ std::string("@elizaos/plugin-sql") }}, 
+    object::pair{std::string("testDependencies"), array<string>{ std::string("@elizaos/plugin-sql") }}, 
+    object::pair{std::string("actions"), array<any>{ createTodoAction, completeTodoAction, confirmTodoAction, updateTodoAction, cancelTodoAction }}, 
+    object::pair{std::string("services"), array<TodoService>{ TodoService, TodoReminderService }}, 
+    object::pair{std::string("routes"), std::string("routes")}, 
+    object::pair{std::string("schema"), todoSchemaExport}, 
+    object::pair{std::string("tests"), e2eTestSuites}, 
+    object::pair{std::string("init"), [=](auto _config, auto _runtime) mutable
     {
     }
     }

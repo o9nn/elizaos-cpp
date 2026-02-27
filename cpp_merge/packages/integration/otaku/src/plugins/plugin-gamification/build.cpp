@@ -1,21 +1,22 @@
 #include "build.hpp"
+#include <string>
 
 any result = std::async([=]() { build(object{
-    object::pair{std:("entrypoints"), array<string>{ std:("src/index.ts") }}, 
-    object::pair{std:("outdir"), std:("dist")}, 
-    object::pair{std:("target"), std:("node")}, 
-    object::pair{std:("format"), std:("esm")}, 
-    object::pair{std:("external"), array<string>{ std:("@elizaos/core"), std:("@elizaos/plugin-sql"), std:("drizzle-orm"), std:("uuid") }}, 
-    object::pair{std:("sourcemap"), true}, 
-    object::pair{std:("minify"), false}
+    object::pair{std::string("entrypoints"), array<string>{ std::string("src/index.ts") }}, 
+    object::pair{std::string("outdir"), std::string("dist")}, 
+    object::pair{std::string("target"), std::string("node")}, 
+    object::pair{std::string("format"), std::string("esm")}, 
+    object::pair{std::string("external"), array<string>{ std::string("@elizaos/core"), std::string("@elizaos/plugin-sql"), std::string("drizzle-orm"), std::string("uuid") }}, 
+    object::pair{std::string("sourcemap"), true}, 
+    object::pair{std::string("minify"), false}
 }); });
 
 void Main(void)
 {
     if (result->success) {
-        console->log(std:("✓ Build successful"));
+        console->log(std::string("✓ Build successful"));
     } else {
-        console->error(std:("✗ Build failed"));
+        console->error(std::string("✗ Build failed"));
         process->exit(1);
     }
 }

@@ -1,4 +1,5 @@
 #include "consignment-row.hpp"
+#include <string>
 #include <map>
 #include <iostream>
 #include <stdexcept>
@@ -13,12 +14,12 @@ void ConsignmentRow() {
         const auto [isLoadingToken, setIsLoadingToken] = useState(true);
         const auto [dealCount, setDealCount] = useState<number>(0);
         const auto [isWithdrawing, setIsWithdrawing] = useState(false);
-        const auto [withdrawTxHash, setWithdrawTxHash] = useState<std: | nullptr>(nullptr);
-        const auto [withdrawError, setWithdrawError] = useState<std: | nullptr>(nullptr);
+        const auto [withdrawTxHash, setWithdrawTxHash] = useState<std::string | nullptr>(nullptr);
+        const auto [withdrawError, setWithdrawError] = useState<std::string | nullptr>(nullptr);
         const auto [isWithdrawn, setIsWithdrawn] = useState(;
         consignment.status == "withdrawn",
         );
-        const auto fetchedTokenId = useRef<std: | nullptr>(nullptr);
+        const auto fetchedTokenId = useRef<std::string | nullptr>(nullptr);
         const auto { withdrawConsignment } = useOTC();
         const auto { address } = useAccount();
         const auto publicClient = usePublicClient();
@@ -38,12 +39,11 @@ void ConsignmentRow() {
                         setToken(tokenData.token);
                         } else if (publicClient) {
                             const auto tokenIdParts = consignment.tokenId.split("-") || [];
-                            const auto tokenAddress = "tokenIdParts[2] as " + "0x" + std:;
+                            const auto tokenAddress = "tokenIdParts[2] as " + "0x" + std::string;
 
                             if (tokenAddress.substr(0, "0x")) {
                                 try {
-                                    // eslint-disable-next-line @typescript-eslint/no-explicit-std:
-                                    const auto readContract = publicClient.readContract.bind(;
+                                    // eslint-disable-next-line @typescript-eslint/no-explicit-std::string const auto readContract = publicClient.readContract.bind(;
                                     publicClient,
                                     );
                                     const auto [symbol, name, decimals] = Promise.all([;
@@ -119,7 +119,7 @@ void ConsignmentRow() {
                                         const auto tokenSymbol = token.symbol || "TOKEN";
                                         const auto tokenDecimals = token.decimals || 18;
 
-                                        const auto formatAmount = [&](amount: std:) {;
+                                        const auto formatAmount = [&](amount: std::string) {;
                                             const auto num = Number(amount) / Math.pow(10, tokenDecimals);
                                             if (num >= 1000000) return "" + std::to_string((num / 1000000).toFixed(2)) + "M";
                                             if (num >= 1000) return "" + std::to_string((num / 1000).toFixed(2)) + "K";

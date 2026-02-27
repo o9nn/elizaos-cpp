@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_CORE_SRC_TYPES_POST_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_CORE_SRC_TYPES_POST_H
 #include "core.hpp"
+#include <string>
 #include "./service.h"
 #include "./primitives.h"
 
@@ -236,23 +237,23 @@ public:
 
     string serviceType = ServiceType["POST"];
 
-    string capabilityDescription = std:("Social media posting and content management capabilities");
+    string capabilityDescription = std::string("Social media posting and content management capabilities");
 
-    virtual std::shared_ptr<Promise<std::shared_ptr<UUID>>> createPost(std::shared_ptr<PostContent> content, std::shared_ptr<PostCreateOptions> options = undefined) = 0;
-    virtual std::shared_ptr<Promise<array<std::shared_ptr<PostInfo>>>> getPosts(std::shared_ptr<PostSearchOptions> options = undefined) = 0;
+    virtual std::shared_ptr<Promise<std::shared_ptr<UUID>>> createPost(std::shared_ptr<PostContent> content, std::shared_ptr<PostCreateOptions> options = std::nullopt) = 0;
+    virtual std::shared_ptr<Promise<array<std::shared_ptr<PostInfo>>>> getPosts(std::shared_ptr<PostSearchOptions> options = std::nullopt) = 0;
     virtual std::shared_ptr<Promise<std::shared_ptr<PostInfo>>> getPost(std::shared_ptr<UUID> postId) = 0;
     virtual std::shared_ptr<Promise<void>> editPost(std::shared_ptr<UUID> postId, std::shared_ptr<PostContent> content) = 0;
     virtual std::shared_ptr<Promise<void>> deletePost(std::shared_ptr<UUID> postId) = 0;
     virtual std::shared_ptr<Promise<void>> likePost(std::shared_ptr<UUID> postId, boolean like) = 0;
-    virtual std::shared_ptr<Promise<std::shared_ptr<UUID>>> sharePost(std::shared_ptr<UUID> postId, string comment = undefined) = 0;
+    virtual std::shared_ptr<Promise<std::shared_ptr<UUID>>> sharePost(std::shared_ptr<UUID> postId, string comment = std::nullopt) = 0;
     virtual std::shared_ptr<Promise<void>> savePost(std::shared_ptr<UUID> postId, boolean save) = 0;
     virtual std::shared_ptr<Promise<std::shared_ptr<UUID>>> commentOnPost(std::shared_ptr<UUID> postId, std::shared_ptr<PostContent> content) = 0;
-    virtual std::shared_ptr<Promise<array<std::shared_ptr<PostInfo>>>> getComments(std::shared_ptr<UUID> postId, std::shared_ptr<PostSearchOptions> options = undefined) = 0;
-    virtual std::shared_ptr<Promise<std::shared_ptr<UUID>>> schedulePost(std::shared_ptr<PostContent> content, std::shared_ptr<Date> scheduledAt, std::shared_ptr<PostCreateOptions> options = undefined) = 0;
+    virtual std::shared_ptr<Promise<array<std::shared_ptr<PostInfo>>>> getComments(std::shared_ptr<UUID> postId, std::shared_ptr<PostSearchOptions> options = std::nullopt) = 0;
+    virtual std::shared_ptr<Promise<std::shared_ptr<UUID>>> schedulePost(std::shared_ptr<PostContent> content, std::shared_ptr<Date> scheduledAt, std::shared_ptr<PostCreateOptions> options = std::nullopt) = 0;
     virtual std::shared_ptr<Promise<std::shared_ptr<PostAnalytics>>> getPostAnalytics(std::shared_ptr<UUID> postId) = 0;
-    virtual std::shared_ptr<Promise<array<std::shared_ptr<PostInfo>>>> getTrendingPosts(std::shared_ptr<PostSearchOptions> options = undefined) = 0;
-    virtual std::shared_ptr<Promise<array<std::shared_ptr<PostInfo>>>> searchPosts(string query, std::shared_ptr<PostSearchOptions> options = undefined) = 0;
-    IPostService(std::shared_ptr<IAgentRuntime> runtime = undefined);
+    virtual std::shared_ptr<Promise<array<std::shared_ptr<PostInfo>>>> getTrendingPosts(std::shared_ptr<PostSearchOptions> options = std::nullopt) = 0;
+    virtual std::shared_ptr<Promise<array<std::shared_ptr<PostInfo>>>> searchPosts(string query, std::shared_ptr<PostSearchOptions> options = std::nullopt) = 0;
+    IPostService(std::shared_ptr<IAgentRuntime> runtime = std::nullopt);
 };
 
 #endif

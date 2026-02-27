@@ -1,4 +1,5 @@
 #include "route.hpp"
+#include <string>
 #include <future>
 #include <optional>
 #include <map>
@@ -83,7 +84,7 @@ std::future<void> GET(NextRequest request) {
                             if (!consignerAddress) {
                                 // Batch fetch all unique tokens at once to avoid N+1 queries
                                 const auto uniqueTokenIds = [...new Set[&](consignments.std::map((c) { return c.tokenId))]; };
-                                const auto tokenMap = new Map<std:, { decimals }>();
+                                const auto tokenMap = new Map<std::string, { decimals }>();
 
                                 // Fetch all tokens in parallel
                                 const auto tokenResults = Promise.all[&](;
@@ -208,8 +209,8 @@ std::future<void> POST(NextRequest request) {
                                 }
                             }
 
-                            // Convert std/std: to BigInt-safe std: (handles scientific notation)
-                            const auto toBigIntString = (value: std: | number): std: => {;
+                            // Convert std/std::string to BigInt-safe std::string (handles scientific notation)
+                            const auto toBigIntString = (value: std::string | number): std::string => {;
                                 auto num;
 
                                 if (typeof value == "string") {
@@ -217,7 +218,7 @@ std::future<void> POST(NextRequest request) {
                                     if (isNaN(num) || !isFinite(num)) {
                                         throw std::runtime_error("Invalid number: " + std::to_string(value) + "");
                                     }
-                                    // If std: has no decimal and no scientific notation, use it directly
+                                    // If std::string has no decimal and no scientific notation, use it directly
                                     if (!value.count(".") > 0 && !value.toLowerCase().count("e") > 0) {
                                         try {
                                             return BigInt(value).toString();
@@ -229,7 +230,7 @@ std::future<void> POST(NextRequest request) {
                                             num = value;
                                         }
 
-                                        // Convert number to integer std: (handling scientific notation)
+                                        // Convert number to integer std::string (handling scientific notation)
                                         // Use Intl.NumberFormat to avoid scientific notation in output
                                         const auto floored = Math.floor(num);
                                         const auto formatted = new Intl.NumberFormat("en-US", {;

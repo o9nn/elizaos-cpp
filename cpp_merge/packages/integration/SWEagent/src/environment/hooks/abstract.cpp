@@ -1,4 +1,5 @@
 #include "abstract.hpp"
+#include <string>
 
 void EnvHook::onInit(std::shared_ptr<EnvironmentInstance> _env)
 {
@@ -35,7 +36,7 @@ void CombinedEnvHooks::onInit(std::shared_ptr<EnvironmentInstance> env)
         }
         catch (const any& error)
         {
-            console->error(std:("Hook error in onInit:"), error);
+            console->error(std::string("Hook error in onInit:"), error);
         }
     }
 }
@@ -50,7 +51,7 @@ void CombinedEnvHooks::onStartDeployment()
         }
         catch (const any& error)
         {
-            console->error(std:("Hook error in onStartDeployment:"), error);
+            console->error(std::string("Hook error in onStartDeployment:"), error);
         }
     }
 }
@@ -65,7 +66,7 @@ void CombinedEnvHooks::onInstallEnvStarted()
         }
         catch (const any& error)
         {
-            console->error(std:("Hook error in onInstallEnvStarted:"), error);
+            console->error(std::string("Hook error in onInstallEnvStarted:"), error);
         }
     }
 }
@@ -80,7 +81,7 @@ void CombinedEnvHooks::onClose()
         }
         catch (const any& error)
         {
-            console->error(std:("Hook error in onClose:"), error);
+            console->error(std::string("Hook error in onClose:"), error);
         }
     }
 }
@@ -95,7 +96,7 @@ void CombinedEnvHooks::onEnvironmentStartup()
         }
         catch (const any& error)
         {
-            console->error(std:("Hook error in onEnvironmentStartup:"), error);
+            console->error(std::string("Hook error in onEnvironmentStartup:"), error);
         }
     }
 }

@@ -25,17 +25,17 @@ namespace elizaos {
 /**
  * Shell agent that allows human intervention during execution
  */
-class ShellAgent extends DefaultAgent {
+class ShellAgent : public DefaultAgent {
   private originalModel: AbstractModel | null = null;
   private originalParser: AbstractParseFunction | null = null;
 
-  constructor(config: {
+  /* constructor */ (config: {
     templates: TemplateConfig;
     tools: ToolHandler;
     historyProcessors: AbstractHistoryProcessor[];
     model: AbstractModel;
     maxRequeries?;
-    name?: std:;
+    name?: std::string;
   }) {
     super(config);
   }

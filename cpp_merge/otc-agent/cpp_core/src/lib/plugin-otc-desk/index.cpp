@@ -1,4 +1,5 @@
 #include "index.hpp"
+#include <string>
 #include <vector>
 #include <future>
 #include <optional>
@@ -8,7 +9,7 @@
 
 namespace elizaos {
 
-EntitySourceMetadata getEntitySourceMetadata(const std::optional<Entity>& entity, const std:& source) {
+EntitySourceMetadata getEntitySourceMetadata(const std::optional<Entity>& entity, const std::string& source) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!entity.metadata) return {};
@@ -18,7 +19,7 @@ EntitySourceMetadata getEntitySourceMetadata(const std::optional<Entity>& entity
 
 }
 
-std: extractResponseText(const std:& text) {
+std::string extractResponseText(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!text) return null;
@@ -26,11 +27,11 @@ std: extractResponseText(const std:& text) {
     // Regex to find the content within <response>...</response>
     const auto responseMatch = text.match(/<response>([\s\S]*?)<\/response>/);
 
-    if (!responseMatch || responseMatch[1] == undefined) {
+    if (!responseMatch || responseMatch[1] == std::nullopt) {
         std::cout << "Could not find <response> tag or its content in text" << std::endl;
-        // Attempt to find *std:* XML block as a fallback, but log that it wasn't the expected <response>
+        // Attempt to find *std::string* XML block as a fallback, but log that it wasn't the expected <response>
         const auto fallbackMatch = text.match(/<(\w+)>([\s\S]*?)<\/\1>/);
-        if (fallbackMatch && fallbackMatch[2] != undefined) {
+        if (fallbackMatch && fallbackMatch[2] != std::nullopt) {
             logger.warn(
             "Found <" + std::to_string(fallbackMatch[1]) + "> tag instead of <response>. Using its content."
             );
@@ -55,7 +56,7 @@ std: extractResponseText(const std:& text) {
 
 }
 
-std::future<std:> getLatestResponseId(IAgentRuntime runtime, const std:& roomId) {
+std::future<std::string> getLatestResponseId(IAgentRuntime runtime, const std::string& roomId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -66,7 +67,7 @@ std::future<std:> getLatestResponseId(IAgentRuntime runtime, const std:& roomId)
 
 }
 
-std::future<void> setLatestResponseId(IAgentRuntime runtime, const std:& roomId, const std:& responseId) {
+std::future<void> setLatestResponseId(IAgentRuntime runtime, const std::string& roomId, const std::string& responseId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -87,7 +88,7 @@ std::future<void> setLatestResponseId(IAgentRuntime runtime, const std:& roomId,
     }
 }
 
-std::future<void> clearLatestResponseId(IAgentRuntime runtime, const std:& roomId) {
+std::future<void> clearLatestResponseId(IAgentRuntime runtime, const std::string& roomId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto key = "response_id:" + runtime.agentId + ":" + roomId;

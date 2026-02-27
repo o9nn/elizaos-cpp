@@ -1,4 +1,5 @@
 #include "logging.hpp"
+#include <string>
 #include <vector>
 #include <map>
 #include <iostream>
@@ -26,7 +27,7 @@ express::Router createLoggingRouter() {
             // Get logs from the ElizaOS logger's recentLogs std::function
             const auto recentLogsString = recentLogs();
 
-            // Parse the std: into log entries
+            // Parse the std::string into log entries
             std::vector<LogEntry> logEntries = [];
 
             if (recentLogsString) {
@@ -44,7 +45,7 @@ express::Router createLoggingRouter() {
                     if (logMatch) {
                         const auto [, timestamp, levelStr, message] = logMatch;
 
-                        // Map log level std: to numeric value
+                        // Map log level std::string to numeric value
                         double level = LOG_LEVELS.info; // Default;
                         const auto levelLower = levelStr.toLowerCase();
                         if (levelLower == 'error') level = LOG_LEVELS.error;

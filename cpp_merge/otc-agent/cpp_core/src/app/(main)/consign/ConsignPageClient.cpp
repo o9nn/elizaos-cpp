@@ -1,4 +1,5 @@
 #include "ConsignPageClient.hpp"
+#include <string>
 #include <future>
 #include <map>
 #include <iostream>
@@ -6,7 +7,7 @@
 
 namespace elizaos {
 
-std: getRequiredChain(const std:& tokenId) {
+std::string getRequiredChain(const std::string& tokenId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!tokenId) return null;
@@ -35,7 +36,7 @@ std::future<Idl> fetchSolanaIdl() {
     }
 }
 
-void getTokenInfo(const std:& tokenId) {
+void getTokenInfo(const std::string& tokenId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto parts = tokenId.split("-") || [];
@@ -166,7 +167,7 @@ void ConsignPageClient() {
                                                     }, []);
 
                                                     const auto getBlockExplorerUrl = useCallback(;
-                                                    [&](txHash: std:) {
+                                                    [&](txHash: std::string) {
                                                         if (tokenChain == "solana") {
                                                             return "https://solscan.io/tx/" + txHash;
                                                         }
@@ -191,8 +192,7 @@ void ConsignPageClient() {
                                                             Math.floor(parseFloat(formData.amount) * Math.pow(10, decimals)),
                                                             );
                                                             const auto txHash = approveToken(;
-                                                            "rawTokenAddress as " + "0x" + std:
-                                                            rawAmount,
+                                                            "rawTokenAddress as " + "0x" + std::string rawAmount,
                                                             );
                                                             return txHash;
                                                             }, [;
@@ -205,10 +205,10 @@ void ConsignPageClient() {
 
                                                             const auto handleCreateConsignment = useCallback(;
                                                             std::async (;
-                                                            onTxSubmitted?: (txHash: std:) => void,
+                                                            onTxSubmitted?: (txHash: std::string) => void,
                                                             ): Promise<{
-                                                                txHash: std:;
-                                                                consignmentId: std:;
+                                                                txHash: std::string;
+                                                                consignmentId: std::string;
                                                                 }> => {
                                                                     const auto decimals = selectedToken.decimals || 18;
 

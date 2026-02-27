@@ -1,4 +1,5 @@
 #include "getMatcherFunction.test.h"
+#include <string>
 
 double createMatcherCallCount = 0;
 boolean shouldThrowError = false;
@@ -7,14 +8,14 @@ std::function<std::shared_ptr<MatcherFunction>(std::shared_ptr<TagPattern>)> moc
 {
     createMatcherCallCount++;
     if (shouldThrowError) {
-        throw any(std::make_shared<Error>(std:("Simulated matcher creation error")));
+        throw any(std::make_shared<Error>(std::string("Simulated matcher creation error")));
     }
     return originalCreateMatcher(tagPattern);
 };
 
 void Main(void)
 {
-    describe(std:("Matcher Cache"), [=]() mutable
+    describe(std::string("Matcher Cache"), [=]() mutable
     {
         beforeEach([=]() mutable
         {
@@ -24,42 +25,42 @@ void Main(void)
         }
         );
         shared pattern1 = object{
-            object::pair{std:("pattern"), std:("test")}, 
-            object::pair{std:("patternType"), PatternType::STRING}, 
-            object::pair{std:("target"), TagPatternType::COMMIT_MESSAGE}, 
-            object::pair{std:("options"), object{
-                object::pair{std:("caseSensitive"), false}
+            object::pair{std::string("pattern"), std::string("test")}, 
+            object::pair{std::string("patternType"), PatternType::STRING}, 
+            object::pair{std::string("target"), TagPatternType::COMMIT_MESSAGE}, 
+            object::pair{std::string("options"), object{
+                object::pair{std::string("caseSensitive"), false}
             }}
         };
         shared pattern1Again = object{
-            object::pair{std:("pattern"), std:("test")}, 
-            object::pair{std:("patternType"), PatternType::STRING}, 
-            object::pair{std:("target"), TagPatternType::COMMIT_MESSAGE}, 
-            object::pair{std:("options"), object{
-                object::pair{std:("caseSensitive"), false}
+            object::pair{std::string("pattern"), std::string("test")}, 
+            object::pair{std::string("patternType"), PatternType::STRING}, 
+            object::pair{std::string("target"), TagPatternType::COMMIT_MESSAGE}, 
+            object::pair{std::string("options"), object{
+                object::pair{std::string("caseSensitive"), false}
             }}
         };
         shared pattern1CaseSensitive = object{
-            object::pair{std:("pattern"), std:("test")}, 
-            object::pair{std:("patternType"), PatternType::STRING}, 
-            object::pair{std:("target"), TagPatternType::COMMIT_MESSAGE}, 
-            object::pair{std:("options"), object{
-                object::pair{std:("caseSensitive"), true}
+            object::pair{std::string("pattern"), std::string("test")}, 
+            object::pair{std::string("patternType"), PatternType::STRING}, 
+            object::pair{std::string("target"), TagPatternType::COMMIT_MESSAGE}, 
+            object::pair{std::string("options"), object{
+                object::pair{std::string("caseSensitive"), true}
             }}
         };
         shared pattern2 = object{
-            object::pair{std:("pattern"), std:("*.ts")}, 
-            object::pair{std:("patternType"), PatternType::GLOB}, 
-            object::pair{std:("target"), TagPatternType::FILE_PATH}, 
-            object::pair{std:("options"), object{}}
+            object::pair{std::string("pattern"), std::string("*.ts")}, 
+            object::pair{std::string("patternType"), PatternType::GLOB}, 
+            object::pair{std::string("target"), TagPatternType::FILE_PATH}, 
+            object::pair{std::string("options"), object{}}
         };
         shared invalidGlobPattern = object{
-            object::pair{std:("pattern"), std:("*.log")}, 
-            object::pair{std:("patternType"), PatternType::GLOB}, 
-            object::pair{std:("target"), TagPatternType::COMMIT_MESSAGE}, 
-            object::pair{std:("options"), object{}}
+            object::pair{std::string("pattern"), std::string("*.log")}, 
+            object::pair{std::string("patternType"), PatternType::GLOB}, 
+            object::pair{std::string("target"), TagPatternType::COMMIT_MESSAGE}, 
+            object::pair{std::string("options"), object{}}
         };
-        it(std:("should cache matcher functions based on pattern configuration"), [=]() mutable
+        it(std::string("should cache matcher functions based on pattern configuration"), [=]() mutable
         {
             expect(getMatcherCacheSize())->toBe(0);
             auto matcherFn1 = getMatcherFunction(pattern1);
@@ -75,7 +76,7 @@ void Main(void)
             expect(matcherFn2)->not->toBe(matcherFn1);
         }
         );
-        it(std:("should clear the cache"), [=]() mutable
+        it(std::string("should clear the cache"), [=]() mutable
         {
             getMatcherFunction(pattern1);
             getMatcherFunction(pattern2);
@@ -88,7 +89,7 @@ void Main(void)
             expect(getMatcherCacheSize())->toBe(2);
         }
         );
-        it(std:("should handle and cache errors during matcher creation"), [=]() mutable
+        it(std::string("should handle and cache errors during matcher creation"), [=]() mutable
         {
             auto originalError = console->error;
             console->error = [=]() mutable
@@ -97,8 +98,8 @@ void Main(void)
             auto errorFn = getMatcherFunction(invalidGlobPattern);
             expect(getMatcherCacheSize())->toBe(1);
             auto content = object{
-                object::pair{std:("content"), std:("test.log")}, 
-                object::pair{std:("contentType"), TagPatternType::COMMIT_MESSAGE}
+                object::pair{std::string("content"), std::string("test.log")}, 
+                object::pair{std::string("contentType"), TagPatternType::COMMIT_MESSAGE}
             };
             expect(errorFn(content))->toBe(false);
             auto errorFnAgain = getMatcherFunction(invalidGlobPattern);
@@ -107,39 +108,39 @@ void Main(void)
             console->error = originalError;
         }
         );
-        it(std:("should create different cache keys for different options"), [=]() mutable
+        it(std::string("should create different cache keys for different options"), [=]() mutable
         {
             auto p1 = object{
-                object::pair{std:("pattern"), std:("a")}, 
-                object::pair{std:("patternType"), PatternType::STRING}, 
-                object::pair{std:("target"), TagPatternType::COMMENT}, 
-                object::pair{std:("options"), object{
-                    object::pair{std:("caseSensitive"), false}, 
-                    object::pair{std:("wordBoundary"), true}
+                object::pair{std::string("pattern"), std::string("a")}, 
+                object::pair{std::string("patternType"), PatternType::STRING}, 
+                object::pair{std::string("target"), TagPatternType::COMMENT}, 
+                object::pair{std::string("options"), object{
+                    object::pair{std::string("caseSensitive"), false}, 
+                    object::pair{std::string("wordBoundary"), true}
                 }}
             };
             auto p2 = object{
-                object::pair{std:("pattern"), std:("a")}, 
-                object::pair{std:("patternType"), PatternType::STRING}, 
-                object::pair{std:("target"), TagPatternType::COMMENT}, 
-                object::pair{std:("options"), object{
-                    object::pair{std:("wordBoundary"), true}, 
-                    object::pair{std:("caseSensitive"), false}
+                object::pair{std::string("pattern"), std::string("a")}, 
+                object::pair{std::string("patternType"), PatternType::STRING}, 
+                object::pair{std::string("target"), TagPatternType::COMMENT}, 
+                object::pair{std::string("options"), object{
+                    object::pair{std::string("wordBoundary"), true}, 
+                    object::pair{std::string("caseSensitive"), false}
                 }}
             };
             auto p3 = object{
-                object::pair{std:("pattern"), std:("a")}, 
-                object::pair{std:("patternType"), PatternType::STRING}, 
-                object::pair{std:("target"), TagPatternType::COMMENT}, 
-                object::pair{std:("options"), object{
-                    object::pair{std:("caseSensitive"), false}
+                object::pair{std::string("pattern"), std::string("a")}, 
+                object::pair{std::string("patternType"), PatternType::STRING}, 
+                object::pair{std::string("target"), TagPatternType::COMMENT}, 
+                object::pair{std::string("options"), object{
+                    object::pair{std::string("caseSensitive"), false}
                 }}
             };
             auto p4 = object{
-                object::pair{std:("pattern"), std:("a")}, 
-                object::pair{std:("patternType"), PatternType::STRING}, 
-                object::pair{std:("target"), TagPatternType::COMMENT}, 
-                object::pair{std:("options"), object{}}
+                object::pair{std::string("pattern"), std::string("a")}, 
+                object::pair{std::string("patternType"), PatternType::STRING}, 
+                object::pair{std::string("target"), TagPatternType::COMMENT}, 
+                object::pair{std::string("options"), object{}}
             };
             auto fn1 = getMatcherFunction(p1);
             expect(getMatcherCacheSize())->toBe(1);

@@ -72,7 +72,7 @@ std::vector<DatabaseOption> getAvailableDatabases() {
 
 }
 
-std::future<std:> selectDatabase() {
+std::future<std::string> selectDatabase() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto availableDatabases = getAvailableDatabases();
@@ -96,7 +96,7 @@ std::future<std:> selectDatabase() {
 
 }
 
-std::future<std:> selectAIModel() {
+std::future<std::string> selectAIModel() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto availableModels = getAvailableAIModels();
@@ -148,7 +148,7 @@ std::vector<AIModelOption> getAvailableEmbeddingModels() {
 
 }
 
-std::future<std:> selectEmbeddingModel() {
+std::future<std::string> selectEmbeddingModel() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto availableModels = getAvailableEmbeddingModels();

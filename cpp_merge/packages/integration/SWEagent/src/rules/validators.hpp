@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SWEAGENT_SRC_RULES_VALIDATORS_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SWEAGENT_SRC_RULES_VALIDATORS_H
 #include "core.hpp"
+#include <string>
 #include "fs.hpp"
 #include "path.hpp"
 #include "./types.h"
@@ -41,7 +42,7 @@ class PythonValidator : public object, public std::enable_shared_from_this<Pytho
 public:
     using std::enable_shared_from_this<PythonValidator>::shared_from_this;
     PythonValidator(array<std::shared_ptr<CodingRule>> _rules = PYTHON_CODING_RULES);
-    virtual std::shared_ptr<ValidationResult> validate(string code, string filePath = undefined);
+    virtual std::shared_ptr<ValidationResult> validate(string code, string filePath = std::nullopt);
     virtual boolean hasTypeAnnotations(string code);
     virtual double getLineNumber(string code, double index);
     virtual boolean isMainScript(string filePath);
@@ -52,7 +53,7 @@ class TypeScriptValidator : public object, public std::enable_shared_from_this<T
 public:
     using std::enable_shared_from_this<TypeScriptValidator>::shared_from_this;
     TypeScriptValidator(array<std::shared_ptr<CodingRule>> _rules = TYPESCRIPT_CODING_RULES);
-    virtual std::shared_ptr<ValidationResult> validate(string code, string filePath = undefined);
+    virtual std::shared_ptr<ValidationResult> validate(string code, string filePath = std::nullopt);
     virtual double getLineNumber(string code, double index);
     virtual double calculateCommentDensity(string code);
 };
@@ -69,7 +70,7 @@ string formatValidationResults(array<std::shared_ptr<ValidationResult>> results)
 template <typename RET, typename P0>
 RET getValidator(P0 language)
 {
-    return (language == std:("python")) ? std::make_shared<PythonValidator>() : std::make_shared<TypeScriptValidator>();
+    return (language == std::string("python")) ? std::make_shared<PythonValidator>() : std::make_shared<TypeScriptValidator>();
 };
 
 

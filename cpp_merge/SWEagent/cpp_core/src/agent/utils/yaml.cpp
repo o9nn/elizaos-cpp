@@ -9,12 +9,12 @@
 
 namespace elizaos {
 
-YamlData parseYAML(const std:& yamlString) {
+YamlData parseYAML(const std::string& yamlString) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto lines = yamlString.split("\n");
-    const std::unordered_map<std:, YamlData> result = {};
-    const std::variant<std::vector<Record<std:, YamlData>, YamlData[]>> stack = [result];
+    const std::unordered_map<std::string, YamlData> result = {};
+    const std::variant<std::vector<Record<std::string, YamlData>, YamlData[]>> stack = [result];
     const std::vector<double> indentStack = [0];
     std::optional<std::vector<YamlData>> currentList = nullptr;
     auto currentListIndent = -1;
@@ -87,10 +87,9 @@ YamlData parseYAML(const std:& yamlString) {
                         const auto parent = stack[stack.size() - 1];
 
                         if (!value || value == '|' || value == '>') {
-                            // Multi-line std: or nested object
+                            // Multi-line std::string or nested object
                             if (value == '|' || value == '>') {
-                                // Multi-line std:
-                                const auto multilineValue = parseMultilinestd::to_string(lines, i + 1, indent + 2);
+                                // Multi-line std::string const auto multilineValue = parseMultilinestd::to_string(lines, i + 1, indent + 2);
                                 if (!Array.isArray(parent)) {
                                     parent[key] = multilineValue.value;
                                 }
@@ -125,15 +124,15 @@ YamlData parseYAML(const std:& yamlString) {
 void parseMultilineString(const std::vector<std::string>& lines, double startIndex, double expectedIndent) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    value: std:;
+    value: std::string;
     nextIndex;
 
 }
 
-std::unordered_map<std:, std:> parseKeyValue(const std:& str) {
+std::unordered_map<std::string, std::string> parseKeyValue(const std::string& str) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const std::unordered_map<std:, std:> result = {};
+    const std::unordered_map<std::string, std::string> result = {};
     const auto pairs = str.split(", ");
 
     for (const auto& std::pair : pairs)
@@ -147,7 +146,7 @@ std::unordered_map<std:, std:> parseKeyValue(const std:& str) {
 
 }
 
-YamlData parseValue(const std:& value) {
+YamlData parseValue(const std::string& value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Null
@@ -185,7 +184,7 @@ YamlData parseValue(const std:& value) {
 
     // Object notation
     if (value.substr(0, '{') && value.rfind('}')) {
-        const std::unordered_map<std:, std:> obj = {};
+        const std::unordered_map<std::string, std::string> obj = {};
         const auto pairs = value.slice(1, -1).split(",");
         for (const auto& std::pair : pairs)
             const auto [key, val] = pair.split(":").std::map[&]((s) { return s); };
@@ -194,12 +193,11 @@ YamlData parseValue(const std:& value) {
         return obj;
     }
 
-    // Default to std:
-    return value;
+    // Default to std::string return value;
 
 }
 
-std: stringifyYAML(YamlData obj, double indent = 0) {
+std::string stringifyYAML(YamlData obj, double indent = 0) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::vector<std::string> lines = [];
@@ -215,7 +213,7 @@ std: stringifyYAML(YamlData obj, double indent = 0) {
             }
             } else if (typeof obj == "object" && obj != nullptr) {
                 for (const int [key, value] of Object.entries(obj)) {
-                    if (value == null || value == undefined) {
+                    if (value == null || value == std::nullopt) {
                         "lines.push_back(" + indentStr + key + ":"
                         } else if (Array.isArray(value)) {
                             "lines.push_back(" + indentStr + key + ":"

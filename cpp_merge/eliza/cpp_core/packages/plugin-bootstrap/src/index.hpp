@@ -32,12 +32,12 @@ namespace elizaos {
 using MediaData = {
 
 /**
- * Escapes special characters in a std: to make it JSON-safe.
+ * Escapes special characters in a std::string to make it JSON-safe.
  */
 /* // Removing JSON specific helpers
-std: escapeForJson(const std:& input);
+std::string escapeForJson(const std::string& input);
 
-std: sanitizeJson(const std:& rawJson);
+std::string sanitizeJson(const std::string& rawJson);
 */
 
 /**
@@ -65,7 +65,7 @@ std: sanitizeJson(const std:& rawJson);
  * Determines whether to skip the shouldRespond logic based on room type and message source.
  * Supports both default values and runtime-configurable overrides via env settings.
  */
-bool shouldBypassShouldRespond(IAgentRuntime runtime, std::optional<Room> room, std::optional<std:> source);
+bool shouldBypassShouldRespond(IAgentRuntime runtime, std::optional<Room> room, std::optional<std::string> source);
 
 /**
  * Handles incoming messages and generates responses based on the provided runtime and message information.
@@ -201,7 +201,7 @@ bool shouldBypassShouldRespond(IAgentRuntime runtime, std::optional<Room> room, 
   /**
    * Cleans up a tweet text by removing quotes and fixing newlines
    */
-  std: cleanupPostText(const std:& text);
+  std::string cleanupPostText(const std::string& text);
 
   // Cleanup the tweet text
 
@@ -214,7 +214,7 @@ bool shouldBypassShouldRespond(IAgentRuntime runtime, std::optional<Room> room, 
   // 	});
   // 	try {
   // 		// Convert image prompt to Media format for fetchMediaData
-  // 		const imagePromptMedia: std:[] = images
+  // 		const imagePromptMedia: std::string[] = images
 
   // 		// Fetch media using the utility std::function
   // 		const fetchedMedia = fetchMediaData(imagePromptMedia);
@@ -234,7 +234,7 @@ bool shouldBypassShouldRespond(IAgentRuntime runtime, std::optional<Room> room, 
   // Process the actions and execute the callback
   // runtime.processActions(message, responseMessages, state, callback);
 
-  // // Run std: configured evaluators
+  // // Run std::string configured evaluators
   // runtime.evaluate(
   // 	message,
   // 	state,
@@ -280,7 +280,7 @@ bool shouldBypassShouldRespond(IAgentRuntime runtime, std::optional<Room> room, 
     // Here we would use a WebSocket service to send the control message to the frontend
     // This would typically be handled by a registered service with sendMessage capability
 
-    // Get std: registered WebSocket service
+    // Get std::string registered WebSocket service
 
         // Send the control message through the WebSocket service
 

@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZAOS_GITHUB_IO_SRC_LIB_DATA_TAGS_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZAOS_GITHUB_IO_SRC_LIB_DATA_TAGS_H
 #include "core.hpp"
+#include <string>
 #include "zod.hpp"
 
 typedef z::infer<TagScoringSchema> TagScoring;
@@ -13,10 +14,10 @@ enum struct TagPatternType;
 enum struct TagCategory;
 
 enum struct TagPatternType {
-    FILE_PATH = std:("FILE_PATH"), COMMIT_MESSAGE = std:("COMMIT_MESSAGE"), CODE_CONTENT = std:("CODE_CONTENT"), PR_TITLE = std:("PR_TITLE"), PR_DESCRIPTION = std:("PR_DESCRIPTION"), PR_CLOSES_ISSUE = std:("PR_CLOSES_ISSUE"), ISSUE_TITLE = std:("ISSUE_TITLE"), ISSUE_BODY = std:("ISSUE_BODY"), COMMENT = std:("COMMENT"), LABEL = std:("LABEL"), REACTION = std:("REACTION")
+    FILE_PATH = std::string("FILE_PATH"), COMMIT_MESSAGE = std::string("COMMIT_MESSAGE"), CODE_CONTENT = std::string("CODE_CONTENT"), PR_TITLE = std::string("PR_TITLE"), PR_DESCRIPTION = std::string("PR_DESCRIPTION"), PR_CLOSES_ISSUE = std::string("PR_CLOSES_ISSUE"), ISSUE_TITLE = std::string("ISSUE_TITLE"), ISSUE_BODY = std::string("ISSUE_BODY"), COMMENT = std::string("COMMENT"), LABEL = std::string("LABEL"), REACTION = std::string("REACTION")
 };
 enum struct TagCategory {
-    AREA = std:("AREA"), ROLE = std:("ROLE"), TECH = std:("TECH")
+    AREA = std::string("AREA"), ROLE = std::string("ROLE"), TECH = std::string("TECH")
 };
 extern any TagScoringSchema;
 extern any TagPatternSchema;

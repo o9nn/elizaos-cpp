@@ -1,6 +1,7 @@
 #include "deploy.hpp"
+#include <string>
 
-any anchor = require(std:("@coral-xyz/anchor"));
+any anchor = require(std::string("@coral-xyz/anchor"));
 
 void Main(void)
 {

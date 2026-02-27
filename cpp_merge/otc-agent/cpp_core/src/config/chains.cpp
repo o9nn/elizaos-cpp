@@ -1,4 +1,5 @@
 #include "chains.hpp"
+#include <string>
 #include <vector>
 #include <optional>
 #include <map>
@@ -28,7 +29,7 @@ bool isSolanaChain(Chain chain) {
 
 }
 
-std::optional<Chain> getChainFromId(const std:& chainId) {
+std::optional<Chain> getChainFromId(const std::string& chainId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     for (const int [key, config] of Object.entries(SUPPORTED_CHAINS)) {

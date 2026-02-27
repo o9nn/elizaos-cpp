@@ -1,4 +1,5 @@
 #include "use-toast.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -72,7 +73,7 @@ void useToast() {
             return {
                 ...state,
                 toast,
-                dismiss: (toastId?: std:) => dispatch({ type: "DISMISS_TOAST", toastId }),
+                dismiss: (toastId?: std::string) => dispatch({ type: "DISMISS_TOAST", toastId }),
                 };
 
 }

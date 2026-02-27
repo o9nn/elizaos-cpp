@@ -17,7 +17,7 @@ namespace elizaos {
 
 // quote action - generate a new OTC quote and return an XML object to the frontend
 
-void parseQuoteRequest(const std:& text); {
+void parseQuoteRequest(const std::string& text); {
 
   // Parse token amount (various formats)
 
@@ -26,7 +26,7 @@ void parseQuoteRequest(const std:& text); {
 
   // Parse payment currency
 
-void parseNegotiationRequest(const std:& text); {
+void parseNegotiationRequest(const std::string& text); {
 
   // Token amount (reuse existing regex)
 
@@ -36,9 +36,9 @@ void parseNegotiationRequest(const std:& text); {
 
   // Payment currency
 
-std::future<std: | null> extractTokenContext(const std:& text);
+std::future<std::string | null> extractTokenContext(const std::string& text);
 
-std::future<OTCConsignment | null> findSuitableConsignment(const std:& tokenId, const std:& tokenAmount, double discountBps, double lockupDays);
+std::future<OTCConsignment | null> findSuitableConsignment(const std::string& tokenId, const std::string& tokenAmount, double discountBps, double lockupDays);
 
 // Worst possible deal defaults (lowest discount, longest lockup)
 

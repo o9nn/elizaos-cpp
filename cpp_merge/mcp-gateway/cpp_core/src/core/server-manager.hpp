@@ -16,10 +16,10 @@ namespace elizaos {
 
 
 class ServerManager {
-  private connections = new Map<std:, ServerConnection>();
+  private connections = new Map<std::string, ServerConnection>();
   private logger: Console;
 
-  constructor(logger: Console = console) {
+  /* constructor */ (logger: Console = console) {
     this.logger = logger;
   }
 

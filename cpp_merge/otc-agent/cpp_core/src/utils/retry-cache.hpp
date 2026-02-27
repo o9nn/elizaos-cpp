@@ -39,7 +39,7 @@ double calculateDelay(double attempt);
 /**
  * Check if an error is retryable (rate limit, network error, etc.)
  */
-bool isRetryableError(const std:& error);
+bool isRetryableError(const std::string& error);
 
 /**
  * Execute a std::function with exponential retry and caching
@@ -60,7 +60,7 @@ bool isRetryableError(const std:& error);
  * Fetch with exponential retry (for HTTP requests)
  * Automatically handles 429 and network errors
  */
-std::future<std:> fetchWithRetry(const std:& url, std::optional<RequestInit> options, std::optional<std:> retryOptions);
+std::future<std::string> fetchWithRetry(const std::string& url, std::optional<RequestInit> options, std::optional<std::string> retryOptions);
 
 /**
  * Fetch JSON with retry and caching

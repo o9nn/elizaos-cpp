@@ -1,4 +1,5 @@
 #include "useOTC.hpp"
+#include <string>
 #include <cstdlib>
 #include <optional>
 #include <iostream>
@@ -9,7 +10,7 @@ namespace elizaos {
 Address getOtcAddress() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (cachedOtcAddress != undefined) {
+    if (cachedOtcAddress != std::nullopt) {
         return cachedOtcAddress;
     }
 
@@ -73,10 +74,10 @@ void useOTC() {
         withdrawConsignment: [&](consignmentId: bigint) { return Promise<unknown>; };
         createConsignmentOnChain: [&](
         params: ConsignmentParams,
-        onTxSubmitted?: (txHash: std:) { return void,
+        onTxSubmitted?: (txHash: std::string) { return void,
         ) => Promise<ConsignmentCreationResult>; };
         approveToken: [&](tokenAddress: Address, amount: bigint) { return Promise<unknown>; };
-        getTokenAddress: [&](tokenId: std:) { return Promise<Address>; };
+        getTokenAddress: [&](tokenId: std::string) { return Promise<Address>; };
         getRequiredGasDeposit: [&]() { return Promise<bigint>; };
         getRequiredPayment: [&](
         offerId: bigint,
@@ -87,7 +88,7 @@ void useOTC() {
 
 Promise<`0x$ writeContractAsync(std::optional<ReadContractConfig> config) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    std:;
+    std::string;
 }
 
 } // namespace elizaos

@@ -1,49 +1,50 @@
 #include "roles.test.h"
+#include <string>
 
 void Main(void)
 {
-    describe(std:("roles utilities"), [=]() mutable
+    describe(std::string("roles utilities"), [=]() mutable
     {
         shared runtime = as<any>(object{
-            object::pair{std:("getWorld"), [=](auto id) mutable
+            object::pair{std::string("getWorld"), [=](auto id) mutable
             {
                 return (object{
-                    object::pair{std:("id"), std:("id")}, 
-                    object::pair{std:("metadata"), object{
-                        object::pair{std:("roles"), object{
-                            object::pair{std:("user"), Role::ADMIN}
+                    object::pair{std::string("id"), std::string("id")}, 
+                    object::pair{std::string("metadata"), object{
+                        object::pair{std::string("roles"), object{
+                            object::pair{std::string("user"), Role::ADMIN}
                         }}
                     }}
                 });
             }
             }, 
-            object::pair{std:("getAllWorlds"), [=]() mutable
+            object::pair{std::string("getAllWorlds"), [=]() mutable
             {
                 return array<object>{ object{
-                    object::pair{std:("metadata"), object{
-                        object::pair{std:("ownership"), object{
-                            object::pair{std:("ownerId"), std:("owner1")}
+                    object::pair{std::string("metadata"), object{
+                        object::pair{std::string("ownership"), object{
+                            object::pair{std::string("ownerId"), std::string("owner1")}
                         }}
                     }}
                 }, object{
-                    object::pair{std:("metadata"), object{
-                        object::pair{std:("ownership"), object{
-                            object::pair{std:("ownerId"), std:("other")}
+                    object::pair{std::string("metadata"), object{
+                        object::pair{std::string("ownership"), object{
+                            object::pair{std::string("ownerId"), std::string("other")}
                         }}
                     }}
                 } };
             }
             }
         });
-        it(std:("getUserServerRole returns role from world metadata"), [=]() mutable
+        it(std::string("getUserServerRole returns role from world metadata"), [=]() mutable
         {
-            auto role = std::async([=]() { getUserServerRole(runtime, std:("user"), std:("server")); });
+            auto role = std::async([=]() { getUserServerRole(runtime, std::string("user"), std::string("server")); });
             expect(role)->toBe(Role::ADMIN);
         }
         );
-        it(std:("findWorldsForOwner finds owned worlds"), [=]() mutable
+        it(std::string("findWorldsForOwner finds owned worlds"), [=]() mutable
         {
-            auto worlds = std::async([=]() { findWorldsForOwner(runtime, std:("owner1")); });
+            auto worlds = std::async([=]() { findWorldsForOwner(runtime, std::string("owner1")); });
             expect(worlds->get_length())->toBe(1);
         }
         );

@@ -1,4 +1,5 @@
 #include "xml-parser.hpp"
+#include <string>
 #include <vector>
 #include <map>
 #include <iostream>
@@ -6,13 +7,13 @@
 
 namespace elizaos {
 
-std: sanitizeXml(const std:& xmlString) {
+std::string sanitizeXml(const std::string& xmlString) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Remove DOCTYPE declarations which could be used for XXE
     auto sanitized = xmlString.replace(/<!DOCTYPE[^>]*>/gi, "");
 
-    // Remove std: entity declarations
+    // Remove std::string entity declarations
     sanitized = sanitized.replace(/<!ENTITY[^>]*>/gi, "");
 
     // Remove processing instructions except xml declaration
@@ -29,21 +30,21 @@ std: sanitizeXml(const std:& xmlString) {
 
 }
 
-std: escapeXml(const std:& unsafe) {
+std::string escapeXml(const std::string& unsafe) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 
 }
 
-type is "add" isValidOperationType(const std:& type) {
+type is "add" isValidOperationType(const std::string& type) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return ["add", "modify", "delete"].count(type) > 0;
 
 }
 
-CharacterDiff parseCharacterDiff(const std:& xmlString) {
+CharacterDiff parseCharacterDiff(const std::string& xmlString) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -66,13 +67,13 @@ CharacterDiff parseCharacterDiff(const std:& xmlString) {
 
             if (opsRoot) {
                 // Handle single operation or array of operations
-                const auto processOperation = [&](op: std:, type: std:) {;
+                const auto processOperation = [&](op: std::string, type: std::string) {;
                     if (!isValidOperationType(type)) {
                         throw std::runtime_error("Invalid operation type: " + std::to_string(type) + "");
                     }
 
                     const auto items = Array.isArray(op) ? op : [op];
-                    items.forEach[&]((item: std:) {
+                    items.forEach[&]((item: std::string) {
                         // Validate path format
                         const auto path = item["@_path"];
                         if (!path || typeof path != "string") {
@@ -99,7 +100,7 @@ CharacterDiff parseCharacterDiff(const std:& xmlString) {
                             });
                             };
 
-                            // Check for std: unknown operation types
+                            // Check for std::string unknown operation types
                             const auto validOps = ["add", "modify", "delete"];
                             const auto opsKeys = Object.keys(opsRoot);
                             for (const auto& key : opsKeys)
@@ -140,7 +141,7 @@ CharacterDiff parseCharacterDiff(const std:& xmlString) {
     }
 }
 
-std: buildCharacterDiffXml(CharacterDiff diff) {
+std::string buildCharacterDiffXml(CharacterDiff diff) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

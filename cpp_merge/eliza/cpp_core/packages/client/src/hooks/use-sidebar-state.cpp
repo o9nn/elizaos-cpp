@@ -1,4 +1,5 @@
 #include "use-sidebar-state.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -29,7 +30,7 @@ void useSidebarState() {
                 setIsVisible(visible);
 
                 try {
-                    localStorage.setItem(SIDEBAR_STATE_KEY, /* JSON.stringify */ std:(visible));
+                    localStorage.setItem(SIDEBAR_STATE_KEY, /* JSON.stringify */ std::string(visible));
                     } catch (error) {
                         clientLogger.error("Error saving sidebar state to localStorage:", error);
                     }

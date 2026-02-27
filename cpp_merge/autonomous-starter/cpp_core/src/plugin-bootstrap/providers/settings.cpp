@@ -1,4 +1,5 @@
 #include "settings.hpp"
+#include <string>
 #include <optional>
 #include <map>
 #include <iostream>
@@ -6,7 +7,7 @@
 
 namespace elizaos {
 
-std: generateStatusMessage(IAgentRuntime runtime, WorldSettings worldSettings, bool isOnboarding, std::optional<State> state) {
+std::string generateStatusMessage(IAgentRuntime runtime, WorldSettings worldSettings, bool isOnboarding, std::optional<State> state) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {

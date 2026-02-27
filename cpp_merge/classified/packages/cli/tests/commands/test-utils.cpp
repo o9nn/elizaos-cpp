@@ -1,11 +1,12 @@
 #include "test-utils.h"
+#include <string>
 
 std::shared_ptr<Promise<string>> execShellCommand(string command, object options)
 {
-    auto shell = (process->platform == std:("win32")) ? array<string>{ std:("cmd"), std:("/c") } : array<string>{ std:("sh"), std:("-c") };
+    auto shell = (process->platform == std::string("win32")) ? array<string>{ std::string("cmd"), std::string("/c") } : array<string>{ std::string("sh"), std::string("-c") };
     shared proc = Bun->spawn(array<string>{ shell, command }, object{
-        object::pair{std:("stdout"), (options["stdio"] == std:("ignore")) ? std:("ignore") : std:("pipe")}, 
-        object::pair{std:("stderr"), (options["stdio"] == std:("ignore")) ? std:("ignore") : std:("pipe")}
+        object::pair{std::string("stdout"), (options["stdio"] == std::string("ignore")) ? std::string("ignore") : std::string("pipe")}, 
+        object::pair{std::string("stderr"), (options["stdio"] == std::string("ignore")) ? std::string("ignore") : std::string("pipe")}
     });
     auto timeoutId = nullptr;
     if (options["timeout"]) {
@@ -24,14 +25,14 @@ std::shared_ptr<Promise<string>> execShellCommand(string command, object options
         });
         try
         {
-            if (options["stdio"] == std:("ignore")) {
+            if (options["stdio"] == std::string("ignore")) {
                 std::async([=]() { proc->exited; });
                 return string_empty;
             }
             auto [stdout, stderr] = std::async([=]() { Promise->all(std::tuple<std::shared_ptr<Promise<string>>, std::shared_ptr<Promise<string>>>{ (proc->stdout) ? ((std::make_shared<Response>(proc->stdout)))->text() : Promise->resolve(string_empty), (proc->stderr) ? ((std::make_shared<Response>(proc->stderr)))->text() : Promise->resolve(string_empty) }); });
             std::async([=]() { proc->exited; });
             if (AND((proc->exitCode != 0), (!options["stdio"]))) {
-                auto error = as<any>(std::make_shared<Error>(std:("Command failed: ") + command + std:("\
+                auto error = as<any>(std::make_shared<Error>(std::string("Command failed: ") + command + std::string("\
 stderr: ") + stderr + string_empty));
                 error->status = proc->exitCode;
                 error->stdout = stdout;
@@ -51,11 +52,11 @@ stderr: ") + stderr + string_empty));
 std::shared_ptr<Promise<std::shared_ptr<TestContext>>> setupTestEnvironment()
 {
     auto originalCwd = process->cwd();
-    auto testTmpDir = std::async([=]() { mkdtemp(join(tmpdir(), std:("eliza-test-"))); });
+    auto testTmpDir = std::async([=]() { mkdtemp(join(tmpdir(), std::string("eliza-test-"))); });
     process->chdir(testTmpDir);
     return object{
-        object::pair{std:("testTmpDir"), std:("testTmpDir")}, 
-        object::pair{std:("originalCwd"), std:("originalCwd")}
+        object::pair{std::string("testTmpDir"), std::string("testTmpDir")}, 
+        object::pair{std::string("originalCwd"), std::string("originalCwd")}
     };
 };
 
@@ -63,11 +64,11 @@ std::shared_ptr<Promise<std::shared_ptr<TestContext>>> setupTestEnvironment()
 std::shared_ptr<Promise<void>> cleanupTestEnvironment(std::shared_ptr<TestContext> context)
 {
     safeChangeDirectory(context->originalCwd);
-    if (AND((context->testTmpDir), (context->testTmpDir->includes(std:("eliza-test-"))))) {
+    if (AND((context->testTmpDir), (context->testTmpDir->includes(std::string("eliza-test-"))))) {
         try
         {
             std::async([=]() { rm(context->testTmpDir, object{
-                object::pair{std:("recursive"), true}
+                object::pair{std::string("recursive"), true}
             }); });
         }
         catch (const any& e)
@@ -110,20 +111,20 @@ void safeChangeDirectory(string targetDir)
 std::shared_ptr<Promise<void>> createTestProject(string projectName)
 {
     auto platformOptions = getPlatformOptions(object{
-        object::pair{std:("stdio"), std:("pipe")}, 
-        object::pair{std:("timeout"), TEST_TIMEOUTS["PROJECT_CREATION"]}
+        object::pair{std::string("stdio"), std::string("pipe")}, 
+        object::pair{std::string("timeout"), TEST_TIMEOUTS["PROJECT_CREATION"]}
     });
     try
     {
-        auto result = std::async([=]() { bunExecSimple(std:("elizaos create ") + projectName + std:(" --yes")); });
+        auto result = std::async([=]() { bunExecSimple(std::string("elizaos create ") + projectName + std::string(" --yes")); });
         process->chdir(projectName);
     }
     catch (const any& error)
     {
-        console->error(std:("[Create Test Project Error] Failed to create ") + projectName + std:(":"), object{
-            object::pair{std:("platform"), process->platform}, 
-            object::pair{std:("stdout"), OR((error["stdout"]["toString"]()), (string_empty))}, 
-            object::pair{std:("stderr"), OR((error["stderr"]["toString"]()), (string_empty))}
+        console->error(std::string("[Create Test Project Error] Failed to create ") + projectName + std::string(":"), object{
+            object::pair{std::string("platform"), process->platform}, 
+            object::pair{std::string("stdout"), OR((error["stdout"]["toString"]()), (string_empty))}, 
+            object::pair{std::string("stderr"), OR((error["stderr"]["toString"]()), (string_empty))}
         });
         throw any(error);
     }
@@ -133,13 +134,13 @@ std::shared_ptr<Promise<void>> createTestProject(string projectName)
 
 void expectHelpOutput(string output, string command, array<string> expectedOptions)
 {
-    if (!output->includes(std:("Usage: elizaos ") + command + string_empty)) {
-        throw any(std::make_shared<Error>(std:("Expected help output to contain 'Usage: elizaos ") + command + std:("', got: ") + output + string_empty));
+    if (!output->includes(std::string("Usage: elizaos ") + command + string_empty)) {
+        throw any(std::make_shared<Error>(std::string("Expected help output to contain 'Usage: elizaos ") + command + std::string("', got: ") + output + string_empty));
     }
     for (auto& option : expectedOptions)
     {
         if (!output->includes(option)) {
-            throw any(std::make_shared<Error>(std:("Expected help output to contain '") + option + std:("', got: ") + output + string_empty));
+            throw any(std::make_shared<Error>(std::string("Expected help output to contain '") + option + std::string("', got: ") + output + string_empty));
         }
     }
 };
@@ -147,22 +148,22 @@ void expectHelpOutput(string output, string command, array<string> expectedOptio
 
 std::shared_ptr<Promise<void>> createTestPluginStructure(string pluginName)
 {
-    auto pluginDir = std:("plugin-") + pluginName + string_empty;
+    auto pluginDir = std::string("plugin-") + pluginName + string_empty;
     std::async([=]() { mkdir(pluginDir, object{
-        object::pair{std:("recursive"), true}
+        object::pair{std::string("recursive"), true}
     }); });
-    std::async([=]() { mkdir(join(pluginDir, std:("src")), object{
-        object::pair{std:("recursive"), true}
+    std::async([=]() { mkdir(join(pluginDir, std::string("src")), object{
+        object::pair{std::string("recursive"), true}
     }); });
     auto packageJson = object{
-        object::pair{std:("name"), std:("@elizaos/plugin-") + pluginName + string_empty}, 
-        object::pair{std:("version"), std:("1.0.0")}, 
-        object::pair{std:("type"), std:("module")}, 
-        object::pair{std:("main"), std:("dist/index.js")}, 
-        object::pair{std:("elizaPlugin"), true}
+        object::pair{std::string("name"), std::string("@elizaos/plugin-") + pluginName + string_empty}, 
+        object::pair{std::string("version"), std::string("1.0.0")}, 
+        object::pair{std::string("type"), std::string("module")}, 
+        object::pair{std::string("main"), std::string("dist/index.js")}, 
+        object::pair{std::string("elizaPlugin"), true}
     };
-    std::async([=]() { writeFile(join(pluginDir, std:("package.json")), JSON->stringify(packageJson, nullptr, 2)); });
-    std::async([=]() { writeFile(join(pluginDir, std:("src/index.ts")), std:("{};")); });
+    std::async([=]() { writeFile(join(pluginDir, std::string("package.json")), JSON->stringify(packageJson, nullptr, 2)); });
+    std::async([=]() { writeFile(join(pluginDir, std::string("src/index.ts")), std::string("{};")); });
     process->chdir(pluginDir);
     return std::shared_ptr<Promise<void>>();
 };
@@ -171,25 +172,25 @@ std::shared_ptr<Promise<void>> createTestPluginStructure(string pluginName)
 std::shared_ptr<Promise<void>> createTestAgent(string agentName)
 {
     auto agentData = object{
-        object::pair{std:("name"), agentName}, 
-        object::pair{std:("system"), std:("You are a helpful assistant.")}, 
-        object::pair{std:("bio"), array<string>{ std:("I am a test agent") }}, 
-        object::pair{std:("messageExamples"), array<array<object>>{ array<object>{ object{
-            object::pair{std:("user"), std:("user")}, 
-            object::pair{std:("content"), object{
-                object::pair{std:("text"), std:("Hello")}
+        object::pair{std::string("name"), agentName}, 
+        object::pair{std::string("system"), std::string("You are a helpful assistant.")}, 
+        object::pair{std::string("bio"), array<string>{ std::string("I am a test agent") }}, 
+        object::pair{std::string("messageExamples"), array<array<object>>{ array<object>{ object{
+            object::pair{std::string("user"), std::string("user")}, 
+            object::pair{std::string("content"), object{
+                object::pair{std::string("text"), std::string("Hello")}
             }}
         } }, array<object>{ object{
-            object::pair{std:("user"), std:("assistant")}, 
-            object::pair{std:("content"), object{
-                object::pair{std:("text"), std:("Hi there!")}
+            object::pair{std::string("user"), std::string("assistant")}, 
+            object::pair{std::string("content"), object{
+                object::pair{std::string("text"), std::string("Hi there!")}
             }}
         } } }}, 
-        object::pair{std:("style"), object{
-            object::pair{std:("all"), array<string>{ std:("helpful"), std:("friendly") }}
+        object::pair{std::string("style"), object{
+            object::pair{std::string("all"), array<string>{ std::string("helpful"), std::string("friendly") }}
         }}
     };
-    std::async([=]() { writeFile(string_empty + agentName + std:(".json"), JSON->stringify(agentData, nullptr, 2)); });
+    std::async([=]() { writeFile(string_empty + agentName + std::string(".json"), JSON->stringify(agentData, nullptr, 2)); });
     return std::shared_ptr<Promise<void>>();
 };
 
@@ -197,19 +198,19 @@ std::shared_ptr<Promise<void>> createTestAgent(string agentName)
 std::shared_ptr<Promise<void>> waitForServerReady(double port, double maxWaitTime, string endpoint)
 {
     auto startTime = Date->now();
-    auto isCI = OR((process->env->CI == std:("true")), (process->env->GITHUB_ACTIONS == std:("true")));
-    auto isMacOS = process->platform == std:("darwin");
+    auto isCI = OR((process->env->CI == std::string("true")), (process->env->GITHUB_ACTIONS == std::string("true")));
+    auto isMacOS = process->platform == std::string("darwin");
     shared pollInterval = (AND((isMacOS), (isCI))) ? any(3000) ((isMacOS) ? 2000 : 1000);
     shared requestTimeout = (AND((isMacOS), (isCI))) ? any(6000) ((isMacOS) ? 4000 : 2000);
-    console->log(std:("[DEBUG] Waiting for server on port ") + port + std:(", max wait: ") + maxWaitTime + std:("ms, poll interval: ") + pollInterval + std:("ms"));
-    console->log(std:("[DEBUG] Environment: CI=") + isCI + std:(", macOS=") + isMacOS + string_empty);
+    console->log(std::string("[DEBUG] Waiting for server on port ") + port + std::string(", max wait: ") + maxWaitTime + std::string("ms, poll interval: ") + pollInterval + std::string("ms"));
+    console->log(std::string("[DEBUG] Environment: CI=") + isCI + std::string(", macOS=") + isMacOS + string_empty);
     auto connectionAttempts = 0;
     auto maxConnectionAttempts = Math->max(5, Math->floor(maxWaitTime / (pollInterval * 2)));
     while (Date->now() - startTime < maxWaitTime)
     {
         try
         {
-            shared net = require(std:("net"));
+            shared net = require(std::string("net"));
             auto canConnect = std::async([=]() { std::make_shared<Promise<boolean>>([=](auto resolve) mutable
             {
                 shared socket = std::make_shared<net["Socket"]>();
@@ -219,14 +220,14 @@ std::shared_ptr<Promise<void>> waitForServerReady(double port, double maxWaitTim
                     resolve(false);
                 }
                 , requestTimeout / 2);
-                socket["connect"](port, std:("127.0.0.1"), [=]() mutable
+                socket["connect"](port, std::string("127.0.0.1"), [=]() mutable
                 {
                     clearTimeout(connectTimeout);
                     socket["destroy"]();
                     resolve(true);
                 }
                 );
-                socket["on"](std:("error"), [=]() mutable
+                socket["on"](std::string("error"), [=]() mutable
                 {
                     clearTimeout(connectTimeout);
                     socket["destroy"]();
@@ -238,11 +239,11 @@ std::shared_ptr<Promise<void>> waitForServerReady(double port, double maxWaitTim
             if (!canConnect) {
                 connectionAttempts++;
                 auto timeRemaining = maxWaitTime - (Date->now() - startTime);
-                console->log(std:("[DEBUG] Connection attempt ") + connectionAttempts + std:("/") + maxConnectionAttempts + std:(" failed - no process listening on port ") + port + std:(", ") + Math->round(timeRemaining / 1000) + std:("s remaining"));
+                console->log(std::string("[DEBUG] Connection attempt ") + connectionAttempts + std::string("/") + maxConnectionAttempts + std::string(" failed - no process listening on port ") + port + std::string(", ") + Math->round(timeRemaining / 1000) + std::string("s remaining"));
                 if (connectionAttempts >= maxConnectionAttempts) {
                     auto timeRemaining = maxWaitTime - (Date->now() - startTime);
                     if (timeRemaining < maxWaitTime * 0.3) {
-                        console->log(std:("[DEBUG] Giving up on connection test, trying HTTP anyway..."));
+                        console->log(std::string("[DEBUG] Giving up on connection test, trying HTTP anyway..."));
                     } else {
                         std::async([=]() { std::make_shared<Promise>([=](auto resolve) mutable
                         {
@@ -266,20 +267,20 @@ std::shared_ptr<Promise<void>> waitForServerReady(double port, double maxWaitTim
                 return controller->abort();
             }
             , requestTimeout);
-            auto response = std::async([=]() { fetch(std:("http://127.0.0.1:") + port + string_empty + endpoint + string_empty, object{
-                object::pair{std:("signal"), controller->signal}, 
-                object::pair{std:("headers"), object{
-                    object::pair{std:("User-Agent"), std:("ElizaOS-Test-Client/1.0")}, 
-                    object::pair{std:("Accept"), std:("application/json")}, 
-                    object::pair{std:("Connection"), std:("keep-alive")}, 
-                    object::pair{std:("Cache-Control"), std:("no-cache")}
+            auto response = std::async([=]() { fetch(std::string("http://127.0.0.1:") + port + string_empty + endpoint + string_empty, object{
+                object::pair{std::string("signal"), controller->signal}, 
+                object::pair{std::string("headers"), object{
+                    object::pair{std::string("User-Agent"), std::string("ElizaOS-Test-Client/1.0")}, 
+                    object::pair{std::string("Accept"), std::string("application/json")}, 
+                    object::pair{std::string("Connection"), std::string("keep-alive")}, 
+                    object::pair{std::string("Cache-Control"), std::string("no-cache")}
                 }}
             }); });
             clearTimeout(timeoutId);
             if (response->ok) {
-                console->log(std:("[DEBUG] Server responded with status ") + response->status + string_empty);
+                console->log(std::string("[DEBUG] Server responded with status ") + response->status + string_empty);
                 shared stabilizationTime = (AND((isMacOS), (isCI))) ? any(3000) ((isMacOS) ? 2000 : 1000);
-                console->log(std:("[DEBUG] Stabilizing for ") + stabilizationTime + std:("ms..."));
+                console->log(std::string("[DEBUG] Stabilizing for ") + stabilizationTime + std::string("ms..."));
                 std::async([=]() { std::make_shared<Promise>([=](auto resolve) mutable
                 {
                     return setTimeout(resolve, stabilizationTime);
@@ -287,15 +288,15 @@ std::shared_ptr<Promise<void>> waitForServerReady(double port, double maxWaitTim
                 ); });
                 return std::shared_ptr<Promise<void>>();
             } else {
-                console->log(std:("[DEBUG] Server responded with status ") + response->status + std:(", continuing to wait..."));
+                console->log(std::string("[DEBUG] Server responded with status ") + response->status + std::string(", continuing to wait..."));
             }
         }
         catch (const any& error)
         {
             auto timeRemaining = maxWaitTime - (Date->now() - startTime);
-            auto errorMsg = (is<Error>(error)) ? any(error->message) (std:("unknown error"));
-            console->log(std:("[DEBUG] Server not ready yet (") + errorMsg + std:("), ") + Math->round(timeRemaining / 1000) + std:("s remaining"));
-            if (OR((errorMsg->includes(std:("fetch"))), (errorMsg->includes(std:("AbortError"))))) {
+            auto errorMsg = (is<Error>(error)) ? any(error->message) (std::string("unknown error"));
+            console->log(std::string("[DEBUG] Server not ready yet (") + errorMsg + std::string("), ") + Math->round(timeRemaining / 1000) + std::string("s remaining"));
+            if (OR((errorMsg->includes(std::string("fetch"))), (errorMsg->includes(std::string("AbortError"))))) {
                 connectionAttempts = 0;
             }
         }
@@ -305,7 +306,7 @@ std::shared_ptr<Promise<void>> waitForServerReady(double port, double maxWaitTim
         }
         ); });
     }
-    throw any(std::make_shared<Error>(std:("Server failed to become ready on port ") + port + std:(" within ") + maxWaitTime + std:("ms")));
+    throw any(std::make_shared<Error>(std::string("Server failed to become ready on port ") + port + std::string(" within ") + maxWaitTime + std::string("ms")));
 };
 
 
@@ -313,68 +314,68 @@ std::shared_ptr<Promise<void>> killProcessOnPort(double port)
 {
     try
     {
-        if (process->platform == std:("win32")) {
-            auto netstatResult = std::async([=]() { execShellCommand(std:("netstat -ano | findstr :") + port + string_empty, object{
-                object::pair{std:("encoding"), std:("utf8")}, 
-                object::pair{std:("stdio"), std:("pipe")}
+        if (process->platform == std::string("win32")) {
+            auto netstatResult = std::async([=]() { execShellCommand(std::string("netstat -ano | findstr :") + port + string_empty, object{
+                object::pair{std::string("encoding"), std::string("utf8")}, 
+                object::pair{std::string("stdio"), std::string("pipe")}
             }); });
-            auto lines = netstatResult->split(std:("\
+            auto lines = netstatResult->split(std::string("\
 "))->filter([=](auto line) mutable
             {
-                return line->includes(std:(":") + port + string_empty);
+                return line->includes(std::string(":") + port + string_empty);
             }
             );
             auto pids = lines->map([=](auto line) mutable
             {
-                auto parts = line->trim()->split((new RegExp(std:("\s"))));
+                auto parts = line->trim()->split((new RegExp(std::string("\s"))));
                 return const_(parts)[parts->get_length() - 1];
             }
             )->filter([=](auto pid) mutable
             {
-                return AND((pid), (pid != std:("0")));
+                return AND((pid), (pid != std::string("0")));
             }
             );
             for (auto& pid : pids)
             {
                 try
                 {
-                    std::async([=]() { execShellCommand(std:("taskkill /F /PID ") + pid + string_empty, object{
-                        object::pair{std:("stdio"), std:("ignore")}
+                    std::async([=]() { execShellCommand(std::string("taskkill /F /PID ") + pid + string_empty, object{
+                        object::pair{std::string("stdio"), std::string("ignore")}
                     }); });
                 }
                 catch (const any& e)
                 {
                 }
             }
-        } else if (process->platform == std:("darwin")) {
+        } else if (process->platform == std::string("darwin")) {
             try
             {
-                auto lsofResult = std::async([=]() { execShellCommand(std:("lsof -ti:") + port + string_empty, object{
-                    object::pair{std:("encoding"), std:("utf8")}, 
-                    object::pair{std:("stdio"), std:("pipe")}, 
-                    object::pair{std:("timeout"), 10000}
+                auto lsofResult = std::async([=]() { execShellCommand(std::string("lsof -ti:") + port + string_empty, object{
+                    object::pair{std::string("encoding"), std::string("utf8")}, 
+                    object::pair{std::string("stdio"), std::string("pipe")}, 
+                    object::pair{std::string("timeout"), 10000}
                 }); });
-                auto pids = lsofResult->trim()->split(std:("\
+                auto pids = lsofResult->trim()->split(std::string("\
 "))->filter([=](auto pid) mutable
                 {
-                    return AND((pid), ((new RegExp(std:("^\d+")))->test(pid)));
+                    return AND((pid), ((new RegExp(std::string("^\d+")))->test(pid)));
                 }
                 );
-                console->log(std:("[DEBUG] Found ") + pids->get_length() + std:(" processes on port ") + port + std:(": ") + pids->join(std:(", ")) + string_empty);
+                console->log(std::string("[DEBUG] Found ") + pids->get_length() + std::string(" processes on port ") + port + std::string(": ") + pids->join(std::string(", ")) + string_empty);
                 for (auto& pid : pids)
                 {
                     try
                     {
-                        std::async([=]() { execShellCommand(std:("ps -p ") + pid + string_empty, object{
-                            object::pair{std:("stdio"), std:("ignore")}, 
-                            object::pair{std:("timeout"), 2000}
+                        std::async([=]() { execShellCommand(std::string("ps -p ") + pid + string_empty, object{
+                            object::pair{std::string("stdio"), std::string("ignore")}, 
+                            object::pair{std::string("timeout"), 2000}
                         }); });
-                        console->log(std:("[DEBUG] Sending SIGTERM to PID ") + pid + string_empty);
-                        std::async([=]() { execShellCommand(std:("kill -TERM ") + pid + string_empty, object{
-                            object::pair{std:("stdio"), std:("ignore")}, 
-                            object::pair{std:("timeout"), 3000}
+                        console->log(std::string("[DEBUG] Sending SIGTERM to PID ") + pid + string_empty);
+                        std::async([=]() { execShellCommand(std::string("kill -TERM ") + pid + string_empty, object{
+                            object::pair{std::string("stdio"), std::string("ignore")}, 
+                            object::pair{std::string("timeout"), 3000}
                         }); });
-                        shared waitTime = (process->env->CI == std:("true")) ? 3000 : 1000;
+                        shared waitTime = (process->env->CI == std::string("true")) ? 3000 : 1000;
                         std::async([=]() { std::make_shared<Promise>([=](auto resolve) mutable
                         {
                             return setTimeout(resolve, waitTime);
@@ -382,14 +383,14 @@ std::shared_ptr<Promise<void>> killProcessOnPort(double port)
                         ); });
                         try
                         {
-                            std::async([=]() { execShellCommand(std:("kill -0 ") + pid + string_empty, object{
-                                object::pair{std:("stdio"), std:("ignore")}, 
-                                object::pair{std:("timeout"), 2000}
+                            std::async([=]() { execShellCommand(std::string("kill -0 ") + pid + string_empty, object{
+                                object::pair{std::string("stdio"), std::string("ignore")}, 
+                                object::pair{std::string("timeout"), 2000}
                             }); });
-                            console->log(std:("[DEBUG] Process ") + pid + std:(" still running, sending SIGKILL"));
-                            std::async([=]() { execShellCommand(std:("kill -9 ") + pid + string_empty, object{
-                                object::pair{std:("stdio"), std:("ignore")}, 
-                                object::pair{std:("timeout"), 3000}
+                            console->log(std::string("[DEBUG] Process ") + pid + std::string(" still running, sending SIGKILL"));
+                            std::async([=]() { execShellCommand(std::string("kill -9 ") + pid + string_empty, object{
+                                object::pair{std::string("stdio"), std::string("ignore")}, 
+                                object::pair{std::string("timeout"), 3000}
                             }); });
                             std::async([=]() { std::make_shared<Promise>([=](auto resolve) mutable
                             {
@@ -399,34 +400,34 @@ std::shared_ptr<Promise<void>> killProcessOnPort(double port)
                         }
                         catch (const any& e)
                         {
-                            console->log(std:("[DEBUG] Process ") + pid + std:(" terminated gracefully"));
+                            console->log(std::string("[DEBUG] Process ") + pid + std::string(" terminated gracefully"));
                         }
                     }
                     catch (const any& e)
                     {
-                        console->log(std:("[DEBUG] Process ") + pid + std:(" not found or already terminated"));
+                        console->log(std::string("[DEBUG] Process ") + pid + std::string(" not found or already terminated"));
                     }
                 }
             }
             catch (const any& e)
             {
-                console->log(std:("[DEBUG] No processes found on port ") + port + std:(" (expected if port is free)"));
+                console->log(std::string("[DEBUG] No processes found on port ") + port + std::string(" (expected if port is free)"));
             }
         } else {
-            std::async([=]() { execShellCommand(std:("lsof -ti:") + port + std:(" | xargs kill -9 2>/dev/null || true"), object{
-                object::pair{std:("stdio"), std:("ignore")}, 
-                object::pair{std:("timeout"), 5000}
+            std::async([=]() { execShellCommand(std::string("lsof -ti:") + port + std::string(" | xargs kill -9 2>/dev/null || true"), object{
+                object::pair{std::string("stdio"), std::string("ignore")}, 
+                object::pair{std::string("timeout"), 5000}
             }); });
         }
         std::async([=]() { std::make_shared<Promise>([=](auto resolve) mutable
         {
-            return setTimeout(resolve, (process->platform == std:("darwin")) ? 2000 : 1000);
+            return setTimeout(resolve, (process->platform == std::string("darwin")) ? 2000 : 1000);
         }
         ); });
     }
     catch (const any& e)
     {
-        console->log(std:("[DEBUG] Port cleanup for ") + port + std:(" encountered error:"), (is<Error>(e)) ? any(e->message) (std:("unknown")));
+        console->log(std::string("[DEBUG] Port cleanup for ") + port + std::string(" encountered error:"), (is<Error>(e)) ? any(e->message) (std::string("unknown")));
     }
     return std::shared_ptr<Promise<void>>();
 };
@@ -438,21 +439,21 @@ any getPlatformOptions(any baseOptions)
     }, baseOptions);
     platformOptions["env"] = utils::assign(object{
     }, process->env, baseOptions["env"]);
-    if (process->platform == std:("win32")) {
-        if (platformOptions["timeout"] != undefined) {
+    if (process->platform == std::string("win32")) {
+        if (platformOptions["timeout"] != std::nullopt) {
             platformOptions["timeout"] = platformOptions["timeout"] * 1.5;
         }
-        platformOptions["killSignal"] = as<NodeJS::Signals>(std:("SIGKILL"));
+        platformOptions["killSignal"] = as<NodeJS::Signals>(std::string("SIGKILL"));
         platformOptions["windowsHide"] = true;
-    } else if (process->platform == std:("darwin")) {
-        if (platformOptions["timeout"] != undefined) {
+    } else if (process->platform == std::string("darwin")) {
+        if (platformOptions["timeout"] != std::nullopt) {
             platformOptions["timeout"] = platformOptions["timeout"] * 1.25;
         }
-        platformOptions["killSignal"] = as<NodeJS::Signals>(std:("SIGTERM"));
+        platformOptions["killSignal"] = as<NodeJS::Signals>(std::string("SIGTERM"));
         platformOptions["env"] = utils::assign(object{
             , 
-            object::pair{std:("LANG"), std:("en_US.UTF-8")}, 
-            object::pair{std:("LC_ALL"), std:("en_US.UTF-8")}
+            object::pair{std::string("LANG"), std::string("en_US.UTF-8")}, 
+            object::pair{std::string("LC_ALL"), std::string("en_US.UTF-8")}
         }, platformOptions["env"]);
     }
     return platformOptions;
@@ -462,11 +463,11 @@ any getPlatformOptions(any baseOptions)
 any TestProcessManager::spawn(string command, array<string> args, any options)
 {
     auto processOptions = object{
-        object::pair{std:("cwd"), OR((options["cwd"]), (process->cwd()))}, 
-        object::pair{std:("env"), OR((options["env"]), (process->env))}, 
-        object::pair{std:("stdout"), (options["allowOutput"]) ? std:("inherit") : std:("ignore")}, 
-        object::pair{std:("stderr"), (options["allowOutput"]) ? std:("inherit") : std:("ignore")}, 
-        object::pair{std:("stdin"), std:("ignore")}
+        object::pair{std::string("cwd"), OR((options["cwd"]), (process->cwd()))}, 
+        object::pair{std::string("env"), OR((options["env"]), (process->env))}, 
+        object::pair{std::string("stdout"), (options["allowOutput"]) ? std::string("inherit") : std::string("ignore")}, 
+        object::pair{std::string("stderr"), (options["allowOutput"]) ? std::string("inherit") : std::string("ignore")}, 
+        object::pair{std::string("stdin"), std::string("ignore")}
     };
     shared childProcess = Bun->spawn(array<string>{ command, args }, processOptions);
     this->processes->add(childProcess);
@@ -491,8 +492,8 @@ std::shared_ptr<Promise<void>> TestProcessManager::terminateProcess(any process)
         try
         {
             auto exitPromise = process["exited"];
-            if (process["platform"] == std:("win32")) {
-                process["kill"](std:("SIGTERM"));
+            if (process["platform"] == std::string("win32")) {
+                process["kill"](std::string("SIGTERM"));
                 auto gracefulTimeout = std::make_shared<Promise<boolean>>([=](auto resolve) mutable
                 {
                     setTimeout([=]() mutable
@@ -510,14 +511,14 @@ std::shared_ptr<Promise<void>> TestProcessManager::terminateProcess(any process)
                 if (AND((!wasGraceful), (process["exitCode"] == nullptr))) {
                     try
                     {
-                        process["kill"](std:("SIGKILL"));
+                        process["kill"](std::string("SIGKILL"));
                     }
                     catch (const any& e)
                     {
                     }
                 }
             } else {
-                process["kill"](std:("SIGTERM"));
+                process["kill"](std::string("SIGTERM"));
             }
             auto timeoutPromise = std::make_shared<Promise<void>>([=](auto resolve) mutable
             {
@@ -554,17 +555,17 @@ object assertions = object{
     , 
 };
 object crossPlatform = object{
-    object::pair{std:("removeDir"), [=](auto path) mutable
+    object::pair{std::string("removeDir"), [=](auto path) mutable
     {
         try
         {
-            if (process->platform == std:("win32")) {
-                std::async([=]() { execShellCommand(std:("if exist "") + path + std:("" rmdir /s /q "") + path + std:("""), object{
-                    object::pair{std:("stdio"), std:("ignore")}
+            if (process->platform == std::string("win32")) {
+                std::async([=]() { execShellCommand(std::string("if exist "") + path + std::string("" rmdir /s /q "") + path + std::string("""), object{
+                    object::pair{std::string("stdio"), std::string("ignore")}
                 }); });
             } else {
-                std::async([=]() { execShellCommand(std:("rm -rf "") + path + std:("""), object{
-                    object::pair{std:("stdio"), std:("ignore")}
+                std::async([=]() { execShellCommand(std::string("rm -rf "") + path + std::string("""), object{
+                    object::pair{std::string("stdio"), std::string("ignore")}
                 }); });
             }
         }
@@ -573,17 +574,17 @@ object crossPlatform = object{
         }
     }
     }, 
-    object::pair{std:("removeFile"), [=](auto path) mutable
+    object::pair{std::string("removeFile"), [=](auto path) mutable
     {
         try
         {
-            if (process->platform == std:("win32")) {
-                std::async([=]() { execShellCommand(std:("if exist "") + path + std:("" del /q "") + path + std:("""), object{
-                    object::pair{std:("stdio"), std:("ignore")}
+            if (process->platform == std::string("win32")) {
+                std::async([=]() { execShellCommand(std::string("if exist "") + path + std::string("" del /q "") + path + std::string("""), object{
+                    object::pair{std::string("stdio"), std::string("ignore")}
                 }); });
             } else {
-                std::async([=]() { execShellCommand(std:("rm -f "") + path + std:("""), object{
-                    object::pair{std:("stdio"), std:("ignore")}
+                std::async([=]() { execShellCommand(std::string("rm -f "") + path + std::string("""), object{
+                    object::pair{std::string("stdio"), std::string("ignore")}
                 }); });
             }
         }
@@ -592,7 +593,7 @@ object crossPlatform = object{
         }
     }
     }, 
-    object::pair{std:("killProcessOnPort"), killProcessOnPort}
+    object::pair{std::string("killProcessOnPort"), killProcessOnPort}
 };
 
 void Main(void)

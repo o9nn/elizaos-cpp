@@ -32,6 +32,6 @@ namespace elizaos {
 /**
  * Validate a plugin object
  */
-PluginValidation validatePlugin(const std:& plugin);
+PluginValidation validatePlugin(const std::string& plugin);
 
 } // namespace elizaos

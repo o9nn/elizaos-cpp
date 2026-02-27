@@ -1,4 +1,5 @@
 #include "remove.hpp"
+#include <string>
 #include <future>
 #include <filesystem>
 #include <iostream>
@@ -6,7 +7,7 @@
 
 namespace elizaos {
 
-std::future<void> removePlugin(const std:& plugin) {
+std::future<void> removePlugin(const std::string& plugin) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

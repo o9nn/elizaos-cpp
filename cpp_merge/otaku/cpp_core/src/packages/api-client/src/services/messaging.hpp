@@ -20,14 +20,14 @@ namespace elizaos {
 
 // Internal payload interfaces for API requests
 struct ChannelCreatePayload {
-    std: name;
+    std::string name;
     ChannelType type;
     UUID server_id;
     std::optional<ChannelMetadata> metadata;
 };
 
 struct GroupChannelCreatePayload {
-    std: name;
+    std::string name;
     UUID server_id;
     std::vector<UUID> participantCentralUserIds;
     std::optional<ChannelType> type;
@@ -40,7 +40,7 @@ struct DmChannelQuery {
     UUID dmServerId;
 };
 
-class MessagingService extends BaseApiClient {
+class MessagingService : public BaseApiClient {
   /**
    * Submit agent replies or system messages
    */
@@ -71,7 +71,7 @@ class MessagingService extends BaseApiClient {
 
       // Create a new metadata object without the hoisted fields
 
-      // Extract hoisted fields safely using bracket notation (ChannelMetadata allows [key: std:]: unknown)
+      // Extract hoisted fields safely using bracket notation (ChannelMetadata allows [key: std::string]: unknown)
 
       // Only include metadata if there are remaining properties
 
@@ -192,9 +192,9 @@ class MessagingService extends BaseApiClient {
 
     // Remove user from participants
 
-  // ========
+  // ====
   // Jobs API - One-off messaging
-  // ========
+  // ====
 
   /**
    * Create a new job (one-off message to agent)

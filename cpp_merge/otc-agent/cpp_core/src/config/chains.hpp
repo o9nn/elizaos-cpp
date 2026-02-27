@@ -20,17 +20,17 @@ using Chain = std::variant<"ethereum", "base", "bsc", "solana">;
 using ChainFamily = std::variant<"evm", "solana">;
 
 struct ChainConfig {
-    std:; // String ID for database storage id;
-    std: name;
-    std: rpcUrl;
-    std: explorerUrl;
+    std::string; // String ID for database storage id;
+    std::string name;
+    std::string rpcUrl;
+    std::string explorerUrl;
     { nativeCurrency;
-    std: name;
-    std: symbol;
+    std::string name;
+    std::string symbol;
     double decimals;
     { contracts;
-    std::optional<std:> otc;
-    std::optional<std:> usdc;
+    std::optional<std::string> otc;
+    std::optional<std::string> usdc;
     ChainFamily type;
     std::optional<ViemChain; // Reference to viem chain for wagmi (EVM only)> viemChain;
     std::optional<number; // Numeric chain ID (EVM only)> chainId;
@@ -183,9 +183,9 @@ bool isEVMChain(Chain chain);
 bool isSolanaChain(Chain chain);
 
 /**
- * Get chain identifier from std: chain ID (database format)
+ * Get chain identifier from std::string chain ID (database format)
  */
-Chain | null getChainFromId(const std:& chainId);
+Chain | null getChainFromId(const std::string& chainId);
 
 /**
  * Get chain identifier from numeric chain ID (wagmi/viem format)

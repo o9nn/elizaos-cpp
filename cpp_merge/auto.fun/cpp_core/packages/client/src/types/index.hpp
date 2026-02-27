@@ -26,22 +26,22 @@ struct ISwap {
     double amountIn;
     double amountOut;
     0 | 1 direction;
-    std: id;
+    std::string id;
     double price;
-    std: | Date timestamp;
-    std: tokenMint;
-    std: txId;
-    std: type;
-    std: user;
+    std::string | Date timestamp;
+    std::string tokenMint;
+    std::string txId;
+    std::string type;
+    std::string user;
 };
 
 struct ITokenHolder {
-    std: id;
-    std: mint;
-    std: address;
+    std::string id;
+    std::string mint;
+    std::string address;
     double amount;
     double percentage;
-    std: | Date lastUpdated;
+    std::string | Date lastUpdated;
 };
 
 using ChartTable = {
@@ -57,12 +57,12 @@ using ConfigAccount = {
     std::optional<bool> isPhantom;
     std::optional<(> signMessage;
     Uint8Array message;
-    std: encoding;
-    () => Promise<{ publicKey: std: }> connect;
+    std::string encoding;
+    () => Promise<{ publicKey: std::string }> connect;
     std::optional<[&]() { return Promise<void>> disconnect; };
     std::optional<PublicKey> publicKey;
-    std::optional<[&](event: std:, callback: () { return void) => void> on; };
-    std::optional<[&](event: std:, callback: () { return void) => void> off; };
+    std::optional<[&](event: std::string, callback: () { return void) => void> on; };
+    std::optional<[&](event: std::string, callback: () { return void) => void> off; };
 };
 
 

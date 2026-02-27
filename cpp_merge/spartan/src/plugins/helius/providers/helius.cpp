@@ -1,4 +1,5 @@
 #include "helius.hpp"
+#include <string>
 
 HeliusWebSocket::HeliusWebSocket(string apiKey_, std::shared_ptr<IAgentRuntime> runtime_) : apiKey(apiKey_), runtime(runtime_)  {
 }
@@ -9,35 +10,35 @@ std::shared_ptr<Promise<void>> HeliusWebSocket::connect()
     {
         try
         {
-            this->ws = std::make_shared<WebSocket>(std:("wss://mainnet.helius-rpc.com/?api-key=") + this->apiKey + string_empty);
-            this->ws["on"](std:("open"), [=]() mutable
+            this->ws = std::make_shared<WebSocket>(std::string("wss://mainnet.helius-rpc.com/?api-key=") + this->apiKey + string_empty);
+            this->ws["on"](std::string("open"), [=]() mutable
             {
-                console->log(std:("Helius WebSocket connected"));
+                console->log(std::string("Helius WebSocket connected"));
                 this->startPing();
                 resolve();
             }
             );
-            this->ws["on"](std:("message"), [=](auto data) mutable
+            this->ws["on"](std::string("message"), [=](auto data) mutable
             {
                 try
                 {
                     auto message = JSON->parse(data["toString"]());
-                    console->log(std:("Received message:"), message);
+                    console->log(std::string("Received message:"), message);
                 }
                 catch (const any& e)
                 {
-                    console->error(std:("Failed to parse WebSocket message:"), e);
+                    console->error(std::string("Failed to parse WebSocket message:"), e);
                 }
             }
             );
-            this->ws["on"](std:("error"), [=](auto error) mutable
+            this->ws["on"](std::string("error"), [=](auto error) mutable
             {
-                console->error(std:("WebSocket error:"), error);
+                console->error(std::string("WebSocket error:"), error);
             }
             );
-            this->ws["on"](std:("close"), [=]() mutable
+            this->ws["on"](std::string("close"), [=]() mutable
             {
-                console->log(std:("WebSocket closed"));
+                console->log(std::string("WebSocket closed"));
                 this->cleanup();
             }
             );
@@ -53,21 +54,21 @@ std::shared_ptr<Promise<void>> HeliusWebSocket::connect()
 std::shared_ptr<Promise<any>> HeliusWebSocket::subscribeToWallet(string walletAddress)
 {
     if (OR((!this->ws), (this->ws["readyState"] != WebSocket->OPEN))) {
-        throw any(std::make_shared<Error>(std:("WebSocket not connected")));
+        throw any(std::make_shared<Error>(std::string("WebSocket not connected")));
     }
     shared request = object{
-        object::pair{std:("jsonrpc"), std:("2.0")}, 
-        object::pair{std:("id"), Date->now()}, 
-        object::pair{std:("method"), std:("accountSubscribe")}, 
-        object::pair{std:("params"), array<string>{ walletAddress, object{
-            object::pair{std:("encoding"), std:("jsonParsed")}, 
-            object::pair{std:("commitment"), std:("confirmed")}
+        object::pair{std::string("jsonrpc"), std::string("2.0")}, 
+        object::pair{std::string("id"), Date->now()}, 
+        object::pair{std::string("method"), std::string("accountSubscribe")}, 
+        object::pair{std::string("params"), array<string>{ walletAddress, object{
+            object::pair{std::string("encoding"), std::string("jsonParsed")}, 
+            object::pair{std::string("commitment"), std::string("confirmed")}
         } }}
     };
     return std::make_shared<Promise>([=](auto resolve, auto reject) mutable
     {
         if (!this->ws) {
-            reject(std::make_shared<Error>(std:("WebSocket not connected")));
+            reject(std::make_shared<Error>(std::string("WebSocket not connected")));
             return;
         }
         this->ws["send"](JSON->stringify(request), [=](auto error) mutable
@@ -76,7 +77,7 @@ std::shared_ptr<Promise<any>> HeliusWebSocket::subscribeToWallet(string walletAd
                 reject(error);
                 return;
             }
-            this->ws["once"](std:("message"), [=](auto data) mutable
+            this->ws["once"](std::string("message"), [=](auto data) mutable
             {
                 try
                 {
@@ -108,15 +109,15 @@ std::shared_ptr<Promise<boolean>> HeliusWebSocket::unsubscribeFromWallet(string 
         return false;
     }
     shared request = object{
-        object::pair{std:("jsonrpc"), std:("2.0")}, 
-        object::pair{std:("id"), Date->now()}, 
-        object::pair{std:("method"), std:("unsubscribe")}, 
-        object::pair{std:("params"), array<double>{ subscriptionId }}
+        object::pair{std::string("jsonrpc"), std::string("2.0")}, 
+        object::pair{std::string("id"), Date->now()}, 
+        object::pair{std::string("method"), std::string("unsubscribe")}, 
+        object::pair{std::string("params"), array<double>{ subscriptionId }}
     };
     return std::make_shared<Promise>([=](auto resolve, auto reject) mutable
     {
         if (!this->ws) {
-            reject(std::make_shared<Error>(std:("WebSocket not connected")));
+            reject(std::make_shared<Error>(std::string("WebSocket not connected")));
             return;
         }
         this->ws["send"](JSON->stringify(request), [=](auto error) mutable
@@ -162,59 +163,59 @@ void HeliusWebSocket::disconnect()
 }
 
 std::shared_ptr<Provider> heliusProvider = object{
-    object::pair{std:("name"), std:("HELIUS_INFORMATION")}, 
-    object::pair{std:("description"), std:("Helius latest information about the cryptocurrencies using Laserstream")}, 
-    object::pair{std:("dynamic"), true}, 
-    object::pair{std:("get"), [=](auto runtime, auto message, auto state) mutable
+    object::pair{std::string("name"), std::string("HELIUS_INFORMATION")}, 
+    object::pair{std::string("description"), std::string("Helius latest information about the cryptocurrencies using Laserstream")}, 
+    object::pair{std::string("dynamic"), true}, 
+    object::pair{std::string("get"), [=](auto runtime, auto message, auto state) mutable
     {
         try
         {
-            auto url = std:("https://api.helius.xyz/v0/token-metadata?api-key=") + runtime->getSetting(std:("HELIUS_API_KEY")) + string_empty;
+            auto url = std::string("https://api.helius.xyz/v0/token-metadata?api-key=") + runtime->getSetting(std::string("HELIUS_API_KEY")) + string_empty;
             auto response = std::async([=]() { fetch(url); });
             auto tokens = std::async([=]() { response->json(); });
             auto data = object{
-                object::pair{std:("tokens"), tokens["map"]([=](auto token) mutable
+                object::pair{std::string("tokens"), tokens["map"]([=](auto token) mutable
                 {
                     return (object{
-                        object::pair{std:("symbol"), OR((token->symbol), (std:("Unknown")))}, 
-                        object::pair{std:("name"), OR((token->name), (std:("Unknown")))}, 
-                        object::pair{std:("address"), token->address}, 
-                        object::pair{std:("decimals"), token->decimals}, 
-                        object::pair{std:("totalSupply"), token->totalSupply}, 
-                        object::pair{std:("marketCap"), token->marketCap}, 
-                        object::pair{std:("volume24h"), token->volume24h}, 
-                        object::pair{std:("price"), token->price}
+                        object::pair{std::string("symbol"), OR((token->symbol), (std::string("Unknown")))}, 
+                        object::pair{std::string("name"), OR((token->name), (std::string("Unknown")))}, 
+                        object::pair{std::string("address"), token->address}, 
+                        object::pair{std::string("decimals"), token->decimals}, 
+                        object::pair{std::string("totalSupply"), token->totalSupply}, 
+                        object::pair{std::string("marketCap"), token->marketCap}, 
+                        object::pair{std::string("volume24h"), token->volume24h}, 
+                        object::pair{std::string("price"), token->price}
                     });
                 }
                 )}
             };
-            auto text = std:("\
+            auto text = std::string("\
 Current Helius token information:\
 \
 ");
             for (auto& token : data["tokens"])
             {
-                text += string_empty + token["name"] + std:(" (") + token["symbol"] + std:(")\
+                text += string_empty + token["name"] + std::string(" (") + token["symbol"] + std::string(")\
 ");
-                text += std:("Address: ") + token["address"] + std:("\
+                text += std::string("Address: ") + token["address"] + std::string("\
 ");
-                text += std:("Price: $") + token["price"] + std:("\
+                text += std::string("Price: $") + token["price"] + std::string("\
 ");
-                text += std:("24h Volume: $") + token["volume24h"] + std:("\
+                text += std::string("24h Volume: $") + token["volume24h"] + std::string("\
 ");
-                text += std:("Market Cap: $") + token["marketCap"] + std:("\
+                text += std::string("Market Cap: $") + token["marketCap"] + std::string("\
 \
 ");
             }
             return object{
-                object::pair{std:("data"), std:("data")}, 
-                object::pair{std:("values"), object{}}, 
-                object::pair{std:("text"), std:("text")}
+                object::pair{std::string("data"), std::string("data")}, 
+                object::pair{std::string("values"), object{}}, 
+                object::pair{std::string("text"), std::string("text")}
             };
         }
         catch (const any& error)
         {
-            console->error(std:("Error in Helius provider:"), error);
+            console->error(std::string("Error in Helius provider:"), error);
             throw any(error);
         }
     }

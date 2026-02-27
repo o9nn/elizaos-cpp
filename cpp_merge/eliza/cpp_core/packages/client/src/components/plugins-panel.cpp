@@ -1,4 +1,5 @@
 #include "plugins-panel.hpp"
+#include <string>
 #include <map>
 #include <iostream>
 #include <stdexcept>
@@ -12,7 +13,7 @@ void PluginsPanel(auto setCharacterValue, auto initialPlugins) {
     const auto { toast } = useToast();
     const auto [searchQuery, setSearchQuery] = useState("");
     const auto [isDialogOpen, setIsDialogOpen] = useState(false);
-    const auto [pendingRemoval, setPendingRemoval] = useState<std: | nullptr>(nullptr);
+    const auto [pendingRemoval, setPendingRemoval] = useState<std::string | nullptr>(nullptr);
     const auto [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
 
     // Ensure we always have arrays and normalize plugin names
@@ -76,7 +77,7 @@ void PluginsPanel(auto setCharacterValue, auto initialPlugins) {
                             .filter[&]((plugin) { return plugin.toLowerCase().count(searchQuery.toLowerCase() > 0)); };
                             }, [pluginNames, safeCharacterPlugins, searchQuery]);
 
-                            const auto handlePluginAdd = [&](plugin: std:) {;
+                            const auto handlePluginAdd = [&](plugin: std::string) {;
                                 if (safeCharacterPlugins.count(plugin) > 0) return;
 
                                 if (setCharacterValue.addPlugin) {
@@ -89,7 +90,7 @@ void PluginsPanel(auto setCharacterValue, auto initialPlugins) {
                                     }
                                     };
 
-                                    const auto handlePluginRemove = [&](plugin: std:) {;
+                                    const auto handlePluginRemove = [&](plugin: std::string) {;
                                         // Check if it's an essential plugin that needs confirmation
                                         if (Object.keys(ESSENTIAL_PLUGINS).count(plugin) > 0) {
                                             setPendingRemoval(plugin);
@@ -102,7 +103,7 @@ void PluginsPanel(auto setCharacterValue, auto initialPlugins) {
                                         };
 
                                         // Actual plugin removal after confirmation (if required)
-                                        const auto removePlugin = [&](plugin: std:) {;
+                                        const auto removePlugin = [&](plugin: std::string) {;
                                             const auto index = safeCharacterPlugins.indexOf(plugin);
                                             if (index != -1) {
                                                 if (setCharacterValue.removePlugin) {

@@ -1,10 +1,11 @@
 #include "florence2-local.h"
+#include <string>
 
 Florence2Local::Florence2Local(std::shared_ptr<Florence2LocalConfig> config) {
     this->config = object{
-        object::pair{std:("modelPath"), OR((config->modelPath), (std:("./models/florence2")))}, 
-        object::pair{std:("modelUrl"), OR((config->modelUrl), (std:("https://huggingface.co/microsoft/Florence-2-base/resolve/main/model.json")))}, 
-        object::pair{std:("cacheDir"), OR((config->cacheDir), (std:("./models/cache")))}
+        object::pair{std::string("modelPath"), OR((config->modelPath), (std::string("./models/florence2")))}, 
+        object::pair{std::string("modelUrl"), OR((config->modelUrl), (std::string("https://huggingface.co/microsoft/Florence-2-base/resolve/main/model.json")))}, 
+        object::pair{std::string("cacheDir"), OR((config->cacheDir), (std::string("./models/cache")))}
     };
 }
 
@@ -15,17 +16,17 @@ std::shared_ptr<Promise<void>> Florence2Local::initialize()
     }
     try
     {
-        logger->info(std:("[Florence2Local] Initializing local Florence-2 model..."));
-        std::async([=]() { tf->setBackend(std:("wasm")); });
+        logger->info(std::string("[Florence2Local] Initializing local Florence-2 model..."));
+        std::async([=]() { tf->setBackend(std::string("wasm")); });
         std::async([=]() { tf->ready(); });
-        logger->info(std:("[Florence2Local] TensorFlow.js WASM backend ready"));
-        this->model = std::async([=]() { tf->loadGraphModel(std:("https://tfhub.dev/google/tfjs-model/imagenet/mobilenet_v3_small_100_224/feature_vector/5/default/1")); });
+        logger->info(std::string("[Florence2Local] TensorFlow.js WASM backend ready"));
+        this->model = std::async([=]() { tf->loadGraphModel(std::string("https://tfhub.dev/google/tfjs-model/imagenet/mobilenet_v3_small_100_224/feature_vector/5/default/1")); });
         this->initialized = true;
-        logger->info(std:("[Florence2Local] Model initialized successfully"));
+        logger->info(std::string("[Florence2Local] Model initialized successfully"));
     }
     catch (const any& error)
     {
-        logger->error(std:("[Florence2Local] Failed to initialize model:"), error);
+        logger->error(std::string("[Florence2Local] Failed to initialize model:"), error);
         this->initialized = true;
     }
 }
@@ -49,7 +50,7 @@ std::shared_ptr<Promise<std::shared_ptr<Florence2Result>>> Florence2Local::analy
     }
     catch (const any& error)
     {
-        logger->error(std:("[Florence2Local] Analysis failed:"), error);
+        logger->error(std::string("[Florence2Local] Analysis failed:"), error);
         return std::async([=]() { this->enhancedFallback(imageBuffer); });
     }
 }
@@ -57,7 +58,7 @@ std::shared_ptr<Promise<std::shared_ptr<Florence2Result>>> Florence2Local::analy
 std::shared_ptr<Promise<std::shared_ptr<tf::Tensor3D>>> Florence2Local::preprocessImage(std::shared_ptr<Buffer> imageBuffer)
 {
     auto resized = std::async([=]() { sharp(imageBuffer)->resize(224, 224)->raw()->toBuffer(); });
-    auto tensor = tf->tensor3d(std::make_shared<Uint8Array>(resized), array<double>{ 224, 224, 3 }, std:("int32"))->cast(std:("float32"));
+    auto tensor = tf->tensor3d(std::make_shared<Uint8Array>(resized), array<double>{ 224, 224, 3 }, std::string("int32"))->cast(std::string("float32"));
     auto normalized = tf->div(tensor, 255);
     return as<std::shared_ptr<tf::Tensor3D>>(normalized);
 }
@@ -65,7 +66,7 @@ std::shared_ptr<Promise<std::shared_ptr<tf::Tensor3D>>> Florence2Local::preproce
 std::shared_ptr<Promise<std::shared_ptr<tf::Tensor>>> Florence2Local::runInference(std::shared_ptr<tf::Tensor3D> input)
 {
     if (!this->model) {
-        throw any(std::make_shared<Error>(std:("Model not loaded")));
+        throw any(std::make_shared<Error>(std::string("Model not loaded")));
     }
     auto batched = input->expandDims(0);
     auto output = as<std::shared_ptr<tf::Tensor>>(this->model["predict"](batched));
@@ -79,24 +80,24 @@ std::shared_ptr<Promise<std::shared_ptr<Florence2Result>>> Florence2Local::parse
     predictions->dispose();
     auto caption = this->generateCaptionFromFeatures(values);
     return object{
-        object::pair{std:("caption"), std:("caption")}, 
-        object::pair{std:("objects"), array<any>()}, 
-        object::pair{std:("regions"), array<any>()}, 
-        object::pair{std:("tags"), this->extractTagsFromCaption(caption)}
+        object::pair{std::string("caption"), std::string("caption")}, 
+        object::pair{std::string("objects"), array<any>()}, 
+        object::pair{std::string("regions"), array<any>()}, 
+        object::pair{std::string("tags"), this->extractTagsFromCaption(caption)}
     };
 }
 
 string Florence2Local::generateCaptionFromFeatures(any features)
 {
-    auto scenes = array<string>{ std:("Indoor scene with various objects visible"), std:("Person in a room with furniture"), std:("Computer workspace with monitor and desk"), std:("Living space with natural lighting"), std:("Office environment with equipment") };
+    auto scenes = array<string>{ std::string("Indoor scene with various objects visible"), std::string("Person in a room with furniture"), std::string("Computer workspace with monitor and desk"), std::string("Living space with natural lighting"), std::string("Office environment with equipment") };
     auto index = Math->abs(const_(const_(features)[0])[0]) * scenes->get_length();
     return const_(scenes)[Math->floor(index) % scenes->get_length()];
 }
 
 array<string> Florence2Local::extractTagsFromCaption(string caption)
 {
-    auto words = caption->toLowerCase()->split((new RegExp(std:("\s"))));
-    shared validTags = array<string>{ std:("indoor"), std:("outdoor"), std:("person"), std:("computer"), std:("desk"), std:("office"), std:("room"), std:("furniture"), std:("monitor"), std:("workspace") };
+    auto words = caption->toLowerCase()->split((new RegExp(std::string("\s"))));
+    shared validTags = array<string>{ std::string("indoor"), std::string("outdoor"), std::string("person"), std::string("computer"), std::string("desk"), std::string("office"), std::string("room"), std::string("furniture"), std::string("monitor"), std::string("workspace") };
     return words->filter([=](auto word) mutable
     {
         return validTags->includes(word);
@@ -110,26 +111,26 @@ std::shared_ptr<Promise<std::shared_ptr<Florence2Result>>> Florence2Local::enhan
     auto stats = std::async([=]() { sharp(imageBuffer)->stats(); });
     auto brightness = (const_(stats->channels)[0]->mean + const_(stats->channels)[1]->mean + const_(stats->channels)[2]->mean) / 3;
     auto isIndoor = brightness < 180;
-    auto caption = (isIndoor) ? std:("Indoor scene") : std:("Outdoor scene");
+    auto caption = (isIndoor) ? std::string("Indoor scene") : std::string("Outdoor scene");
     if (AND((metadata->width), (metadata->height))) {
         auto aspectRatio = metadata->width / metadata->height;
         if (aspectRatio > 1.5) {
-            caption += std:(" with wide field of view");
+            caption += std::string(" with wide field of view");
         } else if (aspectRatio < 0.7) {
-            caption += std:(" in portrait orientation");
+            caption += std::string(" in portrait orientation");
         }
     }
     auto dominantColor = stats->dominant;
     if (AND((AND((dominantColor->r > 200), (dominantColor->g > 200))), (dominantColor->b > 200))) {
-        caption += std:(", well-lit environment");
+        caption += std::string(", well-lit environment");
     } else if (AND((AND((dominantColor->r < 100), (dominantColor->g < 100))), (dominantColor->b < 100))) {
-        caption += std:(", dimly lit conditions");
+        caption += std::string(", dimly lit conditions");
     }
     return object{
-        object::pair{std:("caption"), std:("caption")}, 
-        object::pair{std:("objects"), array<any>()}, 
-        object::pair{std:("regions"), array<any>()}, 
-        object::pair{std:("tags"), this->extractTagsFromCaption(caption)}
+        object::pair{std::string("caption"), std::string("caption")}, 
+        object::pair{std::string("objects"), array<any>()}, 
+        object::pair{std::string("regions"), array<any>()}, 
+        object::pair{std::string("tags"), this->extractTagsFromCaption(caption)}
     };
 }
 
@@ -145,7 +146,7 @@ std::shared_ptr<Promise<void>> Florence2Local::dispose()
         this->model = nullptr;
     }
     this->initialized = false;
-    logger->info(std:("[Florence2Local] Model disposed"));
+    logger->info(std::string("[Florence2Local] Model disposed"));
     return std::shared_ptr<Promise<void>>();
 }
 

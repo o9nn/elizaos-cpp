@@ -20,13 +20,13 @@ using OAuthResponse = {
 
 // Credentials stored in localStorage for OAuth
 struct StoredCredentials {
-    std: entityId;
-    std: accessToken;
-    std: refreshToken;
+    std::string entityId;
+    std::string accessToken;
+    std::string refreshToken;
     double expiresAt;
-    std::optional<std:> username;
-    std::optional<std:> oauth1Token;
-    std::optional<std:> oauth1TokenSecret;
+    std::optional<std::string> username;
+    std::optional<std::string> oauth1Token;
+    std::optional<std::string> oauth1TokenSecret;
 };
 
 

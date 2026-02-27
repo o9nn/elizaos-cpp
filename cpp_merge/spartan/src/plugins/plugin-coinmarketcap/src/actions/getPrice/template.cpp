@@ -1,6 +1,7 @@
 #include "template.hpp"
+#include <string>
 
-string getPriceTemplate = std:("Respond with a JSON object containing BOTH symbol and currency. Currency must default to "USD" if not specified.\
+string getPriceTemplate = std::string("Respond with a JSON object containing BOTH symbol and currency. Currency must default to "USD" if not specified.\
 \
 Here are the cryptocurrency symbol mappings:\
 - bitcoin/btc -> BTC\

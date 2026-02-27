@@ -40,7 +40,7 @@ public:
     boolean isServerAuthenticated;
 };
 
-string generateAuthToken(string userId, string email, string username, boolean isAdmin = undefined);
+string generateAuthToken(string userId, string email, string username, boolean isAdmin = std::nullopt);
 
 any requireAuth(std::shared_ptr<AuthenticatedRequest> req, std::shared_ptr<Response> res, std::shared_ptr<NextFunction> next);
 

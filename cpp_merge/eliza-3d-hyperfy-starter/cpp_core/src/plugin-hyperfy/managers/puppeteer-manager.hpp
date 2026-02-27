@@ -30,7 +30,7 @@ class PuppeteerManager {
     'emissiveMap', 'lightMap'
   ] as const;
 
-  constructor(runtime: IAgentRuntime) {
+  /* constructor */ (runtime: IAgentRuntime) {
     this.runtime = runtime
     this.init()
 

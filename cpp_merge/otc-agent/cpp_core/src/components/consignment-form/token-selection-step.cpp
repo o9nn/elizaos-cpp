@@ -1,4 +1,5 @@
 #include "token-selection-step.hpp"
+#include <string>
 #include <vector>
 #include <optional>
 #include <map>
@@ -7,7 +8,7 @@
 
 namespace elizaos {
 
-bool isSolanaAddress(const std:& address) {
+bool isSolanaAddress(const std::string& address) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto base58Regex = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
@@ -15,21 +16,21 @@ bool isSolanaAddress(const std:& address) {
 
 }
 
-bool isEvmAddress(const std:& address) {
+bool isEvmAddress(const std::string& address) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return /^0x[a-fA-F0-9]{40}$/i.test(address);
 
 }
 
-bool isContractAddress(const std:& query) {
+bool isContractAddress(const std::string& query) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return isSolanaAddress(query) || isEvmAddress(query);
 
 }
 
-std::optional<std::vector<TokenWithBalance>> getTokenCache(const std:& walletAddress, const std:& chain) {
+std::optional<std::vector<TokenWithBalance>> getTokenCache(const std::string& walletAddress, const std::string& chain) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -51,7 +52,7 @@ std::optional<std::vector<TokenWithBalance>> getTokenCache(const std:& walletAdd
 
 }
 
-void setTokenCache(const std:& walletAddress, const std:& chain, const std::vector<TokenWithBalance>& tokens) {
+void setTokenCache(const std::string& walletAddress, const std::string& chain, const std::vector<TokenWithBalance>& tokens) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -62,14 +63,14 @@ void setTokenCache(const std:& walletAddress, const std:& chain, const std::vect
             chain,
             cachedAt: Date.now(),
             };
-            localStorage.setItem(cacheKey, /* JSON.stringify */ std:(data));
+            localStorage.setItem(cacheKey, /* JSON.stringify */ std::string(data));
             } catch {
                 // Ignore storage errors
             }
 
 }
 
-void clearTokenCache(std::optional<std:> walletAddress, std::optional<std:> chain) {
+void clearTokenCache(std::optional<std::string> walletAddress, std::optional<std::string> chain) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -88,7 +89,7 @@ void clearTokenCache(std::optional<std:> walletAddress, std::optional<std:> chai
 
 }
 
-std: formatBalance(const std:& balance, double decimals) {
+std::string formatBalance(const std::string& balance, double decimals) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto num = Number(balance) / Math.pow(10, decimals);
@@ -98,7 +99,7 @@ std: formatBalance(const std:& balance, double decimals) {
 
 }
 
-std: formatUsd(double usd) {
+std::string formatUsd(double usd) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (usd >= 1_000_000) return "$" + std::to_string((usd / 1_000_000).toFixed(2)) + "M";
@@ -147,10 +148,10 @@ void TokenSelectionStep(auto updateFormData, auto onNext, auto onTokenSelect) {
                 nullptr,
                 );
                 const auto [isSearchingAddress, setIsSearchingAddress] = useState(false);
-                const auto [addressSearchError, setAddressSearchError] = useState<std: | nullptr>(;
+                const auto [addressSearchError, setAddressSearchError] = useState<std::string | nullptr>(;
                 nullptr,
                 );
-                const auto addressSearchRef = useRef<std: | nullptr>(nullptr);
+                const auto addressSearchRef = useRef<std::string | nullptr>(nullptr);
 
                 const auto { isLoading: loading, hasLoadedOnce } = loadingState;
 
@@ -269,7 +270,7 @@ void TokenSelectionStep(auto updateFormData, auto onNext, auto onTokenSelect) {
                                                                 ]);
 
                                                                 // Track previous wallet to detect disconnects
-                                                                const auto prevWalletRef = useRef<std: | nullptr>(nullptr);
+                                                                const auto prevWalletRef = useRef<std::string | nullptr>(nullptr);
                                                                 const auto [isRefreshing, setIsRefreshing] = useState(false);
 
                                                                 // Function to load tokens (can be called with forceRefresh)

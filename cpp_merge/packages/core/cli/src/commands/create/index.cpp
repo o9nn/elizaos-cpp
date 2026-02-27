@@ -1,15 +1,16 @@
 #include "index.hpp"
+#include <string>
 
-any create = ((std::make_shared<Command>(std:("create"))))->description(std:("Create a new ElizaOS project, plugin, agent, or TEE project"))->argument(std:("[name]"), std:("name of the project/plugin/agent to create"))->option(std:("--dir <dir>"), std:("directory to create the project in"), std:("."))->option(std:("--yes, -y"), std:("skip prompts and use defaults"))->option(std:("--type <type>"), std:("type of project to create (project, plugin, agent, tee)"), std:("project"))->action([=](auto name = undefined, auto opts = undefined) mutable
+any create = ((std::make_shared<Command>(std::string("create"))))->description(std::string("Create a new ElizaOS project, plugin, agent, or TEE project"))->argument(std::string("[name]"), std::string("name of the project/plugin/agent to create"))->option(std::string("--dir <dir>"), std::string("directory to create the project in"), std::string("."))->option(std::string("--yes, -y"), std::string("skip prompts and use defaults"))->option(std::string("--type <type>"), std::string("type of project to create (project, plugin, agent, tee)"), std::string("project"))->action([=](auto name = std::nullopt, auto opts = std::nullopt) mutable
 {
     try
     {
-        if (OR((OR((OR((process->env->ELIZA_NONINTERACTIVE == std:("1")), (process->env->ELIZA_NONINTERACTIVE == std:("true")))), (process->argv->includes(std:("-y"))))), (process->argv->includes(std:("--yes"))))) {
+        if (OR((OR((OR((process->env->ELIZA_NONINTERACTIVE == std::string("1")), (process->env->ELIZA_NONINTERACTIVE == std::string("true")))), (process->argv->includes(std::string("-y"))))), (process->argv->includes(std::string("--yes"))))) {
             if (opts) {
                 opts["yes"] = true;
             } else {
                 opts = object{
-                    object::pair{std:("yes"), true}
+                    object::pair{std::string("yes"), true}
                 };
             }
         }
@@ -17,64 +18,64 @@ any create = ((std::make_shared<Command>(std:("create"))))->description(std:("Cr
         auto isNonInteractive = options->yes;
         if (!isNonInteractive) {
             std::async([=]() { displayBanner(); });
-            clack->intro(colors->inverse(std:(" Creating ElizaOS Project ")));
+            clack->intro(colors->inverse(std::string(" Creating ElizaOS Project ")));
         }
         shared projectType = options->type;
         auto projectName = name;
         if (!projectName) {
             if (!isNonInteractive) {
                 auto selectedType = std::async([=]() { clack->select(object{
-                    object::pair{std:("message"), std:("What would you like to create?")}, 
-                    object::pair{std:("options"), array<object>{ object{
-                        object::pair{std:("label"), std:("Project - Full ElizaOS application")}, 
-                        object::pair{std:("value"), std:("project")}, 
-                        object::pair{std:("hint"), std:("Complete project with runtime, agents, and all features")}
+                    object::pair{std::string("message"), std::string("What would you like to create?")}, 
+                    object::pair{std::string("options"), array<object>{ object{
+                        object::pair{std::string("label"), std::string("Project - Full ElizaOS application")}, 
+                        object::pair{std::string("value"), std::string("project")}, 
+                        object::pair{std::string("hint"), std::string("Complete project with runtime, agents, and all features")}
                     }, object{
-                        object::pair{std:("label"), std:("Plugin - Custom ElizaOS plugin")}, 
-                        object::pair{std:("value"), std:("plugin")}, 
-                        object::pair{std:("hint"), std:("Extend ElizaOS functionality with custom plugins")}
+                        object::pair{std::string("label"), std::string("Plugin - Custom ElizaOS plugin")}, 
+                        object::pair{std::string("value"), std::string("plugin")}, 
+                        object::pair{std::string("hint"), std::string("Extend ElizaOS functionality with custom plugins")}
                     }, object{
-                        object::pair{std:("label"), std:("Agent - Character definition file")}, 
-                        object::pair{std:("value"), std:("agent")}, 
-                        object::pair{std:("hint"), std:("Create a new agent character file")}
+                        object::pair{std::string("label"), std::string("Agent - Character definition file")}, 
+                        object::pair{std::string("value"), std::string("agent")}, 
+                        object::pair{std::string("hint"), std::string("Create a new agent character file")}
                     }, object{
-                        object::pair{std:("label"), std:("TEE Project - Trusted Execution Environment project")}, 
-                        object::pair{std:("value"), std:("tee")}, 
-                        object::pair{std:("hint"), std:("Secure computing environment for privacy-focused applications")}
+                        object::pair{std::string("label"), std::string("TEE Project - Trusted Execution Environment project")}, 
+                        object::pair{std::string("value"), std::string("tee")}, 
+                        object::pair{std::string("hint"), std::string("Secure computing environment for privacy-focused applications")}
                     } }}, 
-                    object::pair{std:("initialValue"), std:("project")}
+                    object::pair{std::string("initialValue"), std::string("project")}
                 }); });
                 if (clack->isCancel(selectedType)) {
-                    clack->cancel(std:("Operation cancelled."));
+                    clack->cancel(std::string("Operation cancelled."));
                     process->exit(0);
                 }
                 projectType = as<any>(selectedType);
             }
             if (!isNonInteractive) {
                 auto nameInput = std::async([=]() { clack->text(object{
-                    object::pair{std:("message"), std:("What is the name of your ") + projectType + std:("?")}, 
-                    object::pair{std:("placeholder"), std:("my-") + projectType + string_empty}, 
-                    object::pair{std:("validate"), [=](auto value) mutable
+                    object::pair{std::string("message"), std::string("What is the name of your ") + projectType + std::string("?")}, 
+                    object::pair{std::string("placeholder"), std::string("my-") + projectType + string_empty}, 
+                    object::pair{std::string("validate"), [=](auto value) mutable
                     {
-                        if (!value) return std:("Name is required");
-                        if (projectType == std:("agent")) {
-                            return (value["length"] > 0) ? any(undefined) (std:("Agent name cannot be empty"));
+                        if (!value) return std::string("Name is required");
+                        if (projectType == std::string("agent")) {
+                            return (value["length"] > 0) ? any(std::nullopt) (std::string("Agent name cannot be empty"));
                         }
                         auto validation = validateProjectName(value);
-                        return (validation["isValid"]) ? any(undefined) (validation["error"]);
+                        return (validation["isValid"]) ? any(std::nullopt) (validation["error"]);
                     }
                     }
                 }); });
                 if (clack->isCancel(nameInput)) {
-                    clack->cancel(std:("Operation cancelled."));
+                    clack->cancel(std::string("Operation cancelled."));
                     process->exit(0);
                 }
                 projectName = as<string>(nameInput);
             } else {
-                throw any(std::make_shared<Error>(std:("Project name is required. Usage: elizaos create [name]")));
+                throw any(std::make_shared<Error>(std::string("Project name is required. Usage: elizaos create [name]")));
             }
         }
-        if (projectType != std:("agent")) {
+        if (projectType != std::string("agent")) {
             auto nameValidation = validateProjectName(projectName);
             if (!nameValidation["isValid"]) {
                 throw any(std::make_shared<Error>(nameValidation["error"]));
@@ -82,10 +83,10 @@ any create = ((std::make_shared<Command>(std:("create"))))->description(std:("Cr
         }
         auto targetDir = options->dir;
         static switch_type __switch4413_6308 = {
-            { any(std:("plugin")), 1 },
-            { any(std:("agent")), 2 },
-            { any(std:("tee")), 3 },
-            { any(std:("project")), 4 }
+            { any(std::string("plugin")), 1 },
+            { any(std::string("agent")), 2 },
+            { any(std::string("tee")), 3 },
+            { any(std::string("project")), 4 }
         };
         switch (__switch4413_6308[projectType])
         {
@@ -97,13 +98,13 @@ any create = ((std::make_shared<Command>(std:("create"))))->description(std:("Cr
             break;
         case 3:
             {
-                auto database = std:("pglite");
-                auto aiModel = std:("local");
+                auto database = std::string("pglite");
+                auto aiModel = std::string("local");
                 any embeddingModel;
                 if (!isNonInteractive) {
                     database = std::async([=]() { selectDatabase(); });
                     aiModel = std::async([=]() { selectAIModel(); });
-                    if (OR((aiModel == std:("claude")), (aiModel == std:("openrouter")))) {
+                    if (OR((aiModel == std::string("claude")), (aiModel == std::string("openrouter")))) {
                         embeddingModel = std::async([=]() { selectEmbeddingModel(); });
                     }
                 }
@@ -113,13 +114,13 @@ any create = ((std::make_shared<Command>(std:("create"))))->description(std:("Cr
         case 4:
         default:
             {
-                auto database = std:("pglite");
-                auto aiModel = std:("local");
+                auto database = std::string("pglite");
+                auto aiModel = std::string("local");
                 any embeddingModel;
                 if (!isNonInteractive) {
                     database = std::async([=]() { selectDatabase(); });
                     aiModel = std::async([=]() { selectAIModel(); });
-                    if (OR((aiModel == std:("claude")), (aiModel == std:("openrouter")))) {
+                    if (OR((aiModel == std::string("claude")), (aiModel == std::string("openrouter")))) {
                         embeddingModel = std::async([=]() { selectEmbeddingModel(); });
                     }
                 }
@@ -128,15 +129,15 @@ any create = ((std::make_shared<Command>(std:("create"))))->description(std:("Cr
             }
         }
         if (!isNonInteractive) {
-            clack->outro(colors->green(std:("Project created successfully! 🎉")));
+            clack->outro(colors->green(std::string("Project created successfully! 🎉")));
         }
     }
     catch (const any& error)
     {
         if (!opts["yes"]) {
-            clack->cancel(std:("Failed to create project."));
+            clack->cancel(std::string("Failed to create project."));
         }
-        logger->error(std:("Create command failed:"), error);
+        logger->error(std::string("Create command failed:"), error);
         handleError(error);
         process->exit(1);
     }

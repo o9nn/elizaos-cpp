@@ -1,4 +1,5 @@
 #include "agent-settings.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -7,7 +8,7 @@ namespace elizaos {
 void AgentSettingsRoute() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto { agentId } = useParams<{ agentId: std: }>();
+    const auto { agentId } = useParams<{ agentId: std::string }>();
     const auto navigate = useNavigate();
     const auto { data: agentData, isLoading } = useAgent(agentId);
 

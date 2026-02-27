@@ -1,24 +1,25 @@
 #include "setup-instructions.h"
+#include <string>
 
 std::shared_ptr<PlatformInstructions> getBunInstallInstructions()
 {
     auto platform = process->platform;
-    if (platform == std:("win32")) {
+    if (platform == std::string("win32")) {
         return object{
-            object::pair{std:("platform"), std:("Windows")}, 
-            object::pair{std:("commands"), array<string>{ std:("powershell -c "irm bun.sh/install.ps1 | iex"") }}, 
-            object::pair{std:("alternatives"), array<string>{ std:("scoop install bun (if you have Scoop)") }}
+            object::pair{std::string("platform"), std::string("Windows")}, 
+            object::pair{std::string("commands"), array<string>{ std::string("powershell -c "irm bun.sh/install.ps1 | iex"") }}, 
+            object::pair{std::string("alternatives"), array<string>{ std::string("scoop install bun (if you have Scoop)") }}
         };
     } else {
-        auto commands = array<string>{ std:("curl -fsSL https://bun.sh/install | bash") };
+        auto commands = array<string>{ std::string("curl -fsSL https://bun.sh/install | bash") };
         auto alternatives = array<string>();
-        if (platform == std:("darwin")) {
-            alternatives->push(std:("brew install bun (if you have Homebrew)"));
+        if (platform == std::string("darwin")) {
+            alternatives->push(std::string("brew install bun (if you have Homebrew)"));
         }
         return object{
-            object::pair{std:("platform"), (platform == std:("darwin")) ? std:("macOS") : std:("Linux")}, 
-            object::pair{std:("commands"), std:("commands")}, 
-            object::pair{std:("alternatives"), (alternatives->get_length() > 0) ? any(alternatives) (undefined)}
+            object::pair{std::string("platform"), (platform == std::string("darwin")) ? std::string("macOS") : std::string("Linux")}, 
+            object::pair{std::string("commands"), std::string("commands")}, 
+            object::pair{std::string("alternatives"), (alternatives->get_length() > 0) ? any(alternatives) (std::nullopt)}
         };
     }
 };
@@ -26,51 +27,51 @@ std::shared_ptr<PlatformInstructions> getBunInstallInstructions()
 
 void displayBasicSteps(string cdPath)
 {
-    console->log(std:("\
+    console->log(std::string("\
 To complete the ElizaOS setup, follow these steps:\
 "));
-    console->log(std:("1. Navigate to the project directory:"));
-    console->log(std:("   cd ") + cdPath + string_empty);
-    console->log(std:("\
+    console->log(std::string("1. Navigate to the project directory:"));
+    console->log(std::string("   cd ") + cdPath + string_empty);
+    console->log(std::string("\
 2. Install dependencies:"));
-    console->log(std:("   bun install"));
-    console->log(std:("\
+    console->log(std::string("   bun install"));
+    console->log(std::string("\
 3. Build the project:"));
-    console->log(std:("   bun run build"));
-    console->log(std:("\
+    console->log(std::string("   bun run build"));
+    console->log(std::string("\
 4. Start ElizaOS:"));
-    console->log(std:("   bun run start or bun run dev"));
+    console->log(std::string("   bun run start or bun run dev"));
 };
 
 
 void displayPrerequisites()
 {
-    console->log(std:("\
-") + emoji->list(std:("Prerequisites:")) + string_empty);
-    console->log(std:("   ") + emoji->bullet(std:("Node.js 23.3.0+")) + string_empty);
-    console->log(std:("   ") + emoji->bullet(std:("Bun (JavaScript runtime & package manager)")) + string_empty);
+    console->log(std::string("\
+") + emoji->list(std::string("Prerequisites:")) + string_empty);
+    console->log(std::string("   ") + emoji->bullet(std::string("Node.js 23.3.0+")) + string_empty);
+    console->log(std::string("   ") + emoji->bullet(std::string("Bun (JavaScript runtime & package manager)")) + string_empty);
 };
 
 
 void displayBunInstructions()
 {
-    console->log(std:("\
-") + emoji->rocket(std:("If you don't have Bun installed:")) + string_empty);
+    console->log(std::string("\
+") + emoji->rocket(std::string("If you don't have Bun installed:")) + string_empty);
     auto instructions = getBunInstallInstructions();
     instructions->commands->forEach([=](auto command) mutable
     {
-        console->log(std:("   ") + command + string_empty);
+        console->log(std::string("   ") + command + string_empty);
     }
     );
     if (instructions->alternatives) {
         instructions->alternatives->forEach([=](auto alt) mutable
         {
-            console->log(std:("   Alternative: ") + alt + string_empty);
+            console->log(std::string("   Alternative: ") + alt + string_empty);
         }
         );
     }
-    console->log(std:("   More options: https://bun.sh/docs/installation"));
-    console->log(std:("   After installation, restart your terminal"));
+    console->log(std::string("   More options: https://bun.sh/docs/installation"));
+    console->log(std::string("   After installation, restart your terminal"));
 };
 
 

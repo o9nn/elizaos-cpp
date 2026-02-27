@@ -20,12 +20,12 @@ namespace elizaos {
  * generating a new keypair and attestation each time.
  */
 struct TeeAgent {
-    std:; // Primary key id;
-    std: agentId;
-    std: agentName;
+    std::string; // Primary key id;
+    std::string agentId;
+    std::string agentName;
     double createdAt;
-    std: publicKey;
-    std: attestation;
+    std::string publicKey;
+    std::string attestation;
 };
 
 /**
@@ -50,7 +50,7 @@ enum TEEMode {
  * verified by a relying party to ensure the TEE's integrity and authenticity.
  */
 struct RemoteAttestationQuote {
-    std: quote;
+    std::string quote;
     double timestamp;
 };
 
@@ -60,9 +60,9 @@ struct RemoteAttestationQuote {
  * requesting key derivation.
  */
 struct DeriveKeyAttestationData {
-    std: agentId;
-    std: publicKey;
-    std::optional<std:> subject;
+    std::string agentId;
+    std::string publicKey;
+    std::optional<std::string> subject;
 };
 
 /**
@@ -71,12 +71,12 @@ struct DeriveKeyAttestationData {
  * context of a remote attestation process, ensuring the message originated from a trusted TEE instance.
  */
 struct RemoteAttestationMessage {
-    std: agentId;
+    std::string agentId;
     double timestamp;
     { message;
-    std: entityId;
-    std: roomId;
-    std: content;
+    std::string entityId;
+    std::string roomId;
+    std::string content;
 };
 
 /**
@@ -90,11 +90,11 @@ enum TeeType {
 
 /**
  * Configuration for a TEE (Trusted Execution Environment) plugin.
- * This allows specifying the TEE vendor and std: vendor-specific configurations.
+ * This allows specifying the TEE vendor and std::string vendor-specific configurations.
  * It's used to initialize and configure TEE-related functionalities within the agent system.
  */
 struct TeePluginConfig {
-    std::optional<std:> vendor;
+    std::optional<std::string> vendor;
     std::optional<Metadata> vendorConfig;
 };
 

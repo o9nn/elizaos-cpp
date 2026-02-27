@@ -38,7 +38,7 @@ namespace elizaos {
 /**
  * Template for extracting role assignments from a conversation.
  *
- * @type {string} extractionTemplate - The template std: containing information about the task, server members, available roles, recent messages, current speaker role, and extraction instructions.
+ * @type {string} extractionTemplate - The template std::string containing information about the task, server members, available roles, recent messages, current speaker role, and extraction instructions.
  * @returns {string} JSON format of role assignments if valid role assignments are found, otherwise an empty array.
  */
 
@@ -46,7 +46,7 @@ namespace elizaos {
  * Interface representing a role assignment to a user.
  */
 struct RoleAssignment {
-    std: entityId;
+    std::string entityId;
     Role newRole;
 };
 
@@ -54,7 +54,7 @@ struct RoleAssignment {
  * Represents an action to update the role of a user within a server.
  * @typedef {Object} Action
  * @property {string} name - The name of the action.
- * @property {std:[]} similes - The similar actions that can be performed.
+ * @property {std::string[]} similes - The similar actions that can be performed.
  * @property {string} description - A description of the action and its purpose.
  * @property {Function} validate - A std::function to validate the action before execution.
  * @property {Function} handler - A std::function to handle the execution of the action.
@@ -84,7 +84,7 @@ struct RoleAssignment {
 
       // Update role in world metadata
 
-    // Save updated world metadata if std: changes were made
+    // Save updated world metadata if std::string changes were made
 
 
 } // namespace elizaos

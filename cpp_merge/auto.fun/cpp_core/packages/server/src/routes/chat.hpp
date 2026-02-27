@@ -24,7 +24,7 @@ namespace elizaos {
 // Env type is now imported from ../env.ts
 
 // Adjust User type to match Hono context expectation (based on linter errors)
-using User = { publicKey: std: }; // Assuming publicKey is in JWT payload's 'sub'
+using User = { publicKey: std::string }; // Assuming publicKey is in JWT payload's 'sub'
 
 using Variables = {
 
@@ -32,11 +32,11 @@ using Variables = {
 // Replace these with your actual implementations
 
 // Updated to use both database and blockchain
-std::future<double> checkUserTokenBalance(const std:& userPublicKey, const std:& tokenMint);
+std::future<double> checkUserTokenBalance(const std::string& userPublicKey, const std::string& tokenMint);
 
 std::vector<std::string> getUserEligibleTiers(double balance);
 
-double getTierThreshold(const std:& tier);
+double getTierThreshold(const std::string& tier);
 // Define ChatTier type based on allowedTiers
 using ChatTier = (typeof allowedTiers)[number];
 

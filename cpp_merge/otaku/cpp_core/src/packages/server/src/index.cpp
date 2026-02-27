@@ -1,4 +1,5 @@
 #include "index.hpp"
+#include <string>
 #include <filesystem>
 #include <cstdlib>
 #include <optional>
@@ -7,7 +8,7 @@
 
 namespace elizaos {
 
-std: expandTildePath(const std:& filepath) {
+std::string expandTildePath(const std::string& filepath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!filepath) {
@@ -32,7 +33,7 @@ std: expandTildePath(const std:& filepath) {
 
 }
 
-std: resolvePgliteDir(std::optional<std:> dir, std::optional<std:> fallbackDir) {
+std::string resolvePgliteDir(std::optional<std::string> dir, std::optional<std::string> fallbackDir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto envPath = resolveEnvFile();
@@ -69,8 +70,8 @@ bool isWebUIEnabled() {
     const auto isProduction = std::getenv("NODE_ENV") == "production";
     const auto uiEnabledEnv = std::getenv("ELIZA_UI_ENABLE");
 
-    // Treat empty strings as undefined
-    if (uiEnabledEnv != undefined && uiEnabledEnv != '') {
+    // Treat empty strings as std::nullopt
+    if (uiEnabledEnv != std::nullopt && uiEnabledEnv != '') {
         return parseBooleanFromText(uiEnabledEnv);
     }
 

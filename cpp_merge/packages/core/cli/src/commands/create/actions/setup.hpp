@@ -16,6 +16,6 @@ std::shared_ptr<Promise<void>> setupEmbeddingModelConfig(string embeddingModel, 
 
 std::shared_ptr<Promise<void>> installDependencies(string targetDir);
 
-std::shared_ptr<Promise<void>> setupProjectEnvironment(string targetDir, string database, string aiModel, string embeddingModel = undefined, boolean isNonInteractive = false);
+std::shared_ptr<Promise<void>> setupProjectEnvironment(string targetDir, string database, string aiModel, string embeddingModel = std::nullopt, boolean isNonInteractive = false);
 
 #endif

@@ -1,4 +1,5 @@
 #include "utils.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -11,14 +12,14 @@ void cn() {
 
 }
 
-std: characterNameToUrl(const std:& name) {
+std::string characterNameToUrl(const std::string& name) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return name.replace(/\s+/g, "-");
 
 }
 
-std: urlToCharacterName(const std:& urlName) {
+std::string urlToCharacterName(const std::string& urlName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return urlName.replace(/-+/g, " ");

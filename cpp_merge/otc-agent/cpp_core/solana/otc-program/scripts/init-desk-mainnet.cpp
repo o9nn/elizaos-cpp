@@ -1,4 +1,5 @@
 #include "init-desk-mainnet.hpp"
+#include <string>
 #include <future>
 #include <cstdlib>
 #include <iostream>
@@ -93,7 +94,7 @@ std::future<void> main() {
 
             // Save desk keypair
             const auto deskKeypairPath = path.join(__dirname, "../desk-mainnet-keypair.json");
-            fs.writeFileSync(deskKeypairPath, /* JSON.stringify */ std:(Array.from(desk.secretKey)));
+            fs.writeFileSync(deskKeypairPath, /* JSON.stringify */ std::string(Array.from(desk.secretKey)));
             std::cout << "\n✅ Desk keypair saved to " + deskKeypairPath << std::endl;
 
             // Save config
@@ -106,7 +107,7 @@ std::future<void> main() {
                 };
 
                 const auto deploymentPath = path.join(__dirname, "../../../src/config/deployments/mainnet-solana.json");
-                fs.writeFileSync(deploymentPath, /* JSON.stringify */ std:(configData, nullptr, 2));
+                fs.writeFileSync(deploymentPath, /* JSON.stringify */ std::string(configData, nullptr, 2));
                 std::cout << "✅ Config saved to " + deploymentPath << std::endl;
 
                 // Output for .env

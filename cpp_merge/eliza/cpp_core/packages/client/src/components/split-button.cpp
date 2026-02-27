@@ -1,4 +1,5 @@
 #include "split-button.hpp"
+#include <string>
 #include <map>
 #include <iostream>
 #include <stdexcept>
@@ -13,8 +14,8 @@ void SplitButton(auto defaultValue, auto value, auto onValueChange, auto onClick
     // Use controlled value if provided, otherwise use internal state
     const auto selectedValue = value != std::nullopt ? value : internalValue;
 
-    const auto handleValueChange = [&](newValue: std:) {;
-        if (value == undefined) {
+    const auto handleValueChange = [&](newValue: std::string) {;
+        if (value == std::nullopt) {
             setInternalValue(newValue);
         }
         onValueChange.(newValue);

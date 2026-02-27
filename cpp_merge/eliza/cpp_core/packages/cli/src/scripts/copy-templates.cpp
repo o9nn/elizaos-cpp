@@ -1,11 +1,12 @@
 #include "copy-templates.hpp"
+#include <string>
 #include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<void> updatePackageJson(const std:& packagePath, const std:& cliVersion) {
+std::future<void> updatePackageJson(const std::string& packagePath, const std::string& cliVersion) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto packageJsonContent = fs.readFile(packagePath, "utf-8");
@@ -30,7 +31,7 @@ std::future<void> updatePackageJson(const std:& packagePath, const std:& cliVers
         packageData.repository.url = "";
     }
 
-    fs.writeFile(packagePath, /* JSON.stringify */ std:(packageData, nullptr, 2));
+    fs.writeFile(packagePath, /* JSON.stringify */ std::string(packageData, nullptr, 2));
 
 }
 

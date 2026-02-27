@@ -1,43 +1,44 @@
 #include "capsolver.test.h"
+#include <string>
 
 std::function<object(any)> createMockResponse = [=](auto data) mutable
 {
     return (object{
-        object::pair{std:("data"), std:("data")}, 
-        object::pair{std:("status"), 200}, 
-        object::pair{std:("statusText"), std:("OK")}, 
-        object::pair{std:("headers"), object{}}, 
-        object::pair{std:("config"), as<any>(object{
-            object::pair{std:("url"), string_empty}, 
-            object::pair{std:("method"), std:("post")}, 
-            object::pair{std:("headers"), object{}}
+        object::pair{std::string("data"), std::string("data")}, 
+        object::pair{std::string("status"), 200}, 
+        object::pair{std::string("statusText"), std::string("OK")}, 
+        object::pair{std::string("headers"), object{}}, 
+        object::pair{std::string("config"), as<any>(object{
+            object::pair{std::string("url"), string_empty}, 
+            object::pair{std::string("method"), std::string("post")}, 
+            object::pair{std::string("headers"), object{}}
         })}, 
-        object::pair{std:("request"), object{}}
+        object::pair{std::string("request"), object{}}
     });
 };
 
 void Main(void)
 {
-    mock->module(std:("@elizaos/core"), [=]() mutable
+    mock->module(std::string("@elizaos/core"), [=]() mutable
     {
         return (object{
-            object::pair{std:("logger"), object{
-                object::pair{std:("info"), mock()}, 
-                object::pair{std:("error"), mock()}, 
-                object::pair{std:("warn"), mock()}, 
-                object::pair{std:("debug"), mock()}
+            object::pair{std::string("logger"), object{
+                object::pair{std::string("info"), mock()}, 
+                object::pair{std::string("error"), mock()}, 
+                object::pair{std::string("warn"), mock()}, 
+                object::pair{std::string("debug"), mock()}
             }}
         });
     }
     );
-    describe(std:("CapSolverService"), [=]() mutable
+    describe(std::string("CapSolverService"), [=]() mutable
     {
         shared<std::shared_ptr<CapSolverService>> capSolver;
-        shared mockApiKey = std:("test-api-key");
+        shared mockApiKey = std::string("test-api-key");
         beforeEach([=]() mutable
         {
             capSolver = std::make_shared<CapSolverService>(object{
-                object::pair{std:("apiKey"), mockApiKey}
+                object::pair{std::string("apiKey"), mockApiKey}
             });
         }
         );
@@ -46,452 +47,452 @@ void Main(void)
             mock->restore();
         }
         );
-        describe(std:("createTask"), [=]() mutable
+        describe(std::string("createTask"), [=]() mutable
         {
-            it(std:("should create a task successfully"), [=]() mutable
+            it(std::string("should create a task successfully"), [=]() mutable
             {
-                auto mockTaskId = std:("task-123");
-                auto postSpy = spyOn(axios, std:("post"))->mockResolvedValueOnce(createMockResponse(object{
-                    object::pair{std:("errorId"), 0}, 
-                    object::pair{std:("taskId"), mockTaskId}
+                auto mockTaskId = std::string("task-123");
+                auto postSpy = spyOn(axios, std::string("post"))->mockResolvedValueOnce(createMockResponse(object{
+                    object::pair{std::string("errorId"), 0}, 
+                    object::pair{std::string("taskId"), mockTaskId}
                 }));
                 auto task = object{
-                    object::pair{std:("type"), std:("AntiTurnstileTaskProxyLess")}, 
-                    object::pair{std:("websiteURL"), std:("https://example.com")}, 
-                    object::pair{std:("websiteKey"), std:("test-key")}
+                    object::pair{std::string("type"), std::string("AntiTurnstileTaskProxyLess")}, 
+                    object::pair{std::string("websiteURL"), std::string("https://example.com")}, 
+                    object::pair{std::string("websiteKey"), std::string("test-key")}
                 };
                 auto taskId = std::async([=]() { capSolver->createTask(task); });
                 expect(taskId)->toBe(mockTaskId);
-                expect(postSpy)->toHaveBeenCalledWith(std:("https://api.capsolver.com/createTask"), object{
-                    object::pair{std:("clientKey"), mockApiKey}, 
-                    object::pair{std:("task"), std:("task")}
+                expect(postSpy)->toHaveBeenCalledWith(std::string("https://api.capsolver.com/createTask"), object{
+                    object::pair{std::string("clientKey"), mockApiKey}, 
+                    object::pair{std::string("task"), std::string("task")}
                 }, expect->any(Object));
             }
             );
-            it(std:("should throw error when API returns error"), [=]() mutable
+            it(std::string("should throw error when API returns error"), [=]() mutable
             {
-                spyOn(axios, std:("post"))->mockResolvedValueOnce(createMockResponse(object{
-                    object::pair{std:("errorId"), 1}, 
-                    object::pair{std:("errorDescription"), std:("Invalid API key")}
+                spyOn(axios, std::string("post"))->mockResolvedValueOnce(createMockResponse(object{
+                    object::pair{std::string("errorId"), 1}, 
+                    object::pair{std::string("errorDescription"), std::string("Invalid API key")}
                 }));
                 auto task = object{
-                    object::pair{std:("type"), std:("AntiTurnstileTaskProxyLess")}, 
-                    object::pair{std:("websiteURL"), std:("https://example.com")}, 
-                    object::pair{std:("websiteKey"), std:("test-key")}
+                    object::pair{std::string("type"), std::string("AntiTurnstileTaskProxyLess")}, 
+                    object::pair{std::string("websiteURL"), std::string("https://example.com")}, 
+                    object::pair{std::string("websiteKey"), std::string("test-key")}
                 };
-                std::async([=]() { expect(capSolver->createTask(task))->rejects->toThrow(std:("CapSolver error: Invalid API key")); });
+                std::async([=]() { expect(capSolver->createTask(task))->rejects->toThrow(std::string("CapSolver error: Invalid API key")); });
             }
             );
         }
         );
-        describe(std:("getTaskResult"), [=]() mutable
+        describe(std::string("getTaskResult"), [=]() mutable
         {
-            it(std:("should return solution when task is ready"), [=]() mutable
+            it(std::string("should return solution when task is ready"), [=]() mutable
             {
                 auto mockSolution = object{
-                    object::pair{std:("token"), std:("solved-token")}
+                    object::pair{std::string("token"), std::string("solved-token")}
                 };
-                spyOn(axios, std:("post"))->mockResolvedValueOnce(createMockResponse(object{
-                    object::pair{std:("errorId"), 0}, 
-                    object::pair{std:("status"), std:("ready")}, 
-                    object::pair{std:("solution"), mockSolution}
+                spyOn(axios, std::string("post"))->mockResolvedValueOnce(createMockResponse(object{
+                    object::pair{std::string("errorId"), 0}, 
+                    object::pair{std::string("status"), std::string("ready")}, 
+                    object::pair{std::string("solution"), mockSolution}
                 }));
-                auto result = std::async([=]() { capSolver->getTaskResult(std:("task-123")); });
+                auto result = std::async([=]() { capSolver->getTaskResult(std::string("task-123")); });
                 expect(result)->toEqual(mockSolution);
-                expect(axios->post)->toHaveBeenCalledWith(std:("https://api.capsolver.com/getTaskResult"), object{
-                    object::pair{std:("clientKey"), mockApiKey}, 
-                    object::pair{std:("taskId"), std:("task-123")}
+                expect(axios->post)->toHaveBeenCalledWith(std::string("https://api.capsolver.com/getTaskResult"), object{
+                    object::pair{std::string("clientKey"), mockApiKey}, 
+                    object::pair{std::string("taskId"), std::string("task-123")}
                 }, expect->any(Object));
             }
             );
-            it(std:("should poll until task is ready"), [=]() mutable
+            it(std::string("should poll until task is ready"), [=]() mutable
             {
-                spyOn(axios, std:("post"))->mockResolvedValueOnce(createMockResponse(object{
-                    object::pair{std:("errorId"), 0}, 
-                    object::pair{std:("status"), std:("processing")}
+                spyOn(axios, std::string("post"))->mockResolvedValueOnce(createMockResponse(object{
+                    object::pair{std::string("errorId"), 0}, 
+                    object::pair{std::string("status"), std::string("processing")}
                 }))->mockResolvedValueOnce(createMockResponse(object{
-                    object::pair{std:("errorId"), 0}, 
-                    object::pair{std:("status"), std:("ready")}, 
-                    object::pair{std:("solution"), object{
-                        object::pair{std:("token"), std:("solved-token")}
+                    object::pair{std::string("errorId"), 0}, 
+                    object::pair{std::string("status"), std::string("ready")}, 
+                    object::pair{std::string("solution"), object{
+                        object::pair{std::string("token"), std::string("solved-token")}
                     }}
                 }));
                 auto fastCapSolver = std::make_shared<CapSolverService>(object{
-                    object::pair{std:("apiKey"), mockApiKey}, 
-                    object::pair{std:("pollingInterval"), 10}
+                    object::pair{std::string("apiKey"), mockApiKey}, 
+                    object::pair{std::string("pollingInterval"), 10}
                 });
-                auto result = std::async([=]() { fastCapSolver->getTaskResult(std:("task-123")); });
+                auto result = std::async([=]() { fastCapSolver->getTaskResult(std::string("task-123")); });
                 expect(result)->toEqual(object{
-                    object::pair{std:("token"), std:("solved-token")}
+                    object::pair{std::string("token"), std::string("solved-token")}
                 });
                 expect(axios->post)->toHaveBeenCalledTimes(2);
             }
             );
-            it(std:("should throw error on timeout"), [=]() mutable
+            it(std::string("should throw error on timeout"), [=]() mutable
             {
-                spyOn(axios, std:("post"))->mockResolvedValue(createMockResponse(object{
-                    object::pair{std:("errorId"), 0}, 
-                    object::pair{std:("status"), std:("processing")}
+                spyOn(axios, std::string("post"))->mockResolvedValue(createMockResponse(object{
+                    object::pair{std::string("errorId"), 0}, 
+                    object::pair{std::string("status"), std::string("processing")}
                 }));
                 auto fastCapSolver = std::make_shared<CapSolverService>(object{
-                    object::pair{std:("apiKey"), mockApiKey}, 
-                    object::pair{std:("pollingInterval"), 10}, 
-                    object::pair{std:("retryAttempts"), 2}
+                    object::pair{std::string("apiKey"), mockApiKey}, 
+                    object::pair{std::string("pollingInterval"), 10}, 
+                    object::pair{std::string("retryAttempts"), 2}
                 });
-                std::async([=]() { expect(fastCapSolver->getTaskResult(std:("task-123")))->rejects->toThrow(std:("CapSolver task timeout")); });
+                std::async([=]() { expect(fastCapSolver->getTaskResult(std::string("task-123")))->rejects->toThrow(std::string("CapSolver task timeout")); });
             }
             );
         }
         );
-        describe(std:("solveTurnstile"), [=]() mutable
+        describe(std::string("solveTurnstile"), [=]() mutable
         {
-            it(std:("should solve Turnstile captcha"), [=]() mutable
+            it(std::string("should solve Turnstile captcha"), [=]() mutable
             {
-                auto mockTaskId = std:("task-123");
-                auto mockToken = std:("turnstile-token");
-                spyOn(axios, std:("post"))->mockResolvedValueOnce(createMockResponse(object{
-                    object::pair{std:("errorId"), 0}, 
-                    object::pair{std:("taskId"), mockTaskId}
+                auto mockTaskId = std::string("task-123");
+                auto mockToken = std::string("turnstile-token");
+                spyOn(axios, std::string("post"))->mockResolvedValueOnce(createMockResponse(object{
+                    object::pair{std::string("errorId"), 0}, 
+                    object::pair{std::string("taskId"), mockTaskId}
                 }))->mockResolvedValueOnce(createMockResponse(object{
-                    object::pair{std:("errorId"), 0}, 
-                    object::pair{std:("status"), std:("ready")}, 
-                    object::pair{std:("solution"), object{
-                        object::pair{std:("token"), mockToken}
+                    object::pair{std::string("errorId"), 0}, 
+                    object::pair{std::string("status"), std::string("ready")}, 
+                    object::pair{std::string("solution"), object{
+                        object::pair{std::string("token"), mockToken}
                     }}
                 }));
-                auto token = std::async([=]() { capSolver->solveTurnstile(std:("https://example.com"), std:("site-key")); });
+                auto token = std::async([=]() { capSolver->solveTurnstile(std::string("https://example.com"), std::string("site-key")); });
                 expect(token)->toBe(mockToken);
-                expect(logger->info)->toHaveBeenCalledWith(std:("Solving Cloudflare Turnstile captcha"));
+                expect(logger->info)->toHaveBeenCalledWith(std::string("Solving Cloudflare Turnstile captcha"));
             }
             );
-            it(std:("should use proxy when provided"), [=]() mutable
+            it(std::string("should use proxy when provided"), [=]() mutable
             {
-                spyOn(axios, std:("post"))->mockResolvedValueOnce(createMockResponse(object{
-                    object::pair{std:("errorId"), 0}, 
-                    object::pair{std:("taskId"), std:("task-123")}
+                spyOn(axios, std::string("post"))->mockResolvedValueOnce(createMockResponse(object{
+                    object::pair{std::string("errorId"), 0}, 
+                    object::pair{std::string("taskId"), std::string("task-123")}
                 }))->mockResolvedValueOnce(createMockResponse(object{
-                    object::pair{std:("errorId"), 0}, 
-                    object::pair{std:("status"), std:("ready")}, 
-                    object::pair{std:("solution"), object{
-                        object::pair{std:("token"), std:("proxy-token")}
+                    object::pair{std::string("errorId"), 0}, 
+                    object::pair{std::string("status"), std::string("ready")}, 
+                    object::pair{std::string("solution"), object{
+                        object::pair{std::string("token"), std::string("proxy-token")}
                     }}
                 }));
-                std::async([=]() { capSolver->solveTurnstile(std:("https://example.com"), std:("site-key"), std:("proxy-host:8080:username:password")); });
-                expect(axios->post)->toHaveBeenCalledWith(std:("https://api.capsolver.com/createTask"), expect->objectContaining(object{
-                    object::pair{std:("task"), expect->objectContaining(object{
-                        object::pair{std:("type"), std:("AntiTurnstileTask")}, 
-                        object::pair{std:("proxy"), std:("proxy-host:8080")}, 
-                        object::pair{std:("proxyLogin"), std:("username")}, 
-                        object::pair{std:("proxyPassword"), std:("password")}
+                std::async([=]() { capSolver->solveTurnstile(std::string("https://example.com"), std::string("site-key"), std::string("proxy-host:8080:username:password")); });
+                expect(axios->post)->toHaveBeenCalledWith(std::string("https://api.capsolver.com/createTask"), expect->objectContaining(object{
+                    object::pair{std::string("task"), expect->objectContaining(object{
+                        object::pair{std::string("type"), std::string("AntiTurnstileTask")}, 
+                        object::pair{std::string("proxy"), std::string("proxy-host:8080")}, 
+                        object::pair{std::string("proxyLogin"), std::string("username")}, 
+                        object::pair{std::string("proxyPassword"), std::string("password")}
                     })}
                 }), expect->any(Object));
             }
             );
         }
         );
-        describe(std:("solveRecaptchaV2"), [=]() mutable
+        describe(std::string("solveRecaptchaV2"), [=]() mutable
         {
-            it(std:("should solve reCAPTCHA v2"), [=]() mutable
+            it(std::string("should solve reCAPTCHA v2"), [=]() mutable
             {
-                spyOn(axios, std:("post"))->mockResolvedValueOnce(createMockResponse(object{
-                    object::pair{std:("errorId"), 0}, 
-                    object::pair{std:("taskId"), std:("task-456")}
+                spyOn(axios, std::string("post"))->mockResolvedValueOnce(createMockResponse(object{
+                    object::pair{std::string("errorId"), 0}, 
+                    object::pair{std::string("taskId"), std::string("task-456")}
                 }))->mockResolvedValueOnce(createMockResponse(object{
-                    object::pair{std:("errorId"), 0}, 
-                    object::pair{std:("status"), std:("ready")}, 
-                    object::pair{std:("solution"), object{
-                        object::pair{std:("gRecaptchaResponse"), std:("recaptcha-v2-token")}
+                    object::pair{std::string("errorId"), 0}, 
+                    object::pair{std::string("status"), std::string("ready")}, 
+                    object::pair{std::string("solution"), object{
+                        object::pair{std::string("gRecaptchaResponse"), std::string("recaptcha-v2-token")}
                     }}
                 }));
-                auto result = std::async([=]() { capSolver->solveRecaptchaV2(std:("https://example.com"), std:("v2-site-key")); });
-                expect(result)->toBe(std:("recaptcha-v2-token"));
-                expect(logger->info)->toHaveBeenCalledWith(std:("Solving reCAPTCHA v2"));
+                auto result = std::async([=]() { capSolver->solveRecaptchaV2(std::string("https://example.com"), std::string("v2-site-key")); });
+                expect(result)->toBe(std::string("recaptcha-v2-token"));
+                expect(logger->info)->toHaveBeenCalledWith(std::string("Solving reCAPTCHA v2"));
             }
             );
-            it(std:("should handle invisible reCAPTCHA v2"), [=]() mutable
+            it(std::string("should handle invisible reCAPTCHA v2"), [=]() mutable
             {
-                spyOn(axios, std:("post"))->mockResolvedValueOnce(createMockResponse(object{
-                    object::pair{std:("errorId"), 0}, 
-                    object::pair{std:("taskId"), std:("task-789")}
+                spyOn(axios, std::string("post"))->mockResolvedValueOnce(createMockResponse(object{
+                    object::pair{std::string("errorId"), 0}, 
+                    object::pair{std::string("taskId"), std::string("task-789")}
                 }))->mockResolvedValueOnce(createMockResponse(object{
-                    object::pair{std:("errorId"), 0}, 
-                    object::pair{std:("status"), std:("ready")}, 
-                    object::pair{std:("solution"), object{
-                        object::pair{std:("gRecaptchaResponse"), std:("invisible-token")}
+                    object::pair{std::string("errorId"), 0}, 
+                    object::pair{std::string("status"), std::string("ready")}, 
+                    object::pair{std::string("solution"), object{
+                        object::pair{std::string("gRecaptchaResponse"), std::string("invisible-token")}
                     }}
                 }));
-                auto result = std::async([=]() { capSolver->solveRecaptchaV2(std:("https://example.com"), std:("invisible-key"), true); });
-                expect(result)->toBe(std:("invisible-token"));
-                expect(axios->post)->toHaveBeenCalledWith(std:("https://api.capsolver.com/createTask"), expect->objectContaining(object{
-                    object::pair{std:("task"), expect->objectContaining(object{
-                        object::pair{std:("isInvisible"), true}
+                auto result = std::async([=]() { capSolver->solveRecaptchaV2(std::string("https://example.com"), std::string("invisible-key"), true); });
+                expect(result)->toBe(std::string("invisible-token"));
+                expect(axios->post)->toHaveBeenCalledWith(std::string("https://api.capsolver.com/createTask"), expect->objectContaining(object{
+                    object::pair{std::string("task"), expect->objectContaining(object{
+                        object::pair{std::string("isInvisible"), true}
                     })}
                 }), expect->any(Object));
             }
             );
         }
         );
-        describe(std:("solveRecaptchaV3"), [=]() mutable
+        describe(std::string("solveRecaptchaV3"), [=]() mutable
         {
-            it(std:("should solve reCAPTCHA v3"), [=]() mutable
+            it(std::string("should solve reCAPTCHA v3"), [=]() mutable
             {
-                spyOn(axios, std:("post"))->mockResolvedValueOnce(createMockResponse(object{
-                    object::pair{std:("errorId"), 0}, 
-                    object::pair{std:("taskId"), std:("task-v3")}
+                spyOn(axios, std::string("post"))->mockResolvedValueOnce(createMockResponse(object{
+                    object::pair{std::string("errorId"), 0}, 
+                    object::pair{std::string("taskId"), std::string("task-v3")}
                 }))->mockResolvedValueOnce(createMockResponse(object{
-                    object::pair{std:("errorId"), 0}, 
-                    object::pair{std:("status"), std:("ready")}, 
-                    object::pair{std:("solution"), object{
-                        object::pair{std:("gRecaptchaResponse"), std:("v3-token")}
+                    object::pair{std::string("errorId"), 0}, 
+                    object::pair{std::string("status"), std::string("ready")}, 
+                    object::pair{std::string("solution"), object{
+                        object::pair{std::string("gRecaptchaResponse"), std::string("v3-token")}
                     }}
                 }));
-                auto result = std::async([=]() { capSolver->solveRecaptchaV3(std:("https://example.com"), std:("v3-key"), std:("verify")); });
-                expect(result)->toBe(std:("v3-token"));
-                expect(logger->info)->toHaveBeenCalledWith(std:("Solving reCAPTCHA v3"));
+                auto result = std::async([=]() { capSolver->solveRecaptchaV3(std::string("https://example.com"), std::string("v3-key"), std::string("verify")); });
+                expect(result)->toBe(std::string("v3-token"));
+                expect(logger->info)->toHaveBeenCalledWith(std::string("Solving reCAPTCHA v3"));
             }
             );
-            it(std:("should use custom action and score"), [=]() mutable
+            it(std::string("should use custom action and score"), [=]() mutable
             {
-                spyOn(axios, std:("post"))->mockResolvedValueOnce(createMockResponse(object{
-                    object::pair{std:("errorId"), 0}, 
-                    object::pair{std:("taskId"), std:("task-v3-custom")}
+                spyOn(axios, std::string("post"))->mockResolvedValueOnce(createMockResponse(object{
+                    object::pair{std::string("errorId"), 0}, 
+                    object::pair{std::string("taskId"), std::string("task-v3-custom")}
                 }))->mockResolvedValueOnce(createMockResponse(object{
-                    object::pair{std:("errorId"), 0}, 
-                    object::pair{std:("status"), std:("ready")}, 
-                    object::pair{std:("solution"), object{
-                        object::pair{std:("gRecaptchaResponse"), std:("v3-custom-token")}
+                    object::pair{std::string("errorId"), 0}, 
+                    object::pair{std::string("status"), std::string("ready")}, 
+                    object::pair{std::string("solution"), object{
+                        object::pair{std::string("gRecaptchaResponse"), std::string("v3-custom-token")}
                     }}
                 }));
-                auto result = std::async([=]() { capSolver->solveRecaptchaV3(std:("https://example.com"), std:("v3-key"), std:("login"), 0.7); });
-                expect(result)->toBe(std:("v3-custom-token"));
-                expect(axios->post)->toHaveBeenCalledWith(std:("https://api.capsolver.com/createTask"), expect->objectContaining(object{
-                    object::pair{std:("task"), expect->objectContaining(object{
-                        object::pair{std:("pageAction"), std:("login")}, 
-                        object::pair{std:("minScore"), 0.7}
+                auto result = std::async([=]() { capSolver->solveRecaptchaV3(std::string("https://example.com"), std::string("v3-key"), std::string("login"), 0.7); });
+                expect(result)->toBe(std::string("v3-custom-token"));
+                expect(axios->post)->toHaveBeenCalledWith(std::string("https://api.capsolver.com/createTask"), expect->objectContaining(object{
+                    object::pair{std::string("task"), expect->objectContaining(object{
+                        object::pair{std::string("pageAction"), std::string("login")}, 
+                        object::pair{std::string("minScore"), 0.7}
                     })}
                 }), expect->any(Object));
             }
             );
         }
         );
-        describe(std:("solveHCaptcha"), [=]() mutable
+        describe(std::string("solveHCaptcha"), [=]() mutable
         {
-            it(std:("should solve hCaptcha"), [=]() mutable
+            it(std::string("should solve hCaptcha"), [=]() mutable
             {
-                spyOn(axios, std:("post"))->mockResolvedValueOnce(createMockResponse(object{
-                    object::pair{std:("errorId"), 0}, 
-                    object::pair{std:("taskId"), std:("task-hcaptcha")}
+                spyOn(axios, std::string("post"))->mockResolvedValueOnce(createMockResponse(object{
+                    object::pair{std::string("errorId"), 0}, 
+                    object::pair{std::string("taskId"), std::string("task-hcaptcha")}
                 }))->mockResolvedValueOnce(createMockResponse(object{
-                    object::pair{std:("errorId"), 0}, 
-                    object::pair{std:("status"), std:("ready")}, 
-                    object::pair{std:("solution"), object{
-                        object::pair{std:("token"), std:("hcaptcha-token")}
+                    object::pair{std::string("errorId"), 0}, 
+                    object::pair{std::string("status"), std::string("ready")}, 
+                    object::pair{std::string("solution"), object{
+                        object::pair{std::string("token"), std::string("hcaptcha-token")}
                     }}
                 }));
-                auto result = std::async([=]() { capSolver->solveHCaptcha(std:("https://example.com"), std:("hcaptcha-key")); });
-                expect(result)->toBe(std:("hcaptcha-token"));
-                expect(logger->info)->toHaveBeenCalledWith(std:("Solving hCaptcha"));
+                auto result = std::async([=]() { capSolver->solveHCaptcha(std::string("https://example.com"), std::string("hcaptcha-key")); });
+                expect(result)->toBe(std::string("hcaptcha-token"));
+                expect(logger->info)->toHaveBeenCalledWith(std::string("Solving hCaptcha"));
             }
             );
-            it(std:("should use proxy when provided"), [=]() mutable
+            it(std::string("should use proxy when provided"), [=]() mutable
             {
-                spyOn(axios, std:("post"))->mockResolvedValueOnce(createMockResponse(object{
-                    object::pair{std:("errorId"), 0}, 
-                    object::pair{std:("taskId"), std:("task-hcaptcha-proxy")}
+                spyOn(axios, std::string("post"))->mockResolvedValueOnce(createMockResponse(object{
+                    object::pair{std::string("errorId"), 0}, 
+                    object::pair{std::string("taskId"), std::string("task-hcaptcha-proxy")}
                 }))->mockResolvedValueOnce(createMockResponse(object{
-                    object::pair{std:("errorId"), 0}, 
-                    object::pair{std:("status"), std:("ready")}, 
-                    object::pair{std:("solution"), object{
-                        object::pair{std:("token"), std:("hcaptcha-proxy-token")}
+                    object::pair{std::string("errorId"), 0}, 
+                    object::pair{std::string("status"), std::string("ready")}, 
+                    object::pair{std::string("solution"), object{
+                        object::pair{std::string("token"), std::string("hcaptcha-proxy-token")}
                     }}
                 }));
-                std::async([=]() { capSolver->solveHCaptcha(std:("https://example.com"), std:("hcaptcha-key"), std:("proxy-host:8080:username:password")); });
-                expect(axios->post)->toHaveBeenCalledWith(std:("https://api.capsolver.com/createTask"), expect->objectContaining(object{
-                    object::pair{std:("task"), expect->objectContaining(object{
-                        object::pair{std:("type"), std:("HCaptchaTask")}, 
-                        object::pair{std:("proxy"), std:("proxy-host:8080")}, 
-                        object::pair{std:("proxyLogin"), std:("username")}, 
-                        object::pair{std:("proxyPassword"), std:("password")}
+                std::async([=]() { capSolver->solveHCaptcha(std::string("https://example.com"), std::string("hcaptcha-key"), std::string("proxy-host:8080:username:password")); });
+                expect(axios->post)->toHaveBeenCalledWith(std::string("https://api.capsolver.com/createTask"), expect->objectContaining(object{
+                    object::pair{std::string("task"), expect->objectContaining(object{
+                        object::pair{std::string("type"), std::string("HCaptchaTask")}, 
+                        object::pair{std::string("proxy"), std::string("proxy-host:8080")}, 
+                        object::pair{std::string("proxyLogin"), std::string("username")}, 
+                        object::pair{std::string("proxyPassword"), std::string("password")}
                     })}
                 }), expect->any(Object));
             }
             );
         }
         );
-        describe(std:("error handling"), [=]() mutable
+        describe(std::string("error handling"), [=]() mutable
         {
-            it(std:("should handle network errors"), [=]() mutable
+            it(std::string("should handle network errors"), [=]() mutable
             {
-                spyOn(axios, std:("post"))->mockRejectedValueOnce(std::make_shared<Error>(std:("Network error")));
+                spyOn(axios, std::string("post"))->mockRejectedValueOnce(std::make_shared<Error>(std::string("Network error")));
                 std::async([=]() { expect(capSolver->createTask(object{
-                    object::pair{std:("type"), std:("AntiTurnstileTaskProxyLess")}, 
-                    object::pair{std:("websiteURL"), std:("https://example.com")}, 
-                    object::pair{std:("websiteKey"), std:("test-key")}
-                }))->rejects->toThrow(std:("Network error")); });
-                expect(logger->error)->toHaveBeenCalledWith(std:("Error creating CapSolver task:"), expect->any(Error));
+                    object::pair{std::string("type"), std::string("AntiTurnstileTaskProxyLess")}, 
+                    object::pair{std::string("websiteURL"), std::string("https://example.com")}, 
+                    object::pair{std::string("websiteKey"), std::string("test-key")}
+                }))->rejects->toThrow(std::string("Network error")); });
+                expect(logger->error)->toHaveBeenCalledWith(std::string("Error creating CapSolver task:"), expect->any(Error));
             }
             );
-            it(std:("should handle invalid proxy format"), [=]() mutable
+            it(std::string("should handle invalid proxy format"), [=]() mutable
             {
-                spyOn(axios, std:("post"))->mockResolvedValueOnce(createMockResponse(object{
-                    object::pair{std:("errorId"), 0}, 
-                    object::pair{std:("taskId"), std:("task-proxy-error")}
+                spyOn(axios, std::string("post"))->mockResolvedValueOnce(createMockResponse(object{
+                    object::pair{std::string("errorId"), 0}, 
+                    object::pair{std::string("taskId"), std::string("task-proxy-error")}
                 }))->mockResolvedValueOnce(createMockResponse(object{
-                    object::pair{std:("errorId"), 0}, 
-                    object::pair{std:("status"), std:("ready")}, 
-                    object::pair{std:("solution"), object{
-                        object::pair{std:("token"), std:("proxy-error-token")}
+                    object::pair{std::string("errorId"), 0}, 
+                    object::pair{std::string("status"), std::string("ready")}, 
+                    object::pair{std::string("solution"), object{
+                        object::pair{std::string("token"), std::string("proxy-error-token")}
                     }}
                 }));
-                std::async([=]() { expect(capSolver->solveTurnstile(std:("https://example.com"), std:("site-key"), std:("invalid-proxy")))->resolves->toBe(std:("proxy-error-token")); });
+                std::async([=]() { expect(capSolver->solveTurnstile(std::string("https://example.com"), std::string("site-key"), std::string("invalid-proxy")))->resolves->toBe(std::string("proxy-error-token")); });
             }
             );
-            it(std:("should retry on task polling errors"), [=]() mutable
+            it(std::string("should retry on task polling errors"), [=]() mutable
             {
-                spyOn(axios, std:("post"))->mockResolvedValueOnce(createMockResponse(object{
-                    object::pair{std:("errorId"), 0}, 
-                    object::pair{std:("taskId"), std:("task-retry")}
-                }))->mockRejectedValueOnce(std::make_shared<Error>(std:("Temporary error")))->mockResolvedValueOnce(createMockResponse(object{
-                    object::pair{std:("errorId"), 0}, 
-                    object::pair{std:("status"), std:("ready")}, 
-                    object::pair{std:("solution"), object{
-                        object::pair{std:("token"), std:("retry-token")}
+                spyOn(axios, std::string("post"))->mockResolvedValueOnce(createMockResponse(object{
+                    object::pair{std::string("errorId"), 0}, 
+                    object::pair{std::string("taskId"), std::string("task-retry")}
+                }))->mockRejectedValueOnce(std::make_shared<Error>(std::string("Temporary error")))->mockResolvedValueOnce(createMockResponse(object{
+                    object::pair{std::string("errorId"), 0}, 
+                    object::pair{std::string("status"), std::string("ready")}, 
+                    object::pair{std::string("solution"), object{
+                        object::pair{std::string("token"), std::string("retry-token")}
                     }}
                 }));
-                std::async([=]() { expect(capSolver->solveTurnstile(std:("https://example.com"), std:("site-key")))->rejects->toThrow(std:("Temporary error")); });
+                std::async([=]() { expect(capSolver->solveTurnstile(std::string("https://example.com"), std::string("site-key")))->rejects->toThrow(std::string("Temporary error")); });
             }
             );
         }
         );
     }
     );
-    describe(std:("detectCaptchaType"), [=]() mutable
+    describe(std::string("detectCaptchaType"), [=]() mutable
     {
         shared<any> mockPage;
         beforeEach([=]() mutable
         {
             mockPage = object{
-                object::pair{std:("$"), mock()}, 
-                object::pair{std:("evaluate"), mock()}
+                object::pair{std::string("$"), mock()}, 
+                object::pair{std::string("evaluate"), mock()}
             };
         }
         );
-        it(std:("should detect Cloudflare Turnstile"), [=]() mutable
+        it(std::string("should detect Cloudflare Turnstile"), [=]() mutable
         {
             shared mockElement = object{};
             mockPage["$"]["mockImplementation"]([=](auto selector) mutable
             {
-                if (selector == std:("[data-sitekey]")) {
+                if (selector == std::string("[data-sitekey]")) {
                     return Promise->resolve(mockElement);
                 }
-                if (selector == std:(".cf-turnstile")) {
+                if (selector == std::string(".cf-turnstile")) {
                     return Promise->resolve(mockElement);
                 }
                 return Promise->resolve(nullptr);
             }
             );
-            mockPage["evaluate"]["mockResolvedValue"](std:("test-sitekey"));
+            mockPage["evaluate"]["mockResolvedValue"](std::string("test-sitekey"));
             auto result = std::async([=]() { detectCaptchaType(mockPage); });
             expect(result)->toEqual(object{
-                object::pair{std:("type"), std:("turnstile")}, 
-                object::pair{std:("siteKey"), std:("test-sitekey")}
+                object::pair{std::string("type"), std::string("turnstile")}, 
+                object::pair{std::string("siteKey"), std::string("test-sitekey")}
             });
         }
         );
-        it(std:("should detect reCAPTCHA v2"), [=]() mutable
+        it(std::string("should detect reCAPTCHA v2"), [=]() mutable
         {
             shared mockElement = object{};
             mockPage["$"]["mockImplementation"]([=](auto selector) mutable
             {
-                if (selector == std:("[data-sitekey], .g-recaptcha")) {
+                if (selector == std::string("[data-sitekey], .g-recaptcha")) {
                     return Promise->resolve(mockElement);
                 }
                 return Promise->resolve(nullptr);
             }
             );
-            mockPage["evaluate"]["mockResolvedValueOnce"](std:("recaptcha-sitekey"))["mockResolvedValueOnce"](false);
+            mockPage["evaluate"]["mockResolvedValueOnce"](std::string("recaptcha-sitekey"))["mockResolvedValueOnce"](false);
             auto result = std::async([=]() { detectCaptchaType(mockPage); });
             expect(result)->toEqual(object{
-                object::pair{std:("type"), std:("recaptcha-v2")}, 
-                object::pair{std:("siteKey"), std:("recaptcha-sitekey")}
+                object::pair{std::string("type"), std::string("recaptcha-v2")}, 
+                object::pair{std::string("siteKey"), std::string("recaptcha-sitekey")}
             });
         }
         );
-        it(std:("should detect reCAPTCHA v3"), [=]() mutable
+        it(std::string("should detect reCAPTCHA v3"), [=]() mutable
         {
             shared mockElement = object{};
             mockPage["$"]["mockImplementation"]([=](auto selector) mutable
             {
-                if (selector == std:("[data-sitekey], .g-recaptcha")) {
+                if (selector == std::string("[data-sitekey], .g-recaptcha")) {
                     return Promise->resolve(mockElement);
                 }
                 return Promise->resolve(nullptr);
             }
             );
-            mockPage["evaluate"]["mockResolvedValueOnce"](std:("recaptcha-sitekey"))["mockResolvedValueOnce"](true);
+            mockPage["evaluate"]["mockResolvedValueOnce"](std::string("recaptcha-sitekey"))["mockResolvedValueOnce"](true);
             auto result = std::async([=]() { detectCaptchaType(mockPage); });
             expect(result)->toEqual(object{
-                object::pair{std:("type"), std:("recaptcha-v3")}, 
-                object::pair{std:("siteKey"), std:("recaptcha-sitekey")}
+                object::pair{std::string("type"), std::string("recaptcha-v3")}, 
+                object::pair{std::string("siteKey"), std::string("recaptcha-sitekey")}
             });
         }
         );
-        it(std:("should detect hCaptcha"), [=]() mutable
+        it(std::string("should detect hCaptcha"), [=]() mutable
         {
             shared mockElement = object{};
             mockPage["$"]["mockImplementation"]([=](auto selector) mutable
             {
-                if (selector == std:("[data-sitekey].h-captcha, [data-hcaptcha-sitekey]")) {
+                if (selector == std::string("[data-sitekey].h-captcha, [data-hcaptcha-sitekey]")) {
                     return Promise->resolve(mockElement);
                 }
                 return Promise->resolve(nullptr);
             }
             );
-            mockPage["evaluate"]["mockResolvedValue"](std:("hcaptcha-sitekey"));
+            mockPage["evaluate"]["mockResolvedValue"](std::string("hcaptcha-sitekey"));
             auto result = std::async([=]() { detectCaptchaType(mockPage); });
             expect(result)->toEqual(object{
-                object::pair{std:("type"), std:("hcaptcha")}, 
-                object::pair{std:("siteKey"), std:("hcaptcha-sitekey")}
+                object::pair{std::string("type"), std::string("hcaptcha")}, 
+                object::pair{std::string("siteKey"), std::string("hcaptcha-sitekey")}
             });
         }
         );
-        it(std:("should return null when no captcha found"), [=]() mutable
+        it(std::string("should return null when no captcha found"), [=]() mutable
         {
             mockPage["$"]["mockResolvedValue"](nullptr);
             auto result = std::async([=]() { detectCaptchaType(mockPage); });
             expect(result)->toEqual(object{
-                object::pair{std:("type"), nullptr}
+                object::pair{std::string("type"), nullptr}
             });
         }
         );
     }
     );
-    describe(std:("injectCaptchaSolution"), [=]() mutable
+    describe(std::string("injectCaptchaSolution"), [=]() mutable
     {
         shared<any> mockPage;
         beforeEach([=]() mutable
         {
             mockPage = object{
-                object::pair{std:("evaluate"), mock()}
+                object::pair{std::string("evaluate"), mock()}
             };
         }
         );
-        it(std:("should inject Turnstile solution"), [=]() mutable
+        it(std::string("should inject Turnstile solution"), [=]() mutable
         {
-            std::async([=]() { injectCaptchaSolution(mockPage, std:("turnstile"), std:("test-token")); });
-            expect(mockPage["evaluate"])->toHaveBeenCalledWith(expect->any(Function), std:("test-token"));
+            std::async([=]() { injectCaptchaSolution(mockPage, std::string("turnstile"), std::string("test-token")); });
+            expect(mockPage["evaluate"])->toHaveBeenCalledWith(expect->any(Function), std::string("test-token"));
         }
         );
-        it(std:("should inject reCAPTCHA solution"), [=]() mutable
+        it(std::string("should inject reCAPTCHA solution"), [=]() mutable
         {
-            std::async([=]() { injectCaptchaSolution(mockPage, std:("recaptcha-v2"), std:("test-token")); });
-            expect(mockPage["evaluate"])->toHaveBeenCalledWith(expect->any(Function), std:("test-token"));
+            std::async([=]() { injectCaptchaSolution(mockPage, std::string("recaptcha-v2"), std::string("test-token")); });
+            expect(mockPage["evaluate"])->toHaveBeenCalledWith(expect->any(Function), std::string("test-token"));
         }
         );
-        it(std:("should inject hCaptcha solution"), [=]() mutable
+        it(std::string("should inject hCaptcha solution"), [=]() mutable
         {
-            std::async([=]() { injectCaptchaSolution(mockPage, std:("hcaptcha"), std:("test-token")); });
-            expect(mockPage["evaluate"])->toHaveBeenCalledWith(expect->any(Function), std:("test-token"));
+            std::async([=]() { injectCaptchaSolution(mockPage, std::string("hcaptcha"), std::string("test-token")); });
+            expect(mockPage["evaluate"])->toHaveBeenCalledWith(expect->any(Function), std::string("test-token"));
         }
         );
     }

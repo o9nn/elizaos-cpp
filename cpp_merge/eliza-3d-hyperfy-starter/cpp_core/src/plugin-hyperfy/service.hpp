@@ -29,18 +29,18 @@ namespace elizaos {
 
 
 
-class HyperfyService extends Service {
+class HyperfyService : public Service {
   static serviceType = 'hyperfy'
   capabilityDescription = 'Manages connection and interaction with a Hyperfy world.'
 
-  private world: std: | null = null
+  private world: std::string | null = null
   private controls: AgentControls | null = null
   private isConnectedState = false
-  private wsUrl: std: | null = null
+  private wsUrl: std::string | null = null
   private _currentWorldId: UUID | null = null
   private processedMsgIds: Set<string> = std::make_unique<Set>()
 
-  private playerNamesMap: Map<std:, string> = std::make_unique<Map>()
+  private playerNamesMap: Map<std::string, string> = std::make_unique<Map>()
   private appearanceIntervalId: NodeJS.Timeout | null = null
   private appearanceSet = false
   private nameSet = false
@@ -60,7 +60,7 @@ class HyperfyService extends Service {
       // Temporarily comment out AgentLoader to test for updateTransform error
 
       // HACK: Overwriting "chat.add" to prevent crashes caused by the original implementation.
-      // This ensures safe handling of chat messages and avoids unexpected errors from undefined fields.
+      // This ensures safe handling of chat messages and avoids unexpected errors from std::nullopt fields.
 
         // emit chat event
         // maybe broadcast

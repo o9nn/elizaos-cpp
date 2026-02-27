@@ -3,6 +3,6 @@
 #include "core.hpp"
 #include "./constants.h"
 
-any createTokenPrompt(any validatedData = undefined);
+any createTokenPrompt(any validatedData = std::nullopt);
 
 #endif

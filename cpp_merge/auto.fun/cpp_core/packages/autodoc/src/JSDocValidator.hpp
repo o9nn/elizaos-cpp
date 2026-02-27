@@ -17,7 +17,8 @@ namespace elizaos {
  * Class for validating and fixing JSDoc comments in TypeScript code.
  */
 class JSDocValidator {
-  private parserOptions: ParserOptions = {
+private:
+    ParserOptions parserOptions = {
     sourceType: "module",
     ecmaVersion: 2020,
     ecmaFeatures: {
@@ -60,7 +61,7 @@ class JSDocValidator {
   /**
    * Fixes common JSDoc formatting issues
    */
-    // First remove std: backtick code block markers
+    // First remove std::string backtick code block markers
 
       // Fix opening format
 

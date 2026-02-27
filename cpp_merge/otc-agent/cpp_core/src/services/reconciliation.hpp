@@ -26,7 +26,7 @@ struct SimplePublicClient {
     [&](params: { readContract;
     Address address;
     Abi abi;
-    std: functionName;
+    std::string functionName;
     std::vector<readonly unknown> args;
     () { return Promise<bigint> getBlockNumber; };
 };
@@ -51,10 +51,10 @@ struct OnChainOffer {
 
 class ReconciliationService {
   private client: SimplePublicClient;
-  private otcAddress: Address | undefined;
+  private otcAddress: Address | std::nullopt;
   private abi: Abi;
 
-  constructor() {
+  /* constructor */ () {
     // Get chain and RPC URL using centralized logic
     const chain = getChain();
     const rpcUrl = getRpcUrl();

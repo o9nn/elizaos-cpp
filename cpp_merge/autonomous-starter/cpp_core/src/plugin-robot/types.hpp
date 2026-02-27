@@ -22,30 +22,30 @@ namespace elizaos {
 // Export service type constant
 
 struct ScreenObject {
-    std: label;
+    std::string label;
     double y;
     double width;
 };
 
 struct ScreenActionStep {
-    std: action;
+    std::string action;
     std::optional<double> x;
     std::optional<double> y;
-    std::optional<std:> text;
-    std::optional<std:> button;
+    std::optional<std::string> text;
+    std::optional<std::string> button;
 };
 
 struct ScreenDescription {
-    std: description;
+    std::string description;
     double timestamp;
-    std: relativeTime;
+    std::string relativeTime;
 };
 
 struct ScreenContext {
     std::vector<uint8_t> screenshot;
-    std: currentDescription;
+    std::string currentDescription;
     std::vector<ScreenDescription> descriptionHistory;
-    std: ocr;
+    std::string ocr;
     std::vector<ScreenObject> objects;
     double timestamp;
     bool changeDetected;

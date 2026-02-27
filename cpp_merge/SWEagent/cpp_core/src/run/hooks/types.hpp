@@ -35,12 +35,12 @@ struct RunHook {
 /**
  * Abstract base class for run hooks
  */
-    void onInit(const std::unordered_map<std:, std:>& _run);
+    void onInit(const std::unordered_map<std::string, std::string>& _run);
     void onStart();
     void onEnd();
-    void onInstanceStart(const std:& _params);
+    void onInstanceStart(const std::string& _params);
     void onInstanceSkipped();
-    void onInstanceCompleted(const std:& _params);
+    void onInstanceCompleted(const std::string& _params);
 
 /**
  * Combined run hooks manager
@@ -48,12 +48,12 @@ struct RunHook {
 class CombinedRunHooks {
 public addHook(RunHook hook);
     std::vector<RunHook> hooks() const;
-    void onInit(const std::unordered_map<std:, std:>& run);
+    void onInit(const std::unordered_map<std::string, std::string>& run);
     void onStart();
     void onEnd();
-    void onInstanceStart(const std:& params);
+    void onInstanceStart(const std::string& params);
     void onInstanceSkipped();
-    void onInstanceCompleted(const std:& params);
+    void onInstanceCompleted(const std::string& params);
 };
 
 

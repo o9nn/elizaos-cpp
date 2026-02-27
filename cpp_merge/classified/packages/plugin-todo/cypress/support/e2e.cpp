@@ -1,4 +1,5 @@
 #include "e2e.hpp"
+#include <string>
 
 namespace global {
     namespace Cypress {
@@ -7,7 +8,7 @@ namespace global {
 
 void Main(void)
 {
-    Cypress->on(std:("uncaught:exception"), [=](auto err, auto runnable) mutable
+    Cypress->on(std::string("uncaught:exception"), [=](auto err, auto runnable) mutable
     {
         return false;
     }

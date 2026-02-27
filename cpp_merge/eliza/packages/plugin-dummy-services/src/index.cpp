@@ -1,13 +1,14 @@
 #include "index.hpp"
+#include <string>
 
 std::shared_ptr<Plugin> dummyServicesPlugin = object{
-    object::pair{std:("name"), std:("dummy-services")}, 
-    object::pair{std:("description"), std:("Load standard dummy services for testing purposes.")}, 
-    object::pair{std:("services"), array<DummyTokenDataService>{ DummyTokenDataService, DummyLpService, DummyWalletService }}, 
-    object::pair{std:("tests"), array<any>{ dummyServicesScenariosSuite }}, 
-    object::pair{std:("init"), [=](auto runtime) mutable
+    object::pair{std::string("name"), std::string("dummy-services")}, 
+    object::pair{std::string("description"), std::string("Load standard dummy services for testing purposes.")}, 
+    object::pair{std::string("services"), array<DummyTokenDataService>{ DummyTokenDataService, DummyLpService, DummyWalletService }}, 
+    object::pair{std::string("tests"), array<any>{ dummyServicesScenariosSuite }}, 
+    object::pair{std::string("init"), [=](auto runtime) mutable
     {
-        console->log(std:("Dummy Services Plugin Initialized"));
+        console->log(std::string("Dummy Services Plugin Initialized"));
     }
     }
 };

@@ -20,7 +20,7 @@ namespace elizaos {
 
 struct ExperienceAnalysis {
     bool isSignificant;
-    std::optional<std:> learning;
+    std::optional<std::string> learning;
     double confidence;
     std::optional<std::vector<std::string>> relatedExperiences;
     std::optional<std::vector<std::string>> actionableInsights;
@@ -32,10 +32,10 @@ std::vector<Experience> findSimilarExperiences(const std::optional<Experience>& 
 
 std::vector<Experience> findContradictions(const std::optional<Experience>& partial, const std::vector<Experience>& experiences);
 
-bool similarContext(const std:& context1, const std:& context2);
+bool similarContext(const std::string& context1, const std::string& context2);
 
 struct FailurePattern {
-    std: learning;
+    std::string learning;
     std::vector<std::string> relatedIds;
     std::vector<std::string> insights;
 };

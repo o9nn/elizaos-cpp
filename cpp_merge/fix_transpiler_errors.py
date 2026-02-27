@@ -175,6 +175,23 @@ def fix_typescript_syntax(content: str) -> str:
     # Fix malformed std::vector<std:> to std::vector<std::string>
     content = re.sub(r'std::vector<std:>', 'std::vector<std::string>', content)
     
+    # Fix incomplete std: references to std::string
+    content = re.sub(r'\bstd:\s+(\w+)', r'std::string \1', content)
+    content = re.sub(r'\bstd:(?!\s*:)', 'std::string', content)
+    
+    # Fix TypeScript class member declarations
+    # private token: std::string = '' -> private: std::string token = "";
+    content = re.sub(
+        r'\s*private\s+(\w+):\s*([\w:]+)\s*=\s*([^;]+);',
+        r'\nprivate:\n    \2 \1 = \3;',
+        content
+    )
+    content = re.sub(
+        r'\s*public\s+(\w+):\s*([\w:]+)\s*=\s*([^;]+);',
+        r'\npublic:\n    \2 \1 = \3;',
+        content
+    )
+    
     # Fix object literal syntax { key: value } to C++ style
     content = re.sub(r'\{\s*(\w+):\s*true\s*\}', r'Config{\1 = true}', content)
     content = re.sub(r'\{\s*(\w+):\s*false\s*\}', r'Config{\1 = false}', content)
@@ -185,6 +202,18 @@ def fix_typescript_syntax(content: str) -> str:
     
     # Fix .length property
     content = re.sub(r'\.length\b', '.size()', content)
+    
+    # Fix undefined checks
+    content = re.sub(r'\bundefined\b', 'std::nullopt', content)
+    
+    # Fix Math.random()
+    content = re.sub(r'Math\.random\(\)', '((double)rand() / RAND_MAX)', content)
+    
+    # Fix constructor keyword
+    content = re.sub(r'\bconstructor\s*\(', '/* constructor */ (', content)
+    
+    # Fix extends keyword (TypeScript inheritance)
+    content = re.sub(r'\bextends\s+(\w+)', r': public \1', content)
     
     return content
 

@@ -1,11 +1,12 @@
 #include "plugin-creation-actions.hpp"
+#include <string>
 #include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<PluginSpecification> generatePluginSpecification(const std:& description, IAgentRuntime runtime) {
+std::future<PluginSpecification> generatePluginSpecification(const std::string& description, IAgentRuntime runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto lowerDesc = description.toLowerCase();

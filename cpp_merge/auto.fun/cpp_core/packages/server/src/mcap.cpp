@@ -1,4 +1,5 @@
 #include "mcap.hpp"
+#include <string>
 #include <future>
 #include <cstdlib>
 #include <iostream>
@@ -111,7 +112,7 @@ std::future<double> fetchSOLPriceFromPyth() {
 
 }
 
-std::future<std:> calculateTokenMarketData(const std:& token, double solPrice) {
+std::future<std::string> calculateTokenMarketData(const std::string& token, double solPrice) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Copy the token to avoid modifying the original
@@ -147,7 +148,7 @@ std::future<std:> calculateTokenMarketData(const std:& token, double solPrice) {
 
 }
 
-std::future<void> calculateRaydiumTokenMarketData(const std:& token) {
+std::future<void> calculateRaydiumTokenMarketData(const std::string& token) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

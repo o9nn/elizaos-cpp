@@ -1,13 +1,14 @@
 #include "setup.hpp"
+#include <string>
 
 void Main(void)
 {
-    vi->mock(std:("uuid"), [=]() mutable
+    vi->mock(std::string("uuid"), [=]() mutable
     {
         return (object{
-            object::pair{std:("v4"), vi->fn([=]() mutable
+            object::pair{std::string("v4"), vi->fn([=]() mutable
             {
-                return std:("test-uuid-123");
+                return std::string("test-uuid-123");
             }
             )}
         });
@@ -15,13 +16,13 @@ void Main(void)
     );
     global->console = utils::assign(object{
         , 
-        object::pair{std:("log"), vi->fn()}, 
-        object::pair{std:("debug"), vi->fn()}, 
-        object::pair{std:("info"), vi->fn()}, 
-        object::pair{std:("warn"), vi->fn()}, 
-        object::pair{std:("error"), vi->fn()}
+        object::pair{std::string("log"), vi->fn()}, 
+        object::pair{std::string("debug"), vi->fn()}, 
+        object::pair{std::string("info"), vi->fn()}, 
+        object::pair{std::string("warn"), vi->fn()}, 
+        object::pair{std::string("error"), vi->fn()}
     }, console);
-    process->env->NODE_ENV = std:("test");
+    process->env->NODE_ENV = std::string("test");
 }
 
 MAIN

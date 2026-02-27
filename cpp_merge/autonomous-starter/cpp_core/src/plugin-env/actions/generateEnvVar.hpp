@@ -23,7 +23,7 @@ namespace elizaos {
  * Generate environment variable action
  */
 
-      // Check if there are std: generatable environment variables
+      // Check if there are std::string generatable environment variables
 
       // Initialize generation scripts metadata if needed
 

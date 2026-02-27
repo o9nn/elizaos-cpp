@@ -17,11 +17,11 @@ namespace elizaos {
  * Example message for demonstration
  */
 struct MessageExample {
-    std: name;
+    std::string name;
     Content content;
 };
 
-using TemplateType = std::variant<, std:, [&]((options: { state: State, { [key: std:]: std: } }) { return std:)>; };
+using TemplateType = std::variant<, std::string, [&]((options: { state: State, { [key: std::string]: std::string } }) { return std::string)>; };
 
 /**
  * Configuration for an agent's character, defining its personality, knowledge, and capabilities.
@@ -41,16 +41,16 @@ using TemplateType = std::variant<, std:, [&]((options: { state: State, { [key: 
  */
 struct Character {
     std::optional<UUID> id;
-    std: name;
-    std::optional<std:> username;
-    std::optional<std:> system;
+    std::string name;
+    std::optional<std::string> username;
+    std::optional<std::string> system;
     std::optional<{> templates;
-    std::vector<std: | string> bio;
+    std::vector<std::string | string> bio;
     std::optional<std::vector<std::vector<MessageExample>>> messageExamples;
     std::optional<std::vector<std::string>> postExamples;
     std::optional<std::vector<std::string>> topics;
     std::optional<std::vector<std::string>> adjectives;
-    std::optional<std::vector<(std: | { path: std:; shared? } | DirectoryItem)>> knowledge;
+    std::optional<std::vector<(std::string | { path: std::string; shared? } | DirectoryItem)>> knowledge;
     std::optional<std::vector<std::string>> plugins;
     std::optional<{> settings;
     std::optional<{> secrets;

@@ -1,10 +1,11 @@
 #include "character.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-CharacterValidationResult validateCharacter(const std:& data) {
+CharacterValidationResult validateCharacter(const std::string& data) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto result = characterSchema.safeParse(data);
@@ -26,7 +27,7 @@ CharacterValidationResult validateCharacter(const std:& data) {
 
 }
 
-CharacterValidationResult parseAndValidateCharacter(const std:& jsonString) {
+CharacterValidationResult parseAndValidateCharacter(const std::string& jsonString) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -43,7 +44,7 @@ CharacterValidationResult parseAndValidateCharacter(const std:& jsonString) {
 
 }
 
-data is Character isValidCharacter(const std:& data) {
+data is Character isValidCharacter(const std::string& data) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return validateCharacter(data).success;

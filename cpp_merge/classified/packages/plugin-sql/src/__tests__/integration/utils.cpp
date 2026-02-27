@@ -1,8 +1,9 @@
 #include "utils.test.h"
+#include <string>
 
 void Main(void)
 {
-    describe(std:("Utils Integration Tests"), [=]() mutable
+    describe(std::string("Utils Integration Tests"), [=]() mutable
     {
         shared<std::shared_ptr<NodeJS::ProcessEnv>> originalEnv;
         shared<std::function<string()>> originalCwd;
@@ -12,7 +13,7 @@ void Main(void)
             originalEnv = utils::assign(object{
             }, process->env);
             originalCwd = process->cwd;
-            tempDir = fs->mkdtempSync(path->join(os->tmpdir(), std:("utils-test-")));
+            tempDir = fs->mkdtempSync(path->join(os->tmpdir(), std::string("utils-test-")));
             process->cwd = [=]() mutable
             {
                 return tempDir;
@@ -25,133 +26,133 @@ void Main(void)
             process->cwd = originalCwd;
             if (fs->existsSync(tempDir)) {
                 fs->rmSync(tempDir, object{
-                    object::pair{std:("recursive"), true}, 
-                    object::pair{std:("force"), true}
+                    object::pair{std::string("recursive"), true}, 
+                    object::pair{std::string("force"), true}
                 });
             }
         }
         );
-        describe(std:("expandTildePath"), [=]() mutable
+        describe(std::string("expandTildePath"), [=]() mutable
         {
-            it(std:("should expand ~ to current working directory"), [=]() mutable
+            it(std::string("should expand ~ to current working directory"), [=]() mutable
             {
-                auto result = expandTildePath(std:("~/test/path"));
-                expect(result)->toBe(path->join(tempDir, std:("test/path")));
+                auto result = expandTildePath(std::string("~/test/path"));
+                expect(result)->toBe(path->join(tempDir, std::string("test/path")));
             }
             );
-            it(std:("should not change paths without ~"), [=]() mutable
+            it(std::string("should not change paths without ~"), [=]() mutable
             {
-                auto absolutePath = std:("/absolute/path");
+                auto absolutePath = std::string("/absolute/path");
                 expect(expandTildePath(absolutePath))->toBe(absolutePath);
-                auto relativePath = std:("relative/path");
+                auto relativePath = std::string("relative/path");
                 expect(expandTildePath(relativePath))->toBe(relativePath);
             }
             );
-            it(std:("should handle just ~ alone"), [=]() mutable
+            it(std::string("should handle just ~ alone"), [=]() mutable
             {
-                auto result = expandTildePath(std:("~"));
+                auto result = expandTildePath(std::string("~"));
                 expect(result)->toBe(tempDir);
             }
             );
-            it(std:("should handle empty string"), [=]() mutable
+            it(std::string("should handle empty string"), [=]() mutable
             {
                 expect(expandTildePath(string_empty))->toBe(string_empty);
             }
             );
         }
         );
-        describe(std:("resolveEnvFile"), [=]() mutable
+        describe(std::string("resolveEnvFile"), [=]() mutable
         {
-            it(std:("should find .env in current directory"), [=]() mutable
+            it(std::string("should find .env in current directory"), [=]() mutable
             {
-                fs->writeFileSync(path->join(tempDir, std:(".env")), std:("TEST=true"));
+                fs->writeFileSync(path->join(tempDir, std::string(".env")), std::string("TEST=true"));
                 auto result = resolveEnvFile(tempDir);
-                expect(result)->toBe(path->join(tempDir, std:(".env")));
+                expect(result)->toBe(path->join(tempDir, std::string(".env")));
             }
             );
-            it(std:("should traverse up directories to find .env"), [=]() mutable
+            it(std::string("should traverse up directories to find .env"), [=]() mutable
             {
-                auto subDir = path->join(tempDir, std:("sub"), std:("nested"));
+                auto subDir = path->join(tempDir, std::string("sub"), std::string("nested"));
                 fs->mkdirSync(subDir, object{
-                    object::pair{std:("recursive"), true}
+                    object::pair{std::string("recursive"), true}
                 });
-                fs->writeFileSync(path->join(tempDir, std:(".env")), std:("TEST=true"));
+                fs->writeFileSync(path->join(tempDir, std::string(".env")), std::string("TEST=true"));
                 auto result = resolveEnvFile(subDir);
-                expect(result)->toBe(path->join(tempDir, std:(".env")));
+                expect(result)->toBe(path->join(tempDir, std::string(".env")));
             }
             );
-            it(std:("should return .env path in start directory if not found"), [=]() mutable
+            it(std::string("should return .env path in start directory if not found"), [=]() mutable
             {
-                auto subDir = path->join(tempDir, std:("sub"));
+                auto subDir = path->join(tempDir, std::string("sub"));
                 fs->mkdirSync(subDir, object{
-                    object::pair{std:("recursive"), true}
+                    object::pair{std::string("recursive"), true}
                 });
                 auto result = resolveEnvFile(subDir);
-                expect(result)->toBe(path->join(subDir, std:(".env")));
+                expect(result)->toBe(path->join(subDir, std::string(".env")));
             }
             );
-            it(std:("should use current working directory if no startDir provided"), [=]() mutable
+            it(std::string("should use current working directory if no startDir provided"), [=]() mutable
             {
                 auto result = resolveEnvFile();
-                expect(result)->toBe(path->join(tempDir, std:(".env")));
+                expect(result)->toBe(path->join(tempDir, std::string(".env")));
             }
             );
         }
         );
-        describe(std:("resolvePgliteDir"), [=]() mutable
+        describe(std::string("resolvePgliteDir"), [=]() mutable
         {
-            it(std:("should use provided dir argument"), [=]() mutable
+            it(std::string("should use provided dir argument"), [=]() mutable
             {
-                auto customDir = std:("/custom/dir");
+                auto customDir = std::string("/custom/dir");
                 auto result = resolvePgliteDir(customDir);
                 expect(result)->toBe(customDir);
             }
             );
-            it(std:("should use PGLITE_DATA_DIR environment variable"), [=]() mutable
+            it(std::string("should use PGLITE_DATA_DIR environment variable"), [=]() mutable
             {
-                auto envDir = std:("/env/dir");
+                auto envDir = std::string("/env/dir");
                 process->env->PGLITE_DATA_DIR = envDir;
                 auto result = resolvePgliteDir();
                 expect(result)->toBe(envDir);
             }
             );
-            it(std:("should use fallback dir when no dir or env var"), [=]() mutable
+            it(std::string("should use fallback dir when no dir or env var"), [=]() mutable
             {
                 process->env.Delete("PGLITE_DATA_DIR");
-                auto fallbackDir = std:("/fallback/dir");
-                auto result = resolvePgliteDir(undefined, fallbackDir);
+                auto fallbackDir = std::string("/fallback/dir");
+                auto result = resolvePgliteDir(std::nullopt, fallbackDir);
                 expect(result)->toBe(fallbackDir);
             }
             );
-            it(std:("should use default path when no arguments or env var"), [=]() mutable
+            it(std::string("should use default path when no arguments or env var"), [=]() mutable
             {
                 process->env.Delete("PGLITE_DATA_DIR");
                 auto result = resolvePgliteDir();
-                expect(result)->toBe(path->join(tempDir, std:(".eliza"), std:(".elizadb")));
+                expect(result)->toBe(path->join(tempDir, std::string(".eliza"), std::string(".elizadb")));
             }
             );
-            it(std:("should load .env file if it exists"), [=]() mutable
+            it(std::string("should load .env file if it exists"), [=]() mutable
             {
-                fs->writeFileSync(path->join(tempDir, std:(".env")), std:("PGLITE_DATA_DIR=/from/env/file"));
-                process->env->PGLITE_DATA_DIR = std:("/from/env/file");
+                fs->writeFileSync(path->join(tempDir, std::string(".env")), std::string("PGLITE_DATA_DIR=/from/env/file"));
+                process->env->PGLITE_DATA_DIR = std::string("/from/env/file");
                 auto result = resolvePgliteDir();
-                expect(process->env->PGLITE_DATA_DIR)->toBe(as<any>(std:("/from/env/file")));
-                expect(result)->toBe(as<any>(std:("/from/env/file")));
+                expect(process->env->PGLITE_DATA_DIR)->toBe(as<any>(std::string("/from/env/file")));
+                expect(result)->toBe(as<any>(std::string("/from/env/file")));
                 process->env.Delete("PGLITE_DATA_DIR");
             }
             );
-            it(std:("should expand tilde paths"), [=]() mutable
+            it(std::string("should expand tilde paths"), [=]() mutable
             {
-                auto result = resolvePgliteDir(std:("~/data/pglite"));
-                expect(result)->toBe(path->join(tempDir, std:("data/pglite")));
+                auto result = resolvePgliteDir(std::string("~/data/pglite"));
+                expect(result)->toBe(path->join(tempDir, std::string("data/pglite")));
             }
             );
-            it(std:("should migrate legacy path to new location"), [=]() mutable
+            it(std::string("should migrate legacy path to new location"), [=]() mutable
             {
-                auto legacyPath = path->join(tempDir, std:(".elizadb"));
+                auto legacyPath = path->join(tempDir, std::string(".elizadb"));
                 auto result = resolvePgliteDir(legacyPath);
-                expect(result)->toBe(path->join(tempDir, std:(".eliza"), std:(".elizadb")));
-                expect(process->env->PGLITE_DATA_DIR)->toBe(path->join(tempDir, std:(".eliza"), std:(".elizadb")));
+                expect(result)->toBe(path->join(tempDir, std::string(".eliza"), std::string(".elizadb")));
+                expect(process->env->PGLITE_DATA_DIR)->toBe(path->join(tempDir, std::string(".eliza"), std::string(".elizadb")));
             }
             );
         }

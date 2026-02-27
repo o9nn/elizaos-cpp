@@ -1,10 +1,11 @@
 #include "getTokenPriceChart.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std: formatMarketCap(double value) {
+std::string formatMarketCap(double value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (value >= 1000000000) return "" + std::to_string((value / 1000000000).toFixed(2)) + "B";

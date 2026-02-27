@@ -15,7 +15,7 @@ namespace elizaos {
 
 
 struct ConnectionErrorBannerProps {
-    std::optional<std:> className;
+    std::optional<std::string> className;
 };
 
 void ConnectionErrorBanner(ConnectionErrorBannerProps { className });

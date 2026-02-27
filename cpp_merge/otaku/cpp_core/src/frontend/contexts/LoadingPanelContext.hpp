@@ -16,16 +16,16 @@ namespace elizaos {
 struct LoadingPanelState {
     bool isVisible;
     'loading' | 'success' | 'error' type;
-    std: title;
-    std::vector<std: | string> messages;
-    std: | null; // Track which component is showing the panel id;
+    std::string title;
+    std::vector<std::string | string> messages;
+    std::string | null; // Track which component is showing the panel id;
 };
 
 struct LoadingPanelContextType {
-    [&](title: std:, messages: std: | std:[], id?: std:) { return void showLoading; };
-    [&](title: std:, messages: std: | std:[], id?: std:, autoClose?) { return void showSuccess; };
-    [&](title: std:, messages: std: | std:[], id?: std:) { return void showError; };
-    [&](id?: std:) { return void hide; };
+    [&](title: std::string, messages: std::string | std::string[], id?: std::string) { return void showLoading; };
+    [&](title: std::string, messages: std::string | std::string[], id?: std::string, autoClose?) { return void showSuccess; };
+    [&](title: std::string, messages: std::string | std::string[], id?: std::string) { return void showError; };
+    [&](id?: std::string) { return void hide; };
     bool isVisible;
 };
 

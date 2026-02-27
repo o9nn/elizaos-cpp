@@ -1,40 +1,41 @@
 #include "walk_randomly.hpp"
+#include <string>
 
 double RANDOM_WALK_DEFAULT_INTERVAL = 4000;
 double RANDOM_WALK_DEFAULT_MAX_DISTANCE = 30;
 std::shared_ptr<Action> hyperfyWalkRandomlyAction = object{
-    object::pair{std:("name"), std:("HYPERFY_WALK_RANDOMLY")}, 
-    object::pair{std:("similes"), array<string>{ std:("WANDER"), std:("PACE_AROUND"), std:("WALK_AROUND"), std:("MOVE_RANDOMLY") }}, 
-    object::pair{std:("description"), std:("Makes your character wander to random points nearby; use for idle behavior or ambient movement.")}, 
-    object::pair{std:("validate"), [=](auto runtime) mutable
+    object::pair{std::string("name"), std::string("HYPERFY_WALK_RANDOMLY")}, 
+    object::pair{std::string("similes"), array<string>{ std::string("WANDER"), std::string("PACE_AROUND"), std::string("WALK_AROUND"), std::string("MOVE_RANDOMLY") }}, 
+    object::pair{std::string("description"), std::string("Makes your character wander to random points nearby; use for idle behavior or ambient movement.")}, 
+    object::pair{std::string("validate"), [=](auto runtime) mutable
     {
         auto service = runtime->getService<std::shared_ptr<HyperfyService>>(HyperfyService::serviceType);
         return AND((AND((!!service), (service->isConnected()))), (!!service->getWorld()->controls));
     }
     }, 
-    object::pair{std:("handler"), [=](auto runtime, auto _message, auto _state, auto options, auto callback) mutable
+    object::pair{std::string("handler"), [=](auto runtime, auto _message, auto _state, auto options, auto callback) mutable
     {
         auto service = runtime->getService<std::shared_ptr<HyperfyService>>(HyperfyService::serviceType);
         auto world = service->getWorld();
         auto controls = as<any>(world->controls);
         if (OR((OR((!service), (!world))), (!controls))) {
-            logger->error(std:("Hyperfy service, world, or controls not found for HYPERFY_WALK_RANDOMLY action."));
+            logger->error(std::string("Hyperfy service, world, or controls not found for HYPERFY_WALK_RANDOMLY action."));
             std::async([=]() { callback(object{
-                object::pair{std:("text"), std:("Error: Cannot wander. Hyperfy connection/controls unavailable.")}
+                object::pair{std::string("text"), std::string("Error: Cannot wander. Hyperfy connection/controls unavailable.")}
             }); });
             return std::shared_ptr<Promise<void>>();
         }
-        if (OR((type_of(std::bind(&AgentControls::startRandomWalk, controls, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)) != std:("function")), (type_of(std::bind(&AgentControls::stopRandomWalk, controls)) != std:("function")))) {
-            logger->error(std:("AgentControls missing startRandomWalk or stopRandomWalk methods."));
+        if (OR((type_of(std::bind(&AgentControls::startRandomWalk, controls, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)) != std::string("function")), (type_of(std::bind(&AgentControls::stopRandomWalk, controls)) != std::string("function")))) {
+            logger->error(std::string("AgentControls missing startRandomWalk or stopRandomWalk methods."));
             std::async([=]() { callback(object{
-                object::pair{std:("text"), std:("Error: Wander functionality not available in controls.")}
+                object::pair{std::string("text"), std::string("Error: Wander functionality not available in controls.")}
             }); });
             return std::shared_ptr<Promise<void>>();
         }
-        auto command = OR((options["command"]), (std:("start")));
+        auto command = OR((options["command"]), (std::string("start")));
         auto intervalMs = (options["interval"]) ? any(options["interval"] * 1000) (RANDOM_WALK_DEFAULT_INTERVAL);
         auto maxDistance = OR((options["distance"]), (RANDOM_WALK_DEFAULT_MAX_DISTANCE));
-        if (command == std:("stop")) {
+        if (command == std::string("stop")) {
             if (controls->getIsWalkingRandomly()) {
                 controls->stopRandomWalk();
             } else {
@@ -42,53 +43,53 @@ std::shared_ptr<Action> hyperfyWalkRandomlyAction = object{
         } else {
             controls->startRandomWalk(intervalMs, maxDistance);
             std::async([=]() { callback(object{
-                object::pair{std:("text"), string_empty}, 
-                object::pair{std:("actions"), array<string>{ std:("HYPERFY_WALK_RANDOMLY") }}, 
-                object::pair{std:("source"), std:("hyperfy")}, 
-                object::pair{std:("metadata"), object{
-                    object::pair{std:("status"), std:("started")}, 
-                    object::pair{std:("intervalMs"), intervalMs}, 
-                    object::pair{std:("maxDistance"), maxDistance}
+                object::pair{std::string("text"), string_empty}, 
+                object::pair{std::string("actions"), array<string>{ std::string("HYPERFY_WALK_RANDOMLY") }}, 
+                object::pair{std::string("source"), std::string("hyperfy")}, 
+                object::pair{std::string("metadata"), object{
+                    object::pair{std::string("status"), std::string("started")}, 
+                    object::pair{std::string("intervalMs"), intervalMs}, 
+                    object::pair{std::string("maxDistance"), maxDistance}
                 }}
             }); });
         }
     }
     }, 
-    object::pair{std:("examples"), array<array<any>>{ array<object>{ object{
-        object::pair{std:("name"), std:("{{name1}}")}, 
-        object::pair{std:("content"), object{
-            object::pair{std:("text"), std:("Wander around for a bit.")}
+    object::pair{std::string("examples"), array<array<any>>{ array<object>{ object{
+        object::pair{std::string("name"), std::string("{{name1}}")}, 
+        object::pair{std::string("content"), object{
+            object::pair{std::string("text"), std::string("Wander around for a bit.")}
         }}
     }, object{
-        object::pair{std:("name"), std:("{{name2}}")}, 
-        object::pair{std:("content"), object{
-            object::pair{std:("text"), std:("Starting to wander randomly... (New target every ~5.0s)")}, 
-            object::pair{std:("actions"), array<string>{ std:("HYPERFY_WALK_RANDOMLY") }}, 
-            object::pair{std:("source"), std:("hyperfy")}
+        object::pair{std::string("name"), std::string("{{name2}}")}, 
+        object::pair{std::string("content"), object{
+            object::pair{std::string("text"), std::string("Starting to wander randomly... (New target every ~5.0s)")}, 
+            object::pair{std::string("actions"), array<string>{ std::string("HYPERFY_WALK_RANDOMLY") }}, 
+            object::pair{std::string("source"), std::string("hyperfy")}
         }}
     } }, array<object>{ object{
-        object::pair{std:("name"), std:("{{name1}}")}, 
-        object::pair{std:("content"), object{
-            object::pair{std:("text"), std:("Just pace around here.")}
+        object::pair{std::string("name"), std::string("{{name1}}")}, 
+        object::pair{std::string("content"), object{
+            object::pair{std::string("text"), std::string("Just pace around here.")}
         }}
     }, object{
-        object::pair{std:("name"), std:("{{name2}}")}, 
-        object::pair{std:("content"), object{
-            object::pair{std:("text"), std:("Starting to wander randomly... (New target every ~5.0s)")}, 
-            object::pair{std:("actions"), array<string>{ std:("HYPERFY_WALK_RANDOMLY") }}, 
-            object::pair{std:("source"), std:("hyperfy")}
+        object::pair{std::string("name"), std::string("{{name2}}")}, 
+        object::pair{std::string("content"), object{
+            object::pair{std::string("text"), std::string("Starting to wander randomly... (New target every ~5.0s)")}, 
+            object::pair{std::string("actions"), array<string>{ std::string("HYPERFY_WALK_RANDOMLY") }}, 
+            object::pair{std::string("source"), std::string("hyperfy")}
         }}
     } }, array<object>{ object{
-        object::pair{std:("name"), std:("{{name1}}")}, 
-        object::pair{std:("content"), object{
-            object::pair{std:("text"), std:("Stop wandering.")}
+        object::pair{std::string("name"), std::string("{{name1}}")}, 
+        object::pair{std::string("content"), object{
+            object::pair{std::string("text"), std::string("Stop wandering.")}
         }}
     }, object{
-        object::pair{std:("name"), std:("{{name2}}")}, 
-        object::pair{std:("content"), object{
-            object::pair{std:("text"), std:("Stopped wandering.")}, 
-            object::pair{std:("actions"), array<string>{ std:("HYPERFY_WALK_RANDOMLY") }}, 
-            object::pair{std:("source"), std:("hyperfy")}
+        object::pair{std::string("name"), std::string("{{name2}}")}, 
+        object::pair{std::string("content"), object{
+            object::pair{std::string("text"), std::string("Stopped wandering.")}, 
+            object::pair{std::string("actions"), array<string>{ std::string("HYPERFY_WALK_RANDOMLY") }}, 
+            object::pair{std::string("source"), std::string("hyperfy")}
         }}
     } } }}
 };

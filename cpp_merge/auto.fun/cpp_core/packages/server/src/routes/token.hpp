@@ -41,7 +41,7 @@ namespace elizaos {
  // Import the S3 uploader
 
 // --- Validation Function ---
-std::future<void> validateQueryResults(std::optional<{ hideImported; status: std: }> params, Token[] | null | undefined results, std::optional<{ mainQuerySql: std: } // Optional parameter for SQL string> sqlStrings);
+std::future<void> validateQueryResults(std::optional<{ hideImported; status: std::string }> params, Token[] | null | std::nullopt results, std::optional<{ mainQuerySql: std::string } // Optional parameter for SQL string> sqlStrings);
 
 // --- Build Base Query (Filters) ---
 // Adjust DB type if needed
@@ -88,10 +88,10 @@ std::future<void> validateQueryResults(std::optional<{ hideImported; status: std
 
     // Use the shared S3 client getter
 
-std::future<void> processSwapEvent(const std:& swap, boolean = true shouldEmitGlobal);
+std::future<void> processSwapEvent(const std::string& swap, boolean = true shouldEmitGlobal);
 
 // Helper std::function to process token info after finding it on a network
-std::future<void> processTokenInfo(PublicKey mintPublicKey, AccountInfo<Buffer> tokenInfo, Connection connection, const std:& requestor);
+std::future<void> processTokenInfo(PublicKey mintPublicKey, AccountInfo<Buffer> tokenInfo, Connection connection, const std::string& requestor);
 
 // Helper to check token balance directly on blockchain
 
@@ -150,7 +150,7 @@ std::future<void> processTokenInfo(PublicKey mintPublicKey, AccountInfo<Buffer> 
       // for both imported and newly created tokens
 
           // Fetch historical data in the background
-          // Merge std: immediately available market data
+          // Merge std::string immediately available market data
           // Continue even if webhook registration fails, especially locally
 
       // For non-imported tokens, generate additional images in the background

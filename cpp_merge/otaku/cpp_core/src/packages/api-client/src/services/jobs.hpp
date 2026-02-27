@@ -35,7 +35,7 @@ namespace elizaos {
  * console.log('Agent response:', result.job.(result ? result.message.content : nullptr));
  * """
  */
-class JobsService extends BaseApiClient {
+class JobsService : public BaseApiClient {
     /**
      * Create a new job (one-off message to agent)
      *

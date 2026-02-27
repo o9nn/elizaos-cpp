@@ -1,73 +1,74 @@
 #include "installPluginFromRegistry.test.h"
+#include <string>
 
 void Main(void)
 {
-    describe(std:("installPluginFromRegistry"), [=]() mutable
+    describe(std::string("installPluginFromRegistry"), [=]() mutable
     {
         shared<std::shared_ptr<IAgentRuntime>> mockRuntime;
         shared<std::shared_ptr<PluginManagerService>> mockPluginManager;
         beforeEach([=]() mutable
         {
             mockPluginManager = as<any>(object{
-                object::pair{std:("installPluginFromRegistry"), vi->fn()}
+                object::pair{std::string("installPluginFromRegistry"), vi->fn()}
             });
             mockRuntime = as<any>(object{
-                object::pair{std:("getService"), vi->fn()->mockReturnValue(mockPluginManager)}, 
-                object::pair{std:("getSetting"), vi->fn()}, 
-                object::pair{std:("services"), object{
-                    object::pair{std:("get"), vi->fn()->mockReturnValue(mockPluginManager)}
+                object::pair{std::string("getService"), vi->fn()->mockReturnValue(mockPluginManager)}, 
+                object::pair{std::string("getSetting"), vi->fn()}, 
+                object::pair{std::string("services"), object{
+                    object::pair{std::string("get"), vi->fn()->mockReturnValue(mockPluginManager)}
                 }}
             });
         }
         );
-        describe(std:("metadata"), [=]() mutable
+        describe(std::string("metadata"), [=]() mutable
         {
-            it(std:("should have correct action metadata"), [=]() mutable
+            it(std::string("should have correct action metadata"), [=]() mutable
             {
-                expect(installPluginFromRegistryAction->name)->toBe(std:("installPluginFromRegistry"));
-                expect(installPluginFromRegistryAction->similes)->toContain(std:("install plugin from registry"));
-                expect(installPluginFromRegistryAction->description)->toBe(std:("Install a plugin from the ElizaOS plugin registry"));
+                expect(installPluginFromRegistryAction->name)->toBe(std::string("installPluginFromRegistry"));
+                expect(installPluginFromRegistryAction->similes)->toContain(std::string("install plugin from registry"));
+                expect(installPluginFromRegistryAction->description)->toBe(std::string("Install a plugin from the ElizaOS plugin registry"));
                 expect(installPluginFromRegistryAction->validate)->toBeDefined();
                 expect(installPluginFromRegistryAction->handler)->toBeDefined();
             }
             );
-            it(std:("should have similes defined"), [=]() mutable
+            it(std::string("should have similes defined"), [=]() mutable
             {
                 expect(installPluginFromRegistryAction->similes)->toBeDefined();
                 expect(Array->isArray(installPluginFromRegistryAction->similes))->toBe(true);
-                expect(installPluginFromRegistryAction->similes)->toContain(std:("install plugin from registry"));
-                expect(installPluginFromRegistryAction->similes)->toContain(std:("add plugin from registry"));
+                expect(installPluginFromRegistryAction->similes)->toContain(std::string("install plugin from registry"));
+                expect(installPluginFromRegistryAction->similes)->toContain(std::string("add plugin from registry"));
             }
             );
         }
         );
-        describe(std:("validate"), [=]() mutable
+        describe(std::string("validate"), [=]() mutable
         {
-            it(std:("should validate when plugin manager service is available"), [=]() mutable
+            it(std::string("should validate when plugin manager service is available"), [=]() mutable
             {
                 auto mockMessage = object{
-                    object::pair{std:("id"), std:("12345678-1234-1234-1234-123456789012")}, 
-                    object::pair{std:("entityId"), std:("12345678-1234-1234-1234-123456789015")}, 
-                    object::pair{std:("agentId"), std:("12345678-1234-1234-1234-123456789013")}, 
-                    object::pair{std:("roomId"), std:("12345678-1234-1234-1234-123456789014")}, 
-                    object::pair{std:("content"), object{
-                        object::pair{std:("text"), std:("install plugin from registry")}
+                    object::pair{std::string("id"), std::string("12345678-1234-1234-1234-123456789012")}, 
+                    object::pair{std::string("entityId"), std::string("12345678-1234-1234-1234-123456789015")}, 
+                    object::pair{std::string("agentId"), std::string("12345678-1234-1234-1234-123456789013")}, 
+                    object::pair{std::string("roomId"), std::string("12345678-1234-1234-1234-123456789014")}, 
+                    object::pair{std::string("content"), object{
+                        object::pair{std::string("text"), std::string("install plugin from registry")}
                     }}
                 };
                 auto result = std::async([=]() { installPluginFromRegistryAction->validate(mockRuntime, mockMessage); });
                 expect(result)->toBe(true);
             }
             );
-            it(std:("should not validate when plugin manager service is not available"), [=]() mutable
+            it(std::string("should not validate when plugin manager service is not available"), [=]() mutable
             {
                 (as<any>(mockRuntime->getService))["mockReturnValue"](nullptr);
                 auto mockMessage = object{
-                    object::pair{std:("id"), std:("12345678-1234-1234-1234-123456789012")}, 
-                    object::pair{std:("entityId"), std:("12345678-1234-1234-1234-123456789015")}, 
-                    object::pair{std:("agentId"), std:("12345678-1234-1234-1234-123456789013")}, 
-                    object::pair{std:("roomId"), std:("12345678-1234-1234-1234-123456789014")}, 
-                    object::pair{std:("content"), object{
-                        object::pair{std:("text"), std:("install plugin from registry")}
+                    object::pair{std::string("id"), std::string("12345678-1234-1234-1234-123456789012")}, 
+                    object::pair{std::string("entityId"), std::string("12345678-1234-1234-1234-123456789015")}, 
+                    object::pair{std::string("agentId"), std::string("12345678-1234-1234-1234-123456789013")}, 
+                    object::pair{std::string("roomId"), std::string("12345678-1234-1234-1234-123456789014")}, 
+                    object::pair{std::string("content"), object{
+                        object::pair{std::string("text"), std::string("install plugin from registry")}
                     }}
                 };
                 auto result = std::async([=]() { installPluginFromRegistryAction->validate(mockRuntime, mockMessage); });
@@ -76,160 +77,160 @@ void Main(void)
             );
         }
         );
-        describe(std:("handler"), [=]() mutable
+        describe(std::string("handler"), [=]() mutable
         {
             shared message = object{
-                object::pair{std:("id"), std:("12345678-1234-1234-1234-123456789012")}, 
-                object::pair{std:("entityId"), std:("12345678-1234-1234-1234-123456789015")}, 
-                object::pair{std:("agentId"), std:("12345678-1234-1234-1234-123456789013")}, 
-                object::pair{std:("roomId"), std:("12345678-1234-1234-1234-123456789014")}, 
-                object::pair{std:("content"), object{
-                    object::pair{std:("text"), std:("install plugin from registry @elizaos/plugin-example")}
+                object::pair{std::string("id"), std::string("12345678-1234-1234-1234-123456789012")}, 
+                object::pair{std::string("entityId"), std::string("12345678-1234-1234-1234-123456789015")}, 
+                object::pair{std::string("agentId"), std::string("12345678-1234-1234-1234-123456789013")}, 
+                object::pair{std::string("roomId"), std::string("12345678-1234-1234-1234-123456789014")}, 
+                object::pair{std::string("content"), object{
+                    object::pair{std::string("text"), std::string("install plugin from registry @elizaos/plugin-example")}
                 }}
             };
-            it(std:("should extract plugin name from message and install"), [=]() mutable
+            it(std::string("should extract plugin name from message and install"), [=]() mutable
             {
                 (as<any>(std::bind(&PluginManagerService::installPluginFromRegistry, mockPluginManager, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)))["mockResolvedValue"](object{
-                    object::pair{std:("name"), std:("@elizaos/plugin-example")}, 
-                    object::pair{std:("version"), std:("1.0.0")}, 
-                    object::pair{std:("status"), std:("installed")}
+                    object::pair{std::string("name"), std::string("@elizaos/plugin-example")}, 
+                    object::pair{std::string("version"), std::string("1.0.0")}, 
+                    object::pair{std::string("status"), std::string("installed")}
                 });
                 auto mockCallback = vi->fn();
-                std::async([=]() { installPluginFromRegistryAction->handler(mockRuntime, message, undefined, undefined, mockCallback); });
-                expect(std::bind(&PluginManagerService::installPluginFromRegistry, mockPluginManager, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3))->toHaveBeenCalledWith(std:("@elizaos/plugin-example"));
+                std::async([=]() { installPluginFromRegistryAction->handler(mockRuntime, message, std::nullopt, std::nullopt, mockCallback); });
+                expect(std::bind(&PluginManagerService::installPluginFromRegistry, mockPluginManager, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3))->toHaveBeenCalledWith(std::string("@elizaos/plugin-example"));
                 expect(mockCallback)->toHaveBeenCalledWith(object{
-                    object::pair{std:("text"), expect->stringContaining(std:("Successfully installed plugin @elizaos/plugin-example v1.0.0"))}
+                    object::pair{std::string("text"), expect->stringContaining(std::string("Successfully installed plugin @elizaos/plugin-example v1.0.0"))}
                 });
             }
             );
-            it(std:("should handle plugin names without @ prefix"), [=]() mutable
+            it(std::string("should handle plugin names without @ prefix"), [=]() mutable
             {
                 auto testMessage = utils::assign(object{
                     , 
-                    object::pair{std:("content"), object{
-                        object::pair{std:("text"), std:("install plugin-example from registry")}
+                    object::pair{std::string("content"), object{
+                        object::pair{std::string("text"), std::string("install plugin-example from registry")}
                     }}
                 }, message);
                 (as<any>(std::bind(&PluginManagerService::installPluginFromRegistry, mockPluginManager, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)))["mockResolvedValue"](object{
-                    object::pair{std:("name"), std:("plugin-example")}, 
-                    object::pair{std:("version"), std:("1.0.0")}, 
-                    object::pair{std:("status"), std:("installed")}
+                    object::pair{std::string("name"), std::string("plugin-example")}, 
+                    object::pair{std::string("version"), std::string("1.0.0")}, 
+                    object::pair{std::string("status"), std::string("installed")}
                 });
                 auto mockCallback = vi->fn();
-                std::async([=]() { installPluginFromRegistryAction->handler(mockRuntime, testMessage, undefined, undefined, mockCallback); });
-                expect(std::bind(&PluginManagerService::installPluginFromRegistry, mockPluginManager, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3))->toHaveBeenCalledWith(std:("plugin-example"));
+                std::async([=]() { installPluginFromRegistryAction->handler(mockRuntime, testMessage, std::nullopt, std::nullopt, mockCallback); });
+                expect(std::bind(&PluginManagerService::installPluginFromRegistry, mockPluginManager, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3))->toHaveBeenCalledWith(std::string("plugin-example"));
                 expect(mockCallback)->toHaveBeenCalledWith(object{
-                    object::pair{std:("text"), expect->stringContaining(std:("Successfully installed plugin plugin-example v1.0.0"))}
+                    object::pair{std::string("text"), expect->stringContaining(std::string("Successfully installed plugin plugin-example v1.0.0"))}
                 });
             }
             );
-            it(std:("should handle plugin names with version"), [=]() mutable
+            it(std::string("should handle plugin names with version"), [=]() mutable
             {
                 auto testMessage = utils::assign(object{
                     , 
-                    object::pair{std:("content"), object{
-                        object::pair{std:("text"), std:("install @elizaos/plugin-example@1.2.3 from registry")}
+                    object::pair{std::string("content"), object{
+                        object::pair{std::string("text"), std::string("install @elizaos/plugin-example@1.2.3 from registry")}
                     }}
                 }, message);
                 (as<any>(std::bind(&PluginManagerService::installPluginFromRegistry, mockPluginManager, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)))["mockResolvedValue"](object{
-                    object::pair{std:("name"), std:("@elizaos/plugin-example")}, 
-                    object::pair{std:("version"), std:("1.2.3")}, 
-                    object::pair{std:("status"), std:("installed")}
+                    object::pair{std::string("name"), std::string("@elizaos/plugin-example")}, 
+                    object::pair{std::string("version"), std::string("1.2.3")}, 
+                    object::pair{std::string("status"), std::string("installed")}
                 });
                 auto mockCallback = vi->fn();
-                std::async([=]() { installPluginFromRegistryAction->handler(mockRuntime, testMessage, undefined, undefined, mockCallback); });
-                expect(std::bind(&PluginManagerService::installPluginFromRegistry, mockPluginManager, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3))->toHaveBeenCalledWith(std:("@elizaos/plugin-example@1.2.3"));
+                std::async([=]() { installPluginFromRegistryAction->handler(mockRuntime, testMessage, std::nullopt, std::nullopt, mockCallback); });
+                expect(std::bind(&PluginManagerService::installPluginFromRegistry, mockPluginManager, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3))->toHaveBeenCalledWith(std::string("@elizaos/plugin-example@1.2.3"));
                 expect(mockCallback)->toHaveBeenCalledWith(object{
-                    object::pair{std:("text"), expect->stringContaining(std:("Successfully installed plugin @elizaos/plugin-example v1.2.3"))}
+                    object::pair{std::string("text"), expect->stringContaining(std::string("Successfully installed plugin @elizaos/plugin-example v1.2.3"))}
                 });
             }
             );
-            it(std:("should handle plugins that need configuration"), [=]() mutable
+            it(std::string("should handle plugins that need configuration"), [=]() mutable
             {
                 (as<any>(std::bind(&PluginManagerService::installPluginFromRegistry, mockPluginManager, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)))["mockResolvedValue"](object{
-                    object::pair{std:("name"), std:("@elizaos/plugin-example")}, 
-                    object::pair{std:("version"), std:("1.0.0")}, 
-                    object::pair{std:("status"), std:("needs_configuration")}, 
-                    object::pair{std:("requiredEnvVars"), array<object>{ object{
-                        object::pair{std:("name"), std:("API_KEY")}, 
-                        object::pair{std:("description"), std:("API Key for service")}, 
-                        object::pair{std:("sensitive"), true}
+                    object::pair{std::string("name"), std::string("@elizaos/plugin-example")}, 
+                    object::pair{std::string("version"), std::string("1.0.0")}, 
+                    object::pair{std::string("status"), std::string("needs_configuration")}, 
+                    object::pair{std::string("requiredEnvVars"), array<object>{ object{
+                        object::pair{std::string("name"), std::string("API_KEY")}, 
+                        object::pair{std::string("description"), std::string("API Key for service")}, 
+                        object::pair{std::string("sensitive"), true}
                     }, object{
-                        object::pair{std:("name"), std:("API_URL")}, 
-                        object::pair{std:("description"), std:("API endpoint URL")}, 
-                        object::pair{std:("sensitive"), false}
+                        object::pair{std::string("name"), std::string("API_URL")}, 
+                        object::pair{std::string("description"), std::string("API endpoint URL")}, 
+                        object::pair{std::string("sensitive"), false}
                     } }}
                 });
                 auto mockCallback = vi->fn();
-                std::async([=]() { installPluginFromRegistryAction->handler(mockRuntime, message, undefined, undefined, mockCallback); });
+                std::async([=]() { installPluginFromRegistryAction->handler(mockRuntime, message, std::nullopt, std::nullopt, mockCallback); });
                 expect(mockCallback)->toHaveBeenCalledWith(object{
-                    object::pair{std:("text"), expect->stringContaining(std:("Plugin @elizaos/plugin-example has been installed but requires configuration"))}
+                    object::pair{std::string("text"), expect->stringContaining(std::string("Plugin @elizaos/plugin-example has been installed but requires configuration"))}
                 });
                 auto callArg = const_(const_((as<any>(mockCallback))["mock"]["calls"])[0])[0]["text"];
-                expect(callArg)->toContain(std:("API_KEY: API Key for service (sensitive)"));
-                expect(callArg)->toContain(std:("API_URL: API endpoint URL"));
-                expect(callArg)->toContain(std:("Use "configure plugin" to set up the required environment variables"));
+                expect(callArg)->toContain(std::string("API_KEY: API Key for service (sensitive)"));
+                expect(callArg)->toContain(std::string("API_URL: API endpoint URL"));
+                expect(callArg)->toContain(std::string("Use "configure plugin" to set up the required environment variables"));
             }
             );
-            it(std:("should handle installation errors"), [=]() mutable
+            it(std::string("should handle installation errors"), [=]() mutable
             {
-                (as<any>(std::bind(&PluginManagerService::installPluginFromRegistry, mockPluginManager, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)))["mockRejectedValue"](std::make_shared<Error>(std:("Failed to install plugin")));
+                (as<any>(std::bind(&PluginManagerService::installPluginFromRegistry, mockPluginManager, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)))["mockRejectedValue"](std::make_shared<Error>(std::string("Failed to install plugin")));
                 auto mockCallback = vi->fn();
-                std::async([=]() { expect(installPluginFromRegistryAction->handler(mockRuntime, message, undefined, undefined, mockCallback))->rejects->toThrow(std:("Failed to install plugin")); });
+                std::async([=]() { expect(installPluginFromRegistryAction->handler(mockRuntime, message, std::nullopt, std::nullopt, mockCallback))->rejects->toThrow(std::string("Failed to install plugin")); });
             }
             );
-            it(std:("should handle missing plugin manager service"), [=]() mutable
+            it(std::string("should handle missing plugin manager service"), [=]() mutable
             {
                 (as<any>(mockRuntime->getService))["mockReturnValue"](nullptr);
                 auto mockCallback = vi->fn();
-                std::async([=]() { installPluginFromRegistryAction->handler(mockRuntime, message, undefined, undefined, mockCallback); });
+                std::async([=]() { installPluginFromRegistryAction->handler(mockRuntime, message, std::nullopt, std::nullopt, mockCallback); });
                 expect(mockCallback)->toHaveBeenCalledWith(object{
-                    object::pair{std:("text"), std:("Plugin manager service not available")}
+                    object::pair{std::string("text"), std::string("Plugin manager service not available")}
                 });
             }
             );
-            it(std:("should handle missing plugin name"), [=]() mutable
+            it(std::string("should handle missing plugin name"), [=]() mutable
             {
                 auto testMessage = utils::assign(object{
                     , 
-                    object::pair{std:("content"), object{
-                        object::pair{std:("text"), std:("install from registry")}
+                    object::pair{std::string("content"), object{
+                        object::pair{std::string("text"), std::string("install from registry")}
                     }}
                 }, message);
                 auto mockCallback = vi->fn();
-                std::async([=]() { installPluginFromRegistryAction->handler(mockRuntime, testMessage, undefined, undefined, mockCallback); });
+                std::async([=]() { installPluginFromRegistryAction->handler(mockRuntime, testMessage, std::nullopt, std::nullopt, mockCallback); });
                 expect(mockCallback)->toHaveBeenCalledWith(object{
-                    object::pair{std:("text"), expect->stringContaining(std:("Please specify a plugin name to install"))}
+                    object::pair{std::string("text"), expect->stringContaining(std::string("Please specify a plugin name to install"))}
                 });
             }
             );
-            it(std:("should handle various command formats"), [=]() mutable
+            it(std::string("should handle various command formats"), [=]() mutable
             {
                 auto commandFormats = array<object>{ object{
-                    object::pair{std:("text"), std:("add plugin @elizaos/test from registry")}, 
-                    object::pair{std:("expected"), std:("@elizaos/test")}
+                    object::pair{std::string("text"), std::string("add plugin @elizaos/test from registry")}, 
+                    object::pair{std::string("expected"), std::string("@elizaos/test")}
                 }, object{
-                    object::pair{std:("text"), std:("download plugin some-plugin")}, 
-                    object::pair{std:("expected"), std:("some-plugin")}
+                    object::pair{std::string("text"), std::string("download plugin some-plugin")}, 
+                    object::pair{std::string("expected"), std::string("some-plugin")}
                 }, object{
-                    object::pair{std:("text"), std:("get plugin test-pkg")}, 
-                    object::pair{std:("expected"), std:("test-pkg")}
+                    object::pair{std::string("text"), std::string("get plugin test-pkg")}, 
+                    object::pair{std::string("expected"), std::string("test-pkg")}
                 } };
                 (as<any>(std::bind(&PluginManagerService::installPluginFromRegistry, mockPluginManager, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3)))["mockResolvedValue"](object{
-                    object::pair{std:("name"), std:("test")}, 
-                    object::pair{std:("version"), std:("1.0.0")}, 
-                    object::pair{std:("status"), std:("installed")}
+                    object::pair{std::string("name"), std::string("test")}, 
+                    object::pair{std::string("version"), std::string("1.0.0")}, 
+                    object::pair{std::string("status"), std::string("installed")}
                 });
                 for (auto& format : commandFormats)
                 {
                     auto testMessage = utils::assign(object{
                         , 
-                        object::pair{std:("content"), object{
-                            object::pair{std:("text"), format["text"]}
+                        object::pair{std::string("content"), object{
+                            object::pair{std::string("text"), format["text"]}
                         }}
                     }, message);
                     auto mockCallback = vi->fn();
-                    std::async([=]() { installPluginFromRegistryAction->handler(mockRuntime, testMessage, undefined, undefined, mockCallback); });
+                    std::async([=]() { installPluginFromRegistryAction->handler(mockRuntime, testMessage, std::nullopt, std::nullopt, mockCallback); });
                     expect(std::bind(&PluginManagerService::installPluginFromRegistry, mockPluginManager, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3))->toHaveBeenCalledWith(format["expected"]);
                 }
             }

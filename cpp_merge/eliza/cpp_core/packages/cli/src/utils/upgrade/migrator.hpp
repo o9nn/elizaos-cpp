@@ -21,14 +21,14 @@ namespace elizaos {
 
 struct MigrationResult {
     bool success;
-    std: branchName;
-    std: repoPath;
+    std::string branchName;
+    std::string repoPath;
     std::optional<Error> error;
 };
 
 struct ProductionValidationResult {
     bool production_ready;
-    std::optional<std:> revision_instructions;
+    std::optional<std::string> revision_instructions;
 };
 
 struct MigratorOptions {
@@ -38,14 +38,15 @@ struct MigratorOptions {
 
 class PluginMigrator {
   private git: SimpleGit;
-  private repoPath: std: | null;
+  private repoPath: std::string | null;
   private anthropic: Anthropic | null;
   private changedFiles: Set<string>;
   private options: MigratorOptions;
-  private lockFilePath: std: | null = null;
-  private activeClaudeProcess: std: = null;
+  private lockFilePath: std::string | null = null;
+private:
+    std::string activeClaudeProcess = null;
 
-  constructor(options: MigratorOptions = {}) {
+  /* constructor */ (options: MigratorOptions = {}) {
     this.git = simpleGit();
     this.repoPath = null;
     this.anthropic = null;
@@ -56,7 +57,7 @@ class PluginMigrator {
     this.registerCleanupHandlers();
   }
 
-      // Kill std: active Claude Code process
+      // Kill std::string active Claude Code process
 
       // Remove lock file
 

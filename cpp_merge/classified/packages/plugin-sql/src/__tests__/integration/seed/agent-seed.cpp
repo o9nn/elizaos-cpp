@@ -1,15 +1,16 @@
 #include "agent-seed.h"
+#include <string>
 
 std::shared_ptr<Agent> testAgent = object{
-    object::pair{std:("name"), std:("Integration Test Agent")}, 
-    object::pair{std:("username"), std:("test_agent")}, 
-    object::pair{std:("bio"), std:("A test agent for integration tests")}, 
-    object::pair{std:("enabled"), true}, 
-    object::pair{std:("settings"), object{
-        object::pair{std:("testSetting"), std:("test value")}
+    object::pair{std::string("name"), std::string("Integration Test Agent")}, 
+    object::pair{std::string("username"), std::string("test_agent")}, 
+    object::pair{std::string("bio"), std::string("A test agent for integration tests")}, 
+    object::pair{std::string("enabled"), true}, 
+    object::pair{std::string("settings"), object{
+        object::pair{std::string("testSetting"), std::string("test value")}
     }}, 
-    object::pair{std:("createdAt"), ((std::make_shared<Date>()))->getTime()}, 
-    object::pair{std:("updatedAt"), ((std::make_shared<Date>()))->getTime()}
+    object::pair{std::string("createdAt"), ((std::make_shared<Date>()))->getTime()}, 
+    object::pair{std::string("updatedAt"), ((std::make_shared<Date>()))->getTime()}
 };
 
 void Main(void)

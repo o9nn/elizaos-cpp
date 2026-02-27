@@ -1,4 +1,5 @@
 #include "index.hpp"
+#include <string>
 #include <map>
 #include <iostream>
 #include <stdexcept>
@@ -23,7 +24,7 @@ void TagIcon() {
 
 }
 
-std: getShortLabel(const std:& label) {
+std::string getShortLabel(const std::string& label) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Convert longer tag names to shorter versions for display consistency

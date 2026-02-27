@@ -21,7 +21,7 @@ namespace elizaos {
 class MessageManager {
   private runtime: IAgentRuntime;
   
-  constructor(runtime: IAgentRuntime) {
+  /* constructor */ (runtime: IAgentRuntime) {
     this.runtime = runtime;
     if (!this.runtime.character.templates) {
       this.runtime.character.templates = {};

@@ -1,11 +1,12 @@
 #include "tee.hpp"
+#include <string>
 #include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-express::Router createTeeRouter(const std::unordered_map<std:, IAgentRuntime>& agents) {
+express::Router createTeeRouter(const std::unordered_map<std::string, IAgentRuntime>& agents) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     //   const router = express.Router();
@@ -70,8 +71,8 @@ express::Router createTeeRouter(const std::unordered_map<std:, IAgentRuntime>& a
     //         entityId: query.entityId || '',
     //         type: query.type || '',
     //         containsContent: query.containsContent || '',
-    //         startTimestamp: query.startTimestamp || undefined,
-    //         endTimestamp: query.endTimestamp || undefined,
+    //         startTimestamp: query.startTimestamp || std::nullopt,
+    //         endTimestamp: query.endTimestamp || std::nullopt,
     //       };
     //       const agentRuntime: IAgentRuntime = agents.values().next().value;
     //       const teeLogService = agentRuntime.getService<ITeeLogService>(ServiceType.TEE);

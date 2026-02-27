@@ -1,4 +1,5 @@
 #include "plugin-utils.hpp"
+#include <string>
 #include <future>
 #include <filesystem>
 #include <optional>
@@ -7,7 +8,7 @@
 
 namespace elizaos {
 
-obj is Plugin isValidPluginShape(const std:& obj) {
+obj is Plugin isValidPluginShape(const std::string& obj) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!obj || typeof obj != 'object' || !obj.name) {
@@ -24,11 +25,11 @@ obj is Plugin isValidPluginShape(const std:& obj) {
 
 }
 
-std::future<std::optional<Plugin>> loadAndPreparePlugin(const std:& pluginName) {
+std::future<std::optional<Plugin>> loadAndPreparePlugin(const std::string& pluginName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto version = getCliInstallTag();
-    auto pluginModule: std:;
+    auto pluginModule: std::string;
     const auto context = detectPluginContext(pluginName);
 
     if (context.isLocalDevelopment) {
@@ -83,11 +84,11 @@ std::future<std::optional<Plugin>> loadAndPreparePlugin(const std:& pluginName) 
 
 }
 
-PluginValidation validatePlugin(const std:& plugin) {
+PluginValidation validatePlugin(const std::string& plugin) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!plugin) {
-        return { isValid: false, error: 'Plugin is null or undefined' }
+        return { isValid: false, error: 'Plugin is null or std::nullopt' }
     }
 
     if (!isValidPluginShape(plugin)) {

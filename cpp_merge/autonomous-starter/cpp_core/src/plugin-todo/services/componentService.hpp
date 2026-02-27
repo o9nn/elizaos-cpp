@@ -19,7 +19,7 @@ namespace elizaos {
  * Component service that provides database-compatible component operations
  */
 class ComponentService {
-  constructor(private runtime: IAgentRuntime) {}
+  /* constructor */ (private runtime: IAgentRuntime) {}
 
   /**
    * Get a component with database-compatible data parsing

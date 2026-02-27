@@ -1,4 +1,5 @@
 #include "page.hpp"
+#include <string>
 #include <vector>
 #include <map>
 #include <iostream>
@@ -21,7 +22,7 @@ void LeaderboardPage() {
                 }
                 try {
                     return gamificationClient.getLeaderboard(agentId, scope, 50, userId);
-                    } catch (err: std:) {
+                    } catch (err: std::string) {
                         std::cerr << "[LeaderboardPage] Error fetching leaderboard:" << err << std::endl;
                         // If 404, return empty data instead of throwing
                         if (err.response.status == 404 || err.status == 404) {
@@ -49,7 +50,7 @@ void LeaderboardPage() {
                         ];
 
                         // Simple hash std::function to deterministically select avatar based on userId
-                        const auto getRandomAvatar = (userId: std:): std: => {;
+                        const auto getRandomAvatar = (userId: std::string): std::string => {;
                             // Use userId as seed for deterministic randomization
                             auto hash = 0;
                             for (int i = 0; i < userId.size(); i++) {
@@ -62,7 +63,7 @@ void LeaderboardPage() {
                             };
 
                             // Check if avatar is the default krimson avatar (early users have this)
-                            const auto isKrimsonAvatar = [&](avatar: std: | std::nullopt) {;
+                            const auto isKrimsonAvatar = [&](avatar: std::string | std::nullopt) {;
                                 if (!avatar) return false;
                                 return (std::find(avatar.begin(), avatar.end(), "user_krimson.png") != avatar.end()) || (std::find(avatar.begin(), avatar.end(), "user_krimson") != avatar.end());
                                 };

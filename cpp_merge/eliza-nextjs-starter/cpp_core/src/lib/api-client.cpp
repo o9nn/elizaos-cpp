@@ -1,4 +1,5 @@
 #include "api-client.hpp"
+#include <string>
 #include <vector>
 #include <map>
 #include <iostream>
@@ -33,7 +34,7 @@ std::vector<ChatMessage> transformMemoriesToChatMessages(const std::vector<Backe
 
             assert(;
             typeof message.name == "string" && message.text != std::nullopt,
-            "[transformMemoriesToChatMessages] Invalid transformed message: " + std::to_string(/* JSON.stringify */ std:(message))
+            "[transformMemoriesToChatMessages] Invalid transformed message: " + std::to_string(/* JSON.stringify */ std::string(message))
             );
 
             return message;

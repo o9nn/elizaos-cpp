@@ -1,4 +1,5 @@
 #include "channels.hpp"
+#include <string>
 #include <future>
 #include <optional>
 #include <map>
@@ -8,9 +9,9 @@
 
 namespace elizaos {
 
-std::future<> saveChannelUploadedFile(Express.Multer.File file, const std:& channelId) {
+std::future<> saveChannelUploadedFile(Express.Multer.File file, const std::string& channelId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    filename: std:; url: std:
+    filename: std::string; url: std::string
 }
 
 express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntime>& agents, AgentServer serverInstance) {
@@ -107,7 +108,7 @@ express::Router createChannelsRouter(const std::unordered_map<UUID, IAgentRuntim
 
                                             logger.info(
                                             "[Messages Router] Creating channel with data:",
-                                            /* JSON.stringify */ std:(channelData, nullptr, 2);
+                                            /* JSON.stringify */ std::string(channelData, nullptr, 2);
                                             );
 
                                             // For DM channels, we need to determine the participants

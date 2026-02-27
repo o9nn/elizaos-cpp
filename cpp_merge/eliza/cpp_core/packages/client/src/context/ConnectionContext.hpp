@@ -19,11 +19,11 @@ namespace elizaos {
 
 // Eliza client refresh functionality removed (not needed with direct client)
 
-using ConnectionStatusType = std::variant<, std:>;
+using ConnectionStatusType = std::variant<, std::string>;
 
 struct ConnectionContextType {
     ConnectionStatusType status;
-    std: error;
+    std::string error;
 };
 
       // Update localStorage if a new API key is provided

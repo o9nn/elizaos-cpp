@@ -1,45 +1,46 @@
 #include "test-utils.h"
+#include <string>
 
 std::shared_ptr<Promise<object>> setupScenario(std::shared_ptr<IAgentRuntime> runtime)
 {
-    assert(runtime->agentId, std:("Runtime must have an agentId to run a scenario"));
+    assert(runtime->agentId, std::string("Runtime must have an agentId to run a scenario"));
     auto user = object{
-        object::pair{std:("id"), asUUID(uuid())}, 
-        object::pair{std:("names"), array<string>{ std:("Test User") }}, 
-        object::pair{std:("agentId"), runtime->agentId}, 
-        object::pair{std:("metadata"), object{
-            object::pair{std:("type"), std:("user")}
+        object::pair{std::string("id"), asUUID(uuid())}, 
+        object::pair{std::string("names"), array<string>{ std::string("Test User") }}, 
+        object::pair{std::string("agentId"), runtime->agentId}, 
+        object::pair{std::string("metadata"), object{
+            object::pair{std::string("type"), std::string("user")}
         }}
     };
     std::async([=]() { runtime->createEntity(user); });
-    assert(user->id, std:("Created user must have an id"));
+    assert(user->id, std::string("Created user must have an id"));
     auto world = object{
-        object::pair{std:("id"), asUUID(uuid())}, 
-        object::pair{std:("agentId"), runtime->agentId}, 
-        object::pair{std:("name"), std:("E2E Test World")}, 
-        object::pair{std:("serverId"), std:("e2e-test-server")}, 
-        object::pair{std:("metadata"), object{
-            object::pair{std:("ownership"), object{
-                object::pair{std:("ownerId"), user->id}
+        object::pair{std::string("id"), asUUID(uuid())}, 
+        object::pair{std::string("agentId"), runtime->agentId}, 
+        object::pair{std::string("name"), std::string("E2E Test World")}, 
+        object::pair{std::string("serverId"), std::string("e2e-test-server")}, 
+        object::pair{std::string("metadata"), object{
+            object::pair{std::string("ownership"), object{
+                object::pair{std::string("ownerId"), user->id}
             }}
         }}
     };
     std::async([=]() { runtime->ensureWorldExists(world); });
     auto room = object{
-        object::pair{std:("id"), asUUID(uuid())}, 
-        object::pair{std:("name"), std:("Test DM Room")}, 
-        object::pair{std:("type"), ChannelType->DM}, 
-        object::pair{std:("source"), std:("e2e-test")}, 
-        object::pair{std:("worldId"), world->id}, 
-        object::pair{std:("serverId"), world->serverId}
+        object::pair{std::string("id"), asUUID(uuid())}, 
+        object::pair{std::string("name"), std::string("Test DM Room")}, 
+        object::pair{std::string("type"), ChannelType->DM}, 
+        object::pair{std::string("source"), std::string("e2e-test")}, 
+        object::pair{std::string("worldId"), world->id}, 
+        object::pair{std::string("serverId"), world->serverId}
     };
     std::async([=]() { runtime->createRoom(room); });
     std::async([=]() { runtime->ensureParticipantInRoom(runtime->agentId, room->id); });
     std::async([=]() { runtime->ensureParticipantInRoom(user->id, room->id); });
     return object{
-        object::pair{std:("user"), std:("user")}, 
-        object::pair{std:("room"), std:("room")}, 
-        object::pair{std:("world"), std:("world")}
+        object::pair{std::string("user"), std::string("user")}, 
+        object::pair{std::string("room"), std::string("room")}, 
+        object::pair{std::string("world"), std::string("world")}
     };
 };
 
@@ -48,26 +49,26 @@ std::shared_ptr<Promise<std::shared_ptr<Content>>> sendMessageAndWaitForResponse
 {
     return std::make_shared<Promise>([=](auto resolve) mutable
     {
-        assert(runtime->agentId, std:("Runtime must have an agentId to send a message"));
-        assert(user->id, std:("User must have an id to send a message"));
+        assert(runtime->agentId, std::string("Runtime must have an agentId to send a message"));
+        assert(user->id, std::string("User must have an id to send a message"));
         auto message = object{
-            object::pair{std:("id"), createUniqueUuid(runtime, string_empty + user->id + std:("-") + Date->now() + string_empty)}, 
-            object::pair{std:("agentId"), runtime->agentId}, 
-            object::pair{std:("entityId"), user->id}, 
-            object::pair{std:("roomId"), room->id}, 
-            object::pair{std:("content"), object{
-                object::pair{std:("text"), std:("text")}
+            object::pair{std::string("id"), createUniqueUuid(runtime, string_empty + user->id + std::string("-") + Date->now() + string_empty)}, 
+            object::pair{std::string("agentId"), runtime->agentId}, 
+            object::pair{std::string("entityId"), user->id}, 
+            object::pair{std::string("roomId"), room->id}, 
+            object::pair{std::string("content"), object{
+                object::pair{std::string("text"), std::string("text")}
             }}, 
-            object::pair{std:("createdAt"), Date->now()}
+            object::pair{std::string("createdAt"), Date->now()}
         };
         auto callback = [=](auto responseContent) mutable
         {
             resolve(responseContent);
         };
         runtime->emitEvent(EventType->MESSAGE_RECEIVED, object{
-            object::pair{std:("runtime"), std:("runtime")}, 
-            object::pair{std:("message"), std:("message")}, 
-            object::pair{std:("callback"), std:("callback")}
+            object::pair{std::string("runtime"), std::string("runtime")}, 
+            object::pair{std::string("message"), std::string("message")}, 
+            object::pair{std::string("callback"), std::string("callback")}
         });
     }
     );

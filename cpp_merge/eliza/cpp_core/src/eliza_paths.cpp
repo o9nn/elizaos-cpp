@@ -1,38 +1,39 @@
 #include "eliza/packages/cli/src/utils/eliza-paths.h"
+#include <string>
 
-std: getElizaBaseDir(std: cwd)
+std::string getElizaBaseDir(std::string cwd)
 {
-    return path->join(cwd, std:(".eliza"));
+    return path->join(cwd, std::string(".eliza"));
 };
 
 
-std: getElizaDbDir(std: cwd)
+std::string getElizaDbDir(std::string cwd)
 {
-    return path->join(getElizaBaseDir(cwd), std:(".elizadb"));
+    return path->join(getElizaBaseDir(cwd), std::string(".elizadb"));
 };
 
 
-std: getElizaDataDir(std: cwd)
+std::string getElizaDataDir(std::string cwd)
 {
-    return path->join(getElizaBaseDir(cwd), std:("data"));
+    return path->join(getElizaBaseDir(cwd), std::string("data"));
 };
 
 
-std: getElizaUploadsDir(std: cwd)
+std::string getElizaUploadsDir(std::string cwd)
 {
-    return path->join(getElizaDataDir(cwd), std:("uploads"));
+    return path->join(getElizaDataDir(cwd), std::string("uploads"));
 };
 
 
-std: getElizaGeneratedDir(std: cwd)
+std::string getElizaGeneratedDir(std::string cwd)
 {
-    return path->join(getElizaDataDir(cwd), std:("generated"));
+    return path->join(getElizaDataDir(cwd), std::string("generated"));
 };
 
 
-std: getElizaCharactersDir(std: cwd)
+std::string getElizaCharactersDir(std::string cwd)
 {
-    return path->join(getElizaDataDir(cwd), std:("characters"));
+    return path->join(getElizaDataDir(cwd), std::string("characters"));
 };
 
 

@@ -21,7 +21,7 @@ namespace elizaos {
  * Detect if an address is a Solana address (Base58 encoded)
  * Solana addresses are case-sensitive and don't start with 0x
  */
-bool isSolanaAddress(const std:& address);
+bool isSolanaAddress(const std::string& address);
 
 /**
  * Convert wallet address to deterministic UUID entity ID
@@ -30,6 +30,6 @@ bool isSolanaAddress(const std:& address);
  * IMPORTANT: EVM addresses are case-insensitive (lowercased for consistency)
  * Solana addresses are case-sensitive (Base58 encoded, preserved as-is)
  */
-std: walletToEntityId(const std:& address);
+std::string walletToEntityId(const std::string& address);
 
 } // namespace elizaos

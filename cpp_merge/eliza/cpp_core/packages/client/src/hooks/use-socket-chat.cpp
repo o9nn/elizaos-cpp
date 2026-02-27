@@ -1,4 +1,5 @@
 #include "use-socket-chat.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -8,17 +9,17 @@ void useSocketChat(auto currentUserId, auto contextId, auto chatType, auto allAg
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto socketIOManager = SocketIOManager.getInstance();
-    const auto animatedMessageIdRef = useRef<std: | nullptr>(nullptr);
-    const auto joinedChannelRef = useRef<std: | nullptr>(nullptr); // Ref to track joined channel;
+    const auto animatedMessageIdRef = useRef<std::string | nullptr>(nullptr);
+    const auto joinedChannelRef = useRef<std::string | nullptr>(nullptr); // Ref to track joined channel;
 
     const auto sendMessage = useCallback[&](;
     std::async (;
-    text: std:,
+    text: std::string,
     serverId: UUID,
-    source: std:,
-    attachments?: std:[],
-    tempMessageId?: std:,
-    metadata?: Record<std:, any>,
+    source: std::string,
+    attachments?: std::string[],
+    tempMessageId?: std::string,
+    metadata?: Record<std::string, any>,
     overrideChannelId?: UUID
     ) {
         const auto channelIdToUse = overrideChannelId || channelId;
@@ -52,7 +53,7 @@ void useSocketChat(auto currentUserId, auto contextId, auto chatType, auto allAg
 
                 useEffect[&](() {
                     if (!channelId || !currentUserId) {
-                        // If channelId becomes undefined (e.g., navigating away), ensure we reset the ref
+                        // If channelId becomes std::nullopt (e.g., navigating away), ensure we reset the ref
                         if (joinedChannelRef.current) {
                             clientLogger.info(;
                             "[useSocketChat] useEffect: channelId is now nullptr/std::nullopt, resetting joinedChannelRef from " + joinedChannelRef.current
@@ -81,7 +82,7 @@ void useSocketChat(auto currentUserId, auto contextId, auto chatType, auto allAg
                         const auto handleMessageBroadcasting = [&](data: MessageBroadcastData) {;
                             clientLogger.info(;
                             "[useSocketChat] Received raw messageBroadcast data:",
-                            /* JSON.stringify */ std:(data);
+                            /* JSON.stringify */ std::string(data);
                             );
                             const auto msgChannelId = data.channelId || data.roomId;
                             if (msgChannelId != channelId) return;
@@ -130,7 +131,7 @@ void useSocketChat(auto currentUserId, auto contextId, auto chatType, auto allAg
                                             // Check if message already exists
                                             const auto messageExists = messages.some[&]((m) { return m.id == data.id); };
                                             if (!messageExists) {
-                                                clientLogger.info("[useSocketChat] Adding new UiMessage:", /* JSON.stringify */ std:(newUiMsg));
+                                                clientLogger.info("[useSocketChat] Adding new UiMessage:", /* JSON.stringify */ std::string(newUiMsg));
                                                 onAddMessage(newUiMsg);
 
                                                 if (isTargetAgent && newUiMsg.id) {

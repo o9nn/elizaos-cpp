@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_SQL_SRC_PG_ADAPTER_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_SQL_SRC_PG_ADAPTER_H
 #include "core.hpp"
+#include <string>
 // External dependency removed
 #include "drizzle-orm/node-postgres.h"
 #include "../base.h"
@@ -17,7 +18,7 @@ public:
 
     std::shared_ptr<PostgresConnectionManager> manager;
 
-    PgDatabaseAdapter(std::shared_ptr<UUID> agentId, std::shared_ptr<PostgresConnectionManager> manager, any _schema = undefined);
+    PgDatabaseAdapter(std::shared_ptr<UUID> agentId, std::shared_ptr<PostgresConnectionManager> manager, any _schema = std::nullopt);
     virtual std::shared_ptr<Promise<void>> runMigrations();
     template <typename T>
     std::shared_ptr<Promise<T>> withDatabase(std::function<std::shared_ptr<Promise<T>>()> operation);
@@ -38,7 +39,7 @@ public:
     virtual std::shared_ptr<Promise<boolean>> updateMemory(any memory);
     virtual std::shared_ptr<Promise<void>> deleteMemory(std::shared_ptr<UUID> memoryId);
     virtual std::shared_ptr<Promise<boolean>> createComponent(std::shared_ptr<Component> component);
-    virtual std::shared_ptr<Promise<any>> getComponent(std::shared_ptr<UUID> entityId, string type, std::shared_ptr<UUID> worldId = undefined, std::shared_ptr<UUID> sourceEntityId = undefined);
+    virtual std::shared_ptr<Promise<any>> getComponent(std::shared_ptr<UUID> entityId, string type, std::shared_ptr<UUID> worldId = std::nullopt, std::shared_ptr<UUID> sourceEntityId = std::nullopt);
     virtual std::shared_ptr<Promise<void>> updateComponent(std::shared_ptr<Component> component);
     virtual std::shared_ptr<Promise<void>> deleteComponent(std::shared_ptr<UUID> componentId);
     PgDatabaseAdapter(std::shared_ptr<UUID> agentId);
@@ -58,7 +59,7 @@ std::shared_ptr<Promise<T>> PgDatabaseAdapter::withDatabase(std::function<std::s
             try
             {
                 auto db = drizzle(as<any>(client), object{
-                    object::pair{std:("schema"), std:("schema")}
+                    object::pair{std::string("schema"), std::string("schema")}
                 });
                 this->db = db;
                 return std::async([=]() { operation(); });

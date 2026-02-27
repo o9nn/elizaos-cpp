@@ -24,9 +24,9 @@ public:
     TavilyService(IAgentRuntime runtime);
     static std::future<TavilyService> start(IAgentRuntime runtime);
     std::future<void> initialize(IAgentRuntime runtime);
-    std: capabilityDescription() const;
+    std::string capabilityDescription() const;
     std::future<void> stop();
-    std::future<SearchResponse> search(const std:& query, std::optional<SearchOptions> options);
+    std::future<SearchResponse> search(const std::string& query, std::optional<SearchOptions> options);
 };
 
 

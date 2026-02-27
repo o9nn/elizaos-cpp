@@ -41,25 +41,25 @@ namespace elizaos {
  * Token metadata from CoinGecko
  */
 struct TokenMetadata {
-    std: symbol;
-    std: name;
-    std: address;
+    std::string symbol;
+    std::string name;
+    std::string address;
     double decimals;
-    std: network;
+    std::string network;
 };
 
 /**
  * CoinGecko API response types
  */
 struct CoinGeckoTokenResponse {
-    std::optional<std:> symbol;
-    std::optional<std:> name;
+    std::optional<std::string> symbol;
+    std::optional<std::string> name;
 };
 
 struct CoinGeckoSearchCoin {
-    std: id;
-    std: symbol;
-    std: name;
+    std::string id;
+    std::string symbol;
+    std::string name;
 };
 
 struct CoinGeckoSearchResponse {
@@ -91,17 +91,17 @@ struct CoinGeckoCoinDetailResponse {
 /**
  * Get CoinGecko platform ID from network name
  */
-std: getPlatformId(const std:& network);
+std::string getPlatformId(const std::string& network);
 
 /**
  * Get cache key for token
  */
-std: getCacheKey(const std:& network, const std:& address);
+std::string getCacheKey(const std::string& network, const std::string& address);
 
 /**
  * Check if cache entry is still valid
  */
-bool isCacheValid(const std:& key);
+bool isCacheValid(const std::string& key);
 
 /**
  * Fetch token metadata from CoinGecko API
@@ -119,7 +119,7 @@ bool isCacheValid(const std:& key);
  * @param network - Network name
  * @returns Token address or null if not found
  */
-std::future<std:> resolveTokenSymbol(const std:& symbol, const std:& network);
+std::future<std::string> resolveTokenSymbol(const std::string& symbol, const std::string& network);
 
 /**
  * Resolve token to address
@@ -128,7 +128,7 @@ std::future<std:> resolveTokenSymbol(const std:& symbol, const std:& network);
  *
  * IMPORTANT: Always validates addresses with CoinGecko to prevent fake/invalid addresses.
  */
-std::future<"0x> resolveTokenToAddress(const std:& token, const std:& network);" | null> {
+std::future<"0x> resolveTokenToAddress(const std::string& token, const std::string& network);" | null> {
 
   // For native tokens
 
@@ -143,7 +143,7 @@ std::future<"0x> resolveTokenToAddress(const std:& token, const std:& network);"
  * @param network - Network name
  * @returns Number of decimals (defaults to 18 if not found)
  */
-std::future<double> getTokenDecimals(const std:& address, const std:& network);
+std::future<double> getTokenDecimals(const std::string& address, const std::string& network);
 
 /**
  * Clear the token metadata cache
@@ -162,12 +162,12 @@ void clearTokenCache();
  * @param symbol - Token symbol (will be converted to lowercase)
  * @param address - Token contract address
  */
-void addHardcodedTokenAddress(const std:& network, const std:& symbol, const std:& address);
+void addHardcodedTokenAddress(const std::string& network, const std::string& symbol, const std::string& address);
 
 /**
  * Get hardcoded token addresses for a network
  */
-std::unordered_map<std:, std:> getHardcodedTokens(const std:& network);
+std::unordered_map<std::string, std::string> getHardcodedTokens(const std::string& network);
 
 
 } // namespace elizaos

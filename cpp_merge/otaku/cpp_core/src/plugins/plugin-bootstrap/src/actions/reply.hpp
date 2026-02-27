@@ -25,7 +25,7 @@ namespace elizaos {
  *
  * @typedef {Object} replyAction
  * @property {string} name - The name of the action ("REPLY").
- * @property {std:[]} similes - An array of similes for the action.
+ * @property {std::string[]} similes - An array of similes for the action.
  * @property {string} description - A description of the action and its usage.
  * @property {Function} validate - An asynchronous std::function for validating the action runtime.
  * @property {Function} handler - An asynchronous std::function for handling the action logic.
@@ -33,7 +33,7 @@ namespace elizaos {
  */
     // Access previous action results from context if available
 
-    // Check if std: responses had providers associated with them
+    // Check if std::string responses had providers associated with them
 
     // Only generate response using LLM if no suitable response was found
 

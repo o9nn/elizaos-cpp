@@ -1,4 +1,5 @@
 #include "x-share.hpp"
+#include <string>
 #include <future>
 #include <cstdlib>
 #include <optional>
@@ -7,13 +8,13 @@
 
 namespace elizaos {
 
-std: getApiUrl() {
+std::string getApiUrl() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (typeof process != "undefined" && std::getenv("NEXT_PUBLIC_API_URL")) {
+    if (typeof process != "std::nullopt" && std::getenv("NEXT_PUBLIC_API_URL")) {
         return std::getenv("NEXT_PUBLIC_API_URL");
     }
-    if (typeof window != "undefined") {
+    if (typeof window != "std::nullopt") {
         return window.location.origin;
     }
     return "";
@@ -23,7 +24,7 @@ std: getApiUrl() {
 std::optional<XCredentials> getXCreds() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (typeof window == "undefined") return null;
+    if (typeof window == "std::nullopt") return null;
     const auto stored = localStorage.getItem(STORAGE_KEY);
     if (!stored) return null;
     return /* JSON::parse */ stored;
@@ -33,15 +34,15 @@ std::optional<XCredentials> getXCreds() {
 void setPendingShare(PendingShare pending) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (typeof window == "undefined") return;
-    localStorage.setItem(PENDING_DEAL_SHARE_KEY, /* JSON.stringify */ std:(pending));
+    if (typeof window == "std::nullopt") return;
+    localStorage.setItem(PENDING_DEAL_SHARE_KEY, /* JSON.stringify */ std::string(pending));
 
 }
 
 void clearPendingShare() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (typeof window == "undefined") return;
+    if (typeof window == "std::nullopt") return;
     localStorage.removeItem(PENDING_DEAL_SHARE_KEY);
 
 }
@@ -51,7 +52,7 @@ bool ensureXAuth(std::optional<PendingShare> pending) {
 
     const auto creds = getXCreds();
     if (creds && creds.oauth1Token && creds.oauth1TokenSecret) return true;
-    if (typeof window == "undefined") return false;
+    if (typeof window == "std::nullopt") return false;
 
     const auto apiUrl = getApiUrl();
     const auto origin =;
@@ -64,9 +65,9 @@ bool ensureXAuth(std::optional<PendingShare> pending) {
 
 }
 
-std::future<> shareOnX(const std:& text, const std:& dataUrl, std::optional<std::optional<XCredentials>> creds) {
+std::future<> shareOnX(const std::string& text, const std::string& dataUrl, std::optional<std::optional<XCredentials>> creds) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    success; tweetId?: std:; tweetUrl?: std:
+    success; tweetId?: std::string; tweetUrl?: std::string
 }
 
 std::future<> resumeFreshAuth() {
@@ -74,7 +75,7 @@ std::future<> resumeFreshAuth() {
     resumed: false
 }
 
-std::future<void> safeText(const std:& r) {
+std::future<void> safeText(const std::string& r) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return r.text();

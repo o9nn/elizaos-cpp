@@ -36,7 +36,7 @@ class ReviewSubmissionImpl implements ReviewSubmission {
   info: AgentInfo;
   modelStats: InstanceStats;
 
-  constructor(data: { trajectory: Trajectory; info: AgentInfo; modelStats: InstanceStats }) {
+  /* constructor */ (data: { trajectory: Trajectory; info: AgentInfo; modelStats: InstanceStats }) {
     this.trajectory = data.trajectory;
     this.info = data.info;
     this.modelStats = data.modelStats;
@@ -56,7 +56,7 @@ struct ReviewerResult {
  */
 struct PreselectorOutput {
     std::vector<double> chosenIdx;
-    std: response;
+    std::string response;
     History messages;
 };
 
@@ -65,7 +65,7 @@ struct PreselectorOutput {
  */
 struct ChooserOutput {
     double chosenIdx;
-    std: response;
+    std::string response;
     std::optional<PreselectorOutput | null> preselectorOutput;
     History messages;
 };
@@ -90,7 +90,7 @@ struct ChooserOutput {
 struct TrajFormatterConfig {
     std::vector<std::string> filter;
     std::vector<std::string> outputFilter;
-    std: itemTemplate;
+    std::string itemTemplate;
     double onlyShowLastNOutput;
 };
 
@@ -98,8 +98,8 @@ struct TrajFormatterConfig {
  * Configuration for reviewer
  */
 struct ReviewerConfig {
-    std: systemTemplate;
-    std: instanceTemplate;
+    std::string systemTemplate;
+    std::string instanceTemplate;
     double failureScorePenalty;
     TrajFormatterConfig trajFormatter;
     double nSample;
@@ -113,9 +113,9 @@ struct ReviewerConfig {
  */
 struct ChooserConfig {
     ModelConfig model;
-    std: systemTemplate;
-    std: instanceTemplate;
-    std: submissionTemplate;
+    std::string systemTemplate;
+    std::string instanceTemplate;
+    std::string submissionTemplate;
     double maxLenSubmission;
     std::optional<PreselectorConfig | null> preselector;
 };
@@ -125,9 +125,9 @@ struct ChooserConfig {
  */
 struct PreselectorConfig {
     ModelConfig model;
-    std: systemTemplate;
-    std: instanceTemplate;
-    std: submissionTemplate;
+    std::string systemTemplate;
+    std::string instanceTemplate;
+    std::string submissionTemplate;
     double maxLenSubmission;
 };
 
@@ -164,20 +164,20 @@ using RetryLoopConfig = std::variant<ScoreRetryLoopConfig, ChooserRetryLoopConfi
 class TrajectoryFormatter {
   private config: TrajFormatterConfig;
 
-  constructor(config: TrajFormatterConfig) {
+  /* constructor */ (config: TrajFormatterConfig) {
     this.config = config;
   }
 
 /**
  * Reviewer implementation
  */
-class Reviewer extends AbstractReviewer {
+class Reviewer : public AbstractReviewer {
   private config: ReviewerConfig;
   private model: AbstractModel;
   private trajFormatter: TrajectoryFormatter;
   private logger: AgentLogger;
 
-  constructor(config: ReviewerConfig, model: AbstractModel) {
+  /* constructor */ (config: ReviewerConfig, model: AbstractModel) {
     super();
     this.config = config;
     this.model = model;
@@ -193,7 +193,7 @@ class Chooser {
   private model: AbstractModel;
   private logger: AgentLogger;
 
-  constructor(config: ChooserConfig) {
+  /* constructor */ (config: ChooserConfig) {
     this.config = config;
     // The model doesn't need tool configuration for reviewer
     // The model doesn't need tool configuration for reviewer
@@ -209,7 +209,7 @@ class Chooser {
 /**
  * Chooser retry loop implementation
  */
-class ChooserRetryLoop extends AbstractRetryLoop {
+class ChooserRetryLoop : public AbstractRetryLoop {
   private config: ChooserRetryLoopConfig;
   private problemStatement: ProblemStatement;
   private chooser: Chooser;
@@ -218,7 +218,7 @@ class ChooserRetryLoop extends AbstractRetryLoop {
   private logger: AgentLogger;
   private chooserOutput: ChooserOutput | null = null;
 
-  constructor(config: ChooserRetryLoopConfig, problemStatement: ProblemStatement) {
+  /* constructor */ (config: ChooserRetryLoopConfig, problemStatement: ProblemStatement) {
     super();
     this.config = config;
     this.problemStatement = problemStatement;
@@ -229,7 +229,7 @@ class ChooserRetryLoop extends AbstractRetryLoop {
 /**
  * Score retry loop implementation
  */
-class ScoreRetryLoop extends AbstractRetryLoop {
+class ScoreRetryLoop : public AbstractRetryLoop {
   private model: AbstractModel;
   private problemStatement: ProblemStatement;
   private reviewer: AbstractReviewer;
@@ -239,7 +239,7 @@ class ScoreRetryLoop extends AbstractRetryLoop {
   private nConsecExitCost = 0;
   private logger: AgentLogger;
 
-  constructor(config: ScoreRetryLoopConfig, problemStatement: ProblemStatement) {
+  /* constructor */ (config: ScoreRetryLoopConfig, problemStatement: ProblemStatement) {
     super();
     this.config = config;
     this.problemStatement = problemStatement;

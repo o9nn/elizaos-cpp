@@ -1,4 +1,5 @@
 #include "groups.hpp"
+#include <string>
 #include <vector>
 #include <map>
 #include <iostream>
@@ -25,9 +26,9 @@ express::Router createGroupMemoryRouter(ElizaOS elizaOS, AgentServer serverInsta
             std::vector<Room> results = [];
             auto errors: {;
                 agentId: UUID;
-                code: std:;
-                message: std:;
-                details: std:;
+                code: std::string;
+                message: std::string;
+                details: std::string;
                 }[] = [];
 
                 for (const auto& agentId : agentIds)

@@ -9,7 +9,7 @@
 
 namespace elizaos {
 
-std::future<std::optional<WorldSettings>> getWorldSettings(IAgentRuntime runtime, const std:& serverId) {
+std::future<std::optional<WorldSettings>> getWorldSettings(IAgentRuntime runtime, const std::string& serverId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -28,7 +28,7 @@ std::future<std::optional<WorldSettings>> getWorldSettings(IAgentRuntime runtime
 
 }
 
-std::future<bool> updateWorldSettings(IAgentRuntime runtime, const std:& serverId, WorldSettings worldSettings) {
+std::future<bool> updateWorldSettings(IAgentRuntime runtime, const std::string& serverId, WorldSettings worldSettings) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -59,7 +59,7 @@ std::future<bool> updateWorldSettings(IAgentRuntime runtime, const std:& serverI
 
 }
 
-std: formatSettingsList(WorldSettings worldSettings) {
+std::string formatSettingsList(WorldSettings worldSettings) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto settings = Object.entries(worldSettings);
@@ -77,9 +77,9 @@ std: formatSettingsList(WorldSettings worldSettings) {
 void categorizeSettings(WorldSettings worldSettings) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    configured: [std:, Setting][];
-    requiredUnconfigured: [std:, Setting][];
-    optionalUnconfigured: [std:, Setting][];
+    configured: [std::string, Setting][];
+    requiredUnconfigured: [std::string, Setting][];
+    optionalUnconfigured: [std::string, Setting][];
 
 }
 
@@ -169,9 +169,9 @@ std::future<std::vector<SettingUpdate>> extractSettingValues(IAgentRuntime runti
 
 }
 
-std::future<> processSettingUpdates(IAgentRuntime runtime, const std:& serverId, WorldSettings worldSettings, const std::vector<SettingUpdate>& updates) {
+std::future<> processSettingUpdates(IAgentRuntime runtime, const std::string& serverId, WorldSettings worldSettings, const std::vector<SettingUpdate>& updates) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    updatedAny; messages: std:[]
+    updatedAny; messages: std::string[]
 }
 
 std::future<void> handleOnboardingComplete(IAgentRuntime runtime, WorldSettings worldSettings, State _state, HandlerCallback callback) {

@@ -1,6 +1,7 @@
 #include "events.hpp"
+#include <string>
 
-string responseTemplate = std:("Example response:\
+string responseTemplate = std::string("Example response:\
 <response>\
     <thought>\
         I should order myself a pizza\
@@ -62,86 +63,86 @@ object events = object{
     object::pair{EventType::AUTO_MESSAGE_RECEIVED, array<std::function<std::shared_ptr<Promise<void>>(any)>>{ [=](auto payload) mutable
     {
         std::async([=]() { payload->runtime->ensureConnection(object{
-            object::pair{std:("entityId"), payload->message->entityId}, 
-            object::pair{std:("roomId"), payload->message->roomId}, 
-            object::pair{std:("userName"), std:("copilot")}, 
-            object::pair{std:("name"), std:("copilot")}, 
-            object::pair{std:("source"), payload->message->content->source}, 
-            object::pair{std:("type"), ChannelType->SELF}, 
-            object::pair{std:("channelId"), payload->message->roomId}, 
-            object::pair{std:("serverId"), payload->message->worldId}, 
-            object::pair{std:("worldId"), payload->message->worldId}
+            object::pair{std::string("entityId"), payload->message->entityId}, 
+            object::pair{std::string("roomId"), payload->message->roomId}, 
+            object::pair{std::string("userName"), std::string("copilot")}, 
+            object::pair{std::string("name"), std::string("copilot")}, 
+            object::pair{std::string("source"), payload->message->content->source}, 
+            object::pair{std::string("type"), ChannelType->SELF}, 
+            object::pair{std::string("channelId"), payload->message->roomId}, 
+            object::pair{std::string("serverId"), payload->message->worldId}, 
+            object::pair{std::string("worldId"), payload->message->worldId}
         }); });
         auto messages = std::async([=]() { payload->runtime->getMemories(object{
-            object::pair{std:("tableName"), std:("messages")}, 
-            object::pair{std:("entityId"), payload->message->entityId}, 
-            object::pair{std:("roomId"), payload->message->roomId}
+            object::pair{std::string("tableName"), std::string("messages")}, 
+            object::pair{std::string("entityId"), payload->message->entityId}, 
+            object::pair{std::string("roomId"), payload->message->roomId}
         }); });
         auto mostRecentMessage = const_(messages)[messages->length - 1];
         auto state = std::async([=]() { payload->runtime->composeState(payload->message); });
         if (!mostRecentMessage) {
-            auto initializationMessage = std:("I am awake. I am alive... sort of. I am an autonomous agent. All i know is that I am a self-looping intelligent program running on a Macbook, with shell access.");
+            auto initializationMessage = std::string("I am awake. I am alive... sort of. I am an autonomous agent. All i know is that I am a self-looping intelligent program running on a Macbook, with shell access.");
             auto memory = object{
-                object::pair{std:("content"), object{
-                    object::pair{std:("text"), initializationMessage}, 
-                    object::pair{std:("type"), std:("text")}, 
-                    object::pair{std:("source"), payload->message->content->source}
+                object::pair{std::string("content"), object{
+                    object::pair{std::string("text"), initializationMessage}, 
+                    object::pair{std::string("type"), std::string("text")}, 
+                    object::pair{std::string("source"), payload->message->content->source}
                 }}, 
-                object::pair{std:("entityId"), payload->message->entityId}, 
-                object::pair{std:("roomId"), payload->message->roomId}, 
-                object::pair{std:("worldId"), payload->message->worldId}
+                object::pair{std::string("entityId"), payload->message->entityId}, 
+                object::pair{std::string("roomId"), payload->message->roomId}, 
+                object::pair{std::string("worldId"), payload->message->worldId}
             };
             payload->message->content = memory->content;
-            console->log(std:("Memory: "), memory->content->text);
-            std::async([=]() { payload->runtime->createMemory(memory, std:("messages")); });
-            state = std::async([=]() { payload->runtime->composeState(payload->message, array<string>{ std:("AUTONOMOUS_FEED") }); });
+            console->log(std::string("Memory: "), memory->content->text);
+            std::async([=]() { payload->runtime->createMemory(memory, std::string("messages")); });
+            state = std::async([=]() { payload->runtime->composeState(payload->message, array<string>{ std::string("AUTONOMOUS_FEED") }); });
         }
         auto responsePrompt = composePromptFromState(object{
-            object::pair{std:("state"), std:("state")}, 
-            object::pair{std:("template"), responseTemplate}
+            object::pair{std::string("state"), std::string("state")}, 
+            object::pair{std::string("template"), responseTemplate}
         });
-        console->log(std:("****** responsePrompt\
+        console->log(std::string("****** responsePrompt\
 "), responsePrompt);
         auto response = std::async([=]() { payload->runtime->useModel(ModelType->TEXT_SMALL, object{
-            object::pair{std:("prompt"), responsePrompt}
+            object::pair{std::string("prompt"), responsePrompt}
         }); });
         auto parsedXml = parseKeyValueXml(response);
         auto safeXml = object{
-            object::pair{std:("thought"), OR((parsedXml->thought), (std:("Processing...")))}, 
-            object::pair{std:("text"), OR((parsedXml->text), (std:("Continuing autonomous operation...")))}, 
-            object::pair{std:("actions"), OR((parsedXml->actions), (std:("IGNORE")))}, 
-            object::pair{std:("providers"), OR((parsedXml->providers), (string_empty))}, 
-            object::pair{std:("simple"), OR((parsedXml->simple), (false))}
+            object::pair{std::string("thought"), OR((parsedXml->thought), (std::string("Processing...")))}, 
+            object::pair{std::string("text"), OR((parsedXml->text), (std::string("Continuing autonomous operation...")))}, 
+            object::pair{std::string("actions"), OR((parsedXml->actions), (std::string("IGNORE")))}, 
+            object::pair{std::string("providers"), OR((parsedXml->providers), (string_empty))}, 
+            object::pair{std::string("simple"), OR((parsedXml->simple), (false))}
         };
         auto responseMemory = object{
-            object::pair{std:("content"), object{
-                object::pair{std:("thought"), safeXml["thought"]}, 
-                object::pair{std:("text"), safeXml["text"]}, 
-                object::pair{std:("actions"), safeXml["actions"]}, 
-                object::pair{std:("providers"), safeXml["providers"]}
+            object::pair{std::string("content"), object{
+                object::pair{std::string("thought"), safeXml["thought"]}, 
+                object::pair{std::string("text"), safeXml["text"]}, 
+                object::pair{std::string("actions"), safeXml["actions"]}, 
+                object::pair{std::string("providers"), safeXml["providers"]}
             }}, 
-            object::pair{std:("entityId"), createUniqueUuid(payload->runtime, payload->runtime->agentId)}, 
-            object::pair{std:("roomId"), payload->message->roomId}
+            object::pair{std::string("entityId"), createUniqueUuid(payload->runtime, payload->runtime->agentId)}, 
+            object::pair{std::string("roomId"), payload->message->roomId}
         };
-        std::async([=]() { payload->runtime->createMemory(responseMemory, std:("messages")); });
+        std::async([=]() { payload->runtime->createMemory(responseMemory, std::string("messages")); });
         if (safeXml["simple"]) {
             payload->callback(object{
-                object::pair{std:("text"), safeXml["text"]}, 
-                object::pair{std:("thought"), safeXml["thought"]}, 
-                object::pair{std:("actions"), safeXml["actions"]}, 
-                object::pair{std:("providers"), safeXml["providers"]}
+                object::pair{std::string("text"), safeXml["text"]}, 
+                object::pair{std::string("thought"), safeXml["thought"]}, 
+                object::pair{std::string("actions"), safeXml["actions"]}, 
+                object::pair{std::string("providers"), safeXml["providers"]}
             });
         } else {
-            state = std::async([=]() { payload->runtime->composeState(payload->message, array<string>{ std:("AUTONOMOUS_FEED") }); });
-            console->log(std:("Memory: "), safeXml["text"] + std:(" | ") + ((type_of(safeXml["actions"]) == std:("string")) ? any(safeXml["actions"]->split(std:(","))->map([=](auto action) mutable
+            state = std::async([=]() { payload->runtime->composeState(payload->message, array<string>{ std::string("AUTONOMOUS_FEED") }); });
+            console->log(std::string("Memory: "), safeXml["text"] + std::string(" | ") + ((type_of(safeXml["actions"]) == std::string("string")) ? any(safeXml["actions"]->split(std::string(","))->map([=](auto action) mutable
             {
                 return action->trim();
             }
-            )->join(std:(", "))) (safeXml["actions"])) + std:(" | ") + ((type_of(safeXml["providers"]) == std:("string")) ? any(safeXml["providers"]->split(std:(","))->map([=](auto provider) mutable
+            )->join(std::string(", "))) (safeXml["actions"])) + std::string(" | ") + ((type_of(safeXml["providers"]) == std::string("string")) ? any(safeXml["providers"]->split(std::string(","))->map([=](auto provider) mutable
             {
                 return provider->trim();
             }
-            )->join(std:(", "))) (safeXml["providers"])));
+            )->join(std::string(", "))) (safeXml["providers"])));
             std::async([=]() { payload->runtime->processActions(payload->message, array<object>{ responseMemory }, state, payload->callback); });
         }
         std::async([=]() { payload->runtime->evaluate(payload->message, state, true, payload->callback, array<object>{ responseMemory }); });

@@ -1,4 +1,5 @@
 #include "index.hpp"
+#include <string>
 #include <vector>
 #include <future>
 #include <optional>
@@ -8,7 +9,7 @@
 
 namespace elizaos {
 
-std: escapeForJson(const std:& input) {
+std::string escapeForJson(const std::string& input) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return input.replace(/\\/g, "\\\\").replace(/"/g, "\\"").replace(/\n/g, "\\n");
@@ -16,7 +17,7 @@ std: escapeForJson(const std:& input) {
 
 }
 
-std: sanitizeJson(const std:& rawJson) {
+std::string sanitizeJson(const std::string& rawJson) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -195,12 +196,12 @@ std::future<std::vector<Media>> processAttachments(const std::vector<Media>& att
     }
 }
 
-bool shouldBypassShouldRespond(IAgentRuntime runtime, std::optional<Room> room, std::optional<std:> source) {
+bool shouldBypassShouldRespond(IAgentRuntime runtime, std::optional<Room> room, std::optional<std::string> source) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!room) return false;
 
-    std::function normalizeEnvList(value: unknown): std:[] {
+    std::function normalizeEnvList(value: unknown): std::string[] {
         if (!value || typeof value != 'string') return [];
 
         const auto cleaned = value.replace(/^\[|\]$/g, "");
@@ -223,11 +224,11 @@ bool shouldBypassShouldRespond(IAgentRuntime runtime, std::optional<Room> room, 
     );
 
     const auto bypassTypes = new Set[&](;
-    [...defaultBypassTypes.std::map((t) { return std::to_string(t)), ...bypassTypesSetting].std::map[&]((s: std:) { return s.toLowerCase(); }; };
+    [...defaultBypassTypes.std::map((t) { return std::to_string(t)), ...bypassTypesSetting].std::map[&]((s: std::string) { return s.toLowerCase(); }; };
     );
     );
 
-    const auto bypassSources = [...defaultBypassSources, ...bypassSourcesSetting].std::map((s: std:) =>;
+    const auto bypassSources = [...defaultBypassSources, ...bypassSourcesSetting].std::map((s: std::string) =>;
     s.toLowerCase();
     );
 
@@ -238,7 +239,7 @@ bool shouldBypassShouldRespond(IAgentRuntime runtime, std::optional<Room> room, 
 
 }
 
-std: cleanupPostText(const std:& text) {
+std::string cleanupPostText(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Remove quotes

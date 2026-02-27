@@ -12,29 +12,29 @@ namespace elizaos {
 // Manual refinement required for production use
 
 // Raw registry types
-using RawRegistry = std::unordered_map<std:, std:>; // <npmName> → "github:owner/repo"
+using RawRegistry = std::unordered_map<std::string, std::string>; // <npmName> → "github:owner/repo"
 
 struct VersionInfo {
     std::optional<{> git;
-    std: repo;
+    std::string repo;
     std::optional<{> v0;
-    std: | null version;
-    std: | null branch;
+    std::string | null version;
+    std::string | null branch;
     std::optional<{> v1;
-    std: | null version;
-    std: | null branch;
+    std::string | null version;
+    std::string | null branch;
     std::optional<{> npm;
-    std: repo;
-    std::optional<std: | null> v0;
-    std::optional<std: | null> v1;
+    std::string repo;
+    std::optional<std::string | null> v0;
+    std::optional<std::string | null> v1;
     { supports;
     bool v0;
     bool v1;
 };
 
 struct CachedRegistry {
-    std: lastUpdatedAt;
-    std::unordered_map<std:, VersionInfo> registry;
+    std::string lastUpdatedAt;
+    std::unordered_map<std::string, VersionInfo> registry;
 };
 
 

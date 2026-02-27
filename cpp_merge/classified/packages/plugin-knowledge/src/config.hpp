@@ -7,10 +7,10 @@
 // External dependency removed
 
 extern std::function<boolean(any)> parseBooleanEnv;
-std::shared_ptr<ModelConfig> validateModelConfig(std::shared_ptr<IAgentRuntime> runtime = undefined);
+std::shared_ptr<ModelConfig> validateModelConfig(std::shared_ptr<IAgentRuntime> runtime = std::nullopt);
 
 void validateConfigRequirements(std::shared_ptr<ModelConfig> config, boolean assumePluginOpenAI);
 
-std::shared_ptr<Promise<std::shared_ptr<ProviderRateLimits>>> getProviderRateLimits(std::shared_ptr<IAgentRuntime> runtime = undefined);
+std::shared_ptr<Promise<std::shared_ptr<ProviderRateLimits>>> getProviderRateLimits(std::shared_ptr<IAgentRuntime> runtime = std::nullopt);
 
 #endif

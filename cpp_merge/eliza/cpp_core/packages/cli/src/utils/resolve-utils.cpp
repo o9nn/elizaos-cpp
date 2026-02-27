@@ -1,4 +1,5 @@
 #include "resolve-utils.hpp"
+#include <string>
 #include <future>
 #include <filesystem>
 #include <cstdlib>
@@ -8,7 +9,7 @@
 
 namespace elizaos {
 
-std::future<std:> resolvePgliteDir(std::optional<std:> dir, std::optional<std:> fallbackDir) {
+std::future<std::string> resolvePgliteDir(std::optional<std::string> dir, std::optional<std::string> fallbackDir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto userEnv = UserEnvironment.getInstance();

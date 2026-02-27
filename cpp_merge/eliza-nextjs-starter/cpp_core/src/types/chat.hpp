@@ -17,9 +17,9 @@ namespace elizaos {
 
 
 struct Citation {
-    std: url;
-    std: content;
-    std: title;
+    std::string url;
+    std::string content;
+    std::string title;
 };
 
 struct ChatStreamData {

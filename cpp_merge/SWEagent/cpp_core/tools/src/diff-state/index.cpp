@@ -1,4 +1,5 @@
 #include "index.hpp"
+#include <string>
 #include <cstdlib>
 #include <iostream>
 #include <stdexcept>
@@ -22,7 +23,7 @@ State loadState() {
 void saveState(State state) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    fs.writeFileSync(STATE_PATH, /* JSON.stringify */ std:(state, nullptr, 2));
+    fs.writeFileSync(STATE_PATH, /* JSON.stringify */ std::string(state, nullptr, 2));
 
 }
 
@@ -65,7 +66,7 @@ void clearDiff() {
 
 }
 
-std: getDiff() {
+std::string getDiff() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto state = loadState();

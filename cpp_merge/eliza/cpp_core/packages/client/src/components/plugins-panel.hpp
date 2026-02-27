@@ -18,10 +18,10 @@ namespace elizaos {
 struct PluginsPanelProps {
     Agent characterValue;
     { setCharacterValue;
-    std::optional<[&](pluginId: std:) { return void> addPlugin; };
+    std::optional<[&](pluginId: std::string) { return void> addPlugin; };
     std::optional<[&](index) { return void> removePlugin; };
-    std::optional<[&](plugins: std:[]) { return void> setPlugins; };
-    std::optional<<T>[&](path: std:, value: T) { return void> updateField; };
+    std::optional<[&](plugins: std::string[]) { return void> setPlugins; };
+    std::optional<<T>[&](path: std::string, value: T) { return void> updateField; };
     std::optional<std::vector<std::string>> initialPlugins;
 };
 

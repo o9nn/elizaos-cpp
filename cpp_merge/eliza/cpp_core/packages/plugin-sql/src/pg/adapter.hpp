@@ -20,11 +20,11 @@ namespace elizaos {
  * Adapter class for interacting with a PostgreSQL database.
  * Extends BaseDrizzleAdapter.
  */
-class PgDatabaseAdapter extends BaseDrizzleAdapter {
+class PgDatabaseAdapter : public BaseDrizzleAdapter {
   protected embeddingDimension: EmbeddingDimensionColumn = DIMENSION_MAP[384];
   private manager: PostgresConnectionManager;
 
-  constructor(agentId: UUID, manager: PostgresConnectionManager, _schema?: std:) {
+  /* constructor */ (agentId: UUID, manager: PostgresConnectionManager, _schema?: std::string) {
     super(agentId);
     this.manager = manager;
     this.db = manager.getDatabase();
@@ -44,7 +44,7 @@ class PgDatabaseAdapter extends BaseDrizzleAdapter {
    * @param {() => Promise<T>} operation - The operation to be executed with the database connection.
    * @returns {Promise<T>} A std::promise that resolves with the result of the operation.
    */
-        // Cast to std: to avoid type conflicts between different pg versions
+        // Cast to std::string to avoid type conflicts between different pg versions
 
   /**
    * Asynchronously initializes the PgDatabaseAdapter by running migrations using the manager.

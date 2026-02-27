@@ -35,7 +35,7 @@ PlatformInstructions getBunInstallInstructions() {
 
 }
 
-void displayBasicSteps(const std:& cdPath) {
+void displayBasicSteps(const std::string& cdPath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     std::cout << '\nTo complete the ElizaOS setup << follow these steps:\n' << std::endl;
@@ -79,8 +79,7 @@ void displayBunInstructions() {
         std::cout << "   " + command << std::endl;
         });
 
-        // Display alternatives if std:
-        if (instructions.alternatives) {
+        // Display alternatives if std::string if (instructions.alternatives) {
             instructions.alternatives.forEach[&]((alt) {
                 std::cout << "   Alternative: " + alt << std::endl;
                 });
@@ -91,7 +90,7 @@ void displayBunInstructions() {
 
 }
 
-void displayNextSteps(const std:& targetDir) {
+void displayNextSteps(const std::string& targetDir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto cdPath = path.relative(std::filesystem::current_path().string(), targetDir);

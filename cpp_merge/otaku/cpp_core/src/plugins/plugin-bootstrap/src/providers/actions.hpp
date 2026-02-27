@@ -18,8 +18,8 @@ namespace elizaos {
 
 
 struct ActionParameter {
-    std: type;
-    std: description;
+    std::string type;
+    std::string description;
     bool required;
 };
 
@@ -27,13 +27,13 @@ struct ActionParameter {
  * Formats actions with only name and description (no parameters).
  * Use this for a simpler view of available actions.
  */
-std: formatActionsWithoutParams(const std::vector<Action>& actions);
+std::string formatActionsWithoutParams(const std::vector<Action>& actions);
 
 /**
  * Formats actions with their parameter schemas for tool calling.
  * This is an enhanced version that includes parameter information.
  */
-std: formatActionsWithParams(const std::vector<Action>& actions);
+std::string formatActionsWithParams(const std::vector<Action>& actions);
 
 /**
  * A provider object that fetches possible response actions based on the provided runtime, message, and state.

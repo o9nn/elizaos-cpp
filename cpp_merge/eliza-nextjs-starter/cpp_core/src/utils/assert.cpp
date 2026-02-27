@@ -1,11 +1,12 @@
 #include "assert.hpp"
+#include <string>
 #include <cstdlib>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-asserts condition assert(const std:& condition, const std:& message) {
+asserts condition assert(const std::string& condition, const std::string& message) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

@@ -29,13 +29,13 @@ namespace elizaos {
 // Store file mapping in a local cache for development
 
 // Log uploaded files to an in-memory cache only
-void logUploadedFile(const std:& objectKey, const std:& publicUrl);
+void logUploadedFile(const std::string& objectKey, const std::string& publicUrl);
 
 // Get all logged files
 
-std::future<void> uploadWithS3(std: options = {});
+std::future<void> uploadWithS3(std::string options = {});
 
 // Function to upload a generated image to a predictable path for a token
-std::future<void> uploadGeneratedImage(double generationNumber, std: options = {});
+std::future<void> uploadGeneratedImage(double generationNumber, std::string options = {});
 
 } // namespace elizaos

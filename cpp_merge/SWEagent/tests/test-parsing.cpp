@@ -1,34 +1,35 @@
 #include "test-parsing.test.h"
+#include <string>
 
 void Main(void)
 {
-    describe(std:("Parsing"), [=]() mutable
+    describe(std::string("Parsing"), [=]() mutable
     {
-        describe(std:("ActionParser"), [=]() mutable
+        describe(std::string("ActionParser"), [=]() mutable
         {
-            it(std:("should parse valid commands"), [=]() mutable
+            it(std::string("should parse valid commands"), [=]() mutable
             {
                 auto parser = std::make_shared<ActionParser>();
                 auto command = object{
-                    object::pair{std:("name"), std:("ls")}
+                    object::pair{std::string("name"), std::string("ls")}
                 };
                 auto [thought, action] = parser->parse(object{
-                    object::pair{std:("message"), std:("ls -l")}
+                    object::pair{std::string("message"), std::string("ls -l")}
                 }, array<std::shared_ptr<Command>>{ command });
                 expect(thought)->toBe(string_empty);
-                expect(action)->toBe(std:("ls -l"));
+                expect(action)->toBe(std::string("ls -l"));
             }
             );
-            it(std:("should throw FormatError for invalid commands"), [=]() mutable
+            it(std::string("should throw FormatError for invalid commands"), [=]() mutable
             {
                 shared parser = std::make_shared<ActionParser>();
                 shared command = object{
-                    object::pair{std:("name"), std:("ls")}
+                    object::pair{std::string("name"), std::string("ls")}
                 };
                 expect([=]() mutable
                 {
                     parser->parse(object{
-                        object::pair{std:("message"), std:("invalid command")}
+                        object::pair{std::string("message"), std::string("invalid command")}
                     }, array<std::shared_ptr<Command>>{ command });
                 }
                 )->toThrow(FormatError);
@@ -36,31 +37,31 @@ void Main(void)
             );
         }
         );
-        describe(std:("ThoughtActionParser"), [=]() mutable
+        describe(std::string("ThoughtActionParser"), [=]() mutable
         {
-            it(std:("should parse thought and action with code blocks"), [=]() mutable
+            it(std::string("should parse thought and action with code blocks"), [=]() mutable
             {
                 auto parser = std::make_shared<ThoughtActionParser>();
-                auto modelResponse = std:("Let's look at the files in the current directory.\
+                auto modelResponse = std::string("Let's look at the files in the current directory.\
 """\
 ls -l\
 """");
                 auto [thought, action] = parser->parse(object{
-                    object::pair{std:("message"), modelResponse}
+                    object::pair{std::string("message"), modelResponse}
                 }, array<any>());
-                expect(thought)->toBe(std:("Let's look at the files in the current directory.\
+                expect(thought)->toBe(std::string("Let's look at the files in the current directory.\
 "));
-                expect(action)->toBe(std:("ls -l\
+                expect(action)->toBe(std::string("ls -l\
 "));
             }
             );
-            it(std:("should throw FormatError when no code block"), [=]() mutable
+            it(std::string("should throw FormatError when no code block"), [=]() mutable
             {
                 shared parser = std::make_shared<ThoughtActionParser>();
                 expect([=]() mutable
                 {
                     parser->parse(object{
-                        object::pair{std:("message"), std:("No code block")}
+                        object::pair{std::string("message"), std::string("No code block")}
                     }, array<any>());
                 }
                 )->toThrow(FormatError);
@@ -68,29 +69,29 @@ ls -l\
             );
         }
         );
-        describe(std:("XMLThoughtActionParser"), [=]() mutable
+        describe(std::string("XMLThoughtActionParser"), [=]() mutable
         {
-            it(std:("should parse XML command tags"), [=]() mutable
+            it(std::string("should parse XML command tags"), [=]() mutable
             {
                 auto parser = std::make_shared<XMLThoughtActionParser>();
-                auto modelResponse = std:("Let's look at the files in the current directory.\
+                auto modelResponse = std::string("Let's look at the files in the current directory.\
 <command>\
 ls -l\
 </command>");
                 auto [thought, action] = parser->parse(object{
-                    object::pair{std:("message"), modelResponse}
+                    object::pair{std::string("message"), modelResponse}
                 }, array<any>());
-                expect(thought)->toBe(std:("Let's look at the files in the current directory."));
-                expect(action)->toBe(std:("ls -l"));
+                expect(thought)->toBe(std::string("Let's look at the files in the current directory."));
+                expect(action)->toBe(std::string("ls -l"));
             }
             );
-            it(std:("should throw FormatError when no command tags"), [=]() mutable
+            it(std::string("should throw FormatError when no command tags"), [=]() mutable
             {
                 shared parser = std::make_shared<XMLThoughtActionParser>();
                 expect([=]() mutable
                 {
                     parser->parse(object{
-                        object::pair{std:("message"), std:("No command tags")}
+                        object::pair{std::string("message"), std::string("No command tags")}
                     }, array<any>());
                 }
                 )->toThrow(FormatError);
@@ -98,33 +99,33 @@ ls -l\
             );
         }
         );
-        describe(std:("EditFormat"), [=]() mutable
+        describe(std::string("EditFormat"), [=]() mutable
         {
-            it(std:("should parse edit format with code blocks"), [=]() mutable
+            it(std::string("should parse edit format with code blocks"), [=]() mutable
             {
                 auto parser = std::make_shared<EditFormat>();
-                auto modelResponse = std:("Let's replace the contents.\
+                auto modelResponse = std::string("Let's replace the contents.\
 """\
 import os\
 os.listdir()\
 """");
                 auto [thought, action] = parser->parse(object{
-                    object::pair{std:("message"), modelResponse}
+                    object::pair{std::string("message"), modelResponse}
                 }, array<any>());
-                expect(thought)->toBe(std:("Let's replace the contents.\
+                expect(thought)->toBe(std::string("Let's replace the contents.\
 "));
-                expect(action)->toBe(std:("import os\
+                expect(action)->toBe(std::string("import os\
 os.listdir()\
 "));
             }
             );
-            it(std:("should throw FormatError when no code block"), [=]() mutable
+            it(std::string("should throw FormatError when no code block"), [=]() mutable
             {
                 shared parser = std::make_shared<EditFormat>();
                 expect([=]() mutable
                 {
                     parser->parse(object{
-                        object::pair{std:("message"), std:("No code block")}
+                        object::pair{std::string("message"), std::string("No code block")}
                     }, array<any>());
                 }
                 )->toThrow(FormatError);
@@ -132,14 +133,14 @@ os.listdir()\
             );
         }
         );
-        describe(std:("Identity"), [=]() mutable
+        describe(std::string("Identity"), [=]() mutable
         {
-            it(std:("should return input as is"), [=]() mutable
+            it(std::string("should return input as is"), [=]() mutable
             {
                 auto parser = std::make_shared<Identity>();
-                auto modelResponse = std:("Return as is");
+                auto modelResponse = std::string("Return as is");
                 auto [thought, action] = parser->parse(object{
-                    object::pair{std:("message"), modelResponse}
+                    object::pair{std::string("message"), modelResponse}
                 }, array<any>());
                 expect(thought)->toBe(modelResponse);
                 expect(action)->toBe(modelResponse);
@@ -147,39 +148,39 @@ os.listdir()\
             );
         }
         );
-        describe(std:("JsonParser"), [=]() mutable
+        describe(std::string("JsonParser"), [=]() mutable
         {
-            it(std:("should parse valid JSON"), [=]() mutable
+            it(std::string("should parse valid JSON"), [=]() mutable
             {
                 auto parser = std::make_shared<JsonParser>();
-                auto modelResponse = std:("{"thought": "List files", "command": {"name": "ls", "arguments": {"path": "."}}}");
+                auto modelResponse = std::string("{"thought": "List files", "command": {"name": "ls", "arguments": {"path": "."}}}");
                 auto [thought, action] = parser->parse(object{
-                    object::pair{std:("message"), modelResponse}
+                    object::pair{std::string("message"), modelResponse}
                 }, array<any>());
-                expect(thought)->toBe(std:("List files"));
-                expect(action)->toBe(std:("ls ."));
+                expect(thought)->toBe(std::string("List files"));
+                expect(action)->toBe(std::string("ls ."));
             }
             );
-            it(std:("should throw FormatError for invalid JSON"), [=]() mutable
+            it(std::string("should throw FormatError for invalid JSON"), [=]() mutable
             {
                 shared parser = std::make_shared<JsonParser>();
                 expect([=]() mutable
                 {
                     parser->parse(object{
-                        object::pair{std:("message"), std:("Not a JSON")}
+                        object::pair{std::string("message"), std::string("Not a JSON")}
                     }, array<any>());
                 }
                 )->toThrow(FormatError);
             }
             );
-            it(std:("should throw FormatError for missing keys"), [=]() mutable
+            it(std::string("should throw FormatError for missing keys"), [=]() mutable
             {
                 shared parser = std::make_shared<JsonParser>();
-                shared missingKeys = std:("{"thought": "Missing command key"}");
+                shared missingKeys = std::string("{"thought": "Missing command key"}");
                 expect([=]() mutable
                 {
                     parser->parse(object{
-                        object::pair{std:("message"), missingKeys}
+                        object::pair{std::string("message"), missingKeys}
                     }, array<any>());
                 }
                 )->toThrow(FormatError);
@@ -187,60 +188,60 @@ os.listdir()\
             );
         }
         );
-        describe(std:("FunctionCallingParser"), [=]() mutable
+        describe(std::string("FunctionCallingParser"), [=]() mutable
         {
-            it(std:("should parse function calls successfully"), [=]() mutable
+            it(std::string("should parse function calls successfully"), [=]() mutable
             {
                 auto parser = std::make_shared<FunctionCallingParser>();
                 auto command = object{
-                    object::pair{std:("name"), std:("ls")}
+                    object::pair{std::string("name"), std::string("ls")}
                 };
                 auto modelResponse = object{
-                    object::pair{std:("message"), std:("Let's list the files")}, 
-                    object::pair{std:("tool_calls"), array<object>{ object{
-                        object::pair{std:("function"), object{
-                            object::pair{std:("name"), std:("ls")}, 
-                            object::pair{std:("arguments"), std:("{}")}
+                    object::pair{std::string("message"), std::string("Let's list the files")}, 
+                    object::pair{std::string("tool_calls"), array<object>{ object{
+                        object::pair{std::string("function"), object{
+                            object::pair{std::string("name"), std::string("ls")}, 
+                            object::pair{std::string("arguments"), std::string("{}")}
                         }}
                     } }}
                 };
                 auto [thought, action] = parser->parse(modelResponse, array<std::shared_ptr<Command>>{ command });
-                expect(thought)->toBe(std:("Let's list the files"));
-                expect(action)->toBe(std:("ls"));
+                expect(thought)->toBe(std::string("Let's list the files"));
+                expect(action)->toBe(std::string("ls"));
             }
             );
-            it(std:("should throw error for missing tool_calls"), [=]() mutable
+            it(std::string("should throw error for missing tool_calls"), [=]() mutable
             {
                 shared parser = std::make_shared<FunctionCallingParser>();
                 shared command = object{
-                    object::pair{std:("name"), std:("ls")}
+                    object::pair{std::string("name"), std::string("ls")}
                 };
                 expect([=]() mutable
                 {
                     parser->parse(object{
-                        object::pair{std:("message"), std:("No tool calls")}
+                        object::pair{std::string("message"), std::string("No tool calls")}
                     }, array<std::shared_ptr<Command>>{ command });
                 }
                 )->toThrow(FormatError);
             }
             );
-            it(std:("should throw error for multiple tool calls"), [=]() mutable
+            it(std::string("should throw error for multiple tool calls"), [=]() mutable
             {
                 shared parser = std::make_shared<FunctionCallingParser>();
                 shared command = object{
-                    object::pair{std:("name"), std:("ls")}
+                    object::pair{std::string("name"), std::string("ls")}
                 };
                 shared multipleCalls = object{
-                    object::pair{std:("message"), std:("Multiple calls")}, 
-                    object::pair{std:("tool_calls"), array<object>{ object{
-                        object::pair{std:("function"), object{
-                            object::pair{std:("name"), std:("ls")}, 
-                            object::pair{std:("arguments"), std:("{}")}
+                    object::pair{std::string("message"), std::string("Multiple calls")}, 
+                    object::pair{std::string("tool_calls"), array<object>{ object{
+                        object::pair{std::string("function"), object{
+                            object::pair{std::string("name"), std::string("ls")}, 
+                            object::pair{std::string("arguments"), std::string("{}")}
                         }}
                     }, object{
-                        object::pair{std:("function"), object{
-                            object::pair{std:("name"), std:("cd")}, 
-                            object::pair{std:("arguments"), std:("{}")}
+                        object::pair{std::string("function"), object{
+                            object::pair{std::string("name"), std::string("cd")}, 
+                            object::pair{std::string("arguments"), std::string("{}")}
                         }}
                     } }}
                 };
@@ -251,18 +252,18 @@ os.listdir()\
                 )->toThrow(FormatError);
             }
             );
-            it(std:("should throw error for invalid command"), [=]() mutable
+            it(std::string("should throw error for invalid command"), [=]() mutable
             {
                 shared parser = std::make_shared<FunctionCallingParser>();
                 shared command = object{
-                    object::pair{std:("name"), std:("ls")}
+                    object::pair{std::string("name"), std::string("ls")}
                 };
                 shared invalidCommand = object{
-                    object::pair{std:("message"), std:("Invalid command")}, 
-                    object::pair{std:("tool_calls"), array<object>{ object{
-                        object::pair{std:("function"), object{
-                            object::pair{std:("name"), std:("invalid")}, 
-                            object::pair{std:("arguments"), std:("{}")}
+                    object::pair{std::string("message"), std::string("Invalid command")}, 
+                    object::pair{std::string("tool_calls"), array<object>{ object{
+                        object::pair{std::string("function"), object{
+                            object::pair{std::string("name"), std::string("invalid")}, 
+                            object::pair{std::string("arguments"), std::string("{}")}
                         }}
                     } }}
                 };
@@ -273,18 +274,18 @@ os.listdir()\
                 )->toThrow(FormatError);
             }
             );
-            it(std:("should throw error for invalid JSON arguments"), [=]() mutable
+            it(std::string("should throw error for invalid JSON arguments"), [=]() mutable
             {
                 shared parser = std::make_shared<FunctionCallingParser>();
                 shared command = object{
-                    object::pair{std:("name"), std:("ls")}
+                    object::pair{std::string("name"), std::string("ls")}
                 };
                 shared invalidJson = object{
-                    object::pair{std:("message"), std:("Invalid JSON")}, 
-                    object::pair{std:("tool_calls"), array<object>{ object{
-                        object::pair{std:("function"), object{
-                            object::pair{std:("name"), std:("ls")}, 
-                            object::pair{std:("arguments"), std:("invalid json")}
+                    object::pair{std::string("message"), std::string("Invalid JSON")}, 
+                    object::pair{std::string("tool_calls"), array<object>{ object{
+                        object::pair{std::string("function"), object{
+                            object::pair{std::string("name"), std::string("ls")}, 
+                            object::pair{std::string("arguments"), std::string("invalid json")}
                         }}
                     } }}
                 };
@@ -297,14 +298,14 @@ os.listdir()\
             );
         }
         );
-        describe(std:("FunctionCallingParser error messages"), [=]() mutable
+        describe(std::string("FunctionCallingParser error messages"), [=]() mutable
         {
-            it(std:("should format error message correctly"), [=]() mutable
+            it(std::string("should format error message correctly"), [=]() mutable
             {
                 auto parser = std::make_shared<FunctionCallingParser>();
-                auto error = std::make_shared<FunctionCallingFormatError>(std:("test"), std:("missing"));
+                auto error = std::make_shared<FunctionCallingFormatError>(std::string("test"), std::string("missing"));
                 auto message = parser->formatErrorMessage(error);
-                expect(message)->toContain(std:("did not use any tool calls"));
+                expect(message)->toContain(std::string("did not use any tool calls"));
             }
             );
         }

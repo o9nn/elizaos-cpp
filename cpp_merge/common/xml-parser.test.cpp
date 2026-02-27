@@ -1,14 +1,15 @@
 #include "xml-parser.test.h"
+#include <string>
 
 void Main(void)
 {
-    describe(std:("XML Parser"), [=]() mutable
+    describe(std::string("XML Parser"), [=]() mutable
     {
-        describe(std:("parseCharacterDiff"), [=]() mutable
+        describe(std::string("parseCharacterDiff"), [=]() mutable
         {
-            it(std:("should parse valid XML with all operation types"), [=]() mutable
+            it(std::string("should parse valid XML with all operation types"), [=]() mutable
             {
-                auto xml = std:("\
+                auto xml = std::string("\
 <character-modification>\
   <operations>\
     <add path="bio[]" type="string">New bio entry</add>\
@@ -21,30 +22,30 @@ void Main(void)
                 auto diff = parseCharacterDiff(xml);
                 expect(diff->operations)->toHaveLength(3);
                 expect(const_(diff->operations)[0])->toEqual(object{
-                    object::pair{std:("type"), std:("add")}, 
-                    object::pair{std:("path"), std:("bio[]")}, 
-                    object::pair{std:("value"), std:("New bio entry")}, 
-                    object::pair{std:("dataType"), std:("string")}
+                    object::pair{std::string("type"), std::string("add")}, 
+                    object::pair{std::string("path"), std::string("bio[]")}, 
+                    object::pair{std::string("value"), std::string("New bio entry")}, 
+                    object::pair{std::string("dataType"), std::string("string")}
                 });
                 expect(const_(diff->operations)[1])->toEqual(object{
-                    object::pair{std:("type"), std:("modify")}, 
-                    object::pair{std:("path"), std:("system")}, 
-                    object::pair{std:("value"), std:("Updated system prompt")}, 
-                    object::pair{std:("dataType"), std:("string")}
+                    object::pair{std::string("type"), std::string("modify")}, 
+                    object::pair{std::string("path"), std::string("system")}, 
+                    object::pair{std::string("value"), std::string("Updated system prompt")}, 
+                    object::pair{std::string("dataType"), std::string("string")}
                 });
                 expect(const_(diff->operations)[2])->toEqual(object{
-                    object::pair{std:("type"), std:("delete")}, 
-                    object::pair{std:("path"), std:("topics[0]")}, 
-                    object::pair{std:("value"), undefined}, 
-                    object::pair{std:("dataType"), undefined}
+                    object::pair{std::string("type"), std::string("delete")}, 
+                    object::pair{std::string("path"), std::string("topics[0]")}, 
+                    object::pair{std::string("value"), std::nullopt}, 
+                    object::pair{std::string("dataType"), std::nullopt}
                 });
-                expect(diff->reasoning)->toBe(std:("Test modification"));
-                expect(diff->timestamp)->toBe(std:("2024-01-01T00:00:00Z"));
+                expect(diff->reasoning)->toBe(std::string("Test modification"));
+                expect(diff->timestamp)->toBe(std::string("2024-01-01T00:00:00Z"));
             }
             );
-            it(std:("should handle multiple operations of the same type"), [=]() mutable
+            it(std::string("should handle multiple operations of the same type"), [=]() mutable
             {
-                auto xml = std:("\
+                auto xml = std::string("\
 <character-modification>\
   <operations>\
     <add path="bio[]" type="string">First bio</add>\
@@ -57,24 +58,24 @@ void Main(void)
                 expect(diff->operations)->toHaveLength(3);
                 expect(diff->operations->filter([=](auto op) mutable
                 {
-                    return op["type"] == std:("add");
+                    return op["type"] == std::string("add");
                 }
                 ))->toHaveLength(3);
             }
             );
-            it(std:("should throw error for missing root element"), [=]() mutable
+            it(std::string("should throw error for missing root element"), [=]() mutable
             {
-                shared xml = std:("<invalid>Not a character modification</invalid>");
+                shared xml = std::string("<invalid>Not a character modification</invalid>");
                 expect([=]() mutable
                 {
                     return parseCharacterDiff(xml);
                 }
-                )->toThrow(std:("Invalid XML: missing character-modification root element"));
+                )->toThrow(std::string("Invalid XML: missing character-modification root element"));
             }
             );
-            it(std:("should throw error for missing reasoning"), [=]() mutable
+            it(std::string("should throw error for missing reasoning"), [=]() mutable
             {
-                shared xml = std:("\
+                shared xml = std::string("\
 <character-modification>\
   <operations>\
     <add path="bio[]" type="string">New bio</add>\
@@ -84,12 +85,12 @@ void Main(void)
                 {
                     return parseCharacterDiff(xml);
                 }
-                )->toThrow(std:("Missing or empty reasoning"));
+                )->toThrow(std::string("Missing or empty reasoning"));
             }
             );
-            it(std:("should throw error for empty reasoning"), [=]() mutable
+            it(std::string("should throw error for empty reasoning"), [=]() mutable
             {
-                shared xml = std:("\
+                shared xml = std::string("\
 <character-modification>\
   <operations>\
     <add path="bio[]" type="string">New bio</add>\
@@ -100,12 +101,12 @@ void Main(void)
                 {
                     return parseCharacterDiff(xml);
                 }
-                )->toThrow(std:("Missing or empty reasoning"));
+                )->toThrow(std::string("Missing or empty reasoning"));
             }
             );
-            it(std:("should throw error for invalid operation type"), [=]() mutable
+            it(std::string("should throw error for invalid operation type"), [=]() mutable
             {
-                shared xml = std:("\
+                shared xml = std::string("\
 <character-modification>\
   <operations>\
     <invalidOp path="bio[]">Test</invalidOp>\
@@ -116,12 +117,12 @@ void Main(void)
                 {
                     return parseCharacterDiff(xml);
                 }
-                )->toThrow(std:("Invalid operation type: invalidOp"));
+                )->toThrow(std::string("Invalid operation type: invalidOp"));
             }
             );
-            it(std:("should throw error for missing path attribute"), [=]() mutable
+            it(std::string("should throw error for missing path attribute"), [=]() mutable
             {
-                shared xml = std:("\
+                shared xml = std::string("\
 <character-modification>\
   <operations>\
     <add type="string">No path</add>\
@@ -132,14 +133,14 @@ void Main(void)
                 {
                     return parseCharacterDiff(xml);
                 }
-                )->toThrow(std:("Invalid path in add operation"));
+                )->toThrow(std::string("Invalid path in add operation"));
             }
             );
-            describe(std:("Security Tests"), [=]() mutable
+            describe(std::string("Security Tests"), [=]() mutable
             {
-                it(std:("should prevent XXE attacks by removing DOCTYPE"), [=]() mutable
+                it(std::string("should prevent XXE attacks by removing DOCTYPE"), [=]() mutable
                 {
-                    auto xxeXml = std:("\
+                    auto xxeXml = std::string("\
 <!DOCTYPE foo [\
 <!ENTITY xxe SYSTEM "file:///etc/passwd">\
 ]>\
@@ -150,13 +151,13 @@ void Main(void)
   <reasoning>XXE attempt</reasoning>\
 </character-modification>");
                     auto diff = parseCharacterDiff(xxeXml);
-                    expect(const_(diff->operations)[0]->value)->toBe(std:("&xxe;"));
-                    expect(const_(diff->operations)[0]->value)->not->toContain(std:("root:"));
+                    expect(const_(diff->operations)[0]->value)->toBe(std::string("&xxe;"));
+                    expect(const_(diff->operations)[0]->value)->not->toContain(std::string("root:"));
                 }
                 );
-                it(std:("should remove ENTITY declarations"), [=]() mutable
+                it(std::string("should remove ENTITY declarations"), [=]() mutable
                 {
-                    auto entityXml = std:("\
+                    auto entityXml = std::string("\
 <!ENTITY test "malicious content">\
 <character-modification>\
   <operations>\
@@ -165,12 +166,12 @@ void Main(void)
   <reasoning>Entity test</reasoning>\
 </character-modification>");
                     auto diff = parseCharacterDiff(entityXml);
-                    expect(const_(diff->operations)[0]->value)->toBe(std:("&test;"));
+                    expect(const_(diff->operations)[0]->value)->toBe(std::string("&test;"));
                 }
                 );
-                it(std:("should remove processing instructions"), [=]() mutable
+                it(std::string("should remove processing instructions"), [=]() mutable
                 {
-                    auto piXml = std:("\
+                    auto piXml = std::string("\
 <?php echo file_get_contents('/etc/passwd'); ?>\
 <character-modification>\
   <operations>\
@@ -179,12 +180,12 @@ void Main(void)
   <reasoning>PI test</reasoning>\
 </character-modification>");
                     auto diff = parseCharacterDiff(piXml);
-                    expect(const_(diff->operations)[0]->value)->toBe(std:("Test"));
+                    expect(const_(diff->operations)[0]->value)->toBe(std::string("Test"));
                 }
                 );
-                it(std:("should escape CDATA content"), [=]() mutable
+                it(std::string("should escape CDATA content"), [=]() mutable
                 {
-                    auto cdataXml = std:("\
+                    auto cdataXml = std::string("\
 <character-modification>\
   <operations>\
     <add path="bio[]" type="string"><![CDATA[<script>alert('xss')</script>]]></add>\
@@ -192,13 +193,13 @@ void Main(void)
   <reasoning>CDATA test</reasoning>\
 </character-modification>");
                     auto diff = parseCharacterDiff(cdataXml);
-                    expect(const_(diff->operations)[0]->value)->toContain(std:("&lt;script&gt;"));
-                    expect(const_(diff->operations)[0]->value)->not->toContain(std:("<script>"));
+                    expect(const_(diff->operations)[0]->value)->toContain(std::string("&lt;script&gt;"));
+                    expect(const_(diff->operations)[0]->value)->not->toContain(std::string("<script>"));
                 }
                 );
-                it(std:("should reject dangerous path patterns"), [=]() mutable
+                it(std::string("should reject dangerous path patterns"), [=]() mutable
                 {
-                    shared dangerousPath1 = std:("\
+                    shared dangerousPath1 = std::string("\
 <character-modification>\
   <operations>\
     <add path="../../../etc/passwd" type="string">Traversal</add>\
@@ -209,8 +210,8 @@ void Main(void)
                     {
                         return parseCharacterDiff(dangerousPath1);
                     }
-                    )->toThrow(std:("Dangerous path pattern detected"));
-                    shared dangerousPath2 = std:("\
+                    )->toThrow(std::string("Dangerous path pattern detected"));
+                    shared dangerousPath2 = std::string("\
 <character-modification>\
   <operations>\
     <add path="bio//../../admin" type="string">Double slash</add>\
@@ -221,14 +222,14 @@ void Main(void)
                     {
                         return parseCharacterDiff(dangerousPath2);
                     }
-                    )->toThrow(std:("Dangerous path pattern detected"));
+                    )->toThrow(std::string("Dangerous path pattern detected"));
                 }
                 );
             }
             );
-            it(std:("should handle empty operations gracefully"), [=]() mutable
+            it(std::string("should handle empty operations gracefully"), [=]() mutable
             {
-                auto xml = std:("\
+                auto xml = std::string("\
 <character-modification>\
   <operations>\
   </operations>\
@@ -238,9 +239,9 @@ void Main(void)
                 expect(diff->operations)->toEqual(array<any>());
             }
             );
-            it(std:("should use current timestamp if not provided"), [=]() mutable
+            it(std::string("should use current timestamp if not provided"), [=]() mutable
             {
-                auto xml = std:("\
+                auto xml = std::string("\
 <character-modification>\
   <operations>\
     <add path="bio[]" type="string">Test</add>\
@@ -257,138 +258,138 @@ void Main(void)
             );
         }
         );
-        describe(std:("buildCharacterDiffXml"), [=]() mutable
+        describe(std::string("buildCharacterDiffXml"), [=]() mutable
         {
-            it(std:("should build valid XML from diff object"), [=]() mutable
+            it(std::string("should build valid XML from diff object"), [=]() mutable
             {
                 auto diff = object{
-                    object::pair{std:("operations"), array<object>{ object{
-                        object::pair{std:("type"), std:("add")}, 
-                        object::pair{std:("path"), std:("bio[]")}, 
-                        object::pair{std:("value"), std:("New bio")}, 
-                        object::pair{std:("dataType"), std:("string")}
+                    object::pair{std::string("operations"), array<object>{ object{
+                        object::pair{std::string("type"), std::string("add")}, 
+                        object::pair{std::string("path"), std::string("bio[]")}, 
+                        object::pair{std::string("value"), std::string("New bio")}, 
+                        object::pair{std::string("dataType"), std::string("string")}
                     }, object{
-                        object::pair{std:("type"), std:("modify")}, 
-                        object::pair{std:("path"), std:("system")}, 
-                        object::pair{std:("value"), std:("Updated")}, 
-                        object::pair{std:("dataType"), std:("string")}
+                        object::pair{std::string("type"), std::string("modify")}, 
+                        object::pair{std::string("path"), std::string("system")}, 
+                        object::pair{std::string("value"), std::string("Updated")}, 
+                        object::pair{std::string("dataType"), std::string("string")}
                     }, object{
-                        object::pair{std:("type"), std:("delete")}, 
-                        object::pair{std:("path"), std:("topics[0]")}
+                        object::pair{std::string("type"), std::string("delete")}, 
+                        object::pair{std::string("path"), std::string("topics[0]")}
                     } }}, 
-                    object::pair{std:("reasoning"), std:("Test build")}, 
-                    object::pair{std:("timestamp"), std:("2024-01-01T00:00:00Z")}
+                    object::pair{std::string("reasoning"), std::string("Test build")}, 
+                    object::pair{std::string("timestamp"), std::string("2024-01-01T00:00:00Z")}
                 };
                 auto xml = buildCharacterDiffXml(diff);
-                expect(xml)->toContain(std:("<character-modification>"));
-                expect(xml)->toContain(std:("<add path="bio[]" type="string">New bio</add>"));
-                expect(xml)->toContain(std:("<modify path="system" type="string">Updated</modify>"));
-                expect(xml)->toContain(std:("<delete path="topics[0]"/>"));
-                expect(xml)->toContain(std:("<reasoning>Test build</reasoning>"));
-                expect(xml)->toContain(std:("<timestamp>2024-01-01T00:00:00Z</timestamp>"));
+                expect(xml)->toContain(std::string("<character-modification>"));
+                expect(xml)->toContain(std::string("<add path="bio[]" type="string">New bio</add>"));
+                expect(xml)->toContain(std::string("<modify path="system" type="string">Updated</modify>"));
+                expect(xml)->toContain(std::string("<delete path="topics[0]"/>"));
+                expect(xml)->toContain(std::string("<reasoning>Test build</reasoning>"));
+                expect(xml)->toContain(std::string("<timestamp>2024-01-01T00:00:00Z</timestamp>"));
             }
             );
-            it(std:("should omit empty operation categories"), [=]() mutable
+            it(std::string("should omit empty operation categories"), [=]() mutable
             {
                 auto diff = object{
-                    object::pair{std:("operations"), array<object>{ object{
-                        object::pair{std:("type"), std:("add")}, 
-                        object::pair{std:("path"), std:("bio[]")}, 
-                        object::pair{std:("value"), std:("New bio")}
+                    object::pair{std::string("operations"), array<object>{ object{
+                        object::pair{std::string("type"), std::string("add")}, 
+                        object::pair{std::string("path"), std::string("bio[]")}, 
+                        object::pair{std::string("value"), std::string("New bio")}
                     } }}, 
-                    object::pair{std:("reasoning"), std:("Only additions")}, 
-                    object::pair{std:("timestamp"), std:("2024-01-01T00:00:00Z")}
+                    object::pair{std::string("reasoning"), std::string("Only additions")}, 
+                    object::pair{std::string("timestamp"), std::string("2024-01-01T00:00:00Z")}
                 };
                 auto xml = buildCharacterDiffXml(diff);
-                expect(xml)->toContain(std:("<add"));
-                expect(xml)->not->toContain(std:("<modify"));
-                expect(xml)->not->toContain(std:("<delete"));
+                expect(xml)->toContain(std::string("<add"));
+                expect(xml)->not->toContain(std::string("<modify"));
+                expect(xml)->not->toContain(std::string("<delete"));
             }
             );
-            it(std:("should validate reasoning is not empty"), [=]() mutable
+            it(std::string("should validate reasoning is not empty"), [=]() mutable
             {
                 shared diff = object{
-                    object::pair{std:("operations"), array<any>()}, 
-                    object::pair{std:("reasoning"), string_empty}, 
-                    object::pair{std:("timestamp"), std:("2024-01-01T00:00:00Z")}
+                    object::pair{std::string("operations"), array<any>()}, 
+                    object::pair{std::string("reasoning"), string_empty}, 
+                    object::pair{std::string("timestamp"), std::string("2024-01-01T00:00:00Z")}
                 };
                 expect([=]() mutable
                 {
                     return buildCharacterDiffXml(diff);
                 }
-                )->toThrow(std:("Reasoning is required"));
+                )->toThrow(std::string("Reasoning is required"));
             }
             );
-            it(std:("should validate operations is an array"), [=]() mutable
+            it(std::string("should validate operations is an array"), [=]() mutable
             {
                 shared diff = as<any>(object{
-                    object::pair{std:("operations"), std:("not an array")}, 
-                    object::pair{std:("reasoning"), std:("Test")}, 
-                    object::pair{std:("timestamp"), std:("2024-01-01T00:00:00Z")}
+                    object::pair{std::string("operations"), std::string("not an array")}, 
+                    object::pair{std::string("reasoning"), std::string("Test")}, 
+                    object::pair{std::string("timestamp"), std::string("2024-01-01T00:00:00Z")}
                 });
                 expect([=]() mutable
                 {
                     return buildCharacterDiffXml(diff);
                 }
-                )->toThrow(std:("Operations must be an array"));
+                )->toThrow(std::string("Operations must be an array"));
             }
             );
-            it(std:("should default dataType to string if not specified"), [=]() mutable
+            it(std::string("should default dataType to string if not specified"), [=]() mutable
             {
                 auto diff = object{
-                    object::pair{std:("operations"), array<object>{ object{
-                        object::pair{std:("type"), std:("add")}, 
-                        object::pair{std:("path"), std:("bio[]")}, 
-                        object::pair{std:("value"), std:("No type")}
+                    object::pair{std::string("operations"), array<object>{ object{
+                        object::pair{std::string("type"), std::string("add")}, 
+                        object::pair{std::string("path"), std::string("bio[]")}, 
+                        object::pair{std::string("value"), std::string("No type")}
                     } }}, 
-                    object::pair{std:("reasoning"), std:("Default type test")}, 
-                    object::pair{std:("timestamp"), std:("2024-01-01T00:00:00Z")}
+                    object::pair{std::string("reasoning"), std::string("Default type test")}, 
+                    object::pair{std::string("timestamp"), std::string("2024-01-01T00:00:00Z")}
                 };
                 auto xml = buildCharacterDiffXml(diff);
-                expect(xml)->toContain(std:("type="string""));
+                expect(xml)->toContain(std::string("type="string""));
             }
             );
-            it(std:("should handle build errors gracefully"), [=]() mutable
+            it(std::string("should handle build errors gracefully"), [=]() mutable
             {
                 shared diff = object{
-                    object::pair{std:("operations"), array<object>{ object{
-                        object::pair{std:("type"), as<any>(std:("add"))}, 
-                        object::pair{std:("path"), as<any>(nullptr)}, 
-                        object::pair{std:("value"), std:("Invalid")}
+                    object::pair{std::string("operations"), array<object>{ object{
+                        object::pair{std::string("type"), as<any>(std::string("add"))}, 
+                        object::pair{std::string("path"), as<any>(nullptr)}, 
+                        object::pair{std::string("value"), std::string("Invalid")}
                     } }}, 
-                    object::pair{std:("reasoning"), std:("Invalid operation")}, 
-                    object::pair{std:("timestamp"), std:("2024-01-01T00:00:00Z")}
+                    object::pair{std::string("reasoning"), std::string("Invalid operation")}, 
+                    object::pair{std::string("timestamp"), std::string("2024-01-01T00:00:00Z")}
                 };
                 expect([=]() mutable
                 {
                     return buildCharacterDiffXml(diff);
                 }
-                )->toThrow(std:("Invalid path in operation"));
+                )->toThrow(std::string("Invalid path in operation"));
             }
             );
         }
         );
-        describe(std:("Round-trip conversion"), [=]() mutable
+        describe(std::string("Round-trip conversion"), [=]() mutable
         {
-            it(std:("should maintain data integrity through parse and build"), [=]() mutable
+            it(std::string("should maintain data integrity through parse and build"), [=]() mutable
             {
                 shared originalDiff = object{
-                    object::pair{std:("operations"), array<object>{ object{
-                        object::pair{std:("type"), std:("add")}, 
-                        object::pair{std:("path"), std:("bio[]")}, 
-                        object::pair{std:("value"), std:("Test bio")}, 
-                        object::pair{std:("dataType"), std:("string")}
+                    object::pair{std::string("operations"), array<object>{ object{
+                        object::pair{std::string("type"), std::string("add")}, 
+                        object::pair{std::string("path"), std::string("bio[]")}, 
+                        object::pair{std::string("value"), std::string("Test bio")}, 
+                        object::pair{std::string("dataType"), std::string("string")}
                     }, object{
-                        object::pair{std:("type"), std:("modify")}, 
-                        object::pair{std:("path"), std:("adjectives[0]")}, 
-                        object::pair{std:("value"), std:("creative")}, 
-                        object::pair{std:("dataType"), std:("string")}
+                        object::pair{std::string("type"), std::string("modify")}, 
+                        object::pair{std::string("path"), std::string("adjectives[0]")}, 
+                        object::pair{std::string("value"), std::string("creative")}, 
+                        object::pair{std::string("dataType"), std::string("string")}
                     }, object{
-                        object::pair{std:("type"), std:("delete")}, 
-                        object::pair{std:("path"), std:("topics[5]")}
+                        object::pair{std::string("type"), std::string("delete")}, 
+                        object::pair{std::string("path"), std::string("topics[5]")}
                     } }}, 
-                    object::pair{std:("reasoning"), std:("Round trip test")}, 
-                    object::pair{std:("timestamp"), std:("2024-01-01T12:00:00Z")}
+                    object::pair{std::string("reasoning"), std::string("Round trip test")}, 
+                    object::pair{std::string("timestamp"), std::string("2024-01-01T12:00:00Z")}
                 };
                 auto xml = buildCharacterDiffXml(originalDiff);
                 auto parsedDiff = parseCharacterDiff(xml);

@@ -29,11 +29,11 @@ namespace elizaos {
  * registration. This is an intentional design choice to prevent memory leaks and
  * unintended multiple executions of the same handler.
  */
-class InternalMessageBus extends EventTarget {
+class InternalMessageBus : public EventTarget {
   private _maxListeners = 50; // Kept for API compatibility, see setMaxListeners()
-  private handlers = new Map<std:, Map<[&](data: unknown) { return void, EventListener>>(); };
+  private handlers = new Map<std::string, Map<[&](data: unknown) { return void, EventListener>>(); };
 
-  emit(event: std:, data: unknown) {
+  emit(event: std::string, data: unknown) {
     return this.dispatchEvent(new CustomEvent(event, { detail: data }));
   }
 

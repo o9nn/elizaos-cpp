@@ -51,6 +51,6 @@ string getChainDisplayName(string chain);
 extern Record<string, string> TOKEN_ICONS;
 any getTokenIconBySymbol(string symbol);
 
-any getTokenIcon(string symbol, string chain = undefined);
+any getTokenIcon(string symbol, string chain = std::nullopt);
 
 #endif

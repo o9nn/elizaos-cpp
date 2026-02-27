@@ -50,7 +50,7 @@ struct GlobalSingletons {
  * @param {UUID} agentId - The unique identifier for the agent.
  * @returns {IDatabaseAdapter} The created database adapter.
  */
-IDatabaseAdapter createDatabaseAdapter(std::optional<std:> config, UUID agentId);
+IDatabaseAdapter createDatabaseAdapter(std::optional<std::string> config, UUID agentId);
 
 /**
  * SQL plugin for database adapter using Drizzle ORM with dynamic plugin schema migrations

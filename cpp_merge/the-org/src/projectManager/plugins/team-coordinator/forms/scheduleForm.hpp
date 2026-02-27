@@ -49,6 +49,6 @@ public:
     string label;
 };
 
-std::shared_ptr<Promise<void>> sendCheckInScheduleForm(std::shared_ptr<HandlerCallback> callback, array<object> channels = undefined);
+std::shared_ptr<Promise<void>> sendCheckInScheduleForm(std::shared_ptr<HandlerCallback> callback, array<object> channels = std::nullopt);
 
 #endif

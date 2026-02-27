@@ -22,8 +22,8 @@ namespace elizaos {
  * Service builder class that provides type-safe service creation
  * with automatic type inference
  */
-class ServiceBuilder<TService extends Service = Service> extends coreServiceBuilder {
-  constructor(serviceType: ServiceTypeName | std:) {
+class ServiceBuilder<TService : public Service = Service> : public coreServiceBuilder {
+  /* constructor */ (serviceType: ServiceTypeName | std::string) {
     super(serviceType);
     //this.serviceType = serviceType;
     this.description = '';

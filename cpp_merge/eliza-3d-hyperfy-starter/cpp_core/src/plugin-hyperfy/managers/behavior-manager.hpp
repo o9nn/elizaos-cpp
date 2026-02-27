@@ -22,7 +22,7 @@ class BehaviorManager {
   private isRunning = false;
   private runtime: IAgentRuntime;
   
-  constructor(runtime: IAgentRuntime) {
+  /* constructor */ (runtime: IAgentRuntime) {
     this.runtime = runtime;
   }
 

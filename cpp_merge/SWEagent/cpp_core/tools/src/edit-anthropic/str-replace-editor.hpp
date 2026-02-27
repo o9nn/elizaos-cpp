@@ -22,7 +22,8 @@ struct FileHistory {
 };
 
 class EditTool {
-  private fileHistory: FileHistory = {};
+private:
+    FileHistory fileHistory = {};
 
     // Load file history from registry if available
 

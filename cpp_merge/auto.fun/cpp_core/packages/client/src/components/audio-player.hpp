@@ -18,11 +18,11 @@ namespace elizaos {
 
 
 struct AudioPlayerProps {
-    std: src;
-    std::optional<std:> albumArt;
-    std::optional<std:> lyrics;
+    std::string src;
+    std::optional<std::string> albumArt;
+    std::optional<std::string> lyrics;
     std::optional<bool> showControls;
-    std::optional<std:> className;
+    std::optional<std::string> className;
 };
 
 

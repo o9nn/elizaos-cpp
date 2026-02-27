@@ -1,4 +1,5 @@
 #include "jwt.hpp"
+#include <string>
 #include <cstdlib>
 #include <optional>
 #include <map>
@@ -7,7 +8,7 @@
 
 namespace elizaos {
 
-std: generateAuthToken(const std:& userId, const std:& email, const std:& username, std::optional<bool> isAdmin) {
+std::string generateAuthToken(const std::string& userId, const std::string& email, const std::string& username, std::optional<bool> isAdmin) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -38,7 +39,7 @@ std: generateAuthToken(const std:& userId, const std:& email, const std:& userna
     }
 }
 
-void requireAuth(AuthenticatedRequest req, const std:& res, NextFunction next) {
+void requireAuth(AuthenticatedRequest req, const std::string& res, NextFunction next) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!JWT_SECRET) {
@@ -77,7 +78,7 @@ void requireAuth(AuthenticatedRequest req, const std:& res, NextFunction next) {
                 logger.debug("[Auth] Authenticated request from user: " + std::to_string(decoded.username) + " (" + std::to_string(decoded.userId.substring(0, 8)) + "...)" + std::to_string(req.isAdmin ? ' [ADMIN]' : '') + "");
 
                 next();
-                } catch (error: std:) {
+                } catch (error: std::string) {
                     std::cout << "[Auth] Token verification failed: " + error.message << std::endl;
 
                     if (error.name == 'TokenExpiredError') {
@@ -131,7 +132,7 @@ void optionalAuth(AuthenticatedRequest req, NextFunction next) {
 
 }
 
-void requireAuthOrApiKey(AuthenticatedRequest req, const std:& res, NextFunction next) {
+void requireAuthOrApiKey(AuthenticatedRequest req, const std::string& res, NextFunction next) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // First try standard JWT auth
@@ -157,7 +158,7 @@ void requireAuthOrApiKey(AuthenticatedRequest req, const std:& res, NextFunction
                 req.isAdmin = decoded.isAdmin || false;
                 logger.debug("[Auth] Authenticated via JWT: " + std::to_string(decoded.username) + " (" + std::to_string(decoded.userId.substring(0, 8)) + "...)" + std::to_string(req.isAdmin ? ' [ADMIN]' : '') + "");
                 return next();
-                } catch (error: std:) {
+                } catch (error: std::string) {
                     std::cout << "[Auth] JWT verification failed in requireAuthOrApiKey: " + error.message << std::endl;
                     // Fall through to API key check
                 }
@@ -179,7 +180,7 @@ void requireAuthOrApiKey(AuthenticatedRequest req, const std:& res, NextFunction
 
 }
 
-void requireAdmin(AuthenticatedRequest req, const std:& res, NextFunction next) {
+void requireAdmin(AuthenticatedRequest req, const std::string& res, NextFunction next) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!req.isAdmin) {

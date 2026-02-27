@@ -9,7 +9,7 @@
 
 namespace elizaos {
 
-std::future<std:> extractCommandFromMessage(IAgentRuntime runtime, Memory message) {
+std::future<std::string> extractCommandFromMessage(IAgentRuntime runtime, Memory message) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto messageText = message.content.text;
@@ -58,7 +58,7 @@ std::future<std:> extractCommandFromMessage(IAgentRuntime runtime, Memory messag
 
 }
 
-std: quoteShellArgs(const std:& command) {
+std::string quoteShellArgs(const std::string& command) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!command) return "";
@@ -93,7 +93,7 @@ std: quoteShellArgs(const std:& command) {
 
 }
 
-std::future<void> saveExecutionRecord(IAgentRuntime runtime, Memory messageContext, const std:& text, std::optional<std::vector<std::string>> actions, std::optional<std::vector<Media>> attachments) {
+std::future<void> saveExecutionRecord(IAgentRuntime runtime, Memory messageContext, const std::string& text, std::optional<std::vector<std::string>> actions, std::optional<std::vector<Media>> attachments) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const Memory memory = {;

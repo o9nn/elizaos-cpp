@@ -7,7 +7,7 @@
 // External dependency removed
 
 extern std::shared_ptr<Action> generateCodeAction;
-std::shared_ptr<Promise<string>> extractProjectType(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<Memory> message, std::shared_ptr<State> _state = undefined);
+std::shared_ptr<Promise<string>> extractProjectType(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<Memory> message, std::shared_ptr<State> _state = std::nullopt);
 
 array<string> extractRequirements(string text);
 

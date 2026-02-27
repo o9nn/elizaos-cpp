@@ -1,4 +1,5 @@
 #include "sessions.hpp"
+#include <string>
 #include <vector>
 #include <future>
 #include <cstdlib>
@@ -9,7 +10,7 @@
 
 namespace elizaos {
 
-double safeParseInt(const std:& value, double fallback, std::optional<double> min, std::optional<double> max) {
+double safeParseInt(const std::string& value, double fallback, std::optional<double> min, std::optional<double> max) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!value) {
@@ -26,11 +27,11 @@ double safeParseInt(const std:& value, double fallback, std::optional<double> mi
 
     // Apply bounds if specified
     auto result = parsed;
-    if (min != undefined && result < min) {
+    if (min != std::nullopt && result < min) {
         std::cout << "[Sessions API] Value " + result + " is below minimum " + min << "clamping to minimum" << std::endl;
         result = min;
     }
-    if (max != undefined && result > max) {
+    if (max != std::nullopt && result > max) {
         std::cout << "[Sessions API] Value " + result + " is above maximum " + max << "clamping to maximum" << std::endl;
         result = max;
     }
@@ -39,14 +40,14 @@ double safeParseInt(const std:& value, double fallback, std::optional<double> mi
 
 }
 
-obj is Session isValidSession(const std:& obj) {
+obj is Session isValidSession(const std::string& obj) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!obj || typeof obj != 'object') {
         return false;
     }
 
-    const auto session = obj<std:, unknown>;
+    const auto session = obj<std::string, unknown>;
 
     return (;
     typeof session.id == "string" &&;
@@ -63,38 +64,38 @@ obj is Session isValidSession(const std:& obj) {
 
 }
 
-obj is CreateSessionRequest isCreateSessionRequest(const std:& obj) {
+obj is CreateSessionRequest isCreateSessionRequest(const std::string& obj) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!obj || typeof obj != 'object') {
         return false;
     }
 
-    const auto req = obj<std:, unknown>;
+    const auto req = obj<std::string, unknown>;
     return typeof req.agentId == "string" && typeof req.userId == "string";
 
 }
 
-obj is SendMessageRequest isSendMessageRequest(const std:& obj) {
+obj is SendMessageRequest isSendMessageRequest(const std::string& obj) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!obj || typeof obj != 'object') {
         return false;
     }
 
-    const auto req = obj<std:, unknown>;
+    const auto req = obj<std::string, unknown>;
     return typeof req.content == "string";
 
 }
 
-obj is SessionTimeoutConfig isValidTimeoutConfig(const std:& obj) {
+obj is SessionTimeoutConfig isValidTimeoutConfig(const std::string& obj) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!obj || typeof obj != 'object') {
         return false;
     }
 
-    const auto config = obj<std:, unknown>;
+    const auto config = obj<std::string, unknown>;
     return (;
     (config.timeoutMinutes == std::nullopt ||;
     typeof config.timeoutMinutes == "number" ||;
@@ -177,7 +178,7 @@ SessionTimeoutConfig mergeTimeoutConfigs(std::optional<SessionTimeoutConfig> ses
         // Apply session config (overrides agent config)
         if (sessionConfig) {
             // Validate and apply timeout minutes with NaN protection
-            if (sessionConfig.timeoutMinutes != undefined) {
+            if (sessionConfig.timeoutMinutes != std::nullopt) {
                 const auto timeoutValue = Number(sessionConfig.timeoutMinutes);
 
                 // Check for NaN or invalid number
@@ -193,11 +194,11 @@ SessionTimeoutConfig mergeTimeoutConfigs(std::optional<SessionTimeoutConfig> ses
                     }
                 }
 
-                if (sessionConfig.autoRenew != undefined) {
+                if (sessionConfig.autoRenew != std::nullopt) {
                     merged.autoRenew = sessionConfig.autoRenew;
                 }
 
-                if (sessionConfig.maxDurationMinutes != undefined) {
+                if (sessionConfig.maxDurationMinutes != std::nullopt) {
                     const auto maxDurationValue = Number(sessionConfig.maxDurationMinutes);
 
                     // Check for NaN or invalid number
@@ -215,7 +216,7 @@ SessionTimeoutConfig mergeTimeoutConfigs(std::optional<SessionTimeoutConfig> ses
                         }
                     }
 
-                    if (sessionConfig.warningThresholdMinutes != undefined) {
+                    if (sessionConfig.warningThresholdMinutes != std::nullopt) {
                         const auto warningValue = Number(sessionConfig.warningThresholdMinutes);
 
                         // Check for NaN or invalid number
@@ -334,7 +335,7 @@ SessionInfoResponse createSessionInfoResponse(Session session) {
 
 }
 
-void validateMetadata(const std:& metadata) {
+void validateMetadata(const std::string& metadata) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -343,7 +344,7 @@ void validateMetadata(const std:& metadata) {
         }
 
         // Check metadata size
-        const auto metadataStr = /* JSON.stringify */ std:(metadata);
+        const auto metadataStr = /* JSON.stringify */ std::string(metadata);
         if (metadataStr.size() > MAX_METADATA_SIZE) {
             throw new InvalidMetadataError(
             "Metadata exceeds maximum size of " + MAX_METADATA_SIZE + " bytes"
@@ -357,7 +358,7 @@ void validateMetadata(const std:& metadata) {
     }
 }
 
-content is std: validateContent(const std:& content) {
+content is std::string validateContent(const std::string& content) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -827,14 +828,14 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
                                                                                                                                         actions: rawMessage.actions,
                                                                                                                                         };
 
-                                                                                                                                        // Add std: attachments from transformedMessage.metadata
+                                                                                                                                        // Add std::string attachments from transformedMessage.metadata
                                                                                                                                         if (transformedMessage.metadata && typeof transformedMessage.metadata == 'object') {
                                                                                                                                             Object.assign(metadata, transformedMessage.metadata);
                                                                                                                                         }
 
                                                                                                                                         return {
                                                                                                                                             id: msg.id,
-                                                                                                                                            content: typeof msg.content == "string" ? msg.content : /* JSON.stringify */ std:(msg.content),
+                                                                                                                                            content: typeof msg.content == "string" ? msg.content : /* JSON.stringify */ std::string(msg.content),
                                                                                                                                             authorId: msg.authorId,
                                                                                                                                             isAgent: msg.sourceType == "agent_response",
                                                                                                                                             createdAt: msg.createdAt,
@@ -937,7 +938,7 @@ SessionRouter createSessionsRouter(ElizaOS elizaOS, AgentServer serverInstance) 
                                                                                                                                                                         }
 
                                                                                                                                                                         // Validate numeric bounds only for valid numbers
-                                                                                                                                                                        if (newConfig.timeoutMinutes != undefined) {
+                                                                                                                                                                        if (newConfig.timeoutMinutes != std::nullopt) {
                                                                                                                                                                             const auto timeoutValue = Number(newConfig.timeoutMinutes);
                                                                                                                                                                             // Only validate range if it's a valid number (NaN will be handled by mergeTimeoutConfigs)
                                                                                                                                                                             if (!isNaN(timeoutValue) && isFinite(timeoutValue)) {

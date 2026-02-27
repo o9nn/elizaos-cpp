@@ -1,4 +1,5 @@
 #include "pluginManagerService.hpp"
+#include <string>
 #include <future>
 #include <optional>
 #include <unordered_map>
@@ -14,7 +15,7 @@ void resetRegistryCache() {
 
 }
 
-std::future<std::unordered_map<std:, RegistryEntry>> getLocalRegistryIndex() {
+std::future<std::unordered_map<std::string, RegistryEntry>> getLocalRegistryIndex() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -29,7 +30,7 @@ std::future<std::unordered_map<std:, RegistryEntry>> getLocalRegistryIndex() {
                 throw std::runtime_error("Registry fetch failed: " + std::to_string(response.statusText) + "");
             }
 
-            const auto data = (response.json())<std:, RegistryEntry>;
+            const auto data = (response.json())<std::string, RegistryEntry>;
 
             // Cache the result
             registryCache = {
@@ -57,7 +58,7 @@ std::future<std::unordered_map<std:, RegistryEntry>> getLocalRegistryIndex() {
     }
 }
 
-std::future<void> installPlugin(const std:& pluginName, const std:& targetDir, std::optional<std:> version) {
+std::future<void> installPlugin(const std::string& pluginName, const std::string& targetDir, std::optional<std::string> version) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -96,7 +97,7 @@ std::future<void> installPlugin(const std:& pluginName, const std:& targetDir, s
                         "No installation method available for plugin " + pluginName
                         );
                     }
-                    } catch (error: std:) {
+                    } catch (error: std::string) {
                         std::cerr << "Failed to install plugin " + pluginName + ":" << error << std::endl;
                         throw error; // Re-throw to preserve specific error messages
                     }
@@ -107,7 +108,7 @@ std::future<void> installPlugin(const std:& pluginName, const std:& targetDir, s
     }
 }
 
-std::future<void> installFromNpm(const std:& packageName, const std:& version, const std:& targetDir) {
+std::future<void> installFromNpm(const std::string& packageName, const std::string& version, const std::string& targetDir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -124,7 +125,7 @@ std::future<void> installFromNpm(const std:& packageName, const std:& version, c
                 stdio: "pipe",
                 },
                 );
-                } catch (error: std:) {
+                } catch (error: std::string) {
                     std::cerr << "Failed to install npm package:" << error << std::endl;
                     throw;
                 }
@@ -135,7 +136,7 @@ std::future<void> installFromNpm(const std:& packageName, const std:& version, c
     }
 }
 
-std::future<void> installFromGit(const std:& gitRepo, const std:& version, const std:& targetDir) {
+std::future<void> installFromGit(const std::string& gitRepo, const std::string& version, const std::string& targetDir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -174,7 +175,7 @@ std::future<void> installFromGit(const std:& gitRepo, const std:& version, const
                                 // Clean up temp directory
                                 fs.remove(tempDir);
                             }
-                            } catch (error: std:) {
+                            } catch (error: std::string) {
                                 std::cerr << "Failed to install git repository:" << error << std::endl;
                                 throw;
                             }

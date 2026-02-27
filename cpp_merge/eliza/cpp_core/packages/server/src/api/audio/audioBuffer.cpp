@@ -1,4 +1,5 @@
 #include "audioBuffer.hpp"
+#include <string>
 #include <vector>
 #include <future>
 #include <iostream>
@@ -6,7 +7,7 @@
 
 namespace elizaos {
 
-std: getAudioMimeType(const std::vector<uint8_t>& audioBuffer) {
+std::string getAudioMimeType(const std::vector<uint8_t>& audioBuffer) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Check if this is a WAV file by looking for the RIFF header
@@ -38,13 +39,13 @@ std: getAudioMimeType(const std::vector<uint8_t>& audioBuffer) {
 
 std::future<std::variant<Buffer>;
 std::async std::function convertToAudioBuffer(
-  speechResponse: std:,
+  speechResponse: std::string,
   detectMimeType: true
 ): Promise<AudioProcessingResult>;
 std::async std::function convertToAudioBuffer(
-  speechResponse: std:,
+  speechResponse: std::string,
   detectMimeType?
-): Promise<Buffer, AudioProcessingResult>> convertToAudioBuffer(const std:& speechResponse) {
+): Promise<Buffer, AudioProcessingResult>> convertToAudioBuffer(const std::string& speechResponse) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -77,7 +78,7 @@ std::async std::function convertToAudioBuffer(
                         // Handle Node Readable Stream
                         resultBuffer = new Promise<Buffer>[&]((resolve, reject) {
                             const std::vector<std::vector<uint8_t>> chunks = [];
-                            speechResponse.on[&]("data", (chunk: std:) { return chunks.push_back(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk))
+                            speechResponse.on[&]("data", (chunk: std::string) { return chunks.push_back(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk))
                             ); };
                             speechResponse.on[&]("end", () { return resolve(Buffer.concat(chunks))); };
                             speechResponse.on[&]("error", (err: Error) { return reject(err)); };

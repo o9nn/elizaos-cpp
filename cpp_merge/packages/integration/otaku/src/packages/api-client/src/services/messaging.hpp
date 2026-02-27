@@ -65,8 +65,8 @@ public:
     virtual std::shared_ptr<Promise<object>> clearChannelHistory(std::shared_ptr<UUID> channelId);
     virtual std::shared_ptr<Promise<object>> addAgentToServer(std::shared_ptr<UUID> serverId, std::shared_ptr<UUID> agentId);
     virtual std::shared_ptr<Promise<object>> removeAgentFromServer(std::shared_ptr<UUID> serverId, std::shared_ptr<UUID> agentId);
-    virtual std::shared_ptr<Promise<std::shared_ptr<Message>>> postMessage(std::shared_ptr<UUID> channelId, string content, std::shared_ptr<MessageMetadata> metadata = undefined);
-    virtual std::shared_ptr<Promise<object>> getChannelMessages(std::shared_ptr<UUID> channelId, any params = undefined);
+    virtual std::shared_ptr<Promise<std::shared_ptr<Message>>> postMessage(std::shared_ptr<UUID> channelId, string content, std::shared_ptr<MessageMetadata> metadata = std::nullopt);
+    virtual std::shared_ptr<Promise<object>> getChannelMessages(std::shared_ptr<UUID> channelId, any params = std::nullopt);
     virtual std::shared_ptr<Promise<std::shared_ptr<Message>>> getMessage(std::shared_ptr<UUID> messageId);
     virtual std::shared_ptr<Promise<object>> deleteMessage(std::shared_ptr<UUID> channelId, std::shared_ptr<UUID> messageId);
     virtual std::shared_ptr<Promise<std::shared_ptr<Message>>> updateMessage(std::shared_ptr<UUID> messageId, string content);
@@ -84,7 +84,7 @@ public:
     virtual std::shared_ptr<Promise<object>> removeUserFromChannel(std::shared_ptr<UUID> channelId, std::shared_ptr<UUID> userId);
     virtual std::shared_ptr<Promise<std::shared_ptr<CreateJobResponse>>> createJob(std::shared_ptr<CreateJobRequest> params);
     virtual std::shared_ptr<Promise<std::shared_ptr<JobDetailsResponse>>> getJob(string jobId);
-    virtual std::shared_ptr<Promise<std::shared_ptr<JobListResponse>>> listJobs(std::shared_ptr<ListJobsParams> params = undefined);
+    virtual std::shared_ptr<Promise<std::shared_ptr<JobListResponse>>> listJobs(std::shared_ptr<ListJobsParams> params = std::nullopt);
     virtual std::shared_ptr<Promise<std::shared_ptr<JobHealthResponse>>> getJobsHealth();
     virtual std::shared_ptr<Promise<std::shared_ptr<JobDetailsResponse>>> pollJob(string jobId, double interval = 1000, double maxAttempts = 30);
     virtual std::shared_ptr<Promise<std::shared_ptr<JobDetailsResponse>>> createAndWaitForJob(std::shared_ptr<CreateJobRequest> params, double pollInterval = 1000, double maxAttempts = 30);

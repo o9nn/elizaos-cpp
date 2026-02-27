@@ -61,3 +61,4 @@ updated_issue_body.md
 # Auto-generated C++ code from TypeScript - not intended for commit
 # Uncomment the next line to exclude from version control:
 # excpp/
+cpp_merge/build

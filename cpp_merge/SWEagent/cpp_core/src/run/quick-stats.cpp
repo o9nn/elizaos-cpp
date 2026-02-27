@@ -8,7 +8,7 @@
 
 namespace elizaos {
 
-std::future<std:> quickStats(std: directory = ".") {
+std::future<std::string> quickStats(std::string directory = ".") {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto dir = path.resolve(directory);
@@ -23,14 +23,14 @@ std::future<std:> quickStats(std: directory = ".") {
 
     // Extract api_calls from each file
     const std::vector<double> apiCalls = [];
-    const auto filesByExitStatus = new Map<std:, std:[]>();
+    const auto filesByExitStatus = new Map<std::string, std::string[]>();
 
     for (const auto& filePath : trajFiles)
         try {
             const auto data = /* JSON::parse */ fs.readFileSync(filePath, "utf-8");
 
             // Extract the api_calls value
-            if (data.info.model_stats.api_calls != undefined) {
+            if (data.info.model_stats.api_calls != std::nullopt) {
                 apiCalls.push_back(data.info.model_stats.api_calls);
             }
 
@@ -79,12 +79,12 @@ std::future<std:> quickStats(std: directory = ".") {
 
 }
 
-std::vector<std::string> findTrajFiles(const std:& directory) {
+std::vector<std::string> findTrajFiles(const std::string& directory) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::vector<std::string> results = [];
 
-    std::function walk(dir: std:) {
+    std::function walk(dir: std::string) {
         const auto files = fs.readdirSync(dir);
 
         for (const auto& file : files)

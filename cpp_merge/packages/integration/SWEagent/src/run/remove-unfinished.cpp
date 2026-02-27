@@ -1,4 +1,5 @@
 #include "remove-unfinished.h"
+#include <string>
 
 std::shared_ptr<Promise<void>> removeUnfinished(string baseDir, boolean dryRun)
 {
@@ -14,12 +15,12 @@ std::shared_ptr<Promise<void>> removeUnfinished(string baseDir, boolean dryRun)
             if (!fs::statSync(directory)->isDirectory()) {
                 continue;
             }
-            if (!dirName->includes(std:("__"))) {
+            if (!dirName->includes(std::string("__"))) {
                 continue;
             }
             auto trajs = fs::readdirSync(directory)->filter([=](auto file) mutable
             {
-                return file->endsWith(std:(".traj"));
+                return file->endsWith(std::string(".traj"));
             }
             )->map([=](auto file) mutable
             {
@@ -27,38 +28,38 @@ std::shared_ptr<Promise<void>> removeUnfinished(string baseDir, boolean dryRun)
             }
             );
             if (trajs->get_length() == 0) {
-                logger->info(std:("No trajectories found in ") + directory + string_empty);
+                logger->info(std::string("No trajectories found in ") + directory + string_empty);
                 continue;
             }
             if (trajs->get_length() > 1) {
-                logger->warn(std:("Found multiple trajectories in ") + directory + std:(". Skipping."));
+                logger->warn(std::string("Found multiple trajectories in ") + directory + std::string(". Skipping."));
                 continue;
             }
             try
             {
                 auto traj = loadFile(const_(trajs)[0]);
-                if (OR((!traj), (type_of(traj) != std:("object")))) {
-                    logger->warn(std:("Invalid trajectory format in ") + const_(trajs)[0] + std:(". Adding to remove list."));
+                if (OR((!traj), (type_of(traj) != std::string("object")))) {
+                    logger->warn(std::string("Invalid trajectory format in ") + const_(trajs)[0] + std::string(". Adding to remove list."));
                     toRemove->push(directory);
                     continue;
                 }
                 auto submission = OR(((as<std::shared_ptr<TrajectoryFile>>(traj))->info["submission"]), (nullptr));
                 if (submission == nullptr) {
-                    logger->warn(std:("No submission found in ") + directory + std:(". Adding to remove list."));
+                    logger->warn(std::string("No submission found in ") + directory + std::string(". Adding to remove list."));
                     toRemove->push(directory);
                     continue;
                 }
             }
             catch (const any& error)
             {
-                logger->warn(std:("Error loading trajectory ") + const_(trajs)[0] + std:(": ") + error + std:(". Adding to remove list."));
+                logger->warn(std::string("Error loading trajectory ") + const_(trajs)[0] + std::string(": ") + error + std::string(". Adding to remove list."));
                 toRemove->push(directory);
                 continue;
             }
         }
     }
     if (dryRun) {
-        logger->info(std:("Would remove ") + toRemove->get_length() + std:(" unfinished trajectories."));
+        logger->info(std::string("Would remove ") + toRemove->get_length() + std::string(" unfinished trajectories."));
         for (auto& directory : toRemove)
         {
             logger->info(directory);
@@ -66,10 +67,10 @@ std::shared_ptr<Promise<void>> removeUnfinished(string baseDir, boolean dryRun)
     } else {
         for (auto& directory : toRemove)
         {
-            logger->info(std:("Removing ") + directory + string_empty);
+            logger->info(std::string("Removing ") + directory + string_empty);
             fs::rmSync(directory, object{
-                object::pair{std:("recursive"), true}, 
-                object::pair{std:("force"), true}
+                object::pair{std::string("recursive"), true}, 
+                object::pair{std::string("force"), true}
             });
         }
     }
@@ -77,7 +78,7 @@ std::shared_ptr<Promise<void>> removeUnfinished(string baseDir, boolean dryRun)
 };
 
 
-std::shared_ptr<AgentLogger> logger = getLogger(std:("remove_unfinished"));
+std::shared_ptr<AgentLogger> logger = getLogger(std::string("remove_unfinished"));
 
 void Main(void)
 {

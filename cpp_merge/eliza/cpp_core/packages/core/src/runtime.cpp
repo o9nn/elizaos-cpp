@@ -1,4 +1,5 @@
 #include "runtime.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -12,7 +13,7 @@ void if() {
 
 }
 
-void normalizeAction(const std:& actionString) {
+void normalizeAction(const std::string& actionString) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return actionString.toLowerCase().replace("_", "");

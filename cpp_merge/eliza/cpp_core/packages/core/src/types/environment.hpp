@@ -19,7 +19,7 @@ struct Component {
     UUID roomId;
     UUID worldId;
     UUID sourceEntityId;
-    std: type;
+    std::string type;
     double createdAt;
     Metadata data;
 };
@@ -86,7 +86,7 @@ struct Relationship {
     UUID agentId;
     std::vector<std::string> tags;
     Metadata metadata;
-    std::optional<std:> createdAt;
+    std::optional<std::string> createdAt;
 };
 
 

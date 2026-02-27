@@ -39,6 +39,6 @@ namespace elizaos {
 
       // Generate the first prompt
 
-std::future<std:> extractPluginNameFromMessage(IAgentRuntime runtime, const std:& text);
+std::future<std::string> extractPluginNameFromMessage(IAgentRuntime runtime, const std::string& text);
 
 } // namespace elizaos

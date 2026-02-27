@@ -1,24 +1,25 @@
 #include "aiProjectSummary.hpp"
+#include <string>
 
 std::shared_ptr<Promise<any>> generateProjectSummary(std::shared_ptr<RepositoryMetrics> metrics, std::shared_ptr<AISummaryConfig> config, object dateInfo, std::shared_ptr<IntervalType> intervalType)
 {
     auto apiKey = config->apiKey;
     if (!apiKey) {
-        throw any(std::make_shared<Error>(std:("No API key for AI summary generation")));
+        throw any(std::make_shared<Error>(std::string("No API key for AI summary generation")));
     }
     try
     {
         auto prompt = formatAnalysisPrompt(metrics, dateInfo, intervalType, config);
         auto maxTokens = calculateMaxTokens(prompt, intervalType, config);
-        console->log(std:("Max tokens: ") + maxTokens + std:(", intervalType: ") + intervalType + string_empty);
+        console->log(std::string("Max tokens: ") + maxTokens + std::string(", intervalType: ") + intervalType + string_empty);
         return std::async([=]() { callAIService(prompt, config, object{
-            object::pair{std:("maxTokens"), std:("maxTokens")}, 
-            object::pair{std:("model"), const_(config->models)[intervalType]}
+            object::pair{std::string("maxTokens"), std::string("maxTokens")}, 
+            object::pair{std::string("model"), const_(config->models)[intervalType]}
         }); });
     }
     catch (const any& error)
     {
-        console->error(std:("Error generating ") + intervalType + std:(" project analysis:"), error);
+        console->error(std::string("Error generating ") + intervalType + std::string(" project analysis:"), error);
         return nullptr;
     }
 };
@@ -27,9 +28,9 @@ std::shared_ptr<Promise<any>> generateProjectSummary(std::shared_ptr<RepositoryM
 double calculateMaxTokens(string prompt, std::shared_ptr<IntervalType> intervalType, std::shared_ptr<AISummaryConfig> config)
 {
     auto baseTokensByInterval = object{
-        object::pair{std:("month"), 3000}, 
-        object::pair{std:("week"), 1500}, 
-        object::pair{std:("day"), 1000}
+        object::pair{std::string("month"), 3000}, 
+        object::pair{std::string("week"), 1500}, 
+        object::pair{std::string("day"), 1000}
     };
     auto baseTokens = OR((const_(baseTokensByInterval)[intervalType]), (600));
     auto estimatedPromptTokens = prompt->get_length() / 4;
@@ -49,7 +50,7 @@ string formatAnalysisPrompt(std::shared_ptr<RepositoryMetrics> metrics, object d
     }
     )->slice(0, 5)->map([=](auto area) mutable
     {
-        return string_empty + area["area"] + std:(": ") + area["count"] + std:(" changes");
+        return string_empty + area["area"] + std::string(": ") + area["count"] + std::string(" changes");
     }
     );
     auto formatCompletedItems = [=](P0 type) mutable
@@ -60,87 +61,87 @@ string formatAnalysisPrompt(std::shared_ptr<RepositoryMetrics> metrics, object d
         }
         )->map([=](auto item) mutable
         {
-            return std:(" (PR #") + item["prNumber"] + std:(") ") + item["title"] + std:(". BODY: ") + item["body"] + string_empty;
+            return std::string(" (PR #") + item["prNumber"] + std::string(") ") + item["title"] + std::string(". BODY: ") + item["body"] + string_empty;
         }
-        )->join(std:("\
-- "))), (std:("None")));
+        )->join(std::string("\
+- "))), (std::string("None")));
     };
-    auto completedFeatures = formatCompletedItems(std:("feature"));
-    auto completedBugfixes = formatCompletedItems(std:("bugfix"));
-    auto completedRefactors = formatCompletedItems(std:("refactor"));
-    auto completedDocs = formatCompletedItems(std:("docs"));
-    auto completedTests = formatCompletedItems(std:("tests"));
-    auto completedOtherWork = formatCompletedItems(std:("other"));
+    auto completedFeatures = formatCompletedItems(std::string("feature"));
+    auto completedBugfixes = formatCompletedItems(std::string("bugfix"));
+    auto completedRefactors = formatCompletedItems(std::string("refactor"));
+    auto completedDocs = formatCompletedItems(std::string("docs"));
+    auto completedTests = formatCompletedItems(std::string("tests"));
+    auto completedOtherWork = formatCompletedItems(std::string("other"));
     auto newIssues = metrics->issues->newIssues;
     auto closedIssues = metrics->issues->closedIssues;
-    return std:("\
+    return std::string("\
 BACKGROUND CONTEXT:\
-  ") + config->projectContext + std:("\
+  ") + config->projectContext + std::string("\
 \
 INSTRUCTIONS:\
-Generate a detailed yet concise ") + intervalType + std:("ly development report for the ") + metrics->repository + std:(" repo during ") + timeframeTitle + std:(", based on the following github activity.\
+Generate a detailed yet concise ") + intervalType + std::string("ly development report for the ") + metrics->repository + std::string(" repo during ") + timeframeTitle + std::string(", based on the following github activity.\
   \
 COMPLETED WORK:\
   \
 - **Features Added:** \
-  - ") + completedFeatures + std:("\
+  - ") + completedFeatures + std::string("\
 - **Bug Fixes:** \
-  - ") + completedBugfixes + std:("\
+  - ") + completedBugfixes + std::string("\
 - **Code Refactoring:** \
-  - ") + completedRefactors + std:("\
+  - ") + completedRefactors + std::string("\
 - **Documentation Enhancements:** \
-  - ") + completedDocs + std:("\
+  - ") + completedDocs + std::string("\
 - **Tests Added:** \
-  - ") + completedTests + std:("\
+  - ") + completedTests + std::string("\
 - **Other Work:** \
-  - ") + completedOtherWork + std:("\
+  - ") + completedOtherWork + std::string("\
   Most Active Development Areas:\
-  - ") + topActiveAreas->join(std:("\
-- ")) + std:("\
+  - ") + topActiveAreas->join(std::string("\
+- ")) + std::string("\
 \
 NEW ISSUES:\
   - ") + newIssues->map([=](auto issue) mutable
     {
-        return std:("[#") + issue["number"] + std:("] ") + issue["title"] + std:(". BODY: ") + issue["body"]->slice(0, 240) + string_empty;
+        return std::string("[#") + issue["number"] + std::string("] ") + issue["title"] + std::string(". BODY: ") + issue["body"]->slice(0, 240) + string_empty;
     }
-    )->join(std:("\
-- ")) + std:("\
+    )->join(std::string("\
+- ")) + std::string("\
 \
 CLOSED ISSUES:\
   - ") + closedIssues->map([=](auto issue) mutable
     {
-        return std:("[#") + issue["number"] + std:("] ") + issue["title"] + std:(". BODY: ") + issue["body"]->slice(0, 240) + string_empty;
+        return std::string("[#") + issue["number"] + std::string("] ") + issue["title"] + std::string(". BODY: ") + issue["body"]->slice(0, 240) + string_empty;
     }
-    )->join(std:("\
-- ")) + std:("\
+    )->join(std::string("\
+- ")) + std::string("\
 \
 Format the report with the following sections:\
 \
-# <Project Name> ") + getIntervalTypeTitle(intervalType) + std:(" Update (") + timeframeTitle + std:(")\
+# <Project Name> ") + getIntervalTypeTitle(intervalType) + std::string(" Update (") + timeframeTitle + std::string(")\
 ## OVERVIEW \
-  Provide a high-level summary (max 500 characters, min 40 characters) highlighting the overall progress and major achievements of the ") + intervalType + std:(".\
+  Provide a high-level summary (max 500 characters, min 40 characters) highlighting the overall progress and major achievements of the ") + intervalType + std::string(".\
 \
 ## KEY TECHNICAL DEVELOPMENTS\
 \
-  Group/cluster the completed work thematically into ") + (intervalType == std:("month")) ? std:("8-12") : std:("2-4") + std:(" different headlines,\
+  Group/cluster the completed work thematically into ") + (intervalType == std::string("month")) ? std::string("8-12") : std::string("2-4") + std::string(" different headlines,\
   and concisely describe the key changes and improvements in point form. Reference\
-   the PR numbers that are most relevant to each headline, formatted as a Markdown link (e.g. [#123](https://github.com/") + metrics->repository + std:("/pull/123)).\
+   the PR numbers that are most relevant to each headline, formatted as a Markdown link (e.g. [#123](https://github.com/") + metrics->repository + std::string("/pull/123)).\
  \
 ## CLOSED ISSUES\
 \
-  Group related closed issues into  ") + (intervalType == std:("month")) ? std:("6-9") : std:("2-4") + std:(" different headlines and concisely summarize them.\
-   Reference the issue numbers that are most relevant to each headline, formatted as a Markdown link (e.g. [#123](https://github.com/") + metrics->repository + std:("/issues/123)).\
+  Group related closed issues into  ") + (intervalType == std::string("month")) ? std::string("6-9") : std::string("2-4") + std::string(" different headlines and concisely summarize them.\
+   Reference the issue numbers that are most relevant to each headline, formatted as a Markdown link (e.g. [#123](https://github.com/") + metrics->repository + std::string("/issues/123)).\
 \
 ## NEW ISSUES\
 \
-  Group the new issues thematically into ") + (intervalType == std:("month")) ? std:("6-9") : std:("2-4") + std:(" different headlines,\
+  Group the new issues thematically into ") + (intervalType == std::string("month")) ? std::string("6-9") : std::string("2-4") + std::string(" different headlines,\
   and concisely describe the key challenges and problems in point form. Reference\
-  the issue numbers that are most relevant to each headline, formatted as a Markdown link (e.g. [#123](https://github.com/") + metrics->repository + std:("/issues/123)).\
+  the issue numbers that are most relevant to each headline, formatted as a Markdown link (e.g. [#123](https://github.com/") + metrics->repository + std::string("/issues/123)).\
 \
- ") + (intervalType == std:("month")) ? std:("\
+ ") + (intervalType == std::string("month")) ? std::string("\
 ## SUMMARY\
 Close with a short summary of the months achievements\
-") : string_empty + std:("\
+") : string_empty + std::string("\
 \
 GUIDELINES:\
 - Be factual and precise; focus on concrete changes and verifiable data.\

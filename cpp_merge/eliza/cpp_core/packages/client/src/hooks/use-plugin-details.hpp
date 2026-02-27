@@ -18,31 +18,31 @@ namespace elizaos {
 
 // Define the structure of plugin secrets requirements
 struct PluginSecret {
-    std: name;
-    std::optional<std:> description;
+    std::string name;
+    std::optional<std::string> description;
     bool required;
-    std::optional<std:> example;
+    std::optional<std::string> example;
 };
 
 struct PluginPackageJson {
-    std: name;
-    std: version;
-    std::optional<std:> description;
+    std::string name;
+    std::string version;
+    std::optional<std::string> description;
     std::optional<{> elizaos;
     std::optional<std::vector<PluginSecret>> secrets;
-    std::optional<std:[]; // Legacy format - just array of secret names> requiredSecrets;
+    std::optional<std::string[]; // Legacy format - just array of secret names> requiredSecrets;
     std::optional<{> agentConfig;
-    std::optional<std:> pluginType;
+    std::optional<std::string> pluginType;
     std::optional<Record<> pluginParameters;
-    std: type;
-    std::optional<std:> description;
+    std::string type;
+    std::optional<std::string> description;
     bool required;
     std::optional<bool> sensitive;
-    std::optional<std:> example;
+    std::optional<std::string> example;
 };
 
 struct PluginDetails {
-    std: name;
+    std::string name;
     std::vector<PluginSecret> requiredSecrets;
 };
 
@@ -50,20 +50,20 @@ struct PluginDetails {
 
 // Registry types (same as in use-plugins.ts)
 struct GitVersionInfo {
-    std: | null version;
-    std: | null branch;
+    std::string | null version;
+    std::string | null branch;
 };
 
 struct PluginGitInfo {
-    std: repo;
+    std::string repo;
     GitVersionInfo v0;
     GitVersionInfo v1;
 };
 
 struct PluginNpmInfo {
-    std: repo;
-    std: | null v0;
-    std: | null v1;
+    std::string repo;
+    std::string | null v0;
+    std::string | null v1;
 };
 
 struct PluginSupport {
@@ -78,8 +78,8 @@ struct PluginInfo {
 };
 
 struct RegistryResponse {
-    std: lastUpdatedAt;
-    std::unordered_map<std:, PluginInfo> registry;
+    std::string lastUpdatedAt;
+    std::unordered_map<std::string, PluginInfo> registry;
 };
 
 /**
@@ -90,12 +90,12 @@ std::future<RegistryResponse | null> fetchPluginRegistry();
 /**
  * Convert plugin name for registry lookup - handles both @elizaos and @elizaos-plugins formats
  */
-std: getRegistryPluginName(const std:& pluginName);
+std::string getRegistryPluginName(const std::string& pluginName);
 
 /**
  * Check if a plugin is a core plugin that doesn't need external fetching
  */
-bool isCorePlugin(const std:& pluginName);
+bool isCorePlugin(const std::string& pluginName);
 
 /**
  * Get GitHub repo path from registry data
@@ -104,12 +104,12 @@ bool isCorePlugin(const std:& pluginName);
 /**
  * Fetches package.json for a single plugin from GitHub
  */
-std::future<PluginPackageJson | null> fetchPluginPackageJson(const std:& pluginName, std: | null repoPath);
+std::future<PluginPackageJson | null> fetchPluginPackageJson(const std::string& pluginName, std::string | null repoPath);
 
 /**
  * Extract required secrets from package.json
  */
-std::vector<PluginSecret> extractRequiredSecrets(const std:& pluginName, PluginPackageJson | null packageJson);
+std::vector<PluginSecret> extractRequiredSecrets(const std::string& pluginName, PluginPackageJson | null packageJson);
 
 /**
  * Hook to fetch plugin details including required secrets
@@ -124,7 +124,7 @@ void useRequiredSecrets(const std::vector<std::string>& pluginNames);
 /**
  * Check if all required secrets are provided
  */
-void validateRequiredSecrets(const std::vector<PluginSecret>& requiredSecrets, Record<std: providedSecrets, auto std: | null>); {
+void validateRequiredSecrets(const std::vector<PluginSecret>& requiredSecrets, Record<std::string providedSecrets, auto std::string | null>); {
 
 
 } // namespace elizaos

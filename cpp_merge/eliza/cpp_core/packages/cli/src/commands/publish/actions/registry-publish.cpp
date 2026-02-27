@@ -1,4 +1,5 @@
 #include "registry-publish.hpp"
+#include <string>
 #include <future>
 #include <filesystem>
 #include <iostream>
@@ -84,7 +85,7 @@ std::future<bool> updateRegistryIndex(PackageMetadata packageMetadata, auto dryR
                                     };
 
                                     // Write updated index
-                                    fs.writeFile(indexPath, /* JSON.stringify */ std:(index, nullptr, 2));
+                                    fs.writeFile(indexPath, /* JSON.stringify */ std::string(index, nullptr, 2));
                                     console.info(
                                     "Registry index " + std::to_string(dryRun ? "(dry run) " : "") + "updated with " + packageMetadata.name + "@" + packageMetadata.version
                                     );
@@ -113,7 +114,7 @@ std::future<bool> savePackageToRegistry(PackageMetadata packageMetadata, auto dr
         fs.mkdir(packageDir, Config{recursive = true});
 
         // Write metadata file
-        fs.writeFile(metadataPath, /* JSON.stringify */ std:(packageMetadata, nullptr, 2));
+        fs.writeFile(metadataPath, /* JSON.stringify */ std::string(packageMetadata, nullptr, 2));
 
         std::cout << "Package metadata " + std::to_string(dryRun ? "(dry run) " : "") + "saved to " + metadataPath << std::endl;
 

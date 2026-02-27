@@ -1,31 +1,32 @@
 #include "types.hpp"
+#include <string>
 
 any UserScoreMetricsSchema = z->object(object{
-    object::pair{std:("pullRequests"), z->object(object{
-        object::pair{std:("total"), z->number()}, 
-        object::pair{std:("merged"), z->number()}, 
-        object::pair{std:("open"), z->number()}, 
-        object::pair{std:("closed"), z->number()}
+    object::pair{std::string("pullRequests"), z->object(object{
+        object::pair{std::string("total"), z->number()}, 
+        object::pair{std::string("merged"), z->number()}, 
+        object::pair{std::string("open"), z->number()}, 
+        object::pair{std::string("closed"), z->number()}
     })}, 
-    object::pair{std:("issues"), z->object(object{
-        object::pair{std:("total"), z->number()}, 
-        object::pair{std:("open"), z->number()}, 
-        object::pair{std:("closed"), z->number()}
+    object::pair{std::string("issues"), z->object(object{
+        object::pair{std::string("total"), z->number()}, 
+        object::pair{std::string("open"), z->number()}, 
+        object::pair{std::string("closed"), z->number()}
     })}, 
-    object::pair{std:("reviews"), z->object(object{
-        object::pair{std:("total"), z->number()}, 
-        object::pair{std:("approved"), z->number()}, 
-        object::pair{std:("changesRequested"), z->number()}, 
-        object::pair{std:("commented"), z->number()}
+    object::pair{std::string("reviews"), z->object(object{
+        object::pair{std::string("total"), z->number()}, 
+        object::pair{std::string("approved"), z->number()}, 
+        object::pair{std::string("changesRequested"), z->number()}, 
+        object::pair{std::string("commented"), z->number()}
     })}, 
-    object::pair{std:("comments"), z->object(object{
-        object::pair{std:("pullRequests"), z->number()}, 
-        object::pair{std:("issues"), z->number()}
+    object::pair{std::string("comments"), z->object(object{
+        object::pair{std::string("pullRequests"), z->number()}, 
+        object::pair{std::string("issues"), z->number()}
     })}, 
-    object::pair{std:("codeChanges"), z->object(object{
-        object::pair{std:("additions"), z->number()}, 
-        object::pair{std:("deletions"), z->number()}, 
-        object::pair{std:("files"), z->number()}
+    object::pair{std::string("codeChanges"), z->object(object{
+        object::pair{std::string("additions"), z->number()}, 
+        object::pair{std::string("deletions"), z->number()}, 
+        object::pair{std::string("files"), z->number()}
     })}
 });
 

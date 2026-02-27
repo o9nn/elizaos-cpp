@@ -1,4 +1,5 @@
 #include "authMiddleware.hpp"
+#include <string>
 
 any apiKeyAuthMiddleware(std::shared_ptr<Request> req, std::shared_ptr<Response> res, std::shared_ptr<NextFunction> next)
 {
@@ -6,13 +7,13 @@ any apiKeyAuthMiddleware(std::shared_ptr<Request> req, std::shared_ptr<Response>
     if (!serverAuthToken) {
         return next();
     }
-    if (req->method == std:("OPTIONS")) {
+    if (req->method == std::string("OPTIONS")) {
         return next();
     }
-    auto apiKey = const_(req->headers)[std:("x-api-key")];
+    auto apiKey = const_(req->headers)[std::string("x-api-key")];
     if (OR((!apiKey), (apiKey != serverAuthToken))) {
-        logger->warn(std:("Unauthorized access attempt: Missing or invalid X-API-KEY from ") + req->ip + string_empty);
-        return res->status(401)->send(std:("Unauthorized: Invalid or missing X-API-KEY"));
+        logger->warn(std::string("Unauthorized access attempt: Missing or invalid X-API-KEY from ") + req->ip + string_empty);
+        return res->status(401)->send(std::string("Unauthorized: Invalid or missing X-API-KEY"));
     }
     next();
 };

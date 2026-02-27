@@ -4,7 +4,7 @@
 #include "./prisma.h"
 // Using alias removed (invalid transpilation)
 
-void trackSearch(string query, string userId = undefined);
+void trackSearch(string query, string userId = std::nullopt);
 
 any getPopularSearches(double limit = 10);
 

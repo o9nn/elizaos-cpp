@@ -21,7 +21,7 @@ namespace elizaos {
  *
  * @param _runtime - The runtime environment of the bot agent.
  * @param _message - The memory object containing message data.
- * @returns An object containing the current date and time data, human-readable date and time std:,
+ * @returns An object containing the current date and time data, human-readable date and time std::string,
  * and a text response with the current date and time information.
  */
 /**

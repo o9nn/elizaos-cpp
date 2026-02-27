@@ -1,4 +1,5 @@
 #include "display.hpp"
+#include <string>
 
 std::shared_ptr<Promise<void>> listAgents(std::shared_ptr<OptionValues> opts)
 {
@@ -8,19 +9,19 @@ std::shared_ptr<Promise<void>> listAgents(std::shared_ptr<OptionValues> opts)
         auto agentData = agents->map([=](auto agent) mutable
         {
             return (object{
-                object::pair{std:("Name"), agent->name}, 
-                object::pair{std:("ID"), agent->id}, 
-                object::pair{std:("Status"), OR((agent->status), (std:("unknown")))}
+                object::pair{std::string("Name"), agent->name}, 
+                object::pair{std::string("ID"), agent->id}, 
+                object::pair{std::string("Status"), OR((agent->status), (std::string("unknown")))}
             });
         }
         );
         if (opts->json) {
             console->info(JSON->stringify(agentData, nullptr, 2));
         } else {
-            console->info(std:("\
+            console->info(std::string("\
 Available agents:"));
             if (agentData->get_length() == 0) {
-                console->info(std:("No agents found"));
+                console->info(std::string("No agents found"));
             } else {
                 console->table(agentData);
             }

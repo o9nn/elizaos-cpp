@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_CORE_SRC___TESTS___SERVICES_BY_TYPE_TEST_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_CORE_SRC___TESTS___SERVICES_BY_TYPE_TEST_H
 #include "core.hpp"
+#include <string>
 #include "bun:test.h"
 #include "../runtime.h"
 #include "../types.h"
@@ -20,7 +21,7 @@ public:
 
     string serviceType = ServiceType["WALLET"];
 
-    string capabilityDescription = std:("Mock wallet service 1");
+    string capabilityDescription = std::string("Mock wallet service 1");
 
     MockWalletService1(std::shared_ptr<IAgentRuntime> runtime);
     static std::shared_ptr<Promise<std::shared_ptr<MockWalletService1>>> start(std::shared_ptr<IAgentRuntime> runtime);
@@ -34,7 +35,7 @@ public:
 
     string serviceType = ServiceType["WALLET"];
 
-    string capabilityDescription = std:("Mock wallet service 2");
+    string capabilityDescription = std::string("Mock wallet service 2");
 
     MockWalletService2(std::shared_ptr<IAgentRuntime> runtime);
     static std::shared_ptr<Promise<std::shared_ptr<MockWalletService2>>> start(std::shared_ptr<IAgentRuntime> runtime);
@@ -48,7 +49,7 @@ public:
 
     string serviceType = ServiceType["PDF"];
 
-    string capabilityDescription = std:("Mock PDF service");
+    string capabilityDescription = std::string("Mock PDF service");
 
     MockPdfService(std::shared_ptr<IAgentRuntime> runtime);
     static std::shared_ptr<Promise<std::shared_ptr<MockPdfService>>> start(std::shared_ptr<IAgentRuntime> runtime);

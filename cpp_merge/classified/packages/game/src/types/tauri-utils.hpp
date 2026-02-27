@@ -10,7 +10,7 @@ array<std::shared_ptr<LogEntry>> extractLogsFromResponse(any response);
 any isSuccessfulTauriResponse(any response);
 
 template <typename T>
-array<T> extractDataFromResponse(any response, any dataKey = undefined);
+array<T> extractDataFromResponse(any response, any dataKey = std::nullopt);
 
 array<Record<string, any>> convertToRecordArray(array<any> data);
 

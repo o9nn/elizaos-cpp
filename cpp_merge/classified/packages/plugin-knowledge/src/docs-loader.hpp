@@ -10,7 +10,7 @@
 
 string getKnowledgePath();
 
-std::shared_ptr<Promise<object>> loadDocsFromPath(std::shared_ptr<KnowledgeService> service, std::shared_ptr<UUID> agentId, std::shared_ptr<UUID> worldId = undefined);
+std::shared_ptr<Promise<object>> loadDocsFromPath(std::shared_ptr<KnowledgeService> service, std::shared_ptr<UUID> agentId, std::shared_ptr<UUID> worldId = std::nullopt);
 
 array<string> getAllFiles(string dirPath, array<string> files = array<string>());
 

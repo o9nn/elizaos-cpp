@@ -1,8 +1,9 @@
 #include "experienceRAG.hpp"
+#include <string>
 
 std::shared_ptr<Provider> experienceRAGProvider = object{
-    object::pair{std:("name"), std:("experienceRAG")}, 
-    object::pair{std:("description"), std:("Searches past experiences for relevant learnings and insights")}, 
+    object::pair{std::string("name"), std::string("experienceRAG")}, 
+    object::pair{std::string("description"), std::string("Searches past experiences for relevant learnings and insights")}, 
 };
 
 void Main(void)

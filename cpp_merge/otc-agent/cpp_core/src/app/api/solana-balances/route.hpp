@@ -26,7 +26,7 @@ namespace elizaos {
 // Bulk metadata cache for Solana tokens (permanent - metadata doesn't change)
 struct SolanaMetadataCache {
     Record< metadata;
-    std: name;
+    std::string name;
 };
 
 
@@ -35,51 +35,51 @@ struct SolanaPriceCache {
     double cachedAt;
 };
 
-std::future<void> setSolanaPriceCache(const std::unordered_map<std:, double>& prices);
+std::future<void> setSolanaPriceCache(const std::unordered_map<std::string, double>& prices);
 
 struct CachedWalletResponse {
-    std: mint;
+    std::string mint;
     double amount;
     double decimals;
-    std: symbol;
-    std: name;
-    std: logoURI;
+    std::string symbol;
+    std::string name;
+    std::string logoURI;
     double priceUsd;
     double balanceUsd;
     double cachedAt;
 };
 
-std::future<void> setCachedWalletResponse(const std:& address, CachedWalletResponse["tokens"] tokens);
+std::future<void> setCachedWalletResponse(const std::string& address, CachedWalletResponse["tokens"] tokens);
 
 // Alternative IPFS gateways to try if main one fails
 
 /**
  * Try to fetch image from multiple IPFS gateways
  */
-std::future<std:> fetchWithIpfsGatewayFallback(const std:& imageUrl);
+std::future<std::string> fetchWithIpfsGatewayFallback(const std::string& imageUrl);
 
 /**
  * Cache an image URL to Vercel Blob storage
  * Returns the cached blob URL, or null if caching fails (don't return broken IPFS URLs)
  */
-std::future<std:> cacheImageToBlob(const std:& imageUrl);
+std::future<std::string> cacheImageToBlob(const std::string& imageUrl);
 
-std: getExtensionFromUrl(const std:& url);
+std::string getExtensionFromUrl(const std::string& url);
 
 /**
  * Codex GraphQL response types
  */
 struct CodexBalanceItem {
-    std: balance;
-    std: balanceUsd;
+    std::string balance;
+    std::string balanceUsd;
     double shiftedBalance;
-    std: tokenAddress;
-    std: name;
-    std: symbol;
-    std: address;
+    std::string tokenAddress;
+    std::string name;
+    std::string symbol;
+    std::string address;
     double decimals;
     double networkId;
-    std: imageSmallUrl;
+    std::string imageSmallUrl;
 };
 
 /**

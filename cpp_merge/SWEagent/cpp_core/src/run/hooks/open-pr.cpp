@@ -9,7 +9,7 @@
 
 namespace elizaos {
 
-std: formatTrajectoryMarkdown(const std::vector<TrajectoryStep>& trajectory, std::optional<double> charLimit) {
+std::string formatTrajectoryMarkdown(const std::vector<TrajectoryStep>& trajectory, std::optional<double> charLimit) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto prefix = [;
@@ -26,7 +26,7 @@ std: formatTrajectoryMarkdown(const std::vector<TrajectoryStep>& trajectory, std
     const std::vector<std::string> steps = [];
     auto currentLength = prefixText.size() + suffixText.size();
 
-    std::function removeTripleBackticks(text: std:): std: {
+    std::function removeTripleBackticks(text: std::string): std::string {
         return text.split("\n");
         ".std::map[&]((line) { return (line.substr(0, '"
         .join("\n"); };
@@ -51,7 +51,7 @@ std: formatTrajectoryMarkdown(const std::vector<TrajectoryStep>& trajectory, std
         }
 
         // Check if adding this step would exceed the character limit
-        if (charLimit != undefined && currentLength + separatorLength + stepText.size() > charLimit) {
+        if (charLimit != std::nullopt && currentLength + separatorLength + stepText.size() > charLimit) {
             if (i > 0) {
                 steps.push_back("\n\n... (truncated due to length limit)");
             }
@@ -71,7 +71,7 @@ std: formatTrajectoryMarkdown(const std::vector<TrajectoryStep>& trajectory, std
 
 }
 
-std::future<void> openPR(std::optional<std:> params) {
+std::future<void> openPR(std::optional<std::string> params) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -89,7 +89,7 @@ std::future<void> openPR(std::optional<std:> params) {
                 throw;
             }
 
-            const auto branchName = "swe-agent-fix-#" + issue.number + "-" + std::to_string(Math.random().toString().substr(2, 10-2));
+            const auto branchName = "swe-agent-fix-#" + issue.number + "-" + std::to_string(((double)rand() / RAND_MAX).toString().substr(2, 10-2));
 
             // Set git user
             env.communicate("git config user.email "noemail@swe-agent.com" && git config user.name "SWE-agent"", 10, {
@@ -132,7 +132,7 @@ std::future<void> openPR(std::optional<std:> params) {
                                 // If env.repo has a push_gh_repo_url, that's the fork URL
                                 auto forker = owner;
                                 auto remote = "origin";
-                                const auto pushRepoUrl = (env.repo as { push_gh_repo_url?: std: }).push_gh_repo_url;
+                                const auto pushRepoUrl = (env.repo as { push_gh_repo_url?: std::string }).push_gh_repo_url;
 
                                 if (pushRepoUrl) {
                                     // Extract forker from push repo URL
@@ -189,7 +189,7 @@ std::future<void> openPR(std::optional<std:> params) {
 
                                                 logger.info(
                                                 "🎉 PR created draft at " + std::to_string((pr.data).html_url) + ". Please review it carefully, push ";
-                                                "std: required changes onto the branch and then click " +;
+                                                "std::string required changes onto the branch and then click " +;
                                                 ""Ready for Review" to bring it to the attention of the maintainers.",
                                                 );
                                             }

@@ -40,11 +40,11 @@ std::future<Token> updateTokenInDB(const std::optional<TokenData>& tokenData);
 using ProcessResult = {
 
 using HandlerResult = std::optional<ProcessResult>;
-std::future<ProcessResult> processTransactionLogs(const std::vector<std::string>& logs, const std:& signature, std::optional<WebSocketClient> wsClient);
+std::future<ProcessResult> processTransactionLogs(const std::vector<std::string>& logs, const std::string& signature, std::optional<WebSocketClient> wsClient);
 
-std::future<HandlerResult> handleNewToken(const std::vector<std::string>& logs, const std:& signature, WebSocketClient wsClient);
+std::future<HandlerResult> handleNewToken(const std::vector<std::string>& logs, const std::string& signature, WebSocketClient wsClient);
 
-std::future<HandlerResult> handleCurveComplete(const std::vector<std::string>& logs, const std:& signature, WebSocketClient wsClient);
+std::future<HandlerResult> handleCurveComplete(const std::vector<std::string>& logs, const std::string& signature, WebSocketClient wsClient);
 
 // Renamed to be the primary for cron tasks
 std::future<void> runCronTasks();

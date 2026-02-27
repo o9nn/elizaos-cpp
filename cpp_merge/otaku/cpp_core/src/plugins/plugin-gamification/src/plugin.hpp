@@ -29,13 +29,13 @@ namespace elizaos {
 
 
 // Leaderboard route handlers
-std::future<void> handleGetLeaderboard(const std:& req, const std:& res, IAgentRuntime runtime);
+std::future<void> handleGetLeaderboard(const std::string& req, const std::string& res, IAgentRuntime runtime);
 
 // User summary route handler
-std::future<void> handleGetUserSummary(const std:& req, const std:& res, IAgentRuntime runtime);
+std::future<void> handleGetUserSummary(const std::string& req, const std::string& res, IAgentRuntime runtime);
 
 // Referral code route handler
-std::future<void> handleGetReferralCode(const std:& req, const std:& res, IAgentRuntime runtime);
+std::future<void> handleGetReferralCode(const std::string& req, const std::string& res, IAgentRuntime runtime);
 
   // Note: Plugin routes are automatically protected by the general API rate limit middleware
   // (1000 requests per 15 minutes per IP) applied in createApiRouter.

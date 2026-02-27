@@ -8,7 +8,7 @@
 
 namespace elizaos {
 
-std::future<void> runBunCommand(const std::vector<std::string>& args, const std:& cwd) {
+std::future<void> runBunCommand(const std::vector<std::string>& args, const std::string& cwd) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -28,7 +28,7 @@ std::future<void> runBunCommand(const std::vector<std::string>& args, const std:
 
         try {
             execa("bun", finalArgs, { cwd, stdio: "inherit" });
-            } catch (error: std:) {
+            } catch (error: std::string) {
                 if (error.code == 'ENOENT' || error.message.count('bun: command not found') > 0) {
                     throw std::runtime_error("Bun command not found. " + std::to_string(displayBunInstallationTipCompact()) + "");
                 }

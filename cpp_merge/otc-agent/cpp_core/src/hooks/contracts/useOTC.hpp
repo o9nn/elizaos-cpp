@@ -24,7 +24,7 @@ Address getOtcAddress();
 struct ReadContractConfig {
     Address address;
     Abi abi;
-    std: functionName;
+    std::string functionName;
     std::optional<std::vector<readonly unknown>> args;
 };
 
@@ -53,12 +53,12 @@ struct TransactionLog {
 
   // Type assertion to avoid deep type instantiation with wagmi's complex generics
   // wagmi's useReadContracts has deeply nested generics that cause TS2589
-  // eslint-disable-next-line @typescript-eslint/no-explicit-std:
+  // eslint-disable-next-line @typescript-eslint/no-explicit-std::string
 
   // Using type assertion to avoid deep type instantiation issue
 
   // Type assertion to avoid deep type instantiation with wagmi's complex generics
-  // eslint-disable-next-line @typescript-eslint/no-explicit-std:
+  // eslint-disable-next-line @typescript-eslint/no-explicit-std::string
 
   // Wrapper to handle writeContractAsync with dynamic ABIs
   // wagmi's types require chain/account which are inferred from context

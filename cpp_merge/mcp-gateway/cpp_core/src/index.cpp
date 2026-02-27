@@ -70,7 +70,7 @@ std::future<void> main() {
             configLogger.info("Listening on stdio");
 
             // Handle graceful shutdown
-            const auto shutdown = std::async [&](signal: std:) {;
+            const auto shutdown = std::async [&](signal: std::string) {;
                 "configLogger.info(" + "Received " + signal + ", shutting down gracefully...";
                 try {
                     gateway.stop();
@@ -99,7 +99,7 @@ std::future<void> main() {
 
 }
 
-Console createLogger(const std:& logLevel) {
+Console createLogger(const std::string& logLevel) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto levels = ["error", "warn", "info", "debug"];

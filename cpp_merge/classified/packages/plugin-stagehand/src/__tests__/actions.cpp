@@ -1,53 +1,54 @@
 #include "actions.test.h"
+#include <string>
 
 void Main(void)
 {
-    mock->module(std:("../service"), [=]() mutable
+    mock->module(std::string("../service"), [=]() mutable
     {
         return (object{
-            object::pair{std:("StagehandService"), object{
-                object::pair{std:("serviceType"), std:("STAGEHAND")}, 
-                object::pair{std:("start"), mock()}, 
-                object::pair{std:("stop"), mock()}
+            object::pair{std::string("StagehandService"), object{
+                object::pair{std::string("serviceType"), std::string("STAGEHAND")}, 
+                object::pair{std::string("start"), mock()}, 
+                object::pair{std::string("stop"), mock()}
             }}, 
-            object::pair{std:("BrowserSession"), mock()->mockImplementation([=](auto id) mutable
+            object::pair{std::string("BrowserSession"), mock()->mockImplementation([=](auto id) mutable
             {
                 return (object{
-                    object::pair{std:("id"), std:("id")}, 
-                    object::pair{std:("createdAt"), std::make_shared<Date>()}
+                    object::pair{std::string("id"), std::string("id")}, 
+                    object::pair{std::string("createdAt"), std::make_shared<Date>()}
                 });
             }
             )}
         });
     }
     );
-    mock->module(std:("../websocket-client"), [=]() mutable
+    mock->module(std::string("../websocket-client"), [=]() mutable
     {
         return (object{
-            object::pair{std:("StagehandWebSocketClient"), mock()->mockImplementation([=]() mutable
+            object::pair{std::string("StagehandWebSocketClient"), mock()->mockImplementation([=]() mutable
             {
                 return (object{
-                    object::pair{std:("navigate"), mock()->mockResolvedValue(object{
-                        object::pair{std:("url"), std:("https://example.com")}, 
-                        object::pair{std:("title"), std:("Example Domain")}
+                    object::pair{std::string("navigate"), mock()->mockResolvedValue(object{
+                        object::pair{std::string("url"), std::string("https://example.com")}, 
+                        object::pair{std::string("title"), std::string("Example Domain")}
                     })}, 
-                    object::pair{std:("getState"), mock()->mockResolvedValue(object{
-                        object::pair{std:("url"), std:("https://example.com")}, 
-                        object::pair{std:("title"), std:("Example Domain")}, 
-                        object::pair{std:("sessionId"), std:("test-session-1")}, 
-                        object::pair{std:("createdAt"), std::make_shared<Date>()}
+                    object::pair{std::string("getState"), mock()->mockResolvedValue(object{
+                        object::pair{std::string("url"), std::string("https://example.com")}, 
+                        object::pair{std::string("title"), std::string("Example Domain")}, 
+                        object::pair{std::string("sessionId"), std::string("test-session-1")}, 
+                        object::pair{std::string("createdAt"), std::make_shared<Date>()}
                     })}, 
-                    object::pair{std:("goBack"), mock()->mockResolvedValue(object{
-                        object::pair{std:("url"), std:("https://previous.com")}, 
-                        object::pair{std:("title"), std:("Previous Page")}
+                    object::pair{std::string("goBack"), mock()->mockResolvedValue(object{
+                        object::pair{std::string("url"), std::string("https://previous.com")}, 
+                        object::pair{std::string("title"), std::string("Previous Page")}
                     })}, 
-                    object::pair{std:("goForward"), mock()->mockResolvedValue(object{
-                        object::pair{std:("url"), std:("https://next.com")}, 
-                        object::pair{std:("title"), std:("Next Page")}
+                    object::pair{std::string("goForward"), mock()->mockResolvedValue(object{
+                        object::pair{std::string("url"), std::string("https://next.com")}, 
+                        object::pair{std::string("title"), std::string("Next Page")}
                     })}, 
-                    object::pair{std:("refresh"), mock()->mockResolvedValue(object{
-                        object::pair{std:("url"), std:("https://current.com")}, 
-                        object::pair{std:("title"), std:("Current Page")}
+                    object::pair{std::string("refresh"), mock()->mockResolvedValue(object{
+                        object::pair{std::string("url"), std::string("https://current.com")}, 
+                        object::pair{std::string("title"), std::string("Current Page")}
                     })}
                 });
             }
@@ -55,7 +56,7 @@ void Main(void)
         });
     }
     );
-    describe(std:("BROWSER_NAVIGATE action"), [=]() mutable
+    describe(std::string("BROWSER_NAVIGATE action"), [=]() mutable
     {
         shared<std::shared_ptr<IAgentRuntime>> mockRuntime;
         shared<any> mockService;
@@ -66,69 +67,69 @@ void Main(void)
         beforeEach([=]() mutable
         {
             setupLoggerSpies();
-            mockSession = std::make_shared<BrowserSession>(std:("test-session-1"));
-            mockClient = std::make_shared<StagehandWebSocketClient>(std:("ws://localhost:3456"));
+            mockSession = std::make_shared<BrowserSession>(std::string("test-session-1"));
+            mockClient = std::make_shared<StagehandWebSocketClient>(std::string("ws://localhost:3456"));
             mockService = object{
-                object::pair{std:("getCurrentSession"), mock()->mockResolvedValue(mockSession)}, 
-                object::pair{std:("createSession"), mock()->mockResolvedValue(mockSession)}, 
-                object::pair{std:("getClient"), mock()->mockReturnValue(mockClient)}, 
-                object::pair{std:("isInitialized"), true}
+                object::pair{std::string("getCurrentSession"), mock()->mockResolvedValue(mockSession)}, 
+                object::pair{std::string("createSession"), mock()->mockResolvedValue(mockSession)}, 
+                object::pair{std::string("getClient"), mock()->mockReturnValue(mockClient)}, 
+                object::pair{std::string("isInitialized"), true}
             };
             mockRuntime = createMockRuntime(object{
-                object::pair{std:("getService"), mock()->mockReturnValue(mockService)}
+                object::pair{std::string("getService"), mock()->mockReturnValue(mockService)}
             });
             mockCallback = mock();
             browserNavigateAction = stagehandPlugin->actions->find([=](auto action) mutable
             {
-                return action["name"] == std:("BROWSER_NAVIGATE");
+                return action["name"] == std::string("BROWSER_NAVIGATE");
             }
             );
         }
         );
-        describe(std:("validate"), [=]() mutable
+        describe(std::string("validate"), [=]() mutable
         {
-            it(std:("should validate when URL is found in message"), [=]() mutable
+            it(std::string("should validate when URL is found in message"), [=]() mutable
             {
                 auto message = createMockMemory(object{
-                    object::pair{std:("content"), object{
-                        object::pair{std:("text"), std:("Navigate to https://google.com")}, 
-                        object::pair{std:("source"), std:("test")}
+                    object::pair{std::string("content"), object{
+                        object::pair{std::string("text"), std::string("Navigate to https://google.com")}, 
+                        object::pair{std::string("source"), std::string("test")}
                     }}
                 });
                 auto isValid = std::async([=]() { browserNavigateAction["validate"](mockRuntime, as<std::shared_ptr<Memory>>(message), as<std::shared_ptr<State>>(object{})); });
                 expect(isValid)->toBe(true);
             }
             );
-            it(std:("should validate domain without protocol"), [=]() mutable
+            it(std::string("should validate domain without protocol"), [=]() mutable
             {
                 auto message = createMockMemory(object{
-                    object::pair{std:("content"), object{
-                        object::pair{std:("text"), std:("Go to example.com")}, 
-                        object::pair{std:("source"), std:("test")}
+                    object::pair{std::string("content"), object{
+                        object::pair{std::string("text"), std::string("Go to example.com")}, 
+                        object::pair{std::string("source"), std::string("test")}
                     }}
                 });
                 auto isValid = std::async([=]() { browserNavigateAction["validate"](mockRuntime, as<std::shared_ptr<Memory>>(message), as<std::shared_ptr<State>>(object{})); });
                 expect(isValid)->toBe(true);
             }
             );
-            it(std:("should validate URL in quotes"), [=]() mutable
+            it(std::string("should validate URL in quotes"), [=]() mutable
             {
                 auto message = createMockMemory(object{
-                    object::pair{std:("content"), object{
-                        object::pair{std:("text"), std:("Open "https://example.com" in browser")}, 
-                        object::pair{std:("source"), std:("test")}
+                    object::pair{std::string("content"), object{
+                        object::pair{std::string("text"), std::string("Open "https://example.com" in browser")}, 
+                        object::pair{std::string("source"), std::string("test")}
                     }}
                 });
                 auto isValid = std::async([=]() { browserNavigateAction["validate"](mockRuntime, as<std::shared_ptr<Memory>>(message), as<std::shared_ptr<State>>(object{})); });
                 expect(isValid)->toBe(true);
             }
             );
-            it(std:("should not validate when no URL found"), [=]() mutable
+            it(std::string("should not validate when no URL found"), [=]() mutable
             {
                 auto message = createMockMemory(object{
-                    object::pair{std:("content"), object{
-                        object::pair{std:("text"), std:("Just regular text without URLs")}, 
-                        object::pair{std:("source"), std:("test")}
+                    object::pair{std::string("content"), object{
+                        object::pair{std::string("text"), std::string("Just regular text without URLs")}, 
+                        object::pair{std::string("source"), std::string("test")}
                     }}
                 });
                 auto isValid = std::async([=]() { browserNavigateAction["validate"](mockRuntime, as<std::shared_ptr<Memory>>(message), as<std::shared_ptr<State>>(object{})); });
@@ -137,107 +138,107 @@ void Main(void)
             );
         }
         );
-        describe(std:("handler"), [=]() mutable
+        describe(std::string("handler"), [=]() mutable
         {
-            it(std:("should navigate to URL and return success"), [=]() mutable
+            it(std::string("should navigate to URL and return success"), [=]() mutable
             {
                 auto message = createMockMemory(object{
-                    object::pair{std:("content"), object{
-                        object::pair{std:("text"), std:("Navigate to https://google.com")}, 
-                        object::pair{std:("source"), std:("test")}
+                    object::pair{std::string("content"), object{
+                        object::pair{std::string("text"), std::string("Navigate to https://google.com")}, 
+                        object::pair{std::string("source"), std::string("test")}
                     }}
                 });
                 mockClient["navigate"]["mockResolvedValue"](object{
-                    object::pair{std:("url"), std:("https://google.com")}, 
-                    object::pair{std:("title"), std:("Google")}
+                    object::pair{std::string("url"), std::string("https://google.com")}, 
+                    object::pair{std::string("title"), std::string("Google")}
                 });
                 std::async([=]() { browserNavigateAction["handler"](mockRuntime, as<std::shared_ptr<Memory>>(message), as<std::shared_ptr<State>>(object{}), object{}, mockCallback, array<any>()); });
-                expect(mockClient["navigate"])->toHaveBeenCalledWith(std:("test-session-1"), std:("https://google.com"));
+                expect(mockClient["navigate"])->toHaveBeenCalledWith(std::string("test-session-1"), std::string("https://google.com"));
                 expect(mockCallback)->toHaveBeenCalledWith(object{
-                    object::pair{std:("text"), std:("I've navigated to https://google.com. The page title is: "Google"")}, 
-                    object::pair{std:("actions"), array<string>{ std:("BROWSER_NAVIGATE") }}, 
-                    object::pair{std:("source"), std:("test")}
+                    object::pair{std::string("text"), std::string("I've navigated to https://google.com. The page title is: "Google"")}, 
+                    object::pair{std::string("actions"), array<string>{ std::string("BROWSER_NAVIGATE") }}, 
+                    object::pair{std::string("source"), std::string("test")}
                 });
             }
             );
-            it(std:("should create session if none exists"), [=]() mutable
+            it(std::string("should create session if none exists"), [=]() mutable
             {
-                mockService["getCurrentSession"]["mockResolvedValue"](undefined);
+                mockService["getCurrentSession"]["mockResolvedValue"](std::nullopt);
                 auto message = createMockMemory(object{
-                    object::pair{std:("content"), object{
-                        object::pair{std:("text"), std:("Navigate to https://example.com")}, 
-                        object::pair{std:("source"), std:("test")}
+                    object::pair{std::string("content"), object{
+                        object::pair{std::string("text"), std::string("Navigate to https://example.com")}, 
+                        object::pair{std::string("source"), std::string("test")}
                     }}
                 });
                 std::async([=]() { browserNavigateAction["handler"](mockRuntime, as<std::shared_ptr<Memory>>(message), as<std::shared_ptr<State>>(object{}), object{}, mockCallback, array<any>()); });
-                expect(mockService["createSession"])->toHaveBeenCalledWith(expect->stringContaining(std:("session-")));
+                expect(mockService["createSession"])->toHaveBeenCalledWith(expect->stringContaining(std::string("session-")));
                 expect(mockClient["navigate"])->toHaveBeenCalled();
             }
             );
-            it(std:("should handle domain without protocol"), [=]() mutable
+            it(std::string("should handle domain without protocol"), [=]() mutable
             {
                 auto message = createMockMemory(object{
-                    object::pair{std:("content"), object{
-                        object::pair{std:("text"), std:("Go to example.com")}, 
-                        object::pair{std:("source"), std:("test")}
+                    object::pair{std::string("content"), object{
+                        object::pair{std::string("text"), std::string("Go to example.com")}, 
+                        object::pair{std::string("source"), std::string("test")}
                     }}
                 });
                 std::async([=]() { browserNavigateAction["handler"](mockRuntime, as<std::shared_ptr<Memory>>(message), as<std::shared_ptr<State>>(object{}), object{}, mockCallback, array<any>()); });
-                expect(mockClient["navigate"])->toHaveBeenCalledWith(std:("test-session-1"), std:("https://example.com"));
+                expect(mockClient["navigate"])->toHaveBeenCalledWith(std::string("test-session-1"), std::string("https://example.com"));
             }
             );
-            it(std:("should handle error when service not available"), [=]() mutable
+            it(std::string("should handle error when service not available"), [=]() mutable
             {
                 mockRuntime->getService = mock()->mockReturnValue(nullptr);
                 auto message = createMockMemory(object{
-                    object::pair{std:("content"), object{
-                        object::pair{std:("text"), std:("Navigate to https://example.com")}, 
-                        object::pair{std:("source"), std:("test")}
+                    object::pair{std::string("content"), object{
+                        object::pair{std::string("text"), std::string("Navigate to https://example.com")}, 
+                        object::pair{std::string("source"), std::string("test")}
                     }}
                 });
                 std::async([=]() { browserNavigateAction["handler"](mockRuntime, as<std::shared_ptr<Memory>>(message), as<std::shared_ptr<State>>(object{}), object{}, mockCallback, array<any>()); });
                 expect(mockCallback)->toHaveBeenCalledWith(object{
-                    object::pair{std:("text"), std:("The browser automation service is not available. Please ensure the Stagehand plugin is properly configured.")}, 
-                    object::pair{std:("error"), true}
+                    object::pair{std::string("text"), std::string("The browser automation service is not available. Please ensure the Stagehand plugin is properly configured.")}, 
+                    object::pair{std::string("error"), true}
                 });
             }
             );
-            it(std:("should handle error when no URL found"), [=]() mutable
+            it(std::string("should handle error when no URL found"), [=]() mutable
             {
                 auto message = createMockMemory(object{
-                    object::pair{std:("content"), object{
-                        object::pair{std:("text"), std:("Just some text")}, 
-                        object::pair{std:("source"), std:("test")}
+                    object::pair{std::string("content"), object{
+                        object::pair{std::string("text"), std::string("Just some text")}, 
+                        object::pair{std::string("source"), std::string("test")}
                     }}
                 });
                 std::async([=]() { browserNavigateAction["handler"](mockRuntime, as<std::shared_ptr<Memory>>(message), as<std::shared_ptr<State>>(object{}), object{}, mockCallback, array<any>()); });
                 expect(mockCallback)->toHaveBeenCalledWith(object{
-                    object::pair{std:("text"), std:("I couldn't find a URL in your request. Please provide a valid URL to navigate to.")}, 
-                    object::pair{std:("error"), true}
+                    object::pair{std::string("text"), std::string("I couldn't find a URL in your request. Please provide a valid URL to navigate to.")}, 
+                    object::pair{std::string("error"), true}
                 });
             }
             );
-            it(std:("should handle navigation errors"), [=]() mutable
+            it(std::string("should handle navigation errors"), [=]() mutable
             {
                 auto message = createMockMemory(object{
-                    object::pair{std:("content"), object{
-                        object::pair{std:("text"), std:("Navigate to https://example.com")}, 
-                        object::pair{std:("source"), std:("test")}
+                    object::pair{std::string("content"), object{
+                        object::pair{std::string("text"), std::string("Navigate to https://example.com")}, 
+                        object::pair{std::string("source"), std::string("test")}
                     }}
                 });
-                mockClient["navigate"]["mockRejectedValue"](std::make_shared<Error>(std:("Navigation failed")));
+                mockClient["navigate"]["mockRejectedValue"](std::make_shared<Error>(std::string("Navigation failed")));
                 std::async([=]() { browserNavigateAction["handler"](mockRuntime, as<std::shared_ptr<Memory>>(message), as<std::shared_ptr<State>>(object{}), object{}, mockCallback, array<any>()); });
                 expect(mockCallback)->toHaveBeenCalledWith(object{
-                    object::pair{std:("text"), std:("I couldn't navigate to the requested page. Please check the URL and try again.")}, 
-                    object::pair{std:("error"), true}
+                    object::pair{std::string("text"), std::string("I couldn't navigate to the requested page. Please check the URL and try again.")}, 
+                    object::pair{std::string("error"), true}
                 });
             }
             );
         }
         );
-        describe(std:("examples"), [=]() mutable
+        describe(std::string("examples"), [=]() mutable
         {
-            it(std:("should have valid examples"), [=]() mutable
+            it(std::string("should have valid examples"), [=]() mutable
             {
                 expect(browserNavigateAction["examples"])->toBeDefined();
                 expect(Array->isArray(browserNavigateAction["examples"]))->toBe(true);
@@ -249,30 +250,30 @@ void Main(void)
                     expect(const_(example)[0]["content"]["text"])->toBeDefined();
                     expect(const_(example)[1]["name"])->toBeDefined();
                     expect(const_(example)[1]["content"]["text"])->toBeDefined();
-                    expect(const_(example)[1]["content"]["actions"])->toContain(std:("BROWSER_NAVIGATE"));
+                    expect(const_(example)[1]["content"]["actions"])->toContain(std::string("BROWSER_NAVIGATE"));
                 }
                 );
             }
             );
         }
         );
-        describe(std:("action metadata"), [=]() mutable
+        describe(std::string("action metadata"), [=]() mutable
         {
-            it(std:("should have correct action name"), [=]() mutable
+            it(std::string("should have correct action name"), [=]() mutable
             {
-                expect(browserNavigateAction["name"])->toBe(std:("BROWSER_NAVIGATE"));
+                expect(browserNavigateAction["name"])->toBe(std::string("BROWSER_NAVIGATE"));
             }
             );
-            it(std:("should have similes"), [=]() mutable
+            it(std::string("should have similes"), [=]() mutable
             {
                 expect(browserNavigateAction["similes"])->toBeDefined();
-                expect(browserNavigateAction["similes"])->toContain(std:("GO_TO_URL"));
-                expect(browserNavigateAction["similes"])->toContain(std:("OPEN_WEBSITE"));
+                expect(browserNavigateAction["similes"])->toContain(std::string("GO_TO_URL"));
+                expect(browserNavigateAction["similes"])->toContain(std::string("OPEN_WEBSITE"));
             }
             );
-            it(std:("should have a description"), [=]() mutable
+            it(std::string("should have a description"), [=]() mutable
             {
-                expect(browserNavigateAction["description"])->toContain(std:("Navigate"));
+                expect(browserNavigateAction["description"])->toContain(std::string("Navigate"));
             }
             );
         }

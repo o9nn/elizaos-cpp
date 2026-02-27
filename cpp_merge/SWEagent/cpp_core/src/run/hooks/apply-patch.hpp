@@ -29,19 +29,19 @@ bool isPromisingPatch(AgentInfo info);
 /**
  * Print patch message to console
  */
-void printPatchMessage(const std:& patchOutputFile);
+void printPatchMessage(const std::string& patchOutputFile);
 
 /**
  * This hook saves patches to a separate directory and optionally applies them to a local repository
  */
-class SaveApplyPatchHook extends AbstractRunHook {
+class SaveApplyPatchHook : public AbstractRunHook {
   private applyPatchLocally;
   private showSuccessMessage;
-  private outputDir?: std:;
+  private outputDir?: std::string;
   private env?: SWEEnv;
   private problemStatement?: ProblemStatementConfig;
 
-  constructor(applyPatchLocally = false, showSuccessMessage = true) {
+  /* constructor */ (applyPatchLocally = false, showSuccessMessage = true) {
     super();
     this.applyPatchLocally = applyPatchLocally;
     this.showSuccessMessage = showSuccessMessage;

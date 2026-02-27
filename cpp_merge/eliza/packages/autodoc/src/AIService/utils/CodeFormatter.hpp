@@ -12,7 +12,7 @@ public:
     virtual string formatApiComponents(std::shared_ptr<FileDocsGroup> fileGroup);
     virtual string formatComponents(std::shared_ptr<FileDocsGroup> fileGroup);
     virtual string formatFilePath(string filePath);
-    virtual string formatJSDoc(string jsDoc, string _code = undefined);
+    virtual string formatJSDoc(string jsDoc, string _code = std::nullopt);
     virtual string truncateCodeBlock(string code, double maxLength = 8000);
 };
 

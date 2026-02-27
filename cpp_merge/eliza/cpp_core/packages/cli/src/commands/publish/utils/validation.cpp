@@ -8,7 +8,7 @@
 
 namespace elizaos {
 
-std::future<void> validatePluginRequirements(const std:& cwd, PackageJson packageJson) {
+std::future<void> validatePluginRequirements(const std::string& cwd, PackageJson packageJson) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::vector<std::string> errors = [];
@@ -83,7 +83,7 @@ std::future<void> validatePluginRequirements(const std:& cwd, PackageJson packag
 
 }
 
-bool isMaintainer(PackageJson packageJson, const std:& username) {
+bool isMaintainer(PackageJson packageJson, const std::string& username) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!packageJson.maintainers) {
@@ -95,7 +95,7 @@ bool isMaintainer(PackageJson packageJson, const std:& username) {
 
 }
 
-void displayRegistryPublicationMessage(std::optional<std:> opts, bool userIsMaintainer, std::optional<std:> registryPrUrl) {
+void displayRegistryPublicationMessage(std::optional<std::string> opts, bool userIsMaintainer, std::optional<std::string> registryPrUrl) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Early returns for clear flow control

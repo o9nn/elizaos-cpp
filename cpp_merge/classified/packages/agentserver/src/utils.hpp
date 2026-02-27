@@ -10,6 +10,6 @@
 
 string expandTildePath(string filepath);
 
-string resolvePgliteDir(string dir = undefined, string fallbackDir = undefined);
+string resolvePgliteDir(string dir = std::nullopt, string fallbackDir = std::nullopt);
 
 #endif

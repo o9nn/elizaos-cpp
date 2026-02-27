@@ -1,4 +1,5 @@
 #include "utils.hpp"
+#include <string>
 #include <future>
 #include <optional>
 #include <unordered_map>
@@ -14,56 +15,56 @@ void upgradeDoubleToTriple(auto tpl) {
 
 }
 
-std::optional<UUID> validateUuid(const std:& value) {
+std::optional<UUID> validateUuid(const std::string& value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return coreValidateUuid(value);
 
 }
 
-UUID stringToUuid(const std::variant<std:, double>& target) {
+UUID stringToUuid(const std::variant<std::string, double>& target) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return coreStringToUuid(target);
 
 }
 
-std: truncateToCompleteSentence(const std:& text, double maxLength) {
+std::string truncateToCompleteSentence(const std::string& text, double maxLength) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return coreTruncateToCompleteSentence(text, maxLength);
 
 }
 
-std::optional<std::unordered_map<std:, std:>> parseKeyValueXml(const std:& text) {
+std::optional<std::unordered_map<std::string, std::string>> parseKeyValueXml(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return coreParseKeyValueXml(text);
 
 }
 
-std::optional<std::unordered_map<std:, std:>> parseJSONObjectFromText(const std:& text) {
+std::optional<std::unordered_map<std::string, std::string>> parseJSONObjectFromText(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return coreParseJSONObjectFromText(text);
 
 }
 
-std::optional<bool> parseBooleanFromText(const std:& text) {
+std::optional<bool> parseBooleanFromText(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return coreParseBooleanFromText(text);
 
 }
 
-std::function<std:(std:, std:)> safeReplacer() {
+std::function<std::string(std::string, std::string)> safeReplacer() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return coreSafeReplacer();
 
 }
 
-std::future<std:> trimTokens(const std:& text, double maxTokens, CoreIAgentRuntime runtime) {
+std::future<std::string> trimTokens(const std::string& text, double maxTokens, CoreIAgentRuntime runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return coreTrimTokens(text, maxTokens, runtime);

@@ -1,4 +1,5 @@
 #include "index.hpp"
+#include <string>
 #include <map>
 #include <iostream>
 #include <stdexcept>
@@ -17,13 +18,13 @@ void Notifications() {
     ? notifications;
     : notifications.substr(0, 3-0);
 
-    const auto markAsRead = [&](id: std:) {;
+    const auto markAsRead = [&](id: std::string) {;
         setNotifications((prev) =>;
         prev.std::map((notif) => (notif.id == id ? { ...notif, read: true } : notif))
         );
         };
 
-        const auto deleteNotification = [&](id: std:) {;
+        const auto deleteNotification = [&](id: std::string) {;
             setNotifications[&]((prev) { return prev.filter[&]((notif) { return notif.id != id)); }; };
             };
 

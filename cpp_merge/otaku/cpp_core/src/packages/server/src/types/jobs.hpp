@@ -27,10 +27,10 @@ enum JobStatus {
  * Request to create a new job
  */
 struct CreateJobRequest {
-    std::optional<std:> agentId;
-    std::optional<std:> userId;
-    std: prompt;
-    std::optional<std::unordered_map<std:, unknown>> metadata;
+    std::optional<std::string> agentId;
+    std::optional<std::string> userId;
+    std::string prompt;
+    std::optional<std::unordered_map<std::string, unknown>> metadata;
     std::optional<double> timeoutMs;
 };
 
@@ -38,7 +38,7 @@ struct CreateJobRequest {
  * Response when creating a job
  */
 struct CreateJobResponse {
-    std: jobId;
+    std::string jobId;
     JobStatus status;
     double createdAt;
     double expiresAt;
@@ -49,11 +49,11 @@ struct CreateJobResponse {
  */
 struct JobResult {
     { message;
-    std: id;
-    std: content;
-    std: authorId;
+    std::string id;
+    std::string content;
+    std::string authorId;
     double createdAt;
-    std::optional<std::unordered_map<std:, unknown>> metadata;
+    std::optional<std::unordered_map<std::string, unknown>> metadata;
     double processingTimeMs;
 };
 
@@ -61,23 +61,23 @@ struct JobResult {
  * Job details response
  */
 struct JobDetailsResponse {
-    std: jobId;
+    std::string jobId;
     JobStatus status;
-    std: agentId;
-    std: userId;
-    std: prompt;
+    std::string agentId;
+    std::string userId;
+    std::string prompt;
     double createdAt;
     double expiresAt;
     std::optional<JobResult> result;
-    std::optional<std:> error;
-    std::optional<std::unordered_map<std:, unknown>> metadata;
+    std::optional<std::string> error;
+    std::optional<std::unordered_map<std::string, unknown>> metadata;
 };
 
 /**
  * Poll options for checking job status
  */
 struct PollOptions {
-    std: jobId;
+    std::string jobId;
     std::optional<double> interval;
     std::optional<double> maxAttempts;
     std::optional<double> timeout;
@@ -87,19 +87,19 @@ struct PollOptions {
  * Internal job storage structure
  */
 struct Job {
-    std: id;
+    std::string id;
     UUID agentId;
     UUID userId;
     UUID channelId;
-    std: prompt;
+    std::string prompt;
     JobStatus status;
     double createdAt;
     double expiresAt;
     std::optional<UUID> userMessageId;
     std::optional<UUID> agentResponseId;
     std::optional<JobResult> result;
-    std::optional<std:> error;
-    std::optional<std::unordered_map<std:, unknown>> metadata;
+    std::optional<std::string> error;
+    std::optional<std::unordered_map<std::string, unknown>> metadata;
 };
 
 

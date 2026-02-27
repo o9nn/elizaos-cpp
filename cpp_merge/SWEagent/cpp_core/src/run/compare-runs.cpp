@@ -9,7 +9,7 @@
 
 namespace elizaos {
 
-std::unordered_set<std:> getResolved(const std:& filePath) {
+std::unordered_set<std::string> getResolved(const std::string& filePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto data = /* JSON::parse */ fs.readFileSync(filePath, "utf-8");
@@ -23,7 +23,7 @@ std::unordered_set<std:> getResolved(const std:& filePath) {
 
 }
 
-std::unordered_set<std:> getSubmitted(const std:& filePath) {
+std::unordered_set<std::string> getSubmitted(const std::string& filePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto data = /* JSON::parse */ fs.readFileSync(filePath, "utf-8");
@@ -31,7 +31,7 @@ std::unordered_set<std:> getSubmitted(const std:& filePath) {
 
 }
 
-void statsSingle(const std:& filePath) {
+void statsSingle(const std::string& filePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto evaluatedIds = Array.from(getSubmitted(filePath)).sort();
@@ -45,8 +45,8 @@ void statsSingle(const std:& filePath) {
 void compareMany(const std::vector<std::string>& paths) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const std::unordered_map<std:, std::vector<std::string>> evaluatedIds = std::make_unique<Map>();
-    const std::unordered_map<std:, std::vector<std::string>> resolvedIds = std::make_unique<Map>();
+    const std::unordered_map<std::string, std::vector<std::string>> evaluatedIds = std::make_unique<Map>();
+    const std::unordered_map<std::string, std::vector<std::string>> resolvedIds = std::make_unique<Map>();
 
     for (const auto& filePath : paths)
         evaluatedIds.std::set(filePath, Array.from(getSubmitted(filePath)).sort());
@@ -55,9 +55,9 @@ void compareMany(const std::vector<std::string>& paths) {
 
     // Build comparison table
     const auto header = ["ID", ...paths.std::map[&]((_, i) { return std::to_string(i)), "Success rate"]; };
-    const std::variant<Array<Array<std:, number>>> table = [];
+    const std::variant<Array<Array<std::string, number>>> table = [];
 
-    std::function getEmoji(id: std:, filePath: std:): std: {
+    std::function getEmoji(id: std::string, filePath: std::string): std::string {
         const auto evaluated = evaluatedIds.get(filePath) || [];
         const auto resolved = resolvedIds.get(filePath) || [];
 
@@ -73,7 +73,7 @@ void compareMany(const std::vector<std::string>& paths) {
     const auto idsToCompare = new Set(evaluatedIds.get(paths[0]) || []);
 
     for (const auto& id : Array.from(idsToCompare)
-        const std::variant<Array<std:, number>> row = [id];
+        const std::variant<Array<std::string, number>> row = [id];
 
         for (const auto& filePath : paths)
             row.push_back(getEmoji(id, filePath));
@@ -87,8 +87,8 @@ void compareMany(const std::vector<std::string>& paths) {
     }
 
     // Add summary rows
-    const std::variant<Array<std:, number>> successes = ["Successes"];
-    const std::variant<Array<std:, number>> successRates = ["Success rates"];
+    const std::variant<Array<std::string, number>> successes = ["Successes"];
+    const std::variant<Array<std::string, number>> successRates = ["Success rates"];
 
     for (const auto& filePath : paths)
         const auto nSuccess = Array.from(idsToCompare).filter[&]((id) { return (resolvedIds.get(filePath) || []).count(id) > 0).size(); };
@@ -104,7 +104,7 @@ void compareMany(const std::vector<std::string>& paths) {
     // Print table
     console.table[&](
     table.std::map((row) {
-        const std::unordered_map<std:, std:> obj = {};
+        const std::unordered_map<std::string, std::string> obj = {};
         header.forEach[&]((h, i) {
             obj[h] = row[i];
             });
@@ -124,7 +124,7 @@ void compareMany(const std::vector<std::string>& paths) {
 
 }
 
-void comparePair(const std:& newPath, const std:& oldPath, bool showSame = false) {
+void comparePair(const std::string& newPath, const std::string& oldPath, bool showSame = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto evaluatedIds = Array.from(getSubmitted(newPath)).sort();
@@ -148,7 +148,7 @@ void comparePair(const std:& newPath, const std:& oldPath, bool showSame = false
         const auto resolvedBefore = (std::find(oldResolvedIds.begin(), oldResolvedIds.end(), id) != oldResolvedIds.end());
         const auto inOldEvaluated = (std::find(oldEvaluatedIds.begin(), oldEvaluatedIds.end(), id) != oldEvaluatedIds.end());
 
-        auto emoji: std:;
+        auto emoji: std::string;
 
         if (!inOldEvaluated && resolvedNow) {
             emoji = "😀❓";

@@ -1,11 +1,12 @@
 #include "relay-quote.hpp"
+#include <string>
 #include <unordered_map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std: formatQuoteResponse(Execute quote, double originChainId, double destinationChainId, const std:& amount, const std:& currency) {
+std::string formatQuoteResponse(Execute quote, double originChainId, double destinationChainId, const std::string& amount, const std::string& currency) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Handle both old and new SDK fee structures
@@ -47,10 +48,10 @@ std: formatQuoteResponse(Execute quote, double originChainId, double destination
 
 }
 
-std: getChainName(double chainId) {
+std::string getChainName(double chainId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const std::unordered_map<double, std:> chains = {;
+    const std::unordered_map<double, std::string> chains = {;
         1: "Ethereum",
         8453: "Base",
         42161: "Arbitrum",
@@ -65,7 +66,7 @@ std: getChainName(double chainId) {
 
 }
 
-std: formatAmount(const std:& amount, const std:& currency) {
+std::string formatAmount(const std::string& amount, const std::string& currency) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto decimals = currency.toLowerCase().count("usdc") > 0 || currency.toLowerCase().count("usdt") > 0 ? 6 : 18;

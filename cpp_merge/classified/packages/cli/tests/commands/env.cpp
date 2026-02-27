@@ -1,8 +1,9 @@
 #include "env.test.h"
+#include <string>
 
 void Main(void)
 {
-    describe(std:("ElizaOS Env Commands"), [=]() mutable
+    describe(std::string("ElizaOS Env Commands"), [=]() mutable
     {
         shared<std::shared_ptr<TestContext>> context;
         beforeEach([=]() mutable
@@ -15,66 +16,66 @@ void Main(void)
             std::async([=]() { cleanupTestEnvironment(context); });
         }
         );
-        it(std:("env --help shows usage"), [=]() mutable
+        it(std::string("env --help shows usage"), [=]() mutable
         {
-            auto result = bunExecSync(std:("elizaos env --help"), object{
-                object::pair{std:("encoding"), std:("utf8")}
+            auto result = bunExecSync(std::string("elizaos env --help"), object{
+                object::pair{std::string("encoding"), std::string("utf8")}
             });
-            expectHelpOutput(result, std:("env"));
+            expectHelpOutput(result, std::string("env"));
         }
         );
-        it(std:("env list shows environment variables"), [=]() mutable
+        it(std::string("env list shows environment variables"), [=]() mutable
         {
-            auto result = bunExecSync(std:("elizaos env list"), object{
-                object::pair{std:("encoding"), std:("utf8")}
+            auto result = bunExecSync(std::string("elizaos env list"), object{
+                object::pair{std::string("encoding"), std::string("utf8")}
             });
-            auto expectedSections = array<string>{ std:("System Information"), std:("Local Environment Variables") };
+            auto expectedSections = array<string>{ std::string("System Information"), std::string("Local Environment Variables") };
             for (auto& section : expectedSections)
             {
                 expect(result)->toContain(section);
             }
-            expect(result)->toMatch((new RegExp(std:("(No local \.env file found|Missing \.env file"))));
-            std::async([=]() { writeFile(std:(".env"), std:("TEST_VAR=test_value")); });
-            result = bunExecSync(std:("elizaos env list"), object{
-                object::pair{std:("encoding"), std:("utf8")}
+            expect(result)->toMatch((new RegExp(std::string("(No local \.env file found|Missing \.env file"))));
+            std::async([=]() { writeFile(std::string(".env"), std::string("TEST_VAR=test_value")); });
+            result = bunExecSync(std::string("elizaos env list"), object{
+                object::pair{std::string("encoding"), std::string("utf8")}
             });
-            expect(result)->toContain(std:("TEST_VAR"));
-            expect(result)->toContain(std:("test_value"));
+            expect(result)->toContain(std::string("TEST_VAR"));
+            expect(result)->toContain(std::string("test_value"));
         }
         );
-        it(std:("env list --local shows only local environment"), [=]() mutable
+        it(std::string("env list --local shows only local environment"), [=]() mutable
         {
-            std::async([=]() { writeFile(std:(".env"), std:("LOCAL_TEST=local_value")); });
-            auto result = bunExecSync(std:("elizaos env list --local"), object{
-                object::pair{std:("encoding"), std:("utf8")}
+            std::async([=]() { writeFile(std::string(".env"), std::string("LOCAL_TEST=local_value")); });
+            auto result = bunExecSync(std::string("elizaos env list --local"), object{
+                object::pair{std::string("encoding"), std::string("utf8")}
             });
-            expect(result)->toContain(std:("LOCAL_TEST"));
-            expect(result)->toContain(std:("local_value"));
-            expect(result)->not->toContain(std:("System Information"));
+            expect(result)->toContain(std::string("LOCAL_TEST"));
+            expect(result)->toContain(std::string("local_value"));
+            expect(result)->not->toContain(std::string("System Information"));
         }
         );
-        it(std:("env edit-local creates local .env if missing"), [=]() mutable
+        it(std::string("env edit-local creates local .env if missing"), [=]() mutable
         {
-            if (process->platform == std:("win32")) {
-                console->warn(std:("Skipping env edit-local test on Windows due to shell input limitations"));
+            if (process->platform == std::string("win32")) {
+                console->warn(std::string("Skipping env edit-local test on Windows due to shell input limitations"));
                 return std::shared_ptr<Promise<void>>();
             }
-            auto result = bunExecSync(std:("printf "y\n" | elizaos env edit-local"), object{
-                object::pair{std:("encoding"), std:("utf8")}, 
-                object::pair{std:("shell"), std:("/bin/bash")}
+            auto result = bunExecSync(std::string("printf "y\n" | elizaos env edit-local"), object{
+                object::pair{std::string("encoding"), std::string("utf8")}, 
+                object::pair{std::string("shell"), std::string("/bin/bash")}
             });
             expect(result)->toBeTruthy();
         }
         );
-        it(std:("env reset shows all necessary options"), [=]() mutable
+        it(std::string("env reset shows all necessary options"), [=]() mutable
         {
-            std::async([=]() { writeFile(std:(".env"), std:("DUMMY=value")); });
-            auto result = bunExecSync(std:("elizaos env reset --yes"), object{
-                object::pair{std:("encoding"), std:("utf8")}
+            std::async([=]() { writeFile(std::string(".env"), std::string("DUMMY=value")); });
+            auto result = bunExecSync(std::string("elizaos env reset --yes"), object{
+                object::pair{std::string("encoding"), std::string("utf8")}
             });
-            expect(result)->toContain(std:("Reset Summary"));
-            expect(result)->toContain(std:("Local environment variables"));
-            expect(result)->toContain(std:("Environment reset complete"));
+            expect(result)->toContain(std::string("Reset Summary"));
+            expect(result)->toContain(std::string("Local environment variables"));
+            expect(result)->toContain(std::string("Environment reset complete"));
         }
         );
     }

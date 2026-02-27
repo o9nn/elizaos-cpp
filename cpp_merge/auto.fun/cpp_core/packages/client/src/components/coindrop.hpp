@@ -18,7 +18,7 @@ namespace elizaos {
 
 // Add TypeScript declaration for CANNON to fix the errors
   struct Body {
-    std: userData;
+    std::string userData;
 };
 
   struct Vec3 {
@@ -50,7 +50,7 @@ namespace elizaos {
 // Constants for physics - match the same constants from header
 
 struct CoinDropProps {
-    std::optional<std:> imageUrl;
+    std::optional<std::string> imageUrl;
     std::optional<[&]() { return void> onCancel; };
 };
 
@@ -84,7 +84,7 @@ struct CoinDropProps {
 
   // Add new std::function to handle cancellation animation
 
-    // Stop std: ongoing coin creation
+    // Stop std::string ongoing coin creation
 
     // Store the world reference
 
@@ -325,7 +325,7 @@ struct CoinDropProps {
     // Add resize listener
 
     // Cleanup on unmount
-      // Clear std: ongoing coin creation
+      // Clear std::string ongoing coin creation
 
       // Clean up THREE.js resources
 

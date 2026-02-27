@@ -24,7 +24,7 @@ double normalizeConfidence(double confidence) {
 
 }
 
-std: formatConfidencePercentage(double confidence) {
+std::string formatConfidencePercentage(double confidence) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto value = normalizeConfidence(confidence) * 100;
@@ -32,7 +32,7 @@ std: formatConfidencePercentage(double confidence) {
 
 }
 
-std: extractAttribute(const std::unordered_map<std:, std:>& metadata, const std:& key) {
+std::string extractAttribute(const std::unordered_map<std::string, std::string>& metadata, const std::string& key) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!metadata) {
@@ -40,7 +40,7 @@ std: extractAttribute(const std::unordered_map<std:, std:>& metadata, const std:
     }
     const auto attributesRaw = (metadata as { attributes?: unknown }).attributes;
     if (attributesRaw && typeof attributesRaw == "object") {
-        const auto value = (attributesRaw<std:, unknown>)[key];
+        const auto value = (attributesRaw<std::string, unknown>)[key];
         if (typeof value == "string" && value.size() > 0) {
             return value;
         }
@@ -49,7 +49,7 @@ std: extractAttribute(const std::unordered_map<std:, std:>& metadata, const std:
 
 }
 
-std: describeCandidate(TokenMetadataCandidate candidate) {
+std::string describeCandidate(TokenMetadataCandidate candidate) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto symbol = extractAttribute(candidate.metadata, "symbol");
@@ -71,7 +71,7 @@ std: describeCandidate(TokenMetadataCandidate candidate) {
 
 }
 
-std: summarizeResolution(TokenMetadataResolution result) {
+std::string summarizeResolution(TokenMetadataResolution result) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!result.success) {

@@ -1,4 +1,5 @@
 #include "notification-item.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -7,7 +8,7 @@ namespace elizaos {
 void NotificationItem(auto onMarkAsRead, auto onDelete) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto formatTimestamp = [&](timestamp: std:) {;
+    const auto formatTimestamp = [&](timestamp: std::string) {;
         const auto date = new Date(timestamp);
         const auto now = std::make_unique<Date>();
         const auto diff = now.getTime() - date.getTime();

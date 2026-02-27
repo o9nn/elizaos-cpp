@@ -305,10 +305,10 @@ class CdpService : public BaseApiClient, public std::enable_shared_from_this<Cdp
 public:
     using std::enable_shared_from_this<CdpService>::shared_from_this;
     virtual std::shared_ptr<Promise<std::shared_ptr<WalletInfo>>> getOrCreateWallet(string name);
-    virtual std::shared_ptr<Promise<std::shared_ptr<TokensResponse>>> getTokens(string chain = undefined);
-    virtual std::shared_ptr<Promise<std::shared_ptr<TokensResponse>>> syncTokens(string chain = undefined);
-    virtual std::shared_ptr<Promise<std::shared_ptr<NFTsResponse>>> getNFTs(string chain = undefined);
-    virtual std::shared_ptr<Promise<std::shared_ptr<NFTsResponse>>> syncNFTs(string chain = undefined);
+    virtual std::shared_ptr<Promise<std::shared_ptr<TokensResponse>>> getTokens(string chain = std::nullopt);
+    virtual std::shared_ptr<Promise<std::shared_ptr<TokensResponse>>> syncTokens(string chain = std::nullopt);
+    virtual std::shared_ptr<Promise<std::shared_ptr<NFTsResponse>>> getNFTs(string chain = std::nullopt);
+    virtual std::shared_ptr<Promise<std::shared_ptr<NFTsResponse>>> syncNFTs(string chain = std::nullopt);
     virtual std::shared_ptr<Promise<std::shared_ptr<TransactionHistoryResponse>>> getHistory();
     virtual std::shared_ptr<Promise<std::shared_ptr<SendTokenResponse>>> sendToken(std::shared_ptr<SendTokenRequest> request);
     virtual std::shared_ptr<Promise<std::shared_ptr<SendNFTResponse>>> sendNFT(std::shared_ptr<SendNFTRequest> request);

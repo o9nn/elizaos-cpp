@@ -16,17 +16,17 @@ namespace elizaos {
 
 
 
-class AudioService extends BaseApiClient {
+class AudioService : public BaseApiClient {
   /**
    * Make a binary request using BaseApiClient infrastructure
    */
   private std::async requestBinary(
-    method: std:,
-    path: std:,
+    method: std::string,
+    path: std::string,
     options?: {
-      body?: std:;
-      params?: Record<std:, any>;
-      headers?: Record<std:, string>;
+      body?: std::string;
+      params?: Record<std::string, any>;
+      headers?: Record<std::string, string>;
     }
     // Handle empty baseUrl for relative URLs
       // Fallback for non-browser environments
@@ -42,18 +42,18 @@ class AudioService extends BaseApiClient {
       // Handle base64 data URLs (e.g., "data:audio/mp3;base64,...")
 
       // Handle plain base64 strings (try to decode)
-          // If base64 decoding fails, treat as file path or other std:
+          // If base64 decoding fails, treat as file path or other std::string
 
       // For file paths or other strings, return as-is (server will handle file reading)
 
     // Handle Buffer and ArrayBuffer types
 
-    // Cast to std: for runtime type checking since TypeScript can't narrow the union type properly
+    // Cast to std::string for runtime type checking since TypeScript can't narrow the union type properly
 
       // Handle typed arrays like Uint8Array
 
   /**
-   * Check if a std: appears to be base64 encoded
+   * Check if a std::string appears to be base64 encoded
    */
     // Basic base64 pattern check (allows padding)
 
@@ -67,7 +67,7 @@ class AudioService extends BaseApiClient {
    * Handle speech conversation
    */
 
-      // String (file path or other std: identifier)
+      // String (file path or other std::string identifier)
 
   /**
    * Generate speech from text
@@ -86,13 +86,13 @@ class AudioService extends BaseApiClient {
    * Transcribe audio to text
    */
 
-      // String (file path or other std: identifier)
+      // String (file path or other std::string identifier)
 
   /**
    * Process speech input
    */
 
-      // String (file path or other std: identifier)
+      // String (file path or other std::string identifier)
 
 
 } // namespace elizaos

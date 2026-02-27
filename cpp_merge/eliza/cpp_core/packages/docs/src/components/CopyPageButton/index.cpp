@@ -1,4 +1,5 @@
 #include "index.hpp"
+#include <string>
 #include <cstdlib>
 #include <optional>
 #include <iostream>
@@ -45,7 +46,7 @@ std::optional<JSX::Element> CopyPageButton() {
                             setIsOpen(!isOpen);
                             };
 
-                            const auto getEditUrl = (): std: | nullptr => {;
+                            const auto getEditUrl = (): std::string | nullptr => {;
                                 const auto editLinkElement = document.querySelector("a.theme-edit-this-page");
                                 if (editLinkElement && editLinkElement.getAttribute('href')) {
                                     return editLinkElement.getAttribute("href");
@@ -78,7 +79,7 @@ std::optional<JSX::Element> CopyPageButton() {
                                 return nullptr;
                                 };
 
-                                const auto getRawUrl = (url: std:): std: | nullptr => {;
+                                const auto getRawUrl = (url: std::string): std::string | nullptr => {;
                                     if (!url) return null;
                                     const auto githubEditRegex = /github\.com\/([^/]+)\/([^/]+)\/(edit|tree)\/([^/]+)\/(.+)/;
                                     const auto match = url.match(githubEditRegex);
@@ -95,7 +96,7 @@ std::optional<JSX::Element> CopyPageButton() {
                                     return url;
                                     };
 
-                                    const auto getContent = std::async (url: std:): Promise<string> => {;
+                                    const auto getContent = std::async (url: std::string): Promise<string> => {;
                                         if (std::getenv("NODE_ENV") == 'development' && !url.substr(0, 'http')) {
                                             try {
                                                 const auto localUrl = "url.substr(0, "/") ? url : " + "/" + url;

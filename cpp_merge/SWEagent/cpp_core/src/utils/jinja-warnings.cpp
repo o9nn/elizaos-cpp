@@ -1,10 +1,11 @@
 #include "jinja-warnings.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-void warnProbablyWrongJinjaSyntax(const std:& template) {
+void warnProbablyWrongJinjaSyntax(const std::string& template) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!template) {

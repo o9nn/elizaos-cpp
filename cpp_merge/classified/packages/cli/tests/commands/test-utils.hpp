@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_CLI_TESTS_COMMANDS_TEST_UTILS_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_CLI_TESTS_COMMANDS_TEST_UTILS_H
 #include "core.hpp"
+#include <string>
 #include "fs/promises.h"
 #include "path.hpp"
 #include "os.hpp"
@@ -37,7 +38,7 @@ std::shared_ptr<Promise<void>> createTestPluginStructure(string pluginName);
 std::shared_ptr<Promise<void>> createTestAgent(string agentName);
 
 extern object assertions;
-std::shared_ptr<Promise<void>> waitForServerReady(double port, double maxWaitTime = TEST_TIMEOUTS["SERVER_STARTUP"], string endpoint = std:("/api/agents"));
+std::shared_ptr<Promise<void>> waitForServerReady(double port, double maxWaitTime = TEST_TIMEOUTS["SERVER_STARTUP"], string endpoint = std::string("/api/agents"));
 
 std::shared_ptr<Promise<void>> killProcessOnPort(double port);
 

@@ -8,12 +8,12 @@
 
 namespace elizaos {
 
-std::vector<std::string> findTrajFiles(const std:& dir) {
+std::vector<std::string> findTrajFiles(const std::string& dir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::vector<std::string> results = [];
 
-    std::function walk(directory: std:) {
+    std::function walk(directory: std::string) {
         const auto files = fs.readdirSync(directory);
 
         for (const auto& file : files)
@@ -38,7 +38,7 @@ std::vector<std::string> findTrajFiles(const std:& dir) {
 
 }
 
-std::future<void> inspectorCli(std: trajectoryPath = ".", std::optional<std:> dataPath) {
+std::future<void> inspectorCli(std::string trajectoryPath = ".", std::optional<std::string> dataPath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

@@ -1,10 +1,11 @@
 #include "settings.hpp"
+#include <string>
 
 object REQUIRED_SETTINGS = object{
-    object::pair{std:("SOLANA_RPC_URL"), std:("Solana RPC endpoint URL")}, 
-    object::pair{std:("SOLANA_PRIVATE_KEY"), std:("Private key for trading wallet")}, 
-    object::pair{std:("BIRDEYE_API_KEY"), std:("API key for Birdeye data")}, 
-    object::pair{std:("TRADER_SELL_KUMA"), std:("Webhook URL for sell notifications")}
+    object::pair{std::string("SOLANA_RPC_URL"), std::string("Solana RPC endpoint URL")}, 
+    object::pair{std::string("SOLANA_PRIVATE_KEY"), std::string("Private key for trading wallet")}, 
+    object::pair{std::string("BIRDEYE_API_KEY"), std::string("API key for Birdeye data")}, 
+    object::pair{std::string("TRADER_SELL_KUMA"), std::string("Webhook URL for sell notifications")}
 };
 
 void Main(void)

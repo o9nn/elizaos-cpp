@@ -8,7 +8,7 @@
 
 namespace elizaos {
 
-std::future<void> removeUnfinished(const std:& baseDir, bool dryRun = true) {
+std::future<void> removeUnfinished(const std::string& baseDir, bool dryRun = true) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto basePath = path.resolve(baseDir);

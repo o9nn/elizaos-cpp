@@ -1,21 +1,22 @@
 #include "advanced-visualization.h"
+#include <string>
 
 std::shared_ptr<ChartConfiguration> AdvancedVisualization::generateSegmentationSunburst(array<any> segments)
 {
     return object{
-        object::pair{std:("type"), std:("sunburst")}, 
-        object::pair{std:("data"), AdvancedVisualization::transformSegmentData(segments)}, 
-        object::pair{std:("options"), object{
-            object::pair{std:("responsive"), true}, 
-            object::pair{std:("plugins"), object{
-                object::pair{std:("legend"), object{
-                    object::pair{std:("position"), std:("right")}
+        object::pair{std::string("type"), std::string("sunburst")}, 
+        object::pair{std::string("data"), AdvancedVisualization::transformSegmentData(segments)}, 
+        object::pair{std::string("options"), object{
+            object::pair{std::string("responsive"), true}, 
+            object::pair{std::string("plugins"), object{
+                object::pair{std::string("legend"), object{
+                    object::pair{std::string("position"), std::string("right")}
                 }}, 
-                object::pair{std:("tooltip"), object{
-                    object::pair{std:("callbacks"), object{
-                        object::pair{std:("label"), [=](auto ctx) mutable
+                object::pair{std::string("tooltip"), object{
+                    object::pair{std::string("callbacks"), object{
+                        object::pair{std::string("label"), [=](auto ctx) mutable
                         {
-                            return string_empty + ctx["raw"]["value"] + std:(" users");
+                            return string_empty + ctx["raw"]["value"] + std::string(" users");
                         }
                         }
                     }}
@@ -28,29 +29,29 @@ std::shared_ptr<ChartConfiguration> AdvancedVisualization::generateSegmentationS
 std::shared_ptr<ChartConfiguration> AdvancedVisualization::generatePredictionGraph(array<any> predictions)
 {
     return object{
-        object::pair{std:("type"), std:("scatter")}, 
-        object::pair{std:("data"), object{
-            object::pair{std:("datasets"), array<object>{ object{
-                object::pair{std:("label"), std:("Engagement Predictions")}, 
-                object::pair{std:("data"), predictions->map([=](auto p) mutable
+        object::pair{std::string("type"), std::string("scatter")}, 
+        object::pair{std::string("data"), object{
+            object::pair{std::string("datasets"), array<object>{ object{
+                object::pair{std::string("label"), std::string("Engagement Predictions")}, 
+                object::pair{std::string("data"), predictions->map([=](auto p) mutable
                 {
                     return (object{
-                        object::pair{std:("x"), p["timestamp"]}, 
-                        object::pair{std:("y"), p["score"]}, 
-                        object::pair{std:("r"), p["confidence"] * 10}
+                        object::pair{std::string("x"), p["timestamp"]}, 
+                        object::pair{std::string("y"), p["score"]}, 
+                        object::pair{std::string("r"), p["confidence"] * 10}
                     });
                 }
                 )}, 
-                object::pair{std:("backgroundColor"), std:("rgba(75, 192, 192, 0.5)")}
+                object::pair{std::string("backgroundColor"), std::string("rgba(75, 192, 192, 0.5)")}
             } }}
         }}, 
-        object::pair{std:("options"), object{
-            object::pair{std:("scales"), object{
-                object::pair{std:("y"), object{
-                    object::pair{std:("beginAtZero"), true}, 
-                    object::pair{std:("title"), object{
-                        object::pair{std:("display"), true}, 
-                        object::pair{std:("text"), std:("Engagement Score")}
+        object::pair{std::string("options"), object{
+            object::pair{std::string("scales"), object{
+                object::pair{std::string("y"), object{
+                    object::pair{std::string("beginAtZero"), true}, 
+                    object::pair{std::string("title"), object{
+                        object::pair{std::string("display"), true}, 
+                        object::pair{std::string("text"), std::string("Engagement Score")}
                     }}
                 }}
             }}
@@ -72,15 +73,15 @@ any AdvancedVisualization::generateNetworkGraph(any data)
         return Object->create(d);
     }
     );
-    auto simulation = d3->forceSimulation(nodes)->force(std:("link"), d3->forceLink(links)->id([=](auto d) mutable
+    auto simulation = d3->forceSimulation(nodes)->force(std::string("link"), d3->forceLink(links)->id([=](auto d) mutable
     {
         return d["id"];
     }
-    ))->force(std:("charge"), d3->forceManyBody())->force(std:("center"), d3->forceCenter(width / 2, height / 2));
+    ))->force(std::string("charge"), d3->forceManyBody())->force(std::string("center"), d3->forceCenter(width / 2, height / 2));
     return object{
-        object::pair{std:("simulation"), std:("simulation")}, 
-        object::pair{std:("nodes"), std:("nodes")}, 
-        object::pair{std:("links"), std:("links")}
+        object::pair{std::string("simulation"), std::string("simulation")}, 
+        object::pair{std::string("nodes"), std::string("nodes")}, 
+        object::pair{std::string("links"), std::string("links")}
     };
 }
 

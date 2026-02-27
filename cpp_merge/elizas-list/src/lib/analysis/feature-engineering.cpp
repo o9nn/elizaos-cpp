@@ -1,4 +1,5 @@
 #include "feature-engineering.h"
+#include <string>
 
 std::shared_ptr<Promise<std::shared_ptr<EngineeredFeatures>>> FeatureEngineering::engineerFeatures(array<Record<string, any>> data, std::shared_ptr<FeatureConfig> config)
 {
@@ -8,14 +9,14 @@ std::shared_ptr<Promise<std::shared_ptr<EngineeredFeatures>>> FeatureEngineering
         auto reducedFeatures = std::async([=]() { this->reduceDimensionality(array<any>{ numericalFeatures, categoricalFeatures }, config->dimensionality); });
         auto selectedFeatures = std::async([=]() { this->selectFeatures(reducedFeatures, config->target, config->selectionCriteria); });
         return object{
-            object::pair{std:("features"), selectedFeatures}, 
-            object::pair{std:("metadata"), this->generateFeatureMetadata(selectedFeatures)}, 
-            object::pair{std:("importance"), std::async([=]() { this->calculateFeatureImportance(selectedFeatures, config->target); })}
+            object::pair{std::string("features"), selectedFeatures}, 
+            object::pair{std::string("metadata"), this->generateFeatureMetadata(selectedFeatures)}, 
+            object::pair{std::string("importance"), std::async([=]() { this->calculateFeatureImportance(selectedFeatures, config->target); })}
         };
     }
     catch (const any& error)
     {
-        logger["error"](std:("Error in feature engineering:"), error);
+        logger["error"](std::string("Error in feature engineering:"), error);
         throw any(error);
     }
 }
@@ -39,10 +40,10 @@ any FeatureEngineering::processCategoricalFeatures(array<Record<string, any>> da
     for (auto& feature : config->features)
     {
         static switch_type __switch2308_2867 = {
-            { any(std:("onehot")), 1 },
-            { any(std:("target")), 2 },
-            { any(std:("frequency")), 3 },
-            { any(std:("embedding")), 4 }
+            { any(std::string("onehot")), 1 },
+            { any(std::string("target")), 2 },
+            { any(std::string("frequency")), 3 },
+            { any(std::string("embedding")), 4 }
         };
         switch (__switch2308_2867[config->encoding])
         {

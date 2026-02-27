@@ -6,7 +6,7 @@
 
 namespace elizaos {
 
-void createFilemap(const std:& filePath) {
+void createFilemap(const std::string& filePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Check if file exists

@@ -20,7 +20,7 @@ namespace elizaos {
 
 ValidationResult validateCharacterDiff(CharacterDiff diff);
 
-bool validateDataType(const std:& value, const std:& expectedType);
+bool validateDataType(const std::string& value, const std::string& expectedType);
 
 bool validateModificationRate(const std::vector<std::string>& recentModifications, double maxPerHour = 5, double maxPerDay = 20);
 

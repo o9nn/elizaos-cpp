@@ -21,10 +21,10 @@ namespace elizaos {
 // XML template for command extraction
 
 // Helper std::function to extract command from natural language
-std::future<std: | null> extractCommandFromMessage(IAgentRuntime runtime, Memory message);
+std::future<std::string | null> extractCommandFromMessage(IAgentRuntime runtime, Memory message);
 
 // New helper std::function to quote arguments for shell commands like find and grep
-std: quoteShellArgs(const std:& command);
+std::string quoteShellArgs(const std::string& command);
 
 // Helper std::function to save execution record to message feed
 

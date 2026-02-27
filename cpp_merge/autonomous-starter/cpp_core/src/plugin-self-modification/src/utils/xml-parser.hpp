@@ -21,15 +21,15 @@ namespace elizaos {
   // Security settings to prevent XXE attacks
 
 // Sanitize XML input to prevent injection attacks
-std: sanitizeXml(const std:& xmlString);
+std::string sanitizeXml(const std::string& xmlString);
 
 // Escape special XML characters
-std: escapeXml(const std:& unsafe);
+std::string escapeXml(const std::string& unsafe);
 
 // Validate operation type
 
-CharacterDiff parseCharacterDiff(const std:& xmlString);
+CharacterDiff parseCharacterDiff(const std::string& xmlString);
 
-std: buildCharacterDiffXml(CharacterDiff diff);
+std::string buildCharacterDiffXml(CharacterDiff diff);
 
 } // namespace elizaos

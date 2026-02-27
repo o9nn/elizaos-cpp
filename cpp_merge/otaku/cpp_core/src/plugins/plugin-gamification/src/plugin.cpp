@@ -1,11 +1,12 @@
 #include "plugin.hpp"
+#include <string>
 #include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<void> handleGetLeaderboard(const std:& req, const std:& res, IAgentRuntime runtime) {
+std::future<void> handleGetLeaderboard(const std::string& req, const std::string& res, IAgentRuntime runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -47,7 +48,7 @@ std::future<void> handleGetLeaderboard(const std:& req, const std:& res, IAgentR
 
 }
 
-std::future<void> handleGetUserSummary(const std:& req, const std:& res, IAgentRuntime runtime) {
+std::future<void> handleGetUserSummary(const std::string& req, const std::string& res, IAgentRuntime runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -71,7 +72,7 @@ std::future<void> handleGetUserSummary(const std:& req, const std:& res, IAgentR
 
 }
 
-std::future<void> handleGetReferralCode(const std:& req, const std:& res, IAgentRuntime runtime) {
+std::future<void> handleGetReferralCode(const std::string& req, const std::string& res, IAgentRuntime runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {

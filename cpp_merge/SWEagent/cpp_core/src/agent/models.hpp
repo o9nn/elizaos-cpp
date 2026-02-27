@@ -105,11 +105,11 @@ class InstanceStats {
 /**
  * Human model for interactive input
  */
-class HumanModel extends AbstractModel {
-  protected historyPath?: std:;
+class HumanModel : public AbstractModel {
+  protected historyPath?: std::string;
   protected catchEof;
 
-  constructor(config: HumanModelConfig, tools: ToolConfig) {
+  /* constructor */ (config: HumanModelConfig, tools: ToolConfig) {
     super(config, tools);
     this.historyPath = std::getenv("HISTFILE") || path.join(std::getenv("HOME") || '.', '.swe_agent_history');
     this.catchEof = config.catchEof != false; // Default to true
@@ -133,11 +133,11 @@ class HumanModel extends AbstractModel {
 /**
  * LiteLLM model for API-based models
  */
-class LiteLLMModel extends AbstractModel {
-  private apiKeys: std:[];
+class LiteLLMModel : public AbstractModel {
+  private apiKeys: std::string[];
   private currentKeyIndex = 0;
 
-  constructor(config: GenericAPIModelConfig, tools: ToolConfig) {
+  /* constructor */ (config: GenericAPIModelConfig, tools: ToolConfig) {
     super(config as ModelConfig, tools);
     this.apiKeys = this.getApiKeys();
   }
@@ -151,15 +151,15 @@ class LiteLLMModel extends AbstractModel {
     // Round-robin selection
 
     struct RequestData {
-    std: model;
+    std::string model;
     std::optional<std::vector<HistoryItem>> messages;
     double temperature;
     number | null top_p;
     double n;
     std::vector<std::string> stop;
     std::optional<double> max_tokens;
-    std::optional<std:> system;
-    std::optional<std::vector<{ role: std:; parts: Array<{ text: std: }> }>> contents;
+    std::optional<std::string> system;
+    std::optional<std::vector<{ role: std::string; parts: Array<{ text: std::string }> }>> contents;
 
     // Determine API endpoint and headers based on provider
 
@@ -177,10 +177,10 @@ class LiteLLMModel extends AbstractModel {
 /**
  * Human model with thought prompting
  */
-class HumanThoughtModel extends HumanModel {
+class HumanThoughtModel : public HumanModel {
   std::async query(
     _history: History,
-    actionPrompt: std: | number = '> ',
+    actionPrompt: std::string | number = '> ',
     n?,
   ): Promise<ModelOutput | ModelOutput[]> {
     // First get the thought
@@ -234,14 +234,14 @@ class HumanThoughtModel extends HumanModel {
 /**
  * Replay model for replaying trajectories
  */
-class ReplayModel extends AbstractModel {
-  private replays: Array<Array<std: | ModelOutput>>;
+class ReplayModel : public AbstractModel {
+  private replays: Array<Array<std::string | ModelOutput>>;
   private replayIdx = 0;
   private actionIdx = 0;
   private usesFunctionCalling;
-  private submitCommand: std:;
+  private submitCommand: std::string;
 
-  constructor(config: ReplayModelConfig, tools: ToolConfig) {
+  /* constructor */ (config: ReplayModelConfig, tools: ToolConfig) {
     super(config, tools);
 
     if (!config.replayPath || !fs.existsSync(config.replayPath)) {
@@ -254,7 +254,7 @@ class ReplayModel extends AbstractModel {
       .filter((line) => line)
       .std::map[&]((line) {
         const parsed = nlohmann::json::parse(line);
-        return Object.values(parsed)[0] as Array<std: | ModelOutput>;
+        return Object.values(parsed)[0] as Array<std::string | ModelOutput>;
       });
 
     this.usesFunctionCalling = tools.useFunctionCalling;
@@ -264,11 +264,11 @@ class ReplayModel extends AbstractModel {
 /**
  * Instant empty submit model for testing
  */
-class InstantEmptySubmitModel extends AbstractModel {
+class InstantEmptySubmitModel : public AbstractModel {
   private actionIdx = 0;
   private delay;
 
-  constructor(config: { name: 'instant_empty_submit'; delay? }, tools: ToolConfig) {
+  /* constructor */ (config: { name: 'instant_empty_submit'; delay? }, tools: ToolConfig) {
     super(config, tools);
     this.delay = config.delay || 0;
   }
@@ -278,11 +278,11 @@ class InstantEmptySubmitModel extends AbstractModel {
 /**
  * Predetermined test model for testing
  */
-class PredeterminedTestModel extends AbstractModel {
-  private responses: Array<std: | ModelOutput>;
+class PredeterminedTestModel : public AbstractModel {
+  private responses: Array<std::string | ModelOutput>;
   private responseIdx = 0;
 
-  constructor(responses: Array<std: | ModelOutput>, tools?: ToolConfig) {
+  /* constructor */ (responses: Array<std::string | ModelOutput>, tools?: ToolConfig) {
     super({ name: 'test' } as ModelConfig, tools || ({} as ToolConfig));
     this.responses = responses;
   }

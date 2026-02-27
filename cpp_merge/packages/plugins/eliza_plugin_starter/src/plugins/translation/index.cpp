@@ -1,12 +1,13 @@
 #include "index.hpp"
+#include <string>
 
 std::shared_ptr<Plugin> translationPlugin = object{
-    object::pair{std:("name"), std:("translation")}, 
-    object::pair{std:("description"), std:("A plugin for translating text between different languages")}, 
-    object::pair{std:("actions"), array<any>{ getTranslationAction }}, 
-    object::pair{std:("evaluators"), array<any>{ translationEvaluator }}, 
-    object::pair{std:("providers"), array<any>{ translationProvider }}, 
-    object::pair{std:("services"), array<any>{ translationService }}
+    object::pair{std::string("name"), std::string("translation")}, 
+    object::pair{std::string("description"), std::string("A plugin for translating text between different languages")}, 
+    object::pair{std::string("actions"), array<any>{ getTranslationAction }}, 
+    object::pair{std::string("evaluators"), array<any>{ translationEvaluator }}, 
+    object::pair{std::string("providers"), array<any>{ translationProvider }}, 
+    object::pair{std::string("services"), array<any>{ translationService }}
 };
 std::function<void(any)> initializeTranslationPlugin = [=](auto config) mutable
 {

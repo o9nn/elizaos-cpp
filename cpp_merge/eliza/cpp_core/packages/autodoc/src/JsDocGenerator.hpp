@@ -32,14 +32,14 @@ namespace elizaos {
 /**
  * Builds a prompt with the JSDoc comment for the provided ASTQueueItem code.
  * * @param { ASTQueueItem } queueItem The ASTQueueItem object containing the code to extract the JSDoc comment from.
- * @returns { std: } The JSDoc comment extracted from the code provided in the ASTQueueItem object.
+ * @returns { std::string } The JSDoc comment extracted from the code provided in the ASTQueueItem object.
  */
 class JsDocGenerator {
   /**
    * Constructor for a class that takes in an AIService instance.
    * @param {AIService} aiService - The AIService instance to be injected into the class.
    */
-  constructor(public aiService: AIService) {}
+  /* constructor */ (public aiService: AIService) {}
 
   /**
    * Generates a comment based on the given ASTQueueItem.

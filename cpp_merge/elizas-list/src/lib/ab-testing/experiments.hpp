@@ -27,7 +27,7 @@ class ABTestingService : public object, public std::enable_shared_from_this<ABTe
 public:
     using std::enable_shared_from_this<ABTestingService>::shared_from_this;
     static std::shared_ptr<Promise<string>> assignVariant(string experimentId, string userId);
-    static void trackConversion(string experimentId, string userId, string conversionType, double value = undefined);
+    static void trackConversion(string experimentId, string userId, string conversionType, double value = std::nullopt);
     static any getResults(string experimentId);
     static any calculateStatistics(array<any> results);
 };

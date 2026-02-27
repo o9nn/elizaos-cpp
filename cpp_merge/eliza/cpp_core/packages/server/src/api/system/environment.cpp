@@ -1,4 +1,5 @@
 #include "environment.hpp"
+#include <string>
 #include <future>
 #include <map>
 #include <unordered_map>
@@ -7,7 +8,7 @@
 
 namespace elizaos {
 
-std::future<EnvVars> parseEnvFile(const std:& filePath) {
+std::future<EnvVars> parseEnvFile(const std::string& filePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -21,14 +22,14 @@ std::future<EnvVars> parseEnvFile(const std:& filePath) {
             return {}
         }
         return dotenv.parse(content);
-        } catch (error: std:) {
+        } catch (error: std::string) {
             std::cerr << "Error parsing .env file: " + error.message << std::endl;
             return {}
         }
 
 }
 
-std: serializeEnvObject(const std::unordered_map<std:, std:>& envObj) {
+std::string serializeEnvObject(const std::unordered_map<std::string, std::string>& envObj) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return Object.entries(envObj);
@@ -36,7 +37,7 @@ std: serializeEnvObject(const std::unordered_map<std:, std:>& envObj) {
 
 }
 
-std: getLocalEnvPath() {
+std::string getLocalEnvPath() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto envPath = resolveEnvFile();

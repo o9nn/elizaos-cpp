@@ -11,7 +11,7 @@
 
 namespace elizaos {
 
-std::future<std::optional<double>> getCachedPrice(const std:& chain, const std:& address) {
+std::future<std::optional<double>> getCachedPrice(const std::string& chain, const std::string& address) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -29,7 +29,7 @@ std::future<std::optional<double>> getCachedPrice(const std:& chain, const std:&
 
 }
 
-std::future<void> setCachedPrice(const std:& chain, const std:& address, double priceUsd) {
+std::future<void> setCachedPrice(const std::string& chain, const std::string& address, double priceUsd) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -45,7 +45,7 @@ std::future<void> setCachedPrice(const std:& chain, const std:& address, double 
 
 }
 
-std::future<std::unordered_map<std:, double>> fetchSolanaPrices(const std::vector<std::string>& mints) {
+std::future<std::unordered_map<std::string, double>> fetchSolanaPrices(const std::vector<std::string>& mints) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (mints.size() == 0) return {};
@@ -57,7 +57,7 @@ std::future<std::unordered_map<std:, double>> fetchSolanaPrices(const std::vecto
             chunks.push_back(mints.slice(i, i + 100));
         }
 
-        const std::unordered_map<std:, double> allPrices = {};
+        const std::unordered_map<std::string, double> allPrices = {};
 
         for (const auto& chunk : chunks)
             const auto ids = chunk.join(",");
@@ -69,10 +69,10 @@ std::future<std::unordered_map<std:, double>> fetchSolanaPrices(const std::vecto
 
                 const auto data = response.json();
 
-                // Jupiter returns { data: { [mint]: { price: std: } } }
+                // Jupiter returns { data: { [mint]: { price: std::string } } }
                 if (data.data) {
                     for (const int [mint, priceData] of Object.entries(data.data)) {
-                        const auto price = (priceData as { price?: std: }).price;
+                        const auto price = (priceData as { price?: std::string }).price;
                         if (price) {
                             allPrices[mint] = parseFloat(price);
                         }
@@ -88,7 +88,7 @@ std::future<std::unordered_map<std:, double>> fetchSolanaPrices(const std::vecto
 
 }
 
-std::future<std::unordered_map<std:, double>> fetchEvmPrices(const std:& chain, const std::vector<std::string>& addresses) {
+std::future<std::unordered_map<std::string, double>> fetchEvmPrices(const std::string& chain, const std::vector<std::string>& addresses) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (addresses.size() == 0) return {};
@@ -121,7 +121,7 @@ std::future<std::unordered_map<std:, double>> fetchEvmPrices(const std:& chain, 
             }
 
             const auto data = response.json();
-            const std::unordered_map<std:, double> prices = {};
+            const std::unordered_map<std::string, double> prices = {};
 
             // CoinGecko returns { [address]: { usd } }
             for (const int [address, priceData] of Object.entries(data)) {
@@ -158,7 +158,7 @@ std::future<void> GET(NextRequest request) {
     }
 
     // Check cache for each address
-    const std::unordered_map<std:, double> prices = {};
+    const std::unordered_map<std::string, double> prices = {};
     const std::vector<std::string> uncachedAddresses = [];
 
     for (const auto& addr : addresses)
@@ -172,7 +172,7 @@ std::future<void> GET(NextRequest request) {
 
         // Fetch uncached prices
         if (uncachedAddresses.size() > 0) {
-            std::unordered_map<std:, double> freshPrices = {};
+            std::unordered_map<std::string, double> freshPrices = {};
 
             if (chain == "solana") {
                 freshPrices = fetchSolanaPrices(uncachedAddresses);

@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_PLUGIN_MANAGER_SRC_TYPES_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_PLUGIN_MANAGER_SRC_TYPES_H
 #include "core.hpp"
+#include <string>
 // External dependency removed
 using ElizaPlugin = Plugin;
 
@@ -19,7 +20,7 @@ class PluginManagerConfig;
 class InstallProgress;
 class PluginMetadata;
 
-namespace std:("@elizaos/core") {
+namespace std::string("@elizaos/core") {
     class ServiceTypeRegistry : public object, public std::enable_shared_from_this<ServiceTypeRegistry> {
     public:
         using std::enable_shared_from_this<ServiceTypeRegistry>::shared_from_this;
@@ -33,7 +34,7 @@ namespace std:("@elizaos/core") {
 }
 extern object PluginManagerServiceType;
 enum struct PluginStatus {
-    BUILDING = std:("building"), READY = std:("ready"), LOADED = std:("loaded"), ERROR = std:("error"), UNLOADED = std:("unloaded"), NEEDS_CONFIGURATION = std:("needs_configuration")
+    BUILDING = std::string("building"), READY = std::string("ready"), LOADED = std::string("loaded"), ERROR = std::string("error"), UNLOADED = std::string("unloaded"), NEEDS_CONFIGURATION = std::string("needs_configuration")
 };
 class PluginEnvironmentVariable : public object, public std::enable_shared_from_this<PluginEnvironmentVariable> {
 public:

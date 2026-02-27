@@ -18,22 +18,22 @@ namespace elizaos {
 struct AccountPageProps {
     std::optional<double> totalBalance;
     { userProfile;
-    std: avatarUrl;
-    std: displayName;
-    std: bio;
-    std: email;
-    std: walletAddress;
-    std: memberSince;
+    std::string avatarUrl;
+    std::string displayName;
+    std::string bio;
+    std::string email;
+    std::string walletAddress;
+    std::string memberSince;
     (updates: { onUpdateProfile;
-    std::optional<std:> avatarUrl;
-    std::optional<std:> displayName;
-    std::optional<std:> bio;
+    std::optional<std::string> avatarUrl;
+    std::optional<std::string> displayName;
+    std::optional<std::string> bio;
     std::optional<UUID> agentId;
     std::optional<UUID> userId;
 };
 
 // Compress and convert image to base64
-std::future<std:> compressImage(File file, number = 500 maxSizeKB);
+std::future<std::string> compressImage(File file, number = 500 maxSizeKB);
 
 // Predefined avatars in the public/avatars folder
 const predefinedAvatars = [
@@ -44,8 +44,8 @@ const predefinedAvatars = [
 ];
 
 struct AvatarPickerModalProps {
-    std: currentAvatar;
-    [&](avatarUrl: std:) { return void onSelectAvatar; };
+    std::string currentAvatar;
+    [&](avatarUrl: std::string) { return void onSelectAvatar; };
     [&]() { return void onUploadCustom; };
 };
 

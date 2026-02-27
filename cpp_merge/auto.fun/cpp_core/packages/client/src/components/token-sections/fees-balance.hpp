@@ -17,7 +17,7 @@ namespace elizaos {
 
 
 struct BalanceCheckerProps {
-    std: tokenMint;
+    std::string tokenMint;
 };
 
 

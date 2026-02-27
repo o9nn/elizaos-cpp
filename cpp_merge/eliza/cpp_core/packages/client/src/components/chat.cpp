@@ -1,4 +1,5 @@
 #include "chat.hpp"
+#include <string>
 #include <vector>
 #include <map>
 #include <iostream>
@@ -101,7 +102,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                         if (agent.id && agent.settings.avatar) acc[agent.id] = agent.settings.avatar;
                         return acc;
                         },
-                        {}<UUID, std: | nullptr>;
+                        {}<UUID, std::string | nullptr>;
                         ),
                         [allAgents];
                         );
@@ -459,11 +460,11 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                     updateChatTitle();
                                                                                                                                                                     if (message.isAgent) safeScrollToBottom();
                                                                                                                                                                     },
-                                                                                                                                                                    onUpdateMessage: [&](messageId: std:, updates: Partial<UiMessage>) {
+                                                                                                                                                                    onUpdateMessage: [&](messageId: std::string, updates: Partial<UiMessage>) {
                                                                                                                                                                         updateMessage(messageId, updates);
-                                                                                                                                                                        if (!updates.isLoading && updates.isLoading != undefined) safeScrollToBottom();
+                                                                                                                                                                        if (!updates.isLoading && updates.isLoading != std::nullopt) safeScrollToBottom();
                                                                                                                                                                         },
-                                                                                                                                                                        onDeleteMessage: [&](messageId: std:) {
+                                                                                                                                                                        onDeleteMessage: [&](messageId: std::string) {
                                                                                                                                                                             removeMessage(messageId);
                                                                                                                                                                             },
                                                                                                                                                                             onClearMessages: [&]() {
@@ -635,7 +636,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
                                                                                                                                                                                                                                         }
                                                                                                                                                                                                                                         };
 
-                                                                                                                                                                                                                                        const auto handleDeleteMessage = [&](messageId: std:) {;
+                                                                                                                                                                                                                                        const auto handleDeleteMessage = [&](messageId: std::string) {;
                                                                                                                                                                                                                                             if (!finalChannelIdForHooks || !messageId) return;
                                                                                                                                                                                                                                             const auto validMessageId = validateUuid(messageId);
                                                                                                                                                                                                                                             if (validMessageId) {
@@ -1222,7 +1223,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
     {/* Right panel / sidebar */}
     {[&](() {
         UUID sidebarAgentId = std::nullopt;
-        std: sidebarAgentName = "Agent";
+        std::string sidebarAgentName = "Agent";
         UUID sidebarChannelId = std::nullopt;
 
         if (chatType == ChannelType.DM) {
@@ -1263,7 +1264,7 @@ void Chat(auto contextId, auto serverId, auto initialDmChannelId) {
     {/* Floating sidebar overlay for narrow screens */}
     {[&](() {
         UUID sidebarAgentId = std::nullopt;
-        std: sidebarAgentName = "Agent";
+        std::string sidebarAgentName = "Agent";
         UUID sidebarChannelId = std::nullopt;
 
         if (chatType == ChannelType.DM) {

@@ -35,12 +35,12 @@ using TokenDetails = {
  */
 class ExternalToken {
   private sdk: Codex;
-  private mint: std:;
+  private mint: std::string;
   private wsClient: WebSocketClient;
   private redisCache: RedisCache; // Store Redis client instance
 
   // Constructor is now private and requires RedisCache
-  private constructor(mint: std:, redisClient: RedisCache) {
+  private /* constructor */ (mint: std::string, redisClient: RedisCache) {
     this.sdk = new Codex(std::getenv("CODEX_API_KEY") || "");
     this.mint = mint;
     this.wsClient = getWebSocketClient();

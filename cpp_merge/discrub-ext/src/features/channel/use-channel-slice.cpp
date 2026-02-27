@@ -1,4 +1,5 @@
 #include "use-channel-slice.h"
+#include <string>
 
 std::function<object()> useChannelSlice = [=]() mutable
 {
@@ -38,10 +39,10 @@ std::function<object()> useChannelSlice = [=]() mutable
         );
     };
     auto state = object{
-        object::pair{std:("channels"), useChannels}, 
-        object::pair{std:("selectedChannel"), useSelectedChannel}, 
-        object::pair{std:("isLoading"), useIsLoading}, 
-        object::pair{std:("selectedExportChannels"), useSelectedExportChannels}
+        object::pair{std::string("channels"), useChannels}, 
+        object::pair{std::string("selectedChannel"), useSelectedChannel}, 
+        object::pair{std::string("isLoading"), useIsLoading}, 
+        object::pair{std::string("selectedExportChannels"), useSelectedExportChannels}
     };
     auto setIsLoading = [=](auto value) mutable
     {
@@ -76,15 +77,15 @@ std::function<object()> useChannelSlice = [=]() mutable
         dispatch(loadChannelAction(channelId));
     };
     return object{
-        object::pair{std:("state"), std:("state")}, 
-        object::pair{std:("setIsLoading"), std:("setIsLoading")}, 
-        object::pair{std:("setChannels"), std:("setChannels")}, 
-        object::pair{std:("setChannel"), std:("setChannel")}, 
-        object::pair{std:("resetChannel"), std:("resetChannel")}, 
-        object::pair{std:("setSelectedExportChannels"), std:("setSelectedExportChannels")}, 
-        object::pair{std:("getChannels"), std:("getChannels")}, 
-        object::pair{std:("changeChannel"), std:("changeChannel")}, 
-        object::pair{std:("loadChannel"), std:("loadChannel")}
+        object::pair{std::string("state"), std::string("state")}, 
+        object::pair{std::string("setIsLoading"), std::string("setIsLoading")}, 
+        object::pair{std::string("setChannels"), std::string("setChannels")}, 
+        object::pair{std::string("setChannel"), std::string("setChannel")}, 
+        object::pair{std::string("resetChannel"), std::string("resetChannel")}, 
+        object::pair{std::string("setSelectedExportChannels"), std::string("setSelectedExportChannels")}, 
+        object::pair{std::string("getChannels"), std::string("getChannels")}, 
+        object::pair{std::string("changeChannel"), std::string("changeChannel")}, 
+        object::pair{std::string("loadChannel"), std::string("loadChannel")}
     };
 };
 

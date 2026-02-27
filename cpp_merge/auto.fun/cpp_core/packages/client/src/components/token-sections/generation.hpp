@@ -39,10 +39,10 @@ using PendingShare = {
 
 // --- Expected API Response Types ---
 struct TokenInfoResponse {
-    std: name;
-    std: ticker;
-    std::optional<std:> description;
-    std::optional<std:> image;
+    std::string name;
+    std::string ticker;
+    std::optional<std::string> description;
+    std::optional<std::string> image;
 };
 
 

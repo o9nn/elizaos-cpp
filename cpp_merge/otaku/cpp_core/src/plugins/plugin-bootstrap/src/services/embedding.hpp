@@ -20,7 +20,7 @@ struct EmbeddingQueueItem {
     double retryCount;
     double maxRetries;
     double addedAt;
-    std::optional<std:> runId;
+    std::optional<std::string> runId;
 };
 
 /**
@@ -28,7 +28,7 @@ struct EmbeddingQueueItem {
  * This service listens for EMBEDDING_GENERATION_REQUESTED events
  * and processes them in a queue to avoid blocking the main runtime
  */
-class EmbeddingGenerationService extends Service {
+class EmbeddingGenerationService : public Service {
   static serviceType = 'embedding-generation';
   capabilityDescription = 'Handles asynchronous embedding generation for memories';
 

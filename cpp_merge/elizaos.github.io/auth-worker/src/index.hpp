@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZAOS_GITHUB_IO_AUTH_WORKER_SRC_INDEX_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZAOS_GITHUB_IO_AUTH_WORKER_SRC_INDEX_H
 #include "core.hpp"
+#include <string>
 
 class Env;
 
@@ -28,8 +29,8 @@ template <typename RET>
 RET getCorsHeaders(std::shared_ptr<Env> env)
 {
     return object{
-        object::pair{std:("Access-Control-Allow-Origin"), env->ALLOWED_ORIGIN}, 
-        object::pair{std:("Access-Control-Allow-Credentials"), std:("true")}
+        object::pair{std::string("Access-Control-Allow-Origin"), env->ALLOWED_ORIGIN}, 
+        object::pair{std::string("Access-Control-Allow-Credentials"), std::string("true")}
     };
 };
 

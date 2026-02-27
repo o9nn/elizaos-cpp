@@ -28,12 +28,12 @@ Chain getChain();
  * Get RPC URL for the current chain
  * Uses deployment config with env override support
  */
-std: getRpcUrl();
+std::string getRpcUrl();
 
 /**
  * Get RPC URL for a specific chain type
  * @param chainType - Chain identifier (base, bsc, localhost, etc.)
  */
-std: getRpcUrlForChain(const std:& chainType);
+std::string getRpcUrlForChain(const std::string& chainType);
 
 } // namespace elizaos

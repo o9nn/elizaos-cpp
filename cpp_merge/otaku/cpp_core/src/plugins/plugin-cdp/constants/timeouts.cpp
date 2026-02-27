@@ -1,11 +1,12 @@
 #include "timeouts.hpp"
+#include <string>
 #include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<void> waitForTxConfirmation(PublicClient publicClient, "0x" + std::to_string(string) + "" hash, std: operationType = "transaction", double timeout = TX_CONFIRMATION_TIMEOUT) {
+std::future<void> waitForTxConfirmation(PublicClient publicClient, "0x" + std::to_string(string) + "" hash, std::string operationType = "transaction", double timeout = TX_CONFIRMATION_TIMEOUT) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

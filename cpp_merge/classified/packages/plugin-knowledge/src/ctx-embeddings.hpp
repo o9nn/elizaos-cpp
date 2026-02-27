@@ -18,7 +18,7 @@ extern string CODE_PROMPT_TEMPLATE;
 extern string TECHNICAL_PROMPT_TEMPLATE;
 string getContextualizationPrompt(string docContent, string chunkContent, double minTokens = CONTEXT_TARGETS["DEFAULT"]["MIN_TOKENS"], double maxTokens = CONTEXT_TARGETS["DEFAULT"]["MAX_TOKENS"], string promptTemplate = CONTEXTUAL_CHUNK_ENRICHMENT_PROMPT_TEMPLATE);
 
-object getCachingContextualizationPrompt(string chunkContent, string contentType = undefined, double minTokens = CONTEXT_TARGETS["DEFAULT"]["MIN_TOKENS"], double maxTokens = CONTEXT_TARGETS["DEFAULT"]["MAX_TOKENS"]);
+object getCachingContextualizationPrompt(string chunkContent, string contentType = std::nullopt, double minTokens = CONTEXT_TARGETS["DEFAULT"]["MIN_TOKENS"], double maxTokens = CONTEXT_TARGETS["DEFAULT"]["MAX_TOKENS"]);
 
 string getPromptForMimeType(string mimeType, string docContent, string chunkContent);
 

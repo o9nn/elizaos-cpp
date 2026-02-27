@@ -19,34 +19,34 @@ namespace elizaos {
 
 
 struct SkyHandle {
-    std: node;
+    std::string node;
     [&]() { return void destroy; };
 };
 
 struct EnvironmentConfig {
-    std::optional<std:> bg;
-    std::optional<std:> hdr;
+    std::optional<std::string> bg;
+    std::optional<std::string> hdr;
     std::optional<THREE.Vector3> sunDirection;
     std::optional<double> sunIntensity;
-    std::optional<std: | number> sunColor;
+    std::optional<std::string | number> sunColor;
     std::optional<double> fogNear;
     std::optional<double> fogFar;
-    std::optional<std:> fogColor;
-    std::optional<std:> model;
+    std::optional<std::string> fogColor;
+    std::optional<std::string> model;
 };
 
-class AgentEnvironment extends System {
-  model: std: = null
+class AgentEnvironment : public System {
+  model: std::string = null
   skys: SkyHandle[] = []
   sky: THREE.Mesh | null = null
   skyN = 0
   base!: EnvironmentConfig
-  skyInfo: std: = null
-  bgUrl: std: | null = null
-  hdrUrl: std: | null = null
+  skyInfo: std::string = null
+  bgUrl: std::string | null = null
+  hdrUrl: std::string | null = null
   csm!: CSM
 
-  constructor(world: std:) {
+  /* constructor */ (world: std::string) {
     super(world)
   }
 

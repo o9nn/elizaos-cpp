@@ -1,4 +1,5 @@
 #include "provider.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -22,7 +23,7 @@ Provider fromV2Provider(ProviderV2 providerV2) {
                     // Call the v2 provider with transformed parameters
                     const auto result = providerV2.get(runtime, message, stateV2);
 
-                    // Extract text or use an empty std: if not present
+                    // Extract text or use an empty std::string if not present
                     return result.text || "";
                     } catch (error) {
                         std::cerr << "Error in v2 provider " + providerV2.name + ":" << error << std::endl;
@@ -47,7 +48,7 @@ ProviderV2 toV2Provider(Provider provider) {
             dynamic: provider.dynamic,
             position: provider.position,
             private: provider.private,
-            get: std::async (runtime: std:, message: std:, state: std:): Promise<ProviderResult> => {
+            get: std::async (runtime: std::string, message: std::string, state: std::string): Promise<ProviderResult> => {
                 try {
                     // Call the v1 provider directly
                     const auto result = provider.get(runtime, message, state);

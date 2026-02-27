@@ -1,4 +1,5 @@
 #include "setup.hpp"
+#include <string>
 #include <future>
 #include <cstdlib>
 #include <optional>
@@ -7,14 +8,14 @@
 
 namespace elizaos {
 
-std::future<void> createProjectDirectories(const std:& targetDir) {
+std::future<void> createProjectDirectories(const std::string& targetDir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     ensureElizaDir(targetDir);
 
 }
 
-std::future<void> setupAIModelConfig(const std:& aiModel, const std:& envFilePath, auto isNonInteractive) {
+std::future<void> setupAIModelConfig(const std::string& aiModel, const std::string& envFilePath, auto isNonInteractive) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -167,7 +168,7 @@ std::future<void> setupAIModelConfig(const std:& aiModel, const std:& envFilePat
 
 }
 
-bool hasValidApiKey(const std:& content, const std:& keyName) {
+bool hasValidApiKey(const std::string& content, const std::string& keyName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto regex = "new RegExp(" + "^" + keyName + "=(.+)$";
@@ -186,7 +187,7 @@ bool hasValidApiKey(const std:& content, const std:& keyName) {
 
 }
 
-std::future<void> setupEmbeddingModelConfig(const std:& embeddingModel, const std:& envFilePath, auto isNonInteractive) {
+std::future<void> setupEmbeddingModelConfig(const std::string& embeddingModel, const std::string& envFilePath, auto isNonInteractive) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -308,7 +309,7 @@ std::future<void> setupEmbeddingModelConfig(const std:& embeddingModel, const st
 
 }
 
-std::future<void> installDependencies(const std:& targetDir) {
+std::future<void> installDependencies(const std::string& targetDir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Skip dependency installation in CI/test environments to save memory and time
@@ -322,7 +323,7 @@ std::future<void> installDependencies(const std:& targetDir) {
 
 }
 
-std::future<void> setupProjectEnvironment(const std:& targetDir, const std:& database, const std:& aiModel, std::optional<std:> embeddingModel, auto isNonInteractive) {
+std::future<void> setupProjectEnvironment(const std::string& targetDir, const std::string& database, const std::string& aiModel, std::optional<std::string> embeddingModel, auto isNonInteractive) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Create project directories first

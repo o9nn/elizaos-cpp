@@ -34,7 +34,7 @@ public:
 
     double VOCAB_SIZE = 51289;
 
-    Florence2Local(std::shared_ptr<Florence2LocalConfig> config = undefined);
+    Florence2Local(std::shared_ptr<Florence2LocalConfig> config = std::nullopt);
     virtual std::shared_ptr<Promise<void>> initialize();
     virtual std::shared_ptr<Promise<std::shared_ptr<Florence2Result>>> analyzeImage(std::shared_ptr<Buffer> imageBuffer);
     virtual std::shared_ptr<Promise<std::shared_ptr<tf::Tensor3D>>> preprocessImage(std::shared_ptr<Buffer> imageBuffer);

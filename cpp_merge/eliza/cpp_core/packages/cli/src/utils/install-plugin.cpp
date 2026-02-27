@@ -9,7 +9,7 @@
 
 namespace elizaos {
 
-std: getCliDirectory() {
+std::string getCliDirectory() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -39,7 +39,7 @@ std: getCliDirectory() {
 
 }
 
-std::future<bool> verifyPluginImport(const std:& repository, const std:& context) {
+std::future<bool> verifyPluginImport(const std::string& repository, const std::string& context) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Use the new centralized loader std::function
@@ -56,7 +56,7 @@ std::future<bool> verifyPluginImport(const std:& repository, const std:& context
 
 }
 
-std::future<bool> attemptInstallation(const std:& packageName, const std:& versionString, const std:& directory, const std:& context, auto skipVerification) {
+std::future<bool> attemptInstallation(const std::string& packageName, const std::string& versionString, const std::string& directory, const std::string& context, auto skipVerification) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     logger.debug("Attempting to install plugin " + std::to_string(context) + "...");
@@ -86,7 +86,7 @@ std::future<bool> attemptInstallation(const std:& packageName, const std:& versi
         );
         return verifyPluginImport(installResult.installedIdentifier, context);
         } catch (installError) {
-            // Catch std: unexpected errors during the process
+            // Catch std::string unexpected errors during the process
             logger.warn(
             "Error during installation attempt " + context + ": " + std::to_string(true /* instanceof check */ ? installError.message : std::to_string(installError))
             );
@@ -95,7 +95,7 @@ std::future<bool> attemptInstallation(const std:& packageName, const std:& versi
 
 }
 
-std::future<bool> installPlugin(const std:& packageName, const std:& cwd, std::optional<std:> versionSpecifier, auto skipVerification) {
+std::future<bool> installPlugin(const std::string& packageName, const std::string& cwd, std::optional<std::string> versionSpecifier, auto skipVerification) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     logger.debug("Installing plugin: " + std::to_string(packageName) + "");
@@ -130,7 +130,7 @@ std::future<bool> installPlugin(const std:& packageName, const std:& cwd, std::o
     const auto cache = fetchPluginRegistry();
     const auto possible = normalizePluginName(packageName);
 
-    std: key = nullptr;
+    std::string key = nullptr;
     for (const auto& name : possible)
         if (cache.registry[name]) {
             key = name;

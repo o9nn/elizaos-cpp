@@ -45,14 +45,14 @@ enum SortOrder {
 }
 
 struct RawTokenQuery {
-    std::optional<std:> page;
-    std::optional<std:> limit;
-    std::optional<std:> status;
-    std::optional<std:> hideImported;
-    std::optional<std:> creator;
-    std::optional<std:> search;
-    std::optional<std:> sortBy;
-    std::optional<std:> sortOrder;
+    std::optional<std::string> page;
+    std::optional<std::string> limit;
+    std::optional<std::string> status;
+    std::optional<std::string> hideImported;
+    std::optional<std::string> creator;
+    std::optional<std::string> search;
+    std::optional<std::string> sortBy;
+    std::optional<std::string> sortOrder;
 };
 
 struct TokenQueryParams {
@@ -60,14 +60,14 @@ struct TokenQueryParams {
     double limit;
     std::optional<TokenStatus> status;
     std::optional<0 | 1> hideImported;
-    std::optional<std:> creator;
-    std::optional<std:> search;
+    std::optional<std::string> creator;
+    std::optional<std::string> search;
     SortBy sortBy;
     SortOrder sortOrder;
 };
 
-std: parseSolanaAddress(unknown raw, auto name = "address");
+std::string parseSolanaAddress(unknown raw, auto name = "address");
 
-Pagination parsePaginationQuery(Record<std: query, auto std: | undefined>, auto { defaultLimit = 50, auto maxLimit = 50, auto maxPage = 1000 } = {});
+Pagination parsePaginationQuery(Record<std::string query, auto std::string | std::nullopt>, auto { defaultLimit = 50, auto maxLimit = 50, auto maxPage = 1000 } = {});
 
 } // namespace elizaos

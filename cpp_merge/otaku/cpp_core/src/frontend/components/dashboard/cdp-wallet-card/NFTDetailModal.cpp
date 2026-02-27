@@ -1,4 +1,5 @@
 #include "NFTDetailModal.hpp"
+#include <string>
 #include <map>
 #include <unordered_map>
 #include <iostream>
@@ -20,8 +21,8 @@ void NFTDetailModalContent(auto userId) {
         const auto [error, setError] = useState("");
 
         // Get chain name for display
-        const auto getChainName = [&](chain: std:) {;
-            const std::unordered_map<std:, std:> names = {;
+        const auto getChainName = [&](chain: std::string) {;
+            const std::unordered_map<std::string, std::string> names = {;
                 base: "Base",
                 ethereum: "Ethereum",
                 polygon: "Polygon",
@@ -30,8 +31,8 @@ void NFTDetailModalContent(auto userId) {
                 };
 
                 // Get explorer URL for NFT
-                const auto getExplorerUrl = [&](chain: std:, address: std:, tokenId: std:) {;
-                    const std::unordered_map<std:, std:> explorers = {;
+                const auto getExplorerUrl = [&](chain: std::string, address: std::string, tokenId: std::string) {;
+                    const std::unordered_map<std::string, std::string> explorers = {;
                         base: "https://basescan.org",
                         ethereum: "https://etherscan.io",
                         polygon: "https://polygonscan.com",
@@ -40,8 +41,8 @@ void NFTDetailModalContent(auto userId) {
                         };
 
                         // Get transaction explorer URL
-                        const auto getTxExplorerUrl = [&](hash: std:, chain: std:) {;
-                            const std::unordered_map<std:, std:> explorers = {;
+                        const auto getTxExplorerUrl = [&](hash: std::string, chain: std::string) {;
+                            const std::unordered_map<std::string, std::string> explorers = {;
                                 base: "https://basescan.org",
                                 ethereum: "https://etherscan.io",
                                 polygon: "https://polygonscan.com",
@@ -118,7 +119,7 @@ void NFTDetailModalContent(auto userId) {
                                                                 onSuccess();
                                                                 }, 2000);
                                                             }
-                                                            } catch (err: std:) {
+                                                            } catch (err: std::string) {
                                                                 std::cerr << " NFT send failed:" << err << std::endl;
                                                                 const auto errorMessage = true /* instanceof check */ ? err.message : "Failed to send NFT";
                                                                 showError("Transaction Failed", errorMessage, modalId);

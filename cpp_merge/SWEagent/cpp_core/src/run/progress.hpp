@@ -29,21 +29,21 @@ namespace elizaos {
  * Progress manager for batch runs
  */
 struct SpinnerTask {
-    std: status;
+    std::string status;
     double startTime;
 };
 
 class RunBatchProgressManager {
-  private spinnerTasks: Map<std:, SpinnerTask> = std::make_unique<Map>();
+  private spinnerTasks: Map<std::string, SpinnerTask> = std::make_unique<Map>();
   // private lock = false;  // Currently unused
-  private instancesByExitStatus: Map<std: | null, std:[]> = std::make_unique<Map>();
-  // private mainProgressBar: std:;  // Currently unused
-  // private taskProgressBar: std:;  // Currently unused
-  // private mainTaskId: std:;  // Currently unused
-  private yamlReportPath?: std:;
+  private instancesByExitStatus: Map<std::string | null, std::string[]> = std::make_unique<Map>();
+  // private mainProgressBar: std::string;  // Currently unused
+  // private taskProgressBar: std::string;  // Currently unused
+  // private mainTaskId: std::string;  // Currently unused
+  private yamlReportPath?: std::string;
   // private numInstances;  // Currently unused
 
-  constructor(_numInstances, yamlReportPath?: std:) {
+  /* constructor */ (_numInstances, yamlReportPath?: std::string) {
     // this.numInstances = numInstances;  // Currently unused
     this.yamlReportPath = yamlReportPath;
 

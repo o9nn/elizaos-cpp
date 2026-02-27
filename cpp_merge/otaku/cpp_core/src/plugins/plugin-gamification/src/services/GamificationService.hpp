@@ -16,11 +16,11 @@ namespace elizaos {
 
 
 
-class GamificationService extends Service {
+class GamificationService : public Service {
   static serviceType = 'gamification';
   capabilityDescription = 'Records points for user actions and provides gamification state';
 
-  private getDb(): DatabaseAdapter | undefined {
+  private getDb(): DatabaseAdapter | std::nullopt {
     return (this.runtime as RuntimeWithDb).db;
   }
 

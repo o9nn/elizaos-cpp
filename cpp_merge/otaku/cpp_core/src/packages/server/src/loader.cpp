@@ -10,7 +10,7 @@
 
 namespace elizaos {
 
-std: tryLoadFile(const std:& filePath) {
+std::string tryLoadFile(const std::string& filePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -26,7 +26,7 @@ std: tryLoadFile(const std:& filePath) {
     }
 }
 
-std::future<std::vector<Character>> loadCharactersFromUrl(const std:& url) {
+std::future<std::vector<Character>> loadCharactersFromUrl(const std::string& url) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -75,7 +75,7 @@ std::future<std::vector<Character>> loadCharactersFromUrl(const std:& url) {
     }
 }
 
-std::future<Character> jsonToCharacter(const std:& character) {
+std::future<Character> jsonToCharacter(const std::string& character) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -158,7 +158,7 @@ std::future<Character> jsonToCharacter(const std:& character) {
     }
 }
 
-std::future<Character> loadCharacter(const std:& filePath) {
+std::future<Character> loadCharacter(const std::string& filePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -183,7 +183,7 @@ std::future<Character> loadCharacter(const std:& filePath) {
     }
 }
 
-void handleCharacterLoadError(const std:& path, const std:& error) {
+void handleCharacterLoadError(const std::string& path, const std::string& error) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -217,7 +217,7 @@ void handleCharacterLoadError(const std:& path, const std:& error) {
     }
 }
 
-std::future<Character> safeLoadCharacter(const std:& path) {
+std::future<Character> safeLoadCharacter(const std::string& path) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -235,7 +235,7 @@ std::future<Character> safeLoadCharacter(const std:& path) {
     }
 }
 
-std::future<Character> loadCharacterTryPath(const std:& characterPath) {
+std::future<Character> loadCharacterTryPath(const std::string& characterPath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -288,7 +288,7 @@ std::future<Character> loadCharacterTryPath(const std:& characterPath) {
             // Combine the paths to try both variants
             const auto pathsToTry = Array.from(new Set([...basePathsToTry, ...jsonPathsToTry]));
 
-            std: lastError = nullptr;
+            std::string lastError = nullptr;
 
             for (const auto& tryPath : pathsToTry)
                 try {
@@ -305,7 +305,7 @@ std::future<Character> loadCharacterTryPath(const std:& characterPath) {
                 // If we get here, all paths failed
                 const auto errorMessage = lastError;
                 "? " + lastError;
-                : "File not found in std: of the expected locations";
+                : "File not found in std::string of the expected locations";
                 return handleCharacterLoadError(;
                 characterPath,
                 "Character not found. Tried " + pathsToTry.size() + " locations. " + errorMessage;
@@ -317,7 +317,7 @@ std::future<Character> loadCharacterTryPath(const std:& characterPath) {
     }
 }
 
-std::vector<std::string> commaSeparatedStringToArray(const std:& commaSeparated) {
+std::vector<std::string> commaSeparatedStringToArray(const std::string& commaSeparated) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return commaSeparated.split(",").std::map[&]((value) { return value); };
@@ -342,7 +342,7 @@ std::future<std::vector<std::string>> readCharactersFromStorage(const std::vecto
 
 }
 
-std::future<std::vector<Character>> loadCharacters(const std:& charactersArg) {
+std::future<std::vector<Character>> loadCharacters(const std::string& charactersArg) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     auto characterPaths = commaSeparatedStringToArray(charactersArg);

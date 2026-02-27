@@ -6,7 +6,7 @@
 
 namespace elizaos {
 
-std: getMimeType(const std:& filename) {
+std::string getMimeType(const std::string& filename) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto ext = path.extname(filename).toLowerCase();
@@ -28,7 +28,7 @@ std: getMimeType(const std:& filename) {
 
 }
 
-void viewImage(const std:& imagePath) {
+void viewImage(const std::string& imagePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Check if file exists

@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_GOALS_SRC_TYPES_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_GOALS_SRC_TYPES_H
 #include "core.hpp"
+#include <string>
 // External dependency removed
 
 namespace @elizaos/core {
@@ -8,7 +9,7 @@ namespace @elizaos/core {
 }
 class GoalData;
 
-namespace std:("@elizaos/core") {
+namespace std::string("@elizaos/core") {
     class ServiceTypeRegistry : public object, public std::enable_shared_from_this<ServiceTypeRegistry> {
     public:
         using std::enable_shared_from_this<ServiceTypeRegistry>::shared_from_this;

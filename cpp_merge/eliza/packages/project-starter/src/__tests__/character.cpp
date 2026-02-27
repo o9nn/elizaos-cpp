@@ -1,29 +1,30 @@
 #include "character.test.h"
+#include <string>
 
 void Main(void)
 {
-    describe(std:("Character Configuration"), [=]() mutable
+    describe(std::string("Character Configuration"), [=]() mutable
     {
-        it(std:("should have all required fields"), [=]() mutable
+        it(std::string("should have all required fields"), [=]() mutable
         {
-            expect(character)->toHaveProperty(std:("name"));
-            expect(character)->toHaveProperty(std:("bio"));
-            expect(character)->toHaveProperty(std:("plugins"));
-            expect(character)->toHaveProperty(std:("system"));
-            expect(character)->toHaveProperty(std:("messageExamples"));
+            expect(character)->toHaveProperty(std::string("name"));
+            expect(character)->toHaveProperty(std::string("bio"));
+            expect(character)->toHaveProperty(std::string("plugins"));
+            expect(character)->toHaveProperty(std::string("system"));
+            expect(character)->toHaveProperty(std::string("messageExamples"));
         }
         );
-        it(std:("should have the correct name"), [=]() mutable
+        it(std::string("should have the correct name"), [=]() mutable
         {
-            expect(character->name)->toBe(std:("Eliza"));
+            expect(character->name)->toBe(std::string("Eliza"));
         }
         );
-        it(std:("should have plugins defined as an array"), [=]() mutable
+        it(std::string("should have plugins defined as an array"), [=]() mutable
         {
             expect(Array->isArray(character->plugins))->toBe(true);
         }
         );
-        it(std:("should have conditionally included plugins based on environment variables"), [=]() mutable
+        it(std::string("should have conditionally included plugins based on environment variables"), [=]() mutable
         {
             auto originalOpenAIKey = process->env->OPENAI_API_KEY;
             auto originalAnthropicKey = process->env->ANTHROPIC_API_KEY;
@@ -35,12 +36,12 @@ void Main(void)
                 });
                 try
                 {
-                    expect(character->plugins)->toContain(std:("@elizaos/plugin-sql"));
+                    expect(character->plugins)->toContain(std::string("@elizaos/plugin-sql"));
                     if (process->env->OPENAI_API_KEY) {
-                        expect(character->plugins)->toContain(std:("@elizaos/plugin-openai"));
+                        expect(character->plugins)->toContain(std::string("@elizaos/plugin-openai"));
                     }
                     if (process->env->ANTHROPIC_API_KEY) {
-                        expect(character->plugins)->toContain(std:("@elizaos/plugin-anthropic"));
+                        expect(character->plugins)->toContain(std::string("@elizaos/plugin-anthropic"));
                     }
                 }
                 catch (...)
@@ -50,30 +51,30 @@ void Main(void)
             }
         }
         );
-        it(std:("should have a non-empty system prompt"), [=]() mutable
+        it(std::string("should have a non-empty system prompt"), [=]() mutable
         {
             expect(character->system)->toBeTruthy();
             if (character->system) {
-                expect(type_of(character->system))->toBe(std:("string"));
+                expect(type_of(character->system))->toBe(std::string("string"));
                 expect(character->system->length)->toBeGreaterThan(0);
             }
         }
         );
-        it(std:("should have personality traits in bio array"), [=]() mutable
+        it(std::string("should have personality traits in bio array"), [=]() mutable
         {
             expect(Array->isArray(character->bio))->toBe(true);
             if (AND((character->bio), (Array->isArray(character->bio)))) {
                 expect(character->bio->length)->toBeGreaterThan(0);
                 character->bio->forEach([=](auto trait) mutable
                 {
-                    expect(type_of(trait))->toBe(std:("string"));
+                    expect(type_of(trait))->toBe(std::string("string"));
                     expect(trait["length"])->toBeGreaterThan(0);
                 }
                 );
             }
         }
         );
-        it(std:("should have message examples for training"), [=]() mutable
+        it(std::string("should have message examples for training"), [=]() mutable
         {
             expect(Array->isArray(character->messageExamples))->toBe(true);
             if (AND((character->messageExamples), (Array->isArray(character->messageExamples)))) {
@@ -83,9 +84,9 @@ void Main(void)
                 expect(firstExample->length)->toBeGreaterThan(1);
                 firstExample->forEach([=](auto message) mutable
                 {
-                    expect(message)->toHaveProperty(std:("name"));
-                    expect(message)->toHaveProperty(std:("content"));
-                    expect(message["content"])->toHaveProperty(std:("text"));
+                    expect(message)->toHaveProperty(std::string("name"));
+                    expect(message)->toHaveProperty(std::string("content"));
+                    expect(message["content"])->toHaveProperty(std::string("text"));
                 }
                 );
             }

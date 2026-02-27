@@ -16,7 +16,7 @@ namespace elizaos {
 
 
 
-class AgentsService extends BaseApiClient {
+class AgentsService : public BaseApiClient {
   /**
    * List all agents with minimal details
    */

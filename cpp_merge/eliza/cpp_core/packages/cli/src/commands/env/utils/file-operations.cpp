@@ -1,4 +1,5 @@
 #include "file-operations.hpp"
+#include <string>
 #include <future>
 #include <filesystem>
 #include <map>
@@ -7,7 +8,7 @@
 
 namespace elizaos {
 
-std::future<std:> getGlobalEnvPath() {
+std::future<std::string> getGlobalEnvPath() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto envInfo = UserEnvironment.getInstanceInfo();
@@ -15,7 +16,7 @@ std::future<std:> getGlobalEnvPath() {
 
 }
 
-std::future<std:> getLocalEnvPath() {
+std::future<std::string> getLocalEnvPath() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto localEnvPath = path.join(std::filesystem::current_path().string(), ".env");
@@ -23,7 +24,7 @@ std::future<std:> getLocalEnvPath() {
 
 }
 
-std::future<EnvVars> parseEnvFile(const std:& filePath) {
+std::future<EnvVars> parseEnvFile(const std::string& filePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -46,7 +47,7 @@ std::future<EnvVars> parseEnvFile(const std:& filePath) {
 
 }
 
-std::future<void> writeEnvFile(const std:& filePath, EnvVars envVars) {
+std::future<void> writeEnvFile(const std::string& filePath, EnvVars envVars) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -67,7 +68,7 @@ std::future<void> writeEnvFile(const std:& filePath, EnvVars envVars) {
 
 }
 
-std::future<bool> resetEnvFile(const std:& filePath) {
+std::future<bool> resetEnvFile(const std::string& filePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {

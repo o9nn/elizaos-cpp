@@ -1,4 +1,5 @@
 #include "token-header.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -17,7 +18,7 @@ void TokenHeader() {
         return "$" + std::to_string(mc.toFixed(2));
         };
 
-        const auto formatAddress = [&](address: std:) {;
+        const auto formatAddress = [&](address: std::string) {;
             if (!address) return "";
             return std::to_string(address.substr(0, 6-0)) + "..." + std::to_string(address.slice(-4));
             };

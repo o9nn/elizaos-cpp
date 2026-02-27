@@ -20,12 +20,12 @@ namespace elizaos {
 /**
  * Safely constructs and validates upload directory paths to prevent path traversal attacks
  */
-std: createSecureUploadDir(const std:& id, const std:& type);
+std::string createSecureUploadDir(const std::string& id, const std::string& type);
 
 /**
  * Sanitizes a filename by removing dangerous characters and normalizing it
  */
-std: sanitizeFilename(const std:& filename);
+std::string sanitizeFilename(const std::string& filename);
 
 /**
  * Safely cleans up a file by removing it from the filesystem

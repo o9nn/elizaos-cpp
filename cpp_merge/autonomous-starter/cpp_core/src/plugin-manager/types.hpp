@@ -33,80 +33,80 @@ enum PluginStatus {
 
 // Configuration-related types
 struct PluginEnvironmentVariable {
-    std: name;
-    std: description;
+    std::string name;
+    std::string description;
     bool sensitive;
     bool required;
-    std::optional<std:> defaultValue;
+    std::optional<std::string> defaultValue;
     std::optional<{> validation;
-    std::optional<std:> pattern;
+    std::optional<std::string> pattern;
     std::optional<double> minLength;
     std::optional<double> maxLength;
     std::optional<std::vector<std::string>> enum;
 };
 
 struct PluginConfigurationRequest {
-    std: pluginName;
+    std::string pluginName;
     std::vector<PluginEnvironmentVariable> requiredVars;
     std::vector<std::string> missingVars;
     std::vector<PluginEnvironmentVariable> optionalVars;
 };
 
 struct ConfigurationDialog {
-    std: id;
-    std: pluginName;
+    std::string id;
+    std::string pluginName;
     "pending" | "in_progress" | "completed" | "cancelled" status;
     PluginConfigurationRequest request;
-    std::unordered_map<std:, std:> responses;
-    std::optional<std:> currentVariable;
+    std::unordered_map<std::string, std::string> responses;
+    std::optional<std::string> currentVariable;
     Date startedAt;
     std::optional<Date> completedAt;
 };
 
 struct PluginState {
-    std: id;
-    std: name;
+    std::string id;
+    std::string name;
     PluginStatus status;
     std::optional<Plugin> plugin;
     std::vector<std::string> missingEnvVars;
     std::vector<std::string> buildLog;
-    std::optional<std:> sourceCode;
-    std::optional<std:> packageJson;
-    std::optional<std:> error;
+    std::optional<std::string> sourceCode;
+    std::optional<std::string> packageJson;
+    std::optional<std::string> error;
     double createdAt;
     std::optional<double> loadedAt;
     std::optional<double> unloadedAt;
-    std::optional<std:> version;
-    std::optional<std::unordered_map<std:, std:>> dependencies;
+    std::optional<std::string> version;
+    std::optional<std::unordered_map<std::string, std::string>> dependencies;
     std::optional<"unconfigured" | "partial" | "complete"> configurationStatus;
     std::optional<std::vector<PluginEnvironmentVariable>> requiredConfiguration;
     std::optional<std::vector<std::string>> configurationErrors;
 };
 
 struct PluginRegistry {
-    std::unordered_map<std:, PluginState> plugins;
+    std::unordered_map<std::string, PluginState> plugins;
 };
 
 struct CreatePluginParams {
-    std: name;
-    std: description;
+    std::string name;
+    std::string description;
     std::vector<std::string> capabilities;
     std::optional<std::vector<std::string>> dependencies;
 };
 
 struct LoadPluginParams {
-    std: pluginId;
+    std::string pluginId;
     std::optional<bool> force;
 };
 
 struct UnloadPluginParams {
-    std: pluginId;
+    std::string pluginId;
 };
 
 struct PluginManagerConfig {
     std::optional<double> maxBuildAttempts;
     std::optional<double> buildTimeout;
-    std::optional<std:> pluginDirectory;
+    std::optional<std::string> pluginDirectory;
     std::optional<bool> enableHotReload;
 };
 

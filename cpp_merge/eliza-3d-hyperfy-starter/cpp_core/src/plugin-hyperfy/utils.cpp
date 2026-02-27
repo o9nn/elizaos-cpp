@@ -9,7 +9,7 @@
 
 namespace elizaos {
 
-std::future<std:> hashFileBuffer(const std::vector<uint8_t>& buffer) {
+std::future<std::string> hashFileBuffer(const std::vector<uint8_t>& buffer) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto hashBuf = crypto.subtle.digest("SHA-256", buffer);
@@ -19,7 +19,7 @@ std::future<std:> hashFileBuffer(const std::vector<uint8_t>& buffer) {
 
 }
 
-std::future<std::vector<uint8_t>> convertToAudioBuffer(const std:& speechResponse) {
+std::future<std::vector<uint8_t>> convertToAudioBuffer(const std::string& speechResponse) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -68,7 +68,7 @@ std::future<std::vector<uint8_t>> convertToAudioBuffer(const std:& speechRespons
     }
 }
 
-std: getModuleDirectory() {
+std::string getModuleDirectory() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto __filename = fileURLToPath("__FILE__");
@@ -107,7 +107,7 @@ void formatActions(const std::vector<Action>& actions) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return actions;
-    .sort[&](() { return 0.5 - Math.random()); };
+    .sort[&](() { return 0.5 - ((double)rand() / RAND_MAX)); };
     ".std::map[&]((action: Action) { return " + "- **" + action.name + "**: " + action.description
     .join("\n\n"); };
 

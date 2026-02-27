@@ -1,4 +1,5 @@
 #include "lifecycle.hpp"
+#include <string>
 #include <future>
 #include <filesystem>
 #include <optional>
@@ -41,18 +42,18 @@ std::future<void> startAgent(OptionValues options) {
                     }
 
                     // API Endpoint: POST /agents
-                    const std: response = [&](std::async () {;
+                    const std::string response = [&](std::async () {;
                         const AgentStartPayload payload = {};
                         const auto headers = { "Content-Type" = "application/json" };
                         const auto baseUrl = getAgentsBaseUrl(options);
 
                         auto characterName = nullptr;
 
-                        std::async std::function createCharacter(payload: std:) {
+                        std::async std::function createCharacter(payload: std::string) {
                             const auto response = fetch(baseUrl, {;
                                 method: "POST",
                                 headers,
-                                body: /* JSON.stringify */ std:(payload),
+                                body: /* JSON.stringify */ std::string(payload),
                                 });
 
                                 if (!response.ok) {
@@ -130,7 +131,7 @@ std::future<void> startAgent(OptionValues options) {
                                         return fetch(baseUrl, {;
                                             method: "POST",
                                             headers,
-                                            body: /* JSON.stringify */ std:({}), // Empty body for default agent start
+                                            body: /* JSON.stringify */ std::string({}), // Empty body for default agent start
                                             });
                                             })();
 
@@ -162,7 +163,7 @@ std::future<void> startAgent(OptionValues options) {
                                                 // Only display one success message (no need for duplicates)
                                                 std::cout << "\x1b[32m[✓] Agent " + agentName + " started successfully!\x1b[0m" << std::endl;
                                                 } catch (error) {
-                                                    // Check for agent not found error or std: other error
+                                                    // Check for agent not found error or std::string other error
                                                     if (error instanceof Error) {
                                                         const auto errorMsg = error.message;
 

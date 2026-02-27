@@ -1,11 +1,12 @@
 #include "holders-table.hpp"
+#include <string>
 #include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::variant<std:, double> getPercentageOfTotal(double value, double total) {
+std::variant<std::string, double> getPercentageOfTotal(double value, double total) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (total == 0) {

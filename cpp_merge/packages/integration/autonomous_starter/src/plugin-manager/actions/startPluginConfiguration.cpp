@@ -1,8 +1,9 @@
 #include "startPluginConfiguration.hpp"
+#include <string>
 
 std::shared_ptr<Promise<any>> extractPluginNameFromMessage(std::shared_ptr<IAgentRuntime> runtime, string text)
 {
-    auto patterns = array<std::shared_ptr<RegExp>>{ (new RegExp(std:("configure\s+(?:the\s+)?(\w+)\s+plugin"))), (new RegExp(std:("setup\s+(?:the\s+)?(\w+)\s+plugin"))), (new RegExp(std:("(\w+)\s+plugin\s+config"))), (new RegExp(std:("set\s+up\s+(?:the\s+)?(\w+)\s+plugin"))), (new RegExp(std:("configure\s+(\w+)"))) };
+    auto patterns = array<std::shared_ptr<RegExp>>{ (new RegExp(std::string("configure\s+(?:the\s+)?(\w+)\s+plugin"))), (new RegExp(std::string("setup\s+(?:the\s+)?(\w+)\s+plugin"))), (new RegExp(std::string("(\w+)\s+plugin\s+config"))), (new RegExp(std::string("set\s+up\s+(?:the\s+)?(\w+)\s+plugin"))), (new RegExp(std::string("configure\s+(\w+)"))) };
     for (auto& pattern : patterns)
     {
         auto match = text->match(pattern);
@@ -12,7 +13,7 @@ std::shared_ptr<Promise<any>> extractPluginNameFromMessage(std::shared_ptr<IAgen
     }
     try
     {
-        auto prompt = std:("Extract the plugin name from this user message about plugin configuration: "") + text + std:(""\
+        auto prompt = std::string("Extract the plugin name from this user message about plugin configuration: "") + text + std::string(""\
 \
 If the user mentions a specific plugin name, return just the plugin name (lowercase, no spaces).\
 If no specific plugin is mentioned, return "unknown".\
@@ -24,45 +25,45 @@ Examples:\
 - "setup plugin environment variables" → "unknown"\
 \
 Plugin name:");
-        auto result = std::async([=]() { runtime->useModel(std:("text"), object{
-            object::pair{std:("prompt"), std:("prompt")}, 
-            object::pair{std:("temperature"), 0.1}, 
-            object::pair{std:("maxTokens"), 50}
+        auto result = std::async([=]() { runtime->useModel(std::string("text"), object{
+            object::pair{std::string("prompt"), std::string("prompt")}, 
+            object::pair{std::string("temperature"), 0.1}, 
+            object::pair{std::string("maxTokens"), 50}
         }); });
         auto extracted = result->trim()->toLowerCase();
-        if (AND((AND((AND((extracted), (extracted != std:("unknown")))), (extracted->length > 0))), (extracted->length < 50))) {
+        if (AND((AND((AND((extracted), (extracted != std::string("unknown")))), (extracted->length > 0))), (extracted->length < 50))) {
             return extracted;
         }
     }
     catch (const any& error)
     {
-        logger->warn(std:("[startPluginConfiguration] AI extraction failed:"), error);
+        logger->warn(std::string("[startPluginConfiguration] AI extraction failed:"), error);
     }
     return nullptr;
 };
 
 
 std::shared_ptr<Action> startPluginConfigurationAction = object{
-    object::pair{std:("name"), std:("START_PLUGIN_CONFIGURATION")}, 
-    object::pair{std:("similes"), array<string>{ std:("configure plugin"), std:("setup plugin"), std:("plugin configuration"), std:("setup environment variables"), std:("configure environment"), std:("plugin setup"), std:("set up plugin") }}, 
-    object::pair{std:("description"), std:("Initiates configuration dialog for a plugin to collect required environment variables")}, 
-    object::pair{std:("examples"), array<any>()}, 
-    object::pair{std:("validate"), [=](auto runtime, auto message, auto state = undefined) mutable
+    object::pair{std::string("name"), std::string("START_PLUGIN_CONFIGURATION")}, 
+    object::pair{std::string("similes"), array<string>{ std::string("configure plugin"), std::string("setup plugin"), std::string("plugin configuration"), std::string("setup environment variables"), std::string("configure environment"), std::string("plugin setup"), std::string("set up plugin") }}, 
+    object::pair{std::string("description"), std::string("Initiates configuration dialog for a plugin to collect required environment variables")}, 
+    object::pair{std::string("examples"), array<any>()}, 
+    object::pair{std::string("validate"), [=](auto runtime, auto message, auto state = std::nullopt) mutable
     {
         try
         {
             auto configService = runtime->getService(PluginManagerServiceType["PLUGIN_CONFIGURATION"]);
             if (!configService) {
-                logger->warn(std:("[startPluginConfiguration] PluginConfigurationService not available"));
+                logger->warn(std::string("[startPluginConfiguration] PluginConfigurationService not available"));
                 return false;
             }
             auto interactionService = runtime->getService(PluginManagerServiceType["PLUGIN_USER_INTERACTION"]);
             if (!interactionService) {
-                logger->warn(std:("[startPluginConfiguration] PluginUserInteractionService not available"));
+                logger->warn(std::string("[startPluginConfiguration] PluginUserInteractionService not available"));
                 return false;
             }
             shared text = message->content->text->toLowerCase();
-            auto configKeywords = array<string>{ std:("configure"), std:("setup"), std:("config"), std:("environment"), std:("env var"), std:("environment variable"), std:("plugin config"), std:("set up") };
+            auto configKeywords = array<string>{ std::string("configure"), std::string("setup"), std::string("config"), std::string("environment"), std::string("env var"), std::string("environment variable"), std::string("plugin config"), std::string("set up") };
             return configKeywords->some([=](auto keyword) mutable
             {
                 return text->includes(keyword);
@@ -71,33 +72,33 @@ std::shared_ptr<Action> startPluginConfigurationAction = object{
         }
         catch (const any& error)
         {
-            logger->error(std:("[startPluginConfiguration] Error in validation:"), error);
+            logger->error(std::string("[startPluginConfiguration] Error in validation:"), error);
             return false;
         }
     }
     }, 
-    object::pair{std:("handler"), [=](auto runtime, auto message, auto state = undefined) mutable
+    object::pair{std::string("handler"), [=](auto runtime, auto message, auto state = std::nullopt) mutable
     {
         try
         {
-            logger->info(std:("[startPluginConfiguration] Starting plugin configuration process"));
+            logger->info(std::string("[startPluginConfiguration] Starting plugin configuration process"));
             auto configService = as<std::shared_ptr<PluginConfigurationService>>(runtime->getService(PluginManagerServiceType["PLUGIN_CONFIGURATION"]));
             auto interactionService = as<std::shared_ptr<PluginUserInteractionService>>(runtime->getService(PluginManagerServiceType["PLUGIN_USER_INTERACTION"]));
             if (OR((!configService), (!interactionService))) {
-                return std:("❌ Plugin configuration services are not available. Please check your setup.");
+                return std::string("❌ Plugin configuration services are not available. Please check your setup.");
             }
             auto text = message->content->text->toLowerCase();
             auto pluginName = std::async([=]() { extractPluginNameFromMessage(runtime, text); });
             if (!pluginName) {
-                return std:("🔧 **Plugin Configuration**\
+                return std::string("🔧 **Plugin Configuration**\
 \
 To help you configure a plugin, I need to know which plugin you'd like to set up. Could you please specify the plugin name?\
 \
 For example: "configure the openai plugin" or "setup discord plugin"");
             }
-            auto result = std::async([=]() { configService->parsePluginRequirements(std:("./plugins/") + pluginName + string_empty); });
+            auto result = std::async([=]() { configService->parsePluginRequirements(std::string("./plugins/") + pluginName + string_empty); });
             if (OR((!result), (result["requiredVars"]->get_length() == 0))) {
-                return std:("ℹ️ The plugin "") + pluginName + std:("" doesn't require any configuration, or I couldn't find it. Please check the plugin name and try again.");
+                return std::string("ℹ️ The plugin "") + pluginName + std::string("" doesn't require any configuration, or I couldn't find it. Please check the plugin name and try again.");
             }
             shared currentConfig = std::async([=]() { configService->getPluginConfiguration(pluginName); });
             shared missingVars = result["requiredVars"]->filter([=](auto varInfo) mutable
@@ -110,17 +111,17 @@ For example: "configure the openai plugin" or "setup discord plugin"");
             }
             );
             if (missingVars->get_length() == 0) {
-                return std:("✅ The plugin "") + pluginName + std:("" is already fully configured! All required environment variables are set.");
+                return std::string("✅ The plugin "") + pluginName + std::string("" is already fully configured! All required environment variables are set.");
             }
             auto configRequest = object{
-                object::pair{std:("pluginName"), std:("pluginName")}, 
-                object::pair{std:("requiredVars"), result["requiredVars"]}, 
-                object::pair{std:("missingVars"), std:("missingVars")}, 
-                object::pair{std:("optionalVars"), result["optionalVars"]}
+                object::pair{std::string("pluginName"), std::string("pluginName")}, 
+                object::pair{std::string("requiredVars"), result["requiredVars"]}, 
+                object::pair{std::string("missingVars"), std::string("missingVars")}, 
+                object::pair{std::string("optionalVars"), result["optionalVars"]}
             };
             auto dialog = std::async([=]() { interactionService->initiateConfigurationDialog(configRequest, runtime->agentId); });
             if (missingVars->get_length() == 0) {
-                return std:("✅ The plugin "") + pluginName + std:("" is already configured and ready to use!");
+                return std::string("✅ The plugin "") + pluginName + std::string("" is already configured and ready to use!");
             }
             auto firstMissingVar = result["requiredVars"]->find([=](auto v) mutable
             {
@@ -128,25 +129,25 @@ For example: "configure the openai plugin" or "setup discord plugin"");
             }
             );
             if (!firstMissingVar) {
-                return std:("❌ Error: Could not find configuration details for required variables.");
+                return std::string("❌ Error: Could not find configuration details for required variables.");
             }
             auto firstPrompt = interactionService->generatePromptForVariable(firstMissingVar);
-            return std:("🎯 **Configuration Started**\
+            return std::string("🎯 **Configuration Started**\
 \
-I'll help you configure the "") + pluginName + std:("" plugin step by step.\
+I'll help you configure the "") + pluginName + std::string("" plugin step by step.\
 \
-**Progress**: 1 of ") + missingVars->get_length() + std:(" variables\
+**Progress**: 1 of ") + missingVars->get_length() + std::string(" variables\
 \
 ") + firstPrompt + string_empty;
         }
         catch (const any& error)
         {
-            logger->error(std:("[startPluginConfiguration] Error in handler:"), error);
-            return std:("❌ **Configuration Error**\
+            logger->error(std::string("[startPluginConfiguration] Error in handler:"), error);
+            return std::string("❌ **Configuration Error**\
 \
 Sorry, I encountered an error while trying to start the plugin configuration. Please try again or check if the plugin exists.\
 \
-Error: ") + (is<Error>(error)) ? any(error->message) (std:("Unknown error")) + string_empty;
+Error: ") + (is<Error>(error)) ? any(error->message) (std::string("Unknown error")) + string_empty;
         }
     }
     }

@@ -1,4 +1,5 @@
 #include "agent-memory-edit-overlay.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -18,7 +19,7 @@ void MemoryEditOverlay(auto onClose, auto memory, auto agentId) {
 
     const auto textareaRef = useRef<HTMLTextAreaElement>(nullptr);
     const auto isProcessing = isUpdating || isDeleting;
-    const auto originalContent = /* JSON.stringify */ std:(memory.content, nullptr, 2);
+    const auto originalContent = /* JSON.stringify */ std::string(memory.content, nullptr, 2);
 
     // Initialize content when component opens
     useEffect[&](() {
@@ -157,7 +158,7 @@ void MemoryEditOverlay(auto onClose, auto memory, auto agentId) {
                                                                                                         const auto handlePrettyFormat = useCallback[&](() {;
                                                                                                             try {
                                                                                                                 const auto parsed = /* JSON::parse */ editedContent;
-                                                                                                                setEditedContent(/* JSON.stringify */ std:(parsed, nullptr, 2));
+                                                                                                                setEditedContent(/* JSON.stringify */ std::string(parsed, nullptr, 2));
                                                                                                                 toast({
                                                                                                                     title: "Formatted",
                                                                                                                     description: "JSON has been formatted",
@@ -346,7 +347,7 @@ void MemoryEditOverlay(auto onClose, auto memory, auto agentId) {
                                                                         {isPreviewMode ? (;
                                                                         <div className="flex-1 border rounded-md p-3 bg-muted/50 overflow-auto">;
                                                                         <pre className="text-sm whitespace-pre-wrap">;
-                                                                    {isValidJson ? /* JSON.stringify */ std:(/* JSON::parse */ editedContent, nullptr, 2)  = editedContent}
+                                                                    {isValidJson ? /* JSON.stringify */ std::string(/* JSON::parse */ editedContent, nullptr, 2)  = editedContent}
                                                                     </pre>;
                                                                     </div>;
                                                                     ) : (

@@ -40,7 +40,7 @@ namespace elizaos {
         // Lowered threshold for testing
 
       // 6. Analyze domain trends
-        // This should be based on whether std: experience was recorded above
+        // This should be based on whether std::string experience was recorded above
 
       // If no specific experience was detected and recorded by other checks,
       // consider recording a general learning experience if the message is from the agent.
@@ -49,18 +49,18 @@ namespace elizaos {
 
 // Helper functions
 
-std: extractContext(const std::vector<Memory>& messages);
+std::string extractContext(const std::vector<Memory>& messages);
 
-std: extractAction(const std:& text);
+std::string extractAction(const std::string& text);
 
-std: extractError(const std:& text);
+std::string extractError(const std::string& text);
 
-std: extractDiscovery(const std:& text);
+std::string extractDiscovery(const std::string& text);
 
-std: extractLearning(const std:& text, const std:& type);
+std::string extractLearning(const std::string& text, const std::string& type);
 
-std: extractHypothesis(const std:& text);
+std::string extractHypothesis(const std::string& text);
 
-std: detectDomain(const std:& text);
+std::string detectDomain(const std::string& text);
 
 } // namespace elizaos

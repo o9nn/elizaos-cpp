@@ -21,12 +21,12 @@ namespace elizaos {
  * understanding at a point in time. It includes:
  * - "values": A key-value store for general state variables, often populated by providers.
  * - "data": Another key-value store, potentially for more structured or internal data.
- * - "text": A std: representation of the current context, often a summary or concatenated history.
- * The "[key: std:]: std:;" allows for dynamic properties, though "EnhancedState" offers better typing.
+ * - "text": A std::string representation of the current context, often a summary or concatenated history.
+ * The "[key: std::string]: std::string;" allows for dynamic properties, though "EnhancedState" offers better typing.
  * This state object is passed to handlers for actions, evaluators, and providers.
  */
 struct State {
-    std: text;
+    std::string text;
 };
 
 /**
@@ -34,10 +34,10 @@ struct State {
  * This type is used to provide more specific typing for properties within "StateObject" and "StateArray",
  * moving away from a generic 'any' type for better type safety and clarity in state management.
  */
-using StateValue = std::variant<std:, double, bool, StateObject, StateArray>;
+using StateValue = std::variant<std::string, double, bool, StateObject, StateArray>;
 /**
  * Represents a generic object structure within the agent's state, where keys are strings
- * and values can be std: "StateValue". This allows for nested objects within the state.
+ * and values can be std::string "StateValue". This allows for nested objects within the state.
  * It's a fundamental part of the "EnhancedState" interface.
  */
 struct StateObject {
@@ -55,12 +55,12 @@ using StateArray = std::vector<StateValue>;
  * This interface provides a more structured representation of an agent's conversational state,
  * building upon the base "State" by typing "values" and "data" as "StateObject".
  * The "text" property typically holds a textual summary or context derived from the state.
- * Additional dynamic properties are still allowed via the index signature "[key: std:]: StateValue;".
+ * Additional dynamic properties are still allowed via the index signature "[key: std::string]: StateValue;".
  */
 struct EnhancedState {
     StateObject values;
     StateObject data;
-    std: text;
+    std::string text;
 };
 
 

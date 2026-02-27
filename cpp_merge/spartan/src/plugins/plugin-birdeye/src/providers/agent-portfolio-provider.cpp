@@ -1,36 +1,37 @@
 #include "agent-portfolio-provider.h"
+#include <string>
 
 std::shared_ptr<Provider> agentPortfolioProvider = object{
-    object::pair{std:("name"), std:("BIRDEYE_TRADE_PORTFOLIO")}, 
-    object::pair{std:("description"), std:("Birdeye intel on agent's walllet")}, 
-    object::pair{std:("dynamic"), true}, 
-    object::pair{std:("get"), [=](auto runtime, auto _message, auto _state = undefined) mutable
+    object::pair{std::string("name"), std::string("BIRDEYE_TRADE_PORTFOLIO")}, 
+    object::pair{std::string("description"), std::string("Birdeye intel on agent's walllet")}, 
+    object::pair{std::string("dynamic"), true}, 
+    object::pair{std::string("get"), [=](auto runtime, auto _message, auto _state = std::nullopt) mutable
     {
         try
         {
             auto provider = std::make_shared<BirdeyeProvider>(runtime->cacheManager);
-            auto walletAddr = runtime->getSetting(std:("BIRDEYE_WALLET_ADDR"));
+            auto walletAddr = runtime->getSetting(std::string("BIRDEYE_WALLET_ADDR"));
             if (!walletAddr) {
-                console->warn(std:("No Birdeye wallet was specified"));
+                console->warn(std::string("No Birdeye wallet was specified"));
                 return string_empty;
             }
             auto chain = extractChain(walletAddr);
             auto resp = std::async([=]() { provider->fetchWalletPortfolio(object{
-                object::pair{std:("wallet"), walletAddr}
+                object::pair{std::string("wallet"), walletAddr}
             }, object{
-                object::pair{std:("headers"), object{
-                    object::pair{std:("chain"), std:("chain")}
+                object::pair{std::string("headers"), object{
+                    object::pair{std::string("chain"), std::string("chain")}
                 }}
             }); });
             auto portfolioText = formatPortfolio(resp);
-            return std:("This is your wallet address: ") + walletAddr + std:("\
+            return std::string("This is your wallet address: ") + walletAddr + std::string("\
 \
-This is your portfolio: [") + portfolioText + std:("]");
+This is your portfolio: [") + portfolioText + std::string("]");
         }
         catch (const any& error)
         {
-            console->error(std:("Error fetching token data:"), error);
-            return std:("Unable to fetch token information. Please try again later.");
+            console->error(std::string("Error fetching token data:"), error);
+            return std::string("Unable to fetch token information. Please try again later.");
         }
     }
     }

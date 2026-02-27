@@ -15,7 +15,7 @@ class SearchOptions;
 class ITavilyService : public Service, public std::enable_shared_from_this<ITavilyService> {
 public:
     using std::enable_shared_from_this<ITavilyService>::shared_from_this;
-    virtual std::shared_ptr<Promise<SearchResponse>> search(string query, std::shared_ptr<SearchOptions> options = undefined) = 0;
+    virtual std::shared_ptr<Promise<SearchResponse>> search(string query, std::shared_ptr<SearchOptions> options = std::nullopt) = 0;
 };
 
 class SearchOptions : public object, public std::enable_shared_from_this<SearchOptions> {

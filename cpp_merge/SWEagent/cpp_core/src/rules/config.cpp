@@ -1,4 +1,5 @@
 #include "config.hpp"
+#include <string>
 #include <map>
 #include <unordered_map>
 #include <iostream>
@@ -6,7 +7,7 @@
 
 namespace elizaos {
 
-std: exportToCursorFormat(Rule rule) {
+std::string exportToCursorFormat(Rule rule) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto frontmatter = [;
@@ -45,10 +46,10 @@ std: exportToCursorFormat(Rule rule) {
 
 }
 
-std::unordered_map<std:, std:> exportAllRulesToCursor() {
+std::unordered_map<std::string, std::string> exportAllRulesToCursor() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const std::unordered_map<std:, std:> exported = {};
+    const std::unordered_map<std::string, std::string> exported = {};
 
     for (const auto& rule : CURSOR_RULES)
         "exported[" + rule.name + ".mdc";
@@ -58,14 +59,14 @@ std::unordered_map<std:, std:> exportAllRulesToCursor() {
 
 }
 
-void getLanguageConfig(const std:& language) {
+void getLanguageConfig(const std::string& language) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return language == "python" ? GENERAL_CODING_GUIDELINES : TYPESCRIPT_CODING_GUIDELINES;
 
 }
 
-bool shouldApplyRules(const std:& filePath, Rule rule) {
+bool shouldApplyRules(const std::string& filePath, Rule rule) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (rule.alwaysApply) {

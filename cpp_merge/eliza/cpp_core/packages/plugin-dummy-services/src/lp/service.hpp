@@ -22,14 +22,14 @@ namespace elizaos {
 
 class DummyLpService {
 public:
-    std: getDexName();
+    std::string getDexName();
     static std::future<DummyLpService> start(IAgentRuntime runtime);
     static std::future<void> stop(IAgentRuntime runtime);
-    std::future<std::vector<PoolInfo>> getPools(std::optional<std:> tokenAMint, std::optional<std:> tokenBMint);
-    Promise<TransactionResult & addLiquidity(std::optional<std:> params);
-    Promise<TransactionResult & removeLiquidity(const std:& params);
-    std::variant<Promise<LpPositionDetails, null>> getLpPositionDetails(const std:& userAccountPublicKey, const std:& poolOrPositionIdentifier);
-    std::future<std::unordered_map<std:, std::optional<PoolInfo>>> getMarketDataForPools(const std::vector<std::string>& poolIds);
+    std::future<std::vector<PoolInfo>> getPools(std::optional<std::string> tokenAMint, std::optional<std::string> tokenBMint);
+    Promise<TransactionResult & addLiquidity(std::optional<std::string> params);
+    Promise<TransactionResult & removeLiquidity(const std::string& params);
+    std::variant<Promise<LpPositionDetails, null>> getLpPositionDetails(const std::string& userAccountPublicKey, const std::string& poolOrPositionIdentifier);
+    std::future<std::unordered_map<std::string, std::optional<PoolInfo>>> getMarketDataForPools(const std::vector<std::string>& poolIds);
 };
 
 

@@ -1,10 +1,11 @@
 #include "primitives.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-UUID asUUID(const std:& id) {
+UUID asUUID(const std::string& id) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

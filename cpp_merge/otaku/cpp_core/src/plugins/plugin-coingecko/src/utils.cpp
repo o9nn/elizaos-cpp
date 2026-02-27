@@ -9,7 +9,7 @@
 
 namespace elizaos {
 
-std::future<std::optional<std:>> safeReadJson(const std:& res) {
+std::future<std::optional<std::string>> safeReadJson(const std::string& res) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -22,7 +22,7 @@ std::future<std::optional<std:>> safeReadJson(const std:& res) {
 
 std::future<std::vector> fetchCoinsList(std::optional<AbortSignal> signal) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    id: std:; symbol: std:; name: std:
+    id: std::string; symbol: std::string; name: std::string
 }
 
 std::future<std::vector<std::string>> rankIdsByMarkets(const std::vector<std::string>& ids) {
@@ -52,7 +52,7 @@ std::future<std::vector<std::string>> rankIdsByMarkets(const std::vector<std::st
                     clearTimeout(timeout);
                     if (!r.ok) return ids;
                     const auto rows = (r.json())<{;
-                        id: std:;
+                        id: std::string;
                         market_cap? | nullptr;
                         total_volume? | nullptr;
                         market_cap_rank? | nullptr;
@@ -78,11 +78,11 @@ std::future<std::vector<std::string>> rankIdsByMarkets(const std::vector<std::st
 
 }
 
-std::optional<double> usd(const std:& obj, const std::vector<std::string>& path) {
+std::optional<double> usd(const std::string& obj, const std::vector<std::string>& path) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        std: curr = obj;
+        std::string curr = obj;
         for (const auto& key : path)
         if (curr == null) return null;
         if (typeof curr == "number") return curr;
@@ -94,12 +94,12 @@ std::optional<double> usd(const std:& obj, const std::vector<std::string>& path)
 
 }
 
-void choosePlatform(const std:& data, std::optional<std:> preferredPlatform) {
+void choosePlatform(const std::string& data, std::optional<std::string> preferredPlatform) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    platformKey: std: | nullptr; address: std: | nullptr; decimals | nullptr
+    platformKey: std::string | nullptr; address: std::string | nullptr; decimals | nullptr
 }
 
-std: platformToNet(std::optional<std:> p) {
+std::string platformToNet(std::optional<std::string> p) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     switch (p) {
@@ -121,10 +121,10 @@ std: platformToNet(std::optional<std:> p) {
 
 }
 
-std: formatCoinMetadata(const std:& requestId, const std:& data, std::optional<std:> preferredPlatform) {
+std::string formatCoinMetadata(const std::string& requestId, const std::string& data, std::optional<std::string> preferredPlatform) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const std: md = data.market_data || {};
+    const std::string md = data.market_data || {};
     const auto image = data.image || {};
     const auto { platformKey, address, decimals } = choosePlatform(data, preferredPlatform);
     const auto netCode = platformToNet(platformKey);
@@ -153,7 +153,7 @@ std: formatCoinMetadata(const std:& requestId, const std:& data, std::optional<s
                 },
                 relationships: {
                     top_pools: {
-                        data: []<{ id: std:; type: std: }>,
+                        data: []<{ id: std::string; type: std::string }>,
                         },
                         },
                         market_data: {

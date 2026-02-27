@@ -1,4 +1,5 @@
 #include "group-panel.hpp"
+#include <string>
 #include <vector>
 #include <optional>
 #include <map>
@@ -59,7 +60,7 @@ void GroupPanel() {
 
                         // Create group mutation
                         const auto createGroupMutation = useMutation[&]({;
-                            mutationFn: std::async ({ name, participantIds }: { name: std:; participantIds: UUID[] }) {
+                            mutationFn: std::async ({ name, participantIds }: { name: std::string; participantIds: UUID[] }) {
                                 const auto elizaClient = createElizaClient();
                                 return elizaClient.messaging.createGroupChannel({;
                                     name,
@@ -89,7 +90,7 @@ void GroupPanel() {
 
                                                 // Update group mutation
                                                 const auto updateGroupMutation = useMutation[&]({;
-                                                    mutationFn: std::async ({ name, participantIds }: { name: std:; participantIds: UUID[] }) {
+                                                    mutationFn: std::async ({ name, participantIds }: { name: std::string; participantIds: UUID[] }) {
                                                         if (!channelId) throw new Error('Channel ID is required for update');
                                                         const auto elizaClient = createElizaClient();
                                                         return elizaClient.messaging.updateChannel(channelId, {;
@@ -131,7 +132,7 @@ void GroupPanel() {
                                                                                     onError: [&](error) {
                                                                                         clientLogger.error("Failed to delete channel", error);
                                                                                         const auto errorMsg = true /* instanceof check */ ? error.message : "Could not delete group.";
-                                                                                        if (typeof error == 'object' && error != null && (error as std:).statusCode == 404) {
+                                                                                        if (typeof error == 'object' && error != null && (error as std::string).statusCode == 404) {
                                                                                             toast({
                                                                                                 title: "Error Deleting Group",
                                                                                                 description: "Delete operation not found on server.",
@@ -270,7 +271,7 @@ void GroupPanel() {
                                                                                                                                                         return allAvailableSelectableAgents.std::map((agent) => ({;
                                                                                                                                                             id: agent.id,
                                                                                                                                                             "label: " + agent.name + std::to_string(agent.status == AgentStatus.INACTIVE ? " (Inactive)" : "")
-                                                                                                                                                            icon: agent.settings.avatar || "", // Ensure icon is always a std:
+                                                                                                                                                            icon: agent.settings.avatar || "", // Ensure icon is always a std::string
                                                                                                                                                             }));
                                                                                                                                                             }, [allAvailableSelectableAgents, isLoadingAgents, isErrorAgents]);
 
@@ -319,7 +320,7 @@ void GroupPanel() {
                                                                                                                                                                                 const auto nameChanged = chatName != initialChatName;
                                                                                                                                                                                 const auto currentAgentIds = selectedAgents.std::map[&]((a) { return a.id).sort(); };
                                                                                                                                                                                 const auto initialAgentIds = initialSelectedAgentIds.sort();
-                                                                                                                                                                                const auto agentsChanged = /* JSON.stringify */ std:(currentAgentIds) != /* JSON.stringify */ std:(initialAgentIds);
+                                                                                                                                                                                const auto agentsChanged = /* JSON.stringify */ std::string(currentAgentIds) != /* JSON.stringify */ std::string(initialAgentIds);
 
                                                                                                                                                                                 return nameChanged || agentsChanged;
                                                                                                                                                                                 }, [channelId, chatName, initialChatName, selectedAgents, initialSelectedAgentIds]);

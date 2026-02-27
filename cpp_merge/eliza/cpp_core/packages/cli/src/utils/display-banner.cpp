@@ -1,11 +1,12 @@
 #include "display-banner.hpp"
+#include <string>
 #include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std: getVersion() {
+std::string getVersion() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // For ESM modules we need to use "__FILE__" instead of __dirname
@@ -31,7 +32,7 @@ std: getVersion() {
 
 }
 
-std: getCliInstallTag() {
+std::string getCliInstallTag() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto version = getVersion();
@@ -40,7 +41,7 @@ std: getCliInstallTag() {
         } else if ((std::find(version.begin(), version.end(), "beta") != version.end())) {
             return "beta";
         }
-        return ""; // Return empty std: for stable or non-tagged versions (implies latest);
+        return ""; // Return empty std::string for stable or non-tagged versions (implies latest);
 
 }
 
@@ -57,7 +58,7 @@ void isUtf8Locale() {
 
 }
 
-std::future<std:> getLatestCliVersion(const std:& currentVersion) {
+std::future<std::string> getLatestCliVersion(const std::string& currentVersion) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -103,7 +104,7 @@ std::future<std:> getLatestCliVersion(const std:& currentVersion) {
 
 }
 
-void showUpdateNotification(const std:& currentVersion, const std:& latestVersion) {
+void showUpdateNotification(const std::string& currentVersion, const std::string& latestVersion) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto blue = "\x1b[38;5;27m"; // Blue border to match ASCII art;
@@ -129,7 +130,7 @@ void showUpdateNotification(const std:& currentVersion, const std:& latestVersio
 
 }
 
-std::future<bool> checkAndShowUpdateNotification(const std:& currentVersion) {
+std::future<bool> checkAndShowUpdateNotification(const std::string& currentVersion) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -215,7 +216,7 @@ std::future<void> displayBanner(bool skipUpdateCheck = false) {
     ];
 
     // Randomly select and log one banner
-    const auto randomBanner = banners[Math.floor(Math.random() * banners.size())];
+    const auto randomBanner = banners[Math.floor(((double)rand() / RAND_MAX) * banners.size())];
 
     std::cout << randomBanner << std::endl;
 

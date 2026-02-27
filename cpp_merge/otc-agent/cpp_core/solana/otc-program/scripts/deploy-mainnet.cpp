@@ -1,4 +1,5 @@
 #include "deploy-mainnet.hpp"
+#include <string>
 #include <future>
 #include <iostream>
 #include <stdexcept>
@@ -28,7 +29,7 @@ std::future<void> main() {
         std::cout << "🏦 Using existing Desk:" << desk.std::to_string(publicKey) << std::endl;
         } else {
             desk = Keypair.generate();
-            fs.writeFileSync(deskKeypairPath, /* JSON.stringify */ std:(Array.from(desk.secretKey)));
+            fs.writeFileSync(deskKeypairPath, /* JSON.stringify */ std::string(Array.from(desk.secretKey)));
             std::cout << "⚠️  Created NEW Desk keypair:" << desk.std::to_string(publicKey) << std::endl;
             std::cout << "⚠️  BACKUP THIS KEYPAIR IMMEDIATELY." << std::endl;
         }
@@ -69,7 +70,7 @@ std::future<void> main() {
                         fs.mkdirSync(deploymentDir, Config{recursive = true});
                     }
 
-                    fs.writeFileSync(deploymentPath, /* JSON.stringify */ std:(envData, nullptr, 2));
+                    fs.writeFileSync(deploymentPath, /* JSON.stringify */ std::string(envData, nullptr, 2));
                     std::cout << "\n✅ Config saved to " + deploymentPath << std::endl;
 
 }

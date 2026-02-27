@@ -44,7 +44,7 @@ struct ServiceTypeRegistry {
 };
 
 /**
- * Type for service names that includes both core services and std: plugin-registered services
+ * Type for service names that includes both core services and std::string plugin-registered services
  */
 using ServiceTypeName = ServiceTypeRegistry[keyof ServiceTypeRegistry];
 
@@ -124,14 +124,14 @@ struct ServiceClassMap {
  * Standardized service error type for consistent error handling
  */
 struct ServiceError {
-    std: code;
-    std: message;
+    std::string code;
+    std::string message;
     std::optional<unknown> details;
     std::optional<Error> cause;
 };
 
 /**
- * Safely create a ServiceError from std: caught error
+ * Safely create a ServiceError from std::string caught error
  */
 ServiceError createServiceError(unknown error, auto code = 'UNKNOWN_ERROR');
 

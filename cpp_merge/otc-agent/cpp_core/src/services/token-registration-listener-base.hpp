@@ -27,7 +27,7 @@ std::future<void> startBaseListener();
 /**
  * Handle a TokenRegistered event
  */
-std::future<void> handleTokenRegistered(const std:& client, const std:& log);
+std::future<void> handleTokenRegistered(const std::string& client, const std::string& log);
 
 /**
  * Backfill historical events (run once after deployment)

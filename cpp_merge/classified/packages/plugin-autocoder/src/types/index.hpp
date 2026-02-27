@@ -118,10 +118,10 @@ public:
 class IProjectPlanningService : public object, public std::enable_shared_from_this<IProjectPlanningService> {
 public:
     using std::enable_shared_from_this<IProjectPlanningService>::shared_from_this;
-    virtual std::shared_ptr<Promise<std::shared_ptr<ProjectMetadata>>> createProject(P0 type, Record<string, any> initialData = undefined) = 0;
+    virtual std::shared_ptr<Promise<std::shared_ptr<ProjectMetadata>>> createProject(P0 type, Record<string, any> initialData = std::nullopt) = 0;
     virtual std::shared_ptr<Promise<std::shared_ptr<ProjectMetadata>>> updateProject(std::shared_ptr<UUID> projectId, Partial<std::shared_ptr<ProjectMetadata>> updates) = 0;
     virtual std::shared_ptr<Promise<any>> getProject(std::shared_ptr<UUID> projectId) = 0;
-    virtual std::shared_ptr<Promise<array<std::shared_ptr<ProjectMetadata>>>> listProjects(P0 status = undefined) = 0;
+    virtual std::shared_ptr<Promise<array<std::shared_ptr<ProjectMetadata>>>> listProjects(P0 status = std::nullopt) = 0;
     virtual std::shared_ptr<Promise<void>> generateProject(std::shared_ptr<UUID> projectId) = 0;
 };
 
@@ -273,8 +273,8 @@ public:
     using std::enable_shared_from_this<ProjectStatusManagerInterface>::shared_from_this;
     virtual string createProject(string name, P1 type) = 0;
     virtual void updateStatus(string projectId, Partial<std::shared_ptr<ProjectStatusUpdate>> updates) = 0;
-    virtual void updateStep(string projectId, string step, string message = undefined) = 0;
-    virtual void updateValidation(string projectId, P1 type, boolean passed, array<string> errors = undefined) = 0;
+    virtual void updateStep(string projectId, string step, string message = std::nullopt) = 0;
+    virtual void updateValidation(string projectId, P1 type, boolean passed, array<string> errors = std::nullopt) = 0;
 };
 
 class ProjectPlan : public object, public std::enable_shared_from_this<ProjectPlan> {

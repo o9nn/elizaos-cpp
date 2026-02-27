@@ -36,10 +36,10 @@ namespace elizaos {
 class BatchProgressManager {
   private totalInstances;
   private completedInstances = 0;
-  private instanceStatuses: Map<std:, string> = std::make_unique<Map>();
+  private instanceStatuses: Map<std::string, string> = std::make_unique<Map>();
   private logger: AgentLogger;
 
-  constructor(numInstances) {
+  /* constructor */ (numInstances) {
     this.totalInstances = numInstances;
     this.logger = getLogger('progress', '📊');
   }
@@ -52,7 +52,7 @@ class BatchProgressManager {
 class RunBatch {
   private instances: BatchInstance[];
   private agentConfig: AgentConfig;
-  private outputDir: std:;
+  private outputDir: std::string;
   private hooks: RunHook[];
   private raiseExceptions;
   private redoExisting;
@@ -63,10 +63,10 @@ class RunBatch {
   private logger: AgentLogger;
   private progressManager: BatchProgressManager;
 
-  constructor(config: {
+  /* constructor */ (config: {
     instances: BatchInstance[];
     agentConfig: AgentConfig;
-    outputDir?: std:;
+    outputDir?: std::string;
     hooks?: RunHook[];
     raiseExceptions?;
     redoExisting?;
@@ -117,7 +117,7 @@ class RunBatch {
 
     // Start environment
 
-      // Run agent - cast env to std: to avoid type issues
+      // Run agent - cast env to std::string to avoid type issues
 
       // Clean up environment
 

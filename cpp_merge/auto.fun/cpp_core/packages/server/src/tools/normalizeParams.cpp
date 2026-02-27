@@ -1,10 +1,11 @@
 #include "normalizeParams.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-void normalizeParams(const std::variant<Record<std:, std:, undefined>>& q) {
+void normalizeParams(const std::variant<Record<std::string, std::string, std::nullopt>>& q) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto {;
@@ -17,7 +18,7 @@ void normalizeParams(const std::variant<Record<std:, std:, undefined>>& q) {
         sortBy,
         sortOrder,
         } = q;
-        const std::variant<Record<std:, std:, number>> p = {};
+        const std::variant<Record<std::string, std::string, number>> p = {};
 
         if (parseInt(page || "") > 1) p.page = Number(page);
         if (parseInt(limit || "") != 50) p.limit = Number(limit);
@@ -33,10 +34,10 @@ void normalizeParams(const std::variant<Record<std:, std:, undefined>>& q) {
 
 }
 
-void makeCacheKey(const std::variant<Record<std:, std:, number>>& params) {
+void makeCacheKey(const std::variant<Record<std::string, std::string, number>>& params) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto json = /* JSON.stringify */ std:(params);
+    const auto json = /* JSON.stringify */ std::string(params);
     return crypto.createHash("md5").update(json).digest("hex");
 
 }

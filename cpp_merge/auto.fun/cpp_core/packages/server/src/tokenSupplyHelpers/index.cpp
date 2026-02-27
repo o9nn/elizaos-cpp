@@ -18,7 +18,7 @@ std::future<void> getAllLockedTokens() {
 
 }
 
-std::future<void> handleSignature(const std:& signature, const std:& token, double solPriceUSD) {
+std::future<void> handleSignature(const std::string& signature, const std::string& token, double solPriceUSD) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto connection = new Connection(;
@@ -54,7 +54,7 @@ std::future<void> handleSignature(const std:& signature, const std:& token, doub
 
 }
 
-std::future<void> processSwapLog(const std:& token, const std:& signature, double solPriceUSD, const std::vector<std::string>& logs) {
+std::future<void> processSwapLog(const std::string& token, const std::string& signature, double solPriceUSD, const std::vector<std::string>& logs) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -151,7 +151,7 @@ std::future<void> processSwapLog(const std:& token, const std:& signature, doubl
                     const auto redisCache = getGlobalRedisCache();
                     const auto listKey = "swapsList:" + mintAddress;
                     try {
-                        redisCache.lpush(listKey, /* JSON.stringify */ std:(swapRecord));
+                        redisCache.lpush(listKey, /* JSON.stringify */ std::string(swapRecord));
                         redisCache.ltrim(listKey, 0, MAX_SWAPS_TO_KEEP - 1);
                         logger.log(
                         "Helper: Saved swap to Redis list " + listKey + " & trimmed. Type: " + std::to_string(direction == "0" ? "buy" : "sell")
@@ -210,7 +210,7 @@ std::future<void> processSwapLog(const std:& token, const std:& signature, doubl
                                 "wsClient.emit(" + "token-" + mintAddress;
                                     ...swapRecord,
                                     mint: mintAddress, // Add mint field for compatibility
-                                    timestamp: swapRecord.timestamp.toISOString(), // Emit ISO std:
+                                    timestamp: swapRecord.timestamp.toISOString(), // Emit ISO std::string
                                     });
                                     wsClient;
                                     ".to(" + "token-" + swapRecord.tokenMint.emit("updateToken", enrichedToken);
@@ -229,7 +229,7 @@ std::future<void> processSwapLog(const std:& token, const std:& signature, doubl
 
 }
 
-bool shouldUpdateSupply(const std:& token) {
+bool shouldUpdateSupply(const std::string& token) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!token.lastSupplyUpdate) {
@@ -241,17 +241,17 @@ bool shouldUpdateSupply(const std:& token) {
 
 }
 
-std::future<> updateTokenSupplyFromChain(const std:& tokenMint) {
+std::future<> updateTokenSupplyFromChain(const std::string& tokenMint) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    tokenSupply: std:;
+    tokenSupply: std::string;
     tokenSupplyUiAmount;
     tokenDecimals;
-    lastSupplyUpdate: std:;
+    lastSupplyUpdate: std::string;
 
 }
 
-std::future<bool> isValidSwapTx(Connection connection, const std:& signature, const std:& mint) {
+std::future<bool> isValidSwapTx(Connection connection, const std::string& signature, const std::string& mint) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto tx = connection.getTransaction(signature, {;
@@ -261,7 +261,7 @@ std::future<bool> isValidSwapTx(Connection connection, const std:& signature, co
         const auto logs = tx.meta.logMessages;
         if (!logs) return false;
 
-        const auto has = [&](kw: std:) { return logs.some[&]((l) { return (std::find(l.begin(), l.end(), kw) != l.end())); }; };
+        const auto has = [&](kw: std::string) { return logs.some[&]((l) { return (std::find(l.begin(), l.end(), kw) != l.end())); }; };
         return (;
         has("Mint:") &&
         has("Swap:") &&
@@ -272,7 +272,7 @@ std::future<bool> isValidSwapTx(Connection connection, const std:& signature, co
 
 }
 
-std::future<void> processLastValidSwap(const std:& token, double solPriceUSD, auto limit) {
+std::future<void> processLastValidSwap(const std::string& token, double solPriceUSD, auto limit) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto rpcUrl =;
@@ -303,7 +303,7 @@ std::future<void> processLastValidSwap(const std:& token, double solPriceUSD, au
 
 }
 
-std::future<double> updateHoldersCache(const std:& mint, bool imported = false) {
+std::future<double> updateHoldersCache(const std::string& mint, bool imported = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto env = process.env;
@@ -358,7 +358,7 @@ std::future<double> updateHoldersCache(const std:& mint, bool imported = false) 
 
                         // Process accounts to extract holder information
                         auto totalTokens = 0;
-                        // Change type from TokenHolder to std: or a new local type if needed
+                        // Change type from TokenHolder to std::string or a new local type if needed
                         const std::vector<std::string> holders = [];
 
                         // Process each account to get holder details
@@ -391,7 +391,7 @@ std::future<double> updateHoldersCache(const std:& mint, bool imported = false) 
 
 
 
-                                    } catch (error: std:) {
+                                    } catch (error: std::string) {
                                         std::cerr << "Error processing account for " + mint + ":" << error << std::endl;
                                         // Continue with other accounts even if one fails
                                         continue;
@@ -411,7 +411,7 @@ std::future<double> updateHoldersCache(const std:& mint, bool imported = false) 
                                 const auto holdersListKey = "holders:" + mint;
                                 try {
                                     // Store the entire list, stringified. No TTL.
-                                    redisCache.std::set(holdersListKey, /* JSON.stringify */ std:(holders));
+                                    redisCache.std::set(holdersListKey, /* JSON.stringify */ std::string(holders));
                                     logger.log(
                                     "Stored " + holders.size() + " holders in Redis list " + holdersListKey
                                     );
@@ -458,7 +458,7 @@ std::future<double> updateHoldersCache(const std:& mint, bool imported = false) 
 
 }
 
-std::future<void> processTokenUpdateEvent(const std:& tokenData, bool shouldEmitGlobal = false, bool isNewTokenEvent = false) {
+std::future<void> processTokenUpdateEvent(const std::string& tokenData, bool shouldEmitGlobal = false, bool isNewTokenEvent = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

@@ -8,7 +8,7 @@
 
 namespace elizaos {
 
-std: extractResponseText(const std:& text) {
+std::string extractResponseText(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!text) return null;
@@ -16,11 +16,11 @@ std: extractResponseText(const std:& text) {
     // Regex to find the content within <response>...</response>
     const auto responseMatch = text.match(/<response>([\s\S]*?)<\/response>/);
 
-    if (!responseMatch || responseMatch[1] == undefined) {
+    if (!responseMatch || responseMatch[1] == std::nullopt) {
         std::cout << "Could not find <response> tag or its content in text" << std::endl;
-        // Attempt to find *std:* XML block as a fallback, but log that it wasn't the expected <response>
+        // Attempt to find *std::string* XML block as a fallback, but log that it wasn't the expected <response>
         const auto fallbackMatch = text.match(/<(\w+)>([\s\S]*?)<\/\1>/);
-        if (fallbackMatch && fallbackMatch[2] != undefined) {
+        if (fallbackMatch && fallbackMatch[2] != std::nullopt) {
             console.warn(
             "Found <" + std::to_string(fallbackMatch[1]) + "> tag instead of <response>. Using its content."
             );
@@ -45,7 +45,7 @@ std: extractResponseText(const std:& text) {
 
 }
 
-std: escapeForJson(const std:& input) {
+std::string escapeForJson(const std::string& input) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return input.replace(/\\/g, "\\\\").replace(/"/g, "\\"").replace(/\n/g, "\\n");
@@ -53,7 +53,7 @@ std: escapeForJson(const std:& input) {
 
 }
 
-std: sanitizeJson(const std:& rawJson) {
+std::string sanitizeJson(const std::string& rawJson) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -125,7 +125,7 @@ std::future<std::vector<MediaData>> fetchMediaData(const std::vector<Media>& att
     }
 }
 
-std::vector<std::string> getFilesRecursively(const std:& dir, const std::vector<std::string>& extensions) {
+std::vector<std::string> getFilesRecursively(const std::string& dir, const std::vector<std::string>& extensions) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -157,7 +157,7 @@ std::vector<std::string> getFilesRecursively(const std:& dir, const std::vector<
 
 }
 
-std::vector<std::string> loadDocumentation(const std:& directoryPath) {
+std::vector<std::string> loadDocumentation(const std::string& directoryPath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {

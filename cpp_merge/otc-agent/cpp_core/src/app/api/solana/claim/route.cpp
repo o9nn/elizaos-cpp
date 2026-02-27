@@ -1,4 +1,5 @@
 #include "route.hpp"
+#include <string>
 #include <future>
 #include <filesystem>
 #include <cstdlib>
@@ -50,13 +51,13 @@ std::future<void> POST(NextRequest request) {
 
         const AnchorWallet wallet = {;
             publicKey: deskKeypair.publicKey,
-            signTransaction: std::async <T extends Transaction | VersionedTransaction>[&](
+            signTransaction: std::async <T : public Transaction | VersionedTransaction>[&](
             tx: T,
             ) {
                 (tx).partialSign(deskKeypair);
                 return tx;
                 },
-                signAllTransactions: std::async <T extends Transaction | VersionedTransaction>[&](
+                signAllTransactions: std::async <T : public Transaction | VersionedTransaction>[&](
                 txs: T[],
                 ) {
                     txs.forEach[&]((tx) { return (tx).partialSign(deskKeypair)); };
@@ -73,8 +74,7 @@ std::future<void> POST(NextRequest request) {
 
                         // Fetch offer
                         // Type assertion needed as anchor's account namespace types are dynamic
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-std:
-                        const auto programAccounts = program.account;
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-std::string const auto programAccounts = program.account;
                         const auto offer = new PublicKey(offerAddress);
                         const auto offerData = programAccounts.offer.fetch(offer);
 

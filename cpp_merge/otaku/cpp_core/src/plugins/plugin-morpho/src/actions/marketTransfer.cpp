@@ -1,10 +1,11 @@
 #include "marketTransfer.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std: getOperationEmoji(const std:& intent) {
+std::string getOperationEmoji(const std::string& intent) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     switch (intent) {
@@ -26,7 +27,7 @@ std: getOperationEmoji(const std:& intent) {
 
 }
 
-std: getOperationDescription(const std:& intent) {
+std::string getOperationDescription(const std::string& intent) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     switch (intent) {

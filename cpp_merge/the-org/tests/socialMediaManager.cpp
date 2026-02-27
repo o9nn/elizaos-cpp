@@ -1,66 +1,67 @@
 #include "socialMediaManager.test.h"
+#include <string>
 
 void Main(void)
 {
-    describe(std:("SocialMediaManagerTestSuite"), [=]() mutable
+    describe(std::string("SocialMediaManagerTestSuite"), [=]() mutable
     {
         shared<any> mockScenarioService;
         shared<std::shared_ptr<IAgentRuntime>> mockRuntime;
         beforeEach([=]() mutable
         {
             mockScenarioService = object{
-                object::pair{std:("createWorld"), vi->fn()->mockResolvedValue(std:("world-id"))}, 
-                object::pair{std:("createRoom"), vi->fn()->mockResolvedValue(std:("room-id"))}, 
-                object::pair{std:("addParticipant"), vi->fn()->mockResolvedValue(true)}, 
-                object::pair{std:("sendMessage"), vi->fn()->mockResolvedValue(true)}, 
-                object::pair{std:("waitForCompletion"), vi->fn()->mockResolvedValue(true)}
+                object::pair{std::string("createWorld"), vi->fn()->mockResolvedValue(std::string("world-id"))}, 
+                object::pair{std::string("createRoom"), vi->fn()->mockResolvedValue(std::string("room-id"))}, 
+                object::pair{std::string("addParticipant"), vi->fn()->mockResolvedValue(true)}, 
+                object::pair{std::string("sendMessage"), vi->fn()->mockResolvedValue(true)}, 
+                object::pair{std::string("waitForCompletion"), vi->fn()->mockResolvedValue(true)}
             };
             mockRuntime = as<std::shared_ptr<IAgentRuntime>>(as<any>(object{
-                object::pair{std:("getService"), vi->fn()->mockReturnValue(mockScenarioService)}, 
-                object::pair{std:("agentId"), std:("agent-id")}
+                object::pair{std::string("getService"), vi->fn()->mockReturnValue(mockScenarioService)}, 
+                object::pair{std::string("agentId"), std::string("agent-id")}
             }));
         }
         );
-        describe(std:("Core Functionality"), [=]() mutable
+        describe(std::string("Core Functionality"), [=]() mutable
         {
-            it(std:("should complete onboarding process successfully"), [=]() mutable
+            it(std::string("should complete onboarding process successfully"), [=]() mutable
             {
                 auto testSuite = std::make_shared<SocialMediaManagerTestSuite>();
                 auto test = testSuite->tests->find([=](auto t) mutable
                 {
-                    return t["name"] == std:("Test Onboarding Process");
+                    return t["name"] == std::string("Test Onboarding Process");
                 }
                 );
                 expect(test)->toBeDefined();
                 if (!test) {
-                    throw any(std::make_shared<Error>(std:("Test "Test Onboarding Process" not found")));
+                    throw any(std::make_shared<Error>(std::string("Test "Test Onboarding Process" not found")));
                 }
                 std::async([=]() { test["fn"](mockRuntime); });
-                expect(mockScenarioService["createWorld"])->toHaveBeenCalledWith(std:("Test Organization"), std:("Test Owner"));
-                expect(mockScenarioService["createRoom"])->toHaveBeenCalledWith(std:("world-id"), std:("general"));
+                expect(mockScenarioService["createWorld"])->toHaveBeenCalledWith(std::string("Test Organization"), std::string("Test Owner"));
+                expect(mockScenarioService["createRoom"])->toHaveBeenCalledWith(std::string("world-id"), std::string("general"));
                 expect(mockScenarioService["addParticipant"])->toHaveBeenCalledTimes(2);
                 expect(mockScenarioService["sendMessage"])->toHaveBeenCalled();
             }
             );
-            it(std:("should handle cross-platform post creation"), [=]() mutable
+            it(std::string("should handle cross-platform post creation"), [=]() mutable
             {
                 auto testSuite = std::make_shared<SocialMediaManagerTestSuite>();
                 auto test = testSuite->tests->find([=](auto t) mutable
                 {
-                    return t["name"] == std:("Test Cross-Platform Post Creation");
+                    return t["name"] == std::string("Test Cross-Platform Post Creation");
                 }
                 );
                 std::async([=]() { test["fn"](mockRuntime); });
-                expect(mockScenarioService["sendMessage"])->toHaveBeenCalledWith(mockRuntime, std:("world-id"), std:("room-id"), std:("Please create a post about our new product launch for Twitter and Discord"));
+                expect(mockScenarioService["sendMessage"])->toHaveBeenCalledWith(mockRuntime, std::string("world-id"), std::string("room-id"), std::string("Please create a post about our new product launch for Twitter and Discord"));
                 expect(mockScenarioService["waitForCompletion"])->toHaveBeenCalledWith(10000);
             }
             );
-            it(std:("should manage multiple user queries"), [=]() mutable
+            it(std::string("should manage multiple user queries"), [=]() mutable
             {
                 auto testSuite = std::make_shared<SocialMediaManagerTestSuite>();
                 auto test = testSuite->tests->find([=](auto t) mutable
                 {
-                    return t["name"] == std:("Test Response to User Queries");
+                    return t["name"] == std::string("Test Response to User Queries");
                 }
                 );
                 std::async([=]() { test["fn"](mockRuntime); });
@@ -70,33 +71,33 @@ void Main(void)
             );
         }
         );
-        describe(std:("Error Handling"), [=]() mutable
+        describe(std::string("Error Handling"), [=]() mutable
         {
-            it(std:("should throw error when missing scenario service"), [=]() mutable
+            it(std::string("should throw error when missing scenario service"), [=]() mutable
             {
                 auto brokenRuntime = utils::assign(object{
                     , 
-                    object::pair{std:("getService"), vi->fn()->mockReturnValue(undefined)}
+                    object::pair{std::string("getService"), vi->fn()->mockReturnValue(std::nullopt)}
                 }, mockRuntime);
                 auto testSuite = std::make_shared<SocialMediaManagerTestSuite>();
                 auto test = testSuite->tests->find([=](auto t) mutable
                 {
-                    return t["name"] == std:("Test Onboarding Process");
+                    return t["name"] == std::string("Test Onboarding Process");
                 }
                 );
-                std::async([=]() { expect(test["fn"](brokenRuntime))->rejects->toThrow(std:("Scenario service not found")); });
+                std::async([=]() { expect(test["fn"](brokenRuntime))->rejects->toThrow(std::string("Scenario service not found")); });
             }
             );
-            it(std:("should handle operation timeouts"), [=]() mutable
+            it(std::string("should handle operation timeouts"), [=]() mutable
             {
                 mockScenarioService["waitForCompletion"]["mockResolvedValue"](false);
                 auto testSuite = std::make_shared<SocialMediaManagerTestSuite>();
                 auto test = testSuite->tests->find([=](auto t) mutable
                 {
-                    return t["name"] == std:("Test Onboarding Process");
+                    return t["name"] == std::string("Test Onboarding Process");
                 }
                 );
-                std::async([=]() { expect(test["fn"](mockRuntime))->rejects->toThrow(std:("Agent did not complete onboarding response in time")); });
+                std::async([=]() { expect(test["fn"](mockRuntime))->rejects->toThrow(std::string("Agent did not complete onboarding response in time")); });
             }
             );
         }

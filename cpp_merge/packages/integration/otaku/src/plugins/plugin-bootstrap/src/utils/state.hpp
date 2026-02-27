@@ -1,12 +1,13 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTAKU_SRC_PLUGINS_PLUGIN_BOOTSTRAP_SRC_UTILS_STATE_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTAKU_SRC_PLUGINS_PLUGIN_BOOTSTRAP_SRC_UTILS_STATE_H
 #include "core.hpp"
+#include <string>
 // External dependency removed
 
 std::shared_ptr<Promise<std::shared_ptr<State>>> refreshStateAfterAction(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<Memory> message, std::shared_ptr<State> currentState, array<any> actionResults);
 
 template <typename P2>
-std::shared_ptr<State> updateActionPlanStep(std::shared_ptr<State> state, double stepIndex, P2 status, Record<string, any> result = undefined, string error = undefined);
+std::shared_ptr<State> updateActionPlanStep(std::shared_ptr<State> state, double stepIndex, P2 status, Record<string, any> result = std::nullopt, string error = std::nullopt);
 
 std::shared_ptr<State> updateWorkingMemory(std::shared_ptr<State> state, string key, Record<string, any> value);
 
@@ -22,17 +23,17 @@ std::shared_ptr<State> updateActionPlanStep(std::shared_ptr<State> state, double
     if (AND((stepIndex >= 0), (stepIndex < steps->get_length()))) {
         steps[stepIndex] = utils::assign(object{
             , 
-            object::pair{std:("status"), std:("status")}, 
-            object::pair{std:("result"), std:("result")}, 
-            object::pair{std:("error"), std:("error")}
+            object::pair{std::string("status"), std::string("status")}, 
+            object::pair{std::string("result"), std::string("result")}, 
+            object::pair{std::string("error"), std::string("error")}
         }, const_(steps)[stepIndex]);
         updatedPlan["steps"] = steps;
         updatedPlan["currentStep"] = stepIndex + 1;
         return utils::assign(object{
             , 
-            object::pair{std:("data"), utils::assign(object{
+            object::pair{std::string("data"), utils::assign(object{
                 , 
-                object::pair{std:("actionPlan"), updatedPlan}
+                object::pair{std::string("actionPlan"), updatedPlan}
             }, state->data)}
         }, state);
     }

@@ -1,4 +1,5 @@
 #include "index.hpp"
+#include <string>
 #include <cstdlib>
 #include <unordered_map>
 #include <iostream>
@@ -41,7 +42,7 @@ void setupLogStreaming(SocketIOServer io, SocketIORouter router) {
         const auto originalWrite = destination.write.bind(destination);
 
         // Override write method to broadcast logs via WebSocket
-        destination.write = std::function (data: std: | std:) {
+        destination.write = std::function (data: std::string | std::string) {
             // Call original write first
             originalWrite(data);
 
@@ -237,8 +238,8 @@ express::RequestHandler createPluginRouteHandler(const std::unordered_map<UUID, 
                                                                     });
                                                                     return;
                                                                     } else {
-                                                                        // No agentId in query, or it was invalid. Try matching globally for std: agent that might have this route.
-                                                                        // This allows for non-agent-specific plugin routes if std: plugin defines them.
+                                                                        // No agentId in query, or it was invalid. Try matching globally for std::string agent that might have this route.
+                                                                        // This allows for non-agent-specific plugin routes if std::string plugin defines them.
                                                                         logger.debug("No valid agentId in query. Trying global match for path: " + std::to_string(reqPath) + "");
                                                                         for (const int [_, runtime] of agents) {
                                                                             // Iterate over all agents

@@ -1,4 +1,5 @@
 #include "agents.hpp"
+#include <string>
 #include <optional>
 #include <map>
 #include <iostream>
@@ -6,7 +7,7 @@
 
 namespace elizaos {
 
-express::Router createAgentMemoryRouter(ElizaOS elizaOS, std::optional<std:> _serverInstance) {
+express::Router createAgentMemoryRouter(ElizaOS elizaOS, std::optional<std::string> _serverInstance) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -176,10 +177,10 @@ express::Router createAgentMemoryRouter(ElizaOS elizaOS, std::optional<std:> _se
                                                         metadata: restOfMemoryData.metadata | std::nullopt,
                                                         };
 
-                                                        // Remove undefined fields that might have been explicitly std::set to undefined by casting above,
+                                                        // Remove std::nullopt fields that might have been explicitly std::set to std::nullopt by casting above,
                                                         // if the updateMemory implementation doesn't handle them gracefully.
                                                         Object.keys(memoryToUpdate).forEach[&]((key) {
-                                                            if ((memoryToUpdate as std:)[key] == undefined) {
+                                                            if ((memoryToUpdate as std::string)[key] == std::nullopt) {
                                                                 delete (memoryToUpdate)[key];
                                                             }
                                                             });

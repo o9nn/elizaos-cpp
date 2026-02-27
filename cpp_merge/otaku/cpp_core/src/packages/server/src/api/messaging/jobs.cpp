@@ -1,4 +1,5 @@
 #include "jobs.hpp"
+#include <string>
 #include <cstdlib>
 #include <optional>
 #include <iostream>
@@ -88,14 +89,14 @@ JobDetailsResponse jobToResponse(Job job) {
 
 }
 
-obj is CreateJobRequest isValidCreateJobRequest(const std:& obj) {
+obj is CreateJobRequest isValidCreateJobRequest(const std::string& obj) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!obj || typeof obj != 'object') {
         return false;
     }
 
-    const auto req = obj<std:, unknown>;
+    const auto req = obj<std::string, unknown>;
     return (;
     (req.agentId == std::nullopt || typeof req.agentId == "string") &&;
     (req.userId == std::nullopt || typeof req.userId == "string") &&;
@@ -120,7 +121,7 @@ JobsRouter createJobsRouter(ElizaOS elizaOS, AgentServer serverInstance) {
         const auto facilitatorUrl = std::getenv("X402_FACILITATOR_URL");
         const auto hasCdpKeys = !!(std::getenv("CDP_API_KEY_ID") && std::getenv("CDP_API_KEY_SECRET"));
         const auto facilitatorConfig = facilitatorUrl;
-        "? { url: facilitatorUrl as " + std: + "://" + std:
+        "? { url: facilitatorUrl as " + std::string + "://" + std:
         : facilitator; // Coinbase facilitator (mainnet) - uses CDP keys from env if available
 
         if (facilitatorUrl) {
@@ -162,21 +163,18 @@ JobsRouter createJobsRouter(ElizaOS elizaOS, AgentServer serverInstance) {
                     // Determine resource URL based on environment variable or fallback to NODE_ENV
                     // Priority: X402_PUBLIC_URL > NODE_ENV > localhost
                     const auto publicUrl = std::getenv("X402_PUBLIC_URL") || std::getenv("PUBLIC_URL");
-                    "auto resourceUrl: " + std: + "://" + std:;
+                    "auto resourceUrl: " + std::string + "://" + std::string;
 
                     if (publicUrl) {
                         // Remove trailing slash if present, then append the endpoint path
                         const auto baseUrl = publicUrl.replace(/\/$/, "");
-                        "resourceUrl = " + baseUrl + "/api/messaging/jobs" + " as " + std: + "://" + std:
-                        std::cout << "[Jobs API] Using X402_PUBLIC_URL for resource: " + resourceUrl << std::endl;
+                        "resourceUrl = " + baseUrl + "/api/messaging/jobs" + " as " + std::string + "://" + std::string std::cout << "[Jobs API] Using X402_PUBLIC_URL for resource: " + resourceUrl << std::endl;
                         } else {
                             // Fallback to NODE_ENV detection (less reliable, warns if production)
                             const auto isProduction = std::getenv("NODE_ENV") == "production";
                             resourceUrl = (isProduction;
                             ? "https://otaku.so/api/messaging/jobs"
-                            ": " + "http://localhost:" + std::to_string(std::getenv("SERVER_PORT") || "3000") + "/api/messaging/jobs" + ") as " + std: + "://" + std:
-
-                            if (isProduction) {
+                            ": " + "http://localhost:" + std::to_string(std::getenv("SERVER_PORT") || "3000") + "/api/messaging/jobs" + ") as " + std::string + "://" + std::string if (isProduction) {
                                 logger.warn(
                                 "[Jobs API] X402_PUBLIC_URL not std::set, using hardcoded production URL: " + resourceUrl + ". "
                                 "If your server is behind a proxy/CDN, std::set X402_PUBLIC_URL to match your actual domain.";
@@ -187,7 +185,7 @@ JobsRouter createJobsRouter(ElizaOS elizaOS, AgentServer serverInstance) {
                             }
 
                             router.use(;
-                            "paymentMiddleware(receivingWallet as " + "0x" + std:;
+                            "paymentMiddleware(receivingWallet as " + "0x" + std::string;
                                 "POST /jobs": {
                                     price: "$0.015",
                                     network: "base",
@@ -495,9 +493,9 @@ JobsRouter createJobsRouter(ElizaOS elizaOS, AgentServer serverInstance) {
                                                                                                                                                                                                 id?: UUID;
                                                                                                                                                                                                 channel_id?: UUID;
                                                                                                                                                                                                 author_id?: UUID;
-                                                                                                                                                                                                content?: std:;
+                                                                                                                                                                                                content?: std::string;
                                                                                                                                                                                                 created_at?;
-                                                                                                                                                                                                metadata?: Record<std:, unknown>;
+                                                                                                                                                                                                metadata?: Record<std::string, unknown>;
                                                                                                                                                                                                 };
 
                                                                                                                                                                                                 // Validate required fields

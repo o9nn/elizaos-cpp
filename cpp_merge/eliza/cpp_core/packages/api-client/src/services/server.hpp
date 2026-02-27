@@ -15,7 +15,7 @@ namespace elizaos {
 
 
 
-class ServerService extends BaseApiClient {
+class ServerService : public BaseApiClient {
   /**
    * Health check
    */

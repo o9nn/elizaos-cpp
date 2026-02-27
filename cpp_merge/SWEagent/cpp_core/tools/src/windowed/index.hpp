@@ -20,7 +20,7 @@ namespace elizaos {
  */
 
 struct WindowState {
-    std::optional<std:> currentFile;
+    std::optional<std::string> currentFile;
     double firstLine;
     double windowSize;
     std::optional<std::vector<std::string>> fileContent;
@@ -28,9 +28,9 @@ struct WindowState {
 
 class WindowedEditor {
   private state: WindowState;
-  private stateFile: std:;
+  private stateFile: std::string;
 
-  constructor() {
+  /* constructor */ () {
     // Use ROOT environment variable or temp directory for state file
     const rootDir = std::getenv("ROOT") || std::getenv("TMPDIR") || '/tmp';
     this.stateFile = path.join(rootDir, 'window_state.json');

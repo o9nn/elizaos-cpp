@@ -1,81 +1,82 @@
 #include "storage-integration.test.h"
+#include <string>
 
 object StorageIntegrationTestSuite = object{
-    object::pair{std:("name"), std:("StorageIntegrationTestSuite")}, 
-    object::pair{std:("tests"), array<object>{ object{
-        object::pair{std:("name"), std:("storage_configuration_validation")}, 
-        object::pair{std:("fn"), [=](auto runtime) mutable
+    object::pair{std::string("name"), std::string("StorageIntegrationTestSuite")}, 
+    object::pair{std::string("tests"), array<object>{ object{
+        object::pair{std::string("name"), std::string("storage_configuration_validation")}, 
+        object::pair{std::string("fn"), [=](auto runtime) mutable
         {
-            console->log(std:("🔥 REAL TEST: Storage configuration validation"));
-            auto service = runtime->getService(std:("elizaos-services"));
+            console->log(std::string("🔥 REAL TEST: Storage configuration validation"));
+            auto service = runtime->getService(std::string("elizaos-services"));
             if (!service) {
-                throw any(std::make_shared<Error>(std:("ElizaOS Services service not found - plugin not loaded correctly")));
+                throw any(std::make_shared<Error>(std::string("ElizaOS Services service not found - plugin not loaded correctly")));
             }
             auto storage = (as<any>(service))["getStorage"]();
             if (!storage) {
-                throw any(std::make_shared<Error>(std:("Storage service not available - service initialization failed")));
+                throw any(std::make_shared<Error>(std::string("Storage service not available - service initialization failed")));
             }
-            auto requiredEnvVars = array<string>{ std:("ELIZAOS_STORAGE_ENDPOINT"), std:("ELIZAOS_STORAGE_BUCKET"), std:("ELIZAOS_STORAGE_ACCESS_KEY"), std:("ELIZAOS_STORAGE_SECRET_KEY") };
+            auto requiredEnvVars = array<string>{ std::string("ELIZAOS_STORAGE_ENDPOINT"), std::string("ELIZAOS_STORAGE_BUCKET"), std::string("ELIZAOS_STORAGE_ACCESS_KEY"), std::string("ELIZAOS_STORAGE_SECRET_KEY") };
             auto missingVars = requiredEnvVars->filter([=](auto varName) mutable
             {
                 return OR((!const_(process->env)[varName]), (const_(process->env)[varName]->get_length() == 0));
             }
             );
             if (missingVars->get_length() > 0) {
-                throw any(std::make_shared<Error>(std:("Storage configuration incomplete. Missing: ") + missingVars->join(std:(", ")) + std:(". ") + std:("Set these environment variables to run storage integration tests.")));
+                throw any(std::make_shared<Error>(std::string("Storage configuration incomplete. Missing: ") + missingVars->join(std::string(", ")) + std::string(". ") + std::string("Set these environment variables to run storage integration tests.")));
             }
-            console->log(std:("✅ Storage configuration validation passed"));
+            console->log(std::string("✅ Storage configuration validation passed"));
         }
         }
     }, object{
-        object::pair{std:("name"), std:("storage_upload_download_cycle")}, 
-        object::pair{std:("fn"), [=](auto runtime) mutable
+        object::pair{std::string("name"), std::string("storage_upload_download_cycle")}, 
+        object::pair{std::string("fn"), [=](auto runtime) mutable
         {
-            console->log(std:("🔥 REAL TEST: Storage upload/download cycle"));
-            auto service = runtime->getService(std:("elizaos-services"));
+            console->log(std::string("🔥 REAL TEST: Storage upload/download cycle"));
+            auto service = runtime->getService(std::string("elizaos-services"));
             auto storage = (as<any>(service))["getStorage"]();
-            auto testKey = std:("integration-test/") + Date->now() + std:("-upload-download.txt");
-            auto originalData = Buffer::from(std:("Integration test data - ") + ((std::make_shared<Date>()))->toISOString() + std:("\
+            auto testKey = std::string("integration-test/") + Date->now() + std::string("-upload-download.txt");
+            auto originalData = Buffer::from(std::string("Integration test data - ") + ((std::make_shared<Date>()))->toISOString() + std::string("\
 Multi-line content\
 with special chars: éñ中文🚀"));
             try
             {
-                console->log(std:("🔄 Uploading test file: ") + testKey + string_empty);
-                auto uploadResult = std::async([=]() { storage["uploadFile"](testKey, originalData, std:("text/plain")); });
+                console->log(std::string("🔄 Uploading test file: ") + testKey + string_empty);
+                auto uploadResult = std::async([=]() { storage["uploadFile"](testKey, originalData, std::string("text/plain")); });
                 if (uploadResult != testKey) {
-                    throw any(std::make_shared<Error>(std:("Upload returned unexpected key: expected "") + testKey + std:("", got "") + uploadResult + std:(""")));
+                    throw any(std::make_shared<Error>(std::string("Upload returned unexpected key: expected "") + testKey + std::string("", got "") + uploadResult + std::string(""")));
                 }
-                console->log(std:("✅ Upload successful"));
+                console->log(std::string("✅ Upload successful"));
                 auto exists = std::async([=]() { storage["fileExists"](testKey); });
                 if (!exists) {
-                    throw any(std::make_shared<Error>(std:("File existence check failed immediately after upload")));
+                    throw any(std::make_shared<Error>(std::string("File existence check failed immediately after upload")));
                 }
-                console->log(std:("✅ File existence confirmed"));
+                console->log(std::string("✅ File existence confirmed"));
                 auto metadata = std::async([=]() { storage["getFileMetadata"](testKey); });
                 if (!metadata) {
-                    throw any(std::make_shared<Error>(std:("Failed to retrieve file metadata")));
+                    throw any(std::make_shared<Error>(std::string("Failed to retrieve file metadata")));
                 }
                 if (metadata["size"] != originalData->length) {
-                    throw any(std::make_shared<Error>(std:("Size mismatch: expected ") + originalData->length + std:(", got ") + metadata["size"] + string_empty));
+                    throw any(std::make_shared<Error>(std::string("Size mismatch: expected ") + originalData->length + std::string(", got ") + metadata["size"] + string_empty));
                 }
-                if (metadata["contentType"] != std:("text/plain")) {
-                    throw any(std::make_shared<Error>(std:("Content type mismatch: expected "text/plain", got "") + metadata["contentType"] + std:(""")));
+                if (metadata["contentType"] != std::string("text/plain")) {
+                    throw any(std::make_shared<Error>(std::string("Content type mismatch: expected "text/plain", got "") + metadata["contentType"] + std::string(""")));
                 }
-                console->log(std:("✅ Metadata validation passed: ") + metadata["size"] + std:(" bytes, ") + metadata["contentType"] + string_empty);
-                console->log(std:("🔄 Downloading file for verification"));
+                console->log(std::string("✅ Metadata validation passed: ") + metadata["size"] + std::string(" bytes, ") + metadata["contentType"] + string_empty);
+                console->log(std::string("🔄 Downloading file for verification"));
                 auto downloadedData = std::async([=]() { storage["downloadFile"](testKey); });
                 if (!downloadedData["equals"](originalData)) {
-                    throw any(std::make_shared<Error>(std:("Downloaded data does not match uploaded data")));
+                    throw any(std::make_shared<Error>(std::string("Downloaded data does not match uploaded data")));
                 }
-                console->log(std:("✅ Download and data integrity verification passed"));
+                console->log(std::string("✅ Download and data integrity verification passed"));
                 std::async([=]() { storage["deleteFile"](testKey); });
-                console->log(std:("✅ File cleanup completed"));
+                console->log(std::string("✅ File cleanup completed"));
                 auto existsAfterDelete = std::async([=]() { storage["fileExists"](testKey); });
                 if (existsAfterDelete) {
-                    throw any(std::make_shared<Error>(std:("File still exists after deletion")));
+                    throw any(std::make_shared<Error>(std::string("File still exists after deletion")));
                 }
-                console->log(std:("✅ Deletion verification passed"));
-                console->log(std:("✅ REAL STORAGE UPLOAD/DOWNLOAD CYCLE SUCCESS"));
+                console->log(std::string("✅ Deletion verification passed"));
+                console->log(std::string("✅ REAL STORAGE UPLOAD/DOWNLOAD CYCLE SUCCESS"));
             }
             catch (const any& error)
             {
@@ -85,48 +86,48 @@ with special chars: éñ中文🚀"));
                 }
                 catch (const any& cleanupError)
                 {
-                    console->warn(std:("Failed to cleanup test file on error:"), cleanupError);
+                    console->warn(std::string("Failed to cleanup test file on error:"), cleanupError);
                 }
                 throw any(error);
             }
         }
         }
     }, object{
-        object::pair{std:("name"), std:("storage_signed_url_generation")}, 
-        object::pair{std:("fn"), [=](auto runtime) mutable
+        object::pair{std::string("name"), std::string("storage_signed_url_generation")}, 
+        object::pair{std::string("fn"), [=](auto runtime) mutable
         {
-            console->log(std:("🔥 REAL TEST: Storage signed URL generation"));
-            auto service = runtime->getService(std:("elizaos-services"));
+            console->log(std::string("🔥 REAL TEST: Storage signed URL generation"));
+            auto service = runtime->getService(std::string("elizaos-services"));
             auto storage = (as<any>(service))["getStorage"]();
-            auto testKey = std:("integration-test/") + Date->now() + std:("-signed-url.txt");
-            auto testData = Buffer::from(std:("Signed URL test data"));
+            auto testKey = std::string("integration-test/") + Date->now() + std::string("-signed-url.txt");
+            auto testData = Buffer::from(std::string("Signed URL test data"));
             try
             {
-                std::async([=]() { storage["uploadFile"](testKey, testData, std:("text/plain")); });
-                auto getUrl = std::async([=]() { storage["getSignedUrl"](testKey, std:("get"), 300); });
-                if (!getUrl["startsWith"](std:("http"))) {
-                    throw any(std::make_shared<Error>(std:("Invalid GET signed URL: ") + getUrl + string_empty));
+                std::async([=]() { storage["uploadFile"](testKey, testData, std::string("text/plain")); });
+                auto getUrl = std::async([=]() { storage["getSignedUrl"](testKey, std::string("get"), 300); });
+                if (!getUrl["startsWith"](std::string("http"))) {
+                    throw any(std::make_shared<Error>(std::string("Invalid GET signed URL: ") + getUrl + string_empty));
                 }
-                if (OR((!getUrl["includes"](testKey)), (!getUrl["includes"](std:("X-Amz-Signature"))))) {
-                    throw any(std::make_shared<Error>(std:("GET signed URL missing required components")));
+                if (OR((!getUrl["includes"](testKey)), (!getUrl["includes"](std::string("X-Amz-Signature"))))) {
+                    throw any(std::make_shared<Error>(std::string("GET signed URL missing required components")));
                 }
-                console->log(std:("✅ GET signed URL generation passed"));
-                auto putKey = std:("integration-test/") + Date->now() + std:("-signed-put.txt");
-                auto putUrl = std::async([=]() { storage["getSignedUrl"](putKey, std:("put"), 300); });
-                if (!putUrl["startsWith"](std:("http"))) {
-                    throw any(std::make_shared<Error>(std:("Invalid PUT signed URL: ") + putUrl + string_empty));
+                console->log(std::string("✅ GET signed URL generation passed"));
+                auto putKey = std::string("integration-test/") + Date->now() + std::string("-signed-put.txt");
+                auto putUrl = std::async([=]() { storage["getSignedUrl"](putKey, std::string("put"), 300); });
+                if (!putUrl["startsWith"](std::string("http"))) {
+                    throw any(std::make_shared<Error>(std::string("Invalid PUT signed URL: ") + putUrl + string_empty));
                 }
-                if (OR((!putUrl["includes"](putKey)), (!putUrl["includes"](std:("X-Amz-Signature"))))) {
-                    throw any(std::make_shared<Error>(std:("PUT signed URL missing required components")));
+                if (OR((!putUrl["includes"](putKey)), (!putUrl["includes"](std::string("X-Amz-Signature"))))) {
+                    throw any(std::make_shared<Error>(std::string("PUT signed URL missing required components")));
                 }
-                console->log(std:("✅ PUT signed URL generation passed"));
-                auto shortUrl = std::async([=]() { storage["getSignedUrl"](testKey, std:("get"), 60); });
-                auto longUrl = std::async([=]() { storage["getSignedUrl"](testKey, std:("get"), 3600); });
+                console->log(std::string("✅ PUT signed URL generation passed"));
+                auto shortUrl = std::async([=]() { storage["getSignedUrl"](testKey, std::string("get"), 60); });
+                auto longUrl = std::async([=]() { storage["getSignedUrl"](testKey, std::string("get"), 3600); });
                 if (shortUrl == longUrl) {
-                    throw any(std::make_shared<Error>(std:("Signed URLs with different expiration times should differ")));
+                    throw any(std::make_shared<Error>(std::string("Signed URLs with different expiration times should differ")));
                 }
-                console->log(std:("✅ Expiration time handling passed"));
-                console->log(std:("✅ REAL STORAGE SIGNED URL GENERATION SUCCESS"));
+                console->log(std::string("✅ Expiration time handling passed"));
+                console->log(std::string("✅ REAL STORAGE SIGNED URL GENERATION SUCCESS"));
                 std::async([=]() { storage["deleteFile"](testKey); });
             }
             catch (const any& error)
@@ -137,57 +138,57 @@ with special chars: éñ中文🚀"));
                 }
                 catch (const any& cleanupError)
                 {
-                    console->warn(std:("Failed to cleanup test file on error:"), cleanupError);
+                    console->warn(std::string("Failed to cleanup test file on error:"), cleanupError);
                 }
                 throw any(error);
             }
         }
         }
     }, object{
-        object::pair{std:("name"), std:("storage_list_operations")}, 
-        object::pair{std:("fn"), [=](auto runtime) mutable
+        object::pair{std::string("name"), std::string("storage_list_operations")}, 
+        object::pair{std::string("fn"), [=](auto runtime) mutable
         {
-            console->log(std:("🔥 REAL TEST: Storage list operations"));
-            auto service = runtime->getService(std:("elizaos-services"));
+            console->log(std::string("🔥 REAL TEST: Storage list operations"));
+            auto service = runtime->getService(std::string("elizaos-services"));
             auto storage = (as<any>(service))["getStorage"]();
-            auto testPrefix = std:("integration-test/list-test-") + Date->now() + string_empty;
-            auto testFiles = array<string>{ string_empty + testPrefix + std:("/file1.txt"), string_empty + testPrefix + std:("/file2.txt"), string_empty + testPrefix + std:("/subdir/file3.txt") };
+            auto testPrefix = std::string("integration-test/list-test-") + Date->now() + string_empty;
+            auto testFiles = array<string>{ string_empty + testPrefix + std::string("/file1.txt"), string_empty + testPrefix + std::string("/file2.txt"), string_empty + testPrefix + std::string("/subdir/file3.txt") };
             try
             {
                 for (auto& filePath : testFiles)
                 {
-                    auto data = Buffer::from(std:("Content for ") + filePath + string_empty);
-                    std::async([=]() { storage["uploadFile"](filePath, data, std:("text/plain")); });
+                    auto data = Buffer::from(std::string("Content for ") + filePath + string_empty);
+                    std::async([=]() { storage["uploadFile"](filePath, data, std::string("text/plain")); });
                 }
-                console->log(std:("✅ Uploaded ") + testFiles->get_length() + std:(" test files"));
+                console->log(std::string("✅ Uploaded ") + testFiles->get_length() + std::string(" test files"));
                 auto listedFiles = std::async([=]() { storage["listFiles"](testPrefix); });
                 if (listedFiles["length"] < testFiles->get_length()) {
-                    throw any(std::make_shared<Error>(std:("Expected at least ") + testFiles->get_length() + std:(" files, got ") + listedFiles["length"] + string_empty));
+                    throw any(std::make_shared<Error>(std::string("Expected at least ") + testFiles->get_length() + std::string(" files, got ") + listedFiles["length"] + string_empty));
                 }
                 for (auto& testFile : testFiles)
                 {
                     if (!listedFiles["includes"](testFile)) {
-                        throw any(std::make_shared<Error>(std:("File ") + testFile + std:(" not found in list results")));
+                        throw any(std::make_shared<Error>(std::string("File ") + testFile + std::string(" not found in list results")));
                     }
                 }
-                console->log(std:("✅ Prefix-based file listing passed"));
-                auto subdirFiles = std::async([=]() { storage["listFiles"](string_empty + testPrefix + std:("/subdir/")); });
-                auto expectedSubdirFile = string_empty + testPrefix + std:("/subdir/file3.txt");
+                console->log(std::string("✅ Prefix-based file listing passed"));
+                auto subdirFiles = std::async([=]() { storage["listFiles"](string_empty + testPrefix + std::string("/subdir/")); });
+                auto expectedSubdirFile = string_empty + testPrefix + std::string("/subdir/file3.txt");
                 if (!subdirFiles["includes"](expectedSubdirFile)) {
-                    throw any(std::make_shared<Error>(std:("Subdirectory listing failed")));
+                    throw any(std::make_shared<Error>(std::string("Subdirectory listing failed")));
                 }
-                console->log(std:("✅ Subdirectory listing passed"));
+                console->log(std::string("✅ Subdirectory listing passed"));
                 auto limitedFiles = std::async([=]() { storage["listFiles"](testPrefix, 2); });
                 if (limitedFiles["length"] > 2) {
-                    throw any(std::make_shared<Error>(std:("Max keys limit not respected: got ") + limitedFiles["length"] + std:(" files")));
+                    throw any(std::make_shared<Error>(std::string("Max keys limit not respected: got ") + limitedFiles["length"] + std::string(" files")));
                 }
-                console->log(std:("✅ Max keys limit handling passed"));
-                console->log(std:("✅ REAL STORAGE LIST OPERATIONS SUCCESS"));
+                console->log(std::string("✅ Max keys limit handling passed"));
+                console->log(std::string("✅ REAL STORAGE LIST OPERATIONS SUCCESS"));
                 for (auto& filePath : testFiles)
                 {
                     std::async([=]() { storage["deleteFile"](filePath); });
                 }
-                console->log(std:("✅ Test files cleanup completed"));
+                console->log(std::string("✅ Test files cleanup completed"));
             }
             catch (const any& error)
             {
@@ -200,63 +201,63 @@ with special chars: éñ中文🚀"));
                 }
                 catch (const any& cleanupError)
                 {
-                    console->warn(std:("Failed to cleanup test files on error:"), cleanupError);
+                    console->warn(std::string("Failed to cleanup test files on error:"), cleanupError);
                 }
                 throw any(error);
             }
         }
         }
     }, object{
-        object::pair{std:("name"), std:("storage_error_handling")}, 
-        object::pair{std:("fn"), [=](auto runtime) mutable
+        object::pair{std::string("name"), std::string("storage_error_handling")}, 
+        object::pair{std::string("fn"), [=](auto runtime) mutable
         {
-            console->log(std:("🔥 REAL TEST: Storage error handling"));
-            auto service = runtime->getService(std:("elizaos-services"));
+            console->log(std::string("🔥 REAL TEST: Storage error handling"));
+            auto service = runtime->getService(std::string("elizaos-services"));
             auto storage = (as<any>(service))["getStorage"]();
-            auto nonExistentKey = std:("integration-test/non-existent-") + Date->now() + std:(".txt");
+            auto nonExistentKey = std::string("integration-test/non-existent-") + Date->now() + std::string(".txt");
             try
             {
                 std::async([=]() { storage["downloadFile"](nonExistentKey); });
-                throw any(std::make_shared<Error>(std:("Download of non-existent file should have failed")));
+                throw any(std::make_shared<Error>(std::string("Download of non-existent file should have failed")));
             }
             catch (const any& error)
             {
-                if (AND((is<Error>(error)), (!error->message->includes(std:("failed"))))) {
-                    throw any(std::make_shared<Error>(std:("Download error should contain meaningful message")));
+                if (AND((is<Error>(error)), (!error->message->includes(std::string("failed"))))) {
+                    throw any(std::make_shared<Error>(std::string("Download error should contain meaningful message")));
                 }
-                console->log(std:("✅ Non-existent file download error handling passed"));
+                console->log(std::string("✅ Non-existent file download error handling passed"));
             }
             auto exists = std::async([=]() { storage["fileExists"](nonExistentKey); });
             if (exists) {
-                throw any(std::make_shared<Error>(std:("Non-existent file should not report as existing")));
+                throw any(std::make_shared<Error>(std::string("Non-existent file should not report as existing")));
             }
-            console->log(std:("✅ Non-existent file existence check passed"));
+            console->log(std::string("✅ Non-existent file existence check passed"));
             auto metadata = std::async([=]() { storage["getFileMetadata"](nonExistentKey); });
             if (metadata != nullptr) {
-                throw any(std::make_shared<Error>(std:("Non-existent file should return null metadata")));
+                throw any(std::make_shared<Error>(std::string("Non-existent file should return null metadata")));
             }
-            console->log(std:("✅ Non-existent file metadata handling passed"));
+            console->log(std::string("✅ Non-existent file metadata handling passed"));
             try
             {
                 std::async([=]() { storage["deleteFile"](nonExistentKey); });
-                console->log(std:("✅ Non-existent file deletion handling passed"));
+                console->log(std::string("✅ Non-existent file deletion handling passed"));
             }
             catch (const any& error)
             {
-                console->log(std:("⚠️  Storage throws on non-existent file deletion (acceptable behavior)"));
+                console->log(std::string("⚠️  Storage throws on non-existent file deletion (acceptable behavior)"));
             }
-            console->log(std:("✅ REAL STORAGE ERROR HANDLING SUCCESS"));
+            console->log(std::string("✅ REAL STORAGE ERROR HANDLING SUCCESS"));
         }
         }
     }, object{
-        object::pair{std:("name"), std:("storage_large_file_handling")}, 
-        object::pair{std:("fn"), [=](auto runtime) mutable
+        object::pair{std::string("name"), std::string("storage_large_file_handling")}, 
+        object::pair{std::string("fn"), [=](auto runtime) mutable
         {
-            console->log(std:("🔥 REAL TEST: Storage large file handling"));
-            auto service = runtime->getService(std:("elizaos-services"));
+            console->log(std::string("🔥 REAL TEST: Storage large file handling"));
+            auto service = runtime->getService(std::string("elizaos-services"));
             auto storage = (as<any>(service))["getStorage"]();
             auto largeSizeBytes = 1024 * 1024;
-            auto testKey = std:("integration-test/") + Date->now() + std:("-large-file.bin");
+            auto testKey = std::string("integration-test/") + Date->now() + std::string("-large-file.bin");
             auto largeData = Buffer::alloc(largeSizeBytes);
             for (auto i = 0; i < largeSizeBytes; i++)
             {
@@ -264,26 +265,26 @@ with special chars: éñ中文🚀"));
             }
             try
             {
-                console->log(std:("🔄 Uploading large file: ") + largeSizeBytes + std:(" bytes"));
+                console->log(std::string("🔄 Uploading large file: ") + largeSizeBytes + std::string(" bytes"));
                 auto startTime = Date->now();
-                std::async([=]() { storage["uploadFile"](testKey, largeData, std:("application/octet-stream")); });
+                std::async([=]() { storage["uploadFile"](testKey, largeData, std::string("application/octet-stream")); });
                 auto uploadTime = Date->now() - startTime;
-                console->log(std:("✅ Large file upload completed in ") + uploadTime + std:("ms"));
+                console->log(std::string("✅ Large file upload completed in ") + uploadTime + std::string("ms"));
                 auto metadata = std::async([=]() { storage["getFileMetadata"](testKey); });
                 if (OR((!metadata), (metadata["size"] != largeSizeBytes))) {
-                    throw any(std::make_shared<Error>(std:("Size mismatch: expected ") + largeSizeBytes + std:(", got ") + metadata["size"] + string_empty));
+                    throw any(std::make_shared<Error>(std::string("Size mismatch: expected ") + largeSizeBytes + std::string(", got ") + metadata["size"] + string_empty));
                 }
-                console->log(std:("✅ Large file metadata validation passed"));
-                console->log(std:("🔄 Downloading large file for verification"));
+                console->log(std::string("✅ Large file metadata validation passed"));
+                console->log(std::string("🔄 Downloading large file for verification"));
                 auto downloadStartTime = Date->now();
                 auto downloadedData = std::async([=]() { storage["downloadFile"](testKey); });
                 auto downloadTime = Date->now() - downloadStartTime;
-                console->log(std:("✅ Large file download completed in ") + downloadTime + std:("ms"));
+                console->log(std::string("✅ Large file download completed in ") + downloadTime + std::string("ms"));
                 if (!downloadedData["equals"](largeData)) {
-                    throw any(std::make_shared<Error>(std:("Large file data integrity check failed")));
+                    throw any(std::make_shared<Error>(std::string("Large file data integrity check failed")));
                 }
-                console->log(std:("✅ Large file data integrity verification passed"));
-                console->log(std:("✅ REAL STORAGE LARGE FILE HANDLING SUCCESS"));
+                console->log(std::string("✅ Large file data integrity verification passed"));
+                console->log(std::string("✅ REAL STORAGE LARGE FILE HANDLING SUCCESS"));
                 std::async([=]() { storage["deleteFile"](testKey); });
             }
             catch (const any& error)
@@ -294,7 +295,7 @@ with special chars: éñ中文🚀"));
                 }
                 catch (const any& cleanupError)
                 {
-                    console->warn(std:("Failed to cleanup large test file on error:"), cleanupError);
+                    console->warn(std::string("Failed to cleanup large test file on error:"), cleanupError);
                 }
                 throw any(error);
             }

@@ -51,7 +51,7 @@ std::future<anchor::Program> getProgram(Connection connection, Keypair wallet) {
 
 }
 
-std::future<void> createTreasury(const std:& tokenMintStr) {
+std::future<void> createTreasury(const std::string& tokenMintStr) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     std::cout << "== CREATE DESK TOKEN TREASURY ==\n" << std::endl;
@@ -95,7 +95,7 @@ std::future<void> createTreasury(const std:& tokenMintStr) {
 
 }
 
-std::future<void> registerToken(const std:& tokenMintStr, std::optional<double> priceUsd) {
+std::future<void> registerToken(const std::string& tokenMintStr, std::optional<double> priceUsd) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     std::cout << "== REGISTER TOKEN ON DESK ==\n" << std::endl;
@@ -155,7 +155,7 @@ std::future<void> registerToken(const std:& tokenMintStr, std::optional<double> 
 
 }
 
-std::future<void> setPrice(const std:& tokenMintStr, double priceUsd) {
+std::future<void> setPrice(const std::string& tokenMintStr, double priceUsd) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     std::cout << "== SET TOKEN PRICE ==\n" << std::endl;

@@ -15,7 +15,7 @@ public:
     virtual object extractExports(string file);
     virtual any findActionBounds(any ast);
     virtual string extractActionCode(string filePath, std::shared_ptr<ActionBounds> bounds);
-    virtual void handleParseError(std::shared_ptr<Error> error, string file = undefined);
+    virtual void handleParseError(std::shared_ptr<Error> error, string file = std::nullopt);
 };
 
 #endif

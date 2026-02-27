@@ -1,4 +1,5 @@
 #include "token-deals-section.hpp"
+#include <string>
 #include <map>
 #include <iostream>
 #include <stdexcept>
@@ -31,7 +32,7 @@ void TokenDealsSection(auto marketData, auto consignments) {
     const auto router = useRouter();
     const auto [isExpanded, setIsExpanded] = useState(true);
 
-    const auto formatAmount = [&](amount: std:) {;
+    const auto formatAmount = [&](amount: std::string) {;
         const auto divisor = 10 ** token.decimals;
         const auto num = Number(amount) / divisor;
         if (num >= 1000000) return "" + std::to_string((num / 1000000).toFixed(2)) + "M";

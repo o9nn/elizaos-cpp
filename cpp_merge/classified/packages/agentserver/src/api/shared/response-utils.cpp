@@ -1,22 +1,23 @@
 #include "response-utils.h"
+#include <string>
 
-std::function<void(any, double, string, string, string)> sendError = [=](auto res, auto status, auto code, auto message, auto details = undefined) mutable
+std::function<void(any, double, string, string, string)> sendError = [=](auto res, auto status, auto code, auto message, auto details = std::nullopt) mutable
 {
     res->status(status)->json(object{
-        object::pair{std:("success"), false}, 
-        object::pair{std:("error"), utils::assign(object{
-            object::pair{std:("code"), std:("code")}, 
-            object::pair{std:("message"), std:("message")}
+        object::pair{std::string("success"), false}, 
+        object::pair{std::string("error"), utils::assign(object{
+            object::pair{std::string("code"), std::string("code")}, 
+            object::pair{std::string("message"), std::string("message")}
         }, (AND((details), (object{
-            object::pair{std:("details"), std:("details")}
+            object::pair{std::string("details"), std::string("details")}
         }))))}
     });
 };
 std::function<void(any, any, double)> sendSuccess = [=](auto res, auto data, auto status = 200) mutable
 {
     res->status(status)->json(object{
-        object::pair{std:("success"), true}, 
-        object::pair{std:("data"), std:("data")}
+        object::pair{std::string("success"), true}, 
+        object::pair{std::string("data"), std::string("data")}
     });
 };
 

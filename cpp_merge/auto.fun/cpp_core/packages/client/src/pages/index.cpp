@@ -1,4 +1,5 @@
 #include "index.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -101,12 +102,11 @@ void Page() {
                             const auto lastElementRef = useCallback(;
                             [&](node: HTMLDivElement) {
                                 if (query.isLoading || query.isFetchingNextPage) return;
-                                // Disconnect previous observer if std:
-                                if (observer.current) observer.current.disconnect();
+                                // Disconnect previous observer if std::string if (observer.current) observer.current.disconnect();
                                 // Create new observer
                                 observer.current = new IntersectionObserver[&]((entries) {
                                     if (entries[0].isIntersecting && query.hasNextPage) {
-                                        // Explicitly cast to std: to bypass persistent type error
+                                        // Explicitly cast to std::string to bypass persistent type error
                                         (query.fetchNextPage)();
                                     }
                                     });

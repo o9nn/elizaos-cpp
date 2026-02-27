@@ -19,10 +19,10 @@ namespace elizaos {
 
 // Time response interface
 struct TimeResponse {
-    std: timestamp;
+    std::string timestamp;
     double unix;
-    std: formatted;
-    std: timezone;
+    std::string formatted;
+    std::string timezone;
 };
 
 // Enhanced Panel Component with time display

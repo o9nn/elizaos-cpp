@@ -22,19 +22,19 @@ namespace elizaos {
 void displayAgent(const std::optional<Agent>& data, auto title);
 
 /**
- * Formats a conversation into a std:
+ * Formats a conversation into a std::string
  */
-std: formatConversation(const std::vector<MessageExample>& conversation);
+std::string formatConversation(const std::vector<MessageExample>& conversation);
 
 /**
  * Displays a section with a title and list of items
  */
-void displaySection(const std:& title, const std::vector<std::string>& items);
+void displaySection(const std::string& title, const std::vector<std::string>& items);
 
 /**
  * Logs a header inside a rectangular frame with extra padding.
  * @param {string} title - The header text to display.
  */
-void logHeader(const std:& title);
+void logHeader(const std::string& title);
 
 } // namespace elizaos

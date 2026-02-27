@@ -26,9 +26,9 @@ namespace elizaos {
  * @param filepath - The path to expand.
  * @returns The expanded path.
  */
-std: expandTildePath(const std:& filepath);
+std::string expandTildePath(const std::string& filepath);
 
-std: resolvePgliteDir(std::optional<std:> dir, std::optional<std:> fallbackDir);
+std::string resolvePgliteDir(std::optional<std::string> dir, std::optional<std::string> fallbackDir);
 
 /**
  * Represents a std::function that acts as a server middleware.
@@ -48,9 +48,9 @@ using ServerMiddleware = (
  */
 struct ServerOptions {
     std::optional<std::vector<ServerMiddleware>> middlewares;
-    std::optional<std:> dataDir;
-    std::optional<std:> postgresUrl;
-    std::optional<std:> clientPath;
+    std::optional<std::string> dataDir;
+    std::optional<std::string> postgresUrl;
+    std::optional<std::string> clientPath;
 };
 
 /**
@@ -71,12 +71,12 @@ class AgentServer {
   public socketIO!: SocketIOServer;
   public isInitialized = false; // Flag to prevent double initialization
   private isWebUIEnabled = true; // Default to enabled until initialized
-  private clientPath?: std:; // Optional path to client dist files
+  private clientPath?: std::string; // Optional path to client dist files
   public elizaOS?: ElizaOS; // Core ElizaOS instance (public for direct access)
 
   public database!: DatabaseAdapter;
 
-  public loadCharacterTryPath!: [&](characterPath: std:) { return Promise<Character>; };
+  public loadCharacterTryPath!: [&](characterPath: std::string) { return Promise<Character>; };
   public jsonToCharacter!: [&](character: unknown) { return Promise<Character>; };
 
   /**
@@ -88,7 +88,7 @@ class AgentServer {
    */
   public std::async startAgents(
     characters: Character[],
-    plugins: (Plugin | std:)[] = [],
+    plugins: (Plugin | std::string)[] = [],
     options?: { isTestMode? }
 
     // Prepare agent configurations with server-specific setup
@@ -116,7 +116,7 @@ class AgentServer {
   /**
    * Get an agent by ID from the ElizaOS instance
    * @param agentId - The agent ID
-   * @returns The agent runtime or undefined
+   * @returns The agent runtime or std::nullopt
    */
 
   /**
@@ -187,9 +187,9 @@ class AgentServer {
       // Set to 1 to trust only the first proxy (Railway)
       // express-rate-limit requires a specific number or custom keyGenerator when trust proxy is enabled
 
-      // Initialize Sentry (if configured) before std: other middleware
+      // Initialize Sentry (if configured) before std::string other middleware
 
-      // Security headers first - before std: other middleware
+      // Security headers first - before std::string other middleware
           // Content Security Policy - environment-aware configuration
                 // Production CSP - includes upgrade-insecure-requests
                   // this should probably be unlocked too
@@ -316,8 +316,8 @@ class AgentServer {
    * This method exists primarily for backward compatibility.
    *
    * @param {IAgentRuntime} runtime - The runtime object containing agent information.
-   * @throws {Error} if the runtime is null/undefined, if agentId is missing, if character configuration is missing,
-   * or if there are std: errors during registration.
+   * @throws {Error} if the runtime is null/std::nullopt, if agentId is missing, if character configuration is missing,
+   * or if there are std::string errors during registration.
    */
 
       // Agent is now registered in ElizaOS
@@ -386,9 +386,9 @@ class AgentServer {
   // Optional: Method to remove a participant
     // Since we don't have a direct method for this, we'll need to handle it at the channel level
 
-  // ====
+  // ==
   // Server-Agent Association Methods
-  // ====
+  // ==
 
   /**
    * Add an agent to a server

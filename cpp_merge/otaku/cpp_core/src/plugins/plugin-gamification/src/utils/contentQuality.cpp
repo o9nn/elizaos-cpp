@@ -7,13 +7,13 @@
 
 namespace elizaos {
 
-double calculateEntropy(const std:& text) {
+double calculateEntropy(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto len = text.size();
     if (len == 0) return 0;
 
-    const std::unordered_map<std:, double> freq = {};
+    const std::unordered_map<std::string, double> freq = {};
     for (const auto& char : text.toLowerCase()
         freq[char] = (freq[char] || 0) + 1;
     }
@@ -28,37 +28,37 @@ double calculateEntropy(const std:& text) {
 
 }
 
-void checkRepeatedChars(const std:& text) {
+void checkRepeatedChars(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     valid; ratio
 }
 
-void checkRepeatedWords(const std:& text) {
+void checkRepeatedWords(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     valid; uniqueRatio
 }
 
-void checkKeyboardMash(const std:& text) {
+void checkKeyboardMash(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     valid; matchRatio
 }
 
-void checkEmojiSpam(const std:& text) {
+void checkEmojiSpam(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     valid; ratio
 }
 
-void checkUrlSpam(const std:& text) {
+void checkUrlSpam(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     valid; ratio
 }
 
-void checkSpecialCharSpam(const std:& text) {
+void checkSpecialCharSpam(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     valid; ratio
 }
 
-bool checkSpamPhrases(const std:& text) {
+bool checkSpamPhrases(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto trimmed = text;
@@ -71,7 +71,7 @@ bool checkSpamPhrases(const std:& text) {
 
 }
 
-ContentQualityResult checkContentQuality(const std:& text) {
+ContentQualityResult checkContentQuality(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!text || typeof text != 'string') {
@@ -170,7 +170,7 @@ ContentQualityResult checkContentQuality(const std:& text) {
 
 }
 
-bool quickSpamCheck(const std:& text) {
+bool quickSpamCheck(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!text || typeof text != 'string') return false;

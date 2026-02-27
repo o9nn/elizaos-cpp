@@ -21,17 +21,17 @@ namespace elizaos {
 /**
  * Prompts the user with a text input and std::optional navigation options.
  * @param {string} label - The label to display to the user.
- * @param {string} initial - The initial value for the input (default is an empty std:).
- * @param {(val: std:) => true | string} validate - Optional validation std::function for the input.
- * @returns {Promise<string>} The user's input after processing std: navigation commands.
+ * @param {string} initial - The initial value for the input (default is an empty std::string).
+ * @param {(val: std::string) => true | string} validate - Optional validation std::function for the input.
+ * @returns {Promise<string>} The user's input after processing std::string navigation commands.
  */
 
 /**
  * Prompts the user to enter multiple items for a specified field name.
  *
  * @param {string} fieldName - The name of the field being prompted for.
- * @param {std:[]} initial - The initial values to display and allow the user to modify.
- * @returns {Promise<std:[]>} The array of strings containing the user-entered values.
+ * @param {std::string[]} initial - The initial values to display and allow the user to modify.
+ * @returns {Promise<std::string[]>} The array of strings containing the user-entered values.
  */
 
 /**
@@ -40,6 +40,6 @@ namespace elizaos {
  * @returns {Promise<boolean>} A Promise that resolves to a boolean value representing the user's confirmation choice.
  */
 
-std::future<bool> confirmAction(const std:& message);
+std::future<bool> confirmAction(const std::string& message);
 
 } // namespace elizaos

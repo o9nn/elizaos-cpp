@@ -1,42 +1,43 @@
 #include "index.test.h"
+#include <string>
 
 void Main(void)
 {
-    describe(std:("Self Modification Plugin"), [=]() mutable
+    describe(std::string("Self Modification Plugin"), [=]() mutable
     {
-        it(std:("should a valid plugin object"), [=]() mutable
+        it(std::string("should a valid plugin object"), [=]() mutable
         {
             expect(selfModificationPlugin)->toBeDefined();
-            expect(selfModificationPlugin->name)->toBe(std:("@elizaos/plugin-personality"));
+            expect(selfModificationPlugin->name)->toBe(std::string("@elizaos/plugin-personality"));
             expect(selfModificationPlugin->description)->toBeDefined();
         }
         );
-        it(std:("should have actions array"), [=]() mutable
+        it(std::string("should have actions array"), [=]() mutable
         {
             expect(selfModificationPlugin->actions)->toBeDefined();
             expect(Array->isArray(selfModificationPlugin->actions))->toBe(true);
             expect(selfModificationPlugin->actions->length)->toBeGreaterThan(0);
         }
         );
-        it(std:("should have evaluators array"), [=]() mutable
+        it(std::string("should have evaluators array"), [=]() mutable
         {
             expect(selfModificationPlugin->evaluators)->toBeDefined();
             expect(Array->isArray(selfModificationPlugin->evaluators))->toBe(true);
             expect(selfModificationPlugin->evaluators->length)->toBeGreaterThan(0);
         }
         );
-        it(std:("should have services array"), [=]() mutable
+        it(std::string("should have services array"), [=]() mutable
         {
             expect(selfModificationPlugin->services)->toBeDefined();
             expect(Array->isArray(selfModificationPlugin->services))->toBe(true);
             expect(selfModificationPlugin->services->length)->toBeGreaterThan(0);
         }
         );
-        it(std:("should contain MODIFY_CHARACTER action"), [=]() mutable
+        it(std::string("should contain MODIFY_CHARACTER action"), [=]() mutable
         {
             auto modifyAction = selfModificationPlugin->actions->find([=](auto action) mutable
             {
-                return action["name"] == std:("MODIFY_CHARACTER");
+                return action["name"] == std::string("MODIFY_CHARACTER");
             }
             );
             expect(modifyAction)->toBeDefined();
@@ -45,11 +46,11 @@ void Main(void)
             expect(modifyAction->handler)->toBeDefined();
         }
         );
-        it(std:("should contain CHARACTER_EVOLUTION evaluator"), [=]() mutable
+        it(std::string("should contain CHARACTER_EVOLUTION evaluator"), [=]() mutable
         {
             auto evaluator = selfModificationPlugin->evaluators->find([=](auto evaluatorItem) mutable
             {
-                return evaluatorItem["name"] == std:("CHARACTER_EVOLUTION");
+                return evaluatorItem["name"] == std::string("CHARACTER_EVOLUTION");
             }
             );
             expect(evaluator)->toBeDefined();
@@ -58,7 +59,7 @@ void Main(void)
             expect(evaluator->handler)->toBeDefined();
         }
         );
-        it(std:("should contain CharacterFileManager service"), [=]() mutable
+        it(std::string("should contain CharacterFileManager service"), [=]() mutable
         {
             auto service = selfModificationPlugin->services->find([=](auto svc) mutable
             {
@@ -68,10 +69,10 @@ void Main(void)
             expect(service)->toBeDefined();
         }
         );
-        it(std:("should have proper plugin metadata"), [=]() mutable
+        it(std::string("should have proper plugin metadata"), [=]() mutable
         {
-            expect(selfModificationPlugin->name)->toBe(std:("@elizaos/plugin-personality"));
-            expect(selfModificationPlugin->description)->toContain(std:("self-modification"));
+            expect(selfModificationPlugin->name)->toBe(std::string("@elizaos/plugin-personality"));
+            expect(selfModificationPlugin->description)->toContain(std::string("self-modification"));
         }
         );
     }

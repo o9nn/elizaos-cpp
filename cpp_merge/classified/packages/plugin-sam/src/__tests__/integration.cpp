@@ -1,4 +1,5 @@
 #include "integration.test.h"
+#include <string>
 
 void Main(void)
 {
@@ -11,7 +12,7 @@ void Main(void)
     {
     }
     );
-    describe(std:("Integration: SAY_ALOUD Action with SamTTSService"), [=]() mutable
+    describe(std::string("Integration: SAY_ALOUD Action with SamTTSService"), [=]() mutable
     {
         shared<std::shared_ptr<MockRuntime>> mockRuntime;
         shared<object> mockHardwareBridge;
@@ -22,30 +23,30 @@ void Main(void)
                 return Promise->resolve();
             };
             mockHardwareBridge = object{
-                object::pair{std:("sendAudioData"), sendAudioDataSpy}, 
-                object::pair{std:("isConnected"), [=]() mutable
+                object::pair{std::string("sendAudioData"), sendAudioDataSpy}, 
+                object::pair{std::string("isConnected"), [=]() mutable
                 {
                     return true;
                 }
                 }, 
-                object::pair{std:("capabilityDescription"), std:("Mock hardware bridge for audio output")}
+                object::pair{std::string("capabilityDescription"), std::string("Mock hardware bridge for audio output")}
             };
-            spyOn(mockHardwareBridge, std:("sendAudioData"));
+            spyOn(mockHardwareBridge, std::string("sendAudioData"));
             shared mockSamService = object{
-                object::pair{std:("generateAudio"), [=](auto text, auto _options = undefined) mutable
+                object::pair{std::string("generateAudio"), [=](auto text, auto _options = std::nullopt) mutable
                 {
                     auto audioLength = text->get_length() * 100;
                     return ((std::make_shared<Uint8Array>(audioLength)))->fill(42);
                 }
                 }, 
-                object::pair{std:("speakText"), [=](auto text, auto options = undefined) mutable
+                object::pair{std::string("speakText"), [=](auto text, auto options = std::nullopt) mutable
                 {
                     auto audioBuffer = std::async([=]() { mockSamService["generateAudio"](text, options); });
                     std::async([=]() { mockHardwareBridge["sendAudioData"](audioBuffer); });
                     return audioBuffer;
                 }
                 }, 
-                object::pair{std:("createWAVBuffer"), [=](auto audioData, auto _sampleRate = 22050) mutable
+                object::pair{std::string("createWAVBuffer"), [=](auto audioData, auto _sampleRate = 22050) mutable
                 {
                     auto wavHeader = std::make_shared<Uint8Array>(44);
                     auto wavData = std::make_shared<Uint8Array>(44 + audioData->length);
@@ -54,55 +55,55 @@ void Main(void)
                     return wavData;
                 }
                 }, 
-                object::pair{std:("stop"), [=]() mutable
+                object::pair{std::string("stop"), [=]() mutable
                 {
                     return Promise->resolve();
                 }
                 }, 
-                object::pair{std:("capabilityDescription"), std:("Mock SAM TTS service with audio generation")}
+                object::pair{std::string("capabilityDescription"), std::string("Mock SAM TTS service with audio generation")}
             };
-            spyOn(mockSamService, std:("generateAudio"));
-            spyOn(mockSamService, std:("speakText"));
-            spyOn(mockSamService, std:("createWAVBuffer"));
+            spyOn(mockSamService, std::string("generateAudio"));
+            spyOn(mockSamService, std::string("speakText"));
+            spyOn(mockSamService, std::string("createWAVBuffer"));
             auto getServiceImpl = [=](auto serviceType) mutable
             {
-                if (serviceType == std:("SAM_TTS")) {
+                if (serviceType == std::string("SAM_TTS")) {
                     return mockSamService;
                 }
-                if (serviceType == std:("hardwareBridge")) {
+                if (serviceType == std::string("hardwareBridge")) {
                     return mockHardwareBridge;
                 }
                 return nullptr;
             };
             mockRuntime = createMockRuntime(object{
-                object::pair{std:("getService"), getServiceImpl}
+                object::pair{std::string("getService"), getServiceImpl}
             });
             (as<any>(mockRuntime))["_mockSamService"] = mockSamService;
         }
         );
-        it(std:("should handle SAY_ALOUD action with SamTTSService available"), [=]() mutable
+        it(std::string("should handle SAY_ALOUD action with SamTTSService available"), [=]() mutable
         {
             auto sayAloudAction = samPlugin->actions->find([=](auto action) mutable
             {
-                return action["name"] == std:("SAY_ALOUD");
+                return action["name"] == std::string("SAY_ALOUD");
             }
             );
             expect(sayAloudAction)->toBeDefined();
             auto mockMessage = object{
-                object::pair{std:("id"), as<std::shared_ptr<UUID>>(std:("12345678-1234-1234-1234-123456789012"))}, 
-                object::pair{std:("roomId"), as<std::shared_ptr<UUID>>(std:("12345678-1234-1234-1234-123456789012"))}, 
-                object::pair{std:("entityId"), as<std::shared_ptr<UUID>>(std:("12345678-1234-1234-1234-123456789012"))}, 
-                object::pair{std:("agentId"), as<std::shared_ptr<UUID>>(std:("12345678-1234-1234-1234-123456789012"))}, 
-                object::pair{std:("content"), object{
-                    object::pair{std:("text"), std:("say aloud: Hello from the retro future!")}, 
-                    object::pair{std:("source"), std:("test")}
+                object::pair{std::string("id"), as<std::shared_ptr<UUID>>(std::string("12345678-1234-1234-1234-123456789012"))}, 
+                object::pair{std::string("roomId"), as<std::shared_ptr<UUID>>(std::string("12345678-1234-1234-1234-123456789012"))}, 
+                object::pair{std::string("entityId"), as<std::shared_ptr<UUID>>(std::string("12345678-1234-1234-1234-123456789012"))}, 
+                object::pair{std::string("agentId"), as<std::shared_ptr<UUID>>(std::string("12345678-1234-1234-1234-123456789012"))}, 
+                object::pair{std::string("content"), object{
+                    object::pair{std::string("text"), std::string("say aloud: Hello from the retro future!")}, 
+                    object::pair{std::string("source"), std::string("test")}
                 }}, 
-                object::pair{std:("createdAt"), Date->now()}
+                object::pair{std::string("createdAt"), Date->now()}
             };
             auto mockState = object{
-                object::pair{std:("values"), object{}}, 
-                object::pair{std:("data"), object{}}, 
-                object::pair{std:("text"), string_empty}
+                object::pair{std::string("values"), object{}}, 
+                object::pair{std::string("data"), object{}}, 
+                object::pair{std::string("text"), string_empty}
             };
             shared callbackCalls = array<array<any>>();
             auto callbackFn = [=](Args... args_) mutable
@@ -114,8 +115,8 @@ void Main(void)
             expect(callbackCalls->get_length())->toBeGreaterThan(0);
             if (callbackCalls->get_length() > 0) {
                 auto response = const_(const_(callbackCalls)[0])[0];
-                expect(response->text)->toContain(std:("SAM voice"));
-                expect(response->action)->toBe(std:("SAY_ALOUD"));
+                expect(response->text)->toContain(std::string("SAM voice"));
+                expect(response->action)->toBe(std::string("SAY_ALOUD"));
             }
             auto samService = (as<any>(mockRuntime))["_mockSamService"];
             expect(samService)->toBeDefined();
@@ -123,45 +124,45 @@ void Main(void)
             expect(mockHardwareBridge["sendAudioData"])->toHaveBeenCalled();
         }
         );
-        it(std:("should extract text correctly from various message formats"), [=]() mutable
+        it(std::string("should extract text correctly from various message formats"), [=]() mutable
         {
             auto sayAloudAction = samPlugin->actions->find([=](auto action) mutable
             {
-                return action["name"] == std:("SAY_ALOUD");
+                return action["name"] == std::string("SAY_ALOUD");
             }
             );
             expect(sayAloudAction)->toBeDefined();
             auto testCases = array<object>{ object{
-                object::pair{std:("input"), std:("say aloud: Welcome to 1985")}, 
-                object::pair{std:("expectedText"), std:("aloud: welcome to 1985")}
+                object::pair{std::string("input"), std::string("say aloud: Welcome to 1985")}, 
+                object::pair{std::string("expectedText"), std::string("aloud: welcome to 1985")}
             }, object{
-                object::pair{std:("input"), std:("please speak this text: System online")}, 
-                object::pair{std:("expectedText"), std:("text: system online")}
+                object::pair{std::string("input"), std::string("please speak this text: System online")}, 
+                object::pair{std::string("expectedText"), std::string("text: system online")}
             }, object{
-                object::pair{std:("input"), std:("speak up: Error detected")}, 
-                object::pair{std:("expectedText"), std:("up: error detected")}
+                object::pair{std::string("input"), std::string("speak up: Error detected")}, 
+                object::pair{std::string("expectedText"), std::string("up: error detected")}
             }, object{
-                object::pair{std:("input"), std:("can you say aloud the following: Hello world")}, 
-                object::pair{std:("expectedText"), std:("the following: hello world")}
+                object::pair{std::string("input"), std::string("can you say aloud the following: Hello world")}, 
+                object::pair{std::string("expectedText"), std::string("the following: hello world")}
             } };
             auto samService = (as<any>(mockRuntime))["_mockSamService"];
             for (auto& testCase : testCases)
             {
                 auto mockMessage = object{
-                    object::pair{std:("id"), as<std::shared_ptr<UUID>>(std:("12345678-1234-1234-1234-123456789012"))}, 
-                    object::pair{std:("roomId"), as<std::shared_ptr<UUID>>(std:("12345678-1234-1234-1234-123456789012"))}, 
-                    object::pair{std:("entityId"), as<std::shared_ptr<UUID>>(std:("12345678-1234-1234-1234-123456789012"))}, 
-                    object::pair{std:("agentId"), as<std::shared_ptr<UUID>>(std:("12345678-1234-1234-1234-123456789012"))}, 
-                    object::pair{std:("content"), object{
-                        object::pair{std:("text"), testCase["input"]}, 
-                        object::pair{std:("source"), std:("test")}
+                    object::pair{std::string("id"), as<std::shared_ptr<UUID>>(std::string("12345678-1234-1234-1234-123456789012"))}, 
+                    object::pair{std::string("roomId"), as<std::shared_ptr<UUID>>(std::string("12345678-1234-1234-1234-123456789012"))}, 
+                    object::pair{std::string("entityId"), as<std::shared_ptr<UUID>>(std::string("12345678-1234-1234-1234-123456789012"))}, 
+                    object::pair{std::string("agentId"), as<std::shared_ptr<UUID>>(std::string("12345678-1234-1234-1234-123456789012"))}, 
+                    object::pair{std::string("content"), object{
+                        object::pair{std::string("text"), testCase["input"]}, 
+                        object::pair{std::string("source"), std::string("test")}
                     }}, 
-                    object::pair{std:("createdAt"), Date->now()}
+                    object::pair{std::string("createdAt"), Date->now()}
                 };
                 auto mockState = object{
-                    object::pair{std:("values"), object{}}, 
-                    object::pair{std:("data"), object{}}, 
-                    object::pair{std:("text"), string_empty}
+                    object::pair{std::string("values"), object{}}, 
+                    object::pair{std::string("data"), object{}}, 
+                    object::pair{std::string("text"), string_empty}
                 };
                 auto callbackFn = [=]() mutable
                 {
@@ -172,29 +173,29 @@ void Main(void)
             }
         }
         );
-        it(std:("should handle voice parameters from message content"), [=]() mutable
+        it(std::string("should handle voice parameters from message content"), [=]() mutable
         {
             auto sayAloudAction = samPlugin->actions->find([=](auto action) mutable
             {
-                return action["name"] == std:("SAY_ALOUD");
+                return action["name"] == std::string("SAY_ALOUD");
             }
             );
             expect(sayAloudAction)->toBeDefined();
             auto mockMessage = object{
-                object::pair{std:("id"), as<std::shared_ptr<UUID>>(std:("12345678-1234-1234-1234-123456789012"))}, 
-                object::pair{std:("roomId"), as<std::shared_ptr<UUID>>(std:("12345678-1234-1234-1234-123456789012"))}, 
-                object::pair{std:("entityId"), as<std::shared_ptr<UUID>>(std:("12345678-1234-1234-1234-123456789012"))}, 
-                object::pair{std:("agentId"), as<std::shared_ptr<UUID>>(std:("12345678-1234-1234-1234-123456789012"))}, 
-                object::pair{std:("content"), object{
-                    object::pair{std:("text"), std:("say aloud with robotic voice: Fast robot voice")}, 
-                    object::pair{std:("source"), std:("test")}
+                object::pair{std::string("id"), as<std::shared_ptr<UUID>>(std::string("12345678-1234-1234-1234-123456789012"))}, 
+                object::pair{std::string("roomId"), as<std::shared_ptr<UUID>>(std::string("12345678-1234-1234-1234-123456789012"))}, 
+                object::pair{std::string("entityId"), as<std::shared_ptr<UUID>>(std::string("12345678-1234-1234-1234-123456789012"))}, 
+                object::pair{std::string("agentId"), as<std::shared_ptr<UUID>>(std::string("12345678-1234-1234-1234-123456789012"))}, 
+                object::pair{std::string("content"), object{
+                    object::pair{std::string("text"), std::string("say aloud with robotic voice: Fast robot voice")}, 
+                    object::pair{std::string("source"), std::string("test")}
                 }}, 
-                object::pair{std:("createdAt"), Date->now()}
+                object::pair{std::string("createdAt"), Date->now()}
             };
             auto mockState = object{
-                object::pair{std:("values"), object{}}, 
-                object::pair{std:("data"), object{}}, 
-                object::pair{std:("text"), string_empty}
+                object::pair{std::string("values"), object{}}, 
+                object::pair{std::string("data"), object{}}, 
+                object::pair{std::string("text"), string_empty}
             };
             auto callbackFn = [=]() mutable
             {
@@ -204,17 +205,17 @@ void Main(void)
             expect(samService["speakText"])->toHaveBeenCalled();
             auto callArgs = const_(samService["speakText"]["mock"]["calls"])[0];
             expect(const_(callArgs)[1])->toMatchObject(object{
-                object::pair{std:("throat"), 200}, 
-                object::pair{std:("mouth"), 50}
+                object::pair{std::string("throat"), 200}, 
+                object::pair{std::string("mouth"), 50}
             });
         }
         );
-        it(std:("should handle service unavailability gracefully"), [=]() mutable
+        it(std::string("should handle service unavailability gracefully"), [=]() mutable
         {
             auto runtimeWithoutSam = createMockRuntime(object{
-                object::pair{std:("getService"), [=](auto serviceType) mutable
+                object::pair{std::string("getService"), [=](auto serviceType) mutable
                 {
-                    if (serviceType == std:("SAM_TTS")) {
+                    if (serviceType == std::string("SAM_TTS")) {
                         return nullptr;
                     }
                     return nullptr;
@@ -223,25 +224,25 @@ void Main(void)
             });
             auto sayAloudAction = samPlugin->actions->find([=](auto action) mutable
             {
-                return action["name"] == std:("SAY_ALOUD");
+                return action["name"] == std::string("SAY_ALOUD");
             }
             );
             expect(sayAloudAction)->toBeDefined();
             auto mockMessage = object{
-                object::pair{std:("id"), as<std::shared_ptr<UUID>>(std:("12345678-1234-1234-1234-123456789012"))}, 
-                object::pair{std:("roomId"), as<std::shared_ptr<UUID>>(std:("12345678-1234-1234-1234-123456789012"))}, 
-                object::pair{std:("entityId"), as<std::shared_ptr<UUID>>(std:("12345678-1234-1234-1234-123456789012"))}, 
-                object::pair{std:("agentId"), as<std::shared_ptr<UUID>>(std:("12345678-1234-1234-1234-123456789012"))}, 
-                object::pair{std:("content"), object{
-                    object::pair{std:("text"), std:("say aloud: This should fail gracefully")}, 
-                    object::pair{std:("source"), std:("test")}
+                object::pair{std::string("id"), as<std::shared_ptr<UUID>>(std::string("12345678-1234-1234-1234-123456789012"))}, 
+                object::pair{std::string("roomId"), as<std::shared_ptr<UUID>>(std::string("12345678-1234-1234-1234-123456789012"))}, 
+                object::pair{std::string("entityId"), as<std::shared_ptr<UUID>>(std::string("12345678-1234-1234-1234-123456789012"))}, 
+                object::pair{std::string("agentId"), as<std::shared_ptr<UUID>>(std::string("12345678-1234-1234-1234-123456789012"))}, 
+                object::pair{std::string("content"), object{
+                    object::pair{std::string("text"), std::string("say aloud: This should fail gracefully")}, 
+                    object::pair{std::string("source"), std::string("test")}
                 }}, 
-                object::pair{std:("createdAt"), Date->now()}
+                object::pair{std::string("createdAt"), Date->now()}
             };
             auto mockState = object{
-                object::pair{std:("values"), object{}}, 
-                object::pair{std:("data"), object{}}, 
-                object::pair{std:("text"), string_empty}
+                object::pair{std::string("values"), object{}}, 
+                object::pair{std::string("data"), object{}}, 
+                object::pair{std::string("text"), string_empty}
             };
             shared callbackCalls = array<array<any>>();
             auto callbackFn = [=](Args... args_) mutable
@@ -253,23 +254,23 @@ void Main(void)
             expect(callbackCalls->get_length())->toBeGreaterThan(0);
             if (callbackCalls->get_length() > 0) {
                 auto response = const_(const_(callbackCalls)[0])[0];
-                expect(response->text)->toContain(std:("not available"));
+                expect(response->text)->toContain(std::string("not available"));
             }
         }
         );
     }
     );
-    describe(std:("Integration: Plugin initialization and service registration"), [=]() mutable
+    describe(std::string("Integration: Plugin initialization and service registration"), [=]() mutable
     {
-        it(std:("should initialize the plugin and register the service"), [=]() mutable
+        it(std::string("should initialize the plugin and register the service"), [=]() mutable
         {
             auto mockRuntime = createMockRuntime();
             shared registerServiceCalls = array<object>();
             mockRuntime->registerService = [=](auto type, auto service) mutable
             {
                 registerServiceCalls->push(object{
-                    object::pair{std:("type"), std:("type")}, 
-                    object::pair{std:("service"), std:("service")}
+                    object::pair{std::string("type"), std::string("type")}, 
+                    object::pair{std::string("service"), std::string("service")}
                 });
             };
             if (samPlugin->init) {
@@ -283,7 +284,7 @@ void Main(void)
             }
         }
         );
-        it(std:("should register all plugin components correctly"), [=]() mutable
+        it(std::string("should register all plugin components correctly"), [=]() mutable
         {
             auto mockRuntime = createMockRuntime();
             shared registeredActions = array<any>();
@@ -313,9 +314,9 @@ void Main(void)
                 }
             }
             expect(registeredActions)->toHaveLength(1);
-            expect(const_(registeredActions)[0]->name)->toBe(std:("SAY_ALOUD"));
+            expect(const_(registeredActions)[0]->name)->toBe(std::string("SAY_ALOUD"));
             expect(registeredServices)->toHaveLength(1);
-            expect(const_(registeredServices)[0]->constructor->name)->toBe(std:("SamTTSService"));
+            expect(const_(registeredServices)[0]->constructor->name)->toBe(std::string("SamTTSService"));
         }
         );
     }

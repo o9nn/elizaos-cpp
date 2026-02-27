@@ -118,7 +118,7 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                 name: "settings.voice.model",
                                                 description: "Voice model for audio synthesis",
                                                 fieldType: "select",
-                                                getValue: (char) => (char.settings<std:, any>).voice.model || "",
+                                                getValue: (char) => (char.settings<std::string, any>).voice.model || "",
                                                 options: allVoiceModels.std::map((model) => ({
                                                     value: model.value,
                                                     label: model.label,
@@ -209,7 +209,7 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                                     }
                                                                                                     };
 
-                                                                                                    const auto handleVoiceModelChange = [&](value: std:, name: std:) {;
+                                                                                                    const auto handleVoiceModelChange = [&](value: std::string, name: std::string) {;
                                                                                                         if (name.substr(0, 'settings.')) {
                                                                                                             const auto path = name.substring(9); // Remove "settings." prefix;
 
@@ -225,7 +225,7 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                                                         ? [...characterValue.plugins];
                                                                                                                         : [];
                                                                                                                         const auto previousVoiceModel = getVoiceModelByValue(;
-                                                                                                                        (characterValue.settings<std:, any>).voice.model;
+                                                                                                                        (characterValue.settings<std::string, any>).voice.model;
                                                                                                                         );
 
                                                                                                                         // Get the required plugin for the new voice model
@@ -262,7 +262,7 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                                                         }
                                                                                                                         };
 
-                                                                                                                        const auto updateArray = [&](path: std:, newData: std:[]) {;
+                                                                                                                        const auto updateArray = [&](path: std::string, newData: std::string[]) {;
                                                                                                                             // If the path is a simple field name
                                                                                                                             if (!path.count('.') > 0) {
                                                                                                                                 setCharacterValue.updateField(path, newData);
@@ -327,7 +327,7 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                                                                                             const auto secretsObj = updatedCharacter.settings.secrets;
                                                                                                                                                             const auto currentSecrets =;
                                                                                                                                                             secretsObj && typeof secretsObj == "object" && !Array.isArray(secretsObj);
-                                                                                                                                                            ? (secretsObj<std:, any>);
+                                                                                                                                                            ? (secretsObj<std::string, any>);
                                                                                                                                                             : {};
 
                                                                                                                                                             missingSecrets = requiredSecrets;
@@ -398,7 +398,7 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                                                                                                                 <Label htmlFor={field.name} className="flex items-center gap-1">;
                                                                                                                                                                             {field.title}
                                                                                                                                                                             {field.name in FIELD_REQUIREMENTS &&;
-                                                                                                                                                                            (FIELD_REQUIREMENTS<std:, FIELD_REQUIREMENT_TYPE>)[field.name] ==;
+                                                                                                                                                                            (FIELD_REQUIREMENTS<std::string, FIELD_REQUIREMENT_TYPE>)[field.name] ==;
                                                                                                                                                                         FIELD_REQUIREMENT_TYPE.REQUIRED && <p className="text-red-500">*</p>}
                                                                                                                                                                         </Label>;
                                                                                                                                                                         </TooltipTrigger>;
@@ -426,7 +426,7 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                                                                             id={field.name}
                                                                                                                                         name={field.name}
                                                                                                                                         type="checkbox";
-                                                                                                                                    checked={(characterValue<std:, any>)[field.name] == "true"}
+                                                                                                                                    checked={(characterValue<std::string, any>)[field.name] == "true"}
                                                                                                                                 onChange={handleChange}
                                                                                                                                 />;
                                                                                                                                 ) : field.fieldType == "select" ? (
@@ -473,7 +473,7 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                     <Label htmlFor={field.path} className="flex items-center gap-1">;
                                                                                 {field.title}
                                                                                 {field.path in FIELD_REQUIREMENTS &&;
-                                                                                (FIELD_REQUIREMENTS<std:, FIELD_REQUIREMENT_TYPE>)[field.path] ==;
+                                                                                (FIELD_REQUIREMENTS<std::string, FIELD_REQUIREMENT_TYPE>)[field.path] ==;
                                                                             FIELD_REQUIREMENT_TYPE.REQUIRED && <p className="text-red-500">*</p>}
                                                                             </Label>;
                                                                             </TooltipTrigger>;
@@ -513,11 +513,11 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
 
                                                                             // Handle nested fields like style.all
                                                                             const auto parts = field.split(".");
-                                                                            std: current = json;
+                                                                            std::string current = json;
 
                                                                             for (const auto& part : parts)
                                                                                 current = current.[part];
-                                                                                if (current == undefined) return true; // field missing
+                                                                                if (current == std::nullopt) return true; // field missing
                                                                             }
 
                                                                             return false;
@@ -587,7 +587,7 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                                                                                                                 * Handle template selection
                                                                                                                 */
                                                                                                                 const auto handleTemplateChange = useCallback(;
-                                                                                                                [&](templateId: std:) {
+                                                                                                                [&](templateId: std::string) {
                                                                                                                     setSelectedTemplate(templateId);
 
                                                                                                                     // If "None" is selected, reset to blank form if reset std::function is available
@@ -868,7 +868,7 @@ void CharacterForm(auto setCharacterValue, auto title, auto description, auto on
                 const auto secretsObj = characterValue.settings.secrets;
                 const auto currentSecrets =;
                 secretsObj && typeof secretsObj == "object" && !Array.isArray(secretsObj);
-                ? (secretsObj<std:, any>);
+                ? (secretsObj<std::string, any>);
                 : {};
 
                 missingSecretNames = requiredSecrets;

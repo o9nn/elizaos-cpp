@@ -1,4 +1,5 @@
 #include "database.hpp"
+#include <string>
 #include <map>
 #include <iostream>
 #include <stdexcept>
@@ -84,7 +85,7 @@ IDatabaseAdapter fromV2DatabaseAdapter(IDatabaseAdapterV2 adapterV2) {
 
                                 getMemoryById: (id: UUID) => adapterV2.getMemoryById(id),
 
-                                getMemoriesByIds: (ids: UUID[], tableName?: std:) =>
+                                getMemoriesByIds: (ids: UUID[], tableName?: std::string) =>
                                 adapterV2.getMemoriesByIds(ids, tableName),
 
                                 getMemoriesByRoomIds: (params) =>
@@ -152,20 +153,20 @@ IDatabaseAdapter fromV2DatabaseAdapter(IDatabaseAdapterV2 adapterV2) {
                                                                         });
                                                                         },
 
-                                                                        createMemory: std::async [&](memory: Memory, tableName: std:, unique?) {
+                                                                        createMemory: std::async [&](memory: Memory, tableName: std::string, unique?) {
                                                                             adapterV2.createMemory(memory, tableName, unique);
                                                                             },
 
-                                                                            removeMemory: [&](memoryId: UUID, tableName: std:) {
+                                                                            removeMemory: [&](memoryId: UUID, tableName: std::string) {
                                                                                 // V2 uses deleteMemory instead of removeMemory
                                                                                 return adapterV2.deleteMemory(memoryId);
                                                                                 },
 
-                                                                                removeAllMemories: [&](roomId: UUID, tableName: std:) {
+                                                                                removeAllMemories: [&](roomId: UUID, tableName: std::string) {
                                                                                     return adapterV2.deleteAllMemories(roomId, tableName);
                                                                                     },
 
-                                                                                    countMemories: (roomId: UUID, unique?, tableName?: std:) =>
+                                                                                    countMemories: (roomId: UUID, unique?, tableName?: std::string) =>
                                                                                     adapterV2.countMemories(roomId, unique, tableName),
 
                                                                                     // Goal methods - not implemented in V2, return empty/stub implementations
@@ -262,8 +263,7 @@ IDatabaseAdapter fromV2DatabaseAdapter(IDatabaseAdapterV2 adapterV2) {
                                                                                                                                                 userB: relationship.targetEntityId,
                                                                                                                                                 userId: relationship.sourceEntityId, // Use source user
                                                                                                                                                 roomId: relationship.id, // V1 expects roomId, use relationship ID
-                                                                                                                                                status: relationship.tags.join(","), // Convert tags to status std:
-                                                                                                                                                createdAt: relationship.createdAt,
+                                                                                                                                                status: relationship.tags.join(","), // Convert tags to status std::string createdAt: relationship.createdAt,
                                                                                                                                                 };
                                                                                                                                                 },
 

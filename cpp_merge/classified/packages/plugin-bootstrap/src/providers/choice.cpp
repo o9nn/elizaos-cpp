@@ -1,24 +1,25 @@
 #include "choice.hpp"
+#include <string>
 
 std::shared_ptr<Provider> choiceProvider = object{
-    object::pair{std:("name"), std:("CHOICE")}, 
-    object::pair{std:("get"), [=](auto runtime, auto message, auto _state) mutable
+    object::pair{std::string("name"), std::string("CHOICE")}, 
+    object::pair{std::string("get"), [=](auto runtime, auto message, auto _state) mutable
     {
         try
         {
             auto pendingTasks = std::async([=]() { runtime->getTasks(object{
-                object::pair{std:("roomId"), message->roomId}, 
-                object::pair{std:("tags"), array<string>{ std:("AWAITING_CHOICE") }}
+                object::pair{std::string("roomId"), message->roomId}, 
+                object::pair{std::string("tags"), array<string>{ std::string("AWAITING_CHOICE") }}
             }); });
             if (OR((!pendingTasks), (pendingTasks->length == 0))) {
                 return object{
-                    object::pair{std:("data"), object{
-                        object::pair{std:("tasks"), array<any>()}
+                    object::pair{std::string("data"), object{
+                        object::pair{std::string("tasks"), array<any>()}
                     }}, 
-                    object::pair{std:("values"), object{
-                        object::pair{std:("tasks"), std:("No pending choices for the moment.")}
+                    object::pair{std::string("values"), object{
+                        object::pair{std::string("tasks"), std::string("No pending choices for the moment.")}
                     }}, 
-                    object::pair{std:("text"), std:("No pending choices for the moment.")}
+                    object::pair{std::string("text"), std::string("No pending choices for the moment.")}
                 };
             }
             auto tasksWithOptions = pendingTasks->filter([=](auto task) mutable
@@ -28,77 +29,77 @@ std::shared_ptr<Provider> choiceProvider = object{
             );
             if (tasksWithOptions->length == 0) {
                 return object{
-                    object::pair{std:("data"), object{
-                        object::pair{std:("tasks"), array<any>()}
+                    object::pair{std::string("data"), object{
+                        object::pair{std::string("tasks"), array<any>()}
                     }}, 
-                    object::pair{std:("values"), object{
-                        object::pair{std:("tasks"), std:("No pending choices for the moment.")}
+                    object::pair{std::string("values"), object{
+                        object::pair{std::string("tasks"), std::string("No pending choices for the moment.")}
                     }}, 
-                    object::pair{std:("text"), std:("No pending choices for the moment.")}
+                    object::pair{std::string("text"), std::string("No pending choices for the moment.")}
                 };
             }
-            shared output = std:("# Pending Tasks\
+            shared output = std::string("# Pending Tasks\
 \
 ");
-            output += std:("The following tasks are awaiting your selection:\
+            output += std::string("The following tasks are awaiting your selection:\
 \
 ");
             tasksWithOptions->forEach([=](auto task, auto index) mutable
             {
-                output += string_empty + (index + 1) + std:(". **") + task["name"] + std:("**\
+                output += string_empty + (index + 1) + std::string(". **") + task["name"] + std::string("**\
 ");
                 if (task["description"]) {
-                    output += std:("   ") + task["description"] + std:("\
+                    output += std::string("   ") + task["description"] + std::string("\
 ");
                 }
                 if (task["metadata"]["options"]) {
-                    output += std:("   Options:\
+                    output += std::string("   Options:\
 ");
                     shared options = as<any>(task["metadata"]["options"]);
                     options->forEach([=](auto option) mutable
                     {
-                        if (type_of(option) == std:("string")) {
+                        if (type_of(option) == std::string("string")) {
                             auto description = OR((task["metadata"]["options"]["find"]([=](auto o) mutable
                             {
                                 return o["name"] == option;
                             }
                             )["description"]), (string_empty));
-                            output += std:("   - "") + option + std:("" ") + (description) ? any(std:("- ") + description + string_empty) (string_empty) + std:("\
+                            output += std::string("   - "") + option + std::string("" ") + (description) ? any(std::string("- ") + description + string_empty) (string_empty) + std::string("\
 ");
                         } else {
-                            output += std:("   - "") + option["name"] + std:("" ") + (option["description"]) ? any(std:("- ") + option["description"] + string_empty) (string_empty) + std:("\
+                            output += std::string("   - "") + option["name"] + std::string("" ") + (option["description"]) ? any(std::string("- ") + option["description"] + string_empty) (string_empty) + std::string("\
 ");
                         }
                     }
                     );
                 }
-                output += std:("\
+                output += std::string("\
 ");
             }
             );
-            output += std:("To select an option, reply with the option name (e.g., 'post' or 'cancel').\
+            output += std::string("To select an option, reply with the option name (e.g., 'post' or 'cancel').\
 ");
             return object{
-                object::pair{std:("data"), object{
-                    object::pair{std:("tasks"), tasksWithOptions}
+                object::pair{std::string("data"), object{
+                    object::pair{std::string("tasks"), tasksWithOptions}
                 }}, 
-                object::pair{std:("values"), object{
-                    object::pair{std:("tasks"), output}
+                object::pair{std::string("values"), object{
+                    object::pair{std::string("tasks"), output}
                 }}, 
-                object::pair{std:("text"), output}
+                object::pair{std::string("text"), output}
             };
         }
         catch (const any& error)
         {
-            logger->error(std:("Error in options provider:"), error);
+            logger->error(std::string("Error in options provider:"), error);
             return object{
-                object::pair{std:("data"), object{
-                    object::pair{std:("tasks"), array<any>()}
+                object::pair{std::string("data"), object{
+                    object::pair{std::string("tasks"), array<any>()}
                 }}, 
-                object::pair{std:("values"), object{
-                    object::pair{std:("tasks"), std:("There was an error retrieving pending tasks with options.")}
+                object::pair{std::string("values"), object{
+                    object::pair{std::string("tasks"), std::string("There was an error retrieving pending tasks with options.")}
                 }}, 
-                object::pair{std:("text"), std:("There was an error retrieving pending tasks with options.")}
+                object::pair{std::string("text"), std::string("There was an error retrieving pending tasks with options.")}
             };
         }
     }

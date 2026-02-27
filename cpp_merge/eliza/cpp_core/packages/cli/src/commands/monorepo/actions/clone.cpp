@@ -1,4 +1,5 @@
 #include "clone.hpp"
+#include <string>
 #include <future>
 #include <filesystem>
 #include <iostream>
@@ -6,7 +7,7 @@
 
 namespace elizaos {
 
-std::future<void> cloneRepository(const std:& repo, const std:& branch, const std:& destination) {
+std::future<void> cloneRepository(const std::string& repo, const std::string& branch, const std::string& destination) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -40,7 +41,7 @@ std::future<void> cloneRepository(const std:& repo, const std:& branch, const st
     }
 }
 
-std: prepareDestination(const std:& dir) {
+std::string prepareDestination(const std::string& dir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

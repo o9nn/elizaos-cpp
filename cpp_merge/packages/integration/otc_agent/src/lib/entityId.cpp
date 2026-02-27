@@ -1,8 +1,9 @@
 #include "entityId.hpp"
+#include <string>
 
 boolean isSolanaAddress(string address)
 {
-    return (AND((AND((!address->startsWith(std:("0x"))), (address->get_length() >= 32))), (address->get_length() <= 44)));
+    return (AND((AND((!address->startsWith(std::string("0x"))), (address->get_length() >= 32))), (address->get_length() <= 44)));
 };
 
 

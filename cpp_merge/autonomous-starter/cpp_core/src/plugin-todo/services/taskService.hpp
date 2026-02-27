@@ -19,7 +19,7 @@ namespace elizaos {
  * Task service that provides database-compatible task operations
  */
 class TaskService {
-  constructor(private runtime: IAgentRuntime) {}
+  /* constructor */ (private runtime: IAgentRuntime) {}
 
   /**
    * Get tasks with database-compatible filtering

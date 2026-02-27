@@ -31,7 +31,7 @@ namespace elizaos {
     // https://github.com/velodrome-finance/slipstream
     // Fallback RPC for Base Mainnet to avoid rate limits on public endpoint
   // Base Sepolia
-    // Aerodrome not officially on Sepolia, using same address will fail, so undefined
+    // Aerodrome not officially on Sepolia, using same address will fail, so std::nullopt
   // BSC Mainnet
   // BSC Testnet
 
@@ -40,9 +40,9 @@ namespace elizaos {
 // Aerodrome CL: Uses tickSpacing instead of fee. Common: 1, 50, 100, 200, 2000
 
 struct PoolInfo {
-    std: address;
-    std: token0;
-    std: token1;
+    std::string address;
+    std::string token0;
+    std::string token1;
     std::optional<double> fee;
     std::optional<double> tickSpacing;
     std::optional<bool> stable;
@@ -185,6 +185,6 @@ void validatePoolLiquidity(PoolInfo pool); {
 /**
  * Format pool info for display
  */
-std: formatPoolInfo(PoolInfo pool);
+std::string formatPoolInfo(PoolInfo pool);
 
 } // namespace elizaos

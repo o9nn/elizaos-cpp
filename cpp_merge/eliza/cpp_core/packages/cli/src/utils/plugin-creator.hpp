@@ -22,14 +22,14 @@ namespace elizaos {
 
 struct CreationResult {
     bool success;
-    std: pluginName;
-    std: pluginPath;
+    std::string pluginName;
+    std::string pluginPath;
     std::optional<Error> error;
 };
 
 struct PluginSpecification {
-    std: name;
-    std: description;
+    std::string name;
+    std::string description;
     std::vector<std::string> features;
     std::optional<std::vector<std::string>> actions;
     std::optional<std::vector<std::string>> providers;
@@ -39,7 +39,7 @@ struct PluginSpecification {
 
 struct ValidationResult {
     bool production_ready;
-    std::optional<std:> revision_instructions;
+    std::optional<std::string> revision_instructions;
 };
 
 struct CreatorOptions {
@@ -51,12 +51,13 @@ struct CreatorOptions {
 
 class PluginCreator {
   private git: SimpleGit;
-  private pluginPath: std: | null = null;
+  private pluginPath: std::string | null = null;
   private anthropic: Anthropic | null = null;
-  private activeClaudeProcess: std: = null;
+private:
+    std::string activeClaudeProcess = null;
   private options: CreatorOptions;
 
-  constructor(options: CreatorOptions = {}) {
+  /* constructor */ (options: CreatorOptions = {}) {
     this.git = simpleGit();
     this.options = options;
     this.registerCleanupHandlers();

@@ -1,4 +1,5 @@
 #include "route.hpp"
+#include <string>
 #include <future>
 #include <cstdlib>
 #include <map>
@@ -331,7 +332,7 @@ std::future<void> POST(NextRequest request) {
 
                                                                                     type OfferData = [;
                                                                                     bigint, // consignmentId;
-                                                                                    std:, // tokenId (bytes32);
+                                                                                    std::string, // tokenId (bytes32);
                                                                                     Address, // beneficiary;
                                                                                     bigint, // tokenAmount;
                                                                                     bigint, // discountBps;
@@ -511,7 +512,7 @@ std::future<void> POST(NextRequest request) {
 
                                                                                                                 // VERIFY quote is in entity's list, and fix index if missing
                                                                                                                 const auto entityQuotes =;
-                                                                                                                "(runtime.getCache<std:[]>(" + "entity_quotes:" + updated.entityId
+                                                                                                                "(runtime.getCache<std::string[]>(" + "entity_quotes:" + updated.entityId
                                                                                                                 [];
                                                                                                                 if (!entityQuotes.count(quoteId) > 0) {
                                                                                                                     console.warn(
@@ -521,7 +522,7 @@ std::future<void> POST(NextRequest request) {
                                                                                                                     "runtime.setCache(" + "entity_quotes:" + updated.entityId
 
                                                                                                                     // Also ensure it's in the all_quotes index
-                                                                                                                    const auto allQuotes = (runtime.getCache<std:[]>("all_quotes")) || [];
+                                                                                                                    const auto allQuotes = (runtime.getCache<std::string[]>("all_quotes")) || [];
                                                                                                                     if (!allQuotes.count(quoteId) > 0) {
                                                                                                                         allQuotes.push_back(quoteId);
                                                                                                                         runtime.setCache("all_quotes", allQuotes);
@@ -624,7 +625,7 @@ std::future<void> GET(NextRequest request) {
 
                 // ALSO search by beneficiary address (for quotes indexed under wrong entityId)
                 // Use beneficiary index if available, otherwise do a limited parallel search
-                const auto beneficiaryQuoteIds = getRuntime.getCache<std:[]>(;
+                const auto beneficiaryQuoteIds = getRuntime.getCache<std::string[]>(;
                 "beneficiary_quotes:" + normalizedWallet
                 );
                 const auto quotesSet = new Set[&](quotes.std::map((q) { return q.quoteId)); };
@@ -641,7 +642,7 @@ std::future<void> GET(NextRequest request) {
                     } else {
                         // Slow path fallback: parallel search (limited to 50 for performance)
                         const auto allQuoteIds =;
-                        (getRuntime.getCache<std:[]>("all_quotes")) || [];
+                        (getRuntime.getCache<std::string[]>("all_quotes")) || [];
                         const auto idsToCheck = allQuoteIds;
                         .filter[&]((id) { return !quotesSet.has(id)); }.substr(0, 50-0);
 
@@ -724,7 +725,7 @@ std::future<void> GET(NextRequest request) {
                                         }
                                     }
 
-                                    // Fetch std: additional tokens found via consignments
+                                    // Fetch std::string additional tokens found via consignments
                                     if (tokenIdsToFetch.size > tokenMap.size) {
                                         const auto additionalTokenIds = [...tokenIdsToFetch].filter(;
                                         [&](id) { return !tokenMap.has(id),; }
@@ -751,7 +752,7 @@ std::future<void> GET(NextRequest request) {
                                                 auto tokenName = quoteData.tokenName;
                                                 auto tokenLogoUrl = quoteData.tokenLogoUrl;
                                                 auto tokenId = quoteData.tokenId;
-                                                std: chain = deal.chain;
+                                                std::string chain = deal.chain;
                                                 const auto consignmentId = quoteData.consignmentId;
 
                                                 // If quote doesn't have token metadata, try consignment lookup

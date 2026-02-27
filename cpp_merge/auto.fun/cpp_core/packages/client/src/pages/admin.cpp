@@ -1,4 +1,5 @@
 #include "admin.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -35,7 +36,7 @@ void Admin() {
                 });
 
                 // Helper std::function to determine if a link is active
-                const auto isActive = [&](path: std:) {;
+                const auto isActive = [&](path: std::string) {;
                     if (path == "/admin" && currentPath == "/admin") {
                         return true;
                     }

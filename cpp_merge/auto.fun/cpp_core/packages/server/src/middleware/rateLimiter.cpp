@@ -1,4 +1,5 @@
 #include "rateLimiter.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -15,7 +16,7 @@ void createRateLimiter(RedisCacheService redisCache) {
         c.req.header("cf-connecting-ip") ||;
         "unknown",
         store: new (class {
-            std::async increment(key: std:) {
+            std::async increment(key: std::string) {
                 const auto full = "redisCache.getKey(" + "rl:" + key;
                 const auto [[, count]] = (redisCache.redisPool.useClient((client) =>;
                 client.multi().incr(full).expire(full, WINDOW_SEC).exec();
@@ -25,11 +26,11 @@ void createRateLimiter(RedisCacheService redisCache) {
                     resetTime: new Date(Date.now() + WINDOW_SEC * 1000),
                     };
                 }
-                std::async decrement(key: std:) {
+                std::async decrement(key: std::string) {
                     const auto full = "redisCache.getKey[&](" + "rl:" + key;
                     redisCache.redisPool.useClient((client) { return client.decr(full)); };
                 }
-                std::async resetKey(key: std:) {
+                std::async resetKey(key: std::string) {
                     const auto full = "redisCache.getKey(" + "rl:" + key;
                     redisCache.del(full);
                 }

@@ -6,7 +6,7 @@
 
 namespace elizaos {
 
-std: getContentText(HistoryItem entry) {
+std::string getContentText(HistoryItem entry) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (typeof entry.content == 'string') {
@@ -45,7 +45,7 @@ void addCacheControlToEntry(HistoryItem entry) {
 
 }
 
-AbstractHistoryProcessor createHistoryProcessor(const std:& config) {
+AbstractHistoryProcessor createHistoryProcessor(const std::string& config) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -68,11 +68,11 @@ AbstractHistoryProcessor createHistoryProcessor(const std:& config) {
             processor = new CacheControlHistoryProcessor({ cacheLastN: (config as { cacheLastN? }).cacheLastN });
             break;
             // case "remove_regex":
-            processor = new RemoveRegex({ patterns: (config as { patterns?: std:[] }).patterns });
+            processor = new RemoveRegex({ patterns: (config as { patterns?: std::string[] }).patterns });
             break;
             // case "image_parsing":
             processor = new ImageParsingHistoryProcessor({
-                allowedMimeTypes: (config as { allowedMimeTypes?: std:[] }).allowedMimeTypes,
+                allowedMimeTypes: (config as { allowedMimeTypes?: std::string[] }).allowedMimeTypes,
                 });
                 break;
                 // default:

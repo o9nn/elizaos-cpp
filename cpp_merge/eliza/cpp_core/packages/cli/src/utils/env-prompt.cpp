@@ -10,7 +10,7 @@
 
 namespace elizaos {
 
-std::future<std:> getEnvFilePath() {
+std::future<std::string> getEnvFilePath() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto envInfo = UserEnvironment.getInstanceInfo();
@@ -18,11 +18,11 @@ std::future<std:> getEnvFilePath() {
 
 }
 
-std::future<std::unordered_map<std:, std:>> readEnvFile() {
+std::future<std::unordered_map<std::string, std::string>> readEnvFile() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto envPath = getEnvFilePath();
-    const std::unordered_map<std:, std:> result = {};
+    const std::unordered_map<std::string, std::string> result = {};
 
     try {
         // Read existing env file
@@ -54,7 +54,7 @@ std::future<std::unordered_map<std:, std:>> readEnvFile() {
 
 }
 
-std::future<void> writeEnvFile(const std::unordered_map<std:, std:>& envVars) {
+std::future<void> writeEnvFile(const std::unordered_map<std::string, std::string>& envVars) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -85,7 +85,7 @@ std::future<void> writeEnvFile(const std::unordered_map<std:, std:>& envVars) {
 
 }
 
-std::future<std:> promptForEnvVar(EnvVarConfig config) {
+std::future<std::string> promptForEnvVar(EnvVarConfig config) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // If the key already exists in the environment and is valid, use that
@@ -107,7 +107,7 @@ std::future<std:> promptForEnvVar(EnvVarConfig config) {
     const auto value = (config.secret;
     ? clack.password({
         "message: " + "Enter your " + config.name + ":"
-        validate: (input: std:) {
+        validate: (input: std::string) {
             if (config.required && (!input || input == '')) {
                 return "This field is required";
             }
@@ -116,7 +116,7 @@ std::future<std:> promptForEnvVar(EnvVarConfig config) {
             });
             : clack.text[&]({
                 "message: " + "Enter your " + config.name + ":"
-                validate: (input: std:) {
+                validate: (input: std::string) {
                     if (config.required && (!input || input == '')) {
                         return "This field is required";
                     }
@@ -129,7 +129,7 @@ std::future<std:> promptForEnvVar(EnvVarConfig config) {
                         std::exit(0);
                     }
 
-                    // For std::optional fields, an empty std: means skip
+                    // For std::optional fields, an empty std::string means skip
                     if (!config.required && (!value || value == '')) {
                         return "";
                     }
@@ -143,7 +143,7 @@ std::future<std:> promptForEnvVar(EnvVarConfig config) {
 
 }
 
-std::future<std::unordered_map<std:, std:>> promptForEnvVars(const std:& pluginName) {
+std::future<std::unordered_map<std::string, std::string>> promptForEnvVars(const std::string& pluginName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto envVarConfigs = ENV_VAR_CONFIGS[pluginName.toLowerCase()];
@@ -186,7 +186,7 @@ std::future<std::unordered_map<std:, std:>> promptForEnvVars(const std:& pluginN
 
             // Read existing environment variables
             const auto envVars = readEnvFile();
-            const std::unordered_map<std:, std:> result = {};
+            const std::unordered_map<std::string, std::string> result = {};
             auto changes = false;
 
             // Check each environment variable
@@ -218,7 +218,7 @@ std::future<std::unordered_map<std:, std:>> promptForEnvVars(const std:& pluginN
                 changes = true;
             }
 
-            // Save changes if std: were made
+            // Save changes if std::string were made
             if (changes) {
                 writeEnvFile(envVars);
             }
@@ -227,7 +227,7 @@ std::future<std::unordered_map<std:, std:>> promptForEnvVars(const std:& pluginN
 
 }
 
-std::future<bool> validateEnvVars(const std:& pluginName) {
+std::future<bool> validateEnvVars(const std::string& pluginName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto envVarConfigs = ENV_VAR_CONFIGS[pluginName.toLowerCase()];
@@ -248,7 +248,7 @@ std::future<bool> validateEnvVars(const std:& pluginName) {
 
 }
 
-std::future<std::vector<std::string>> getMissingEnvVars(const std:& pluginName) {
+std::future<std::vector<std::string>> getMissingEnvVars(const std::string& pluginName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto envVarConfigs = ENV_VAR_CONFIGS[pluginName.toLowerCase()];
@@ -269,11 +269,11 @@ std::future<std::vector<std::string>> getMissingEnvVars(const std:& pluginName) 
 
 }
 
-std::future<> validatePluginEnvVars(const std:& pluginName) {
+std::future<> validatePluginEnvVars(const std::string& pluginName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     valid;
-    message: std:;
+    message: std::string;
 
 }
 

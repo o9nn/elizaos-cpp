@@ -45,7 +45,7 @@ std::future<void> POST(NextRequest request) {
 
 }
 
-std::future<void> syncEvmToken(const std:& transactionHash, const std:& blockNumber, const std:& chain) {
+std::future<void> syncEvmToken(const std::string& transactionHash, const std::string& blockNumber, const std::string& chain) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Import chains dynamically to handle both Base and BSC
@@ -81,7 +81,7 @@ std::future<void> syncEvmToken(const std:& transactionHash, const std:& blockNum
             try {
                 // Get transaction receipt to find the block
                 const auto receipt = client.getTransactionReceipt({;
-                    "hash: transactionHash as " + "0x" + std:
+                    "hash: transactionHash as " + "0x" + std::string
                     });
                     if (!receipt) {
                         return NextResponse.json(;
@@ -100,8 +100,7 @@ std::future<void> syncEvmToken(const std:& transactionHash, const std:& blockNum
 
                     // Get logs for this specific transaction
                     const auto logs = client.getLogs({;
-                        "address: registrationHelperAddress as " + "0x" + std:
-                        event: {
+                        "address: registrationHelperAddress as " + "0x" + std::string event: {
                             type: "event",
                             name: "TokenRegistered",
                             inputs: [
@@ -137,10 +136,10 @@ std::future<void> syncEvmToken(const std:& transactionHash, const std:& blockNum
                                 for (const auto& log : txLogs)
                                     try {
                                         const auto { tokenAddress, registeredBy } = log.args as {;
-                                            tokenId: std:;
-                                            tokenAddress: std:;
-                                            pool: std:;
-                                            registeredBy: std:;
+                                            tokenId: std::string;
+                                            tokenAddress: std::string;
+                                            pool: std::string;
+                                            registeredBy: std::string;
                                             };
 
                                             console.log(
@@ -154,18 +153,15 @@ std::future<void> syncEvmToken(const std:& transactionHash, const std:& blockNum
                                             ) { return Promise<unknown>; };
                                             const auto [symbol, name, decimals] = Promise.all([;
                                             readContract({
-                                                "address: tokenAddress as " + "0x" + std:
-                                                abi: ERC20_ABI,
+                                                "address: tokenAddress as " + "0x" + std::string abi: ERC20_ABI,
                                                 functionName: "symbol",
                                                 }),
                                                 readContract({
-                                                    "address: tokenAddress as " + "0x" + std:
-                                                    abi: ERC20_ABI,
+                                                    "address: tokenAddress as " + "0x" + std::string abi: ERC20_ABI,
                                                     functionName: "name",
                                                     }),
                                                     readContract({
-                                                        "address: tokenAddress as " + "0x" + std:
-                                                        abi: ERC20_ABI,
+                                                        "address: tokenAddress as " + "0x" + std::string abi: ERC20_ABI,
                                                         functionName: "decimals",
                                                         }),
                                                         ]);
@@ -215,7 +211,7 @@ std::future<void> syncEvmToken(const std:& transactionHash, const std:& blockNum
 
 }
 
-std::future<void> syncSolanaToken(const std:& signature) {
+std::future<void> syncSolanaToken(const std::string& signature) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto programId = std::getenv("NEXT_PUBLIC_SOLANA_PROGRAM_ID");

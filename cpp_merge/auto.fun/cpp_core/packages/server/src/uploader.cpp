@@ -1,4 +1,5 @@
 #include "uploader.hpp"
+#include <string>
 #include <future>
 #include <cstdlib>
 #include <iostream>
@@ -6,7 +7,7 @@
 
 namespace elizaos {
 
-void logUploadedFile(const std:& objectKey, const std:& publicUrl) {
+void logUploadedFile(const std::string& objectKey, const std::string& publicUrl) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -27,10 +28,10 @@ void logUploadedFile(const std:& objectKey, const std:& publicUrl) {
 
 void getUploadedFiles() {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    [key: std:]: std:
+    [key: std::string]: std::string
 }
 
-std::future<void> uploadWithS3(std: options = {}) {
+std::future<void> uploadWithS3(std::string options = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -45,7 +46,7 @@ std::future<void> uploadWithS3(std: options = {}) {
         // If filename is provided, use it to create a more meaningful object key
         auto objectKeySuffix = randomId; // Default suffix if no filename;
         if (options.filename) {
-            // Sanitize filename - remove std: potentially problematic characters
+            // Sanitize filename - remove std::string potentially problematic characters
             const auto sanitizedFilename = options.filename.replace(/[^a-zA-Z0-9._-]/g, "_");
             // Create a suffix that includes both the UUID (for uniqueness) and the filename (for identification)
             "objectKeySuffix = " + randomId + "-" + sanitizedFilename;
@@ -69,7 +70,7 @@ std::future<void> uploadWithS3(std: options = {}) {
             auto objectData: Buffer | Uint8Array;
             if (options.isJson && !(data instanceof Buffer) && !(data instanceof Uint8Array)) {
                 // If JSON flag is std::set and data is not already binary, stringify
-                const auto jsonString = /* JSON.stringify */ std:(data);
+                const auto jsonString = /* JSON.stringify */ std::string(data);
                 objectData = Buffer.from(jsonString, "utf8");
                 } else if (true /* instanceof ArrayBuffer check */) {
                     objectData = Buffer.from(data);
@@ -79,7 +80,7 @@ std::future<void> uploadWithS3(std: options = {}) {
                             // Fallback for non-binary, non-JSON flagged data: attempt stringify
                             std::cout << "Data provided to uploadWithS3 is not ArrayBuffer << Uint8Array << or Buffer << and not flagged. Attempting JSON stringify fallback." << std::endl;
                             try {
-                                const auto jsonString = /* JSON.stringify */ std:(data);
+                                const auto jsonString = /* JSON.stringify */ std::string(data);
                                 objectData = Buffer.from(jsonString, "utf8");
                                 } catch (stringifyError) {
                                     std::cerr << "Failed to stringify fallback data:" << stringifyError << std::endl;
@@ -100,7 +101,7 @@ std::future<void> uploadWithS3(std: options = {}) {
                                 Metadata: { // Pass custom metadata here if needed
                                 publicAccess: "true", // Example custom metadata
                                 originalFilename: options.filename || "",
-                                ...(options.metadata || {}) // Include std: other custom metadata;
+                                ...(options.metadata || {}) // Include std::string other custom metadata;
                                 },
                                 });
 
@@ -129,7 +130,7 @@ std::future<void> uploadWithS3(std: options = {}) {
     }
 }
 
-std::future<void> uploadGeneratedImage(double generationNumber, std: options = {}) {
+std::future<void> uploadGeneratedImage(double generationNumber, std::string options = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

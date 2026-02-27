@@ -1,4 +1,5 @@
 #include "validate-otc-flows.hpp"
+#include <string>
 #include <future>
 #include <filesystem>
 #include <cstdlib>
@@ -9,7 +10,7 @@
 
 namespace elizaos {
 
-void log(const std:& category, const std:& message, std::optional<std::unordered_map<std:, std:>> data) {
+void log(const std::string& category, const std::string& message, std::optional<std::unordered_map<std::string, std::string>> data) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto prefix = {;
@@ -31,7 +32,7 @@ void log(const std:& category, const std:& message, std::optional<std::unordered
 
 }
 
-void section(const std:& title) {
+void section(const std::string& title) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     std::cout << "\n" + "═".repeat(70) << std::endl;
@@ -171,8 +172,7 @@ std::future<void> validateEVM() {
                                                                             functionName: "offers",
                                                                             args: [BigInt(numOffers)],
                                                                             }) as [;
-                                                                            "bigint, " + "0x" + std:
-                                                                            bigint, bigint, number, boolean, boolean, boolean, boolean, Address, bigint;
+                                                                            "bigint, " + "0x" + std::string bigint, bigint, number, boolean, boolean, boolean, boolean, Address, bigint;
                                                                             ];
 
                                                                             "log(\"INFO\", " + "Latest Offer #" + numOffers + ":"
@@ -200,7 +200,7 @@ std::future<void> validateEVM() {
                                                                                 const auto privateKey = std::getenv("MAINNET_PRIVATE_KEY");
                                                                                 if (privateKey) {
                                                                                     try {
-                                                                                        const auto account = "privateKeyToAccount(privateKey as " + "0x" + std:;
+                                                                                        const auto account = "privateKeyToAccount(privateKey as " + "0x" + std::string;
                                                                                         delay(500);
                                                                                         const auto balance = publicClient.getBalance({ address: account.address });
                                                                                         delay(500);
@@ -450,7 +450,7 @@ std::future<void> validateFlows() {
                             const auto approveRes = "fetch(" + BACKEND_URL + "/api/otc/approve";
                                 method: "POST",
                                 headers: { "Content-Type": "application/json" },
-                                body: /* JSON.stringify */ std:({ offerId: "999999", chain: "base", dryRun: true }),
+                                body: /* JSON.stringify */ std::string({ offerId: "999999", chain: "base", dryRun: true }),
                                 });
                                 // Should fail gracefully (offer doesn't exist)
                                 log("INFO", "POST /api/otc/approve (dry run)", {
@@ -488,7 +488,7 @@ std::future<void> executeRealTransactions() {
         transport: http(BASE_RPC),
         });
 
-        const auto account = "privateKeyToAccount(privateKey as " + "0x" + std:;
+        const auto account = "privateKeyToAccount(privateKey as " + "0x" + std::string;
         const auto walletClient = createWalletClient({;
             account,
             chain: base,
@@ -579,7 +579,7 @@ std::future<void> executeRealTransactions() {
                                             const auto approveRes = "fetch(" + BACKEND_URL + "/api/otc/approve";
                                                 method: "POST",
                                                 headers: { "Content-Type": "application/json" },
-                                                body: /* JSON.stringify */ std:({ offerId: std::to_string(offerId), chain: "base" }),
+                                                body: /* JSON.stringify */ std::string({ offerId: std::to_string(offerId), chain: "base" }),
                                                 });
 
                                                 if (approveRes.ok) {

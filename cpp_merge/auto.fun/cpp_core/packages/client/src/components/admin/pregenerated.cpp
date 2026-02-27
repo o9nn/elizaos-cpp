@@ -1,4 +1,5 @@
 #include "pregenerated.hpp"
+#include <string>
 #include <optional>
 #include <map>
 #include <iostream>
@@ -86,7 +87,7 @@ void AdminPregenerated() {
 
                                     // Delete mutation
                                     const auto deleteMutation = useMutation({;
-                                        mutationFn: (id: std:) =>
+                                        mutationFn: (id: std::string) =>
                                         "fetcher[&](" + "/api/admin/pregenerated/" + id
                                         onSuccess: () {
                                             toast.success("Token deleted successfully");
@@ -125,7 +126,7 @@ void AdminPregenerated() {
 
                                                                 // Edit token mutation
                                                                 const auto editMutation = useMutation({;
-                                                                    mutationFn: (data: { id: std:; updates: Partial<PreGeneratedToken> }) =>
+                                                                    mutationFn: (data: { id: std::string; updates: Partial<PreGeneratedToken> }) =>
                                                                     "fetcher[&](" + "/api/admin/pregenerated/" + data.id
                                                                     onSuccess: () {
                                                                         toast.success("Token updated successfully");
@@ -181,13 +182,13 @@ void AdminPregenerated() {
                                                                                             editMutation.mutate({ id: editingToken.id, updates });
                                                                                             };
 
-                                                                                            const auto handleDelete = [&](id: std:) {;
+                                                                                            const auto handleDelete = [&](id: std::string) {;
                                                                                                 if (window.confirm("Are you sure you want to delete this token?")) {
                                                                                                     deleteMutation.mutate(id);
                                                                                                 }
                                                                                                 };
 
-                                                                                                const auto handleSort = [&](column: keyof PreGeneratedToken | std:) {;
+                                                                                                const auto handleSort = [&](column: keyof PreGeneratedToken | std::string) {;
                                                                                                     if (sortBy == column) {
                                                                                                         // Toggle sort order if clicking the same column
                                                                                                         setSortOrder(sortOrder == "asc" ? "desc" : "asc");
@@ -200,7 +201,7 @@ void AdminPregenerated() {
                                                                                                         setCurrentPage(1);
                                                                                                         };
 
-                                                                                                        const auto getSortIndicator = [&](column: keyof PreGeneratedToken | std:) {;
+                                                                                                        const auto getSortIndicator = [&](column: keyof PreGeneratedToken | std::string) {;
                                                                                                             if (sortBy != column) return null;
                                                                                                             return sortOrder == "asc" ? " ▲" : " ▼";
                                                                                                             };

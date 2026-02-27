@@ -1,4 +1,5 @@
 #include "groups.hpp"
+#include <string>
 #include <vector>
 #include <map>
 #include <unordered_map>
@@ -26,9 +27,9 @@ express::Router createGroupMemoryRouter(const std::unordered_map<UUID, IAgentRun
             std::vector<Room> results = [];
             auto errors: {;
                 agentId: UUID;
-                code: std:;
-                message: std:;
-                details: std:;
+                code: std::string;
+                message: std::string;
+                details: std::string;
                 }[] = [];
 
                 for (const auto& agentId : agentIds)

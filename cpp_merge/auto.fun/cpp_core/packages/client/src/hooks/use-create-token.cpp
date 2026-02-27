@@ -1,4 +1,5 @@
 #include "use-create-token.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -20,7 +21,7 @@ void useCreateToken() {
             mintKeypair,
             }: {
                 tokenMetadata: TokenMetadata;
-                metadataUrl: std:;
+                metadataUrl: std::string;
                 mintKeypair: Keypair;
                 }) {
                     if (!window.solana.isPhantom) {
@@ -54,7 +55,7 @@ void useCreateToken() {
                             mintKeypair,
                             }: {
                                 tokenMetadata: TokenMetadata;
-                                metadataUrl: std:;
+                                metadataUrl: std::string;
                                 mintKeypair: Keypair;
                                 }) {
                                     if (!window.solana.isPhantom) {

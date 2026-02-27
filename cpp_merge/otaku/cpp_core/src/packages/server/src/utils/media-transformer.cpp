@@ -1,11 +1,12 @@
 #include "media-transformer.hpp"
+#include <string>
 #include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std: transformPathToApiUrl(const std:& filePath) {
+std::string transformPathToApiUrl(const std::string& filePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Skip if already transformed or not a local absolute path

@@ -1,4 +1,5 @@
 #include "roles.hpp"
+#include <string>
 #include <vector>
 #include <future>
 #include <optional>
@@ -7,14 +8,14 @@
 
 namespace elizaos {
 
-std::future<Role> getUserServerRole(IAgentRuntime runtime, const std:& entityId, const std:& serverId) {
+std::future<Role> getUserServerRole(IAgentRuntime runtime, const std::string& entityId, const std::string& serverId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return coreGetUserServerRole(runtime, entityId, serverId);
 
 }
 
-std::future<std::optional<std::vector<World>>> findWorldsForOwner(IAgentRuntime runtime, const std:& entityId) {
+std::future<std::optional<std::vector<World>>> findWorldsForOwner(IAgentRuntime runtime, const std::string& entityId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return coreFindWorldsForOwner(runtime, entityId);

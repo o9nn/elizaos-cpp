@@ -20,7 +20,7 @@ namespace elizaos {
 
 
 
-using SortOrderType = std:;
+using SortOrderType = std::string;
 
 struct TableViewProps {
     std::vector<IToken> data;

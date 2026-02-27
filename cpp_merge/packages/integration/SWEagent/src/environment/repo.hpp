@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SWEAGENT_SRC_ENVIRONMENT_REPO_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SWEAGENT_SRC_ENVIRONMENT_REPO_H
 #include "core.hpp"
+#include <string>
 #include "zod.hpp"
 #include "path.hpp"
 #include "fs.hpp"
@@ -88,49 +89,49 @@ public:
 
 extern any RepoConfigSchema;
 template <typename P2>
-std::shared_ptr<Repo> repoFromSimplifiedInput(string input, string baseCommit = std:("HEAD"), P2 type = std:("auto"));
+std::shared_ptr<Repo> repoFromSimplifiedInput(string input, string baseCommit = std::string("HEAD"), P2 type = std::string("auto"));
 
 template <typename P2>
 std::shared_ptr<Repo> repoFromSimplifiedInput(string input, string baseCommit, P2 type)
 {
-    if (type == std:("auto")) {
-        if (input->includes(std:("github.com"))) {
-            type = std:("github");
+    if (type == std::string("auto")) {
+        if (input->includes(std::string("github.com"))) {
+            type = std::string("github");
         } else if (fs::existsSync(input)) {
-            type = std:("local");
+            type = std::string("local");
         } else {
-            type = std:("preexisting");
+            type = std::string("preexisting");
         }
     }
     static switch_type __switch6933_7354 = {
-        { any(std:("github")), 1 },
-        { any(std:("local")), 2 },
-        { any(std:("preexisting")), 3 }
+        { any(std::string("github")), 1 },
+        { any(std::string("local")), 2 },
+        { any(std::string("preexisting")), 3 }
     };
     switch (__switch6933_7354[type])
     {
     case 1:
         return std::make_shared<GithubRepo>(object{
-            object::pair{std:("githubUrl"), input}, 
-            object::pair{std:("baseCommit"), std:("baseCommit")}, 
-            object::pair{std:("type"), std:("github")}, 
-            object::pair{std:("cloneTimeout"), 500}
+            object::pair{std::string("githubUrl"), input}, 
+            object::pair{std::string("baseCommit"), std::string("baseCommit")}, 
+            object::pair{std::string("type"), std::string("github")}, 
+            object::pair{std::string("cloneTimeout"), 500}
         });
     case 2:
         return std::make_shared<LocalRepo>(object{
-            object::pair{std:("path"), input}, 
-            object::pair{std:("baseCommit"), std:("baseCommit")}, 
-            object::pair{std:("type"), std:("local")}
+            object::pair{std::string("path"), input}, 
+            object::pair{std::string("baseCommit"), std::string("baseCommit")}, 
+            object::pair{std::string("type"), std::string("local")}
         });
     case 3:
         return std::make_shared<PreExistingRepo>(object{
-            object::pair{std:("repoName"), input}, 
-            object::pair{std:("baseCommit"), std:("baseCommit")}, 
-            object::pair{std:("type"), std:("preexisting")}, 
-            object::pair{std:("reset"), true}
+            object::pair{std::string("repoName"), input}, 
+            object::pair{std::string("baseCommit"), std::string("baseCommit")}, 
+            object::pair{std::string("type"), std::string("preexisting")}, 
+            object::pair{std::string("reset"), true}
         });
     default:
-        throw any(std::make_shared<Error>(std:("Unknown repo type: ") + type + string_empty));
+        throw any(std::make_shared<Error>(std::string("Unknown repo type: ") + type + string_empty));
     }
 };
 

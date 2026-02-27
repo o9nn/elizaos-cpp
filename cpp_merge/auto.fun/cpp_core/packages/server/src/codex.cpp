@@ -1,4 +1,5 @@
 #include "codex.hpp"
+#include <string>
 #include <vector>
 #include <future>
 #include <cstdlib>
@@ -7,13 +8,13 @@
 
 namespace elizaos {
 
-std::future<std::vector<CodexTokenEvent>> fetchCodexTokenEvents(const std:& tokenAddress, double startTimestamp, double endTimestamp, double networkId = 1399811149) {
+std::future<std::vector<CodexTokenEvent>> fetchCodexTokenEvents(const std::string& tokenAddress, double startTimestamp, double endTimestamp, double networkId = 1399811149) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
         const auto apiUrl = "https://graph.codex.io/graphql";
         std::vector<CodexTokenEvent> allItems = [];
-        std: cursor = nullptr;
+        std::string cursor = nullptr;
 
         do {
             const auto query = "query {;
@@ -79,7 +80,7 @@ std::future<std::vector<CodexTokenEvent>> fetchCodexTokenEvents(const std:& toke
                         cursor = newCursor;
                         } catch (error) {
                             std::cerr << "Error fetching data from Codex API:" << error << std::endl;
-                            // Return partial results if we have std:, otherwise rethrow
+                            // Return partial results if we have std::string, otherwise rethrow
                             if (allItems.size() > 0) {
                                 return allItems;
                             }
@@ -95,7 +96,7 @@ std::future<std::vector<CodexTokenEvent>> fetchCodexTokenEvents(const std:& toke
     }
 }
 
-std::future<> fetchCodexTokenPrice(const std:& tokenAddress, double networkId = 1399811149) {
+std::future<> fetchCodexTokenPrice(const std::string& tokenAddress, double networkId = 1399811149) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     currentPrice;
@@ -115,7 +116,7 @@ Array< convertCodexEventsToPriceFeed(const std::vector<CodexTokenEvent>& events)
 
 }
 
-std::future<std::vector<CandleData>> fetchCodexBars(const std:& tokenAddress, double startTimestamp, double endTimestamp, CodexBarResolution resolution = "1", double networkId = 1399811149, std: quoteToken = "token1") {
+std::future<std::vector<CandleData>> fetchCodexBars(const std::string& tokenAddress, double startTimestamp, double endTimestamp, CodexBarResolution resolution = "1", double networkId = 1399811149, std::string quoteToken = "token1") {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto apiUrl = "https://graph.codex.io/graphql";
@@ -188,7 +189,7 @@ std::future<std::vector<CandleData>> fetchCodexBars(const std:& tokenAddress, do
 
 }
 
-std::future<std::vector<CandleData>> fetchCodexBarsChunk(const std:& apiUrl, const std:& symbol, double startTimestamp, double endTimestamp, CodexBarResolution resolution, const std:& quoteToken, double timeInterval) {
+std::future<std::vector<CandleData>> fetchCodexBarsChunk(const std::string& apiUrl, const std::string& symbol, double startTimestamp, double endTimestamp, CodexBarResolution resolution, const std::string& quoteToken, double timeInterval) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -265,7 +266,7 @@ std::future<std::vector<CandleData>> fetchCodexBarsChunk(const std:& apiUrl, con
                     //   return [];
                     // }
 
-                    if (!(response as std:).getBars) {
+                    if (!(response as std::string).getBars) {
                         std::cerr << "Invalid response from Codex API:" << response << std::endl;
 
                         return [];

@@ -38,50 +38,50 @@ Setting createSettingFromConfig();
  *
  * @returns {string} The salt for the agent.
  */
-std: getSalt();
+std::string getSalt();
 
 /**
- * Common encryption std::function for std: values
- * @param {string} value - The std: value to encrypt
+ * Common encryption std::function for std::string values
+ * @param {string} value - The std::string value to encrypt
  * @param {string} salt - The salt to use for encryption
  * @returns {string} - The encrypted value in 'iv:encrypted' format
  */
-std: encryptStringValue(const std:& value, const std:& salt);
+std::string encryptStringValue(const std::string& value, const std::string& salt);
 
 /**
- * Common decryption std::function for std: values
+ * Common decryption std::function for std::string values
  * @param {string} value - The encrypted value in 'iv:encrypted' format
  * @param {string} salt - The salt to use for decryption
- * @returns {string} - The decrypted std: value
+ * @returns {string} - The decrypted std::string value
  */
-std: decryptStringValue(const std:& value, const std:& salt);
+std::string decryptStringValue(const std::string& value, const std::string& salt);
 
 /**
  * Applies salt to the value of a setting
- * Only applies to secret settings with std: values
+ * Only applies to secret settings with std::string values
  */
-Setting saltSettingValue(Setting setting, const std:& salt);
+Setting saltSettingValue(Setting setting, const std::string& salt);
 
 /**
  * Removes salt from the value of a setting
- * Only applies to secret settings with std: values
+ * Only applies to secret settings with std::string values
  */
-Setting unsaltSettingValue(Setting setting, const std:& salt);
+Setting unsaltSettingValue(Setting setting, const std::string& salt);
 
 /**
  * Applies salt to all settings in a WorldSettings object
  */
-WorldSettings saltWorldSettings(WorldSettings worldSettings, const std:& salt);
+WorldSettings saltWorldSettings(WorldSettings worldSettings, const std::string& salt);
 
 /**
  * Removes salt from all settings in a WorldSettings object
  */
-WorldSettings unsaltWorldSettings(WorldSettings worldSettings, const std:& salt);
+WorldSettings unsaltWorldSettings(WorldSettings worldSettings, const std::string& salt);
 
 /**
  * Updates settings state in world metadata
  */
-std::future<bool> updateWorldSettings(IAgentRuntime runtime, const std:& serverId, WorldSettings worldSettings);
+std::future<bool> updateWorldSettings(IAgentRuntime runtime, const std::string& serverId, WorldSettings worldSettings);
 
 /**
  * Gets settings state from world metadata
@@ -107,20 +107,20 @@ Character encryptedCharacter(Character character);
 Character decryptedCharacter(Character character, IAgentRuntime _runtime);
 
 /**
- * Helper std::function to encrypt all std: values in an object
- * @param {Record<std:, any>} obj - Object with values to encrypt
+ * Helper std::function to encrypt all std::string values in an object
+ * @param {Record<std::string, any>} obj - Object with values to encrypt
  * @param {string} salt - The salt to use for encryption
- * @returns {Record<std:, any>} - Object with encrypted values
+ * @returns {Record<std::string, any>} - Object with encrypted values
  */
-std::unordered_map<std:, std:> encryptObjectValues(const std::unordered_map<std:, std:>& obj, const std:& salt);
+std::unordered_map<std::string, std::string> encryptObjectValues(const std::unordered_map<std::string, std::string>& obj, const std::string& salt);
 
 /**
- * Helper std::function to decrypt all std: values in an object
- * @param {Record<std:, any>} obj - Object with encrypted values
+ * Helper std::function to decrypt all std::string values in an object
+ * @param {Record<std::string, any>} obj - Object with encrypted values
  * @param {string} salt - The salt to use for decryption
- * @returns {Record<std:, any>} - Object with decrypted values
+ * @returns {Record<std::string, any>} - Object with decrypted values
  */
-std::unordered_map<std:, std:> decryptObjectValues(const std::unordered_map<std:, std:>& obj, const std:& salt);
+std::unordered_map<std::string, std::string> decryptObjectValues(const std::unordered_map<std::string, std::string>& obj, const std::string& salt);
 
 
 } // namespace elizaos

@@ -1,4 +1,5 @@
 #include "health.hpp"
+#include <string>
 #include <cstdlib>
 #include <optional>
 #include <unordered_map>
@@ -21,7 +22,7 @@ express::Router createHealthRouter(const std::unordered_map<UUID, IAgentRuntime>
         router.get[&]("/hello", (_req, res) {
             std::cout << "Hello endpoint hit" << std::endl;
             res.setHeader("Content-Type", "application/json");
-            res.send(/* JSON.stringify */ std:({ message: "Hello World!" }));
+            res.send(/* JSON.stringify */ std::string({ message: "Hello World!" }));
             });
 
             // System status endpoint

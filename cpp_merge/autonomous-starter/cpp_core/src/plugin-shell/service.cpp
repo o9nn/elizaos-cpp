@@ -1,17 +1,18 @@
 #include "service.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::variant<Omit<FileOperationEntry, "timestamp", "cwd">> parseFileOperation(const std:& command, const std:& cwd) {
+std::variant<Omit<FileOperationEntry, "timestamp", "cwd">> parseFileOperation(const std::string& command, const std::string& cwd) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto parts = command.split(/\s+/);
     const auto cmd = parts[0].toLowerCase();
-    std: operationType = nullptr;
-    std: target = nullptr;
-    std: secondaryTarget = std::nullopt;
+    std::string operationType = nullptr;
+    std::string target = nullptr;
+    std::string secondaryTarget = std::nullopt;
 
     // Simple keywords for operations
     const auto readCmds = ["cat", "less", "more", "head", "tail"];

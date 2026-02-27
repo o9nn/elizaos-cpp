@@ -20,7 +20,7 @@ namespace elizaos {
 
 struct PriceValidationResult {
     bool valid;
-    std::optional<std:> warning;
+    std::optional<std::string> warning;
     std::optional<double> aggregatedPrice;
     std::optional<double> poolPrice;
     std::optional<double> divergencePercent;
@@ -39,6 +39,6 @@ struct CoinGeckoPriceResponse {
  * Check if the pool price diverges significantly (>10%) from the aggregated off-chain price.
  * Uses CoinGecko public API with exponential retry and 30-second caching.
  */
-std::future<PriceValidationResult> checkPriceDivergence(const std:& tokenAddress, Chain chain, double poolPriceUsd);
+std::future<PriceValidationResult> checkPriceDivergence(const std::string& tokenAddress, Chain chain, double poolPriceUsd);
 
 } // namespace elizaos

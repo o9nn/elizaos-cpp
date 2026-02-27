@@ -1,4 +1,5 @@
 #include "use-authentication.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -13,12 +14,12 @@ void useAuthentication() {
         disconnect: adapterDisconnect,
         wallet,
         } = useWallet();
-        const auto [authToken, setAuthToken] = useLocalStorage<std: | nullptr>(;
+        const auto [authToken, setAuthToken] = useLocalStorage<std::string | nullptr>(;
         "authToken",
         nullptr,
         );
         // const [isAuthenticating, setIsAuthenticating] = useState(false);
-        const auto [userPrivileges, setUserPrivileges] = useState<std:[]>([]);
+        const auto [userPrivileges, setUserPrivileges] = useState<std::string[]>([]);
         const auto queryClient = useQueryClient();
         const auto isSettingToken = useRef(false);
 
@@ -65,7 +66,7 @@ void useAuthentication() {
                                 return [&]() { return window.removeEventListener("storage", handleStorageChange); };
                                 }, [authToken, setAuthToken, queryClient]);
 
-                                const auto getWalletAddress = (): std: | nullptr => {;
+                                const auto getWalletAddress = (): std::string | nullptr => {;
                                     if (authToken && !isTokenExpired(authToken)) {
                                         const auto payload = parseJwt(authToken);
                                         if (payload.sub) {
@@ -124,7 +125,7 @@ void useAuthentication() {
                                                             retry: 1,
                                                             });
 
-                                                            const auto handleSuccessfulAuth = [&](token: std:) {;
+                                                            const auto handleSuccessfulAuth = [&](token: std::string) {;
                                                                 const auto payload = parseJwt(token);
                                                                 const auto tokenWallet = payload.sub;
 
@@ -141,7 +142,7 @@ void useAuthentication() {
                                                                     return;
                                                                 }
 
-                                                                // Set the flag before std: state changes
+                                                                // Set the flag before std::string state changes
                                                                 isSettingToken.current = true;
 
                                                                 // Use a timeout to ensure the flag is cleared after the storage event

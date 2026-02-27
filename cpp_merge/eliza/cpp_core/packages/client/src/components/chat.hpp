@@ -33,7 +33,7 @@ struct UnifiedChatViewProps {
 struct ChatUIState {
     bool showGroupEditPanel;
     bool showProfileOverlay;
-    std: input;
+    std::string input;
     bool inputDisabled;
     std::optional<UUID> selectedGroupAgentId;
     std::optional<UUID> currentDmChannelId;

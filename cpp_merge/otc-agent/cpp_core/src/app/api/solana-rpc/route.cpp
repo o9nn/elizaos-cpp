@@ -1,4 +1,5 @@
 #include "route.hpp"
+#include <string>
 #include <future>
 #include <cstdlib>
 #include <iostream>
@@ -28,7 +29,7 @@ std::future<void> POST(NextRequest request) {
             headers: {
                 "Content-Type": "application/json",
                 },
-                body: /* JSON.stringify */ std:(body),
+                body: /* JSON.stringify */ std::string(body),
                 },
                 );
 

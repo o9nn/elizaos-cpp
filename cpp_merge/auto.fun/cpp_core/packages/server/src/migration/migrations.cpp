@@ -1,4 +1,5 @@
 #include "migrations.hpp"
+#include <string>
 #include <future>
 #include <cstdlib>
 #include <optional>
@@ -7,7 +8,7 @@
 
 namespace elizaos {
 
-std::future<std::optional<TokenData>> getToken(const std:& mint) {
+std::future<std::optional<TokenData>> getToken(const std::string& mint) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto db = getDB();
@@ -20,7 +21,7 @@ std::future<std::optional<TokenData>> getToken(const std:& mint) {
         auto tokenDecimals = tokenDb.tokenDecimals;
         auto lastSupplyUpdate = tokenDb.lastSupplyUpdate;
 
-        if (tokenDb.tokenDecimals == undefined) {
+        if (tokenDb.tokenDecimals == std::nullopt) {
             const auto supplyResult = updateTokenSupplyFromChain(tokenDb.mint);
             tokenSupply = supplyResult.tokenSupply;
             tokenSupplyUiAmount = supplyResult.tokenSupplyUiAmount;
@@ -80,7 +81,7 @@ std::future<std::optional<TokenData>> getToken(const std:& mint) {
             withdrawnAmounts: withdrawnAmounts || std::nullopt,
             poolInfo: safeParse<any>(tokenDb.poolInfo, std::nullopt),
             migration: typeof tokenDb.migration == "string"
-            ? safeParse<Record<std:, any>>(tokenDb.migration, {});
+            ? safeParse<Record<std::string, any>>(tokenDb.migration, {});
             : (tokenDb.migration || {}),
             tokenSupply: tokenDb.tokenSupply || std::nullopt,
             tokenSupplyUiAmount: tokenDb.tokenSupplyUiAmount || std::nullopt,
@@ -102,7 +103,7 @@ std::future<MigrationStepResult> executeMigrationStep(TokenData token, Migration
 
     // Update token migration
     token.migration = token.migration || {}
-    (token.migration<std:, any>)[step.name] = {
+    (token.migration<std::string, any>)[step.name] = {
         status: "success",
         txId: result.txId,
         updatedAt: std::make_unique<Date>().toISOString(),
@@ -172,7 +173,7 @@ std::future<void> releaseMigrationLock(TokenData token) {
 
 }
 
-std::future<void> saveMigrationState(TokenData token, const std:& step) {
+std::future<void> saveMigrationState(TokenData token, const std::string& step) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto db = getDB();
@@ -183,7 +184,7 @@ std::future<void> saveMigrationState(TokenData token, const std:& step) {
 
         db.update(tokens);
         .std::set({
-            migration: /* JSON.stringify */ std:(updatedMigration),
+            migration: /* JSON.stringify */ std::string(updatedMigration),
             lastUpdated: std::make_unique<Date>(),
             }).where(eq(tokens.mint, token.mint));
 

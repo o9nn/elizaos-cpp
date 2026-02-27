@@ -15,20 +15,20 @@ namespace elizaos {
 
 
 
-class MorphoError extends Error {
+class MorphoError : public Error {
   code: MorphoErrorCode;
-  details?: std:;
-  suggestions?: std:[];
+  details?: std::string;
+  suggestions?: std::string[];
   matchingImpact?: MatchingImpact;
-  fallbackOptions?: std:[];
+  fallbackOptions?: std::string[];
 
-  constructor(
+  /* constructor */ (
     code: MorphoErrorCode,
-    message: std:,
-    details?: std:,
-    suggestions?: std:[],
+    message: std::string,
+    details?: std::string,
+    suggestions?: std::string[],
     matchingImpact?: MatchingImpact,
-    fallbackOptions?: std:[],
+    fallbackOptions?: std::string[],
   ) {
     super(message);
     this.name = "MorphoError";
@@ -40,7 +40,7 @@ class MorphoError extends Error {
   }
 
 class ErrorHandler {
-  static handle(error: std:): MorphoError {
+  static handle(error: std::string): MorphoError {
     logger.error("Handling error:", error);
 
     // Already a MorphoError

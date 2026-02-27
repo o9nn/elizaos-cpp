@@ -20,17 +20,17 @@ namespace elizaos {
  * Morpho Supply Parameters
  */
 struct MorphoSupplyParams {
-    std: asset;
+    std::string asset;
     BigNumber amount;
     BigNumber maxGasForMatching;
-    std::optional<std:> onBehalf;
+    std::optional<std::string> onBehalf;
 };
 
 /**
  * Morpho Supply Result
  */
 struct MorphoSupplyResult {
-    std: transactionHash;
+    std::string transactionHash;
     BigNumber suppliedAmount;
     BigNumber matchedAmount;
     BigNumber poolAmount;
@@ -42,17 +42,17 @@ struct MorphoSupplyResult {
  * Morpho Borrow Parameters
  */
 struct MorphoBorrowParams {
-    std: asset;
+    std::string asset;
     BigNumber amount;
     BigNumber maxGasForMatching;
-    std::optional<std:> onBehalf;
+    std::optional<std::string> onBehalf;
 };
 
 /**
  * Morpho Borrow Result
  */
 struct MorphoBorrowResult {
-    std: transactionHash;
+    std::string transactionHash;
     BigNumber borrowedAmount;
     BigNumber matchedAmount;
     BigNumber poolAmount;
@@ -65,17 +65,17 @@ struct MorphoBorrowResult {
  * Morpho Withdraw Parameters
  */
 struct MorphoWithdrawParams {
-    std: asset;
+    std::string asset;
     BigNumber amount;
     BigNumber maxGasForMatching;
-    std::optional<std:> receiver;
+    std::optional<std::string> receiver;
 };
 
 /**
  * Morpho Withdraw Result
  */
 struct MorphoWithdrawResult {
-    std: transactionHash;
+    std::string transactionHash;
     BigNumber withdrawnAmount;
     BigNumber matchingImpact;
     { executionDetails;
@@ -88,17 +88,17 @@ struct MorphoWithdrawResult {
  * Morpho Repay Parameters
  */
 struct MorphoRepayParams {
-    std: asset;
+    std::string asset;
     BigNumber amount;
     BigNumber maxGasForMatching;
-    std::optional<std:> onBehalf;
+    std::optional<std::string> onBehalf;
 };
 
 /**
  * Morpho Repay Result
  */
 struct MorphoRepayResult {
-    std: transactionHash;
+    std::string transactionHash;
     BigNumber repaidAmount;
     BigNumber interestSaved;
     { positionUpdate;
@@ -124,8 +124,8 @@ struct MorphoPosition {
  * Individual Asset Position
  */
 struct MorphoAssetPosition {
-    std: asset;
-    std: symbol;
+    std::string asset;
+    std::string symbol;
     BigNumber totalAmount;
     BigNumber matchedAmount;
     BigNumber poolAmount;
@@ -140,7 +140,7 @@ struct MorphoAssetPosition {
  * Rate Comparison Data
  */
 struct RateComparison {
-    std: asset;
+    std::string asset;
     double morphoSupplyAPY;
     double morphoBorrowAPY;
     double poolSupplyAPY;
@@ -148,15 +148,15 @@ struct RateComparison {
     double supplyImprovement;
     double borrowImprovement;
     double matchingPercentage;
-    std::optional<std:> recommendedAction;
+    std::optional<std::string> recommendedAction;
 };
 
 /**
  * Morpho Market Data
  */
 struct MorphoMarketData {
-    std::optional<std:> marketId;
-    std: name;
+    std::optional<std::string> marketId;
+    std::string name;
     BigNumber totalSupply;
     BigNumber totalBorrow;
     double supplyRate;
@@ -172,9 +172,9 @@ struct MorphoMarketData {
  * Morpho Error Response
  */
 struct MorphoErrorResponse {
-    std: code;
-    std: message;
-    std::optional<std:> details;
+    std::string code;
+    std::string message;
+    std::optional<std::string> details;
     std::optional<std::vector<std::string>> suggestions;
     std::optional<MatchingImpact> matchingImpact;
     std::optional<std::vector<std::string>> fallbackOptions;
@@ -195,8 +195,8 @@ struct MatchingImpact {
  */
 struct MorphoConfig {
     "base" | "base-sepolia" network;
-    std: rpcUrl;
-    std::optional<std:> morphoApiUrl;
+    std::string rpcUrl;
+    std::optional<std::string> morphoApiUrl;
     BigNumber defaultMaxGasForMatching;
     double matchingEfficiencyThreshold;
     double rateImprovementThreshold;
@@ -228,27 +228,27 @@ using RepayResult = MorphoRepayResult;
  * Action parameter types
  */
 struct SupplyActionParams {
-    std: asset;
-    std: amount;
-    std::optional<std:> maxGasForMatching;
+    std::string asset;
+    std::string amount;
+    std::optional<std::string> maxGasForMatching;
 };
 
 struct BorrowActionParams {
-    std: asset;
-    std: amount;
-    std::optional<std:> maxGasForMatching;
+    std::string asset;
+    std::string amount;
+    std::optional<std::string> maxGasForMatching;
 };
 
 struct WithdrawActionParams {
-    std: asset;
-    std: amount;
-    std::optional<std:> maxGasForMatching;
+    std::string asset;
+    std::string amount;
+    std::optional<std::string> maxGasForMatching;
 };
 
 struct RepayActionParams {
-    std: asset;
-    std: amount;
-    std::optional<std:> maxGasForMatching;
+    std::string asset;
+    std::string amount;
+    std::optional<std::string> maxGasForMatching;
 };
 
 /**
@@ -271,10 +271,10 @@ enum MorphoErrorCode {
  * Asset metadata
  */
 struct AssetMetadata {
-    std: address;
-    std: symbol;
+    std::string address;
+    std::string symbol;
     double decimals;
-    std: name;
+    std::string name;
     bool isActive;
     bool canBeCollateral;
     bool canBeBorrowed;
@@ -284,20 +284,20 @@ struct AssetMetadata {
  * Morpho Vault Types
  */
 struct MorphoVault {
-    std: address;
-    std: name;
-    std: symbol;
-    std: asset;
+    std::string address;
+    std::string name;
+    std::string symbol;
+    std::string asset;
     BigNumber totalAssets;
     BigNumber totalSupply;
     double performanceFee;
     double managementFee;
-    std: curator;
-    std: owner;
-    std::optional<std:> pendingOwner;
-    std::optional<std:> guardian;
-    std: feeRecipient;
-    std: skimRecipient;
+    std::string curator;
+    std::string owner;
+    std::optional<std::string> pendingOwner;
+    std::optional<std::string> guardian;
+    std::string feeRecipient;
+    std::string skimRecipient;
     double timelock;
     BigNumber lastTotalAssets;
     std::vector<std::string> supplyQueue;
@@ -307,28 +307,28 @@ struct MorphoVault {
 };
 
 struct VaultDepositParams {
-    std: vault;
+    std::string vault;
     BigNumber assets;
-    std::optional<std:> receiver;
+    std::optional<std::string> receiver;
 };
 
 struct VaultDepositResult {
-    std: transactionHash;
+    std::string transactionHash;
     BigNumber shares;
     BigNumber assets;
     BigNumber newBalance;
 };
 
 struct VaultWithdrawParams {
-    std: vault;
+    std::string vault;
     std::optional<BigNumber> shares;
     std::optional<BigNumber> assets;
-    std::optional<std:> receiver;
-    std::optional<std:> owner;
+    std::optional<std::string> receiver;
+    std::optional<std::string> owner;
 };
 
 struct VaultWithdrawResult {
-    std: transactionHash;
+    std::string transactionHash;
     BigNumber shares;
     BigNumber assets;
     BigNumber newBalance;
@@ -338,7 +338,7 @@ struct VaultWithdrawResult {
  * Bundler Types
  */
 struct BundleAction {
-    std: target;
+    std::string target;
     Hex callData;
     std::optional<BigNumber> value;
 };
@@ -349,7 +349,7 @@ struct BundleParams {
 };
 
 struct BundleResult {
-    std: transactionHash;
+    std::string transactionHash;
     std::vector<std::string> results;
     BigNumber gasUsed;
 };
@@ -358,29 +358,29 @@ struct BundleResult {
  * Rewards Types
  */
 struct RewardsClaim {
-    std: token;
+    std::string token;
     BigNumber amount;
     std::vector<std::string> proof;
 };
 
 struct RewardsClaimParams {
     std::vector<RewardsClaim> claims;
-    std::optional<std:> receiver;
+    std::optional<std::string> receiver;
 };
 
 struct RewardsClaimResult {
-    std: transactionHash;
+    std::string transactionHash;
     BigNumber totalClaimed;
-    std::vector<{ token: std:; amount: BigNumber }> claimedTokens;
+    std::vector<{ token: std::string; amount: BigNumber }> claimedTokens;
 
 struct UserRewards {
-    std::vector<{ token: std:; amount: BigNumber }> claimable;
+    std::vector<{ token: std::string; amount: BigNumber }> claimable;
 
 /**
  * Liquidation Types
  */
 struct LiquidationAlert {
-    std: userAddress;
+    std::string userAddress;
     double healthFactor;
     "LOW" | "MEDIUM" | "HIGH" | "CRITICAL" riskLevel;
     std::vector<std::string> recommendedActions;
@@ -388,9 +388,9 @@ struct LiquidationAlert {
 };
 
 struct PreLiquidationParams {
-    std: borrower;
-    std: repayAsset;
-    std: seizeAsset;
+    std::string borrower;
+    std::string repayAsset;
+    std::string seizeAsset;
     std::optional<BigNumber> repayAmount;
 };
 
@@ -398,11 +398,11 @@ struct PreLiquidationParams {
  * Oracle Types
  */
 struct PriceFeed {
-    std: asset;
+    std::string asset;
     BigNumber price;
     double decimals;
     double updatedAt;
-    std: source;
+    std::string source;
 };
 
 struct HealthFactorData {
@@ -418,21 +418,21 @@ struct HealthFactorData {
  * Market Creation Types
  */
 struct MarketCreationParams {
-    std: loanToken;
-    std: collateralToken;
-    std: oracle;
-    std: irm;
+    std::string loanToken;
+    std::string collateralToken;
+    std::string oracle;
+    std::string irm;
     BigNumber; // Loan-to-value ratio in basis points lltv;
 };
 
 struct MarketCreationResult {
     Hex marketId;
-    std: transactionHash;
+    std::string transactionHash;
     { market;
-    std: loanToken;
-    std: collateralToken;
-    std: oracle;
-    std: irm;
+    std::string loanToken;
+    std::string collateralToken;
+    std::string oracle;
+    std::string irm;
     BigNumber lltv;
 };
 
@@ -440,14 +440,14 @@ struct MarketCreationResult {
  * Public Allocator Types
  */
 struct AllocationConfig {
-    std: vault;
+    std::string vault;
     Hex marketId;
     BigNumber maxIn;
     BigNumber maxOut;
 };
 
 struct ReallocateParams {
-    std: vault;
+    std::string vault;
     Hex marketId;
     BigNumber assets;
 };
@@ -456,29 +456,29 @@ struct ReallocateParams {
  * Enhanced Action Parameter Types
  */
 struct VaultDepositActionParams {
-    std: vault;
-    std: amount;
-    std::optional<std:> receiver;
+    std::string vault;
+    std::string amount;
+    std::optional<std::string> receiver;
 };
 
 struct VaultWithdrawActionParams {
-    std: vault;
-    std: amount;
+    std::string vault;
+    std::string amount;
     std::optional<bool> isShares;
-    std::optional<std:> receiver;
+    std::optional<std::string> receiver;
 };
 
 struct BundledSupplyBorrowParams {
-    std: supplyAsset;
-    std: supplyAmount;
-    std: borrowAsset;
-    std: borrowAmount;
-    std::optional<std:> maxGasForMatching;
+    std::string supplyAsset;
+    std::string supplyAmount;
+    std::string borrowAsset;
+    std::string borrowAmount;
+    std::optional<std::string> maxGasForMatching;
 };
 
 struct ClaimRewardsActionParams {
     std::optional<std::vector<std::string>> tokens;
-    std::optional<std:> receiver;
+    std::optional<std::string> receiver;
 };
 
 using MorphoApiMarket = {
@@ -486,30 +486,30 @@ using MorphoApiMarket = {
 using MarketSummary = {
 
 struct UserPosition {
-    std: marketId;
-    std: pairLabel;
+    std::string marketId;
+    std::string pairLabel;
     { symbols;
-    std: collateral;
-    std: loan;
+    std::string collateral;
+    std::string loan;
     { decimals;
     double collateral;
     double loan;
     { amounts;
-    std: collateralTokens;
-    std: loanTokens;
-    std: | null collateralUsd;
-    std: | null loanUsd;
-    std: suppliedTokens;
-    std: | null suppliedUsd;
-    std: withdrawableTokens;
+    std::string collateralTokens;
+    std::string loanTokens;
+    std::string | null collateralUsd;
+    std::string | null loanUsd;
+    std::string suppliedTokens;
+    std::string | null suppliedUsd;
+    std::string withdrawableTokens;
     { shares;
-    std: borrowShares;
-    std: supplyShares;
+    std::string borrowShares;
+    std::string supplyShares;
     { prices;
     number | null collateralUsd;
     number | null loanUsd;
-    std: | null liquidationLoanPerCollateral;
-    std: | null currentLoanPerCollateral;
+    std::string | null liquidationLoanPerCollateral;
+    std::string | null currentLoanPerCollateral;
     { risk;
     double lltvPct;
     number | null ltvPct;
@@ -520,7 +520,7 @@ struct UserPosition {
     "0x" + std::to_string(string) + "" user;
     { supply;
     bool hasSupplied;
-    std: | null earnedInterest;
+    std::string | null earnedInterest;
     number | null currentApy;
     bool hasPosition;
 };
@@ -528,10 +528,10 @@ struct UserPosition {
 using UserVaultPosition = {
   vault: {
     address: "0x" + std::to_string(string) + "";
-    name: std:;
+    name: std::string;
     asset: {
       address: "0x" + std::to_string(string) + "";
-      symbol: std:;
+      symbol: std::string;
       decimals;
     };
     state: {
@@ -541,16 +541,16 @@ using UserVaultPosition = {
       yearlyApy | null;
     };
   };
-  shares: std:;
-  assets: std:;
+  shares: std::string;
+  assets: std::string;
 };
 
 using MorphoVaultData = {
   address: "0x" + std::to_string(string) + "";
-  name: std:;
+  name: std::string;
   asset: {
     address: "0x" + std::to_string(string) + "";
-    symbol: std:;
+    symbol: std::string;
     decimals;
   };
   // Totals
@@ -569,7 +569,7 @@ using MorphoVaultData = {
 
   // Optional: per-allocation info (array of markets)
   allocations?: Array<{
-    marketId: std:;
+    marketId: std::string;
     supplyAssetsTokens: BigNumber;
     supplyAssetsUsd?: BigNumber | null;
     supplyCapTokens?: BigNumber | null;

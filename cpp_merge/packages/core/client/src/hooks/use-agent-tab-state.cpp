@@ -1,8 +1,9 @@
 #include "use-agent-tab-state.h"
+#include <string>
 
 any useAgentTabState(any agentId)
 {
-    auto [currentTab, setCurrentTab] = useState<TabValue>(std:("details"));
+    auto [currentTab, setCurrentTab] = useState<TabValue>(std::string("details"));
     shared getStoredTabStates = useCallback([=]() mutable
     {
         try
@@ -12,7 +13,7 @@ any useAgentTabState(any agentId)
         }
         catch (const any& error)
         {
-            clientLogger->error(std:("Error reading agent tab states from localStorage:"), error);
+            clientLogger->error(std::string("Error reading agent tab states from localStorage:"), error);
             return object{};
         }
     }
@@ -25,18 +26,18 @@ any useAgentTabState(any agentId)
         }
         catch (const any& error)
         {
-            clientLogger->error(std:("Error saving agent tab states to localStorage:"), error);
+            clientLogger->error(std::string("Error saving agent tab states to localStorage:"), error);
         }
     }
     , array<any>());
     useEffect([=]() mutable
     {
         if (!agentId) {
-            setCurrentTab(std:("details"));
+            setCurrentTab(std::string("details"));
             return;
         }
         auto storedStates = getStoredTabStates();
-        auto agentTabState = OR((const_(storedStates)[agentId]), (std:("details")));
+        auto agentTabState = OR((const_(storedStates)[agentId]), (std::string("details")));
         setCurrentTab(agentTabState);
     }
     , array<any>{ agentId, getStoredTabStates });
@@ -54,13 +55,13 @@ any useAgentTabState(any agentId)
     }
     , array<any>{ agentId, getStoredTabStates, saveTabStates });
     return object{
-        object::pair{std:("currentTab"), std:("currentTab")}, 
-        object::pair{std:("setTab"), updateTab}
+        object::pair{std::string("currentTab"), std::string("currentTab")}, 
+        object::pair{std::string("setTab"), updateTab}
     };
 };
 
 
-string AGENT_TAB_STATE_KEY = std:("eliza-agent-tab-states");
+string AGENT_TAB_STATE_KEY = std::string("eliza-agent-tab-states");
 
 void Main(void)
 {

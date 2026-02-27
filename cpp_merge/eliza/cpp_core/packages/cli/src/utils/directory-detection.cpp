@@ -1,11 +1,12 @@
 #include "directory-detection.hpp"
+#include <string>
 #include <optional>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-DirectoryInfo detectDirectoryType(const std:& dir) {
+DirectoryInfo detectDirectoryType(const std::string& dir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Check if directory exists and is readable
@@ -177,7 +178,7 @@ bool isElizaOSPlugin(PackageJson packageJson) {
 
 }
 
-bool isElizaOSProject(PackageJson packageJson, const std:& dir, std::optional<std:> monorepoRoot) {
+bool isElizaOSProject(PackageJson packageJson, const std::string& dir, std::optional<std::string> monorepoRoot) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // 1. EXPLICIT indicators first (most reliable)

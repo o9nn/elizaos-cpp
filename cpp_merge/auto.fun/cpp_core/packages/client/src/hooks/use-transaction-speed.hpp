@@ -16,7 +16,7 @@ namespace elizaos {
 
 
 
-using TTransactionSpeed = std:;
+using TTransactionSpeed = std::string;
 
 
 } // namespace elizaos

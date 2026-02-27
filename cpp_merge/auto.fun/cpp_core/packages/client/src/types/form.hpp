@@ -15,21 +15,21 @@ namespace elizaos {
 // Manual refinement required for production use
 
 struct TokenMetadata {
-    std: name;
-    std: symbol;
-    std: description;
+    std::string name;
+    std::string symbol;
+    std::string description;
     double initialSol;
-    std: twitter;
-    std: telegram;
-    std: farcaster;
-    std: website;
-    std: discord;
-    std: imageBase64;
-    std: tokenMint;
+    std::string twitter;
+    std::string telegram;
+    std::string farcaster;
+    std::string website;
+    std::string discord;
+    std::string imageBase64;
+    std::string tokenMint;
     double decimals;
     double supply;
-    std: freezeAuthority;
-    std: mintAuthority;
+    std::string freezeAuthority;
+    std::string mintAuthority;
 };
 
 

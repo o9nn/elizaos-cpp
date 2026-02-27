@@ -1,9 +1,10 @@
 #include "tables.hpp"
+#include <string>
 
 array<std::shared_ptr<TableSchema>> GOALS_TABLES = array<std::shared_ptr<TableSchema>>{ object{
-    object::pair{std:("name"), std:("goals")}, 
-    object::pair{std:("pluginName"), std:("@elizaos/plugin-goals")}, 
-    object::pair{std:("sql"), std:("CREATE TABLE IF NOT EXISTS "goals" (\
+    object::pair{std::string("name"), std::string("goals")}, 
+    object::pair{std::string("pluginName"), std::string("@elizaos/plugin-goals")}, 
+    object::pair{std::string("sql"), std::string("CREATE TABLE IF NOT EXISTS "goals" (\
       "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),\
       "agent_id" UUID NOT NULL,\
       "owner_type" TEXT NOT NULL,\
@@ -16,7 +17,7 @@ array<std::shared_ptr<TableSchema>> GOALS_TABLES = array<std::shared_ptr<TableSc
       "updated_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\
       "metadata" JSONB DEFAULT '{}' NOT NULL\
     )")}, 
-    object::pair{std:("fallbackSql"), std:("CREATE TABLE IF NOT EXISTS goals (\
+    object::pair{std::string("fallbackSql"), std::string("CREATE TABLE IF NOT EXISTS goals (\
       id TEXT PRIMARY KEY,\
       agent_id TEXT NOT NULL,\
       owner_type TEXT NOT NULL,\
@@ -30,17 +31,17 @@ array<std::shared_ptr<TableSchema>> GOALS_TABLES = array<std::shared_ptr<TableSc
       metadata TEXT DEFAULT '{}' NOT NULL\
     )")}
 }, object{
-    object::pair{std:("name"), std:("goal_tags")}, 
-    object::pair{std:("pluginName"), std:("@elizaos/plugin-goals")}, 
-    object::pair{std:("dependencies"), array<string>{ std:("goals") }}, 
-    object::pair{std:("sql"), std:("CREATE TABLE IF NOT EXISTS "goal_tags" (\
+    object::pair{std::string("name"), std::string("goal_tags")}, 
+    object::pair{std::string("pluginName"), std::string("@elizaos/plugin-goals")}, 
+    object::pair{std::string("dependencies"), array<string>{ std::string("goals") }}, 
+    object::pair{std::string("sql"), std::string("CREATE TABLE IF NOT EXISTS "goal_tags" (\
       "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),\
       "goal_id" UUID NOT NULL REFERENCES goals(id) ON DELETE CASCADE,\
       "tag" TEXT NOT NULL,\
       "created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,\
       UNIQUE(goal_id, tag)\
     )")}, 
-    object::pair{std:("fallbackSql"), std:("CREATE TABLE IF NOT EXISTS goal_tags (\
+    object::pair{std::string("fallbackSql"), std::string("CREATE TABLE IF NOT EXISTS goal_tags (\
       id TEXT PRIMARY KEY,\
       goal_id TEXT NOT NULL REFERENCES goals(id) ON DELETE CASCADE,\
       tag TEXT NOT NULL,\

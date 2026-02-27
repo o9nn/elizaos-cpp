@@ -22,7 +22,7 @@ struct ModalProps {
     std::optional<bool> closeOnBackdropClick;
     std::optional<bool> closeOnEsc;
     std::optional<bool> showCloseButton;
-    std::optional<std:> className;
+    std::optional<std::string> className;
 };
 
 void Modal(auto onClose, auto closeOnBackdropClick, auto closeOnEsc, auto showCloseButton, auto className);

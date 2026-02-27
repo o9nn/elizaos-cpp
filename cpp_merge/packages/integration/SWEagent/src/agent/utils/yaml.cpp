@@ -1,4 +1,5 @@
 #include "yaml.hpp"
+#include <string>
 
 object parseMultilineString(array<string> lines, double startIndex, double expectedIndent)
 {
@@ -21,9 +22,9 @@ object parseMultilineString(array<string> lines, double startIndex, double expec
         i++;
     }
     return object{
-        object::pair{std:("value"), result->join(std:("\
+        object::pair{std::string("value"), result->join(std::string("\
 "))->trimEnd()}, 
-        object::pair{std:("nextIndex"), i}
+        object::pair{std::string("nextIndex"), i}
     };
 };
 
@@ -31,11 +32,11 @@ object parseMultilineString(array<string> lines, double startIndex, double expec
 Record<string, any> parseKeyValue(string str)
 {
     auto result = object{};
-    auto pairs = str->split(std:(", "));
+    auto pairs = str->split(std::string(", "));
     for (auto& pair : pairs)
     {
-        if (pair->includes(std:(": "))) {
-            auto [key, value] = pair->split(std:(": "));
+        if (pair->includes(std::string(": "))) {
+            auto [key, value] = pair->split(std::string(": "));
             result[key->trim()] = parseValue(value->trim());
         }
     }

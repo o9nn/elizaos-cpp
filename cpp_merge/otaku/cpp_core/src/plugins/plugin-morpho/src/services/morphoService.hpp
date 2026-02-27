@@ -22,13 +22,13 @@ namespace elizaos {
 
 // Chain ID mapping for supported networks
 
-class MorphoService extends Service {
+class MorphoService : public Service {
   static serviceType = "morpho";
   capabilityDescription = "";
 
   private gql = new GqlClient(MORPHO_GQL);
 
-  constructor(runtime: IAgentRuntime) {
+  /* constructor */ (runtime: IAgentRuntime) {
     super(runtime);
   }
 
@@ -147,7 +147,7 @@ class MorphoService extends Service {
 // GraphQL Client
 // ----------------------------
 class GqlClient {
-  constructor(private url: std:) {}
+  /* constructor */ (private url: std::string) {}
 
 // --- Minimal ABIs ---
 

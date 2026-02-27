@@ -15,7 +15,7 @@ public:
     template <typename T>
     any testPost(string path, any body);
     template <typename T>
-    any testRequest(string method, string path, any options = undefined);
+    any testRequest(string method, string path, any options = std::nullopt);
     TestClient(std::shared_ptr<ApiClientConfig> config);
 };
 

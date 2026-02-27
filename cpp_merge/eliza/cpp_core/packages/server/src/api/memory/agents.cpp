@@ -1,4 +1,5 @@
 #include "agents.hpp"
+#include <string>
 #include <optional>
 #include <map>
 #include <unordered_map>
@@ -171,10 +172,10 @@ express::Router createAgentMemoryRouter(const std::unordered_map<UUID, IAgentRun
                                                         metadata: restOfMemoryData.metadata | std::nullopt,
                                                         };
 
-                                                        // Remove undefined fields that might have been explicitly std::set to undefined by casting above,
+                                                        // Remove std::nullopt fields that might have been explicitly std::set to std::nullopt by casting above,
                                                         // if the updateMemory implementation doesn't handle them gracefully.
                                                         Object.keys(memoryToUpdate).forEach[&]((key) {
-                                                            if ((memoryToUpdate as std:)[key] == undefined) {
+                                                            if ((memoryToUpdate as std::string)[key] == std::nullopt) {
                                                                 delete (memoryToUpdate)[key];
                                                             }
                                                             });

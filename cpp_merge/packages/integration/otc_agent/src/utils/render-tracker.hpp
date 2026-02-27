@@ -13,8 +13,8 @@ Record<string, string> getPropsSnapshot(Record<string, any> props);
 
 array<string> findChanges(any prev, Record<string, string> curr);
 
-void trackRender(string componentName, Record<string, any> props = undefined, Record<string, any> state = undefined);
+void trackRender(string componentName, Record<string, any> props = std::nullopt, Record<string, any> state = std::nullopt);
 
-void useRenderTracker(string componentName, Record<string, any> props = undefined, Record<string, any> state = undefined);
+void useRenderTracker(string componentName, Record<string, any> props = std::nullopt, Record<string, any> state = std::nullopt);
 
 #endif

@@ -1,10 +1,11 @@
 #include "extract-pred.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-void extractPred(const std:& trajPath) {
+void extractPred(const std::string& trajPath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto data = /* JSON::parse */ fs.readFileSync(trajPath, "utf-8");
@@ -16,7 +17,7 @@ void extractPred(const std:& trajPath) {
         instance_id: path.basename(path.dirname(trajPath)),
         };
 
-        fs.writeFileSync(predPath, /* JSON.stringify */ std:(predData));
+        fs.writeFileSync(predPath, /* JSON.stringify */ std::string(predData));
         std::cout << "Extracted prediction to " + predPath << std::endl;
 
 }

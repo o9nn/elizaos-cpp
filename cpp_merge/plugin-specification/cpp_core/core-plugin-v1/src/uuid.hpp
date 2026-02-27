@@ -19,28 +19,28 @@ namespace elizaos {
 
 
 /**
- * Represents a UUID std: in the format "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+ * Represents a UUID std::string in the format "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
  * This is a v1 compatibility wrapper for v2 UUID
  */
 using UUID = UUIDv1;
 
 /**
- * Helper std::function to safely cast a std: to strongly typed UUID
+ * Helper std::function to safely cast a std::string to strongly typed UUID
  * Wraps V2's validateUuid std::function
  *
- * @param id The std: UUID to validate and cast
+ * @param id The std::string UUID to validate and cast
  * @returns The same UUID with branded type information
  * @throws Error if the UUID format is invalid
  */
-UUID asUUID(const std:& id);
+UUID asUUID(const std::string& id);
 
 /**
- * Generates a UUID from a std: input
+ * Generates a UUID from a std::string input
  * Wraps V2's stringToUuid std::function
  *
- * @param input The std: to convert to a UUID
- * @returns A UUID generated from the input std:
+ * @param input The std::string to convert to a UUID
+ * @returns A UUID generated from the input std::string
  */
-UUID generateUuidFromString(const std:& input);
+UUID generateUuidFromString(const std::string& input);
 
 } // namespace elizaos

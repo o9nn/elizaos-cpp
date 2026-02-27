@@ -10,11 +10,11 @@
 
 namespace elizaos {
 
-std: summarizeValue(const std:& value) {
+std::string summarizeValue(const std::string& value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (value == null) return "null";
-    if (value == undefined) return "undefined";
+    if (value == std::nullopt) return "std::nullopt";
     if (typeof value == "function") return "fn:" + std::to_string(value.name || "anonymous") + "";
     if (typeof value == "object") {
         if (Array.isArray(value)) return "array[" + std::to_string(value.size()) + "]";
@@ -30,10 +30,10 @@ std: summarizeValue(const std:& value) {
 
 }
 
-std::unordered_map<std:, std:> getPropsSnapshot(const std::unordered_map<std:, std:>& props) {
+std::unordered_map<std::string, std::string> getPropsSnapshot(const std::unordered_map<std::string, std::string>& props) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const std::unordered_map<std:, std:> snapshot = {};
+    const std::unordered_map<std::string, std::string> snapshot = {};
     for (const int [key, value] of Object.entries(props)) {
         if (key == "children") {
             snapshot[key] = typeof value == "object" ? "ReactNode" : std::to_string(value);
@@ -45,7 +45,7 @@ std::unordered_map<std:, std:> getPropsSnapshot(const std::unordered_map<std:, s
 
 }
 
-std::vector<std::string> findChanges(const std::unordered_map<std:, std:>& prev, const std::unordered_map<std:, std:>& curr) {
+std::vector<std::string> findChanges(const std::unordered_map<std::string, std::string>& prev, const std::unordered_map<std::string, std::string>& curr) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!prev) return ["(first render)"];
@@ -70,7 +70,7 @@ void MyComponent(MyProps props) {
     *
 }
 
-void trackRender(const std:& componentName, std::optional<std::unordered_map<std:, std:>> props, std::optional<std::unordered_map<std:, std:>> state) {
+void trackRender(const std::string& componentName, std::optional<std::unordered_map<std::string, std::string>> props, std::optional<std::unordered_map<std::string, std::string>> state) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -180,7 +180,7 @@ void MyComponent(MyProps props) {
     *
 }
 
-void useRenderTracker(const std:& componentName, std::optional<std::unordered_map<std:, std:>> props, std::optional<std::unordered_map<std:, std:>> state) {
+void useRenderTracker(const std::string& componentName, std::optional<std::unordered_map<std::string, std::string>> props, std::optional<std::unordered_map<std::string, std::string>> state) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     trackRender(componentName, props, state);

@@ -15,6 +15,6 @@ Partial<std::shared_ptr<State>> createMockState(Partial<std::shared_ptr<State>> 
 
 any createMockService(Partial<Record<string, any>> overrides = object{});
 
-any setupActionTest(object options = undefined);
+any setupActionTest(object options = std::nullopt);
 
 #endif

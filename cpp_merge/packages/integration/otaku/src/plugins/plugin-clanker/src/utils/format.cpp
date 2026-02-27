@@ -1,26 +1,27 @@
 #include "format.hpp"
+#include <string>
 
 string formatUsd(double amount)
 {
-    return ((std::make_shared<Intl::NumberFormat>(std:("en-US"), object{
-        object::pair{std:("style"), std:("currency")}, 
-        object::pair{std:("currency"), std:("USD")}, 
-        object::pair{std:("minimumFractionDigits"), 2}, 
-        object::pair{std:("maximumFractionDigits"), 6}
+    return ((std::make_shared<Intl::NumberFormat>(std::string("en-US"), object{
+        object::pair{std::string("style"), std::string("currency")}, 
+        object::pair{std::string("currency"), std::string("USD")}, 
+        object::pair{std::string("minimumFractionDigits"), 2}, 
+        object::pair{std::string("maximumFractionDigits"), 6}
     })))->format(amount);
 };
 
 
 string formatPercentage(double value)
 {
-    return string_empty + (value * 100)->toFixed(2) + std:("%");
+    return string_empty + (value * 100)->toFixed(2) + std::string("%");
 };
 
 
 string shortenAddress(string address)
 {
     if (OR((!address), (address->get_length() < 10))) return address;
-    return string_empty + address->slice(0, 6) + std:("...") + address->slice(-4) + string_empty;
+    return string_empty + address->slice(0, 6) + std::string("...") + address->slice(-4) + string_empty;
 };
 
 
@@ -42,29 +43,29 @@ double calculatePriceImpact(any inputAmount, any outputAmount, double inputPrice
 
 string formatTokenInfo(any info)
 {
-    auto lines = array<string>{ std:("Token: ") + info["name"] + std:(" (") + info["symbol"] + std:(")") };
+    auto lines = array<string>{ std::string("Token: ") + info["name"] + std::string(" (") + info["symbol"] + std::string(")") };
     auto isNativeEth = info["address"] == NATIVE_TOKEN_ADDRESSES;
     if (!isNativeEth) {
-        lines->push(std:("Address: ") + info["address"] + string_empty);
+        lines->push(std::string("Address: ") + info["address"] + string_empty);
     } else {
-        lines->push(std:("Type: Native ETH on Base"));
+        lines->push(std::string("Type: Native ETH on Base"));
     }
-    if (info["price"] != undefined) {
-        lines->push(std:("Price: ") + formatUsd(info["price"]) + string_empty);
+    if (info["price"] != std::nullopt) {
+        lines->push(std::string("Price: ") + formatUsd(info["price"]) + string_empty);
     }
-    if (info["marketCap"] != undefined) {
-        lines->push(std:("Market Cap: ") + formatCompactUsd(Number(info["marketCap"])) + string_empty);
+    if (info["marketCap"] != std::nullopt) {
+        lines->push(std::string("Market Cap: ") + formatCompactUsd(Number(info["marketCap"])) + string_empty);
     }
-    if (info["liquidity"] != undefined) {
-        lines->push(std:("Liquidity: ") + formatCompactUsd(Number(info["liquidity"])) + string_empty);
+    if (info["liquidity"] != std::nullopt) {
+        lines->push(std::string("Liquidity: ") + formatCompactUsd(Number(info["liquidity"])) + string_empty);
     }
-    if (info["holders"] != undefined) {
-        lines->push(std:("Holders: ") + info["holders"]["toLocaleString"]() + string_empty);
+    if (info["holders"] != std::nullopt) {
+        lines->push(std::string("Holders: ") + info["holders"]["toLocaleString"]() + string_empty);
     }
-    if (info["volume24h"] != undefined) {
-        lines->push(std:("24h Volume: ") + formatCompactUsd(Number(info["volume24h"])) + string_empty);
+    if (info["volume24h"] != std::nullopt) {
+        lines->push(std::string("24h Volume: ") + formatCompactUsd(Number(info["volume24h"])) + string_empty);
     }
-    return lines->join(std:("\
+    return lines->join(std::string("\
 "));
 };
 
@@ -72,18 +73,18 @@ string formatTokenInfo(any info)
 string formatGasPrice(any gasPrice)
 {
     auto gwei = Number(gasPrice) / 1000000000;
-    return string_empty + gwei->toFixed(2) + std:(" gwei");
+    return string_empty + gwei->toFixed(2) + std::string(" gwei");
 };
 
 
 string formatCompactUsd(double amount)
 {
-    return ((std::make_shared<Intl::NumberFormat>(std:("en-US"), object{
-        object::pair{std:("style"), std:("currency")}, 
-        object::pair{std:("currency"), std:("USD")}, 
-        object::pair{std:("notation"), std:("compact")}, 
-        object::pair{std:("compactDisplay"), std:("short")}, 
-        object::pair{std:("maximumFractionDigits"), 1}
+    return ((std::make_shared<Intl::NumberFormat>(std::string("en-US"), object{
+        object::pair{std::string("style"), std::string("currency")}, 
+        object::pair{std::string("currency"), std::string("USD")}, 
+        object::pair{std::string("notation"), std::string("compact")}, 
+        object::pair{std::string("compactDisplay"), std::string("short")}, 
+        object::pair{std::string("maximumFractionDigits"), 1}
     })))->format(amount);
 };
 

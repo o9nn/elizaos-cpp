@@ -75,7 +75,7 @@ ProtocolSummary shapeProtocol(DefiLlamaProtocol p) {
     const std::vector<std::string> chains = Array.isArray(p.chains) ? Array.from(new Set(p.chains)) : [];
     const auto chainTvls = shapeChainTvlsRecord((p as { chainTvls?: ChainTvlsRawRecord }).chainTvls);
 
-    const auto toNumberOrNull = (value | std: | nullptr | std::nullopt) | nullptr =>;
+    const auto toNumberOrNull = (value | std::string | nullptr | std::nullopt) | nullptr =>;
     typeof value == "number" && Number.isFinite(value) ? value : nullptr;
 
     const auto slugValue = typeof p.slug == "string" ? p.slug : nullptr;
@@ -110,14 +110,14 @@ ProtocolSummary shapeProtocol(DefiLlamaProtocol p) {
 
 }
 
-std::unordered_map<std:, double> shapeChainTvlsRecord(ChainTvlsRawRecord value) {
+std::unordered_map<std::string, double> shapeChainTvlsRecord(ChainTvlsRawRecord value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!value) {
         return {}
     }
 
-    const std::unordered_map<std:, double> shaped = {};
+    const std::unordered_map<std::string, double> shaped = {};
     for (const int [chainName, rawValue] of Object.entries(value)) {
         if (typeof rawValue == "number" && Number.isFinite(rawValue)) {
             shaped[chainName] = rawValue;
@@ -134,7 +134,7 @@ std::unordered_map<std:, double> shapeChainTvlsRecord(ChainTvlsRawRecord value) 
 
 }
 
-ProtocolTvlHistory shapeProtocolHistory(RawProtocolHistory raw, const std:& fallbackSlug) {
+ProtocolTvlHistory shapeProtocolHistory(RawProtocolHistory raw, const std::string& fallbackSlug) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::vector<ProtocolTvlPoint> totalSeries = Array.isArray(raw.tvl);
@@ -144,7 +144,7 @@ ProtocolTvlHistory shapeProtocolHistory(RawProtocolHistory raw, const std:& fall
         }));
         : [];
 
-        const std::unordered_map<std:, std::vector<ProtocolTvlPoint>> chainSeries = {};
+        const std::unordered_map<std::string, std::vector<ProtocolTvlPoint>> chainSeries = {};
         if (raw.chainTvls) {
             for (const int [chainName, chainData] of Object.entries(raw.chainTvls)) {
                 const auto series = Array.isArray(chainData.tvl);

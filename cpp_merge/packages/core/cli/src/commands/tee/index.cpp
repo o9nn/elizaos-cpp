@@ -1,6 +1,7 @@
 #include "index.hpp"
+#include <string>
 
-any teeCommand = ((std::make_shared<Command>(std:("tee"))))->description(std:("Manage TEE deployments"))->addCommand(phalaCliCommand);
+any teeCommand = ((std::make_shared<Command>(std::string("tee"))))->description(std::string("Manage TEE deployments"))->addCommand(phalaCliCommand);
 
 void Main(void)
 {

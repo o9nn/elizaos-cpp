@@ -25,7 +25,7 @@ public:
     std::shared_ptr<FullDocumentationGenerator> fullDocumentationGenerator;
 
     PluginDocumentationGenerator(std::shared_ptr<AIService> aiService_, std::shared_ptr<GitManager> gitManager_, std::shared_ptr<Configuration> configuration_);
-    virtual std::shared_ptr<Promise<void>> generate(array<std::shared_ptr<ASTQueueItem>> existingDocs, string branchName = undefined, array<std::shared_ptr<TodoItem>> todoItems = array<std::shared_ptr<TodoItem>>(), array<std::shared_ptr<EnvUsage>> envUsages = array<std::shared_ptr<EnvUsage>>());
+    virtual std::shared_ptr<Promise<void>> generate(array<std::shared_ptr<ASTQueueItem>> existingDocs, string branchName = std::nullopt, array<std::shared_ptr<TodoItem>> todoItems = array<std::shared_ptr<TodoItem>>(), array<std::shared_ptr<EnvUsage>> envUsages = array<std::shared_ptr<EnvUsage>>());
     virtual string generateMarkdownContent(std::shared_ptr<PluginDocumentation> docs, any packageJson);
 };
 

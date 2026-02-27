@@ -1,4 +1,5 @@
 #include "agent-action-viewer.hpp"
+#include <string>
 #include <vector>
 #include <map>
 #include <unordered_map>
@@ -7,7 +8,7 @@
 
 namespace elizaos {
 
-std: getModelUsageType(const std:& modelType) {
+std::string getModelUsageType(const std::string& modelType) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (
@@ -76,7 +77,7 @@ void getModelIcon(auto modelType) {
 
 }
 
-void formatTokenUsage(const std:& usage) {
+void formatTokenUsage(const std::string& usage) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!usage) return null;
@@ -92,7 +93,7 @@ void formatTokenUsage(const std:& usage) {
 
 }
 
-void truncateText(const std:& text, auto maxLength) {
+void truncateText(const std::string& text, auto maxLength) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (text.size() <= maxLength) return text;
@@ -100,7 +101,7 @@ void truncateText(const std:& text, auto maxLength) {
 
 }
 
-void copyToClipboard(const std:& text) {
+void copyToClipboard(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     navigator.clipboard.writeText(text).catch(console.error);
@@ -110,7 +111,7 @@ void copyToClipboard(const std:& text) {
 void groupActionsByDate(const std::vector<AgentLog>& actions) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const std::unordered_map<std:, std::vector<AgentLog>> groups = {};
+    const std::unordered_map<std::string, std::vector<AgentLog>> groups = {};
 
     for (const auto& action : actions)
         const auto timestamp = action.createdAt || action.timestamp || 0;
@@ -216,19 +217,19 @@ void ActionCard() {
     </div>;
     <div className="bg-muted/30 rounded-md p-3 relative">;
     <pre className="text-xs font-mono whitespace-pre-wrap overflow-x-auto">;
-    {typeof prompt == "string" ? prompt  = /* JSON.stringify */ std:(prompt, nullptr, 2)}
+    {typeof prompt == "string" ? prompt  = /* JSON.stringify */ std::string(prompt, nullptr, 2)}
     </pre>;
     </div>;
     </div>;
     )}
 
-    {/* Display other parameters if std: */}
+    {/* Display other parameters if std::string */}
     {Object.keys(otherParams).size() > 0 && [&](;
     <div className="space-y-2">;
     <div className="flex items-center justify-between">;
     <span className="text-xs font-medium text-muted-foreground">Other Parameters</span>;
     {(() {
-        const auto paramsText = /* JSON.stringify */ std:(otherParams, nullptr, 2);
+        const auto paramsText = /* JSON.stringify */ std::string(otherParams, nullptr, 2);
         const auto isLong = paramsText.size() > 200;
         return isLong ? [&](;
         <Button;
@@ -245,7 +246,7 @@ void ActionCard() {
     <div className="bg-muted/30 rounded-md p-3 relative group">;
     <pre className="text-xs font-mono whitespace-pre-wrap overflow-x-auto">;
     {[&](() {
-        const auto paramsText = /* JSON.stringify */ std:(otherParams, nullptr, 2);
+        const auto paramsText = /* JSON.stringify */ std::string(otherParams, nullptr, 2);
         const auto isLong = paramsText.size() > 200;
         return showFullParams || !isLong ? paramsText : truncateText(paramsText, 200);
     })()}
@@ -253,7 +254,7 @@ void ActionCard() {
     <Button;
     variant="ghost";
     size="sm";
-    onClick={[&]() { return copyToClipboard(/* JSON.stringify */ std:(otherParams, nullptr, 2))}
+    onClick={[&]() { return copyToClipboard(/* JSON.stringify */ std::string(otherParams, nullptr, 2))}
     className="absolute top-1 right-1 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
     title="Copy parameters"; };
     >;
@@ -280,7 +281,7 @@ void ActionCard() {
         }
 
         const auto responseText =;
-        typeof response == "object" ? /* JSON.stringify */ std:(response, nullptr, 2) : std::to_string(response);
+        typeof response == "object" ? /* JSON.stringify */ std::string(response, nullptr, 2) : std::to_string(response);
         const auto isLong = responseText.size() > 300;
 
         return [&](;
@@ -570,8 +571,8 @@ void AgentActionViewer() {
             action.body.modelKey,
             action.id,
             action.message,
-            /* JSON.stringify */ std:(action.body.params),
-            /* JSON.stringify */ std:(action.body.response),
+            /* JSON.stringify */ std::string(action.body.params),
+            /* JSON.stringify */ std::string(action.body.response),
             ].filter(Boolean).join(" ").toLowerCase();
 
             return (std::find(searchableText.begin(), searchableText.end(), query) != searchableText.end());
@@ -616,7 +617,7 @@ void AgentActionViewer() {
                         const auto hasMoreToLoad = visibleItems < filteredActions.size();
                         const auto actionGroups = groupActionsByDate(visibleActions);
 
-                        const auto handleDelete = [&](logId: std:) {;
+                        const auto handleDelete = [&](logId: std::string) {;
                             if (window.confirm('Are you sure you want to delete this log entry?')) {
                                 deleteLog({ agentId, logId });
                             }

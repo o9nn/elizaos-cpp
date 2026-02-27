@@ -1,10 +1,11 @@
 #include "service.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-ServiceError createServiceError(const std:& error, auto code) {
+ServiceError createServiceError(const std::string& error, auto code) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (error instanceof Error) {

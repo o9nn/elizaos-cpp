@@ -1,4 +1,5 @@
 #include "wagmi-client.hpp"
+#include <string>
 #include <cstdlib>
 #include <unordered_map>
 #include <iostream>
@@ -6,10 +7,10 @@
 
 namespace elizaos {
 
-std: getProxyUrl(const std:& path) {
+std::string getProxyUrl(const std::string& path) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (typeof window != "undefined") {
+    if (typeof window != "std::nullopt") {
         return window.location.origin + path;
     }
     // Server-side fallback - use env or default
@@ -83,7 +84,7 @@ void getTransports() {
 void getConnectors() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (typeof window == "undefined") return [];
+    if (typeof window == "std::nullopt") return [];
     return [;
     farcasterMiniApp(), // Prioritize Farcaster wallet when in Farcaster Mini App context;
     injected(Config{shimDisconnect = true}), // Fallback for browser wallets

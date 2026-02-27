@@ -1,10 +1,11 @@
 #include "parsing.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-AbstractParseFunction createParser(const std::variant<std:, std:>& config) {
+AbstractParseFunction createParser(const std::variant<std::string, std::string>& config) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

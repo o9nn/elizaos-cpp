@@ -91,7 +91,7 @@ namespace elizaos {
 
       // Separate action results from regular messages
 
-      // Default to message format if room is not found or type is undefined
+      // Default to message format if room is not found or type is std::nullopt
 
       // Format recent messages and posts in parallel, using only dialogue messages
 
@@ -106,7 +106,7 @@ namespace elizaos {
 
         // Format just this single message to get the internal thought
 
-        // Get the most recent thought from std: message
+        // Get the most recent thought from std::string message
 
       // Preload all necessary entities for both types of interactions
 
@@ -126,7 +126,7 @@ namespace elizaos {
         // Format messages using the pre-fetched entities
 
       // Format recent post interactions
-        // Combine pre-loaded entities with std: other entities
+        // Combine pre-loaded entities with std::string other entities
 
         // Add entities from interactionEntityMap that aren't already in entities
 

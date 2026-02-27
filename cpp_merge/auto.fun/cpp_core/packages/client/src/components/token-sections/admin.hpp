@@ -24,15 +24,15 @@ using FormData = {
 
 // Define the token data type to match the backend schema
 struct TokenData {
-    std: id;
-    std: mint;
-    std: name;
-    std: creator;
-    std: website;
-    std: twitter;
-    std: telegram;
-    std: discord;
-    std: farcaster;
+    std::string id;
+    std::string mint;
+    std::string name;
+    std::string creator;
+    std::string website;
+    std::string twitter;
+    std::string telegram;
+    std::string discord;
+    std::string farcaster;
     bool hidden;
     bool featured;
     bool verified;

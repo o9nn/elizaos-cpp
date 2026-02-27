@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTAKU_SRC_PACKAGES_API_CLIENT_SRC_TYPES_JOBS_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTAKU_SRC_PACKAGES_API_CLIENT_SRC_TYPES_JOBS_H
 #include "core.hpp"
+#include <string>
 // External dependency removed
 
 enum struct JobStatus;
@@ -15,7 +16,7 @@ class ListJobsParams;
 class PollResult;
 
 enum struct JobStatus {
-    PENDING = std:("pending"), PROCESSING = std:("processing"), COMPLETED = std:("completed"), FAILED = std:("failed"), TIMEOUT = std:("timeout")
+    PENDING = std::string("pending"), PROCESSING = std::string("processing"), COMPLETED = std::string("completed"), FAILED = std::string("failed"), TIMEOUT = std::string("timeout")
 };
 extern object JobValidation;
 class CreateJobRequest : public object, public std::enable_shared_from_this<CreateJobRequest> {

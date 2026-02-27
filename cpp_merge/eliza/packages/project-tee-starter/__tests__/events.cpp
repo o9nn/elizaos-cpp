@@ -1,10 +1,11 @@
 #include "events.test.h"
+#include <string>
 
 void Main(void)
 {
-    describe(std:("Plugin Events"), [=]() mutable
+    describe(std::string("Plugin Events"), [=]() mutable
     {
-        it(std:("should not have custom events (relies on plugin-tee for TEE events)"), [=]() mutable
+        it(std::string("should not have custom events (relies on plugin-tee for TEE events)"), [=]() mutable
         {
             expect(teeStarterPlugin->events)->toBeDefined();
             expect(teeStarterPlugin->events->MESSAGE_RECEIVED)->toBeDefined();
@@ -13,11 +14,11 @@ void Main(void)
             expect(teeStarterPlugin->events->WORLD_JOINED)->toBeDefined();
         }
         );
-        it(std:("should have correct plugin configuration"), [=]() mutable
+        it(std::string("should have correct plugin configuration"), [=]() mutable
         {
             expect(teeStarterPlugin)->toBeDefined();
-            expect(teeStarterPlugin->name)->toBe(std:("mr-tee-starter-plugin"));
-            expect(teeStarterPlugin->description)->toBe(std:("Mr. TEE's starter plugin - using plugin-tee for attestation"));
+            expect(teeStarterPlugin->name)->toBe(std::string("mr-tee-starter-plugin"));
+            expect(teeStarterPlugin->description)->toBe(std::string("Mr. TEE's starter plugin - using plugin-tee for attestation"));
         }
         );
     }

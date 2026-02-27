@@ -26,18 +26,18 @@ using CreateOptions = z::infer<typeof initOptionsSchema>;
  * Available AI model configuration
  */
 struct AIModelOption {
-    std: title;
-    std: value;
-    std: description;
+    std::string title;
+    std::string value;
+    std::string description;
 };
 
 /**
  * Available database configuration
  */
 struct DatabaseOption {
-    std: title;
-    std: value;
-    std: description;
+    std::string title;
+    std::string value;
+    std::string description;
 };
 
 

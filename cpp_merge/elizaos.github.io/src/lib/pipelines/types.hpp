@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZAOS_GITHUB_IO_SRC_LIB_PIPELINES_TYPES_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZAOS_GITHUB_IO_SRC_LIB_PIPELINES_TYPES_H
 #include "core.hpp"
+#include <string>
 #include "./pipelineConfig.h"
 #include "../logger.h"
 #include "p-map.h"
@@ -105,14 +106,14 @@ PipelineStep<array<TInput>, array<TOutput>, TContext> mapStep(PipelineStep<TInpu
     return [=](auto inputs, auto context) mutable
     {
         if (!Array->isArray(inputs)) {
-            throw any(std::make_shared<Error>(std:("mapStep requires an array input")));
+            throw any(std::make_shared<Error>(std::string("mapStep requires an array input")));
         }
         auto results = std::async([=]() { pMap(inputs, [=](auto item) mutable
         {
             return operation(item, context);
         }
         , object{
-            object::pair{std:("concurrency"), 5}
+            object::pair{std::string("concurrency"), 5}
         }); });
         return results;
     };
@@ -124,13 +125,13 @@ PipelineStep<TInput, TOutput, TContext> createStep(string name, std::function<an
 {
     return [=](auto input, auto context) mutable
     {
-        context->logger->trace(std:("Executing step: ") + name + string_empty);
+        context->logger->trace(std::string("Executing step: ") + name + string_empty);
         auto stepLogger = context->logger->child(name);
         auto output = std::async([=]() { transform(input, utils::assign(object{
             , 
-            object::pair{std:("logger"), stepLogger}
+            object::pair{std::string("logger"), stepLogger}
         }, context)); });
-        context->logger->trace(std:("Completed step: ") + name + string_empty);
+        context->logger->trace(std::string("Completed step: ") + name + string_empty);
         return output;
     };
 };

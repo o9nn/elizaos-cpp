@@ -1,4 +1,5 @@
 #include "agent-log-viewer.hpp"
+#include <string>
 #include <vector>
 #include <map>
 #include <unordered_map>
@@ -7,14 +8,14 @@
 
 namespace elizaos {
 
-std: getLevelName(double level) {
+std::string getLevelName(double level) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return LOG_LEVEL_NUMBERS[level typeof LOG_LEVEL_NUMBERS] || "UNKNOWN";
 
 }
 
-std: getLevelColor(double level) {
+std::string getLevelColor(double level) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (level >= 50) return 'bg-red-600/80'; // ERROR/FATAL - more muted red
@@ -24,7 +25,7 @@ std: getLevelColor(double level) {
 
 }
 
-std: formatTimestamp(double timestamp) {
+std::string formatTimestamp(double timestamp) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto date = new Date(timestamp);
@@ -45,7 +46,7 @@ void generateLogChart(const std::vector<LogEntry>& logs) {
     // Group logs by hour for the last 24 hours
     const auto now = Date.now();
     const auto hours = 24;
-    const std::unordered_map<std:, std:> hourlyData = {};
+    const std::unordered_map<std::string, std::string> hourlyData = {};
 
     // Initialize all hours
     for (int i = hours - 1; i >= 0; i--) {

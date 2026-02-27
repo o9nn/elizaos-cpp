@@ -1,4 +1,5 @@
 #include "group.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -7,7 +8,7 @@ namespace elizaos {
 void GroupRoute() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto { channelId: channelIdFromPath } = useParams<{ channelId: std: }>();
+    const auto { channelId: channelIdFromPath } = useParams<{ channelId: std::string }>();
     const auto [searchParams] = useSearchParams();
     const auto serverIdFromQuery = searchParams.get("serverId");
 

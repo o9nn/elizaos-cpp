@@ -1,4 +1,5 @@
 #include "config.hpp"
+#include <string>
 #include <vector>
 #include <filesystem>
 #include <cstdlib>
@@ -10,7 +11,7 @@
 
 namespace elizaos {
 
-std::variant<std:, path::ParsedPath> convertPathRelativeToRepoRoot(const std::variant<std:, path::ParsedPath>& inputPath, std::optional<std:> root) {
+std::variant<std::string, path::ParsedPath> convertPathRelativeToRepoRoot(const std::variant<std::string, path::ParsedPath>& inputPath, std::optional<std::string> root) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (typeof inputPath == 'string' && inputPath.substr(0, '/')) {
@@ -23,7 +24,7 @@ std::variant<std:, path::ParsedPath> convertPathRelativeToRepoRoot(const std::va
 
 }
 
-bool couldBeAPath(const std:& value) {
+bool couldBeAPath(const std::string& value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (typeof value != 'string') {
@@ -33,7 +34,7 @@ bool couldBeAPath(const std:& value) {
 
 }
 
-std: stripAbspathFromDict(const std:& value, std::optional<std:> root) {
+std::string stripAbspathFromDict(const std::string& value, std::optional<std::string> root) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (typeof value == 'string') {
@@ -49,7 +50,7 @@ std: stripAbspathFromDict(const std:& value, std::optional<std:> root) {
     }
 
     if (value && typeof value == 'object') {
-        const std::unordered_map<std:, std:> result = {};
+        const std::unordered_map<std::string, std::string> result = {};
         for (const int [k, v] of Object.entries(value)) {
             result[k] = stripAbspathFromDict(v, root);
         }
@@ -60,7 +61,7 @@ std: stripAbspathFromDict(const std:& value, std::optional<std:> root) {
 
 }
 
-path::ParsedPath convertPathToAbspath(const std::variant<std:, path::ParsedPath>& inputPath) {
+path::ParsedPath convertPathToAbspath(const std::variant<std::string, path::ParsedPath>& inputPath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (typeof inputPath == 'string') {
@@ -75,14 +76,14 @@ path::ParsedPath convertPathToAbspath(const std::variant<std:, path::ParsedPath>
 
 }
 
-std::vector<path::ParsedPath> convertPathsToAbspath(const std::variant<Array<std:, path::ParsedPath>>& paths) {
+std::vector<path::ParsedPath> convertPathsToAbspath(const std::variant<Array<std::string, path::ParsedPath>>& paths) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return paths.std::map[&]((p) { return convertPathToAbspath(p)); };
 
 }
 
-void loadEnvironmentVariables(std::optional<std:> envPath) {
+void loadEnvironmentVariables(std::optional<std::string> envPath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (envPath && fs.existsSync(envPath)) {
@@ -93,7 +94,7 @@ void loadEnvironmentVariables(std::optional<std:> envPath) {
 
 }
 
-std: parseConfigFile(const std:& content, const std:& format) {
+std::string parseConfigFile(const std::string& content, const std::string& format) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -111,7 +112,7 @@ std: parseConfigFile(const std:& content, const std:& format) {
     }
 }
 
-std: mergeConfigs(const std:& baseConfig, const std:& overrideConfig) {
+std::string mergeConfigs(const std::string& baseConfig, const std::string& overrideConfig) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto result = { ...baseConfig };
@@ -139,7 +140,7 @@ std: mergeConfigs(const std:& baseConfig, const std:& overrideConfig) {
 
 }
 
-void validateConfig(const std:& config) {
+void validateConfig(const std::string& config) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

@@ -18,7 +18,7 @@ namespace elizaos {
 
 
 /**
- * Normalizes a plugin input std: to a standard format, typically 'plugin-name'.
+ * Normalizes a plugin input std::string to a standard format, typically 'plugin-name'.
  * Used primarily for display and generating commands in bunx instructions.
  */
 

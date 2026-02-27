@@ -18,38 +18,38 @@ namespace elizaos {
  * Request body for login endpoint
  */
 struct LoginRequest {
-    std: email;
-    std: username;
-    std: cdpUserId;
+    std::string email;
+    std::string username;
+    std::string cdpUserId;
 };
 
 /**
  * Response from login endpoint
  */
 struct LoginResponse {
-    std: token;
-    std: userId;
-    std: username;
-    std: expiresIn;
+    std::string token;
+    std::string userId;
+    std::string username;
+    std::string expiresIn;
 };
 
 /**
  * Response from refresh token endpoint
  */
 struct RefreshTokenResponse {
-    std: token;
-    std: userId;
-    std: username;
-    std: expiresIn;
+    std::string token;
+    std::string userId;
+    std::string username;
+    std::string expiresIn;
 };
 
 /**
  * Response from /me endpoint (current user info)
  */
 struct CurrentUserResponse {
-    std: userId;
-    std: email;
-    std: username;
+    std::string userId;
+    std::string email;
+    std::string username;
 };
 
 

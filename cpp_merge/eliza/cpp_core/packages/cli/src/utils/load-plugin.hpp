@@ -17,34 +17,34 @@ namespace elizaos {
 
 
 struct PackageJson {
-    std::optional<std:> module;
-    std::optional<std:> main;
+    std::optional<std::string> module;
+    std::optional<std::string> main;
 };
 
 struct ImportStrategy {
-    std: name;
-    [&](repository: std:) { return Promise<std: | null> tryImport; };
+    std::string name;
+    [&](repository: std::string) { return Promise<std::string | null> tryImport; };
 };
 
 /**
  * Get the global node_modules path based on Node.js installation
  */
-std: getGlobalNodeModulesPath();
+std::string getGlobalNodeModulesPath();
 
 /**
  * Helper std::function to resolve a path within node_modules
  */
-std: resolveNodeModulesPath(const std:& repository, const std::vector<std::string>& ...segments);
+std::string resolveNodeModulesPath(const std::string& repository, const std::vector<std::string>& ...segments);
 
 /**
  * Helper std::function to read and parse package.json
  */
-std::future<PackageJson | null> readPackageJson(const std:& repository);
+std::future<PackageJson | null> readPackageJson(const std::string& repository);
 
 /**
  * Attempts to import a module from a given path and logs the outcome.
  */
-std::future<std: | null> tryImporting(const std:& importPath, const std:& strategy, const std:& repository);
+std::future<std::string | null> tryImporting(const std::string& importPath, const std::string& strategy, const std::string& repository);
 
 /**
  * Collection of import strategies
@@ -66,12 +66,12 @@ std::future<std: | null> tryImporting(const std:& importPath, const std:& strate
 /**
  * Determines if a package name is from the ElizaOS ecosystem
  */
-bool isElizaOSPackageName(const std:& repository);
+bool isElizaOSPackageName(const std::string& repository);
 
 /**
  * Get relevant import strategies based on plugin type
  */
-std::vector<ImportStrategy> getStrategiesForPlugin(const std:& repository);
+std::vector<ImportStrategy> getStrategiesForPlugin(const std::string& repository);
 
 /**
  * Attempts to load a plugin module using relevant strategies based on plugin type.
@@ -81,6 +81,6 @@ std::vector<ImportStrategy> getStrategiesForPlugin(const std:& repository);
  * @param repository - The plugin repository/package name to load.
  * @returns The loaded plugin module or null if loading fails after all attempts.
  */
-std::future<std: | null> loadPluginModule(const std:& repository);
+std::future<std::string | null> loadPluginModule(const std::string& repository);
 
 } // namespace elizaos

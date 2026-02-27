@@ -15,9 +15,9 @@ namespace elizaos {
 // Manual refinement required for production use
 
 struct SystemEnvironment {
-    std: nodeVersion;
-    std: platform;
-    std: environment;
+    std::string nodeVersion;
+    std::string platform;
+    std::string environment;
     bool authentication;
     bool tee;
     std::vector<std::string> plugins;

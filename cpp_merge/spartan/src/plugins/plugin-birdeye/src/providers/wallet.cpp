@@ -1,19 +1,20 @@
 #include "wallet.hpp"
+#include <string>
 
 std::shared_ptr<Provider> tradePortfolioProvider = object{
-    object::pair{std:("name"), std:("BIRDEYE_TRADE_PORTFOLIO")}, 
-    object::pair{std:("description"), std:("A list of your trades")}, 
-    object::pair{std:("dynamic"), true}, 
-    object::pair{std:("get"), [=](auto runtime, auto message, auto state) mutable
+    object::pair{std::string("name"), std::string("BIRDEYE_TRADE_PORTFOLIO")}, 
+    object::pair{std::string("description"), std::string("A list of your trades")}, 
+    object::pair{std::string("dynamic"), true}, 
+    object::pair{std::string("get"), [=](auto runtime, auto message, auto state) mutable
     {
-        console->log(std:("birdeye:provider - get portfolio"));
-        auto chains = array<string>{ std:("solana"), std:("base") };
-        auto portfolioData = OR(((std::async([=]() { runtime->getCache<array<std::shared_ptr<Portfolio>>>(std:("portfolio")); }))), (array<any>()));
+        console->log(std::string("birdeye:provider - get portfolio"));
+        auto chains = array<string>{ std::string("solana"), std::string("base") };
+        auto portfolioData = OR(((std::async([=]() { runtime->getCache<array<std::shared_ptr<Portfolio>>>(std::string("portfolio")); }))), (array<any>()));
         auto portfolio = portfolioData["data"];
-        auto trades = OR(((std::async([=]() { runtime->getCache<array<std::shared_ptr<TransactionHistory>>>(std:("transaction_history")); }))), (array<any>()));
-        console->log(std:("birdeye:provider - got trades"), trades["length"]);
-        auto promptInjection = std:("\
-Your trades for ") + portfolio["wallet"] + std:(" (value: $") + portfolio["totalUsd"] + std:("usd):\
+        auto trades = OR(((std::async([=]() { runtime->getCache<array<std::shared_ptr<TransactionHistory>>>(std::string("transaction_history")); }))), (array<any>()));
+        console->log(std::string("birdeye:provider - got trades"), trades["length"]);
+        auto promptInjection = std::string("\
+Your trades for ") + portfolio["wallet"] + std::string(" (value: $") + portfolio["totalUsd"] + std::string("usd):\
 ");
         auto historyStrings = array<any>();
         try
@@ -26,34 +27,34 @@ Your trades for ") + portfolio["wallet"] + std:(" (value: $") + portfolio["total
                 {
                     if (AND((AND((h["data"]["status"] == true), (h["data"]["balanceChange"]))), (h["data"]["balanceChange"]["length"] > 0))) {
                         auto change = const_(h["data"]["balanceChange"])[0];
-                        auto action = OR((h["data"]["mainAction"]), (std:("unknown action")));
+                        auto action = OR((h["data"]["mainAction"]), (std::string("unknown action")));
                         auto amount = OR((change["amount"]), (0));
-                        auto name = OR((change["name"]), (std:("unknown")));
-                        auto symbol = OR((change["symbol"]), (std:("?")));
-                        auto time = OR((h["blockTime"]), (std:("unknown time")));
-                        auto summary = string_empty + action + std:(" ") + amount + std:(" ") + name + std:(" ($") + symbol + std:(") at ") + time + string_empty;
+                        auto name = OR((change["name"]), (std::string("unknown")));
+                        auto symbol = OR((change["symbol"]), (std::string("?")));
+                        auto time = OR((h["blockTime"]), (std::string("unknown time")));
+                        auto summary = string_empty + action + std::string(" ") + amount + std::string(" ") + name + std::string(" ($") + symbol + std::string(") at ") + time + string_empty;
                     }
                 }
             }
         }
         catch (const any& e)
         {
-            console->error(std:("e"), e);
+            console->error(std::string("e"), e);
         }
-        promptInjection += historyStrings->join(std:("\
-")) + std:("\
+        promptInjection += historyStrings->join(std::string("\
+")) + std::string("\
 ");
         auto data = object{
-            object::pair{std:("portfolio"), std:("portfolio")}, 
-            object::pair{std:("trades"), std:("trades")}
+            object::pair{std::string("portfolio"), std::string("portfolio")}, 
+            object::pair{std::string("trades"), std::string("trades")}
         };
         auto values = object{};
-        auto text = promptInjection + std:("\
+        auto text = promptInjection + std::string("\
 ");
         return object{
-            object::pair{std:("data"), std:("data")}, 
-            object::pair{std:("values"), std:("values")}, 
-            object::pair{std:("text"), std:("text")}
+            object::pair{std::string("data"), std::string("data")}, 
+            object::pair{std::string("values"), std::string("values")}, 
+            object::pair{std::string("text"), std::string("text")}
         };
         return false;
     }

@@ -10,7 +10,7 @@
 
 namespace elizaos {
 
-std::future<void> getLatestCandle(const std:& tokenMint, const std:& swap, std::optional<std:> tokenInfo) {
+std::future<void> getLatestCandle(const std::string& tokenMint, const std::string& swap, std::optional<std::string> tokenInfo) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Get a time range that covers just this swap
@@ -67,7 +67,7 @@ std::future<void> getLatestCandle(const std:& tokenMint, const std:& swap, std::
 
 }
 
-std::future<void> fetchPriceChartData(double start, double end, double range, const std:& tokenMint) {
+std::future<void> fetchPriceChartData(double start, double end, double range, const std::string& tokenMint) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto db = getDB();
@@ -110,7 +110,7 @@ std::future<void> fetchPriceChartData(double start, double end, double range, co
                 (swap: {
                     price | nullptr; // Allow nullptr price
                     priceUsd | nullptr | std::nullopt; // Allow nullptr priceUsd
-                    timestamp: std: | Date; // Allow std: or Date
+                    timestamp: std::string | Date; // Allow std::string or Date
                     direction;
                     amountIn | nullptr;
                     amountOut | nullptr;
@@ -120,7 +120,7 @@ std::future<void> fetchPriceChartData(double start, double end, double range, co
                     (swap: {
                         priceUsd | std::nullopt;
                         price; // Not nullptr after filter
-                        timestamp: std: | Date; // Not nullptr after filter
+                        timestamp: std::string | Date; // Not nullptr after filter
                         direction;
                         amountIn | nullptr;
                         amountOut | nullptr;
@@ -259,7 +259,7 @@ std::future<void> fetchPriceChartData(double start, double end, double range, co
 
 }
 
-std::future<std::vector<std::string>> fetchLockedTokenChartData(const std:& token, double start, double end, double range) {
+std::future<std::vector<std::string>> fetchLockedTokenChartData(const std::string& token, double start, double end, double range) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

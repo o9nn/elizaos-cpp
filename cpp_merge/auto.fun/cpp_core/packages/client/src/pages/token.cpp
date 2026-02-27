@@ -1,4 +1,5 @@
 #include "token.hpp"
+#include <string>
 #include <map>
 #include <iostream>
 #include <stdexcept>
@@ -45,7 +46,7 @@ void Page() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const auto params = useParams<{ address: std: }>();
+        const auto params = useParams<{ address: std::string }>();
         const auto address = params.address;
         const auto { publicKey } = useWallet();
         const auto normalizedWallet = std::to_string(publicKey);

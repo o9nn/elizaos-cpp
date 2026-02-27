@@ -1,4 +1,5 @@
 #include "validation.hpp"
+#include <string>
 #include <vector>
 #include <future>
 #include <iostream>
@@ -25,7 +26,7 @@ std::future<std::vector<AgentBasic>> getAgents(OptionValues opts) {
     }
 }
 
-std::future<std:> resolveAgentId(const std:& idOrNameOrIndex, OptionValues opts) {
+std::future<std::string> resolveAgentId(const std::string& idOrNameOrIndex, OptionValues opts) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

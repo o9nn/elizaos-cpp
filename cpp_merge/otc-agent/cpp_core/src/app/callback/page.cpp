@@ -1,4 +1,5 @@
 #include "page.hpp"
+#include <string>
 #include <cstdlib>
 #include <iostream>
 #include <stdexcept>
@@ -9,8 +10,8 @@ void CallbackPage() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const auto [error, setError] = useState<std: | nullptr>(nullptr);
-        const auto [debug, setDebug] = useState<Record<std:, string>>({});
+        const auto [error, setError] = useState<std::string | nullptr>(nullptr);
+        const auto [debug, setDebug] = useState<Record<std::string, string>>({});
 
         useEffect[&](() {
             std::async std::function run() {
@@ -57,7 +58,7 @@ void CallbackPage() {
                             oauth1Token: data.oauth1_token,
                             oauth1TokenSecret: data.oauth1_token_secret,
                             };
-                            localStorage.setItem(STORAGE_KEY, /* JSON.stringify */ std:(credentials));
+                            localStorage.setItem(STORAGE_KEY, /* JSON.stringify */ std::string(credentials));
                             redirectToOrigin();
                             return;
                         }
@@ -79,7 +80,7 @@ void CallbackPage() {
                                 refreshToken: tok.refresh_token,
                                 expiresAt: Date.now() + (tok.expires_in || 3600) * 1000,
                                 };
-                                localStorage.setItem(STORAGE_KEY, /* JSON.stringify */ std:(creds));
+                                localStorage.setItem(STORAGE_KEY, /* JSON.stringify */ std::string(creds));
                                 redirectToOrigin();
                                 return;
                             }
@@ -107,7 +108,7 @@ void CallbackPage() {
                             <div className="text-xl font-semibold">Authentication Error</div>;
                             <div className="text-red-500">{error}</div>;
                             <pre className="bg-zinc-900 text-zinc-300 p-3 overflow-x-auto rounded">;
-                        {/* JSON.stringify */ std:(debug, nullptr, 2)}
+                        {/* JSON.stringify */ std::string(debug, nullptr, 2)}
                         </pre>;
                         </div>;
                         </div>;

@@ -6,7 +6,7 @@
 
 namespace elizaos {
 
-std::vector<std::string> findTsFiles(const std:& dir, const std:& watchDir) {
+std::vector<std::string> findTsFiles(const std::string& dir, const std::string& watchDir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     std::vector<std::string> results = [];

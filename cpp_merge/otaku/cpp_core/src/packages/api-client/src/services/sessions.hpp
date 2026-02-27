@@ -18,16 +18,16 @@ namespace elizaos {
  * Query parameters for session messages API
  */
 struct SessionMessageQueryParams {
-    std::optional<std:> limit;
-    std::optional<std:> before;
-    std::optional<std:> after;
+    std::optional<std::string> limit;
+    std::optional<std::string> before;
+    std::optional<std::string> after;
 };
 
 /**
- * Validates and converts a date parameter to timestamp std:
- * @param value Date, std:, or number to convert
+ * Validates and converts a date parameter to timestamp std::string
+ * @param value Date, std::string, or number to convert
  * @param paramName Name of the parameter for error messages
- * @returns Timestamp std: or undefined if value is invalid
+ * @returns Timestamp std::string or std::nullopt if value is invalid
  */
 
 /**
@@ -40,7 +40,7 @@ struct SessionMessageQueryParams {
 /**
  * Service for managing messaging sessions between users and agents
  */
-class SessionsService extends BaseApiClient {
+class SessionsService : public BaseApiClient {
   /**
    * Get health status of the sessions service
    * @returns Health check response

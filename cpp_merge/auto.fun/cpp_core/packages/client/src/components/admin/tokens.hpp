@@ -31,13 +31,13 @@ using SortOrderType = std::variant<"asc", "desc">;
 void AdminTokensList();
 
 struct SocialLinks {
-    std: website;
-    std: twitter;
-    std: telegram;
-    std: discord;
-    std: farcaster;
+    std::string website;
+    std::string twitter;
+    std::string telegram;
+    std::string discord;
+    std::string farcaster;
 };
 
-void AdminTokenDetails({ address: std: } { address });
+void AdminTokenDetails({ address: std::string } { address });
 
 } // namespace elizaos

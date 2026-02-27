@@ -1,4 +1,5 @@
 #include "rooms.hpp"
+#include <string>
 #include <vector>
 #include <unordered_map>
 #include <iostream>
@@ -153,7 +154,7 @@ express::Router createRoomManagementRouter(const std::unordered_map<UUID, IAgent
                                                 }
 
                                                 // Enrich room data with world name
-                                                auto worldName: std: | std::nullopt;
+                                                auto worldName: std::string | std::nullopt;
                                                 if (room.worldId) {
                                                     const auto world = runtime.getWorld(room.worldId);
                                                     worldName = world.name;

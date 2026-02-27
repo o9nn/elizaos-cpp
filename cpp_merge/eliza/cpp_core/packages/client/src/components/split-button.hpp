@@ -17,19 +17,19 @@ namespace elizaos {
 
 
 struct SplitButtonOption {
-    std: label;
-    std::optional<std:> description;
-    std::optional<std:> value;
+    std::string label;
+    std::optional<std::string> description;
+    std::optional<std::string> value;
 };
 
 struct SplitButtonProps {
     std::vector<SplitButtonOption> options;
-    std::optional<std:> defaultValue;
-    std::optional<std:> value;
-    std::optional<std:> std::variant;
-    std::optional<std:> className;
-    std::optional<std:> buttonClassName;
-    std::optional<std:> dropdownClassName;
+    std::optional<std::string> defaultValue;
+    std::optional<std::string> value;
+    std::optional<std::string> std::variant;
+    std::optional<std::string> className;
+    std::optional<std::string> buttonClassName;
+    std::optional<std::string> dropdownClassName;
     std::optional<bool> disabled;
 };
 

@@ -11,7 +11,7 @@
 
 namespace elizaos {
 
-bool isValidPostgresUrl(const std:& url) {
+bool isValidPostgresUrl(const std::string& url) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!url || typeof url != 'string') return false;
@@ -38,7 +38,7 @@ bool isValidPostgresUrl(const std:& url) {
 
 }
 
-std::future<void> getElizaDirectories(std::optional<std:> targetProjectDir) {
+std::future<void> getElizaDirectories(std::optional<std::string> targetProjectDir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto userEnv = UserEnvironment.getInstance();
@@ -61,7 +61,7 @@ std::future<void> getElizaDirectories(std::optional<std:> targetProjectDir) {
 
 }
 
-std::future<void> ensureDir(const std:& dirPath) {
+std::future<void> ensureDir(const std::string& dirPath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!existsSync(dirPath)) {
@@ -71,7 +71,7 @@ std::future<void> ensureDir(const std:& dirPath) {
 
 }
 
-std::future<void> setupEnvFile(const std:& envFilePath) {
+std::future<void> setupEnvFile(const std::string& envFilePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -128,7 +128,7 @@ std::future<void> setupEnvFile(const std:& envFilePath) {
     }
 }
 
-std::future<void> ensureElizaDir(std::optional<std:> targetProjectDir) {
+std::future<void> ensureElizaDir(std::optional<std::string> targetProjectDir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto dirs = getElizaDirectories(targetProjectDir);
@@ -139,12 +139,12 @@ std::future<void> ensureElizaDir(std::optional<std:> targetProjectDir) {
     const auto configPath = path.join(dirs.elizaDir, "config.json");
 
     if (!existsSync(registryCachePath)) {
-        fs.writeFile(registryCachePath, /* JSON.stringify */ std:({}, nullptr, 2), "utf8");
+        fs.writeFile(registryCachePath, /* JSON.stringify */ std::string({}, nullptr, 2), "utf8");
         logger.debug("Created registry cache file: " + std::to_string(registryCachePath) + "");
     }
 
     if (!existsSync(configPath)) {
-        fs.writeFile(configPath, /* JSON.stringify */ std:({ version: "1.0.0" }, nullptr, 2), "utf8");
+        fs.writeFile(configPath, /* JSON.stringify */ std::string({ version: "1.0.0" }, nullptr, 2), "utf8");
         logger.debug("Created config file: " + std::to_string(configPath) + "");
     }
 
@@ -152,7 +152,7 @@ std::future<void> ensureElizaDir(std::optional<std:> targetProjectDir) {
 
 }
 
-std::future<void> setupPgLite(const std:& dbDir, const std:& envPath, std::optional<std:> targetProjectDir) {
+std::future<void> setupPgLite(const std::string& dbDir, const std::string& envPath, std::optional<std::string> targetProjectDir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -191,7 +191,7 @@ std::future<void> setupPgLite(const std:& dbDir, const std:& envPath, std::optio
     }
 }
 
-std::future<void> storePostgresUrl(const std:& url, const std:& envFilePath) {
+std::future<void> storePostgresUrl(const std::string& url, const std::string& envFilePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -223,7 +223,7 @@ std::future<void> storePostgresUrl(const std:& url, const std:& envFilePath) {
     }
 }
 
-std::future<void> storePgliteDataDir(const std:& dataDir, const std:& envFilePath) {
+std::future<void> storePgliteDataDir(const std::string& dataDir, const std::string& envFilePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -255,7 +255,7 @@ std::future<void> storePgliteDataDir(const std:& dataDir, const std:& envFilePat
     }
 }
 
-std::future<std:> promptAndStorePostgresUrl(const std:& envFilePath) {
+std::future<std::string> promptAndStorePostgresUrl(const std::string& envFilePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     clack.intro("🗄️  PostgreSQL Configuration");
@@ -296,7 +296,7 @@ std::future<std:> promptAndStorePostgresUrl(const std:& envFilePath) {
 
 }
 
-bool isValidOpenAIKey(const std:& key) {
+bool isValidOpenAIKey(const std::string& key) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!key || typeof key != 'string') return false;
@@ -306,7 +306,7 @@ bool isValidOpenAIKey(const std:& key) {
 
 }
 
-bool isValidAnthropicKey(const std:& key) {
+bool isValidAnthropicKey(const std::string& key) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!key || typeof key != 'string') return false;
@@ -316,7 +316,7 @@ bool isValidAnthropicKey(const std:& key) {
 
 }
 
-bool isValidGoogleKey(const std:& key) {
+bool isValidGoogleKey(const std::string& key) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!key || typeof key != 'string') return false;
@@ -326,7 +326,7 @@ bool isValidGoogleKey(const std:& key) {
 
 }
 
-std::future<void> storeOpenAIKey(const std:& key, const std:& envFilePath) {
+std::future<void> storeOpenAIKey(const std::string& key, const std::string& envFilePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -358,7 +358,7 @@ std::future<void> storeOpenAIKey(const std:& key, const std:& envFilePath) {
     }
 }
 
-std::future<void> storeGoogleKey(const std:& key, const std:& envFilePath) {
+std::future<void> storeGoogleKey(const std::string& key, const std::string& envFilePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -391,7 +391,7 @@ std::future<void> storeGoogleKey(const std:& key, const std:& envFilePath) {
     }
 }
 
-std::future<void> storeAnthropicKey(const std:& key, const std:& envFilePath) {
+std::future<void> storeAnthropicKey(const std::string& key, const std::string& envFilePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -423,7 +423,7 @@ std::future<void> storeAnthropicKey(const std:& key, const std:& envFilePath) {
     }
 }
 
-std::future<std:> promptAndStoreOpenAIKey(const std:& envFilePath) {
+std::future<std::string> promptAndStoreOpenAIKey(const std::string& envFilePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const ProviderPromptConfig config = {;
@@ -452,12 +452,12 @@ std::future<std:> promptAndStoreOpenAIKey(const std:& envFilePath) {
                     successMessage: "OpenAI integration configured",
                     };
 
-                    const auto result = promptAndStoreProviderConfig<{ key: std: }>(config, envFilePath);
+                    const auto result = promptAndStoreProviderConfig<{ key: std::string }>(config, envFilePath);
                     return result.key || nullptr;
 
 }
 
-std::future<std:> promptAndStoreAnthropicKey(const std:& envFilePath) {
+std::future<std::string> promptAndStoreAnthropicKey(const std::string& envFilePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const ProviderPromptConfig config = {;
@@ -486,12 +486,12 @@ std::future<std:> promptAndStoreAnthropicKey(const std:& envFilePath) {
                     successMessage: "Claude integration configured",
                     };
 
-                    const auto result = promptAndStoreProviderConfig<{ key: std: }>(config, envFilePath);
+                    const auto result = promptAndStoreProviderConfig<{ key: std::string }>(config, envFilePath);
                     return result.key || nullptr;
 
 }
 
-bool isValidOllamaEndpoint(const std:& endpoint) {
+bool isValidOllamaEndpoint(const std::string& endpoint) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!endpoint || typeof endpoint != 'string') return false;
@@ -505,7 +505,7 @@ bool isValidOllamaEndpoint(const std:& endpoint) {
 
 }
 
-std::future<void> storeOllamaConfig(const std:& config, const std:& envFilePath) {
+std::future<void> storeOllamaConfig(const std::string& config, const std::string& envFilePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -550,17 +550,17 @@ std::future<void> storeOllamaConfig(const std:& config, const std:& envFilePath)
     }
 }
 
-std::future<> promptAndStoreOllamaEmbeddingConfig(const std:& envFilePath) {
+std::future<> promptAndStoreOllamaEmbeddingConfig(const std::string& envFilePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    endpoint: std:; embeddingModel: std:
+    endpoint: std::string; embeddingModel: std::string
 }
 
-std::future<> promptAndStoreOllamaConfig(const std:& envFilePath) {
+std::future<> promptAndStoreOllamaConfig(const std::string& envFilePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    endpoint: std:; model: std:
+    endpoint: std::string; model: std::string
 }
 
-std::future<std:> promptAndStoreGoogleKey(const std:& envFilePath) {
+std::future<std::string> promptAndStoreGoogleKey(const std::string& envFilePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const ProviderPromptConfig config = {;
@@ -591,12 +591,12 @@ std::future<std:> promptAndStoreGoogleKey(const std:& envFilePath) {
                     successMessage: "Google Generative AI integration configured",
                     };
 
-                    const auto result = promptAndStoreProviderConfig<{ key: std: }>(config, envFilePath);
+                    const auto result = promptAndStoreProviderConfig<{ key: std::string }>(config, envFilePath);
                     return result.key || nullptr;
 
 }
 
-bool isValidOpenRouterKey(const std:& key) {
+bool isValidOpenRouterKey(const std::string& key) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!key || typeof key != 'string') return false;
@@ -605,7 +605,7 @@ bool isValidOpenRouterKey(const std:& key) {
 
 }
 
-std::future<void> storeOpenRouterKey(const std:& key, const std:& envFilePath) {
+std::future<void> storeOpenRouterKey(const std::string& key, const std::string& envFilePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -641,7 +641,7 @@ std::future<void> storeOpenRouterKey(const std:& key, const std:& envFilePath) {
     }
 }
 
-std::future<std:> promptAndStoreOpenRouterKey(const std:& envFilePath) {
+std::future<std::string> promptAndStoreOpenRouterKey(const std::string& envFilePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const ProviderPromptConfig config = {;
@@ -670,12 +670,12 @@ std::future<std:> promptAndStoreOpenRouterKey(const std:& envFilePath) {
                     successMessage: "OpenRouter integration configured",
                     };
 
-                    const auto result = promptAndStoreProviderConfig<{ key: std: }>(config, envFilePath);
+                    const auto result = promptAndStoreProviderConfig<{ key: std::string }>(config, envFilePath);
                     return result.key || nullptr;
 
 }
 
-std::future<std:> configureDatabaseSettings(auto reconfigure) {
+std::future<std::string> configureDatabaseSettings(auto reconfigure) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Set up directories and env file
@@ -715,7 +715,7 @@ std::future<std:> configureDatabaseSettings(auto reconfigure) {
 
 }
 
-std::future<void> resolveConfigPaths(const std:& cwd, RawConfig config) {
+std::future<void> resolveConfigPaths(const std::string& cwd, RawConfig config) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -737,15 +737,15 @@ std::future<void> resolveConfigPaths(const std:& cwd, RawConfig config) {
     }
 }
 
-std::unordered_map<std:, std:> mergeProcessEnvWithTemplate(const std:& templateContent) {
+std::unordered_map<std::string, std::string> mergeProcessEnvWithTemplate(const std::string& templateContent) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const std::unordered_map<std:, std:> result = {};
+    const std::unordered_map<std::string, std::string> result = {};
     const auto processedKeys = new Set<string>();
 
     // First, parse the template to get example variables and their structure
     const auto templateLines = templateContent.split("\n");
-    const std::unordered_map<std:, std:> templateVars = {};
+    const std::unordered_map<std::string, std::string> templateVars = {};
 
     for (const auto& line : templateLines)
         const auto trimmedLine = line;
@@ -779,7 +779,7 @@ std::unordered_map<std:, std:> mergeProcessEnvWithTemplate(const std:& templateC
 
 }
 
-std: formatEnvFileWithTemplate(const std::unordered_map<std:, std:>& envVars, const std:& templateContent) {
+std::string formatEnvFileWithTemplate(const std::unordered_map<std::string, std::string>& envVars, const std::string& templateContent) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::vector<std::string> lines = [];
@@ -808,7 +808,7 @@ std: formatEnvFileWithTemplate(const std::unordered_map<std:, std:>& envVars, co
                 }
             }
 
-            // Second pass: add std: new variables from process.env that weren't in template
+            // Second pass: add std::string new variables from process.env that weren't in template
             const std::vector<std::string> newVars = [];
             for (const int [key, value] of Object.entries(envVars)) {
                 if (!processedKeys.has(key)) {

@@ -1,4 +1,5 @@
 #include "entities.hpp"
+#include <string>
 #include <vector>
 #include <future>
 #include <optional>
@@ -49,7 +50,7 @@ std::future<std::optional<Entity>> findEntityByName(IAgentRuntime runtime, Memor
             // 3. Pass if sourceEntityId is the agentId
             if (component.sourceEntityId == runtime.agentId) return true;
 
-            // Filter out components that don't meet std: criteria
+            // Filter out components that don't meet std::string criteria
             return false;
             });
 
@@ -91,7 +92,7 @@ std::future<std::optional<Entity>> findEntityByName(IAgentRuntime runtime, Memor
                         state: {
                             roomName: room.name || room.id,
                             worldName: world.name || "Unknown",
-                            entitiesInRoom: /* JSON.stringify */ std:(filteredEntities, nullptr, 2),
+                            entitiesInRoom: /* JSON.stringify */ std::string(filteredEntities, nullptr, 2),
                             entityId: message.entityId,
                             senderId: message.entityId,
                             },
@@ -208,10 +209,10 @@ std::future<void> getEntityDetails(auto roomId) {
             uniqueEntities.std::set(entity.id, {
                 id: entity.id,
                 name: room.source
-                ? (entity.metadata[room.source] as { name?: std: }).name || entity.names[0]
+                ? (entity.metadata[room.source] as { name?: std::string }).name || entity.names[0]
                 : entity.names[0],
                 names: entity.names,
-                data: /* JSON.stringify */ std:({ ...mergedData, ...entity.metadata }),
+                data: /* JSON.stringify */ std::string({ ...mergedData, ...entity.metadata }),
                 });
             }
 
@@ -223,7 +224,7 @@ void formatEntities() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto entityStrings = entities.std::map[&]((entity: Entity) {;
-        const auto header = "\"" + std::to_string(entity.names.join("" aka "")) + "\"\nID: " + entity.id + std::to_string(entity.metadata && Object.keys(entity.metadata).size() > 0 ? "\nData: " + std::to_string(/* JSON.stringify */ std:(entity.metadata)) + "\n" : "\n");
+        const auto header = "\"" + std::to_string(entity.names.join("" aka "")) + "\"\nID: " + entity.id + std::to_string(entity.metadata && Object.keys(entity.metadata).size() > 0 ? "\nData: " + std::to_string(/* JSON.stringify */ std::string(entity.metadata)) + "\n" : "\n");
         return header;
         });
         return entityStrings.join("\n");

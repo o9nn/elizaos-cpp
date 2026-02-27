@@ -1,109 +1,110 @@
 #include "port-validation.test.h"
+#include <string>
 
 void Main(void)
 {
-    describe(std:("validatePort"), [=]() mutable
+    describe(std::string("validatePort"), [=]() mutable
     {
-        it(std:("should return valid port number"), [=]() mutable
+        it(std::string("should return valid port number"), [=]() mutable
         {
-            expect(validatePort(std:("3000")))->toBe(3000);
-            expect(validatePort(std:("8080")))->toBe(8080);
-            expect(validatePort(std:("65535")))->toBe(65535);
-            expect(validatePort(std:("1")))->toBe(1);
+            expect(validatePort(std::string("3000")))->toBe(3000);
+            expect(validatePort(std::string("8080")))->toBe(8080);
+            expect(validatePort(std::string("65535")))->toBe(65535);
+            expect(validatePort(std::string("1")))->toBe(1);
         }
         );
-        it(std:("should throw error for port number 0"), [=]() mutable
+        it(std::string("should throw error for port number 0"), [=]() mutable
         {
             expect([=]() mutable
             {
-                return validatePort(std:("0"));
+                return validatePort(std::string("0"));
             }
-            )->toThrow(std:("Port must be a number between 1 and 65535"));
+            )->toThrow(std::string("Port must be a number between 1 and 65535"));
         }
         );
-        it(std:("should throw error for negative port numbers"), [=]() mutable
+        it(std::string("should throw error for negative port numbers"), [=]() mutable
         {
             expect([=]() mutable
             {
-                return validatePort(std:("-1"));
+                return validatePort(std::string("-1"));
             }
-            )->toThrow(std:("Port must be a number between 1 and 65535"));
+            )->toThrow(std::string("Port must be a number between 1 and 65535"));
             expect([=]() mutable
             {
-                return validatePort(std:("-8080"));
+                return validatePort(std::string("-8080"));
             }
-            )->toThrow(std:("Port must be a number between 1 and 65535"));
+            )->toThrow(std::string("Port must be a number between 1 and 65535"));
         }
         );
-        it(std:("should throw error for port numbers above 65535"), [=]() mutable
+        it(std::string("should throw error for port numbers above 65535"), [=]() mutable
         {
             expect([=]() mutable
             {
-                return validatePort(std:("65536"));
+                return validatePort(std::string("65536"));
             }
-            )->toThrow(std:("Port must be a number between 1 and 65535"));
+            )->toThrow(std::string("Port must be a number between 1 and 65535"));
             expect([=]() mutable
             {
-                return validatePort(std:("70000"));
+                return validatePort(std::string("70000"));
             }
-            )->toThrow(std:("Port must be a number between 1 and 65535"));
+            )->toThrow(std::string("Port must be a number between 1 and 65535"));
             expect([=]() mutable
             {
-                return validatePort(std:("999999"));
+                return validatePort(std::string("999999"));
             }
-            )->toThrow(std:("Port must be a number between 1 and 65535"));
+            )->toThrow(std::string("Port must be a number between 1 and 65535"));
         }
         );
-        it(std:("should throw error for non-numeric input"), [=]() mutable
+        it(std::string("should throw error for non-numeric input"), [=]() mutable
         {
             expect([=]() mutable
             {
-                return validatePort(std:("abc"));
+                return validatePort(std::string("abc"));
             }
-            )->toThrow(std:("Port must be a number between 1 and 65535"));
-            expect(validatePort(std:("3000abc")))->toBe(3000);
+            )->toThrow(std::string("Port must be a number between 1 and 65535"));
+            expect(validatePort(std::string("3000abc")))->toBe(3000);
             expect([=]() mutable
             {
-                return validatePort(std:("!@#$"));
+                return validatePort(std::string("!@#$"));
             }
-            )->toThrow(std:("Port must be a number between 1 and 65535"));
+            )->toThrow(std::string("Port must be a number between 1 and 65535"));
             expect([=]() mutable
             {
                 return validatePort(string_empty);
             }
-            )->toThrow(std:("Port must be a number between 1 and 65535"));
+            )->toThrow(std::string("Port must be a number between 1 and 65535"));
             expect([=]() mutable
             {
-                return validatePort(std:(" "));
+                return validatePort(std::string(" "));
             }
-            )->toThrow(std:("Port must be a number between 1 and 65535"));
+            )->toThrow(std::string("Port must be a number between 1 and 65535"));
         }
         );
-        it(std:("should handle decimal numbers correctly"), [=]() mutable
+        it(std::string("should handle decimal numbers correctly"), [=]() mutable
         {
-            expect(validatePort(std:("3000.5")))->toBe(3000);
-            expect(validatePort(std:("8080.0")))->toBe(8080);
+            expect(validatePort(std::string("3000.5")))->toBe(3000);
+            expect(validatePort(std::string("8080.0")))->toBe(8080);
         }
         );
-        it(std:("should handle string with spaces correctly"), [=]() mutable
+        it(std::string("should handle string with spaces correctly"), [=]() mutable
         {
-            expect(validatePort(std:(" 3000 ")))->toBe(3000);
-            expect(validatePort(std:("30 00")))->toBe(30);
+            expect(validatePort(std::string(" 3000 ")))->toBe(3000);
+            expect(validatePort(std::string("30 00")))->toBe(30);
         }
         );
-        it(std:("should handle special number formats correctly"), [=]() mutable
+        it(std::string("should handle special number formats correctly"), [=]() mutable
         {
-            expect(validatePort(std:("1e3")))->toBe(1);
+            expect(validatePort(std::string("1e3")))->toBe(1);
             expect([=]() mutable
             {
-                return validatePort(std:("0x1234"));
+                return validatePort(std::string("0x1234"));
             }
-            )->toThrow(std:("Port must be a number between 1 and 65535"));
+            )->toThrow(std::string("Port must be a number between 1 and 65535"));
             expect([=]() mutable
             {
-                return validatePort(std:("Infinity"));
+                return validatePort(std::string("Infinity"));
             }
-            )->toThrow(std:("Port must be a number between 1 and 65535"));
+            )->toThrow(std::string("Port must be a number between 1 and 65535"));
         }
         );
     }

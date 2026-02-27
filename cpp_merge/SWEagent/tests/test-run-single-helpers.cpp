@@ -1,4 +1,5 @@
 #include "test-run-single-helpers.h"
+#include <string>
 
 std::shared_ptr<Promise<void>> MockRuntime::createSession(std::shared_ptr<CreateBashSessionRequest> _request)
 {
@@ -8,9 +9,9 @@ std::shared_ptr<Promise<void>> MockRuntime::createSession(std::shared_ptr<Create
 std::shared_ptr<Promise<std::shared_ptr<CommandResult>>> MockRuntime::execute(std::shared_ptr<Command> _command)
 {
     return object{
-        object::pair{std:("exitCode"), 0}, 
-        object::pair{std:("stdout"), string_empty}, 
-        object::pair{std:("stderr"), string_empty}
+        object::pair{std::string("exitCode"), 0}, 
+        object::pair{std::string("stdout"), string_empty}, 
+        object::pair{std::string("stderr"), string_empty}
     };
 }
 
@@ -18,7 +19,7 @@ std::shared_ptr<Promise<std::shared_ptr<ReadFileResponse>>> MockRuntime::readFil
 {
     auto content = OR((this->files->get(request->path)), (string_empty));
     return object{
-        object::pair{std:("content"), std:("content")}
+        object::pair{std::string("content"), std::string("content")}
     };
 }
 

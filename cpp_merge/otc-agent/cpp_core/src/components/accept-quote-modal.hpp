@@ -26,19 +26,19 @@ using StepState = ;
 
 // --- Token Metadata from cache ---
 struct TokenMetadata {
-    std: symbol;
-    std: name;
-    std: logoUrl;
-    std: contractAddress;
+    std::string symbol;
+    std::string name;
+    std::string logoUrl;
+    std::string contractAddress;
 };
 
 // Client-side token metadata cache (permanent - token metadata doesn't change)
 
-std::optional<TokenMetadata> getCachedTokenMetadata(const std:& chain, const std:& symbol);
+std::optional<TokenMetadata> getCachedTokenMetadata(const std::string& chain, const std::string& symbol);
 
-void setCachedTokenMetadata(const std:& chain, const std:& symbol, TokenMetadata metadata);
+void setCachedTokenMetadata(const std::string& chain, const std::string& symbol, TokenMetadata metadata);
 
-std::optional<TokenMetadata> loadCachedTokenMetadata(const std:& chain, const std:& symbol);
+std::optional<TokenMetadata> loadCachedTokenMetadata(const std::string& chain, const std::string& symbol);
 
 // Contract bytecode cache - keyed by address, stores whether contract exists with TTL
 // TTL of 5 minutes allows for contract deployment during development
@@ -47,23 +47,23 @@ struct ContractCacheEntry {
     double cachedAt;
 };
 
-std::optional<bool> getContractExists(const std:& key);
+std::optional<bool> getContractExists(const std::string& key);
 
-void setContractExists(const std:& key, bool exists);
+void setContractExists(const std::string& key, bool exists);
 
 // --- Consolidated Modal State ---
 struct ModalState {
     double tokenAmount;
-    std: currency;
+    std::string currency;
     StepState step;
     bool isProcessing;
-    std: error;
+    std::string error;
     bool requireApprover;
     bool contractValid;
-    std: solanaTokenMint;
+    std::string solanaTokenMint;
     std::optional<TokenMetadata> tokenMetadata;
-    std: completedTxHash;
-    std: completedOfferId;
+    std::string completedTxHash;
+    std::string completedOfferId;
 };
 
 using ModalAction = std::variant<, { type: "SET_TOKEN_AMOUNT">; payload }

@@ -27,7 +27,7 @@ namespace elizaos {
 
 // Test Room
 
-// Interface that extends Memory to include the type field for the database
+// Interface that : public Memory to include the type field for the database
 
 // Sample test memories
 

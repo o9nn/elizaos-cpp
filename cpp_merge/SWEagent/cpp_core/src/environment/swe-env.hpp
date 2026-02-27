@@ -33,23 +33,23 @@ using EnvironmentConfig = z.infer<typeof EnvironmentConfigSchema>;
  */
 class SWEEnv implements AgentEnvironment {
   public deployment: AbstractDeployment; // Made public to match Python
-  public repo: Repo | undefined; // Changed from null to undefined to match AgentEnvironment interface
-  private _postStartupCommands: std:[]; // Private with underscore to match Python
+  public repo: Repo | std::nullopt; // Changed from null to std::nullopt to match AgentEnvironment interface
+  private _postStartupCommands: std::string[]; // Private with underscore to match Python
   public postStartupCommandTimeout; // Made public to match Python
   private _chook: CombinedEnvHooks; // Private with underscore to match Python
-  public name: std:; // Made public to match Python
-  public cleanMultiLineFunctions: [&](x: std:) { return std: = [&](x) { return x; }; };
+  public name: std::string; // Made public to match Python
+  public cleanMultiLineFunctions: [&](x: std::string) { return std::string = [&](x) { return x; }; };
   public logger = getLogger('swe-env'); // Added logger property to match Python
   // @ts-ignore - used in start() and reset() methods
   private _started = false; // Track if environment has been started
 
-  constructor(config: {
+  /* constructor */ (config: {
     deployment: AbstractDeployment;
     repo?: Repo | RepoConfig | null;
-    postStartupCommands: std:[];
+    postStartupCommands: std::string[];
     postStartupCommandTimeout?;
     hooks?: EnvHook[] | null;
-    name?: std:;
+    name?: std::string;
   }) {
     this.deployment = config.deployment;
     this.repo = this.resolveRepo(config.repo);
@@ -128,7 +128,7 @@ class SWEEnv implements AgentEnvironment {
 
     // Optional method - return empty array for now
 
-    // Optional method - return empty std: for now
+    // Optional method - return empty std::string for now
 
   /**
    * Reset the environment to a clean state

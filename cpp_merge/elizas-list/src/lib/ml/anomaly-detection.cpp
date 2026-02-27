@@ -1,10 +1,11 @@
 #include "anomaly-detection.h"
+#include <string>
 
 AnomalyDetector::AnomalyDetector() {
     this->isolationForest = std::make_shared<IsolationForest>(object{
-        object::pair{std:("numberOfTrees"), 100}, 
-        object::pair{std:("maxSamples"), 256}, 
-        object::pair{std:("contamination"), 0.1}
+        object::pair{std::string("numberOfTrees"), 100}, 
+        object::pair{std::string("maxSamples"), 256}, 
+        object::pair{std::string("contamination"), 0.1}
     });
     this->dbscan = std::make_shared<DBSCAN>();
 }
@@ -17,43 +18,43 @@ void AnomalyDetector::initialize()
 void AnomalyDetector::buildAutoencoder()
 {
     auto encoder = tf->sequential(object{
-        object::pair{std:("layers"), array<any>{ tf->layers->dense(object{
-            object::pair{std:("inputShape"), array<double>{ 50 }}, 
-            object::pair{std:("units"), 32}, 
-            object::pair{std:("activation"), std:("relu")}
+        object::pair{std::string("layers"), array<any>{ tf->layers->dense(object{
+            object::pair{std::string("inputShape"), array<double>{ 50 }}, 
+            object::pair{std::string("units"), 32}, 
+            object::pair{std::string("activation"), std::string("relu")}
         }), tf->layers->dense(object{
-            object::pair{std:("units"), 16}, 
-            object::pair{std:("activation"), std:("relu")}
+            object::pair{std::string("units"), 16}, 
+            object::pair{std::string("activation"), std::string("relu")}
         }), tf->layers->dense(object{
-            object::pair{std:("units"), 8}, 
-            object::pair{std:("activation"), std:("relu")}
+            object::pair{std::string("units"), 8}, 
+            object::pair{std::string("activation"), std::string("relu")}
         }), tf->layers->dense(object{
-            object::pair{std:("units"), 4}, 
-            object::pair{std:("activation"), std:("relu")}
+            object::pair{std::string("units"), 4}, 
+            object::pair{std::string("activation"), std::string("relu")}
         }) }}
     });
     auto decoder = tf->sequential(object{
-        object::pair{std:("layers"), array<any>{ tf->layers->dense(object{
-            object::pair{std:("inputShape"), array<double>{ 4 }}, 
-            object::pair{std:("units"), 8}, 
-            object::pair{std:("activation"), std:("relu")}
+        object::pair{std::string("layers"), array<any>{ tf->layers->dense(object{
+            object::pair{std::string("inputShape"), array<double>{ 4 }}, 
+            object::pair{std::string("units"), 8}, 
+            object::pair{std::string("activation"), std::string("relu")}
         }), tf->layers->dense(object{
-            object::pair{std:("units"), 16}, 
-            object::pair{std:("activation"), std:("relu")}
+            object::pair{std::string("units"), 16}, 
+            object::pair{std::string("activation"), std::string("relu")}
         }), tf->layers->dense(object{
-            object::pair{std:("units"), 32}, 
-            object::pair{std:("activation"), std:("relu")}
+            object::pair{std::string("units"), 32}, 
+            object::pair{std::string("activation"), std::string("relu")}
         }), tf->layers->dense(object{
-            object::pair{std:("units"), 50}, 
-            object::pair{std:("activation"), std:("sigmoid")}
+            object::pair{std::string("units"), 50}, 
+            object::pair{std::string("activation"), std::string("sigmoid")}
         }) }}
     });
     this->autoencoder = tf->sequential(object{
-        object::pair{std:("layers"), array<any>{ encoder->layers, decoder->layers }}
+        object::pair{std::string("layers"), array<any>{ encoder->layers, decoder->layers }}
     });
     this->autoencoder->compile(object{
-        object::pair{std:("optimizer"), std:("adam")}, 
-        object::pair{std:("loss"), std:("meanSquaredError")}
+        object::pair{std::string("optimizer"), std::string("adam")}, 
+        object::pair{std::string("loss"), std::string("meanSquaredError")}
     });
 }
 
@@ -98,10 +99,10 @@ array<std::shared_ptr<AnomalyResult>> AnomalyDetector::ensembleResults(array<arr
     {
         auto score = (const_(const_(results)[0])[i] + const_(const_(results)[1])[i] + const_(const_(results)[2])[i]) / 3;
         return object{
-            object::pair{std:("index"), i}, 
-            object::pair{std:("score"), std:("score")}, 
-            object::pair{std:("isAnomaly"), score > this->threshold}, 
-            object::pair{std:("confidence"), this->calculateConfidence(results->map([=](auto r) mutable
+            object::pair{std::string("index"), i}, 
+            object::pair{std::string("score"), std::string("score")}, 
+            object::pair{std::string("isAnomaly"), score > this->threshold}, 
+            object::pair{std::string("confidence"), this->calculateConfidence(results->map([=](auto r) mutable
             {
                 return const_(r)[i];
             }

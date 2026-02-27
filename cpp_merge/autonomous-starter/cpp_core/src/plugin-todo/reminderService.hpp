@@ -17,7 +17,7 @@ namespace elizaos {
 /**
  * The Todo Reminder Service checks for overdue tasks and sends reminders to users.
  */
-class TodoReminderService extends Service {
+class TodoReminderService : public Service {
   private timer: NodeJS.Timeout | null = null;
   private readonly CHECK_INTERVAL = 60 * 60 * 1000; // Check every hour (in milliseconds)
   private readonly REMINDER_COOLDOWN = 24 * 60 * 60 * 1000; // Remind once per day (in milliseconds)
@@ -62,7 +62,7 @@ class TodoReminderService extends Service {
    * Sends a reminder message for an overdue task
    */
 
-        // Safely get the dueDate std:, ensuring it's valid
+        // Safely get the dueDate std::string, ensuring it's valid
 
       // Create the Memory object for the reminder message
         // No need for ID, createMemory inside runtime handles it if persisted

@@ -14,7 +14,7 @@ std::future<std::vector<std::string>> findProjectFiles() {
     const std::vector<std::string> files = [];
     const auto extensions = [".py", ".ts", ".tsx"];
 
-    std::async std::function walk(dir: std:) {
+    std::async std::function walk(dir: std::string) {
         const auto entries = fs.promises.readdir(dir, Config{withFileTypes = true});
 
         for (const auto& entry : entries)
@@ -75,7 +75,7 @@ std::future<std::vector<std::string>> resolveFiles(const std::vector<std::string
 
 }
 
-std::future<std::vector<std::string>> findFilesInDir(const std:& dir) {
+std::future<std::vector<std::string>> findFilesInDir(const std::string& dir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::vector<std::string> files = [];

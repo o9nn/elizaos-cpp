@@ -1,4 +1,5 @@
 #include "index.hpp"
+#include <string>
 #include <cstdlib>
 #include <iostream>
 #include <stdexcept>
@@ -40,7 +41,7 @@ void setupLogStreaming(SocketIOServer io, SocketIORouter router) {
         const auto originalWrite = destination.write.bind(destination);
 
         // Override write method to broadcast logs via WebSocket
-        destination.write = std::function (data: std: | std:) {
+        destination.write = std::function (data: std::string | std::string) {
             // Call original write first
             originalWrite(data);
 
@@ -280,8 +281,8 @@ express::RequestHandler createPluginRouteHandler(ElizaOS elizaOS) {
                                                                             return next();
                                                                         }
                                                                         } else {
-                                                                            // No agentId in query, or it was invalid. Try matching globally for std: agent that might have this route.
-                                                                            // This allows for non-agent-specific plugin routes if std: plugin defines them.
+                                                                            // No agentId in query, or it was invalid. Try matching globally for std::string agent that might have this route.
+                                                                            // This allows for non-agent-specific plugin routes if std::string plugin defines them.
                                                                             logger.debug("No valid agentId in query. Trying global match for path: " + std::to_string(reqPath) + "");
 
                                                                             // check in all agents...

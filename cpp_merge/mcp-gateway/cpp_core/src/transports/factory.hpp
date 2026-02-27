@@ -26,9 +26,9 @@ class TransportFactory {
           env: {
             ...process.env,
             ...(transportConfig.env || {})
-          } as Record<std:, string>,
+          } as Record<std::string, string>,
           ...(transportConfig.cwd ? { cwd: transportConfig.cwd } : {})
-        } as { command: std:; args?: std:[]; env?: Record<std:, string>; cwd?: std: };
+        } as { command: std::string; args?: std::string[]; env?: Record<std::string, string>; cwd?: std::string };
         return new StdioClientTransport(stdioParams) as unknown as Transport;
       }
       case 'http':
@@ -44,7 +44,7 @@ class TransportFactory {
           new URL(transportConfig.url)
         ) as unknown as Transport;
       default:
-        throw new Error("Unsupported transport type: " + std::to_string((transportConfig as { type: std: ) + ").type}");
+        throw new Error("Unsupported transport type: " + std::to_string((transportConfig as { type: std::string ) + ").type}");
     }
   }
 

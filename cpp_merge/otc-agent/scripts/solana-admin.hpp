@@ -23,7 +23,7 @@ std::shared_ptr<Promise<std::shared_ptr<anchor::Program>>> getProgram(std::share
 
 std::shared_ptr<Promise<void>> createTreasury(string tokenMintStr);
 
-std::shared_ptr<Promise<void>> registerToken(string tokenMintStr, double priceUsd = undefined);
+std::shared_ptr<Promise<void>> registerToken(string tokenMintStr, double priceUsd = std::nullopt);
 
 std::shared_ptr<Promise<void>> setPrice(string tokenMintStr, double priceUsd);
 

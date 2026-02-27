@@ -19,20 +19,20 @@ struct ChatMessageListComponentProps {
     std::vector<UiMessage> messages;
     bool isLoadingMessages;
     ChannelType.GROUP | ChannelType.DM chatType;
-    std: currentClientEntityId;
+    std::string currentClientEntityId;
     std::optional<Agent> targetAgentData;
     std::vector<std::optional<Agent>> allAgents;
-    std: | null animatedMessageId;
+    std::string | null animatedMessageId;
     React.RefObject<HTMLDivElement | null> scrollRef;
     std::optional<React.RefObject<HTMLDivElement | null>; // Optional content ref for StickToBottom> contentRef;
     bool isAtBottom;
     [&]() { return void scrollToBottom; };
     [&]() { return void disableAutoScroll; };
-    UUID | undefined finalChannelId;
-    std::optional<[&](agentId: UUID) { return Partial<Agent> | undefined> getAgentInMessage; };
-    std::optional<std::unordered_map<UUID, std: | null>> agentAvatarMap;
-    [&](messageId: std:) { return void onDeleteMessage; };
-    [&](messageText: std:) { return void onRetryMessage; };
+    UUID | std::nullopt finalChannelId;
+    std::optional<[&](agentId: UUID) { return Partial<Agent> | std::nullopt> getAgentInMessage; };
+    std::optional<std::unordered_map<UUID, std::string | null>> agentAvatarMap;
+    [&](messageId: std::string) { return void onDeleteMessage; };
+    [&](messageText: std::string) { return void onRetryMessage; };
     std::optional<UUID | null> selectedGroupAgentId;
 };
 

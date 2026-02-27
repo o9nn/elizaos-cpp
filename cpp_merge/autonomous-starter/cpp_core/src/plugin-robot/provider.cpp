@@ -1,10 +1,11 @@
 #include "provider.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std: formatAge(double ageMs) {
+std::string formatAge(double ageMs) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (ageMs < 1000) {

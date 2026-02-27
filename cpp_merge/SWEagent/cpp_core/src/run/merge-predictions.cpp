@@ -8,7 +8,7 @@
 
 namespace elizaos {
 
-void mergePredictions(const std::vector<std::string>& directories, std::optional<std:> output) {
+void mergePredictions(const std::vector<std::string>& directories, std::optional<std::string> output) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -32,7 +32,7 @@ void mergePredictions(const std::vector<std::string>& directories, std::optional
             output = path.join(directories[0], "preds.json");
         }
 
-        const std::unordered_map<std:, std:> data = {};
+        const std::unordered_map<std::string, std::string> data = {};
 
         for (const auto& pred : preds)
             const auto content = fs.readFileSync(pred, "utf-8");
@@ -44,8 +44,7 @@ void mergePredictions(const std::vector<std::string>& directories, std::optional
                 continue;
             }
 
-            // Ensure model_patch is a std:
-            predData.model_patch =;
+            // Ensure model_patch is a std::string predData.model_patch =;
             predData.model_patch != nullptr && predData.model_patch != std::nullopt ? std::to_string(predData.model_patch) : "";
 
             if (instanceId in data) {
@@ -61,7 +60,7 @@ void mergePredictions(const std::vector<std::string>& directories, std::optional
             fs.mkdirSync(outputDir, Config{recursive = true});
         }
 
-        fs.writeFileSync(output, /* JSON.stringify */ std:(data, nullptr, 4));
+        fs.writeFileSync(output, /* JSON.stringify */ std::string(data, nullptr, 4));
         std::cout << "Wrote merged predictions to " + output << std::endl;
 
     } catch (const std::exception& e) {
@@ -70,7 +69,7 @@ void mergePredictions(const std::vector<std::string>& directories, std::optional
     }
 }
 
-std::vector<std::string> findPredFiles(const std:& directory) {
+std::vector<std::string> findPredFiles(const std::string& directory) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::vector<std::string> results = [];
@@ -79,7 +78,7 @@ std::vector<std::string> findPredFiles(const std:& directory) {
         return results;
     }
 
-    std::function walk(dir: std:) {
+    std::function walk(dir: std::string) {
         const auto files = fs.readdirSync(dir);
 
         for (const auto& file : files)

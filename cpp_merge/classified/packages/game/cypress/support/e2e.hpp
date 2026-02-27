@@ -29,7 +29,7 @@ namespace global {
             virtual std::shared_ptr<Chainable<void>> testKeyboardNavigation() = 0;
             virtual std::shared_ptr<Chainable<void>> verifyTextOnScreen(string expectedText) = 0;
             virtual std::shared_ptr<Chainable<void>> cleanupTestData() = 0;
-            virtual std::shared_ptr<Chainable<std::shared_ptr<Element>>> tab(object options = undefined) = 0;
+            virtual std::shared_ptr<Chainable<std::shared_ptr<Element>>> tab(object options = std::nullopt) = 0;
         };
 
         class Assertion : public object, public std::enable_shared_from_this<Assertion> {

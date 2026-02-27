@@ -1,22 +1,23 @@
 #include "server-manager.test.h"
+#include <string>
 
 object mockServerState = object{
-    object::pair{std:("process"), as<any>(nullptr)}, 
-    object::pair{std:("isRunning"), false}
+    object::pair{std::string("process"), as<any>(nullptr)}, 
+    object::pair{std::string("isRunning"), false}
 };
 any mockStartServerProcess = mock([=](auto args = array<string>()) mutable
 {
     if (AND((mockServerState["process"]), (mockServerState["isRunning"]))) {
         std::async([=]() { mockStopServerProcess(); });
     }
-    console->info(std:("Starting server..."));
+    console->info(std::string("Starting server..."));
     auto mockProcess = object{
-        object::pair{std:("kill"), mock([=]() mutable
+        object::pair{std::string("kill"), mock([=]() mutable
         {
             return true;
         }
         )}, 
-        object::pair{std:("exited"), Promise->resolve(0)}
+        object::pair{std::string("exited"), Promise->resolve(0)}
     };
     mockServerState["process"] = mockProcess;
     mockServerState["isRunning"] = true;
@@ -28,11 +29,11 @@ any mockStopServerProcess = mock([=]() mutable
     if (OR((!mockServerState["process"]), (!mockServerState["isRunning"]))) {
         return false;
     }
-    console->info(std:("Stopping current server process..."));
-    auto killed = mockServerState["process"]["kill"](std:("SIGTERM"));
+    console->info(std::string("Stopping current server process..."));
+    auto killed = mockServerState["process"]["kill"](std::string("SIGTERM"));
     if (!killed) {
-        console->warn(std:("Failed to kill server process, trying force kill..."));
-        mockServerState["process"]["kill"](std:("SIGKILL"));
+        console->warn(std::string("Failed to kill server process, trying force kill..."));
+        mockServerState["process"]["kill"](std::string("SIGKILL"));
     }
     mockServerState["process"] = nullptr;
     mockServerState["isRunning"] = false;
@@ -41,7 +42,7 @@ any mockStopServerProcess = mock([=]() mutable
 );
 any mockRestartServerProcess = mock([=](auto args = array<string>()) mutable
 {
-    console->info(std:("Restarting server..."));
+    console->info(std::string("Restarting server..."));
     std::async([=]() { mockStopServerProcess(); });
     std::async([=]() { mockStartServerProcess(args); });
 }
@@ -64,14 +65,14 @@ any mockExistsSync = mock([=]() mutable
 
 void Main(void)
 {
-    mock->module(std:("fs"), [=]() mutable
+    mock->module(std::string("fs"), [=]() mutable
     {
         return (object{
-            object::pair{std:("existsSync"), mockExistsSync}
+            object::pair{std::string("existsSync"), mockExistsSync}
         });
     }
     );
-    mock->module(std:("../../../src/commands/dev/utils/server-manager"), [=]() mutable
+    mock->module(std::string("../../../src/commands/dev/utils/server-manager"), [=]() mutable
     {
         shared createServerManager = [=]() mutable
         {
@@ -91,17 +92,17 @@ void Main(void)
             return serverManager;
         };
         return object{
-            object::pair{std:("createServerManager"), std:("createServerManager")}, 
-            object::pair{std:("getServerManager"), std:("getServerManager")}, 
-            object::pair{std:("startServer"), mockStartServerProcess}, 
-            object::pair{std:("stopServer"), mockStopServerProcess}, 
-            object::pair{std:("restartServer"), mockRestartServerProcess}, 
-            object::pair{std:("isRunning"), mockIsServerRunning}, 
-            object::pair{std:("getCurrentProcess"), mockGetServerProcess}
+            object::pair{std::string("createServerManager"), std::string("createServerManager")}, 
+            object::pair{std::string("getServerManager"), std::string("getServerManager")}, 
+            object::pair{std::string("startServer"), mockStartServerProcess}, 
+            object::pair{std::string("stopServer"), mockStopServerProcess}, 
+            object::pair{std::string("restartServer"), mockRestartServerProcess}, 
+            object::pair{std::string("isRunning"), mockIsServerRunning}, 
+            object::pair{std::string("getCurrentProcess"), mockGetServerProcess}
         };
     }
     );
-    describe(std:("Server Manager (Functional)"), [=]() mutable
+    describe(std::string("Server Manager (Functional)"), [=]() mutable
     {
         shared<any> consoleInfoSpy;
         shared<any> consoleWarnSpy;
@@ -142,20 +143,20 @@ void Main(void)
             mockServerState["isRunning"] = false;
         }
         );
-        describe(std:("createServerManager"), [=]() mutable
+        describe(std::string("createServerManager"), [=]() mutable
         {
-            it(std:("should create a server manager with functional interface"), [=]() mutable
+            it(std::string("should create a server manager with functional interface"), [=]() mutable
             {
                 auto manager = createServerManager();
                 expect(manager)->toBeDefined();
-                expect(type_of(manager->start))->toBe(std:("function"));
-                expect(type_of(manager->stop))->toBe(std:("function"));
-                expect(type_of(manager->restart))->toBe(std:("function"));
-                expect(type_of(manager->isRunning))->toBe(std:("function"));
+                expect(type_of(manager->start))->toBe(std::string("function"));
+                expect(type_of(manager->stop))->toBe(std::string("function"));
+                expect(type_of(manager->restart))->toBe(std::string("function"));
+                expect(type_of(manager->isRunning))->toBe(std::string("function"));
                 expect(manager->process)->toBeNull();
             }
             );
-            it(std:("should return false for isRunning when no process is active"), [=]() mutable
+            it(std::string("should return false for isRunning when no process is active"), [=]() mutable
             {
                 auto manager = createServerManager();
                 expect(manager->isRunning())->toBe(false);
@@ -163,26 +164,26 @@ void Main(void)
             );
         }
         );
-        describe(std:("server process management"), [=]() mutable
+        describe(std::string("server process management"), [=]() mutable
         {
-            it(std:("should start server process"), [=]() mutable
+            it(std::string("should start server process"), [=]() mutable
             {
                 auto manager = createServerManager();
                 std::async([=]() { manager->start(); });
                 expect(mockStartServerProcess)->toHaveBeenCalledWith(array<any>());
-                expect(consoleInfoSpy)->toHaveBeenCalledWith(std:("Starting server..."));
+                expect(consoleInfoSpy)->toHaveBeenCalledWith(std::string("Starting server..."));
                 expect(manager->isRunning())->toBe(true);
             }
             );
-            it(std:("should start server with arguments"), [=]() mutable
+            it(std::string("should start server with arguments"), [=]() mutable
             {
                 auto manager = createServerManager();
-                std::async([=]() { manager->start(array<string>{ std:("--verbose"), std:("--port"), std:("3000") }); });
-                expect(mockStartServerProcess)->toHaveBeenCalledWith(array<string>{ std:("--verbose"), std:("--port"), std:("3000") });
-                expect(consoleInfoSpy)->toHaveBeenCalledWith(std:("Starting server..."));
+                std::async([=]() { manager->start(array<string>{ std::string("--verbose"), std::string("--port"), std::string("3000") }); });
+                expect(mockStartServerProcess)->toHaveBeenCalledWith(array<string>{ std::string("--verbose"), std::string("--port"), std::string("3000") });
+                expect(consoleInfoSpy)->toHaveBeenCalledWith(std::string("Starting server..."));
             }
             );
-            it(std:("should stop running server process"), [=]() mutable
+            it(std::string("should stop running server process"), [=]() mutable
             {
                 auto manager = createServerManager();
                 std::async([=]() { manager->start(); });
@@ -190,11 +191,11 @@ void Main(void)
                 auto result = std::async([=]() { manager->stop(); });
                 expect(result)->toBe(true);
                 expect(mockStopServerProcess)->toHaveBeenCalled();
-                expect(consoleInfoSpy)->toHaveBeenCalledWith(std:("Stopping current server process..."));
+                expect(consoleInfoSpy)->toHaveBeenCalledWith(std::string("Stopping current server process..."));
                 expect(manager->isRunning())->toBe(false);
             }
             );
-            it(std:("should return false when stopping non-running server"), [=]() mutable
+            it(std::string("should return false when stopping non-running server"), [=]() mutable
             {
                 auto manager = createServerManager();
                 auto result = std::async([=]() { manager->stop(); });
@@ -202,19 +203,19 @@ void Main(void)
                 expect(mockStopServerProcess)->toHaveBeenCalled();
             }
             );
-            it(std:("should restart server process"), [=]() mutable
+            it(std::string("should restart server process"), [=]() mutable
             {
                 auto manager = createServerManager();
-                std::async([=]() { manager->restart(array<string>{ std:("--debug") }); });
-                expect(mockRestartServerProcess)->toHaveBeenCalledWith(array<string>{ std:("--debug") });
-                expect(consoleInfoSpy)->toHaveBeenCalledWith(std:("Restarting server..."));
+                std::async([=]() { manager->restart(array<string>{ std::string("--debug") }); });
+                expect(mockRestartServerProcess)->toHaveBeenCalledWith(array<string>{ std::string("--debug") });
+                expect(consoleInfoSpy)->toHaveBeenCalledWith(std::string("Restarting server..."));
             }
             );
-            it(std:("should handle process kill failure"), [=]() mutable
+            it(std::string("should handle process kill failure"), [=]() mutable
             {
                 auto manager = createServerManager();
                 auto mockProcess = object{
-                    object::pair{std:("kill"), mock([=]() mutable
+                    object::pair{std::string("kill"), mock([=]() mutable
                     {
                         return false;
                     }
@@ -224,40 +225,40 @@ void Main(void)
                 mockServerState["isRunning"] = true;
                 auto result = std::async([=]() { manager->stop(); });
                 expect(result)->toBe(true);
-                expect(consoleWarnSpy)->toHaveBeenCalledWith(std:("Failed to kill server process, trying force kill..."));
+                expect(consoleWarnSpy)->toHaveBeenCalledWith(std::string("Failed to kill server process, trying force kill..."));
             }
             );
         }
         );
-        describe(std:("global server manager"), [=]() mutable
+        describe(std::string("global server manager"), [=]() mutable
         {
-            it(std:("should return same instance from getServerManager"), [=]() mutable
+            it(std::string("should return same instance from getServerManager"), [=]() mutable
             {
                 auto manager1 = getServerManager();
                 auto manager2 = getServerManager();
                 expect(manager1)->toBe(manager2);
             }
             );
-            it(std:("should work with global server manager"), [=]() mutable
+            it(std::string("should work with global server manager"), [=]() mutable
             {
                 auto manager = getServerManager();
-                std::async([=]() { manager->start(array<string>{ std:("--test") }); });
-                expect(mockStartServerProcess)->toHaveBeenCalledWith(array<string>{ std:("--test") });
+                std::async([=]() { manager->start(array<string>{ std::string("--test") }); });
+                expect(mockStartServerProcess)->toHaveBeenCalledWith(array<string>{ std::string("--test") });
                 expect(manager->isRunning())->toBe(true);
             }
             );
         }
         );
-        describe(std:("utility functions"), [=]() mutable
+        describe(std::string("utility functions"), [=]() mutable
         {
-            it(std:("should start server using startServer function"), [=]() mutable
+            it(std::string("should start server using startServer function"), [=]() mutable
             {
-                std::async([=]() { startServer(array<string>{ std:("--test") }); });
-                expect(mockStartServerProcess)->toHaveBeenCalledWith(array<string>{ std:("--test") });
-                expect(consoleInfoSpy)->toHaveBeenCalledWith(std:("Starting server..."));
+                std::async([=]() { startServer(array<string>{ std::string("--test") }); });
+                expect(mockStartServerProcess)->toHaveBeenCalledWith(array<string>{ std::string("--test") });
+                expect(consoleInfoSpy)->toHaveBeenCalledWith(std::string("Starting server..."));
             }
             );
-            it(std:("should stop server using stopServer function"), [=]() mutable
+            it(std::string("should stop server using stopServer function"), [=]() mutable
             {
                 std::async([=]() { startServer(); });
                 auto result = std::async([=]() { stopServer(); });
@@ -265,14 +266,14 @@ void Main(void)
                 expect(mockStopServerProcess)->toHaveBeenCalled();
             }
             );
-            it(std:("should restart server using restartServer function"), [=]() mutable
+            it(std::string("should restart server using restartServer function"), [=]() mutable
             {
-                std::async([=]() { restartServer(array<string>{ std:("--restart-test") }); });
-                expect(mockRestartServerProcess)->toHaveBeenCalledWith(array<string>{ std:("--restart-test") });
-                expect(consoleInfoSpy)->toHaveBeenCalledWith(std:("Restarting server..."));
+                std::async([=]() { restartServer(array<string>{ std::string("--restart-test") }); });
+                expect(mockRestartServerProcess)->toHaveBeenCalledWith(array<string>{ std::string("--restart-test") });
+                expect(consoleInfoSpy)->toHaveBeenCalledWith(std::string("Restarting server..."));
             }
             );
-            it(std:("should check running status using isRunning function"), [=]() mutable
+            it(std::string("should check running status using isRunning function"), [=]() mutable
             {
                 expect(isRunning())->toBe(false);
                 std::async([=]() { startServer(); });
@@ -281,7 +282,7 @@ void Main(void)
                 expect(isRunning())->toBe(false);
             }
             );
-            it(std:("should get current process using getCurrentProcess function"), [=]() mutable
+            it(std::string("should get current process using getCurrentProcess function"), [=]() mutable
             {
                 expect(getCurrentProcess())->toBeNull();
                 std::async([=]() { startServer(); });
@@ -292,14 +293,14 @@ void Main(void)
             );
         }
         );
-        describe(std:("server lifecycle"), [=]() mutable
+        describe(std::string("server lifecycle"), [=]() mutable
         {
-            it(std:("should handle server start and stop lifecycle"), [=]() mutable
+            it(std::string("should handle server start and stop lifecycle"), [=]() mutable
             {
                 auto manager = createServerManager();
                 expect(manager->isRunning())->toBe(false);
                 expect(manager->process)->toBeNull();
-                std::async([=]() { manager->start(array<string>{ std:("--test") }); });
+                std::async([=]() { manager->start(array<string>{ std::string("--test") }); });
                 expect(manager->isRunning())->toBe(true);
                 expect(manager->process)->toBeDefined();
                 auto stopped = std::async([=]() { manager->stop(); });
@@ -308,29 +309,29 @@ void Main(void)
                 expect(manager->process)->toBeNull();
             }
             );
-            it(std:("should handle multiple start calls"), [=]() mutable
+            it(std::string("should handle multiple start calls"), [=]() mutable
             {
                 auto manager = createServerManager();
-                std::async([=]() { manager->start(array<string>{ std:("--first") }); });
+                std::async([=]() { manager->start(array<string>{ std::string("--first") }); });
                 expect(mockStartServerProcess)->toHaveBeenCalledTimes(1);
-                std::async([=]() { manager->start(array<string>{ std:("--second") }); });
+                std::async([=]() { manager->start(array<string>{ std::string("--second") }); });
                 expect(mockStartServerProcess)->toHaveBeenCalledTimes(2);
                 expect(mockStopServerProcess)->toHaveBeenCalledTimes(1);
             }
             );
-            it(std:("should handle restart without prior start"), [=]() mutable
+            it(std::string("should handle restart without prior start"), [=]() mutable
             {
                 auto manager = createServerManager();
-                std::async([=]() { manager->restart(array<string>{ std:("--restart") }); });
-                expect(mockRestartServerProcess)->toHaveBeenCalledWith(array<string>{ std:("--restart") });
-                expect(consoleInfoSpy)->toHaveBeenCalledWith(std:("Restarting server..."));
+                std::async([=]() { manager->restart(array<string>{ std::string("--restart") }); });
+                expect(mockRestartServerProcess)->toHaveBeenCalledWith(array<string>{ std::string("--restart") });
+                expect(consoleInfoSpy)->toHaveBeenCalledWith(std::string("Restarting server..."));
             }
             );
         }
         );
-        describe(std:("edge cases"), [=]() mutable
+        describe(std::string("edge cases"), [=]() mutable
         {
-            it(std:("should handle empty arguments"), [=]() mutable
+            it(std::string("should handle empty arguments"), [=]() mutable
             {
                 auto manager = createServerManager();
                 std::async([=]() { manager->start(); });
@@ -339,7 +340,7 @@ void Main(void)
                 expect(mockRestartServerProcess)->toHaveBeenCalledWith(array<any>());
             }
             );
-            it(std:("should handle stopping already stopped server"), [=]() mutable
+            it(std::string("should handle stopping already stopped server"), [=]() mutable
             {
                 auto manager = createServerManager();
                 auto result1 = std::async([=]() { manager->stop(); });
@@ -348,12 +349,12 @@ void Main(void)
                 expect(result2)->toBe(false);
             }
             );
-            it(std:("should maintain state consistency across operations"), [=]() mutable
+            it(std::string("should maintain state consistency across operations"), [=]() mutable
             {
                 auto manager = createServerManager();
                 std::async([=]() { manager->start(); });
                 expect(manager->isRunning())->toBe(true);
-                std::async([=]() { manager->restart(array<string>{ std:("--new-args") }); });
+                std::async([=]() { manager->restart(array<string>{ std::string("--new-args") }); });
                 expect(manager->isRunning())->toBe(true);
                 std::async([=]() { manager->stop(); });
                 expect(manager->isRunning())->toBe(false);
@@ -361,13 +362,13 @@ void Main(void)
             );
         }
         );
-        describe(std:("error handling"), [=]() mutable
+        describe(std::string("error handling"), [=]() mutable
         {
-            it(std:("should handle process creation errors gracefully"), [=]() mutable
+            it(std::string("should handle process creation errors gracefully"), [=]() mutable
             {
                 mockStartServerProcess->mockImplementationOnce([=]() mutable
                 {
-                    throw any(std::make_shared<Error>(std:("Process creation failed")));
+                    throw any(std::make_shared<Error>(std::string("Process creation failed")));
                 }
                 );
                 auto manager = createServerManager();
@@ -381,13 +382,13 @@ void Main(void)
                 }
             }
             );
-            it(std:("should handle process stop errors gracefully"), [=]() mutable
+            it(std::string("should handle process stop errors gracefully"), [=]() mutable
             {
                 auto manager = createServerManager();
                 std::async([=]() { manager->start(); });
                 mockStopServerProcess->mockImplementationOnce([=]() mutable
                 {
-                    throw any(std::make_shared<Error>(std:("Process stop failed")));
+                    throw any(std::make_shared<Error>(std::string("Process stop failed")));
                 }
                 );
                 try

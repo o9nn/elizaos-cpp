@@ -7,7 +7,7 @@
 
 namespace elizaos {
 
-bool canGenerateEnvVar(const std:& varName, const std:& type, std::optional<std:> description) {
+bool canGenerateEnvVar(const std::string& varName, const std::string& type, std::optional<std::string> description) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto lowerName = varName.toLowerCase();
@@ -51,13 +51,13 @@ bool canGenerateEnvVar(const std:& varName, const std:& type, std::optional<std:
 
 }
 
-std::optional<GenerationScript> generateScript(const std:& varName, const std:& type, const std:& pluginName, std::optional<std:> description) {
+std::optional<GenerationScript> generateScript(const std::string& varName, const std::string& type, const std::string& pluginName, std::optional<std::string> description) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto lowerName = varName.toLowerCase();
     const auto lowerDesc = description.toLowerCase() || "";
 
-    std: script = nullptr;
+    std::string script = nullptr;
     std::vector<std::string> dependencies = [];
 
     // Determine script type based on variable characteristics
@@ -108,7 +108,7 @@ std::optional<GenerationScript> generateScript(const std:& varName, const std:& 
 
 }
 
-std: getGenerationDescription(const std:& varName, const std:& type) {
+std::string getGenerationDescription(const std::string& varName, const std::string& type) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto lowerName = varName.toLowerCase();

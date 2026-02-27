@@ -77,8 +77,8 @@ std::future<void> handler(IAgentRuntime runtime, Memory message, std::optional<S
                     ...(state.values || {}),
                     knownFacts: formatFacts(knownFacts),
                     roomType: message.content.channelType,
-                    entitiesInRoom: /* JSON.stringify */ std:(entities),
-                    existingRelationships: /* JSON.stringify */ std:(existingRelationships),
+                    entitiesInRoom: /* JSON.stringify */ std::string(entities),
+                    existingRelationships: /* JSON.stringify */ std::string(existingRelationships),
                     senderId: message.entityId,
                     },
                     template: runtime.character.templates.reflectionTemplate || reflectionTemplate,
@@ -127,7 +127,7 @@ std::future<void> handler(IAgentRuntime runtime, Memory message, std::optional<S
                             // Store new facts
                             const auto newFacts =;
                             factsArray.filter[&](;
-                            (fact: std:) { return fact &&; };
+                            (fact: std::string) { return fact &&; };
                             typeof fact == "object" &&;
                             fact.already_known == "false" &&;
                             fact.in_bio == "false" &&;
@@ -137,7 +137,7 @@ std::future<void> handler(IAgentRuntime runtime, Memory message, std::optional<S
                             ) || [];
 
                             Promise.all[&](;
-                            newFacts.std::map(std::async (fact: std:) {
+                            newFacts.std::map(std::async (fact: std::string) {
                                 const auto factMemory = {;
                                     id: asUUID(v4()),
                                     entityId: agentId,
@@ -182,10 +182,9 @@ std::future<void> handler(IAgentRuntime runtime, Memory message, std::optional<S
                                                 return r.sourceEntityId == sourceId && r.targetEntityId == targetId;
                                                 });
 
-                                                // Parse tags from comma-separated std:
-                                                const auto tags = relationship.tags;
+                                                // Parse tags from comma-separated std::string const auto tags = relationship.tags;
                                                 ? relationship.tags.split(",");
-                                                .std::map[&]((tag: std:) { return tag)
+                                                .std::map[&]((tag: std::string) { return tag)
                                                 .filter(Boolean); };
                                                 : [];
 

@@ -46,7 +46,7 @@ void displayAgent(const std::optional<Agent>& data, auto title) {
 
 }
 
-std: formatConversation(const std::vector<MessageExample>& conversation) {
+std::string formatConversation(const std::vector<MessageExample>& conversation) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return conversation;
@@ -57,7 +57,7 @@ std: formatConversation(const std::vector<MessageExample>& conversation) {
 
 }
 
-void displaySection(const std:& title, const std::vector<std::string>& items) {
+void displaySection(const std::string& title, const std::vector<std::string>& items) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!items || items.size() == 0) return;
@@ -69,7 +69,7 @@ void displaySection(const std:& title, const std::vector<std::string>& items) {
 
 }
 
-void logHeader(const std:& title) {
+void logHeader(const std::string& title) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto padding = 2; // number of spaces on each side;

@@ -17,22 +17,22 @@ namespace elizaos {
 struct PriceDataPoint {
     double timestamp;
     double price;
-    std: date;
+    std::string date;
 };
 
 struct MarketCapDataPoint {
     double timestamp;
     double marketCap;
-    std: date;
+    std::string date;
 };
 
 using ChartType = std::variant<'price', 'marketcap'>;
 
 struct PriceChartData {
-    std: token_identifier;
-    std: | null token_symbol;
-    std: chain;
-    std: timeframe;
+    std::string token_identifier;
+    std::string | null token_symbol;
+    std::string chain;
+    std::string timeframe;
     number | null current_price;
     std::optional<number | null> current_market_cap;
     std::vector<PriceDataPoint> data_points;

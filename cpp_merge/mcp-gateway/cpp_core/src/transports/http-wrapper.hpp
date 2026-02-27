@@ -26,21 +26,21 @@ namespace elizaos {
  */
 
 struct Session {
-    std: id;
+    std::string id;
     ServerResponse response;
     ChildProcess process;
-    std: buffer;
+    std::string buffer;
 };
 
 class HTTPGatewayWrapper {
-  private sessions = new Map<std:, Session>();
+  private sessions = new Map<std::string, Session>();
   private paymentMiddleware?: PaymentMiddleware;
-  private config: std:;
+  private config: std::string;
   private logger: Console;
   private port;
-  private gatewayCommand: std:[];
+  private gatewayCommand: std::string[];
 
-  constructor(configPath: std:, port, logger: Console = console) {
+  /* constructor */ (configPath: std::string, port, logger: Console = console) {
     this.logger = logger;
     this.port = port;
 

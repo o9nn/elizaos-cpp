@@ -27,7 +27,7 @@ namespace elizaos {
 
     // Character name
 
-    // Handle bio (std: or random selection from array)
+    // Handle bio (std::string or random selection from array)
 
     // System prompt
 

@@ -1,13 +1,14 @@
 #include "index.hpp"
+#include <string>
 
 std::shared_ptr<Plugin> pluginManagerPlugin = object{
-    object::pair{std:("name"), std:("plugin-manager")}, 
-    object::pair{std:("description"), std:("Manages dynamic loading and unloading of plugins at runtime, including registry installation and configuration management")}, 
-    object::pair{std:("services"), array<PluginManagerService>{ PluginManagerService, PluginConfigurationService, PluginUserInteractionService }}, 
-    object::pair{std:("actions"), array<any>{ loadPluginAction, unloadPluginAction, startPluginConfigurationAction, installPluginFromRegistryAction }}, 
-    object::pair{std:("providers"), array<any>{ pluginStateProvider, pluginConfigurationStatusProvider, registryPluginsProvider }}, 
-    object::pair{std:("evaluators"), array<any>{ pluginConfigurationEvaluator }}, 
-    object::pair{std:("init"), [=](auto config, auto runtime) mutable
+    object::pair{std::string("name"), std::string("plugin-manager")}, 
+    object::pair{std::string("description"), std::string("Manages dynamic loading and unloading of plugins at runtime, including registry installation and configuration management")}, 
+    object::pair{std::string("services"), array<PluginManagerService>{ PluginManagerService, PluginConfigurationService, PluginUserInteractionService }}, 
+    object::pair{std::string("actions"), array<any>{ loadPluginAction, unloadPluginAction, startPluginConfigurationAction, installPluginFromRegistryAction }}, 
+    object::pair{std::string("providers"), array<any>{ pluginStateProvider, pluginConfigurationStatusProvider, registryPluginsProvider }}, 
+    object::pair{std::string("evaluators"), array<any>{ pluginConfigurationEvaluator }}, 
+    object::pair{std::string("init"), [=](auto config, auto runtime) mutable
     {
     }
     }

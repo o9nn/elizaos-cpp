@@ -1,4 +1,5 @@
 #include "useTransactionErrorHandler.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -64,7 +65,7 @@ void useTransactionErrorHandler() {
                         // Logout from Privy (handles all wallet types)
                         logout();
 
-                        if (typeof window != "undefined") {
+                        if (typeof window != "std::nullopt") {
                             // Clear wagmi cache
                             localStorage.removeItem("wagmi.store");
                             localStorage.removeItem("wagmi.cache");
@@ -81,7 +82,7 @@ void useTransactionErrorHandler() {
                             }, [mounted, address, disconnect, logout]);
 
                             const auto handleTransactionError = useCallback(;
-                            (error: TransactionError): std: => {
+                            (error: TransactionError): std::string => {
                                 if (!mounted) return "Transaction failed";
 
                                 std::cerr << "[TxError]" << error << std::endl;
@@ -93,7 +94,7 @@ void useTransactionErrorHandler() {
                                 if (isNonceError(error)) {
                                     std::cerr << "[TxError] Nonce error detected - likely chain reset" << std::endl;
 
-                                    if (typeof window != "undefined") {
+                                    if (typeof window != "std::nullopt") {
                                         toast.error("Wallet State Out of Sync", {
                                             description:
                                             "Your wallet nonce is out of sync with the blockchain. This happens when the local chain is reset.",

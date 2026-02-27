@@ -31,7 +31,7 @@ namespace elizaos {
  * @param response - The fetch Response object
  * @param defaultMessage - Default error message if JSON parsing fails
  */
-std::future<void> handleErrorResponse(const std:& response, const std:& defaultMessage);
+std::future<void> handleErrorResponse(const std::string& response, const std::string& defaultMessage);
 
 /**
  * Get command implementation - retrieves and displays agent details

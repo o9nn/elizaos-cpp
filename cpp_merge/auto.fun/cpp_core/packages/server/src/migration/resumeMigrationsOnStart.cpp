@@ -1,4 +1,5 @@
 #include "resumeMigrationsOnStart.hpp"
+#include <string>
 #include <future>
 #include <cstdlib>
 #include <map>
@@ -17,10 +18,10 @@ std::future<void> createMigrator() {
     //    const provider = new AnchorProvider(connection, new Wallet(wallet), AnchorProvider.defaultOptions());
 
     //    const program = new Program<RaydiumVault>(
-    //       raydium_vault_IDL as std:,
+    //       raydium_vault_IDL as std::string,
     //       provider,
     //    );
-    //    const autofunProgram = new Program<Autofun>(idl as std:, provider);
+    //    const autofunProgram = new Program<Autofun>(idl as std::string, provider);
 
 
     //    const redisCache = getGlobalRedisCache();

@@ -1,4 +1,5 @@
 #include "services-by-type.test.h"
+#include <string>
 
 any MockWalletService1::override;
 
@@ -48,24 +49,24 @@ std::shared_ptr<Promise<void>> MockPdfService::stop()
 
 void Main(void)
 {
-    describe(std:("Service Type System"), [=]() mutable
+    describe(std::string("Service Type System"), [=]() mutable
     {
         shared<std::shared_ptr<AgentRuntime>> runtime;
         beforeEach([=]() mutable
         {
             runtime = std::make_shared<AgentRuntime>(object{
-                object::pair{std:("agentId"), as<std::shared_ptr<UUID>>(uuidv4())}, 
-                object::pair{std:("character"), object{
-                    object::pair{std:("name"), std:("Test Agent")}, 
-                    object::pair{std:("username"), std:("test")}, 
-                    object::pair{std:("clients"), array<any>()}
+                object::pair{std::string("agentId"), as<std::shared_ptr<UUID>>(uuidv4())}, 
+                object::pair{std::string("character"), object{
+                    object::pair{std::string("name"), std::string("Test Agent")}, 
+                    object::pair{std::string("username"), std::string("test")}, 
+                    object::pair{std::string("clients"), array<any>()}
                 }}
             });
         }
         );
-        describe(std:("Multiple services of same type"), [=]() mutable
+        describe(std::string("Multiple services of same type"), [=]() mutable
         {
-            it(std:("should allow registering multiple services of the same type"), [=]() mutable
+            it(std::string("should allow registering multiple services of the same type"), [=]() mutable
             {
                 std::async([=]() { runtime->registerService(MockWalletService1); });
                 std::async([=]() { runtime->registerService(MockWalletService2); });
@@ -76,7 +77,7 @@ void Main(void)
                 expect(const_(walletServices)[1])->toBeInstanceOf(MockWalletService2);
             }
             );
-            it(std:("should return first service when using getService"), [=]() mutable
+            it(std::string("should return first service when using getService"), [=]() mutable
             {
                 std::async([=]() { runtime->registerService(MockWalletService1); });
                 std::async([=]() { runtime->registerService(MockWalletService2); });
@@ -84,23 +85,23 @@ void Main(void)
                 expect(firstService)->toBeInstanceOf(MockWalletService1);
             }
             );
-            it(std:("should return empty array for non-existent service type"), [=]() mutable
+            it(std::string("should return empty array for non-existent service type"), [=]() mutable
             {
-                auto services = runtime->getServicesByType(std:("non-existent-type"));
+                auto services = runtime->getServicesByType(std::string("non-existent-type"));
                 expect(services)->toHaveLength(0);
             }
             );
-            it(std:("should return null for non-existent service type with getService"), [=]() mutable
+            it(std::string("should return null for non-existent service type with getService"), [=]() mutable
             {
-                auto service = runtime->getService(std:("non-existent-type"));
+                auto service = runtime->getService(std::string("non-existent-type"));
                 expect(service)->toBe(nullptr);
             }
             );
         }
         );
-        describe(std:("Mixed service types"), [=]() mutable
+        describe(std::string("Mixed service types"), [=]() mutable
         {
-            it(std:("should handle multiple service types correctly"), [=]() mutable
+            it(std::string("should handle multiple service types correctly"), [=]() mutable
             {
                 std::async([=]() { runtime->registerService(MockWalletService1); });
                 std::async([=]() { runtime->registerService(MockWalletService2); });
@@ -114,7 +115,7 @@ void Main(void)
                 expect(videoServices)->toHaveLength(0);
             }
             );
-            it(std:("should return correct services with getAllServices"), [=]() mutable
+            it(std::string("should return correct services with getAllServices"), [=]() mutable
             {
                 std::async([=]() { runtime->registerService(MockWalletService1); });
                 std::async([=]() { runtime->registerService(MockWalletService2); });
@@ -127,9 +128,9 @@ void Main(void)
             );
         }
         );
-        describe(std:("Service type validation"), [=]() mutable
+        describe(std::string("Service type validation"), [=]() mutable
         {
-            it(std:("should handle hasService correctly with multiple services"), [=]() mutable
+            it(std::string("should handle hasService correctly with multiple services"), [=]() mutable
             {
                 expect(runtime->hasService(ServiceType["WALLET"]))->toBe(false);
                 std::async([=]() { runtime->registerService(MockWalletService1); });
@@ -138,7 +139,7 @@ void Main(void)
                 expect(runtime->hasService(ServiceType["WALLET"]))->toBe(true);
             }
             );
-            it(std:("should return correct service types with getRegisteredServiceTypes"), [=]() mutable
+            it(std::string("should return correct service types with getRegisteredServiceTypes"), [=]() mutable
             {
                 std::async([=]() { runtime->registerService(MockWalletService1); });
                 std::async([=]() { runtime->registerService(MockPdfService); });
@@ -150,9 +151,9 @@ void Main(void)
             );
         }
         );
-        describe(std:("Service lifecycle"), [=]() mutable
+        describe(std::string("Service lifecycle"), [=]() mutable
         {
-            it(std:("should stop all services of all types"), [=]() mutable
+            it(std::string("should stop all services of all types"), [=]() mutable
             {
                 std::async([=]() { runtime->registerService(MockWalletService1); });
                 std::async([=]() { runtime->registerService(MockWalletService2); });
@@ -162,20 +163,20 @@ void Main(void)
                 auto pdfServices = runtime->getServicesByType(ServiceType["PDF"]);
                 std::bind(&Service::stop, const_(walletServices)[0]) = [=]() mutable
                 {
-                    stopCalls->push(std:("wallet1"));
+                    stopCalls->push(std::string("wallet1"));
                 };
                 std::bind(&Service::stop, const_(walletServices)[1]) = [=]() mutable
                 {
-                    stopCalls->push(std:("wallet2"));
+                    stopCalls->push(std::string("wallet2"));
                 };
                 std::bind(&Service::stop, const_(pdfServices)[0]) = [=]() mutable
                 {
-                    stopCalls->push(std:("pdf"));
+                    stopCalls->push(std::string("pdf"));
                 };
                 std::async([=]() { runtime->stop(); });
-                expect(stopCalls)->toContain(std:("wallet1"));
-                expect(stopCalls)->toContain(std:("wallet2"));
-                expect(stopCalls)->toContain(std:("pdf"));
+                expect(stopCalls)->toContain(std::string("wallet1"));
+                expect(stopCalls)->toContain(std::string("wallet2"));
+                expect(stopCalls)->toContain(std::string("pdf"));
                 expect(stopCalls)->toHaveLength(3);
             }
             );

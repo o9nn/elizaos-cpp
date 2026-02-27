@@ -1,4 +1,5 @@
 #include "index.hpp"
+#include <string>
 #include <map>
 #include <iostream>
 #include <stdexcept>
@@ -20,7 +21,7 @@ void App() {
         }
         }, [worlds, isSuccess, error]);
 
-        const auto handleAddRoom = [&](worldId: std:) {;
+        const auto handleAddRoom = [&](worldId: std::string) {;
             const auto roomName = prompt("Enter the name for the new room:");
             if (roomName && roomName) {
                 createRoomMutation.mutate({ worldId, name: roomName });

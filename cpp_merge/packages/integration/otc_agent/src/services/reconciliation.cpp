@@ -1,20 +1,21 @@
 #include "reconciliation.hpp"
+#include <string>
 
 ReconciliationService::ReconciliationService() {
     auto chain = getChain();
     auto rpcUrl = getRpcUrl();
     this->client = as<std::shared_ptr<SimplePublicClient>>(as<any>(createPublicClient(object{
-        object::pair{std:("chain"), std:("chain")}, 
-        object::pair{std:("transport"), http(rpcUrl)}
+        object::pair{std::string("chain"), std::string("chain")}, 
+        object::pair{std::string("transport"), http(rpcUrl)}
     })));
     try
     {
         this->otcAddress = getContractAddress();
-        console->log(std:("[ReconciliationService] Using contract address: ") + this->otcAddress + std:(" for network: ") + (OR((process->env->NETWORK), (std:("localnet")))) + string_empty);
+        console->log(std::string("[ReconciliationService] Using contract address: ") + this->otcAddress + std::string(" for network: ") + (OR((process->env->NETWORK), (std::string("localnet")))) + string_empty);
     }
     catch (const any& error)
     {
-        console->error(std:("[ReconciliationService] Failed to get contract address:"), error);
+        console->error(std::string("[ReconciliationService] Failed to get contract address:"), error);
         throw any(error);
     }
     this->abi = as<std::shared_ptr<Abi>>(otcArtifact->abi);
@@ -25,40 +26,40 @@ std::shared_ptr<Promise<object>> ReconciliationService::reconcileQuote(string qu
     auto dbQuote = std::async([=]() { QuoteDB::getQuoteByQuoteId(quoteId); });
     if (!dbQuote->offerId) {
         return object{
-            object::pair{std:("updated"), false}, 
-            object::pair{std:("oldStatus"), dbQuote->status}, 
-            object::pair{std:("newStatus"), dbQuote->status}
+            object::pair{std::string("updated"), false}, 
+            object::pair{std::string("oldStatus"), dbQuote->status}, 
+            object::pair{std::string("newStatus"), dbQuote->status}
         };
     }
     auto contractOffer = std::async([=]() { this->readContractOffer(dbQuote->offerId); });
-    auto contractStatus = (contractOffer->fulfilled) ? any(std:("executed")) ((contractOffer->cancelled) ? any(std:("rejected")) ((OR((contractOffer->paid), (contractOffer->approved))) ? std:("approved") : std:("active")));
+    auto contractStatus = (contractOffer->fulfilled) ? any(std::string("executed")) ((contractOffer->cancelled) ? any(std::string("rejected")) ((OR((contractOffer->paid), (contractOffer->approved))) ? std::string("approved") : std::string("active")));
     if (dbQuote->status == contractStatus) {
         return object{
-            object::pair{std:("updated"), false}, 
-            object::pair{std:("oldStatus"), dbQuote->status}, 
-            object::pair{std:("newStatus"), contractStatus}
+            object::pair{std::string("updated"), false}, 
+            object::pair{std::string("oldStatus"), dbQuote->status}, 
+            object::pair{std::string("newStatus"), contractStatus}
         };
     }
-    console->log(std:("[Reconciliation] ") + quoteId + std:(": ") + dbQuote->status + std:(" → ") + contractStatus + string_empty);
+    console->log(std::string("[Reconciliation] ") + quoteId + std::string(": ") + dbQuote->status + std::string(" → ") + contractStatus + string_empty);
     std::async([=]() { QuoteDB::updateQuoteStatus(quoteId, contractStatus, object{
-        object::pair{std:("offerId"), OR((dbQuote->offerId), (string_empty))}, 
-        object::pair{std:("transactionHash"), string_empty}, 
-        object::pair{std:("blockNumber"), 0}, 
-        object::pair{std:("rejectionReason"), string_empty}, 
-        object::pair{std:("approvalNote"), string_empty}
+        object::pair{std::string("offerId"), OR((dbQuote->offerId), (string_empty))}, 
+        object::pair{std::string("transactionHash"), string_empty}, 
+        object::pair{std::string("blockNumber"), 0}, 
+        object::pair{std::string("rejectionReason"), string_empty}, 
+        object::pair{std::string("approvalNote"), string_empty}
     }); });
     return object{
-        object::pair{std:("updated"), true}, 
-        object::pair{std:("oldStatus"), dbQuote->status}, 
-        object::pair{std:("newStatus"), contractStatus}
+        object::pair{std::string("updated"), true}, 
+        object::pair{std::string("oldStatus"), dbQuote->status}, 
+        object::pair{std::string("newStatus"), contractStatus}
     };
 }
 
 std::shared_ptr<Promise<object>> ReconciliationService::reconcileAllActive()
 {
-    console->log(std:("[Reconciliation] Starting reconciliation..."));
+    console->log(std::string("[Reconciliation] Starting reconciliation..."));
     auto activeQuotes = std::async([=]() { QuoteDB::getActiveQuotes(); });
-    console->log(std:("[Reconciliation] Found ") + activeQuotes->get_length() + std:(" active quotes"));
+    console->log(std::string("[Reconciliation] Found ") + activeQuotes->get_length() + std::string(" active quotes"));
     auto results = std::async([=]() { Promise->all(activeQuotes->map([=](auto quote) mutable
     {
         return this->reconcileQuote(quote->quoteId);
@@ -69,10 +70,10 @@ std::shared_ptr<Promise<object>> ReconciliationService::reconcileAllActive()
         return r["updated"];
     }
     )->get_length();
-    console->log(std:("[Reconciliation] Complete: ") + updated + std:("/") + results->get_length() + std:(" updated"));
+    console->log(std::string("[Reconciliation] Complete: ") + updated + std::string("/") + results->get_length() + std::string(" updated"));
     return object{
-        object::pair{std:("total"), results->get_length()}, 
-        object::pair{std:("updated"), std:("updated")}
+        object::pair{std::string("total"), results->get_length()}, 
+        object::pair{std::string("updated"), std::string("updated")}
     };
 }
 
@@ -80,23 +81,23 @@ std::shared_ptr<Promise<object>> ReconciliationService::verifyQuoteState(string 
 {
     auto result = std::async([=]() { this->reconcileQuote(quoteId); });
     return object{
-        object::pair{std:("syncNeeded"), result["updated"]}
+        object::pair{std::string("syncNeeded"), result["updated"]}
     };
 }
 
 std::shared_ptr<Promise<object>> ReconciliationService::healthCheck()
 {
-    if (!this->otcAddress) throw any(std::make_shared<Error>(std:("OTC address not configured")));
+    if (!this->otcAddress) throw any(std::make_shared<Error>(std::string("OTC address not configured")));
     auto blockNumber = std::async([=]() { this->client->getBlockNumber(); });
     std::async([=]() { this->client->readContract(object{
-        object::pair{std:("address"), this->otcAddress}, 
-        object::pair{std:("abi"), this->abi}, 
-        object::pair{std:("functionName"), std:("nextOfferId")}, 
-        object::pair{std:("args"), array<any>()}
+        object::pair{std::string("address"), this->otcAddress}, 
+        object::pair{std::string("abi"), this->abi}, 
+        object::pair{std::string("functionName"), std::string("nextOfferId")}, 
+        object::pair{std::string("args"), array<any>()}
     }); });
     return object{
-        object::pair{std:("blockNumber"), Number(blockNumber)}, 
-        object::pair{std:("contractAddress"), this->otcAddress}
+        object::pair{std::string("blockNumber"), Number(blockNumber)}, 
+        object::pair{std::string("contractAddress"), this->otcAddress}
     };
 }
 
@@ -111,16 +112,16 @@ std::shared_ptr<ReconciliationService> getReconciliationService()
 
 std::shared_ptr<Promise<void>> runReconciliationTask()
 {
-    console->log(std:("\
+    console->log(std::string("\
 🔄 [Reconciliation Task] Starting...\
 "));
     auto service = getReconciliationService();
     auto health = std::async([=]() { service->healthCheck(); });
-    console->log(std:("[Reconciliation] Block: ") + health["blockNumber"] + std:(", Contract: ") + health["contractAddress"] + std:("\
+    console->log(std::string("[Reconciliation] Block: ") + health["blockNumber"] + std::string(", Contract: ") + health["contractAddress"] + std::string("\
 "));
     auto result = std::async([=]() { service->reconcileAllActive(); });
-    console->log(std:("\
-✅ [Reconciliation] Complete: ") + result["updated"] + std:("/") + result["total"] + std:(" updated\
+    console->log(std::string("\
+✅ [Reconciliation] Complete: ") + result["updated"] + std::string("/") + result["total"] + std::string(" updated\
 "));
     return std::shared_ptr<Promise<void>>();
 };

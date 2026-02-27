@@ -1,7 +1,8 @@
 #include "types.hpp"
+#include <string>
 
 object ServiceType = as<std::shared_ptr<const>>(object{
-    object::pair{std:("COMMUNITY_MANAGER"), std:("community_manager")}
+    object::pair{std::string("COMMUNITY_MANAGER"), std::string("community_manager")}
 });
 
 void Main(void)

@@ -1,4 +1,5 @@
 #include "quick-init.hpp"
+#include <string>
 #include <future>
 #include <iostream>
 #include <stdexcept>
@@ -194,7 +195,7 @@ std::future<void> main() {
 
                     // Save desk keypair
                     const auto deskKeypairPath = path.join(__dirname, "../desk-keypair.json");
-                    fs.writeFileSync(deskKeypairPath, /* JSON.stringify */ std:(Array.from(desk.secretKey)));
+                    fs.writeFileSync(deskKeypairPath, /* JSON.stringify */ std::string(Array.from(desk.secretKey)));
                     std::cout << "\n💾 Saved desk keypair to:" << deskKeypairPath << std::endl;
 
                     // Output for .env (no TOKEN_MINT - all tokens are equal)
@@ -227,7 +228,7 @@ std::future<void> main() {
 
                         fs.writeFileSync(;
                         deploymentPath,
-                        /* JSON.stringify */ std:(envData, nullptr, 2);
+                        /* JSON.stringify */ std::string(envData, nullptr, 2);
                         );
                         std::cout << "\n✅ Config saved to " + deploymentPath << std::endl;
 

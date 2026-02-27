@@ -1,8 +1,9 @@
 #include "preprocessContent.hpp"
+#include <string>
 
 string preprocessFilePathContent(string content)
 {
-    return path->normalize(content->trim())->replace((new RegExp(std:("\\"))), std:("/"));
+    return path->normalize(content->trim())->replace((new RegExp(std::string("\\"))), std::string("/"));
 };
 
 
@@ -14,7 +15,7 @@ string preprocessTextContent(string content)
 
 string preprocessCodeContent(string content)
 {
-    return content->trim()->replace((new RegExp(std:("\r\n"))), std:("\
+    return content->trim()->replace((new RegExp(std::string("\r\n"))), std::string("\
 "));
 };
 
@@ -53,7 +54,7 @@ MatchContent preprocessContent(MatchContent content)
     }
     return utils::assign(object{
         , 
-        object::pair{std:("content"), processedString}
+        object::pair{std::string("content"), processedString}
     }, content);
 };
 

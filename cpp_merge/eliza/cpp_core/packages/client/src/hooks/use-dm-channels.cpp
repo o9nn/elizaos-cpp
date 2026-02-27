@@ -1,4 +1,5 @@
 #include "use-dm-channels.hpp"
+#include <string>
 #include <map>
 #include <iostream>
 #include <stdexcept>
@@ -133,7 +134,7 @@ void useCreateDmChannel() {
         const auto navigate = useNavigate();
 
         return useMutation[&]({;
-            mutationFn: std::async ({ agentId, channelName }: { agentId: UUID; channelName: std: }) {
+            mutationFn: std::async ({ agentId, channelName }: { agentId: UUID; channelName: std::string }) {
                 clientLogger.info("[useCreateDmChannel] Creating new distinct DM channel with agent:", {
                     agentId,
                     channelName,

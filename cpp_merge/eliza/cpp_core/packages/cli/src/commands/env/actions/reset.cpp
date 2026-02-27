@@ -1,4 +1,5 @@
 #include "reset.hpp"
+#include <string>
 #include <vector>
 #include <future>
 #include <filesystem>
@@ -8,7 +9,7 @@
 
 namespace elizaos {
 
-std::future<std:> resolvePgliteDir() {
+std::future<std::string> resolvePgliteDir() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Default PGLite directory path

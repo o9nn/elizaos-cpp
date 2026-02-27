@@ -1,4 +1,5 @@
 #include "ModalContext.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -14,7 +15,7 @@ void ModalProvider() {
         options: std::nullopt,
         });
 
-        const auto showModal = useCallback[&]((content: ReactNode, id?: std:, options?: ModalOptions) {;
+        const auto showModal = useCallback[&]((content: ReactNode, id?: std::string, options?: ModalOptions) {;
             setState({
                 isVisible: true,
                 content,
@@ -23,7 +24,7 @@ void ModalProvider() {
                 });
                 }, []);
 
-                const auto hideModal = useCallback[&]((id?: std:) {;
+                const auto hideModal = useCallback[&]((id?: std::string) {;
                     setState(prev => {
                         // If an ID is provided, only hide if it matches the current ID
                         // This prevents race conditions where one component hides another's modal
@@ -64,7 +65,7 @@ void useModal() {
     try {
 
         const auto context = useContext(ModalContext);
-        if (context == undefined) {
+        if (context == std::nullopt) {
             throw std::runtime_error('useModal must be used within a ModalProvider');
         }
         return context;

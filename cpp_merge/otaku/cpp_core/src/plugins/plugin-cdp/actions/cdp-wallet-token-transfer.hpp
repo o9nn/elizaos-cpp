@@ -24,8 +24,8 @@ namespace elizaos {
 
 struct TransferParams {
     CdpNetwork network;
-    std: token;
-    std::optional<std:> amount;
+    std::string token;
+    std::optional<std::string> amount;
     std::optional<double> percentage;
 };
 
@@ -56,7 +56,7 @@ struct TransferParams {
       
         // Calculate amount from percentage
 
-        // Convert back to formatted std: for display
+        // Convert back to formatted std::string for display
         
         // Calculate USD value from already-available wallet token data (no extra fetch)
         

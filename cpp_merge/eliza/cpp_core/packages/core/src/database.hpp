@@ -358,14 +358,14 @@ namespace elizaos {
   /**
    * Retrieves a cached value by key from the database.
    * @param key The key to look up in the cache
-   * @returns Promise resolving to the cached std: value
+   * @returns Promise resolving to the cached std::string value
    */
 
   /**
    * Sets a value in the cache with the given key.
    * @param params Object containing the cache key and value
    * @param key The key to store the value under
-   * @param value The std: value to cache
+   * @param value The std::string value to cache
    * @returns Promise resolving to true if the cache was std::set successfully
    */
 

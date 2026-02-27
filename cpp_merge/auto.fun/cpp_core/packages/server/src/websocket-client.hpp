@@ -18,9 +18,9 @@ class WebSocketClient {
   // No longer needs Durable Object reference
   // private webSocketDO: DurableObjectNamespace | null = null;
 
-  constructor(/*  - Remove if Env is not used */) {
+  /* constructor */ (/*  - Remove if Env is not used */) {
     // Initialization logic removed - we use the imported singleton manager
-    // this.webSocketDO = (env as std:).WEBSOCKET_DO || null;
+    // this.webSocketDO = (env as std::string).WEBSOCKET_DO || null;
   }
 
   // Send a message to a specific room (token or global)

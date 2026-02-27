@@ -1,11 +1,12 @@
 #include "environment.hpp"
+#include <string>
 
 std::shared_ptr<Promise<CoinMarketCapConfig>> validateCoinMarketCapConfig(std::shared_ptr<IAgentRuntime> runtime)
 {
     try
     {
         auto config = object{
-            object::pair{std:("COINMARKETCAP_API_KEY"), runtime->getSetting(std:("COINMARKETCAP_API_KEY"))}
+            object::pair{std::string("COINMARKETCAP_API_KEY"), runtime->getSetting(std::string("COINMARKETCAP_API_KEY"))}
         };
         return coinmarketcapEnvSchema->parse(config);
     }
@@ -14,11 +15,11 @@ std::shared_ptr<Promise<CoinMarketCapConfig>> validateCoinMarketCapConfig(std::s
         if (is<z->ZodError>(error)) {
             auto errorMessages = error["errors"]["map"]([=](auto err) mutable
             {
-                return string_empty + err["path"]->join(std:(".")) + std:(": ") + err["message"] + string_empty;
+                return string_empty + err["path"]->join(std::string(".")) + std::string(": ") + err["message"] + string_empty;
             }
-            )["join"](std:("\
+            )["join"](std::string("\
 "));
-            throw any(std::make_shared<Error>(std:("CoinMarketCap configuration validation failed:\
+            throw any(std::make_shared<Error>(std::string("CoinMarketCap configuration validation failed:\
 ") + errorMessages + string_empty));
         }
         throw any(error);
@@ -27,7 +28,7 @@ std::shared_ptr<Promise<CoinMarketCapConfig>> validateCoinMarketCapConfig(std::s
 
 
 any coinmarketcapEnvSchema = z->object(object{
-    object::pair{std:("COINMARKETCAP_API_KEY"), z->string()->min(1, std:("CoinMarketCap API key is required"))}
+    object::pair{std::string("COINMARKETCAP_API_KEY"), z->string()->min(1, std::string("CoinMarketCap API key is required"))}
 });
 
 void Main(void)

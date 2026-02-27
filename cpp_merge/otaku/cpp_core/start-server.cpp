@@ -1,4 +1,5 @@
 #include "start-server.hpp"
+#include <string>
 #include <future>
 #include <cstdlib>
 #include <map>
@@ -28,9 +29,9 @@ std::future<void> main() {
             const auto projectModule = project.default || project;
 
             if (projectModule.agents && Array.isArray(projectModule.agents)) {
-                const auto characters = projectModule.agents.std::map[&]((agent: std:) { return agent.character); };
+                const auto characters = projectModule.agents.std::map[&]((agent: std::string) { return agent.character); };
                 // Flatten plugin arrays from all agents
-                const auto allPlugins = projectModule.agents.flatMap[&]((agent: std:) { return agent.plugins || []); };
+                const auto allPlugins = projectModule.agents.flatMap[&]((agent: std::string) { return agent.plugins || []); };
                 server.startAgents(characters, allPlugins);
                 std::cout << " Started " + characters.size() + " agent(s)" << std::endl;
                 } else {

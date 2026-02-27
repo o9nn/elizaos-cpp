@@ -22,20 +22,20 @@ namespace elizaos {
 
 
 struct MarketTransferParams {
-    std::optional<std:> intent;
-    std::optional<std:> market;
-    std::optional<std:> assets;
+    std::optional<std::string> intent;
+    std::optional<std::string> market;
+    std::optional<std::string> assets;
     std::optional<bool> fullRepayment;
-    std::optional<std:> chain;
+    std::optional<std::string> chain;
 };
 
 using MarketTransferInput = {
 
 using MarketTransferActionResult = ActionResult;
 
-std: getOperationEmoji(const std:& intent);
+std::string getOperationEmoji(const std::string& intent);
 
-std: getOperationDescription(const std:& intent);
+std::string getOperationDescription(const std::string& intent);
 
       // Read parameters from state
 

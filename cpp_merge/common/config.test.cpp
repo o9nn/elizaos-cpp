@@ -1,10 +1,11 @@
 #include "config.test.h"
+#include <string>
 
 void Main(void)
 {
-    describe(std:("Plugin Configuration"), [=]() mutable
+    describe(std::string("Plugin Configuration"), [=]() mutable
     {
-        it(std:("should not have custom configuration (relies on character settings)"), [=]() mutable
+        it(std::string("should not have custom configuration (relies on character settings)"), [=]() mutable
         {
             expect(teeStarterPlugin->config)->toBeDefined();
             expect(teeStarterPlugin->config->TEE_MODE)->toBe(process->env->TEE_MODE);
@@ -12,14 +13,14 @@ void Main(void)
             expect(teeStarterPlugin->init)->toBeDefined();
         }
         );
-        it(std:("should have correct plugin metadata"), [=]() mutable
+        it(std::string("should have correct plugin metadata"), [=]() mutable
         {
             expect(teeStarterPlugin)->toBeDefined();
-            expect(teeStarterPlugin->name)->toBe(std:("mr-tee-starter-plugin"));
-            expect(teeStarterPlugin->description)->toBe(std:("Mr. TEE's starter plugin - using plugin-tee for attestation"));
+            expect(teeStarterPlugin->name)->toBe(std::string("mr-tee-starter-plugin"));
+            expect(teeStarterPlugin->description)->toBe(std::string("Mr. TEE's starter plugin - using plugin-tee for attestation"));
         }
         );
-        it(std:("should be a minimal plugin focused on character definition"), [=]() mutable
+        it(std::string("should be a minimal plugin focused on character definition"), [=]() mutable
         {
             expect(teeStarterPlugin->actions)->toEqual(array<any>());
             expect(teeStarterPlugin->providers)->toEqual(array<any>());

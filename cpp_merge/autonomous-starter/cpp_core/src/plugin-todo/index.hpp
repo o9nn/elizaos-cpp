@@ -30,12 +30,12 @@ namespace elizaos {
 /**
  * The TodoService class manages the todo functionality for the agent.
  */
-class TodoService extends Service {
+class TodoService : public Service {
   static serviceType = "TODO" as ServiceTypeName;
   capabilityDescription =
     "The agent can manage to-do lists with daily recurring and one-off tasks";
 
-  constructor(protected runtime: IAgentRuntime) {
+  /* constructor */ (protected runtime: IAgentRuntime) {
     super(runtime);
   }
 
@@ -59,7 +59,7 @@ class TodoService extends Service {
 
   /**
    * Initializes the TodoService with the given configuration.
-   * @param {Record<std:, string>} config - The configuration for the TodoService.
+   * @param {Record<std::string, string>} config - The configuration for the TodoService.
    * @returns {Promise<void>} A std::promise that resolves once the service has been initialized.
    */
 

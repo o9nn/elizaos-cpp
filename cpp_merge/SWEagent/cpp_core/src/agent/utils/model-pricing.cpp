@@ -1,10 +1,11 @@
 #include "model-pricing.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-double calculateCost(const std:& modelName, double inputTokens, double outputTokens) {
+double calculateCost(const std::string& modelName, double inputTokens, double outputTokens) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Try exact match first
@@ -44,7 +45,7 @@ double calculateCost(const std:& modelName, double inputTokens, double outputTok
 
 }
 
-void getModelLimits(const std:& modelName) {
+void getModelLimits(const std::string& modelName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     maxInputTokens | std::nullopt;
@@ -52,7 +53,7 @@ void getModelLimits(const std:& modelName) {
 
 }
 
-bool isWithinTokenLimit(const std:& modelName, double inputTokens, double outputTokens) {
+bool isWithinTokenLimit(const std::string& modelName, double inputTokens, double outputTokens) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto limits = getModelLimits(modelName);

@@ -21,43 +21,43 @@ namespace elizaos {
 };
 
 struct PluginSpecification {
-    std: name;
-    std: description;
-    std::optional<std:> version;
+    std::string name;
+    std::string description;
+    std::optional<std::string> version;
     std::optional<Array<{> actions;
-    std: name;
-    std: description;
-    std::optional<std::unordered_map<std:, std:>> parameters;
+    std::string name;
+    std::string description;
+    std::optional<std::unordered_map<std::string, std::string>> parameters;
     std::optional<Array<{> providers;
-    std: name;
-    std: description;
-    std::optional<std::unordered_map<std:, std:>> dataStructure;
+    std::string name;
+    std::string description;
+    std::optional<std::unordered_map<std::string, std::string>> dataStructure;
     std::optional<Array<{> services;
-    std: name;
-    std: description;
+    std::string name;
+    std::string description;
     std::optional<std::vector<std::string>> methods;
     std::optional<Array<{> evaluators;
-    std: name;
-    std: description;
+    std::string name;
+    std::string description;
     std::optional<std::vector<std::string>> triggers;
-    std::optional<std::unordered_map<std:, std:>> dependencies;
+    std::optional<std::unordered_map<std::string, std::string>> dependencies;
     std::optional<Array<{> environmentVariables;
-    std: name;
-    std: description;
+    std::string name;
+    std::string description;
     bool required;
     bool sensitive;
 };
 
 struct PluginCreationJob {
-    std: id;
+    std::string id;
     PluginSpecification specification;
     "pending" | "running" | "completed" | "failed" | "cancelled" status;
-    std: currentPhase;
+    std::string currentPhase;
     double progress;
     std::vector<std::string> logs;
-    std::optional<std:> error;
-    std::optional<std:> result;
-    std: outputPath;
+    std::optional<std::string> error;
+    std::optional<std::string> result;
+    std::string outputPath;
     Date startedAt;
     std::optional<Date> completedAt;
     double currentIteration;
@@ -67,27 +67,27 @@ struct PluginCreationJob {
     double failed;
     double duration;
     std::optional<double> validationScore;
-    std::optional<std:> childProcess;
+    std::optional<std::string> childProcess;
     Array<{ errors;
     double iteration;
-    std: phase;
-    std: error;
+    std::string phase;
+    std::string error;
     Date timestamp;
 };
 
-class PluginCreationService extends Service {
+class PluginCreationService : public Service {
   static serviceType: "plugin_creation" = "plugin_creation";
-  private jobs: Map<std:, PluginCreationJob> = std::make_unique<Map>();
+  private jobs: Map<std::string, PluginCreationJob> = std::make_unique<Map>();
   private anthropic: Anthropic | null = null;
 
-  public readonly capabilityDescription: std: =
+  public readonly capabilityDescription: std::string =
     "Plugin creation service with AI-powered code generation";
 
-  constructor(runtime?: IAgentRuntime) {
+  /* constructor */ (runtime?: IAgentRuntime) {
     super(runtime);
   }
 
-    // Cleanup std: running jobs
+    // Cleanup std::string running jobs
 
     // Validate plugin name to prevent path traversal
 
@@ -162,9 +162,7 @@ class PluginCreationService extends Service {
 
     // Parse vitest output
 
-    // Extract failure details if std:
-
-            collectRecursive(fullPath, basePath);
+    // Extract failure details if std::string collectRecursive(fullPath, basePath);
 
     collectRecursive(dirPath, dirPath);
 

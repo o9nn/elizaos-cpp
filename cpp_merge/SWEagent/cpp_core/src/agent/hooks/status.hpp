@@ -21,15 +21,15 @@ namespace elizaos {
 /**
  * Hook for setting status during agent execution
  */
-class SetStatusAgentHook extends AbstractAgentHook {
-  private callable: [&](id: std:, message: std:) { return void; };
-  private id: std:;
+class SetStatusAgentHook : public AbstractAgentHook {
+  private callable: [&](id: std::string, message: std::string) { return void; };
+  private id: std::string;
   private iStep = 0;
   private cost = 0.0;
   private iAttempt = 0;
   private previousCost = 0.0;
 
-  constructor(id: std:, callable: (id: std:, message: std:) => void) {
+  /* constructor */ (id: std::string, callable: (id: std::string, message: std::string) => void) {
     super();
     this.id = id;
     this.callable = callable;

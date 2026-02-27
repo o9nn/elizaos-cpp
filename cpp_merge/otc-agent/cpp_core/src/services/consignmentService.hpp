@@ -15,9 +15,9 @@ namespace elizaos {
 
 
 struct ConsignmentParams {
-    std: tokenId;
-    std: consignerAddress;
-    std: amount;
+    std::string tokenId;
+    std::string consignerAddress;
+    std::string amount;
     bool isNegotiable;
     std::optional<double> fixedDiscountBps;
     std::optional<double> fixedLockupDays;
@@ -25,23 +25,23 @@ struct ConsignmentParams {
     double maxDiscountBps;
     double minLockupDays;
     double maxLockupDays;
-    std: minDealAmount;
-    std: maxDealAmount;
+    std::string minDealAmount;
+    std::string maxDealAmount;
     bool isFractionalized;
     bool isPrivate;
     std::optional<std::vector<std::string>> allowedBuyers;
     double maxPriceVolatilityBps;
     double maxTimeToExecuteSeconds;
     Chain chain;
-    std::optional<std:> contractConsignmentId;
+    std::optional<std::string> contractConsignmentId;
 };
 
 class ConsignmentService {
   std::async createConsignment(params: ConsignmentParams): Promise<OTCConsignment> {
     if (!params.isNegotiable) {
       if (
-        params.fixedDiscountBps == undefined ||
-        params.fixedLockupDays == undefined
+        params.fixedDiscountBps == std::nullopt ||
+        params.fixedLockupDays == std::nullopt
       ) {
         throw new Error(
           "Fixed consignments must specify fixedDiscountBps and fixedLockupDays",
@@ -68,7 +68,7 @@ class ConsignmentService {
     }
 
     // Solana addresses are Base58 and case-sensitive, EVM addresses are case-insensitive
-    const normalizeAddress = [&](addr: std:) { return params.chain == "solana" ? addr : addr.toLowerCase(); };
+    const normalizeAddress = [&](addr: std::string) { return params.chain == "solana" ? addr : addr.toLowerCase(); };
 
     const consignment = ConsignmentDB.createConsignment({
       tokenId: params.tokenId,

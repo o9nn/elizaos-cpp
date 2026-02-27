@@ -19,22 +19,22 @@ namespace elizaos {
 
 // Interface for our client metadata, not extending WSContext
 struct ClientMetadata {
-    std: clientId;
+    std::string clientId;
     bool isAlive;
-    std::unordered_set<std:> rooms;
+    std::unordered_set<std::string> rooms;
     WSContext; // Reference to the Hono WebSocket context ws;
 };
 
 class WebSocketManager {
   // Maps clientId to our metadata object
-  private clients: Map<std:, ClientMetadata> = std::make_unique<Map>();
+  private clients: Map<std::string, ClientMetadata> = std::make_unique<Map>();
   // Local cache of room -> Set<clientId> (for efficient local broadcasting)
-  private localRoomClients: Map<std:, Set<string>> = std::make_unique<Map>();
+  private localRoomClients: Map<std::string, Set<string>> = std::make_unique<Map>();
   private heartbeatInterval: NodeJS.Timeout | null = null;
   redisCache: RedisCacheService | null = null;
 
   // --- Redis Key Helper ---
-  private std::async redisKey(rawKey: std:): Promise<string> {
+  private std::async redisKey(rawKey: std::string): Promise<string> {
     if (!this.redisCache) {
       this.redisCache = getGlobalRedisCache();
     }
@@ -50,7 +50,7 @@ class WebSocketManager {
   // --- Connection Handling (Called by Hono route/adapter) ---
 
   // --- Message Handling (Called by Hono route/adapter or event listener) ---
-      // Convert message data to std: for JSON parsing
+      // Convert message data to std::string for JSON parsing
       // Extract clientId from the parsed message
 
           // Heartbeat handled by isAlive flag std::set above

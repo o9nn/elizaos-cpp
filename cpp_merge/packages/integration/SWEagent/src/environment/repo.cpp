@@ -1,8 +1,9 @@
 #include "repo.hpp"
+#include <string>
 
 array<string> getGitResetCommands(string baseCommit)
 {
-    return array<string>{ std:("git fetch"), std:("git status"), std:("git restore ."), std:("git reset --hard"), std:("git checkout ") + baseCommit + string_empty, std:("git clean -fdq") };
+    return array<string>{ std::string("git fetch"), std::string("git status"), std::string("git restore ."), std::string("git reset --hard"), std::string("git checkout ") + baseCommit + string_empty, std::string("git clean -fdq") };
 };
 
 
@@ -14,7 +15,7 @@ PreExistingRepo::PreExistingRepo(PreExistingRepoConfig config) {
 
 std::shared_ptr<Promise<void>> PreExistingRepo::copy(std::shared_ptr<AbstractDeployment> _deployment)
 {
-    logger->info(std:("Using pre-existing repository ") + this->repoName + string_empty);
+    logger->info(std::string("Using pre-existing repository ") + this->repoName + string_empty);
     return std::shared_ptr<Promise<void>>();
 }
 
@@ -29,40 +30,40 @@ array<string> PreExistingRepo::getResetCommands()
 LocalRepo::LocalRepo(LocalRepoConfig config) {
     this->path = config->path;
     this->baseCommit = config->baseCommit;
-    this->repoName = path->basename(this->path)->replace(std:(" "), std:("-"))->replace(std:("'"), string_empty);
+    this->repoName = path->basename(this->path)->replace(std::string(" "), std::string("-"))->replace(std::string("'"), string_empty);
 }
 
 void LocalRepo::checkValidRepo()
 {
     if (!fs::existsSync(this->path)) {
-        throw any(std::make_shared<Error>(std:("Could not find git repository at path=") + this->path + string_empty));
+        throw any(std::make_shared<Error>(std::string("Could not find git repository at path=") + this->path + string_empty));
     }
-    auto gitPath = path->join(this->path, std:(".git"));
+    auto gitPath = path->join(this->path, std::string(".git"));
     if (!fs::existsSync(gitPath)) {
-        throw any(std::make_shared<Error>(string_empty + this->path + std:(" is not a git repository")));
+        throw any(std::make_shared<Error>(string_empty + this->path + std::string(" is not a git repository")));
     }
-    auto status = execSync(std:("git status --porcelain"), object{
-        object::pair{std:("cwd"), this->path}
+    auto status = execSync(std::string("git status --porcelain"), object{
+        object::pair{std::string("cwd"), this->path}
     })->toString();
     if (AND((status->trim()), (!process->env->PYTEST_CURRENT_TEST))) {
-        throw any(std::make_shared<Error>(std:("Local git repository ") + this->path + std:(" is dirty. Please commit or stash changes.")));
+        throw any(std::make_shared<Error>(std::string("Local git repository ") + this->path + std::string(" is dirty. Please commit or stash changes.")));
     }
 }
 
 std::shared_ptr<Promise<void>> LocalRepo::copy(std::shared_ptr<AbstractDeployment> deployment)
 {
     this->checkValidRepo();
-    logger->info(std:("Copying local repository from ") + this->path + string_empty);
+    logger->info(std::string("Copying local repository from ") + this->path + string_empty);
     std::async([=]() { deployment->runtime->upload(as<std::shared_ptr<UploadRequest>>(object{
-        object::pair{std:("sourcePath"), this->path}, 
-        object::pair{std:("targetPath"), std:("/") + this->repoName + string_empty}
+        object::pair{std::string("sourcePath"), this->path}, 
+        object::pair{std::string("targetPath"), std::string("/") + this->repoName + string_empty}
     })); });
     auto result = std::async([=]() { deployment->runtime->execute(as<std::shared_ptr<Command>>(object{
-        object::pair{std:("command"), std:("chown -R root:root ") + this->repoName + string_empty}, 
-        object::pair{std:("shell"), true}
+        object::pair{std::string("command"), std::string("chown -R root:root ") + this->repoName + string_empty}, 
+        object::pair{std::string("shell"), true}
     })); });
     if (result->exitCode != 0) {
-        auto msg = std:("Failed to change permissions on copied repository (exit code: ") + result->exitCode + std:(", stdout: ") + result->stdout + std:(", stderr: ") + result->stderr + std:(")");
+        auto msg = std::string("Failed to change permissions on copied repository (exit code: ") + result->exitCode + std::string(", stdout: ") + result->stdout + std::string(", stderr: ") + result->stderr + std::string(")");
         throw any(std::make_shared<Error>(msg));
     }
     return std::shared_ptr<Promise<void>>();
@@ -74,15 +75,15 @@ array<string> LocalRepo::getResetCommands()
 }
 
 GithubRepo::GithubRepo(GithubRepoConfig config) {
-    if (AND((config->githubUrl->split(std:("/"))->length == 2), (!config->githubUrl->includes(std:("://"))))) {
-        this->githubUrl = std:("https://github.com/") + config->githubUrl + string_empty;
+    if (AND((config->githubUrl->split(std::string("/"))->length == 2), (!config->githubUrl->includes(std::string("://"))))) {
+        this->githubUrl = std::string("https://github.com/") + config->githubUrl + string_empty;
     } else {
         this->githubUrl = config->githubUrl;
     }
     this->baseCommit = config->baseCommit;
     this->cloneTimeout = config->cloneTimeout;
     auto parsed = parseGhRepoUrl(this->githubUrl);
-    this->repoName = string_empty + parsed["owner"] + std:("__") + parsed["repo"] + string_empty;
+    this->repoName = string_empty + parsed["owner"] + std::string("__") + parsed["repo"] + string_empty;
 }
 
 string GithubRepo::getUrlWithToken(string token)
@@ -90,28 +91,28 @@ string GithubRepo::getUrlWithToken(string token)
     if (!token) {
         return this->githubUrl;
     }
-    if (this->githubUrl->includes(std:("@"))) {
-        logger->warn(std:("Cannot prepend token to URL. "@" found in URL"));
+    if (this->githubUrl->includes(std::string("@"))) {
+        logger->warn(std::string("Cannot prepend token to URL. "@" found in URL"));
         return this->githubUrl;
     }
-    auto urlParts = this->githubUrl->split(std:("://"));
+    auto urlParts = this->githubUrl->split(std::string("://"));
     if (urlParts->get_length() == 2) {
-        return std:("https://") + token + std:("@") + const_(urlParts)[1] + string_empty;
+        return std::string("https://") + token + std::string("@") + const_(urlParts)[1] + string_empty;
     }
     return this->githubUrl;
 }
 
 std::shared_ptr<Promise<void>> GithubRepo::copy(std::shared_ptr<AbstractDeployment> deployment)
 {
-    logger->info(std:("Cloning GitHub repository ") + this->githubUrl + string_empty);
+    logger->info(std::string("Cloning GitHub repository ") + this->githubUrl + string_empty);
     auto token = OR((process->env->GITHUB_TOKEN), (string_empty));
     auto url = this->getUrlWithToken(token);
-    auto commands = array<string>{ std:("mkdir /") + this->repoName + string_empty, std:("cd /") + this->repoName + string_empty, std:("git init"), std:("git remote add origin ") + url + string_empty, std:("git fetch --depth 1 origin ") + this->baseCommit + string_empty, std:("git checkout FETCH_HEAD"), std:("cd ..") };
+    auto commands = array<string>{ std::string("mkdir /") + this->repoName + string_empty, std::string("cd /") + this->repoName + string_empty, std::string("git init"), std::string("git remote add origin ") + url + string_empty, std::string("git fetch --depth 1 origin ") + this->baseCommit + string_empty, std::string("git checkout FETCH_HEAD"), std::string("cd ..") };
     std::async([=]() { deployment->runtime->execute(as<std::shared_ptr<Command>>(object{
-        object::pair{std:("command"), commands->join(std:(" && "))}, 
-        object::pair{std:("timeout"), this->cloneTimeout}, 
-        object::pair{std:("shell"), true}, 
-        object::pair{std:("check"), true}
+        object::pair{std::string("command"), commands->join(std::string(" && "))}, 
+        object::pair{std::string("timeout"), this->cloneTimeout}, 
+        object::pair{std::string("shell"), true}, 
+        object::pair{std::string("check"), true}
     })); });
     return std::shared_ptr<Promise<void>>();
 }
@@ -121,29 +122,29 @@ array<string> GithubRepo::getResetCommands()
     return getGitResetCommands(this->baseCommit);
 }
 
-std::shared_ptr<AgentLogger> logger = getLogger(std:("repo"));
+std::shared_ptr<AgentLogger> logger = getLogger(std::string("repo"));
 any PreExistingRepoConfigSchema = z->object(object{
-    object::pair{std:("repoName"), z->string()->describe(std:("The repo name (must be at root of deployment)"))}, 
-    object::pair{std:("baseCommit"), z->string()->default(std:("HEAD"))}, 
-    object::pair{std:("type"), z->literal(std:("preexisting"))}, 
-    object::pair{std:("reset"), z->boolean()->default(true)}
+    object::pair{std::string("repoName"), z->string()->describe(std::string("The repo name (must be at root of deployment)"))}, 
+    object::pair{std::string("baseCommit"), z->string()->default(std::string("HEAD"))}, 
+    object::pair{std::string("type"), z->literal(std::string("preexisting"))}, 
+    object::pair{std::string("reset"), z->boolean()->default(true)}
 });
 any LocalRepoConfigSchema = z->object(object{
-    object::pair{std:("path"), z->string()->transform([=](auto p) mutable
+    object::pair{std::string("path"), z->string()->transform([=](auto p) mutable
     {
         return path->resolve(p);
     }
     )}, 
-    object::pair{std:("baseCommit"), z->string()->default(std:("HEAD"))}, 
-    object::pair{std:("type"), z->literal(std:("local"))}
+    object::pair{std::string("baseCommit"), z->string()->default(std::string("HEAD"))}, 
+    object::pair{std::string("type"), z->literal(std::string("local"))}
 });
 any GithubRepoConfigSchema = z->object(object{
-    object::pair{std:("githubUrl"), z->string()}, 
-    object::pair{std:("baseCommit"), z->string()->default(std:("HEAD"))}, 
-    object::pair{std:("cloneTimeout"), z->number()->default(500)}, 
-    object::pair{std:("type"), z->literal(std:("github"))}
+    object::pair{std::string("githubUrl"), z->string()}, 
+    object::pair{std::string("baseCommit"), z->string()->default(std::string("HEAD"))}, 
+    object::pair{std::string("cloneTimeout"), z->number()->default(500)}, 
+    object::pair{std::string("type"), z->literal(std::string("github"))}
 });
-any RepoConfigSchema = z->discriminatedUnion(std:("type"), array<any>{ PreExistingRepoConfigSchema, LocalRepoConfigSchema, GithubRepoConfigSchema });
+any RepoConfigSchema = z->discriminatedUnion(std::string("type"), array<any>{ PreExistingRepoConfigSchema, LocalRepoConfigSchema, GithubRepoConfigSchema });
 
 void Main(void)
 {

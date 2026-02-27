@@ -16,7 +16,7 @@ namespace elizaos {
 
 
 
-class MediaService extends BaseApiClient {
+class MediaService : public BaseApiClient {
   /**
    * Upload media for an agent
    */

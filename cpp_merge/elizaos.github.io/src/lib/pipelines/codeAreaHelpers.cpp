@@ -1,16 +1,17 @@
 #include "codeAreaHelpers.hpp"
+#include <string>
 
 any extractAreaFromPath(string path)
 {
-    auto parts = path->split(std:("/"));
+    auto parts = path->split(std::string("/"));
     if (OR((parts->get_length() <= 1), (isRootConfigFile(path)))) {
         return nullptr;
     }
     auto area = const_(parts)[0];
-    if (area == std:("packages")) {
+    if (area == std::string("packages")) {
         area = string_empty + const_(parts)[1] + string_empty;
     } else {
-        area = string_empty + area + std:("/") + const_(parts)[1] + string_empty;
+        area = string_empty + area + std::string("/") + const_(parts)[1] + string_empty;
     }
     return area;
 };
@@ -18,8 +19,8 @@ any extractAreaFromPath(string path)
 
 boolean isRootConfigFile(string path)
 {
-    auto rootConfigPatterns = array<std::shared_ptr<RegExp>>{ (new RegExp(std:("^package\.json"))), (new RegExp(std:("^bun\.lock"))), (new RegExp(std:("^\.gitignore"))), (new RegExp(std:("^\.env(\.\w+)?"))), (new RegExp(std:("^tsconfig\.json"))), (new RegExp(std:("^README\.md"))), (new RegExp(std:("^LICENSE"))), (new RegExp(std:("^yarn\.lock"))), (new RegExp(std:("^pnpm-lock\.yaml"))), (new RegExp(std:("^\.eslintrc(\.\w+)?"))), (new RegExp(std:("^\.prettierrc(\.\w+)?"))), (new RegExp(std:("^vite\.config\.\w+"))), (new RegExp(std:("^next\.config\.\w+"))), (new RegExp(std:("^tailwind\.config\.\w+"))) };
-    shared filename = OR((path->split(std:("/"))->pop()), (string_empty));
+    auto rootConfigPatterns = array<std::shared_ptr<RegExp>>{ (new RegExp(std::string("^package\.json"))), (new RegExp(std::string("^bun\.lock"))), (new RegExp(std::string("^\.gitignore"))), (new RegExp(std::string("^\.env(\.\w+)?"))), (new RegExp(std::string("^tsconfig\.json"))), (new RegExp(std::string("^README\.md"))), (new RegExp(std::string("^LICENSE"))), (new RegExp(std::string("^yarn\.lock"))), (new RegExp(std::string("^pnpm-lock\.yaml"))), (new RegExp(std::string("^\.eslintrc(\.\w+)?"))), (new RegExp(std::string("^\.prettierrc(\.\w+)?"))), (new RegExp(std::string("^vite\.config\.\w+"))), (new RegExp(std::string("^next\.config\.\w+"))), (new RegExp(std::string("^tailwind\.config\.\w+"))) };
+    shared filename = OR((path->split(std::string("/"))->pop()), (string_empty));
     return rootConfigPatterns->some([=](auto pattern) mutable
     {
         return pattern->test(filename);

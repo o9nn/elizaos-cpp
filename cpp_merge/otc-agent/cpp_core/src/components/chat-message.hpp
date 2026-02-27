@@ -23,8 +23,8 @@ struct ChatMessageProps {
     double i;
     std::optional<std::vector<Citation>> citations;
     std::optional<std::vector<std::string>> followUpPrompts;
-    std::optional<std:> assistantAvatarUrl;
-    std::optional<std:> assistantName;
+    std::optional<std::string> assistantAvatarUrl;
+    std::optional<std::string> assistantName;
 };
 
 

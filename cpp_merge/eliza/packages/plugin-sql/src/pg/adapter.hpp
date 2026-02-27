@@ -16,7 +16,7 @@ public:
 
     std::shared_ptr<PostgresConnectionManager> manager;
 
-    PgDatabaseAdapter(std::shared_ptr<UUID> agentId, std::shared_ptr<PostgresConnectionManager> manager, any _schema = undefined);
+    PgDatabaseAdapter(std::shared_ptr<UUID> agentId, std::shared_ptr<PostgresConnectionManager> manager, any _schema = std::nullopt);
     virtual std::shared_ptr<Promise<void>> runMigrations();
     template <typename T>
     std::shared_ptr<Promise<T>> withDatabase(std::function<std::shared_ptr<Promise<T>>()> operation);
@@ -37,7 +37,7 @@ public:
     virtual std::shared_ptr<Promise<boolean>> updateMemory(any memory);
     virtual std::shared_ptr<Promise<void>> deleteMemory(std::shared_ptr<UUID> memoryId);
     virtual std::shared_ptr<Promise<boolean>> createComponent(std::shared_ptr<Component> component);
-    virtual std::shared_ptr<Promise<any>> getComponent(std::shared_ptr<UUID> entityId, string type, std::shared_ptr<UUID> worldId = undefined, std::shared_ptr<UUID> sourceEntityId = undefined);
+    virtual std::shared_ptr<Promise<any>> getComponent(std::shared_ptr<UUID> entityId, string type, std::shared_ptr<UUID> worldId = std::nullopt, std::shared_ptr<UUID> sourceEntityId = std::nullopt);
     virtual std::shared_ptr<Promise<void>> updateComponent(std::shared_ptr<Component> component);
     virtual std::shared_ptr<Promise<void>> deleteComponent(std::shared_ptr<UUID> componentId);
     PgDatabaseAdapter(std::shared_ptr<UUID> agentId);

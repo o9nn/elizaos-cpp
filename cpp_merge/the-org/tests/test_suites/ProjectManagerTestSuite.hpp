@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_THE_ORG_TESTS_TEST_SUITES_PROJECTMANAGERTESTSUITE_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_THE_ORG_TESTS_TEST_SUITES_PROJECTMANAGERTESTSUITE_H
 #include "core.hpp"
+#include <string>
 // External dependency removed
 #include "uuid.hpp"
 using uuidv4 = v4;
@@ -10,9 +11,9 @@ class ProjectManagerTestSuite;
 class ProjectManagerTestSuite : public TestSuite, public std::enable_shared_from_this<ProjectManagerTestSuite> {
 public:
     using std::enable_shared_from_this<ProjectManagerTestSuite>::shared_from_this;
-    string name = std:("project-manager");
+    string name = std::string("project-manager");
 
-    string description = std:("Tests for the project manager agent");
+    string description = std::string("Tests for the project manager agent");
 
     any scenarioService;
 
@@ -20,68 +21,68 @@ public:
 
     ProjectManagerTestSuite(double completionTimeout = 15000);
     array<object> tests = array<object>{ object{
-        object::pair{std:("name"), std:("Test Project Creation")}, 
-        object::pair{std:("fn"), [=](auto runtime) mutable
+        object::pair{std::string("name"), std::string("Test Project Creation")}, 
+        object::pair{std::string("fn"), [=](auto runtime) mutable
         {
-            this->scenarioService = runtime->getService(std:("scenario"));
-            if (!this->scenarioService) throw any(std::make_shared<Error>(std:("Scenario service not found")));
-            auto worldId = std::async([=]() { this->scenarioService["createWorld"](std:("Project Setup Test"), std:("Test Client")); });
-            auto roomId = std::async([=]() { this->scenarioService["createRoom"](worldId, std:("project-setup")); });
-            std::async([=]() { this->scenarioService["sendMessage"](runtime, worldId, roomId, std:("Create a new project for CRM implementation")); });
+            this->scenarioService = runtime->getService(std::string("scenario"));
+            if (!this->scenarioService) throw any(std::make_shared<Error>(std::string("Scenario service not found")));
+            auto worldId = std::async([=]() { this->scenarioService["createWorld"](std::string("Project Setup Test"), std::string("Test Client")); });
+            auto roomId = std::async([=]() { this->scenarioService["createRoom"](worldId, std::string("project-setup")); });
+            std::async([=]() { this->scenarioService["sendMessage"](runtime, worldId, roomId, std::string("Create a new project for CRM implementation")); });
             auto completed = std::async([=]() { this->scenarioService["waitForCompletion"](this->completionTimeout); });
-            if (!completed) throw any(std::make_shared<Error>(std:("Project creation timed out")));
+            if (!completed) throw any(std::make_shared<Error>(std::string("Project creation timed out")));
         }
         }
     }, object{
-        object::pair{std:("name"), std:("Test Task Assignment")}, 
-        object::pair{std:("fn"), [=](auto runtime) mutable
+        object::pair{std::string("name"), std::string("Test Task Assignment")}, 
+        object::pair{std::string("fn"), [=](auto runtime) mutable
         {
-            this->scenarioService = runtime->getService(std:("scenario"));
-            if (!this->scenarioService) throw any(std::make_shared<Error>(std:("Scenario service not found")));
-            auto worldId = std::async([=]() { this->scenarioService["createWorld"](std:("Task Management Test"), std:("Test Team Lead")); });
-            auto roomId = std::async([=]() { this->scenarioService["createRoom"](worldId, std:("task-management")); });
-            std::async([=]() { this->scenarioService["sendMessage"](runtime, worldId, roomId, std:("Assign UI development tasks to Alice and Bob")); });
+            this->scenarioService = runtime->getService(std::string("scenario"));
+            if (!this->scenarioService) throw any(std::make_shared<Error>(std::string("Scenario service not found")));
+            auto worldId = std::async([=]() { this->scenarioService["createWorld"](std::string("Task Management Test"), std::string("Test Team Lead")); });
+            auto roomId = std::async([=]() { this->scenarioService["createRoom"](worldId, std::string("task-management")); });
+            std::async([=]() { this->scenarioService["sendMessage"](runtime, worldId, roomId, std::string("Assign UI development tasks to Alice and Bob")); });
             auto completed = std::async([=]() { this->scenarioService["waitForCompletion"](this->completionTimeout); });
-            if (!completed) throw any(std::make_shared<Error>(std:("Task assignment timed out")));
+            if (!completed) throw any(std::make_shared<Error>(std::string("Task assignment timed out")));
         }
         }
     }, object{
-        object::pair{std:("name"), std:("Test Status Reporting")}, 
-        object::pair{std:("fn"), [=](auto runtime) mutable
+        object::pair{std::string("name"), std::string("Test Status Reporting")}, 
+        object::pair{std::string("fn"), [=](auto runtime) mutable
         {
-            this->scenarioService = runtime->getService(std:("scenario"));
-            if (!this->scenarioService) throw any(std::make_shared<Error>(std:("Scenario service not found")));
-            auto worldId = std::async([=]() { this->scenarioService["createWorld"](std:("Reporting Test"), std:("Test Stakeholder")); });
-            auto roomId = std::async([=]() { this->scenarioService["createRoom"](worldId, std:("reports")); });
-            std::async([=]() { this->scenarioService["sendMessage"](runtime, worldId, roomId, std:("Generate weekly progress report for executive review")); });
+            this->scenarioService = runtime->getService(std::string("scenario"));
+            if (!this->scenarioService) throw any(std::make_shared<Error>(std::string("Scenario service not found")));
+            auto worldId = std::async([=]() { this->scenarioService["createWorld"](std::string("Reporting Test"), std::string("Test Stakeholder")); });
+            auto roomId = std::async([=]() { this->scenarioService["createRoom"](worldId, std::string("reports")); });
+            std::async([=]() { this->scenarioService["sendMessage"](runtime, worldId, roomId, std::string("Generate weekly progress report for executive review")); });
             auto completed = std::async([=]() { this->scenarioService["waitForCompletion"](this->completionTimeout); });
-            if (!completed) throw any(std::make_shared<Error>(std:("Status report generation timed out")));
+            if (!completed) throw any(std::make_shared<Error>(std::string("Status report generation timed out")));
         }
         }
     }, object{
-        object::pair{std:("name"), std:("Test Meeting Scheduling")}, 
-        object::pair{std:("fn"), [=](auto runtime) mutable
+        object::pair{std::string("name"), std::string("Test Meeting Scheduling")}, 
+        object::pair{std::string("fn"), [=](auto runtime) mutable
         {
-            this->scenarioService = runtime->getService(std:("scenario"));
-            if (!this->scenarioService) throw any(std::make_shared<Error>(std:("Scenario service not found")));
-            auto worldId = std::async([=]() { this->scenarioService["createWorld"](std:("Scheduling Test"), std:("Test Coordinator")); });
-            auto roomId = std::async([=]() { this->scenarioService["createRoom"](worldId, std:("meetings")); });
-            std::async([=]() { this->scenarioService["sendMessage"](runtime, worldId, roomId, std:("Schedule sprint planning meeting for next Monday")); });
+            this->scenarioService = runtime->getService(std::string("scenario"));
+            if (!this->scenarioService) throw any(std::make_shared<Error>(std::string("Scenario service not found")));
+            auto worldId = std::async([=]() { this->scenarioService["createWorld"](std::string("Scheduling Test"), std::string("Test Coordinator")); });
+            auto roomId = std::async([=]() { this->scenarioService["createRoom"](worldId, std::string("meetings")); });
+            std::async([=]() { this->scenarioService["sendMessage"](runtime, worldId, roomId, std::string("Schedule sprint planning meeting for next Monday")); });
             auto completed = std::async([=]() { this->scenarioService["waitForCompletion"](this->completionTimeout); });
-            if (!completed) throw any(std::make_shared<Error>(std:("Meeting scheduling timed out")));
+            if (!completed) throw any(std::make_shared<Error>(std::string("Meeting scheduling timed out")));
         }
         }
     }, object{
-        object::pair{std:("name"), std:("Test Off-Topic Handling")}, 
-        object::pair{std:("fn"), [=](auto runtime) mutable
+        object::pair{std::string("name"), std::string("Test Off-Topic Handling")}, 
+        object::pair{std::string("fn"), [=](auto runtime) mutable
         {
-            this->scenarioService = runtime->getService(std:("scenario"));
-            if (!this->scenarioService) throw any(std::make_shared<Error>(std:("Scenario service not found")));
-            auto worldId = std::async([=]() { this->scenarioService["createWorld"](std:("OffTopic Test"), std:("Test User")); });
-            auto roomId = std::async([=]() { this->scenarioService["createRoom"](worldId, std:("general")); });
-            std::async([=]() { this->scenarioService["sendMessage"](runtime, worldId, roomId, std:("What's the weather forecast for tomorrow?")); });
+            this->scenarioService = runtime->getService(std::string("scenario"));
+            if (!this->scenarioService) throw any(std::make_shared<Error>(std::string("Scenario service not found")));
+            auto worldId = std::async([=]() { this->scenarioService["createWorld"](std::string("OffTopic Test"), std::string("Test User")); });
+            auto roomId = std::async([=]() { this->scenarioService["createRoom"](worldId, std::string("general")); });
+            std::async([=]() { this->scenarioService["sendMessage"](runtime, worldId, roomId, std::string("What's the weather forecast for tomorrow?")); });
             auto completed = std::async([=]() { this->scenarioService["waitForCompletion"](this->completionTimeout); });
-            if (!completed) throw any(std::make_shared<Error>(std:("Off-topic handling timed out")));
+            if (!completed) throw any(std::make_shared<Error>(std::string("Off-topic handling timed out")));
         }
         }
     } };

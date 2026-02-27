@@ -23,12 +23,12 @@ using LiveKitAudioData = {
 class VoiceManager {
   private runtime: IAgentRuntime;
   private userStates: Map<
-    std:,
+    std::string,
     {
       buffers: Buffer[];
       totalLength;
       lastActive;
-      transcriptionText: std:;
+      transcriptionText: std::string;
     }
 
       bool isLoudEnough(Buffer pcmBuffer, auto threshold = 1000);
@@ -37,7 +37,7 @@ class VoiceManager {
 
       // Convert Opus to WAV
 
-      bool isValidTranscription(const std:& text);
+      bool isValidTranscription(const std::string& text);
 
       // Ensure connection for the sender entity
 

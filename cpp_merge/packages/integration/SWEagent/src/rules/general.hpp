@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SWEAGENT_SRC_RULES_GENERAL_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SWEAGENT_SRC_RULES_GENERAL_H
 #include "core.hpp"
+#include <string>
 #include "./types.h"
 
 extern array<std::shared_ptr<CodingRule>> PYTHON_CODING_RULES;
@@ -10,13 +11,13 @@ extern std::shared_ptr<CodingGuidelines> TYPESCRIPT_CODING_GUIDELINES;
 object validateAgainstRules(string code, std::shared_ptr<CodingGuidelines> guidelines);
 
 template <typename P1>
-array<std::shared_ptr<CodingRule>> getApplicableRules(string filePath, P1 language = undefined);
+array<std::shared_ptr<CodingRule>> getApplicableRules(string filePath, P1 language = std::nullopt);
 
 template <typename P1>
 array<std::shared_ptr<CodingRule>> getApplicableRules(string filePath, P1 language)
 {
-    auto lang = OR((language), (((filePath->endsWith(std:(".py"))) ? std:("python") : std:("typescript"))));
-    return (lang == std:("python")) ? PYTHON_CODING_RULES : TYPESCRIPT_CODING_RULES;
+    auto lang = OR((language), (((filePath->endsWith(std::string(".py"))) ? std::string("python") : std::string("typescript"))));
+    return (lang == std::string("python")) ? PYTHON_CODING_RULES : TYPESCRIPT_CODING_RULES;
 };
 
 

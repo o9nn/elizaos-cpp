@@ -23,16 +23,16 @@ namespace elizaos {
  */
 struct ValidationResult {
     bool valid;
-    std::optional<std:> file;
+    std::optional<std::string> file;
     std::vector<Violation> violations;
     std::vector<std::string> warnings;
 };
 
 struct Violation {
-    std: rule;
+    std::string rule;
     std::optional<double> line;
     std::optional<double> column;
-    std: message;
+    std::string message;
     'error' | 'warning' severity;
 };
 
@@ -40,7 +40,7 @@ struct Violation {
  * Validate Python code against rules
  */
 class PythonValidator {
-  constructor(_rules: CodingRule[] = PYTHON_CODING_RULES) {
+  /* constructor */ (_rules: CodingRule[] = PYTHON_CODING_RULES) {
     // Allow custom rules to be passed in but not used internally yet
   }
 
@@ -63,11 +63,11 @@ class PythonValidator {
  * Validate TypeScript code against rules
  */
 class TypeScriptValidator {
-  constructor(_rules: CodingRule[] = TYPESCRIPT_CODING_RULES) {
+  /* constructor */ (_rules: CodingRule[] = TYPESCRIPT_CODING_RULES) {
     // Allow custom rules to be passed in but not used internally yet
   }
 
-    // Check for std: type usage
+    // Check for std::string type usage
 
     // Check for missing return types
 
@@ -84,7 +84,7 @@ class TypeScriptValidator {
 /**
  * Validate a file based on its extension
  */
-std::future<ValidationResult> validateFile(const std:& filePath);
+std::future<ValidationResult> validateFile(const std::string& filePath);
 
 /**
  * Validate multiple files
@@ -93,6 +93,6 @@ std::future<ValidationResult> validateFile(const std:& filePath);
 /**
  * Format validation results for display
  */
-std: formatValidationResults(const std::vector<ValidationResult>& results);
+std::string formatValidationResults(const std::vector<ValidationResult>& results);
 
 } // namespace elizaos

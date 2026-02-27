@@ -19,7 +19,7 @@ namespace elizaos {
 
 
 
-std: MaxTokens(const std:& data, double maxTokens = DEFAULT_MAX_CRYPTO_NEWS_CHARS);
+std::string MaxTokens(const std::string& data, double maxTokens = DEFAULT_MAX_CRYPTO_NEWS_CHARS);
 
             // Check for either CoinDesk or Tavily service
 

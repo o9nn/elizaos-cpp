@@ -1,4 +1,5 @@
 #include "utils.hpp"
+#include <string>
 #include <vector>
 #include <optional>
 #include <iostream>
@@ -27,14 +28,14 @@ void upgradeDoubleToTriple(auto tpl) {
 
 }
 
-std::optional<UUID> validateUuid(const std:& value) {
+std::optional<UUID> validateUuid(const std::string& value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return coreValidateUuid(value);
 
 }
 
-UUID stringToUuid(const std::variant<std:, double>& target) {
+UUID stringToUuid(const std::variant<std::string, double>& target) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return coreStringToUuid(target);

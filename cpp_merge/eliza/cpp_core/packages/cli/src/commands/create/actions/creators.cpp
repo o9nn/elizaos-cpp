@@ -1,4 +1,5 @@
 #include "creators.hpp"
+#include <string>
 #include <future>
 #include <optional>
 #include <iostream>
@@ -6,7 +7,7 @@
 
 namespace elizaos {
 
-std::future<void> createPlugin(const std:& pluginName, const std:& targetDir, auto isNonInteractive) {
+std::future<void> createPlugin(const std::string& pluginName, const std::string& targetDir, auto isNonInteractive) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -58,7 +59,7 @@ std::future<void> createPlugin(const std:& pluginName, const std:& targetDir, au
     }
 }
 
-std::future<void> createAgent(const std:& agentName, const std:& targetDir, auto isNonInteractive) {
+std::future<void> createAgent(const std::string& agentName, const std::string& targetDir, auto isNonInteractive) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -68,7 +69,7 @@ std::future<void> createAgent(const std:& agentName, const std:& targetDir, auto
         try {
             fs.access(agentFilePath);
             throw std::runtime_error("Agent file " + std::to_string(agentFilePath) + " already exists");
-            } catch (error: std:) {
+            } catch (error: std::string) {
                 if (error.code != 'ENOENT') {
                     throw;
                 }
@@ -96,7 +97,7 @@ std::future<void> createAgent(const std:& agentName, const std:& targetDir, auto
                     ],
                     };
 
-                    fs.writeFile(agentFilePath, /* JSON.stringify */ std:(agentCharacter, nullptr, 2));
+                    fs.writeFile(agentFilePath, /* JSON.stringify */ std::string(agentCharacter, nullptr, 2));
 
                     if (!isNonInteractive) {
                         std::cout << "\n" + std::to_string(colors.green("✓")) + " Agent \"" + agentName + "\" created successfully!" << std::endl;
@@ -111,7 +112,7 @@ std::future<void> createAgent(const std:& agentName, const std:& targetDir, auto
     }
 }
 
-std::future<void> createTEEProject(const std:& projectName, const std:& targetDir, const std:& database, const std:& aiModel, std::optional<std:> embeddingModel, auto isNonInteractive) {
+std::future<void> createTEEProject(const std::string& projectName, const std::string& targetDir, const std::string& database, const std::string& aiModel, std::optional<std::string> embeddingModel, auto isNonInteractive) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -157,7 +158,7 @@ std::future<void> createTEEProject(const std:& projectName, const std:& targetDi
     }
 }
 
-std::future<void> createProject(const std:& projectName, const std:& targetDir, const std:& database, const std:& aiModel, std::optional<std:> embeddingModel, auto isNonInteractive) {
+std::future<void> createProject(const std::string& projectName, const std::string& targetDir, const std::string& database, const std::string& aiModel, std::optional<std::string> embeddingModel, auto isNonInteractive) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

@@ -1,11 +1,12 @@
 #include "metadata.hpp"
+#include <string>
 #include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<PackageMetadata> generatePackageMetadata(PackageJson packageJson, const std:& cliVersion, const std:& username) {
+std::future<PackageMetadata> generatePackageMetadata(PackageJson packageJson, const std::string& cliVersion, const std::string& username) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const PackageMetadata metadata = {;

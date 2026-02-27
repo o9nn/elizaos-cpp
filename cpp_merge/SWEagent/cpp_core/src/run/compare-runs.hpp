@@ -22,17 +22,17 @@ namespace elizaos {
 /**
  * Get resolved instance IDs from results file
  */
-std::unordered_set<std:> getResolved(const std:& filePath);
+std::unordered_set<std::string> getResolved(const std::string& filePath);
 
 /**
  * Get submitted instance IDs from results file
  */
-std::unordered_set<std:> getSubmitted(const std:& filePath);
+std::unordered_set<std::string> getSubmitted(const std::string& filePath);
 
 /**
  * Show statistics for a single run
  */
-void statsSingle(const std:& filePath);
+void statsSingle(const std::string& filePath);
 
 /**
  * Compare many runs
@@ -42,7 +42,7 @@ void compareMany(const std::vector<std::string>& paths);
 /**
  * Compare a std::pair of runs
  */
-void comparePair(const std:& newPath, const std:& oldPath, bool showSame = false);
+void comparePair(const std::string& newPath, const std::string& oldPath, bool showSame = false);
 
 /**
  * Main std::function to compare runs

@@ -1,4 +1,5 @@
 #include "export-utils.hpp"
+#include <string>
 #include <optional>
 #include <unordered_map>
 #include <iostream>
@@ -6,14 +7,14 @@
 
 namespace elizaos {
 
-std: sanitizeFilename(const std:& name) {
+std::string sanitizeFilename(const std::string& name) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return name.replace(/[^a-zA-Z0-9]/g, "-") // Replace non-alphanumeric with dash.replace(/-+/g, "-") // Replace multiple consecutive dashes with single dash.replace(/^-|-$/g, "") // Remove leading/trailing dashes.toLowerCase();
 
 }
 
-std::unordered_map<std:, std:> agentToCharacterData(Agent agent) {
+std::unordered_map<std::string, std::string> agentToCharacterData(Agent agent) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto characterData = {;
@@ -39,14 +40,14 @@ std::unordered_map<std:, std:> agentToCharacterData(Agent agent) {
             characterData.settings = settingsWithoutSecrets;
         }
 
-        // Remove undefined/null fields to keep JSON clean
+        // Remove std::nullopt/null fields to keep JSON clean
         return Object.fromEntries(;
         Object.entries(characterData).filter[&](([_, value]) { return value != std::nullopt && value != nullptr); };
         );
 
 }
 
-std: generateExportFilename(const std:& agentName) {
+std::string generateExportFilename(const std::string& agentName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto date = std::make_unique<Date>().toISOString().split("T")[0]; // YYYY-MM-DD format;
@@ -55,10 +56,10 @@ std: generateExportFilename(const std:& agentName) {
 
 }
 
-void downloadJsonFile(const std:& data, const std:& filename) {
+void downloadJsonFile(const std::string& data, const std::string& filename) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto blob = new Blob([/* JSON.stringify */ std:(data, nullptr, 2)], {;
+    const auto blob = new Blob([/* JSON.stringify */ std::string(data, nullptr, 2)], {;
         type: "application/json",
         });
         const auto url = URL.createObjectURL(blob);

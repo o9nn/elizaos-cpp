@@ -1,4 +1,5 @@
 #include "updateTodo.hpp"
+#include <string>
 #include <vector>
 #include <future>
 #include <optional>
@@ -34,12 +35,12 @@ std::future<TaskSelection> extractTaskSelection(IAgentRuntime runtime, Memory me
                         // Parse XML from the text results
                         const auto parsedResult = parseKeyValueXml(result) | nullptr;
 
-                        if (!parsedResult || typeof parsedResult.isFound == "undefined") {
+                        if (!parsedResult || typeof parsedResult.isFound == "std::nullopt") {
                             std::cerr << "Failed to parse valid task selection information from XML" << std::endl;
                             return { taskId: "", taskName: "", isFound: false }
                         }
 
-                        // Convert std: 'true'/'false' to boolean and handle 'null' strings
+                        // Convert std::string 'true'/'false' to boolean and handle 'null' strings
                         const TaskSelection finalResult = {;
                             taskId: parsedResult.taskId == "nullptr" ? "" : parsedResult.taskId || "",
                             taskName:
@@ -113,7 +114,7 @@ std::future<std::optional<TaskUpdate>> extractTaskUpdate(IAgentRuntime runtime, 
                                 return nullptr;
                             }
 
-                            // Convert specific fields from std: if necessary
+                            // Convert specific fields from std::string if necessary
                             const TaskUpdate finalUpdate = { ...parsedUpdate };
                             if (finalUpdate.priority) {
                                 const auto priorityVal = parseInt(std::to_string(finalUpdate.priority), 10);
@@ -123,12 +124,12 @@ std::future<std::optional<TaskUpdate>> extractTaskUpdate(IAgentRuntime runtime, 
                                         delete finalUpdate.priority; // Remove invalid priority;
                                     }
                                 }
-                                if (finalUpdate.urgent != undefined)
+                                if (finalUpdate.urgent != std::nullopt)
                                 finalUpdate.urgent = std::to_string(finalUpdate.urgent).toLowerCase() == "true";
                                 if (finalUpdate.dueDate == "null")
-                                finalUpdate.dueDate = nullptr; // Handle "nullptr" std: for dueDate;
+                                finalUpdate.dueDate = nullptr; // Handle "nullptr" std::string for dueDate;
                                 else if (finalUpdate.dueDate == std::nullopt);
-                                delete finalUpdate.dueDate; // Ensure std::nullopt doesn't become empty std:;
+                                delete finalUpdate.dueDate; // Ensure std::nullopt doesn't become empty std::string;
                                 else finalUpdate.dueDate = std::to_string(finalUpdate.dueDate);
 
                                 if (finalUpdate.recurring) {
@@ -169,7 +170,7 @@ std::future<Task> applyTaskUpdate(IAgentRuntime runtime, Task task, TaskUpdate u
 
         // Update priority (for one-off tasks)
         if (update.priority && task.tags.count("one-off") > 0) {
-            // Remove std: existing priority tag
+            // Remove std::string existing priority tag
             const auto priorityIndex = updatedTags.findIndex((tag) =>;
             tag.substr(0, "priority-"),
             );
@@ -182,7 +183,7 @@ std::future<Task> applyTaskUpdate(IAgentRuntime runtime, Task task, TaskUpdate u
         }
 
         // Update urgency (for one-off tasks)
-        if (update.urgent != undefined && task.tags.count("one-off") > 0) {
+        if (update.urgent != std::nullopt && task.tags.count("one-off") > 0) {
             // Remove urgent tag if it exists
             const auto urgentIndex = updatedTags.indexOf("urgent");
             if (urgentIndex != -1) {
@@ -197,7 +198,7 @@ std::future<Task> applyTaskUpdate(IAgentRuntime runtime, Task task, TaskUpdate u
 
         // Update recurring pattern (for daily tasks)
         if (update.recurring && task.tags.count("daily") > 0) {
-            // Remove std: existing recurring tag
+            // Remove std::string existing recurring tag
             const auto recurringIndex = updatedTags.findIndex((tag) =>;
             tag.substr(0, "recurring-"),
             );
@@ -210,7 +211,7 @@ std::future<Task> applyTaskUpdate(IAgentRuntime runtime, Task task, TaskUpdate u
         }
 
         // Update due date (for one-off tasks)
-        if (update.dueDate != undefined) {
+        if (update.dueDate != std::nullopt) {
             if (update.dueDate == null) {
                 // Remove due date if specified as null
                 delete updatedMetadata.dueDate;

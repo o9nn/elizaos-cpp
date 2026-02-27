@@ -39,26 +39,26 @@ struct RunSingleConfig {
     EnvironmentConfig env;
     AgentConfig agent;
     ProblemStatementConfig problemStatement;
-    std: outputDir;
+    std::string outputDir;
     RunSingleActionConfig actions;
-    std::optional<std:> envVarPath;
+    std::optional<std::string> envVarPath;
 };
 
 /**
  * Configuration for batch instances source
  */
 struct BatchInstanceSourceConfig {
-    std::optional<std:> type;
-    std::optional<std:> path;
-    std::optional<std:> filter;
-    std::optional<std:> slice;
+    std::optional<std::string> type;
+    std::optional<std::string> path;
+    std::optional<std::string> filter;
+    std::optional<std::string> slice;
     std::optional<bool> shuffle;
     std::optional<DeploymentConfig> deployment;
-    std::optional<std:> subset;
-    std::optional<std:> split;
-    std::optional<std:> pathOverride;
+    std::optional<std::string> subset;
+    std::optional<std::string> split;
+    std::optional<std::string> pathOverride;
     std::optional<bool> evaluate;
-    std::optional<std:> dataset_name;
+    std::optional<std::string> dataset_name;
 };
 
 /**
@@ -67,11 +67,11 @@ struct BatchInstanceSourceConfig {
 struct RunBatchConfig {
     BatchInstanceSourceConfig instances;
     AgentConfig agent;
-    std: outputDir;
-    std::optional<std:> suffix;
+    std::string outputDir;
+    std::optional<std::string> suffix;
     std::optional<bool> raiseExceptions;
     std::optional<bool> redoExisting;
-    std::optional<std:> envVarPath;
+    std::optional<std::string> envVarPath;
     std::optional<double> numWorkers;
     std::optional<double> randomDelayMultiplier;
     std::optional<bool> progressBar;
@@ -81,11 +81,11 @@ struct RunBatchConfig {
  * Command line configuration
  */
 struct CLIConfig {
-    std::optional<std:> config;
+    std::optional<std::string> config;
     std::optional<EnvironmentConfig> env;
     std::optional<AgentConfig> agent;
     std::optional<ProblemStatementConfig> problemStatement;
-    std::optional<std:> outputDir;
+    std::optional<std::string> outputDir;
     std::optional<RunSingleActionConfig> actions;
     std::optional<BatchInstanceSourceConfig> instances;
     std::optional<double> numWorkers;
@@ -97,36 +97,36 @@ struct CLIConfig {
  * Trajectory data structure
  */
 struct TrajectoryData {
-    std: content;
-    std::optional<std::variant<std:, RunSingleConfig>> replay_config;
-    std::optional<std:> submission;
+    std::string content;
+    std::optional<std::variant<std::string, RunSingleConfig>> replay_config;
+    std::optional<std::string> submission;
     std::optional<ProblemStatementConfig> problemStatement;
-    std::optional<std:> action;
-    std::optional<std:> observation;
-    std::optional<std:> response;
+    std::optional<std::string> action;
+    std::optional<std::string> observation;
+    std::optional<std::string> response;
 };
 
 /**
  * SWE-Bench instance data
  */
 struct SWEBenchInstanceData {
-    std: instance_id;
-    std: repo;
-    std: version;
-    std: base_commit;
-    std: problem_statement;
-    std::optional<std:> hints_text;
-    std::optional<std:> created_at;
-    std::optional<std:> test_patch;
+    std::string instance_id;
+    std::string repo;
+    std::string version;
+    std::string base_commit;
+    std::string problem_statement;
+    std::optional<std::string> hints_text;
+    std::optional<std::string> created_at;
+    std::optional<std::string> test_patch;
 };
 
 /**
  * Demo data structure for trajectory conversion
  */
 struct DemoStep {
-    std: role;
-    std: content;
-    std::optional<std:> agent;
+    std::string role;
+    std::string content;
+    std::optional<std::string> agent;
     std::optional<bool> isDemo;
 };
 

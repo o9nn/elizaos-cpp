@@ -1,32 +1,33 @@
 #include "audio-capture-stream.h"
+#include <string>
 
 StreamingAudioCaptureService::StreamingAudioCaptureService(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<StreamingAudioConfig> config) : EventEmitter() {
     this->runtime = runtime;
     this->config = utils::assign(object{
-        object::pair{std:("sampleRate"), 16000}, 
-        object::pair{std:("channels"), 1}, 
-        object::pair{std:("vadThreshold"), 0.01}, 
-        object::pair{std:("silenceTimeout"), 1500}, 
-        object::pair{std:("responseDelay"), 7777}, 
-        object::pair{std:("chunkSize"), 4096}
+        object::pair{std::string("sampleRate"), 16000}, 
+        object::pair{std::string("channels"), 1}, 
+        object::pair{std::string("vadThreshold"), 0.01}, 
+        object::pair{std::string("silenceTimeout"), 1500}, 
+        object::pair{std::string("responseDelay"), 7777}, 
+        object::pair{std::string("chunkSize"), 4096}
     }, config);
 }
 
 std::shared_ptr<Promise<void>> StreamingAudioCaptureService::initialize()
 {
     if (!this->config->enabled) {
-        logger->info(std:("[StreamingAudio] Audio capture disabled"));
+        logger->info(std::string("[StreamingAudio] Audio capture disabled"));
         return std::shared_ptr<Promise<void>>();
     }
     try
     {
-        logger->info(std:("[StreamingAudio] Initializing streaming audio capture..."));
+        logger->info(std::string("[StreamingAudio] Initializing streaming audio capture..."));
         std::async([=]() { this->startContinuousCapture(); });
-        logger->info(std:("[StreamingAudio] Streaming audio capture initialized"));
+        logger->info(std::string("[StreamingAudio] Streaming audio capture initialized"));
     }
     catch (const any& error)
     {
-        logger->error(std:("[StreamingAudio] Failed to initialize:"), error);
+        logger->error(std::string("[StreamingAudio] Failed to initialize:"), error);
         throw any(error);
     }
 }
@@ -36,39 +37,39 @@ std::shared_ptr<Promise<void>> StreamingAudioCaptureService::startContinuousCapt
     auto platform = process->platform;
     string command;
     array<string> args;
-    if (platform == std:("darwin")) {
-        command = std:("sox");
-        args = array<string>{ std:("-d"), std:("-r"), this->config->sampleRate->toString(), std:("-c"), this->config->channels->toString(), std:("-b"), std:("16"), std:("-e"), std:("signed"), std:("-t"), std:("raw"), std:("-") };
-    } else if (platform == std:("linux")) {
-        command = std:("arecord");
-        args = array<string>{ std:("-D"), OR((this->config->device), (std:("default"))), std:("-f"), std:("S16_LE"), std:("-r"), this->config->sampleRate->toString(), std:("-c"), this->config->channels->toString(), std:("-t"), std:("raw"), std:("-") };
-    } else if (platform == std:("win32")) {
-        command = std:("ffmpeg");
-        args = array<string>{ std:("-f"), std:("dshow"), std:("-i"), std:("audio="") + (OR((this->config->device), (std:("Microphone")))) + std:("""), std:("-acodec"), std:("pcm_s16le"), std:("-ar"), this->config->sampleRate->toString(), std:("-ac"), this->config->channels->toString(), std:("-f"), std:("s16le"), std:("pipe:1") };
+    if (platform == std::string("darwin")) {
+        command = std::string("sox");
+        args = array<string>{ std::string("-d"), std::string("-r"), this->config->sampleRate->toString(), std::string("-c"), this->config->channels->toString(), std::string("-b"), std::string("16"), std::string("-e"), std::string("signed"), std::string("-t"), std::string("raw"), std::string("-") };
+    } else if (platform == std::string("linux")) {
+        command = std::string("arecord");
+        args = array<string>{ std::string("-D"), OR((this->config->device), (std::string("default"))), std::string("-f"), std::string("S16_LE"), std::string("-r"), this->config->sampleRate->toString(), std::string("-c"), this->config->channels->toString(), std::string("-t"), std::string("raw"), std::string("-") };
+    } else if (platform == std::string("win32")) {
+        command = std::string("ffmpeg");
+        args = array<string>{ std::string("-f"), std::string("dshow"), std::string("-i"), std::string("audio="") + (OR((this->config->device), (std::string("Microphone")))) + std::string("""), std::string("-acodec"), std::string("pcm_s16le"), std::string("-ar"), this->config->sampleRate->toString(), std::string("-ac"), this->config->channels->toString(), std::string("-f"), std::string("s16le"), std::string("pipe:1") };
     } else {
-        throw any(std::make_shared<Error>(std:("Unsupported platform: ") + platform + string_empty));
+        throw any(std::make_shared<Error>(std::string("Unsupported platform: ") + platform + string_empty));
     }
     this->captureProcess = spawn(command, args);
     this->isCapturing = true;
-    this->captureProcess->stdout->on(std:("data"), [=](auto chunk) mutable
+    this->captureProcess->stdout->on(std::string("data"), [=](auto chunk) mutable
     {
         this->processAudioChunk(chunk);
     }
     );
-    this->captureProcess->stderr->on(std:("data"), [=](auto data) mutable
+    this->captureProcess->stderr->on(std::string("data"), [=](auto data) mutable
     {
-        logger->debug(std:("[StreamingAudio] Capture stderr:"), data["toString"]());
+        logger->debug(std::string("[StreamingAudio] Capture stderr:"), data["toString"]());
     }
     );
-    this->captureProcess->on(std:("error"), [=](auto error) mutable
+    this->captureProcess->on(std::string("error"), [=](auto error) mutable
     {
-        logger->error(std:("[StreamingAudio] Capture process error:"), error);
+        logger->error(std::string("[StreamingAudio] Capture process error:"), error);
         this->isCapturing = false;
     }
     );
-    this->captureProcess->on(std:("exit"), [=](auto code) mutable
+    this->captureProcess->on(std::string("exit"), [=](auto code) mutable
     {
-        logger->info(std:("[StreamingAudio] Capture process exited with code:"), code);
+        logger->info(std::string("[StreamingAudio] Capture process exited with code:"), code);
         this->isCapturing = false;
     }
     );
@@ -80,20 +81,20 @@ void StreamingAudioCaptureService::processAudioChunk(std::shared_ptr<Buffer> chu
     auto energy = this->calculateEnergy(chunk);
     shared timestamp = Date->now();
     auto audioChunk = object{
-        object::pair{std:("data"), chunk}, 
-        object::pair{std:("timestamp"), std:("timestamp")}, 
-        object::pair{std:("energy"), std:("energy")}
+        object::pair{std::string("data"), chunk}, 
+        object::pair{std::string("timestamp"), std::string("timestamp")}, 
+        object::pair{std::string("energy"), std::string("energy")}
     };
     if (energy > this->config->vadThreshold) {
         if (!this->isSpeaking) {
             this->isSpeaking = true;
             this->lastSpeechTime = timestamp;
-            logger->debug(std:("[StreamingAudio] Speech detected, starting recording"));
-            this->emit(std:("speechStart"));
+            logger->debug(std::string("[StreamingAudio] Speech detected, starting recording"));
+            this->emit(std::string("speechStart"));
             if (this->responseTimer) {
                 clearTimeout(this->responseTimer);
                 this->responseTimer = nullptr;
-                logger->debug(std:("[StreamingAudio] Cancelled pending response due to new speech"));
+                logger->debug(std::string("[StreamingAudio] Cancelled pending response due to new speech"));
             }
         }
         this->audioBuffer->push(audioChunk);
@@ -141,7 +142,7 @@ std::shared_ptr<Promise<void>> StreamingAudioCaptureService::startStreamingTrans
         return std::shared_ptr<Promise<void>>();
     }
     this->transcriptionInProgress = true;
-    logger->debug(std:("[StreamingAudio] Starting streaming transcription"));
+    logger->debug(std::string("[StreamingAudio] Starting streaming transcription"));
     try
     {
         auto audioData = this->getRecentAudioData();
@@ -152,16 +153,16 @@ std::shared_ptr<Promise<void>> StreamingAudioCaptureService::startStreamingTrans
         auto result = std::async([=]() { this->transcribeAudio(audioData); });
         if (AND((result), (result->trim()))) {
             this->currentTranscription = result;
-            logger->info(std:("[StreamingAudio] Partial transcription: "") + result + std:("""));
-            this->emit(std:("transcription"), object{
-                object::pair{std:("text"), result}, 
-                object::pair{std:("isFinal"), false}
+            logger->info(std::string("[StreamingAudio] Partial transcription: "") + result + std::string("""));
+            this->emit(std::string("transcription"), object{
+                object::pair{std::string("text"), result}, 
+                object::pair{std::string("isFinal"), false}
             });
         }
     }
     catch (const any& error)
     {
-        logger->error(std:("[StreamingAudio] Transcription error:"), error);
+        logger->error(std::string("[StreamingAudio] Transcription error:"), error);
     }
     this->transcriptionInProgress = false;
     if (this->isSpeaking) {
@@ -180,8 +181,8 @@ void StreamingAudioCaptureService::endSpeech()
     }
     this->isSpeaking = false;
     this->silenceTimer = nullptr;
-    logger->debug(std:("[StreamingAudio] Speech ended"));
-    this->emit(std:("speechEnd"));
+    logger->debug(std::string("[StreamingAudio] Speech ended"));
+    this->emit(std::string("speechEnd"));
     this->processFinalTranscription();
 }
 
@@ -202,10 +203,10 @@ std::shared_ptr<Promise<void>> StreamingAudioCaptureService::processFinalTranscr
             shared finalText = std::async([=]() { this->transcribeAudio(audioData); });
             if (AND((finalText), (finalText->trim()))) {
                 this->currentTranscription = finalText;
-                logger->info(std:("[StreamingAudio] Final transcription: "") + finalText + std:("""));
-                this->emit(std:("transcription"), object{
-                    object::pair{std:("text"), finalText}, 
-                    object::pair{std:("isFinal"), true}
+                logger->info(std::string("[StreamingAudio] Final transcription: "") + finalText + std::string("""));
+                this->emit(std::string("transcription"), object{
+                    object::pair{std::string("text"), finalText}, 
+                    object::pair{std::string("isFinal"), true}
                 });
                 this->responseTimer = setTimeout([=]() mutable
                 {
@@ -216,7 +217,7 @@ std::shared_ptr<Promise<void>> StreamingAudioCaptureService::processFinalTranscr
         }
         catch (const any& error)
         {
-            logger->error(std:("[StreamingAudio] Final transcription error:"), error);
+            logger->error(std::string("[StreamingAudio] Final transcription error:"), error);
         }
     }
 }
@@ -257,15 +258,15 @@ std::shared_ptr<Promise<any>> StreamingAudioCaptureService::transcribeAudio(std:
     {
         auto wavBuffer = this->rawToWav(audioData);
         auto result = std::async([=]() { this->runtime->useModel(ModelType->TRANSCRIPTION, object{
-            object::pair{std:("audio"), wavBuffer}, 
-            object::pair{std:("language"), std:("en")}, 
-            object::pair{std:("stream"), true}
+            object::pair{std::string("audio"), wavBuffer}, 
+            object::pair{std::string("language"), std::string("en")}, 
+            object::pair{std::string("stream"), true}
         }); });
         return as<string>(result);
     }
     catch (const any& error)
     {
-        logger->error(std:("[StreamingAudio] Transcription failed:"), error);
+        logger->error(std::string("[StreamingAudio] Transcription failed:"), error);
         return nullptr;
     }
 }
@@ -280,10 +281,10 @@ std::shared_ptr<Buffer> StreamingAudioCaptureService::rawToWav(std::shared_ptr<B
     auto dataSize = rawData->length;
     auto fileSize = 36 + dataSize;
     auto header = Buffer::alloc(44);
-    header->write(std:("RIFF"), 0);
+    header->write(std::string("RIFF"), 0);
     header->writeUInt32LE(fileSize, 4);
-    header->write(std:("WAVE"), 8);
-    header->write(std:("fmt "), 12);
+    header->write(std::string("WAVE"), 8);
+    header->write(std::string("fmt "), 12);
     header->writeUInt32LE(16, 16);
     header->writeUInt16LE(1, 20);
     header->writeUInt16LE(channels, 22);
@@ -291,7 +292,7 @@ std::shared_ptr<Buffer> StreamingAudioCaptureService::rawToWav(std::shared_ptr<B
     header->writeUInt32LE(byteRate, 28);
     header->writeUInt16LE(blockAlign, 32);
     header->writeUInt16LE(bitsPerSample, 34);
-    header->write(std:("data"), 36);
+    header->write(std::string("data"), 36);
     header->writeUInt32LE(dataSize, 40);
     return Buffer::concat(array<std::shared_ptr<Buffer>>{ header, rawData });
 }
@@ -302,11 +303,11 @@ std::shared_ptr<Promise<void>> StreamingAudioCaptureService::generateResponse(st
     try
     {
         std::async([=]() { this->createAudioMemory(transcription); });
-        this->emit(std:("utteranceComplete"), transcription);
+        this->emit(std::string("utteranceComplete"), transcription);
     }
     catch (const any& error)
     {
-        logger->error(std:("[StreamingAudio] Response generation error:"), error);
+        logger->error(std::string("[StreamingAudio] Response generation error:"), error);
     }
     return std::shared_ptr<Promise<void>>();
 }
@@ -316,29 +317,29 @@ std::shared_ptr<Promise<void>> StreamingAudioCaptureService::createAudioMemory(s
     try
     {
         auto _memory = object{
-            object::pair{std:("content"), object{
-                object::pair{std:("text"), std:("[Audio] ") + transcription + string_empty}, 
-                object::pair{std:("type"), std:("audio_transcription")}, 
-                object::pair{std:("source"), std:("microphone_streaming")}, 
-                object::pair{std:("timestamp"), Date->now()}
+            object::pair{std::string("content"), object{
+                object::pair{std::string("text"), std::string("[Audio] ") + transcription + string_empty}, 
+                object::pair{std::string("type"), std::string("audio_transcription")}, 
+                object::pair{std::string("source"), std::string("microphone_streaming")}, 
+                object::pair{std::string("timestamp"), Date->now()}
             }}, 
-            object::pair{std:("metadata"), object{
-                object::pair{std:("isAudioTranscription"), true}, 
-                object::pair{std:("streaming"), true}
+            object::pair{std::string("metadata"), object{
+                object::pair{std::string("isAudioTranscription"), true}, 
+                object::pair{std::string("streaming"), true}
             }}
         };
-        logger->info(std:("[StreamingAudio] Audio transcription stored in context"));
+        logger->info(std::string("[StreamingAudio] Audio transcription stored in context"));
     }
     catch (const any& error)
     {
-        logger->error(std:("[StreamingAudio] Failed to create audio memory:"), error);
+        logger->error(std::string("[StreamingAudio] Failed to create audio memory:"), error);
     }
     return std::shared_ptr<Promise<void>>();
 }
 
 std::shared_ptr<Promise<void>> StreamingAudioCaptureService::stop()
 {
-    logger->info(std:("[StreamingAudio] Stopping audio capture..."));
+    logger->info(std::string("[StreamingAudio] Stopping audio capture..."));
     if (this->captureProcess) {
         this->captureProcess->kill();
         this->captureProcess = nullptr;
@@ -354,7 +355,7 @@ std::shared_ptr<Promise<void>> StreamingAudioCaptureService::stop()
     this->isCapturing = false;
     this->isSpeaking = false;
     this->audioBuffer = array<any>();
-    logger->info(std:("[StreamingAudio] Audio capture stopped"));
+    logger->info(std::string("[StreamingAudio] Audio capture stopped"));
     return std::shared_ptr<Promise<void>>();
 }
 

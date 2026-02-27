@@ -32,7 +32,7 @@ void ShowcaseHeader() {
 
 }
 
-void filterUsers(const std::vector<User>& users, const std:& search, const std::vector<std::string>& selectedTags, const std:& operator) {
+void filterUsers(const std::vector<User>& users, const std::string& search, const std::vector<std::string>& selectedTags, const std::string& operator) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // First deduplicate the input array
@@ -73,7 +73,7 @@ JSX::Element ShowcaseComponent() {
     const auto searchParams = new URLSearchParams(location.search);
 
     // Initialize state from URL parameters
-    const auto [selectedTags, setSelectedTags] = useState<std:[]>[&](() {;
+    const auto [selectedTags, setSelectedTags] = useState<std::string[]>[&](() {;
         const auto tags = searchParams.get("tags");
         return tags ? tags.split(",") : [];
         });
@@ -129,7 +129,7 @@ JSX::Element ShowcaseComponent() {
                                     }
                                     }, [location.search]);
 
-                                    const auto toggleTag = [&](tag: std:) {;
+                                    const auto toggleTag = [&](tag: std::string) {;
                                         setSelectedTags((tags) =>;
                                         (std::find(tags.begin(), tags.end(), tag) != tags.end()) ? tags.filter[&]((t) { return t != tag) : [...tags, tag]
                                         ); };

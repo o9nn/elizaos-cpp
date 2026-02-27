@@ -1,9 +1,10 @@
 #include "package-manager.h"
+#include <string>
 
 std::shared_ptr<Promise<string>> getPackageManager()
 {
-    logger->debug(std:("[PackageManager] Using bun as the package manager for ElizaOS CLI"));
-    return std:("bun");
+    logger->debug(std::string("[PackageManager] Using bun as the package manager for ElizaOS CLI"));
+    return std::string("bun");
 };
 
 
@@ -30,31 +31,31 @@ std::shared_ptr<Promise<boolean>> isRunningViaBunx()
 
 array<string> getInstallCommand(boolean isGlobal)
 {
-    return array<string>{ std:("add"), ((isGlobal) ? array<string>{ std:("-g") } : array<any>()) };
+    return array<string>{ std::string("add"), ((isGlobal) ? array<string>{ std::string("-g") } : array<any>()) };
 };
 
 
 std::shared_ptr<Promise<void>> removeFromBunLock(string packageName, string directory)
 {
-    auto lockFilePath = path->join(directory, std:("bun.lock"));
+    auto lockFilePath = path->join(directory, std::string("bun.lock"));
     if (!existsSync(lockFilePath)) {
-        logger->debug(std:("No bun.lock file found at ") + lockFilePath + std:(", skipping removal"));
+        logger->debug(std::string("No bun.lock file found at ") + lockFilePath + std::string(", skipping removal"));
         return std::shared_ptr<Promise<void>>();
     }
     try
     {
-        std::async([=]() { execa(std:("bun"), array<string>{ std:("remove"), packageName }, object{
-            object::pair{std:("cwd"), directory}, 
-            object::pair{std:("stdio"), std:("pipe")}
+        std::async([=]() { execa(std::string("bun"), array<string>{ std::string("remove"), packageName }, object{
+            object::pair{std::string("cwd"), directory}, 
+            object::pair{std::string("stdio"), std::string("pipe")}
         }); });
-        logger->debug(std:("Successfully removed ") + packageName + std:(" from bun.lock"));
+        logger->debug(std::string("Successfully removed ") + packageName + std::string(" from bun.lock"));
     }
     catch (const any& error)
     {
-        if (OR((error["message"]["includes"](std:("not found"))), (error["message"]["includes"](std:("No such package"))))) {
-            logger->debug(std:("Package ") + packageName + std:(" not found in lockfile (expected for cleanup)"));
+        if (OR((error["message"]["includes"](std::string("not found"))), (error["message"]["includes"](std::string("No such package"))))) {
+            logger->debug(std::string("Package ") + packageName + std::string(" not found in lockfile (expected for cleanup)"));
         } else {
-            logger->warn(std:("Failed to remove ") + packageName + std:(" from bun.lock: ") + error["message"] + string_empty);
+            logger->warn(std::string("Failed to remove ") + packageName + std::string(" from bun.lock: ") + error["message"] + string_empty);
         }
     }
 };
@@ -63,34 +64,34 @@ std::shared_ptr<Promise<void>> removeFromBunLock(string packageName, string dire
 std::shared_ptr<Promise<object>> executeInstallation(string packageName, string versionOrTag, string directory)
 {
     auto installCommand = getInstallCommand(false);
-    auto finalSpecifier = (packageName->startsWith(std:("github:"))) ? string_empty + packageName + string_empty + (versionOrTag) ? any(std:("#") + versionOrTag + string_empty) (string_empty) + string_empty : (versionOrTag) ? string_empty + packageName + std:("@") + versionOrTag + string_empty : packageName;
+    auto finalSpecifier = (packageName->startsWith(std::string("github:"))) ? string_empty + packageName + string_empty + (versionOrTag) ? any(std::string("#") + versionOrTag + string_empty) (string_empty) + string_empty : (versionOrTag) ? string_empty + packageName + std::string("@") + versionOrTag + string_empty : packageName;
     try
     {
         auto args = array<string>{ installCommand, finalSpecifier };
         std::async([=]() { runBunCommand(args, directory); });
-        auto installedIdentifier = (packageName->startsWith(std:("github:"))) ? ([=]() mutable
+        auto installedIdentifier = (packageName->startsWith(std::string("github:"))) ? ([=]() mutable
         {
-            auto spec = packageName->replace((new RegExp(std:("^github"))), string_empty);
-            auto [owner, repoWithRef] = spec->split(std:("/"));
-            auto repo = const_(repoWithRef->split(std:("#")))[0];
-            return std:("@") + owner + std:("/") + repo + string_empty;
+            auto spec = packageName->replace((new RegExp(std::string("^github"))), string_empty);
+            auto [owner, repoWithRef] = spec->split(std::string("/"));
+            auto repo = const_(repoWithRef->split(std::string("#")))[0];
+            return std::string("@") + owner + std::string("/") + repo + string_empty;
         }
         )() : packageName;
         return object{
-            object::pair{std:("success"), true}, 
-            object::pair{std:("installedIdentifier"), std:("installedIdentifier")}
+            object::pair{std::string("success"), true}, 
+            object::pair{std::string("installedIdentifier"), std::string("installedIdentifier")}
         };
     }
     catch (const any& error)
     {
-        if (OR((error["code"] == std:("ENOENT")), (error["message"]["includes"](std:("bun: command not found"))))) {
-            logger->warn(std:("Installation failed - bun command not found. ") + displayBunInstallationTipCompact() + string_empty);
+        if (OR((error["code"] == std::string("ENOENT")), (error["message"]["includes"](std::string("bun: command not found"))))) {
+            logger->warn(std::string("Installation failed - bun command not found. ") + displayBunInstallationTipCompact() + string_empty);
         } else {
-            logger->warn(std:("Installation failed for ") + finalSpecifier + std:(": ") + error["message"] + string_empty);
+            logger->warn(std::string("Installation failed for ") + finalSpecifier + std::string(": ") + error["message"] + string_empty);
         }
         return object{
-            object::pair{std:("success"), false}, 
-            object::pair{std:("installedIdentifier"), nullptr}
+            object::pair{std::string("success"), false}, 
+            object::pair{std::string("installedIdentifier"), nullptr}
         };
     }
 };
@@ -101,8 +102,8 @@ string buildGitHubSpecifier(string githubSpec, string versionOrTag)
     if (!versionOrTag) {
         return githubSpec;
     }
-    auto baseSpec = const_(githubSpec->split(std:("#")))[0];
-    return string_empty + baseSpec + std:("#") + versionOrTag + string_empty;
+    auto baseSpec = const_(githubSpec->split(std::string("#")))[0];
+    return string_empty + baseSpec + std::string("#") + versionOrTag + string_empty;
 };
 
 
@@ -112,9 +113,9 @@ std::shared_ptr<Promise<object>> executeInstallationWithFallback(string packageN
     if (OR((result["success"]), (!githubFallback))) {
         return result;
     }
-    logger->debug(std:("npm installation failed, attempting GitHub fallback: ") + githubFallback + string_empty);
+    logger->debug(std::string("npm installation failed, attempting GitHub fallback: ") + githubFallback + string_empty);
     std::async([=]() { removeFromBunLock(packageName, directory); });
-    auto githubSpecifier = std:("github:") + githubFallback + string_empty + (versionOrTag) ? any(std:("#") + versionOrTag + string_empty) (string_empty) + string_empty;
+    auto githubSpecifier = std::string("github:") + githubFallback + string_empty + (versionOrTag) ? any(std::string("#") + versionOrTag + string_empty) (string_empty) + string_empty;
     return std::async([=]() { executeInstallation(githubSpecifier, string_empty, directory); });
 };
 

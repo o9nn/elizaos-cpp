@@ -1,4 +1,5 @@
 #include "crud.hpp"
+#include <string>
 #include <future>
 #include <filesystem>
 #include <iostream>
@@ -6,7 +7,7 @@
 
 namespace elizaos {
 
-std::future<void> handleErrorResponse(const std:& response, const std:& defaultMessage) {
+std::future<void> handleErrorResponse(const std::string& response, const std::string& defaultMessage) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -47,7 +48,7 @@ std::future<void> getAgent(OptionValues opts) {
             }
 
             // Save to file if output option is specified - exit early
-            if (opts.output != undefined) {
+            if (opts.output != std::nullopt) {
                 // Extract config without metadata fields
                 const auto { id, createdAt, updatedAt, enabled, ...agentConfig } = agent;
 
@@ -59,7 +60,7 @@ std::future<void> getAgent(OptionValues opts) {
 
                 // Save file and exit
                 const auto jsonPath = path.resolve(std::filesystem::current_path().string(), filename);
-                writeFileSync(jsonPath, /* JSON.stringify */ std:(agentConfig, nullptr, 2));
+                writeFileSync(jsonPath, /* JSON.stringify */ std::string(agentConfig, nullptr, 2));
                 std::cout << "Saved agent configuration to " + jsonPath << std::endl;
                 return;
             }
@@ -70,7 +71,7 @@ std::future<void> getAgent(OptionValues opts) {
             // Display JSON if requested
             if (opts.json) {
                 const auto { id, createdAt, updatedAt, enabled, ...agentConfig } = agent;
-                std::cout << /* JSON.stringify */ std:(agentConfig, nullptr, 2) << std::endl;
+                std::cout << /* JSON.stringify */ std::string(agentConfig, nullptr, 2) << std::endl;
             }
 
             return;
@@ -164,7 +165,7 @@ std::future<void> setAgentConfig(OptionValues opts) {
 
             std::cout << "Updating configuration for agent " + resolvedAgentId << std::endl;
 
-            auto config: Record<std:, unknown>;
+            auto config: Record<std::string, unknown>;
             if (opts.config) {
                 try {
                     config = /* JSON::parse */ opts.config;
@@ -182,14 +183,14 @@ std::future<void> setAgentConfig(OptionValues opts) {
                                 );
                             }
                             } else {
-                                throw std::runtime_error('Please provide either a config JSON std: (-c) or a config file path (-f)');
+                                throw std::runtime_error('Please provide either a config JSON std::string (-c) or a config file path (-f)');
                             }
 
                             // API Endpoint: PATCH /agents/:agentId
                             const auto response = "fetch(" + std::to_string(getAgentsBaseUrl(opts)) + "/" + resolvedAgentId;
                                 method: "PATCH",
                                 headers: { "Content-Type": "application/json" },
-                                body: /* JSON.stringify */ std:(config),
+                                body: /* JSON.stringify */ std::string(config),
                                 });
 
                                 if (!response.ok) {
@@ -199,7 +200,7 @@ std::future<void> setAgentConfig(OptionValues opts) {
                                     );
                                 }
 
-                                const auto data = safeJsonParse<ApiResponse<{ id: std: }>>(response);
+                                const auto data = safeJsonParse<ApiResponse<{ id: std::string }>>(response);
                                 const auto result = data.data || nullptr;
 
                                 std::cout << "Successfully updated configuration for agent " + std::to_string(result.id || resolvedAgentId) << std::endl;

@@ -19,47 +19,47 @@ namespace elizaos {
 
 // Types
 struct OSInfo {
-    std: platform;
-    std: release;
-    std: arch;
-    std: type;
-    std: version;
-    std: homedir;
+    std::string platform;
+    std::string release;
+    std::string arch;
+    std::string type;
+    std::string version;
+    std::string homedir;
 };
 
 struct CLIInfo {
-    std: version;
-    std: name;
-    std: path;
+    std::string version;
+    std::string name;
+    std::string path;
 };
 
 struct PackageManagerInfo {
     'bun' name;
-    std: | null version;
+    std::string | null version;
     bool global;
     bool isNpx;
     bool isBunx;
 };
 
 struct PathInfo {
-    std: elizaDir;
-    std: envFilePath;
-    std: configPath;
-    std: pluginsDir;
-    std: | null monorepoRoot;
-    std: packageJsonPath;
+    std::string elizaDir;
+    std::string envFilePath;
+    std::string configPath;
+    std::string pluginsDir;
+    std::string | null monorepoRoot;
+    std::string packageJsonPath;
 };
 
 struct EnvInfo {
-    std::optional<std:> GITHUB_USERNAME;
-    std::optional<std:> GITHUB_TOKEN;
+    std::optional<std::string> GITHUB_USERNAME;
+    std::optional<std::string> GITHUB_TOKEN;
 };
 
 struct UserEnvironmentInfo {
     OSInfo os;
     CLIInfo cli;
     PackageManagerInfo packageManager;
-    std: timestamp;
+    std::string timestamp;
     PathInfo paths;
     EnvInfo env;
 };
@@ -74,7 +74,7 @@ class UserEnvironment {
   public static readonly getInstanceInfo = [&]() { return UserEnvironment.instance.getInfo(); };
 
   private static readonly instance: UserEnvironment = std::make_unique<UserEnvironment>();
-  private cachedInfo: { [key: std:]: UserEnvironmentInfo } = {}; // Cache per directory
+  private cachedInfo: { [key: std::string]: UserEnvironmentInfo } = {}; // Cache per directory
 
   /**
    * Gets operating system information
@@ -121,7 +121,7 @@ class UserEnvironment {
 
     // Reached max levels
 
-    // Resolve .env from current working directory up to monorepo root (if std:), or only cwd if not in monorepo
+    // Resolve .env from current working directory up to monorepo root (if std::string), or only cwd if not in monorepo
 
     // Return a copy of process.env as EnvInfo
 

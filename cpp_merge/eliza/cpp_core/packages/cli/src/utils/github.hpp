@@ -17,71 +17,71 @@ namespace elizaos {
 
 
 struct GitHubUserResponse {
-    std: login;
+    std::string login;
 };
 
 struct GitHubRepoResponse {
-    std: full_name;
+    std::string full_name;
 };
 
 struct GitHubBranchResponse {
     { object;
-    std: sha;
+    std::string sha;
 };
 
 struct GitHubFileResponse {
-    std: content;
-    std: sha;
+    std::string content;
+    std::string sha;
 };
 
 struct GitHubPullRequestResponse {
-    std: html_url;
+    std::string html_url;
 };
 
 /**
  * Validate a GitHub token with the API
  */
-std::future<bool> validateGitHubToken(const std:& token);
+std::future<bool> validateGitHubToken(const std::string& token);
 
 /**
  * Check if a fork exists for a given repository
  */
-std::future<bool> forkExists(const std:& token, const std:& repo, const std:& username);
+std::future<bool> forkExists(const std::string& token, const std::string& repo, const std::string& username);
 
 /**
  * Fork a repository
  */
-std::future<std: | null> forkRepository(const std:& token, const std:& owner, const std:& repo);
+std::future<std::string | null> forkRepository(const std::string& token, const std::string& owner, const std::string& repo);
 
 /**
  * Check if a branch exists in a repository
  */
-std::future<bool> branchExists(const std:& token, const std:& owner, const std:& repo, const std:& branch);
+std::future<bool> branchExists(const std::string& token, const std::string& owner, const std::string& repo, const std::string& branch);
 
 /**
  * Create a new branch in a repository
  */
-std::future<bool> createBranch(const std:& token, const std:& owner, const std:& repo, const std:& branch, auto baseBranch = 'main');
+std::future<bool> createBranch(const std::string& token, const std::string& owner, const std::string& repo, const std::string& branch, auto baseBranch = 'main');
 
 /**
  * Get content of a file from a repository
  */
-std::future<std: | null> getFileContent(const std:& token, const std:& owner, const std:& repo, const std:& path, auto branch = 'main');
+std::future<std::string | null> getFileContent(const std::string& token, const std::string& owner, const std::string& repo, const std::string& path, auto branch = 'main');
 
 /**
  * Create or update a file in a repository
  */
-std::future<bool> updateFile(const std:& token, const std:& owner, const std:& repo, const std:& path, const std:& content, const std:& message, auto branch = 'main');
+std::future<bool> updateFile(const std::string& token, const std::string& owner, const std::string& repo, const std::string& path, const std::string& content, const std::string& message, auto branch = 'main');
 
 /**
  * Create a pull request
  */
-std::future<std: | null> createPullRequest(const std:& token, const std:& owner, const std:& repo, const std:& title, const std:& body, const std:& head, auto base = 'main');
+std::future<std::string | null> createPullRequest(const std::string& token, const std::string& owner, const std::string& repo, const std::string& title, const std::string& body, const std::string& head, auto base = 'main');
 
 /**
  * Get authenticated user information
  */
-std::future<GitHubUserResponse | null> getAuthenticatedUser(const std:& token);
+std::future<GitHubUserResponse | null> getAuthenticatedUser(const std::string& token);
 
 /**
  * Retrieves GitHub credentials from the environment, registry, or user prompt.
@@ -116,12 +116,12 @@ std::future<GitHubUserResponse | null> getAuthenticatedUser(const std:& token);
  *
  * Updates or adds the "GITHUB_USERNAME" and "GITHUB_TOKEN" entries in the file and sets them in the current process environment.
  */
-std::future<void> saveGitHubCredentials(const std:& username, const std:& token);
+std::future<void> saveGitHubCredentials(const std::string& username, const std::string& token);
 
 /**
  * Ensure a directory exists in the repository
  */
-std::future<bool> ensureDirectory(const std:& token, const std:& repo, const std:& path, const std:& branch);
+std::future<bool> ensureDirectory(const std::string& token, const std::string& repo, const std::string& path, const std::string& branch);
 
 /**
  * Create a new GitHub repository
@@ -143,6 +143,6 @@ std::future<bool> ensureDirectory(const std:& token, const std:& repo, const std
 /**
  * Push local code to GitHub repository
  */
-std::future<bool> pushToGitHub(const std:& cwd, const std:& repoUrl, auto branch = 'main');
+std::future<bool> pushToGitHub(const std::string& cwd, const std::string& repoUrl, auto branch = 'main');
 
 } // namespace elizaos

@@ -16,7 +16,7 @@ namespace elizaos {
 // Manual refinement required for production use
 
 
-using ModelTypeName = std::variant<(typeof ModelType)[keyof typeof ModelType], std:>;
+using ModelTypeName = std::variant<(typeof ModelType)[keyof typeof ModelType], std::string>;
 
 /**
  * Defines the recognized types of models that the agent runtime can use.
@@ -38,7 +38,7 @@ using ModelTypeName = std::variant<(typeof ModelType)[keyof typeof ModelType], s
  */
 using GenerateTextParams = {
   /** The "AgentRuntime" instance, providing access to models and other services:: */
-  /** The input std: or prompt that the language model will use to generate text. */
+  /** The input std::string or prompt that the language model will use to generate text. */
   /** Specifies the type of text generation model to use (e.g., TEXT_LARGE, REASONING_SMALL). */
   /** Optional. The maximum number of tokens to generate in the response. */
   /** Optional. Controls randomness (0.0-1.0). Lower values are more deterministic, higher are more creative. */
@@ -160,7 +160,7 @@ struct ModelResultMap {
  * serves as a tie-breaker. See "AgentRuntime.registerModel" and "AgentRuntime.getModel".
  */
 struct ModelHandler {
-    std: provider;
+    std::string provider;
     std::optional<double> priority;
     std::optional<double> registrationOrder;
 };

@@ -1,4 +1,5 @@
 #include "route.hpp"
+#include <string>
 #include <future>
 #include <cstdlib>
 #include <optional>
@@ -56,8 +57,7 @@ std::future<void> pollBaseRegistrations() {
                 );
 
                 const auto logs = client.getLogs({;
-                    "address: registrationHelperAddress as " + "0x" + std:
-                    event: {
+                    "address: registrationHelperAddress as " + "0x" + std::string event: {
                         type: "event",
                         name: "TokenRegistered",
                         inputs: [
@@ -77,10 +77,10 @@ std::future<void> pollBaseRegistrations() {
                         auto processed = 0;
                         for (const auto& log : logs)
                             const auto { tokenAddress, registeredBy } = log.args as {;
-                                tokenId: std:;
-                                tokenAddress: std:;
-                                pool: std:;
-                                registeredBy: std:;
+                                tokenId: std::string;
+                                tokenAddress: std::string;
+                                pool: std::string;
+                                registeredBy: std::string;
                                 };
 
                                 console.log(
@@ -94,18 +94,15 @@ std::future<void> pollBaseRegistrations() {
                                 ) { return Promise<unknown>; };
                                 const auto [symbol, name, decimals] = Promise.all([;
                                 readContract({
-                                    "address: tokenAddress as " + "0x" + std:
-                                    abi: ERC20_ABI,
+                                    "address: tokenAddress as " + "0x" + std::string abi: ERC20_ABI,
                                     functionName: "symbol",
                                     }),
                                     readContract({
-                                        "address: tokenAddress as " + "0x" + std:
-                                        abi: ERC20_ABI,
+                                        "address: tokenAddress as " + "0x" + std::string abi: ERC20_ABI,
                                         functionName: "name",
                                         }),
                                         readContract({
-                                            "address: tokenAddress as " + "0x" + std:
-                                            abi: ERC20_ABI,
+                                            "address: tokenAddress as " + "0x" + std::string abi: ERC20_ABI,
                                             functionName: "decimals",
                                             }),
                                             ]);
@@ -184,7 +181,7 @@ std::future<void> pollSolanaRegistrations() {
         );
 
         auto processed = 0;
-        std: lastProcessedSig = nullptr;
+        std::string lastProcessedSig = nullptr;
 
         for (int i = startIndex; i < signatures.size(); i++) {
             const auto sig = signatures[i];

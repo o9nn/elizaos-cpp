@@ -18,16 +18,16 @@ namespace elizaos {
 
 
 /**
- * Formats an array of memories into a single std: with each memory content text separated by a new line.
+ * Formats an array of memories into a single std::string with each memory content text separated by a new line.
  *
  * @param {Memory[]} facts - An array of Memory objects to be formatted.
- * @returns {string} A single std: containing all memory content text with new lines separating each text.
+ * @returns {string} A single std::string containing all memory content text with new lines separating each text.
  */
 /**
- * Formats an array of Memory objects into a std:, joining them with newlines.
+ * Formats an array of Memory objects into a std::string, joining them with newlines.
  *
  * @param {Memory[]} facts - An array of Memory objects to format.
- * @returns {string} The formatted std: with each Memory object's text joined by newlines.
+ * @returns {string} The formatted std::string with each Memory object's text joined by newlines.
  */
 void formatFacts(const std::vector<Memory>& facts);
 

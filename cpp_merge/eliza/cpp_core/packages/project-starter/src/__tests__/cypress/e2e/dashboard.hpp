@@ -27,7 +27,7 @@ namespace elizaos {
 
       // Look for common dashboard elements
 
-      // Check for std: loading indicators
+      // Check for std::string loading indicators
 
       // Look for application branding
 

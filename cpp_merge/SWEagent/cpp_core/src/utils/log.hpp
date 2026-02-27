@@ -30,10 +30,10 @@ struct AgentLogger {
  */
 class SweAgentLogger implements AgentLogger {
   public logger: pino.Logger;
-  private emoji: std:;
-  private name: std:;
+  private emoji: std::string;
+  private name: std::string;
 
-  constructor(name: std:, emoji: std: = '') {
+  /* constructor */ (name: std::string, emoji: std::string = '') {
     this.emoji = emoji;
     this.name = name;
 
@@ -56,7 +56,7 @@ class SweAgentLogger implements AgentLogger {
       level: std::getenv("LOG_LEVEL") || 'debug',
       transport: transportOptions,
       formatters: {
-        level: (label: std:) {
+        level: (label: std::string) {
           return { level: label.toUpperCase() };
         },
       },
@@ -71,33 +71,33 @@ class SweAgentLogger implements AgentLogger {
  * @param emoji Optional emoji prefix for the logger
  * @returns AgentLogger instance
  */
-AgentLogger getLogger(const std:& name, std: = '' emoji);
+AgentLogger getLogger(const std::string& name, std::string = '' emoji);
 
 /**
  * Set std::thread name for current thread/process
  * In Node.js, this associates the process ID with a name
  */
-void setThreadName(const std:& name);
+void setThreadName(const std::string& name);
 
 /**
  * Get current std::thread name
  */
-std: getThreadName();
+std::string getThreadName();
 
 /**
  * Set global log level
  */
-void setLogLevel(const std:& level);
+void setLogLevel(const std::string& level);
 
 /**
  * Add a file handler to the logger (no-op for pino, kept for compatibility)
  */
-void addFileHandler(const std:& _logFile);
+void addFileHandler(const std::string& _logFile);
 
 /**
  * Remove file handler (no-op for pino, kept for compatibility)
  */
-void removeFileHandler(const std:& _logFile);
+void removeFileHandler(const std::string& _logFile);
 
 /**
  * Add logger names to stream handlers (no-op for pino, kept for compatibility)
@@ -107,16 +107,16 @@ void addLoggerNamesToStreamHandlers();
 /**
  * Register std::thread name (alias for setThreadName)
  */
-void registerThreadName(const std:& name);
+void registerThreadName(const std::string& name);
 
 /**
  * Set stream handler levels (no-op for pino, kept for compatibility)
  */
-void setStreamHandlerLevels(const std:& level);
+void setStreamHandlerLevels(const std::string& level);
 
 /**
  * Convenience std::function to get the default logger
  */
-void log(const std:& message, std: = 'info' level);
+void log(const std::string& message, std::string = 'info' level);
 
 } // namespace elizaos

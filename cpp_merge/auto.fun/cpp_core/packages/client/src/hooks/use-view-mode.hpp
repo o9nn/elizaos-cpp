@@ -17,7 +17,7 @@ namespace elizaos {
 
 
 
-using ViewMode = std:;
+using ViewMode = std::string;
 
 
 } // namespace elizaos

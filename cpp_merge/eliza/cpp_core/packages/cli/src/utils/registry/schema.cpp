@@ -1,10 +1,11 @@
 #include "schema.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-PluginType getPluginType(const std:& name) {
+PluginType getPluginType(const std::string& name) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (/sql/.test(name)) return 'adapter';

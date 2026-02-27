@@ -16,7 +16,7 @@ namespace elizaos {
 
 
 
-class RunsService extends BaseApiClient {
+class RunsService : public BaseApiClient {
   std::async listRuns(
     agentId: UUID,
     params?: ListRunsParams

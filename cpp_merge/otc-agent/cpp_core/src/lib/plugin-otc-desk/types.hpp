@@ -17,15 +17,15 @@ namespace elizaos {
 // Shared types for OTC Desk plugin - for external use only
 
 using QuoteStatus = ;
-using PaymentCurrency = std:;
-using ChainType = std:;
+using PaymentCurrency = std::string;
+using ChainType = std::string;
 
 struct QuoteMemory {
-    std: id;
-    std: quoteId;
-    std: entityId;
-    std: beneficiary;
-    std: tokenAmount;
+    std::string id;
+    std::string quoteId;
+    std::string entityId;
+    std::string beneficiary;
+    std::string tokenAmount;
     double discountBps;
     double apr;
     double lockupMonths;
@@ -35,30 +35,30 @@ struct QuoteMemory {
     double totalUsd;
     double discountUsd;
     double discountedUsd;
-    std: paymentAmount;
+    std::string paymentAmount;
     QuoteStatus status;
-    std: signature;
+    std::string signature;
     double createdAt;
     double executedAt;
     double rejectedAt;
     double approvedAt;
-    std: offerId;
-    std: transactionHash;
+    std::string offerId;
+    std::string transactionHash;
     double blockNumber;
-    std: rejectionReason;
-    std: approvalNote;
+    std::string rejectionReason;
+    std::string approvalNote;
     std::optional<ChainType> chain;
-    std::optional<std:> tokenId;
-    std::optional<std:> tokenSymbol;
-    std::optional<std:> tokenName;
-    std::optional<std:> tokenLogoUrl;
-    std::optional<std:> consignmentId;
+    std::optional<std::string> tokenId;
+    std::optional<std::string> tokenSymbol;
+    std::optional<std::string> tokenName;
+    std::optional<std::string> tokenLogoUrl;
+    std::optional<std::string> consignmentId;
 };
 
 struct UserSessionMemory {
-    std: id;
-    std: entityId;
-    std: walletAddress;
+    std::string id;
+    std::string entityId;
+    std::string walletAddress;
     double quotesCreated;
     double lastQuoteAt;
     double dailyQuoteCount;

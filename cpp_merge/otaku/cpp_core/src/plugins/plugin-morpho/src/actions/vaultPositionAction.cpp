@@ -1,4 +1,5 @@
 #include "vaultPositionAction.hpp"
+#include <string>
 #include <vector>
 #include <map>
 #include <iostream>
@@ -6,7 +7,7 @@
 
 namespace elizaos {
 
-std: normalizeUnitsFromApi(const std::variant<std:, double>& raw, double decimals) {
+std::string normalizeUnitsFromApi(const std::variant<std::string, double>& raw, double decimals) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto s = typeof raw == "number" ? std::to_string(raw) : (raw || "0");

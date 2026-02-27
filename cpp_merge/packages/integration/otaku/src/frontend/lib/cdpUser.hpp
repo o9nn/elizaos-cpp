@@ -69,12 +69,12 @@ public:
 
 any extractEmailFromCdpUser(any user, boolean isSignedIn);
 
-any extractUsernameFromCdpUser(any user, string emailForFallback = undefined);
+any extractUsernameFromCdpUser(any user, string emailForFallback = std::nullopt);
 
 any extractPhoneFromCdpUser(any user);
 
 any generateEmailFromPhone(string phone);
 
-std::shared_ptr<CdpUserInfo> resolveCdpUserInfo(any user, std::shared_ptr<CdpUserInfoOptions> options = undefined);
+std::shared_ptr<CdpUserInfo> resolveCdpUserInfo(any user, std::shared_ptr<CdpUserInfoOptions> options = std::nullopt);
 
 #endif

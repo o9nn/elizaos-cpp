@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_ELIZAOS_SERVICES_SRC_AUTH_PLATFORMINTEGRATION_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_ELIZAOS_SERVICES_SRC_AUTH_PLATFORMINTEGRATION_H
 #include "core.hpp"
+#include <string>
 // External dependency removed
 // External dependency removed
 #include "./AuthenticationService.js.h"
@@ -114,14 +115,14 @@ public:
 template <typename P1>
 std::shared_ptr<Promise<std::shared_ptr<ClientSession>>> PlatformIntegrationService::registerSession(string sessionId, P1 clientType, string platformId)
 {
-    logger->debug(std:("Registering session ") + sessionId + std:(" for ") + clientType + std:(" client"));
+    logger->debug(std::string("Registering session ") + sessionId + std::string(" for ") + clientType + std::string(" client"));
     auto session = object{
-        object::pair{std:("sessionId"), std:("sessionId")}, 
-        object::pair{std:("clientType"), std:("clientType")}, 
-        object::pair{std:("platformId"), std:("platformId")}, 
-        object::pair{std:("authStatus"), nullptr}, 
-        object::pair{std:("lastActivity"), std::make_shared<Date>()}, 
-        object::pair{std:("validatedKeys"), array<any>()}
+        object::pair{std::string("sessionId"), std::string("sessionId")}, 
+        object::pair{std::string("clientType"), std::string("clientType")}, 
+        object::pair{std::string("platformId"), std::string("platformId")}, 
+        object::pair{std::string("authStatus"), nullptr}, 
+        object::pair{std::string("lastActivity"), std::make_shared<Date>()}, 
+        object::pair{std::string("validatedKeys"), array<any>()}
     };
     this->activeSessions->set(sessionId, session);
     try
@@ -130,7 +131,7 @@ std::shared_ptr<Promise<std::shared_ptr<ClientSession>>> PlatformIntegrationServ
     }
     catch (const any& error)
     {
-        logger->warn(std:("Failed to get initial auth status for session ") + sessionId + std:(":"), error);
+        logger->warn(std::string("Failed to get initial auth status for session ") + sessionId + std::string(":"), error);
     }
     return session;
 }
@@ -139,18 +140,18 @@ template <typename P0>
 array<string> PlatformAuthUtils::getClientCapabilities(P0 clientType)
 {
     static switch_type __switch12683_13063 = {
-        { any(std:("cli")), 1 },
-        { any(std:("gui")), 2 },
-        { any(std:("agent")), 3 }
+        { any(std::string("cli")), 1 },
+        { any(std::string("gui")), 2 },
+        { any(std::string("agent")), 3 }
     };
     switch (__switch12683_13063[clientType])
     {
     case 1:
-        return array<string>{ std:("text_generation"), std:("embeddings"), std:("validation"), std:("testing") };
+        return array<string>{ std::string("text_generation"), std::string("embeddings"), std::string("validation"), std::string("testing") };
     case 2:
-        return array<string>{ std:("text_generation"), std:("embeddings"), std:("image_description"), std:("validation"), std:("monitoring") };
+        return array<string>{ std::string("text_generation"), std::string("embeddings"), std::string("image_description"), std::string("validation"), std::string("monitoring") };
     case 3:
-        return array<string>{ std:("text_generation"), std:("embeddings"), std:("image_description"), std:("reasoning") };
+        return array<string>{ std::string("text_generation"), std::string("embeddings"), std::string("image_description"), std::string("reasoning") };
     default:
         return array<any>();
     }

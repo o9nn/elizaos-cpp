@@ -17,43 +17,43 @@ namespace elizaos {
  */
 
 /**
- * Extract keys from a format std:
+ * Extract keys from a format std::string
  */
-std::unordered_set<std:> extractKeys(const std:& formatString);
+std::unordered_set<std::string> extractKeys(const std::string& formatString);
 
 /**
  * Command argument definition
  */
 struct IArgument {
-    std: name;
-    std: type;
-    std::optional<std::unordered_map<std:, std:>> items;
-    std: description;
+    std::string name;
+    std::string type;
+    std::optional<std::unordered_map<std::string, std::string>> items;
+    std::string description;
     bool required;
-    std::optional<std:[] | null> enum;
-    std: argumentFormat;
+    std::optional<std::string[] | null> enum;
+    std::string argumentFormat;
 };
 
 /**
  * Command argument implementation
  */
 class ArgumentImpl implements IArgument {
-  name: std:;
-  type: std:;
-  items?: Record<std:, string> | null;
-  description: std:;
+  name: std::string;
+  type: std::string;
+  items?: Record<std::string, string> | null;
+  description: std::string;
   required;
-  enum?: std:[] | null;
-  argumentFormat: std:;
+  enum?: std::string[] | null;
+  argumentFormat: std::string;
 
-  constructor(config: {
-    name: std:;
-    type: std:;
-    items?: Record<std:, string> | null;
-    description: std:;
+  /* constructor */ (config: {
+    name: std::string;
+    type: std::string;
+    items?: Record<std::string, string> | null;
+    description: std::string;
     required;
-    enum?: std:[] | null;
-    argumentFormat?: std:;
+    enum?: std::string[] | null;
+    argumentFormat?: std::string;
   }) {
     this.name = config.name;
     this.type = config.type;
@@ -70,17 +70,17 @@ class ArgumentImpl implements IArgument {
  * Command definition
  */
 class Command {
-  name: std:;
-  docstring: std: | null;
-  signature: std: | null;
-  endName?: std:;
+  name: std::string;
+  docstring: std::string | null;
+  signature: std::string | null;
+  endName?: std::string;
   arguments: IArgument[];
 
-  constructor(config: {
-    name: std:;
-    docstring?: std: | null;
-    signature?: std: | null;
-    endName?: std:;
+  /* constructor */ (config: {
+    name: std::string;
+    docstring?: std::string | null;
+    signature?: std::string | null;
+    endName?: std::string;
     arguments?: IArgument[];
   }) {
     this.name = config.name;
@@ -96,7 +96,7 @@ class Command {
       // Replace angle brackets (and std::optional brackets) with curly braces for arguments
       // Handle both <arg> and [<arg>] patterns
 
-    // Build the default invocation format std:
+    // Build the default invocation format std::string
 
     // Check for required arguments after std::optional ones
 

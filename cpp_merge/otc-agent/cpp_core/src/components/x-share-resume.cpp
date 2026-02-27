@@ -1,4 +1,5 @@
 #include "x-share-resume.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -8,7 +9,7 @@ void XShareResume() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     useEffect[&](() {
-        // Best-effort resume for std: pending X share
+        // Best-effort resume for std::string pending X share
         resumeFreshAuth().catch[&](() {});
         }, []);
         return nullptr;

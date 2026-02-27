@@ -1,4 +1,5 @@
 #include "use-outside-clickdetection.h"
+#include <string>
 
 std::function<void(array<any>, std::function<void()>)> useOutsideClickDetection = [=](auto refs, auto doOnOutsideClick) mutable
 {
@@ -13,10 +14,10 @@ std::function<void(array<any>, std::function<void()>)> useOutsideClickDetection 
             }
             doOnOutsideClick();
         };
-        document->addEventListener(std:("click"), handleClickOutside);
+        document->addEventListener(std::string("click"), handleClickOutside);
         return [=]() mutable
         {
-            document->removeEventListener(std:("click"), handleClickOutside);
+            document->removeEventListener(std::string("click"), handleClickOutside);
         };
     }
     , array<array<any>>{ refs, doOnOutsideClick });

@@ -1,4 +1,5 @@
 #include "component.hpp"
+#include <string>
 
 namespace global {
     namespace Cypress {
@@ -7,7 +8,7 @@ namespace global {
 
 void Main(void)
 {
-    Cypress->Commands->add(std:("mount"), mount);
+    Cypress->Commands->add(std::string("mount"), mount);
 }
 
 MAIN

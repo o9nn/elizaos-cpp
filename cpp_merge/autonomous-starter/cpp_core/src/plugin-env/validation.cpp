@@ -1,4 +1,5 @@
 #include "validation.hpp"
+#include <string>
 #include <future>
 #include <optional>
 #include <iostream>
@@ -6,7 +7,7 @@
 
 namespace elizaos {
 
-std::future<ValidationResult> validateEnvVar(const std:& varName, const std:& value, const std:& type, std::optional<std:> validationMethod) {
+std::future<ValidationResult> validateEnvVar(const std::string& varName, const std::string& value, const std::string& type, std::optional<std::string> validationMethod) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -29,7 +30,7 @@ std::future<ValidationResult> validateEnvVar(const std:& varName, const std:& va
             ) {
                 const auto strategy = categoryStrategies[;
                 method typeof categoryStrategies;
-                ] as [&](value: std:) { return Promise<ValidationResult>; };
+                ] as [&](value: std::string) { return Promise<ValidationResult>; };
                 return strategy(value);
             }
         }

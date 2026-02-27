@@ -9,9 +9,9 @@
 
 namespace elizaos {
 
-std::future<> saveChannelUploadedFile(Express.Multer.File file, const std:& channelId) {
+std::future<> saveChannelUploadedFile(Express.Multer.File file, const std::string& channelId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    filename: std:; url: std:
+    filename: std::string; url: std::string
 }
 
 express::Router createChannelsRouter(ElizaOS elizaOS, AgentServer serverInstance) {
@@ -119,7 +119,7 @@ express::Router createChannelsRouter(ElizaOS elizaOS, AgentServer serverInstance
 
                                             logger.info(
                                             "[Messages Router] Creating channel with data:",
-                                            /* JSON.stringify */ std:(channelData, nullptr, 2);
+                                            /* JSON.stringify */ std::string(channelData, nullptr, 2);
                                             );
 
                                             // For DM channels, we need to determine the participants
@@ -244,7 +244,7 @@ express::Router createChannelsRouter(ElizaOS elizaOS, AgentServer serverInstance
                                                                 // Transform to MessageService structure if GUI expects timestamps as numbers, or align types
                                                                 const auto messagesForGui = messages.std::map[&]((msg) {;
                                                                     // Extract thought and actions from rawMessage for historical messages
-                                                                    std: rawMessage = {};
+                                                                    std::string rawMessage = {};
                                                                     try {
                                                                         rawMessage =;
                                                                         typeof msg.rawMessage == "string" ? /* JSON::parse */ msg.rawMessage : msg.rawMessage;
@@ -411,7 +411,7 @@ express::Router createChannelsRouter(ElizaOS elizaOS, AgentServer serverInstance
                                                                                                                                 }
                                                                                                                                 : { message: std::to_string(error) };
 
-                                                                                                                                std::cerr << "Error finding/creating DM channel:" << /* JSON.stringify */ std:(errorDetails) << std::endl;
+                                                                                                                                std::cerr << "Error finding/creating DM channel:" << /* JSON.stringify */ std::string(errorDetails) << std::endl;
                                                                                                                                 res.status(500).json({ success: false, error: "Failed to find or create DM channel" });
                                                                                                                             }
                                                                                                                             });

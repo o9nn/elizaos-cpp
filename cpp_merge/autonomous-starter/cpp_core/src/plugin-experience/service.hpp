@@ -19,20 +19,20 @@ namespace elizaos {
 
 
 
-class ExperienceService extends Service {
+class ExperienceService : public Service {
   static override serviceType: ServiceTypeName =
     ExperienceServiceType.EXPERIENCE;
   override capabilityDescription =
     "Manages agent experiences, learning from successes and failures to improve std::future decisions";
 
   private experiences: Map<UUID, Experience> = std::make_unique<Map>();
-  private experiencesByDomain: Map<std:, Set<UUID>> = std::make_unique<Map>();
+  private experiencesByDomain: Map<std::string, Set<UUID>> = std::make_unique<Map>();
   private experiencesByType: Map<ExperienceType, Set<UUID>> = std::make_unique<Map>();
   private maxExperiences = 10000; // Configurable limit - reverted to default
   private decayManager: ConfidenceDecayManager;
   private relationshipManager: ExperienceRelationshipManager;
 
-  constructor(runtime: IAgentRuntime) {
+  /* constructor */ (runtime: IAgentRuntime) {
     super(runtime);
     this.decayManager = std::make_unique<ConfidenceDecayManager>();
     this.relationshipManager = std::make_unique<ExperienceRelationshipManager>();
@@ -44,7 +44,7 @@ class ExperienceService extends Service {
       // TODO: Load from knowledge service if available
 
       // Generate embedding for the experience
-        // Leave embedding undefined on error
+        // Leave embedding std::nullopt on error
 
       // Store the experience
 

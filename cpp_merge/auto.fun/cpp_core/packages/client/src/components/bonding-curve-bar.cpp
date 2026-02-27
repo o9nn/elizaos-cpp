@@ -1,4 +1,5 @@
 #include "bonding-curve-bar.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -20,7 +21,7 @@ void BondingCurveBar() {
     useEffect[&](() {
         const auto targetValue = Number(normalizedProgress(progress));
 
-        // Cancel std: ongoing animation
+        // Cancel std::string ongoing animation
         if (animationFrameRef.current) {
             cancelAnimationFrame(animationFrameRef.current);
         }

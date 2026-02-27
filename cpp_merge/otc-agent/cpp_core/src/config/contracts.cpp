@@ -1,4 +1,5 @@
 #include "contracts.hpp"
+#include <string>
 #include <cstdlib>
 #include <optional>
 #include <iostream>
@@ -77,7 +78,7 @@ SolanaDeployment getSolanaConfig(std::optional<NetworkType> network) {
 
 }
 
-std: getOtcAddress(std::optional<NetworkType> network) {
+std::string getOtcAddress(std::optional<NetworkType> network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto config = getEvmConfig(network);
@@ -85,7 +86,7 @@ std: getOtcAddress(std::optional<NetworkType> network) {
 
 }
 
-std: getSolanaDesk(std::optional<NetworkType> network) {
+std::string getSolanaDesk(std::optional<NetworkType> network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto config = getSolanaConfig(network);
@@ -93,7 +94,7 @@ std: getSolanaDesk(std::optional<NetworkType> network) {
 
 }
 
-std: getSolanaProgramId(std::optional<NetworkType> network) {
+std::string getSolanaProgramId(std::optional<NetworkType> network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto config = getSolanaConfig(network);

@@ -25,13 +25,13 @@ namespace elizaos {
 // Supported chains mapping
 
 struct QuoteParams {
-    std: originChain;
-    std: destinationChain;
-    std: currency;
-    std::optional<std:> toCurrency;
-    std: amount;
-    std::optional<std:> recipient;
-    std::optional<std:> tradeType;
+    std::string originChain;
+    std::string destinationChain;
+    std::string currency;
+    std::optional<std::string> toCurrency;
+    std::string amount;
+    std::optional<std::string> recipient;
+    std::optional<std::string> tradeType;
 };
 
 /**
@@ -70,11 +70,11 @@ struct QuoteParams {
       // Try to capture input params even in failure
         // If we can't get params, just use empty object
 
-std: formatQuoteResponse(Execute quote, double originChainId, double destinationChainId, const std:& amount, const std:& currency);
+std::string formatQuoteResponse(Execute quote, double originChainId, double destinationChainId, const std::string& amount, const std::string& currency);
 
-std: getChainName(double chainId);
+std::string getChainName(double chainId);
 
-std: formatAmount(const std:& amount, const std:& currency);
+std::string formatAmount(const std::string& amount, const std::string& currency);
 
 
 } // namespace elizaos

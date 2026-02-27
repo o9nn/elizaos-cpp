@@ -21,12 +21,12 @@ namespace elizaos {
 
 Character applyOperationsToCharacter(Character character, const std::vector<ModificationOperation>& operations);
 
-void addValue(const std:& obj, const std:& path, const std:& value);
+void addValue(const std::string& obj, const std::string& path, const std::string& value);
 
-void modifyValue(const std:& obj, const std:& path, const std:& value);
+void modifyValue(const std::string& obj, const std::string& path, const std::string& value);
 
-void deleteValue(const std:& obj, const std:& path);
+void deleteValue(const std::string& obj, const std::string& path);
 
-bool validateCharacterStructure(const std:& character);
+bool validateCharacterStructure(const std::string& character);
 
 } // namespace elizaos

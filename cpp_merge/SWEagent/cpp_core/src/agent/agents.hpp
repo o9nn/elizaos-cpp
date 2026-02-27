@@ -39,19 +39,19 @@ namespace elizaos {
  * Template configuration for agent messages
  */
 struct TemplateConfig {
-    std: systemTemplate;
-    std: instanceTemplate;
-    std: nextStepTemplate;
-    std: nextStepTruncatedObservationTemplate;
+    std::string systemTemplate;
+    std::string instanceTemplate;
+    std::string nextStepTemplate;
+    std::string nextStepTruncatedObservationTemplate;
     double maxObservationLength;
-    std::optional<std:> nextStepNoOutputTemplate;
-    std::optional<std:> strategyTemplate;
-    std::optional<std:> demonstrationTemplate;
+    std::optional<std::string> nextStepNoOutputTemplate;
+    std::optional<std::string> strategyTemplate;
+    std::optional<std::string> demonstrationTemplate;
     std::vector<std::string> demonstrations;
     bool putDemosInHistory;
     bool disableImageProcessing;
-    std: shellCheckErrorTemplate;
-    std: commandCancelledTimeoutTemplate;
+    std::string shellCheckErrorTemplate;
+    std::string commandCancelledTimeoutTemplate;
 };
 
 /**
@@ -62,9 +62,9 @@ struct TemplateConfig {
  * Command bundle configuration
  */
 struct CommandBundle {
-    std: name;
-    std::optional<std:> endName;
-    std::optional<std:> installScript;
+    std::string name;
+    std::optional<std::string> endName;
+    std::optional<std::string> installScript;
 };
 
 /**
@@ -76,16 +76,16 @@ struct ToolConfig {
     double executionTimeout;
     double maxConsecutiveExecutionTimeouts;
     double totalExecutionTimeout;
-    std: submitCommand;
+    std::string submitCommand;
     bool useFunctionCalling;
     std::optional<{> filter;
-    std: blocklistErrorTemplate;
+    std::string blocklistErrorTemplate;
     std::vector<std::string> blocklist;
     std::vector<std::string> blocklistStandalone;
-    std::optional<std::unordered_map<std:, std:>> blockUnlessRegex;
-    std: formatErrorTemplate;
-    std::optional<std:> commandDocs;
-    std::optional<std::unordered_map<std:, std: | number | boolean>> envVariables;
+    std::optional<std::unordered_map<std::string, std::string>> blockUnlessRegex;
+    std::string formatErrorTemplate;
+    std::optional<std::string> commandDocs;
+    std::optional<std::unordered_map<std::string, std::string | number | boolean>> envVariables;
 };
 
 /**
@@ -95,9 +95,9 @@ class ToolHandler {
   config: ToolConfig;
   tools: CommandBundle[];
   private parser: AbstractParseFunction;
-  private multilineCommands: Map<std:, string> = std::make_unique<Map>();
+  private multilineCommands: Map<std::string, string> = std::make_unique<Map>();
 
-  constructor(config: ToolConfig) {
+  /* constructor */ (config: ToolConfig) {
     this.config = config;
     this.tools = [];
 
@@ -163,10 +163,10 @@ class ToolHandler {
  * Environment interface for agent operations
  */
 struct AgentEnvironment {
-    std: command;
-    std::optional<number | Record<std:, unknown>> timeout;
-    std::optional<std::unordered_map<std:, unknown>> options;
-    std::optional<{ repoName: std: }> repo;
+    std::string command;
+    std::optional<number | Record<std::string, unknown>> timeout;
+    std::optional<std::unordered_map<std::string, unknown>> options;
+    std::optional<{ repoName: std::string }> repo;
 
 /**
  * Logger interface
@@ -178,14 +178,14 @@ struct AgentLogger {
  * Action sampler configuration interface
  */
 struct ActionSamplerConfig {
-    std: type;
+    std::string type;
 };
 
 /**
  * Retry loop configuration interface
  */
 struct RetryLoopConfig {
-    std: type;
+    std::string type;
     double costLimit;
     std::optional<double> maxAttempts;
     std::optional<double> minBudgetForNewAttempt;
@@ -195,7 +195,7 @@ struct RetryLoopConfig {
  * Configuration for default agent
  */
 struct DefaultAgentConfig {
-    std: name;
+    std::string name;
     TemplateConfig templates;
     ToolConfig tools;
     std::vector<AbstractHistoryProcessor> historyProcessors;
@@ -209,7 +209,7 @@ struct DefaultAgentConfig {
  * Configuration for retry agent
  */
 struct RetryAgentConfig {
-    std: name;
+    std::string name;
     std::vector<DefaultAgentConfig> agentConfigs;
     RetryLoopConfig retryLoop;
     'retry' type;
@@ -219,7 +219,7 @@ struct RetryAgentConfig {
  * Configuration for shell agent
  */
 struct ShellAgentConfig {
-    std: name;
+    std::string name;
     TemplateConfig templates;
     ToolConfig tools;
     std::vector<AbstractHistoryProcessor> historyProcessors;
@@ -237,8 +237,8 @@ using AgentConfig = std::variant<DefaultAgentConfig, RetryAgentConfig, ShellAgen
 /**
  * Default agent implementation
  */
-class DefaultAgent extends AbstractAgent {
-  name: std:;
+class DefaultAgent : public AbstractAgent {
+  name: std::string;
   model: AbstractModel;
   templates: TemplateConfig;
   tools: ToolHandler;
@@ -248,7 +248,7 @@ class DefaultAgent extends AbstractAgent {
 
   env: AgentEnvironment | null = null;
   problemStatement: ProblemStatement | ProblemStatementConfig | null = null;
-  trajPath: std: | null = null;
+  trajPath: std::string | null = null;
 
   history: History = [];
   trajectory: Trajectory = [];
@@ -327,7 +327,7 @@ class DefaultAgent extends AbstractAgent {
 /**
  * Retry agent implementation
  */
-class RetryAgent extends AbstractAgent {
+class RetryAgent : public AbstractAgent {
   private config: RetryAgentConfig;
   private hooks: AbstractAgentHook[] = [];
   private iAttempt = 0;
@@ -336,8 +336,8 @@ class RetryAgent extends AbstractAgent {
     trajectory: Trajectory;
     history: History;
     info: AgentInfo;
-    replayConfig: std: | null;
-    environment: std:;
+    replayConfig: std::string | null;
+    environment: std::string;
   }> = [];
 
     // Initialize retry loop based on config

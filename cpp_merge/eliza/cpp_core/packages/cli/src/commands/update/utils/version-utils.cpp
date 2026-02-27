@@ -1,11 +1,12 @@
 #include "version-utils.hpp"
+#include <string>
 #include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<std:> getVersion() {
+std::future<std::string> getVersion() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -18,7 +19,7 @@ std::future<std:> getVersion() {
 
 }
 
-VersionCheckResult checkVersionNeedsUpdate(const std:& currentVersion, const std:& targetVersion) {
+VersionCheckResult checkVersionNeedsUpdate(const std::string& currentVersion, const std::string& targetVersion) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -43,7 +44,7 @@ VersionCheckResult checkVersionNeedsUpdate(const std:& currentVersion, const std
 
 }
 
-bool isMajorUpdate(const std:& currentVersion, const std:& targetVersion) {
+bool isMajorUpdate(const std::string& currentVersion, const std::string& targetVersion) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -62,7 +63,7 @@ bool isMajorUpdate(const std:& currentVersion, const std:& targetVersion) {
 
 }
 
-std::future<std:> fetchLatestVersion(const std:& packageName) {
+std::future<std::string> fetchLatestVersion(const std::string& packageName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {

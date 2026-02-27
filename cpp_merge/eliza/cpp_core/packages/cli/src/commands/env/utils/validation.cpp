@@ -1,10 +1,11 @@
 #include "validation.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std: maskedValue(const std:& value) {
+std::string maskedValue(const std::string& value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!value) return '';

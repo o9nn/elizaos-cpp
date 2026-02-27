@@ -1,4 +1,5 @@
 #include "admin.hpp"
+#include <string>
 #include <vector>
 #include <optional>
 #include <iostream>
@@ -6,13 +7,13 @@
 
 namespace elizaos {
 
-PgSelect buildAdminTokensBaseQuery(const std:& db, std::optional<std:> params) {
+PgSelect buildAdminTokensBaseQuery(const std::string& db, std::optional<std::string> params) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { hideImported, search, sortBy, maxVolume, maxHolders } = params;
     // Select all columns initially, similar to the original builder
     auto query = db.select().from(tokens).$dynamic();
-    const std::variant<(SQL, std::vector<undefined)>> conditions = [];
+    const std::variant<(SQL, std::vector<std::nullopt)>> conditions = [];
 
     if (hideImported == 1) {
         "conditions.push_back(sql" + tokens.imported + " = 0";
@@ -37,12 +38,12 @@ PgSelect buildAdminTokensBaseQuery(const std:& db, std::optional<std:> params) {
 
 }
 
-PgSelect buildAdminTokensCountBaseQuery(const std:& db, std::optional<std:> params) {
+PgSelect buildAdminTokensCountBaseQuery(const std::string& db, std::optional<std::string> params) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     auto query = db.select({ count: count() }).from(tokens).$dynamic();
     const auto { hideImported, search } = params;
-    const std::variant<(SQL, std::vector<undefined)>> conditions = [];
+    const std::variant<(SQL, std::vector<std::nullopt)>> conditions = [];
 
     if (hideImported == 1) {
         "conditions.push_back(sql" + tokens.imported + " = 0";

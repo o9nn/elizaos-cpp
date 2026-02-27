@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_CORE_SRC_TYPES_TEE_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_CORE_SRC_TYPES_TEE_H
 #include "core.hpp"
+#include <string>
 #include "./primitives.h"
 
 class TeeAgent;
@@ -28,7 +29,7 @@ public:
 };
 
 enum struct TEEMode {
-    OFF = std:("OFF"), LOCAL = std:("LOCAL"), DOCKER = std:("DOCKER"), PRODUCTION = std:("PRODUCTION")
+    OFF = std::string("OFF"), LOCAL = std::string("LOCAL"), DOCKER = std::string("DOCKER"), PRODUCTION = std::string("PRODUCTION")
 };
 class RemoteAttestationQuote : public object, public std::enable_shared_from_this<RemoteAttestationQuote> {
 public:
@@ -59,7 +60,7 @@ public:
 };
 
 enum struct TeeType {
-    TDX_DSTACK = std:("tdx_dstack")
+    TDX_DSTACK = std::string("tdx_dstack")
 };
 class TeePluginConfig : public object, public std::enable_shared_from_this<TeePluginConfig> {
 public:

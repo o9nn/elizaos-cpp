@@ -1,13 +1,14 @@
 #include "messaging.test.h"
+#include <string>
 
 void Main(void)
 {
-    describe(std:("MessagingService"), [=]() mutable
+    describe(std::string("MessagingService"), [=]() mutable
     {
         shared<std::shared_ptr<MessagingService>> messagingService;
         shared mockConfig = object{
-            object::pair{std:("baseUrl"), std:("http://localhost:3000")}, 
-            object::pair{std:("apiKey"), std:("test-key")}
+            object::pair{std::string("baseUrl"), std::string("http://localhost:3000")}, 
+            object::pair{std::string("apiKey"), std::string("test-key")}
         };
         beforeEach([=]() mutable
         {
@@ -46,14 +47,14 @@ void Main(void)
             if (deleteMock["mockClear"]) deleteMock["mockClear"]();
         }
         );
-        describe(std:("constructor"), [=]() mutable
+        describe(std::string("constructor"), [=]() mutable
         {
-            it(std:("should create an instance with valid configuration"), [=]() mutable
+            it(std::string("should create an instance with valid configuration"), [=]() mutable
             {
                 expect(messagingService)->toBeInstanceOf(MessagingService);
             }
             );
-            it(std:("should throw error when initialized with invalid configuration"), [=]() mutable
+            it(std::string("should throw error when initialized with invalid configuration"), [=]() mutable
             {
                 expect([=]() mutable
                 {
@@ -64,515 +65,515 @@ void Main(void)
             );
         }
         );
-        describe(std:("submitMessage"), [=]() mutable
+        describe(std::string("submitMessage"), [=]() mutable
         {
             shared mockParams = object{
-                object::pair{std:("agentId"), as<any>(std:("agent-123"))}, 
-                object::pair{std:("channelId"), as<any>(std:("channel-456"))}, 
-                object::pair{std:("content"), std:("Test message")}, 
-                object::pair{std:("metadata"), object{
-                    object::pair{std:("source"), std:("test")}
+                object::pair{std::string("agentId"), as<any>(std::string("agent-123"))}, 
+                object::pair{std::string("channelId"), as<any>(std::string("channel-456"))}, 
+                object::pair{std::string("content"), std::string("Test message")}, 
+                object::pair{std::string("metadata"), object{
+                    object::pair{std::string("source"), std::string("test")}
                 }}
             };
-            it(std:("should submit message successfully"), [=]() mutable
+            it(std::string("should submit message successfully"), [=]() mutable
             {
                 auto mockResponse = object{
-                    object::pair{std:("id"), std:("msg-789")}, 
-                    object::pair{std:("content"), std:("Test message")}
+                    object::pair{std::string("id"), std::string("msg-789")}, 
+                    object::pair{std::string("content"), std::string("Test message")}
                 };
                 (as<any>(messagingService))["post"]["mockResolvedValue"](mockResponse);
                 auto result = std::async([=]() { messagingService->submitMessage(mockParams); });
-                expect((as<any>(messagingService))["post"])->toHaveBeenCalledWith(std:("/api/messaging/submit"), mockParams);
+                expect((as<any>(messagingService))["post"])->toHaveBeenCalledWith(std::string("/api/messaging/submit"), mockParams);
                 expect(result)->toEqual(mockResponse);
             }
             );
-            it(std:("should handle submission errors"), [=]() mutable
+            it(std::string("should handle submission errors"), [=]() mutable
             {
-                (as<any>(messagingService))["post"]["mockRejectedValue"](std::make_shared<Error>(std:("Submission failed")));
-                std::async([=]() { expect(messagingService->submitMessage(mockParams))->rejects->toThrow(std:("Submission failed")); });
+                (as<any>(messagingService))["post"]["mockRejectedValue"](std::make_shared<Error>(std::string("Submission failed")));
+                std::async([=]() { expect(messagingService->submitMessage(mockParams))->rejects->toThrow(std::string("Submission failed")); });
             }
             );
         }
         );
-        describe(std:("completeMessage"), [=]() mutable
+        describe(std::string("completeMessage"), [=]() mutable
         {
             shared mockParams = object{
-                object::pair{std:("messageId"), as<any>(std:("msg-123"))}, 
-                object::pair{std:("status"), as<any>(std:("completed"))}
+                object::pair{std::string("messageId"), as<any>(std::string("msg-123"))}, 
+                object::pair{std::string("status"), as<any>(std::string("completed"))}
             };
-            it(std:("should complete message successfully"), [=]() mutable
+            it(std::string("should complete message successfully"), [=]() mutable
             {
                 auto mockResponse = object{
-                    object::pair{std:("success"), true}
+                    object::pair{std::string("success"), true}
                 };
                 (as<any>(messagingService))["post"]["mockResolvedValue"](mockResponse);
                 auto result = std::async([=]() { messagingService->completeMessage(mockParams); });
-                expect((as<any>(messagingService))["post"])->toHaveBeenCalledWith(std:("/api/messaging/complete"), mockParams);
+                expect((as<any>(messagingService))["post"])->toHaveBeenCalledWith(std::string("/api/messaging/complete"), mockParams);
                 expect(result)->toEqual(mockResponse);
             }
             );
         }
         );
-        describe(std:("ingestExternalMessages"), [=]() mutable
+        describe(std::string("ingestExternalMessages"), [=]() mutable
         {
             shared mockParams = object{
-                object::pair{std:("platform"), std:("discord")}, 
-                object::pair{std:("channelId"), std:("external-channel-123")}, 
-                object::pair{std:("messages"), array<object>{ object{
-                    object::pair{std:("id"), std:("ext-msg-1")}, 
-                    object::pair{std:("authorId"), std:("ext-user-1")}, 
-                    object::pair{std:("content"), std:("External message")}, 
-                    object::pair{std:("timestamp"), Date->now()}, 
-                    object::pair{std:("metadata"), object{
-                        object::pair{std:("platform"), std:("discord")}
+                object::pair{std::string("platform"), std::string("discord")}, 
+                object::pair{std::string("channelId"), std::string("external-channel-123")}, 
+                object::pair{std::string("messages"), array<object>{ object{
+                    object::pair{std::string("id"), std::string("ext-msg-1")}, 
+                    object::pair{std::string("authorId"), std::string("ext-user-1")}, 
+                    object::pair{std::string("content"), std::string("External message")}, 
+                    object::pair{std::string("timestamp"), Date->now()}, 
+                    object::pair{std::string("metadata"), object{
+                        object::pair{std::string("platform"), std::string("discord")}
                     }}
                 } }}
             };
-            it(std:("should ingest external messages successfully"), [=]() mutable
+            it(std::string("should ingest external messages successfully"), [=]() mutable
             {
                 auto mockResponse = object{
-                    object::pair{std:("processed"), 1}
+                    object::pair{std::string("processed"), 1}
                 };
                 (as<any>(messagingService))["post"]["mockResolvedValue"](mockResponse);
                 auto result = std::async([=]() { messagingService->ingestExternalMessages(mockParams); });
-                expect((as<any>(messagingService))["post"])->toHaveBeenCalledWith(std:("/api/messaging/ingest-external"), mockParams);
+                expect((as<any>(messagingService))["post"])->toHaveBeenCalledWith(std::string("/api/messaging/ingest-external"), mockParams);
                 expect(result)->toEqual(mockResponse);
             }
             );
         }
         );
-        describe(std:("createChannel"), [=]() mutable
+        describe(std::string("createChannel"), [=]() mutable
         {
             shared mockParams = object{
-                object::pair{std:("name"), std:("New Channel")}, 
-                object::pair{std:("type"), as<any>(std:("public"))}, 
-                object::pair{std:("serverId"), as<any>(std:("server-123"))}, 
-                object::pair{std:("metadata"), object{
-                    object::pair{std:("description"), std:("A new channel")}
+                object::pair{std::string("name"), std::string("New Channel")}, 
+                object::pair{std::string("type"), as<any>(std::string("public"))}, 
+                object::pair{std::string("serverId"), as<any>(std::string("server-123"))}, 
+                object::pair{std::string("metadata"), object{
+                    object::pair{std::string("description"), std::string("A new channel")}
                 }}
             };
-            it(std:("should create channel successfully"), [=]() mutable
+            it(std::string("should create channel successfully"), [=]() mutable
             {
                 auto mockResponse = object{
-                    object::pair{std:("id"), std:("channel-new")}, 
-                    object::pair{std:("name"), std:("New Channel")}
+                    object::pair{std::string("id"), std::string("channel-new")}, 
+                    object::pair{std::string("name"), std::string("New Channel")}
                 };
                 (as<any>(messagingService))["post"]["mockResolvedValue"](mockResponse);
                 auto result = std::async([=]() { messagingService->createChannel(mockParams); });
-                expect((as<any>(messagingService))["post"])->toHaveBeenCalledWith(std:("/api/messaging/central-channels"), mockParams);
+                expect((as<any>(messagingService))["post"])->toHaveBeenCalledWith(std::string("/api/messaging/central-channels"), mockParams);
                 expect(result)->toEqual(mockResponse);
             }
             );
         }
         );
-        describe(std:("createGroupChannel"), [=]() mutable
+        describe(std::string("createGroupChannel"), [=]() mutable
         {
             shared mockParams = object{
-                object::pair{std:("name"), std:("Group Channel")}, 
-                object::pair{std:("participantIds"), as<array<any>>(array<any>{ std:("user-1"), std:("user-2") })}, 
-                object::pair{std:("metadata"), object{
-                    object::pair{std:("type"), std:("group")}
+                object::pair{std::string("name"), std::string("Group Channel")}, 
+                object::pair{std::string("participantIds"), as<array<any>>(array<any>{ std::string("user-1"), std::string("user-2") })}, 
+                object::pair{std::string("metadata"), object{
+                    object::pair{std::string("type"), std::string("group")}
                 }}
             };
-            it(std:("should create group channel successfully"), [=]() mutable
+            it(std::string("should create group channel successfully"), [=]() mutable
             {
                 auto mockResponse = object{
-                    object::pair{std:("id"), std:("channel-group")}, 
-                    object::pair{std:("name"), std:("Group Channel")}
+                    object::pair{std::string("id"), std::string("channel-group")}, 
+                    object::pair{std::string("name"), std::string("Group Channel")}
                 };
                 (as<any>(messagingService))["post"]["mockResolvedValue"](mockResponse);
                 auto result = std::async([=]() { messagingService->createGroupChannel(mockParams); });
-                expect((as<any>(messagingService))["post"])->toHaveBeenCalledWith(std:("/api/messaging/central-channels"), mockParams);
+                expect((as<any>(messagingService))["post"])->toHaveBeenCalledWith(std::string("/api/messaging/central-channels"), mockParams);
                 expect(result)->toEqual(mockResponse);
             }
             );
         }
         );
-        describe(std:("getOrCreateDmChannel"), [=]() mutable
+        describe(std::string("getOrCreateDmChannel"), [=]() mutable
         {
             shared mockParams = object{
-                object::pair{std:("participantIds"), as<std::tuple<any, any>>(std::tuple<string, string>{ std:("user-1"), std:("user-2") })}
+                object::pair{std::string("participantIds"), as<std::tuple<any, any>>(std::tuple<string, string>{ std::string("user-1"), std::string("user-2") })}
             };
-            it(std:("should get or create DM channel successfully"), [=]() mutable
+            it(std::string("should get or create DM channel successfully"), [=]() mutable
             {
                 auto mockResponse = object{
-                    object::pair{std:("id"), std:("channel-dm")}, 
-                    object::pair{std:("name"), std:("DM Channel")}
+                    object::pair{std::string("id"), std::string("channel-dm")}, 
+                    object::pair{std::string("name"), std::string("DM Channel")}
                 };
                 (as<any>(messagingService))["get"]["mockResolvedValue"](mockResponse);
                 auto result = std::async([=]() { messagingService->getOrCreateDmChannel(mockParams); });
-                expect((as<any>(messagingService))["get"])->toHaveBeenCalledWith(std:("/api/messaging/dm-channel"), object{
-                    object::pair{std:("params"), mockParams}
+                expect((as<any>(messagingService))["get"])->toHaveBeenCalledWith(std::string("/api/messaging/dm-channel"), object{
+                    object::pair{std::string("params"), mockParams}
                 });
                 expect(result)->toEqual(mockResponse);
             }
             );
         }
         );
-        describe(std:("getChannelDetails"), [=]() mutable
+        describe(std::string("getChannelDetails"), [=]() mutable
         {
-            shared channelId = as<any>(std:("channel-123"));
-            it(std:("should get channel details successfully"), [=]() mutable
+            shared channelId = as<any>(std::string("channel-123"));
+            it(std::string("should get channel details successfully"), [=]() mutable
             {
                 auto mockResponse = object{
-                    object::pair{std:("id"), channelId}, 
-                    object::pair{std:("name"), std:("Test Channel")}, 
-                    object::pair{std:("type"), std:("public")}
+                    object::pair{std::string("id"), channelId}, 
+                    object::pair{std::string("name"), std::string("Test Channel")}, 
+                    object::pair{std::string("type"), std::string("public")}
                 };
                 (as<any>(messagingService))["get"]["mockResolvedValue"](mockResponse);
                 auto result = std::async([=]() { messagingService->getChannelDetails(channelId); });
-                expect((as<any>(messagingService))["get"])->toHaveBeenCalledWith(std:("/api/messaging/central-channels/") + channelId + std:("/details"));
+                expect((as<any>(messagingService))["get"])->toHaveBeenCalledWith(std::string("/api/messaging/central-channels/") + channelId + std::string("/details"));
                 expect(result)->toEqual(mockResponse);
             }
             );
         }
         );
-        describe(std:("getChannelParticipants"), [=]() mutable
+        describe(std::string("getChannelParticipants"), [=]() mutable
         {
-            shared channelId = as<any>(std:("channel-123"));
-            it(std:("should get channel participants successfully"), [=]() mutable
+            shared channelId = as<any>(std::string("channel-123"));
+            it(std::string("should get channel participants successfully"), [=]() mutable
             {
                 auto mockResponse = object{
-                    object::pair{std:("participants"), array<object>{ object{
-                        object::pair{std:("id"), std:("user-1")}, 
-                        object::pair{std:("role"), std:("member")}
+                    object::pair{std::string("participants"), array<object>{ object{
+                        object::pair{std::string("id"), std::string("user-1")}, 
+                        object::pair{std::string("role"), std::string("member")}
                     } }}
                 };
                 (as<any>(messagingService))["get"]["mockResolvedValue"](mockResponse);
                 auto result = std::async([=]() { messagingService->getChannelParticipants(channelId); });
-                expect((as<any>(messagingService))["get"])->toHaveBeenCalledWith(std:("/api/messaging/central-channels/") + channelId + std:("/participants"));
+                expect((as<any>(messagingService))["get"])->toHaveBeenCalledWith(std::string("/api/messaging/central-channels/") + channelId + std::string("/participants"));
                 expect(result)->toEqual(mockResponse);
             }
             );
         }
         );
-        describe(std:("addAgentToChannel"), [=]() mutable
+        describe(std::string("addAgentToChannel"), [=]() mutable
         {
-            shared channelId = as<any>(std:("channel-123"));
-            shared agentId = as<any>(std:("agent-456"));
-            it(std:("should add agent to channel successfully"), [=]() mutable
+            shared channelId = as<any>(std::string("channel-123"));
+            shared agentId = as<any>(std::string("agent-456"));
+            it(std::string("should add agent to channel successfully"), [=]() mutable
             {
                 auto mockResponse = object{
-                    object::pair{std:("success"), true}
+                    object::pair{std::string("success"), true}
                 };
                 (as<any>(messagingService))["post"]["mockResolvedValue"](mockResponse);
                 auto result = std::async([=]() { messagingService->addAgentToChannel(channelId, agentId); });
-                expect((as<any>(messagingService))["post"])->toHaveBeenCalledWith(std:("/api/messaging/central-channels/") + channelId + std:("/agents"), object{
-                    object::pair{std:("agentId"), std:("agentId")}
+                expect((as<any>(messagingService))["post"])->toHaveBeenCalledWith(std::string("/api/messaging/central-channels/") + channelId + std::string("/agents"), object{
+                    object::pair{std::string("agentId"), std::string("agentId")}
                 });
                 expect(result)->toEqual(mockResponse);
             }
             );
         }
         );
-        describe(std:("removeAgentFromChannel"), [=]() mutable
+        describe(std::string("removeAgentFromChannel"), [=]() mutable
         {
-            shared channelId = as<any>(std:("channel-123"));
-            shared agentId = as<any>(std:("agent-456"));
-            it(std:("should remove agent from channel successfully"), [=]() mutable
+            shared channelId = as<any>(std::string("channel-123"));
+            shared agentId = as<any>(std::string("agent-456"));
+            it(std::string("should remove agent from channel successfully"), [=]() mutable
             {
                 auto mockResponse = object{
-                    object::pair{std:("success"), true}
+                    object::pair{std::string("success"), true}
                 };
                 (as<any>(messagingService))["delete"]["mockResolvedValue"](mockResponse);
                 auto result = std::async([=]() { messagingService->removeAgentFromChannel(channelId, agentId); });
-                expect((as<any>(messagingService))["delete"])->toHaveBeenCalledWith(std:("/api/messaging/central-channels/") + channelId + std:("/agents/") + agentId + string_empty);
+                expect((as<any>(messagingService))["delete"])->toHaveBeenCalledWith(std::string("/api/messaging/central-channels/") + channelId + std::string("/agents/") + agentId + string_empty);
                 expect(result)->toEqual(mockResponse);
             }
             );
         }
         );
-        describe(std:("deleteChannel"), [=]() mutable
+        describe(std::string("deleteChannel"), [=]() mutable
         {
-            shared channelId = as<any>(std:("channel-123"));
-            it(std:("should delete channel successfully"), [=]() mutable
+            shared channelId = as<any>(std::string("channel-123"));
+            it(std::string("should delete channel successfully"), [=]() mutable
             {
                 auto mockResponse = object{
-                    object::pair{std:("success"), true}
+                    object::pair{std::string("success"), true}
                 };
                 (as<any>(messagingService))["delete"]["mockResolvedValue"](mockResponse);
                 auto result = std::async([=]() { messagingService->deleteChannel(channelId); });
-                expect((as<any>(messagingService))["delete"])->toHaveBeenCalledWith(std:("/api/messaging/central-channels/") + channelId + string_empty);
+                expect((as<any>(messagingService))["delete"])->toHaveBeenCalledWith(std::string("/api/messaging/central-channels/") + channelId + string_empty);
                 expect(result)->toEqual(mockResponse);
             }
             );
         }
         );
-        describe(std:("clearChannelHistory"), [=]() mutable
+        describe(std::string("clearChannelHistory"), [=]() mutable
         {
-            shared channelId = as<any>(std:("channel-123"));
-            it(std:("should clear channel history successfully"), [=]() mutable
+            shared channelId = as<any>(std::string("channel-123"));
+            it(std::string("should clear channel history successfully"), [=]() mutable
             {
                 auto mockResponse = object{
-                    object::pair{std:("deleted"), 10}
+                    object::pair{std::string("deleted"), 10}
                 };
                 (as<any>(messagingService))["delete"]["mockResolvedValue"](mockResponse);
                 auto result = std::async([=]() { messagingService->clearChannelHistory(channelId); });
-                expect((as<any>(messagingService))["delete"])->toHaveBeenCalledWith(std:("/api/messaging/central-channels/") + channelId + std:("/messages"));
+                expect((as<any>(messagingService))["delete"])->toHaveBeenCalledWith(std::string("/api/messaging/central-channels/") + channelId + std::string("/messages"));
                 expect(result)->toEqual(mockResponse);
             }
             );
         }
         );
-        describe(std:("postMessage"), [=]() mutable
+        describe(std::string("postMessage"), [=]() mutable
         {
-            shared channelId = as<any>(std:("channel-123"));
-            shared content = std:("Hello world");
+            shared channelId = as<any>(std::string("channel-123"));
+            shared content = std::string("Hello world");
             shared metadata = object{
-                object::pair{std:("source"), std:("test")}
+                object::pair{std::string("source"), std::string("test")}
             };
-            it(std:("should post message successfully"), [=]() mutable
+            it(std::string("should post message successfully"), [=]() mutable
             {
                 auto mockResponse = object{
-                    object::pair{std:("id"), std:("msg-new")}, 
-                    object::pair{std:("content"), std:("content")}, 
-                    object::pair{std:("channelId"), std:("channelId")}
+                    object::pair{std::string("id"), std::string("msg-new")}, 
+                    object::pair{std::string("content"), std::string("content")}, 
+                    object::pair{std::string("channelId"), std::string("channelId")}
                 };
                 (as<any>(messagingService))["post"]["mockResolvedValue"](mockResponse);
                 auto result = std::async([=]() { messagingService->postMessage(channelId, content, metadata); });
-                expect((as<any>(messagingService))["post"])->toHaveBeenCalledWith(std:("/api/messaging/central-channels/") + channelId + std:("/messages"), object{
-                    object::pair{std:("content"), std:("content")}, 
-                    object::pair{std:("metadata"), std:("metadata")}
+                expect((as<any>(messagingService))["post"])->toHaveBeenCalledWith(std::string("/api/messaging/central-channels/") + channelId + std::string("/messages"), object{
+                    object::pair{std::string("content"), std::string("content")}, 
+                    object::pair{std::string("metadata"), std::string("metadata")}
                 });
                 expect(result)->toEqual(mockResponse);
             }
             );
         }
         );
-        describe(std:("getChannelMessages"), [=]() mutable
+        describe(std::string("getChannelMessages"), [=]() mutable
         {
-            shared channelId = as<any>(std:("channel-123"));
-            it(std:("should get channel messages successfully"), [=]() mutable
+            shared channelId = as<any>(std::string("channel-123"));
+            it(std::string("should get channel messages successfully"), [=]() mutable
             {
                 auto mockResponse = object{
-                    object::pair{std:("messages"), array<object>{ object{
-                        object::pair{std:("id"), std:("msg-1")}, 
-                        object::pair{std:("content"), std:("Hello")}
+                    object::pair{std::string("messages"), array<object>{ object{
+                        object::pair{std::string("id"), std::string("msg-1")}, 
+                        object::pair{std::string("content"), std::string("Hello")}
                     } }}
                 };
                 (as<any>(messagingService))["get"]["mockResolvedValue"](mockResponse);
                 auto result = std::async([=]() { messagingService->getChannelMessages(channelId); });
-                expect((as<any>(messagingService))["get"])->toHaveBeenCalledWith(std:("/api/messaging/central-channels/") + channelId + std:("/messages"), object{
-                    object::pair{std:("params"), undefined}
+                expect((as<any>(messagingService))["get"])->toHaveBeenCalledWith(std::string("/api/messaging/central-channels/") + channelId + std::string("/messages"), object{
+                    object::pair{std::string("params"), std::nullopt}
                 });
                 expect(result)->toEqual(mockResponse);
             }
             );
-            it(std:("should handle pagination parameters"), [=]() mutable
+            it(std::string("should handle pagination parameters"), [=]() mutable
             {
                 auto params = object{
-                    object::pair{std:("limit"), 10}, 
-                    object::pair{std:("offset"), 20}
+                    object::pair{std::string("limit"), 10}, 
+                    object::pair{std::string("offset"), 20}
                 };
                 (as<any>(messagingService))["get"]["mockResolvedValue"](object{
-                    object::pair{std:("messages"), array<any>()}
+                    object::pair{std::string("messages"), array<any>()}
                 });
                 std::async([=]() { messagingService->getChannelMessages(channelId, params); });
-                expect((as<any>(messagingService))["get"])->toHaveBeenCalledWith(std:("/api/messaging/central-channels/") + channelId + std:("/messages"), object{
-                    object::pair{std:("params"), std:("params")}
+                expect((as<any>(messagingService))["get"])->toHaveBeenCalledWith(std::string("/api/messaging/central-channels/") + channelId + std::string("/messages"), object{
+                    object::pair{std::string("params"), std::string("params")}
                 });
             }
             );
         }
         );
-        describe(std:("getMessage"), [=]() mutable
+        describe(std::string("getMessage"), [=]() mutable
         {
-            shared messageId = as<any>(std:("msg-123"));
-            it(std:("should get message successfully"), [=]() mutable
+            shared messageId = as<any>(std::string("msg-123"));
+            it(std::string("should get message successfully"), [=]() mutable
             {
                 auto mockResponse = object{
-                    object::pair{std:("id"), messageId}, 
-                    object::pair{std:("content"), std:("Test message")}
+                    object::pair{std::string("id"), messageId}, 
+                    object::pair{std::string("content"), std::string("Test message")}
                 };
                 (as<any>(messagingService))["get"]["mockResolvedValue"](mockResponse);
                 auto result = std::async([=]() { messagingService->getMessage(messageId); });
-                expect((as<any>(messagingService))["get"])->toHaveBeenCalledWith(std:("/api/messaging/messages/") + messageId + string_empty);
+                expect((as<any>(messagingService))["get"])->toHaveBeenCalledWith(std::string("/api/messaging/messages/") + messageId + string_empty);
                 expect(result)->toEqual(mockResponse);
             }
             );
         }
         );
-        describe(std:("deleteMessage"), [=]() mutable
+        describe(std::string("deleteMessage"), [=]() mutable
         {
-            shared channelId = as<any>(std:("channel-123"));
-            shared messageId = as<any>(std:("msg-123"));
-            it(std:("should delete message successfully"), [=]() mutable
+            shared channelId = as<any>(std::string("channel-123"));
+            shared messageId = as<any>(std::string("msg-123"));
+            it(std::string("should delete message successfully"), [=]() mutable
             {
                 auto mockResponse = object{
-                    object::pair{std:("success"), true}
+                    object::pair{std::string("success"), true}
                 };
                 (as<any>(messagingService))["delete"]["mockResolvedValue"](mockResponse);
                 auto result = std::async([=]() { messagingService->deleteMessage(channelId, messageId); });
-                expect((as<any>(messagingService))["delete"])->toHaveBeenCalledWith(std:("/api/messaging/central-channels/") + channelId + std:("/messages/") + messageId + string_empty);
+                expect((as<any>(messagingService))["delete"])->toHaveBeenCalledWith(std::string("/api/messaging/central-channels/") + channelId + std::string("/messages/") + messageId + string_empty);
                 expect(result)->toEqual(mockResponse);
             }
             );
         }
         );
-        describe(std:("updateMessage"), [=]() mutable
+        describe(std::string("updateMessage"), [=]() mutable
         {
-            shared messageId = as<any>(std:("msg-123"));
-            shared content = std:("Updated content");
-            it(std:("should update message successfully"), [=]() mutable
+            shared messageId = as<any>(std::string("msg-123"));
+            shared content = std::string("Updated content");
+            it(std::string("should update message successfully"), [=]() mutable
             {
                 auto mockResponse = object{
-                    object::pair{std:("id"), messageId}, 
-                    object::pair{std:("content"), std:("content")}
+                    object::pair{std::string("id"), messageId}, 
+                    object::pair{std::string("content"), std::string("content")}
                 };
                 (as<any>(messagingService))["patch"]["mockResolvedValue"](mockResponse);
                 auto result = std::async([=]() { messagingService->updateMessage(messageId, content); });
-                expect((as<any>(messagingService))["patch"])->toHaveBeenCalledWith(std:("/api/messaging/messages/") + messageId + string_empty, object{
-                    object::pair{std:("content"), std:("content")}
+                expect((as<any>(messagingService))["patch"])->toHaveBeenCalledWith(std::string("/api/messaging/messages/") + messageId + string_empty, object{
+                    object::pair{std::string("content"), std::string("content")}
                 });
                 expect(result)->toEqual(mockResponse);
             }
             );
         }
         );
-        describe(std:("searchMessages"), [=]() mutable
+        describe(std::string("searchMessages"), [=]() mutable
         {
             shared mockParams = object{
-                object::pair{std:("query"), std:("search term")}, 
-                object::pair{std:("channelId"), as<any>(std:("channel-123"))}, 
-                object::pair{std:("limit"), 10}
+                object::pair{std::string("query"), std::string("search term")}, 
+                object::pair{std::string("channelId"), as<any>(std::string("channel-123"))}, 
+                object::pair{std::string("limit"), 10}
             };
-            it(std:("should search messages successfully"), [=]() mutable
+            it(std::string("should search messages successfully"), [=]() mutable
             {
                 auto mockResponse = object{
-                    object::pair{std:("messages"), array<object>{ object{
-                        object::pair{std:("id"), std:("msg-1")}, 
-                        object::pair{std:("content"), std:("Found message")}
+                    object::pair{std::string("messages"), array<object>{ object{
+                        object::pair{std::string("id"), std::string("msg-1")}, 
+                        object::pair{std::string("content"), std::string("Found message")}
                     } }}
                 };
                 (as<any>(messagingService))["post"]["mockResolvedValue"](mockResponse);
                 auto result = std::async([=]() { messagingService->searchMessages(mockParams); });
-                expect((as<any>(messagingService))["post"])->toHaveBeenCalledWith(std:("/api/messaging/messages/search"), mockParams);
+                expect((as<any>(messagingService))["post"])->toHaveBeenCalledWith(std::string("/api/messaging/messages/search"), mockParams);
                 expect(result)->toEqual(mockResponse);
             }
             );
         }
         );
-        describe(std:("listServers"), [=]() mutable
+        describe(std::string("listServers"), [=]() mutable
         {
-            it(std:("should list servers successfully"), [=]() mutable
+            it(std::string("should list servers successfully"), [=]() mutable
             {
                 auto mockResponse = object{
-                    object::pair{std:("servers"), array<object>{ object{
-                        object::pair{std:("id"), std:("server-1")}, 
-                        object::pair{std:("name"), std:("Test Server")}
+                    object::pair{std::string("servers"), array<object>{ object{
+                        object::pair{std::string("id"), std::string("server-1")}, 
+                        object::pair{std::string("name"), std::string("Test Server")}
                     } }}
                 };
                 (as<any>(messagingService))["get"]["mockResolvedValue"](mockResponse);
                 auto result = std::async([=]() { messagingService->listServers(); });
-                expect((as<any>(messagingService))["get"])->toHaveBeenCalledWith(std:("/api/messaging/central-servers"));
+                expect((as<any>(messagingService))["get"])->toHaveBeenCalledWith(std::string("/api/messaging/central-servers"));
                 expect(result)->toEqual(mockResponse);
             }
             );
         }
         );
-        describe(std:("getServerChannels"), [=]() mutable
+        describe(std::string("getServerChannels"), [=]() mutable
         {
-            shared serverId = as<any>(std:("server-123"));
-            it(std:("should get server channels successfully"), [=]() mutable
+            shared serverId = as<any>(std::string("server-123"));
+            it(std::string("should get server channels successfully"), [=]() mutable
             {
                 auto mockResponse = object{
-                    object::pair{std:("channels"), array<object>{ object{
-                        object::pair{std:("id"), std:("channel-1")}, 
-                        object::pair{std:("name"), std:("General")}
+                    object::pair{std::string("channels"), array<object>{ object{
+                        object::pair{std::string("id"), std::string("channel-1")}, 
+                        object::pair{std::string("name"), std::string("General")}
                     } }}
                 };
                 (as<any>(messagingService))["get"]["mockResolvedValue"](mockResponse);
                 auto result = std::async([=]() { messagingService->getServerChannels(serverId); });
-                expect((as<any>(messagingService))["get"])->toHaveBeenCalledWith(std:("/api/messaging/central-servers/") + serverId + std:("/channels"));
+                expect((as<any>(messagingService))["get"])->toHaveBeenCalledWith(std::string("/api/messaging/central-servers/") + serverId + std::string("/channels"));
                 expect(result)->toEqual(mockResponse);
             }
             );
         }
         );
-        describe(std:("createServer"), [=]() mutable
+        describe(std::string("createServer"), [=]() mutable
         {
             shared mockParams = object{
-                object::pair{std:("name"), std:("New Server")}, 
-                object::pair{std:("sourceType"), std:("discord")}, 
-                object::pair{std:("sourceId"), std:("discord-server-123")}, 
-                object::pair{std:("metadata"), object{
-                    object::pair{std:("description"), std:("A new server")}
+                object::pair{std::string("name"), std::string("New Server")}, 
+                object::pair{std::string("sourceType"), std::string("discord")}, 
+                object::pair{std::string("sourceId"), std::string("discord-server-123")}, 
+                object::pair{std::string("metadata"), object{
+                    object::pair{std::string("description"), std::string("A new server")}
                 }}
             };
-            it(std:("should create server successfully"), [=]() mutable
+            it(std::string("should create server successfully"), [=]() mutable
             {
                 auto mockResponse = object{
-                    object::pair{std:("id"), std:("server-new")}, 
-                    object::pair{std:("name"), std:("New Server")}
+                    object::pair{std::string("id"), std::string("server-new")}, 
+                    object::pair{std::string("name"), std::string("New Server")}
                 };
                 (as<any>(messagingService))["post"]["mockResolvedValue"](mockResponse);
                 auto result = std::async([=]() { messagingService->createServer(mockParams); });
-                expect((as<any>(messagingService))["post"])->toHaveBeenCalledWith(std:("/api/messaging/servers"), mockParams);
+                expect((as<any>(messagingService))["post"])->toHaveBeenCalledWith(std::string("/api/messaging/servers"), mockParams);
                 expect(result)->toEqual(mockResponse);
             }
             );
         }
         );
-        describe(std:("syncServerChannels"), [=]() mutable
+        describe(std::string("syncServerChannels"), [=]() mutable
         {
-            shared serverId = as<any>(std:("server-123"));
+            shared serverId = as<any>(std::string("server-123"));
             shared mockParams = object{
-                object::pair{std:("channels"), array<object>{ object{
-                    object::pair{std:("name"), std:("general")}, 
-                    object::pair{std:("type"), as<any>(std:("public"))}, 
-                    object::pair{std:("sourceId"), std:("discord-channel-1")}
+                object::pair{std::string("channels"), array<object>{ object{
+                    object::pair{std::string("name"), std::string("general")}, 
+                    object::pair{std::string("type"), as<any>(std::string("public"))}, 
+                    object::pair{std::string("sourceId"), std::string("discord-channel-1")}
                 }, object{
-                    object::pair{std:("name"), std:("private")}, 
-                    object::pair{std:("type"), as<any>(std:("private"))}, 
-                    object::pair{std:("sourceId"), std:("discord-channel-2")}
+                    object::pair{std::string("name"), std::string("private")}, 
+                    object::pair{std::string("type"), as<any>(std::string("private"))}, 
+                    object::pair{std::string("sourceId"), std::string("discord-channel-2")}
                 } }}
             };
-            it(std:("should sync server channels successfully"), [=]() mutable
+            it(std::string("should sync server channels successfully"), [=]() mutable
             {
                 auto mockResponse = object{
-                    object::pair{std:("synced"), 2}
+                    object::pair{std::string("synced"), 2}
                 };
                 (as<any>(messagingService))["post"]["mockResolvedValue"](mockResponse);
                 auto result = std::async([=]() { messagingService->syncServerChannels(serverId, mockParams); });
-                expect((as<any>(messagingService))["post"])->toHaveBeenCalledWith(std:("/api/messaging/servers/") + serverId + std:("/sync-channels"), mockParams);
+                expect((as<any>(messagingService))["post"])->toHaveBeenCalledWith(std::string("/api/messaging/servers/") + serverId + std::string("/sync-channels"), mockParams);
                 expect(result)->toEqual(mockResponse);
             }
             );
         }
         );
-        describe(std:("deleteServer"), [=]() mutable
+        describe(std::string("deleteServer"), [=]() mutable
         {
-            shared serverId = as<any>(std:("server-123"));
-            it(std:("should delete server successfully"), [=]() mutable
+            shared serverId = as<any>(std::string("server-123"));
+            it(std::string("should delete server successfully"), [=]() mutable
             {
                 auto mockResponse = object{
-                    object::pair{std:("success"), true}
+                    object::pair{std::string("success"), true}
                 };
                 (as<any>(messagingService))["delete"]["mockResolvedValue"](mockResponse);
                 auto result = std::async([=]() { messagingService->deleteServer(serverId); });
-                expect((as<any>(messagingService))["delete"])->toHaveBeenCalledWith(std:("/api/messaging/servers/") + serverId + string_empty);
+                expect((as<any>(messagingService))["delete"])->toHaveBeenCalledWith(std::string("/api/messaging/servers/") + serverId + string_empty);
                 expect(result)->toEqual(mockResponse);
             }
             );
         }
         );
-        describe(std:("error handling"), [=]() mutable
+        describe(std::string("error handling"), [=]() mutable
         {
-            it(std:("should handle network errors"), [=]() mutable
+            it(std::string("should handle network errors"), [=]() mutable
             {
-                (as<any>(messagingService))["get"]["mockRejectedValue"](std::make_shared<Error>(std:("Network error")));
-                std::async([=]() { expect(messagingService->listServers())->rejects->toThrow(std:("Network error")); });
+                (as<any>(messagingService))["get"]["mockRejectedValue"](std::make_shared<Error>(std::string("Network error")));
+                std::async([=]() { expect(messagingService->listServers())->rejects->toThrow(std::string("Network error")); });
             }
             );
-            it(std:("should handle API errors"), [=]() mutable
+            it(std::string("should handle API errors"), [=]() mutable
             {
-                (as<any>(messagingService))["post"]["mockRejectedValue"](std::make_shared<Error>(std:("API error")));
+                (as<any>(messagingService))["post"]["mockRejectedValue"](std::make_shared<Error>(std::string("API error")));
                 auto params = object{
-                    object::pair{std:("agentId"), as<any>(std:("agent-123"))}, 
-                    object::pair{std:("channelId"), as<any>(std:("channel-456"))}, 
-                    object::pair{std:("content"), std:("Test message")}
+                    object::pair{std::string("agentId"), as<any>(std::string("agent-123"))}, 
+                    object::pair{std::string("channelId"), as<any>(std::string("channel-456"))}, 
+                    object::pair{std::string("content"), std::string("Test message")}
                 };
-                std::async([=]() { expect(messagingService->submitMessage(params))->rejects->toThrow(std:("API error")); });
+                std::async([=]() { expect(messagingService->submitMessage(params))->rejects->toThrow(std::string("API error")); });
             }
             );
         }

@@ -23,19 +23,19 @@ namespace elizaos {
  */
 
 /**
- * Shorten a std: to a maximum length
+ * Shorten a std::string to a maximum length
  */
-std: shortenString(const std:& s, double maxLength, bool shortenLeft = false);
+std::string shortenString(const std::string& s, double maxLength, bool shortenLeft = false);
 
 /**
  * Shorten strings in a nested object/array
  */
-std: shortenStrings(const std:& data, double maxLength = 30);
+std::string shortenStrings(const std::string& data, double maxLength = 30);
 
 /**
  * Save predictions from agent run result
  */
-void savePredictions(const std::variant<std:, path::ParsedPath>& trajDir, const std:& instanceId, AgentRunResult result);
+void savePredictions(const std::variant<std::string, path::ParsedPath>& trajDir, const std::string& instanceId, AgentRunResult result);
 
 /**
  * Check if a patch is promising (not empty/trivial)
@@ -45,11 +45,11 @@ bool isPromisingPatch(AgentInfo info);
 /**
  * Create a nested dictionary structure
  */
-std::unordered_map<std:, std:> createNestedDict();
+std::unordered_map<std::string, std::string> createNestedDict();
 
 /**
  * Parse command-line arguments into nested dictionary
  */
-std::unordered_map<std:, std:> parseArgsToNestedDict(const std::vector<std::string>& args);
+std::unordered_map<std::string, std::string> parseArgsToNestedDict(const std::vector<std::string>& args);
 
 } // namespace elizaos

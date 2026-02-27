@@ -23,7 +23,7 @@ namespace elizaos {
 
 // Declare environment variables for autonomous service configuration
     struct ProcessEnv {
-    std::optional<std:> AUTONOMOUS_LOOP_INTERVAL;
+    std::optional<std::string> AUTONOMOUS_LOOP_INTERVAL;
 };
 
 

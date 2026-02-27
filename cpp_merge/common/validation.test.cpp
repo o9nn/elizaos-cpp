@@ -1,11 +1,12 @@
 #include "validation.test.h"
+#include <string>
 
 any mockFetch = vi->fn();
 
 void Main(void)
 {
     global->fetch = as<any>(mockFetch);
-    describe(std:("validation"), [=]() mutable
+    describe(std::string("validation"), [=]() mutable
     {
         beforeEach([=]() mutable
         {
@@ -13,351 +14,351 @@ void Main(void)
             mockFetch->mockReset();
         }
         );
-        describe(std:("validateEnvVar"), [=]() mutable
+        describe(std::string("validateEnvVar"), [=]() mutable
         {
-            it(std:("should return invalid for empty value"), [=]() mutable
+            it(std::string("should return invalid for empty value"), [=]() mutable
             {
-                auto result = std::async([=]() { validateEnvVar(std:("TEST_VAR"), string_empty, std:("api_key")); });
+                auto result = std::async([=]() { validateEnvVar(std::string("TEST_VAR"), string_empty, std::string("api_key")); });
                 expect(result->isValid)->toBe(false);
-                expect(result->error)->toBe(std:("Environment variable value is empty"));
+                expect(result->error)->toBe(std::string("Environment variable value is empty"));
             }
             );
-            it(std:("should return invalid for whitespace-only value"), [=]() mutable
+            it(std::string("should return invalid for whitespace-only value"), [=]() mutable
             {
-                auto result = std::async([=]() { validateEnvVar(std:("TEST_VAR"), std:("   "), std:("api_key")); });
+                auto result = std::async([=]() { validateEnvVar(std::string("TEST_VAR"), std::string("   "), std::string("api_key")); });
                 expect(result->isValid)->toBe(false);
-                expect(result->error)->toBe(std:("Environment variable value is empty"));
+                expect(result->error)->toBe(std::string("Environment variable value is empty"));
             }
             );
-            it(std:("should use basic validation for unknown types"), [=]() mutable
+            it(std::string("should use basic validation for unknown types"), [=]() mutable
             {
-                auto loggerSpy = vi->spyOn(logger, std:("warn"));
-                auto result = std::async([=]() { validateEnvVar(std:("TEST_VAR"), std:("test-value"), std:("unknown_type")); });
+                auto loggerSpy = vi->spyOn(logger, std::string("warn"));
+                auto result = std::async([=]() { validateEnvVar(std::string("TEST_VAR"), std::string("test-value"), std::string("unknown_type")); });
                 expect(result->isValid)->toBe(true);
-                expect(result->details)->toBe(std:("Basic validation passed - value is present"));
-                expect(loggerSpy)->toHaveBeenCalledWith(std:("No specific validation strategy found for TEST_VAR, using basic validation"));
+                expect(result->details)->toBe(std::string("Basic validation passed - value is present"));
+                expect(loggerSpy)->toHaveBeenCalledWith(std::string("No specific validation strategy found for TEST_VAR, using basic validation"));
                 loggerSpy->mockRestore();
             }
             );
-            it(std:("should handle validation errors gracefully"), [=]() mutable
+            it(std::string("should handle validation errors gracefully"), [=]() mutable
             {
                 auto originalStrategy = validationStrategies["api_key"]["openai"];
-                validationStrategies["api_key"]["openai"] = vi->fn()->mockRejectedValue(std::make_shared<Error>(std:("Test error")));
-                auto loggerSpy = vi->spyOn(logger, std:("error"));
-                auto result = std::async([=]() { validateEnvVar(std:("TEST_VAR"), std:("test-value"), std:("api_key"), std:("api_key:openai")); });
+                validationStrategies["api_key"]["openai"] = vi->fn()->mockRejectedValue(std::make_shared<Error>(std::string("Test error")));
+                auto loggerSpy = vi->spyOn(logger, std::string("error"));
+                auto result = std::async([=]() { validateEnvVar(std::string("TEST_VAR"), std::string("test-value"), std::string("api_key"), std::string("api_key:openai")); });
                 expect(result->isValid)->toBe(false);
-                expect(result->error)->toBe(std:("Validation failed due to unexpected error"));
-                expect(result->details)->toBe(std:("Test error"));
-                expect(loggerSpy)->toHaveBeenCalledWith(std:("Error validating environment variable TEST_VAR:"), std::make_shared<Error>(std:("Test error")));
+                expect(result->error)->toBe(std::string("Validation failed due to unexpected error"));
+                expect(result->details)->toBe(std::string("Test error"));
+                expect(loggerSpy)->toHaveBeenCalledWith(std::string("Error validating environment variable TEST_VAR:"), std::make_shared<Error>(std::string("Test error")));
                 validationStrategies["api_key"]["openai"] = originalStrategy;
                 loggerSpy->mockRestore();
             }
             );
-            it(std:("should use specific validation strategy when provided"), [=]() mutable
+            it(std::string("should use specific validation strategy when provided"), [=]() mutable
             {
                 mockFetch->mockResolvedValue(object{
-                    object::pair{std:("ok"), true}, 
-                    object::pair{std:("status"), 200}
+                    object::pair{std::string("ok"), true}, 
+                    object::pair{std::string("status"), 200}
                 });
-                auto result = std::async([=]() { validateEnvVar(std:("OPENAI_API_KEY"), std:("sk-test123"), std:("api_key"), std:("api_key:openai")); });
+                auto result = std::async([=]() { validateEnvVar(std::string("OPENAI_API_KEY"), std::string("sk-test123"), std::string("api_key"), std::string("api_key:openai")); });
                 expect(result->isValid)->toBe(true);
-                expect(result->details)->toBe(std:("OpenAI API key validated successfully"));
+                expect(result->details)->toBe(std::string("OpenAI API key validated successfully"));
             }
             );
         }
         );
-        describe(std:("validationStrategies"), [=]() mutable
+        describe(std::string("validationStrategies"), [=]() mutable
         {
-            describe(std:("api_key"), [=]() mutable
+            describe(std::string("api_key"), [=]() mutable
             {
-                describe(std:("openai"), [=]() mutable
+                describe(std::string("openai"), [=]() mutable
                 {
-                    it(std:("should return valid for successful API response"), [=]() mutable
+                    it(std::string("should return valid for successful API response"), [=]() mutable
                     {
                         mockFetch->mockResolvedValue(object{
-                            object::pair{std:("ok"), true}, 
-                            object::pair{std:("status"), 200}
+                            object::pair{std::string("ok"), true}, 
+                            object::pair{std::string("status"), 200}
                         });
-                        auto result = std::async([=]() { validationStrategies["api_key"]["openai"](std:("test-key")); });
+                        auto result = std::async([=]() { validationStrategies["api_key"]["openai"](std::string("test-key")); });
                         expect(result->isValid)->toBe(true);
-                        expect(result->details)->toBe(std:("OpenAI API key validated successfully"));
-                        expect(mockFetch)->toHaveBeenCalledWith(std:("https://api.openai.com/v1/models"), object{
-                            object::pair{std:("headers"), object{
-                                object::pair{std:("Authorization"), std:("Bearer test-key")}, 
-                                object::pair{std:("Content-Type"), std:("application/json")}
+                        expect(result->details)->toBe(std::string("OpenAI API key validated successfully"));
+                        expect(mockFetch)->toHaveBeenCalledWith(std::string("https://api.openai.com/v1/models"), object{
+                            object::pair{std::string("headers"), object{
+                                object::pair{std::string("Authorization"), std::string("Bearer test-key")}, 
+                                object::pair{std::string("Content-Type"), std::string("application/json")}
                             }}
                         });
                     }
                     );
-                    it(std:("should return invalid for failed API response"), [=]() mutable
+                    it(std::string("should return invalid for failed API response"), [=]() mutable
                     {
                         mockFetch->mockResolvedValue(object{
-                            object::pair{std:("ok"), false}, 
-                            object::pair{std:("status"), 401}, 
-                            object::pair{std:("text"), vi->fn()->mockResolvedValue(std:("Unauthorized"))}
+                            object::pair{std::string("ok"), false}, 
+                            object::pair{std::string("status"), 401}, 
+                            object::pair{std::string("text"), vi->fn()->mockResolvedValue(std::string("Unauthorized"))}
                         });
-                        auto result = std::async([=]() { validationStrategies["api_key"]["openai"](std:("invalid-key")); });
+                        auto result = std::async([=]() { validationStrategies["api_key"]["openai"](std::string("invalid-key")); });
                         expect(result->isValid)->toBe(false);
-                        expect(result->error)->toBe(std:("OpenAI API validation failed: 401"));
-                        expect(result->details)->toBe(std:("Unauthorized"));
+                        expect(result->error)->toBe(std::string("OpenAI API validation failed: 401"));
+                        expect(result->details)->toBe(std::string("Unauthorized"));
                     }
                     );
-                    it(std:("should handle network errors"), [=]() mutable
+                    it(std::string("should handle network errors"), [=]() mutable
                     {
-                        mockFetch->mockRejectedValue(std::make_shared<Error>(std:("Network error")));
-                        auto result = std::async([=]() { validationStrategies["api_key"]["openai"](std:("test-key")); });
+                        mockFetch->mockRejectedValue(std::make_shared<Error>(std::string("Network error")));
+                        auto result = std::async([=]() { validationStrategies["api_key"]["openai"](std::string("test-key")); });
                         expect(result->isValid)->toBe(false);
-                        expect(result->error)->toBe(std:("Failed to validate OpenAI API key"));
-                        expect(result->details)->toBe(std:("Network error"));
+                        expect(result->error)->toBe(std::string("Failed to validate OpenAI API key"));
+                        expect(result->details)->toBe(std::string("Network error"));
                     }
                     );
                 }
                 );
-                describe(std:("groq"), [=]() mutable
+                describe(std::string("groq"), [=]() mutable
                 {
-                    it(std:("should return valid for successful API response"), [=]() mutable
+                    it(std::string("should return valid for successful API response"), [=]() mutable
                     {
                         mockFetch->mockResolvedValue(object{
-                            object::pair{std:("ok"), true}, 
-                            object::pair{std:("status"), 200}
+                            object::pair{std::string("ok"), true}, 
+                            object::pair{std::string("status"), 200}
                         });
-                        auto result = std::async([=]() { validationStrategies["api_key"]["groq"](std:("test-key")); });
+                        auto result = std::async([=]() { validationStrategies["api_key"]["groq"](std::string("test-key")); });
                         expect(result->isValid)->toBe(true);
-                        expect(result->details)->toBe(std:("Groq API key validated successfully"));
-                        expect(mockFetch)->toHaveBeenCalledWith(std:("https://api.groq.com/openai/v1/models"), object{
-                            object::pair{std:("headers"), object{
-                                object::pair{std:("Authorization"), std:("Bearer test-key")}, 
-                                object::pair{std:("Content-Type"), std:("application/json")}
+                        expect(result->details)->toBe(std::string("Groq API key validated successfully"));
+                        expect(mockFetch)->toHaveBeenCalledWith(std::string("https://api.groq.com/openai/v1/models"), object{
+                            object::pair{std::string("headers"), object{
+                                object::pair{std::string("Authorization"), std::string("Bearer test-key")}, 
+                                object::pair{std::string("Content-Type"), std::string("application/json")}
                             }}
                         });
                     }
                     );
-                    it(std:("should return invalid for failed API response"), [=]() mutable
+                    it(std::string("should return invalid for failed API response"), [=]() mutable
                     {
                         mockFetch->mockResolvedValue(object{
-                            object::pair{std:("ok"), false}, 
-                            object::pair{std:("status"), 403}
+                            object::pair{std::string("ok"), false}, 
+                            object::pair{std::string("status"), 403}
                         });
-                        auto result = std::async([=]() { validationStrategies["api_key"]["groq"](std:("invalid-key")); });
+                        auto result = std::async([=]() { validationStrategies["api_key"]["groq"](std::string("invalid-key")); });
                         expect(result->isValid)->toBe(false);
-                        expect(result->error)->toBe(std:("Groq API validation failed: 403"));
+                        expect(result->error)->toBe(std::string("Groq API validation failed: 403"));
                     }
                     );
-                    it(std:("should handle network errors"), [=]() mutable
+                    it(std::string("should handle network errors"), [=]() mutable
                     {
-                        mockFetch->mockRejectedValue(std::make_shared<Error>(std:("Connection timeout")));
-                        auto result = std::async([=]() { validationStrategies["api_key"]["groq"](std:("test-key")); });
+                        mockFetch->mockRejectedValue(std::make_shared<Error>(std::string("Connection timeout")));
+                        auto result = std::async([=]() { validationStrategies["api_key"]["groq"](std::string("test-key")); });
                         expect(result->isValid)->toBe(false);
-                        expect(result->error)->toBe(std:("Failed to validate Groq API key"));
-                        expect(result->details)->toBe(std:("Connection timeout"));
+                        expect(result->error)->toBe(std::string("Failed to validate Groq API key"));
+                        expect(result->details)->toBe(std::string("Connection timeout"));
                     }
                     );
                 }
                 );
-                describe(std:("anthropic"), [=]() mutable
+                describe(std::string("anthropic"), [=]() mutable
                 {
-                    it(std:("should return valid for successful API response"), [=]() mutable
+                    it(std::string("should return valid for successful API response"), [=]() mutable
                     {
                         mockFetch->mockResolvedValue(object{
-                            object::pair{std:("ok"), true}, 
-                            object::pair{std:("status"), 200}
+                            object::pair{std::string("ok"), true}, 
+                            object::pair{std::string("status"), 200}
                         });
-                        auto result = std::async([=]() { validationStrategies["api_key"]["anthropic"](std:("test-key")); });
+                        auto result = std::async([=]() { validationStrategies["api_key"]["anthropic"](std::string("test-key")); });
                         expect(result->isValid)->toBe(true);
-                        expect(result->details)->toBe(std:("Anthropic API key validated successfully"));
-                        expect(mockFetch)->toHaveBeenCalledWith(std:("https://api.anthropic.com/v1/messages"), object{
-                            object::pair{std:("method"), std:("POST")}, 
-                            object::pair{std:("headers"), object{
-                                object::pair{std:("x-api-key"), std:("test-key")}, 
-                                object::pair{std:("Content-Type"), std:("application/json")}, 
-                                object::pair{std:("anthropic-version"), std:("2023-06-01")}
+                        expect(result->details)->toBe(std::string("Anthropic API key validated successfully"));
+                        expect(mockFetch)->toHaveBeenCalledWith(std::string("https://api.anthropic.com/v1/messages"), object{
+                            object::pair{std::string("method"), std::string("POST")}, 
+                            object::pair{std::string("headers"), object{
+                                object::pair{std::string("x-api-key"), std::string("test-key")}, 
+                                object::pair{std::string("Content-Type"), std::string("application/json")}, 
+                                object::pair{std::string("anthropic-version"), std::string("2023-06-01")}
                             }}, 
-                            object::pair{std:("body"), JSON->stringify(object{
-                                object::pair{std:("model"), std:("claude-3-haiku-20240307")}, 
-                                object::pair{std:("max_tokens"), 1}, 
-                                object::pair{std:("messages"), array<object>{ object{
-                                    object::pair{std:("role"), std:("user")}, 
-                                    object::pair{std:("content"), std:("test")}
+                            object::pair{std::string("body"), JSON->stringify(object{
+                                object::pair{std::string("model"), std::string("claude-3-haiku-20240307")}, 
+                                object::pair{std::string("max_tokens"), 1}, 
+                                object::pair{std::string("messages"), array<object>{ object{
+                                    object::pair{std::string("role"), std::string("user")}, 
+                                    object::pair{std::string("content"), std::string("test")}
                                 } }}
                             })}
                         });
                     }
                     );
-                    it(std:("should return valid for 400 status (expected for minimal test)"), [=]() mutable
+                    it(std::string("should return valid for 400 status (expected for minimal test)"), [=]() mutable
                     {
                         mockFetch->mockResolvedValue(object{
-                            object::pair{std:("ok"), false}, 
-                            object::pair{std:("status"), 400}
+                            object::pair{std::string("ok"), false}, 
+                            object::pair{std::string("status"), 400}
                         });
-                        auto result = std::async([=]() { validationStrategies["api_key"]["anthropic"](std:("test-key")); });
+                        auto result = std::async([=]() { validationStrategies["api_key"]["anthropic"](std::string("test-key")); });
                         expect(result->isValid)->toBe(true);
-                        expect(result->details)->toBe(std:("Anthropic API key validated successfully"));
+                        expect(result->details)->toBe(std::string("Anthropic API key validated successfully"));
                     }
                     );
-                    it(std:("should return invalid for unauthorized response"), [=]() mutable
+                    it(std::string("should return invalid for unauthorized response"), [=]() mutable
                     {
                         mockFetch->mockResolvedValue(object{
-                            object::pair{std:("ok"), false}, 
-                            object::pair{std:("status"), 401}
+                            object::pair{std::string("ok"), false}, 
+                            object::pair{std::string("status"), 401}
                         });
-                        auto result = std::async([=]() { validationStrategies["api_key"]["anthropic"](std:("invalid-key")); });
+                        auto result = std::async([=]() { validationStrategies["api_key"]["anthropic"](std::string("invalid-key")); });
                         expect(result->isValid)->toBe(false);
-                        expect(result->error)->toBe(std:("Anthropic API validation failed: 401"));
+                        expect(result->error)->toBe(std::string("Anthropic API validation failed: 401"));
                     }
                     );
-                    it(std:("should handle network errors"), [=]() mutable
+                    it(std::string("should handle network errors"), [=]() mutable
                     {
-                        mockFetch->mockRejectedValue(std::make_shared<Error>(std:("DNS resolution failed")));
-                        auto result = std::async([=]() { validationStrategies["api_key"]["anthropic"](std:("test-key")); });
+                        mockFetch->mockRejectedValue(std::make_shared<Error>(std::string("DNS resolution failed")));
+                        auto result = std::async([=]() { validationStrategies["api_key"]["anthropic"](std::string("test-key")); });
                         expect(result->isValid)->toBe(false);
-                        expect(result->error)->toBe(std:("Failed to validate Anthropic API key"));
-                        expect(result->details)->toBe(std:("DNS resolution failed"));
+                        expect(result->error)->toBe(std::string("Failed to validate Anthropic API key"));
+                        expect(result->details)->toBe(std::string("DNS resolution failed"));
                     }
                     );
                 }
                 );
             }
             );
-            describe(std:("url"), [=]() mutable
+            describe(std::string("url"), [=]() mutable
             {
-                describe(std:("webhook"), [=]() mutable
+                describe(std::string("webhook"), [=]() mutable
                 {
-                    it(std:("should return valid for successful webhook response"), [=]() mutable
+                    it(std::string("should return valid for successful webhook response"), [=]() mutable
                     {
                         mockFetch->mockResolvedValue(object{
-                            object::pair{std:("status"), 200}
+                            object::pair{std::string("status"), 200}
                         });
-                        auto result = std::async([=]() { validationStrategies["url"]["webhook"](std:("https://example.com/webhook")); });
+                        auto result = std::async([=]() { validationStrategies["url"]["webhook"](std::string("https://example.com/webhook")); });
                         expect(result->isValid)->toBe(true);
-                        expect(result->details)->toBe(std:("Webhook URL is reachable"));
-                        expect(mockFetch)->toHaveBeenCalledWith(std:("https://example.com/webhook"), object{
-                            object::pair{std:("method"), std:("POST")}, 
-                            object::pair{std:("headers"), object{
-                                object::pair{std:("Content-Type"), std:("application/json")}
+                        expect(result->details)->toBe(std::string("Webhook URL is reachable"));
+                        expect(mockFetch)->toHaveBeenCalledWith(std::string("https://example.com/webhook"), object{
+                            object::pair{std::string("method"), std::string("POST")}, 
+                            object::pair{std::string("headers"), object{
+                                object::pair{std::string("Content-Type"), std::string("application/json")}
                             }}, 
-                            object::pair{std:("body"), JSON->stringify(object{
-                                object::pair{std:("test"), true}
+                            object::pair{std::string("body"), JSON->stringify(object{
+                                object::pair{std::string("test"), true}
                             })}
                         });
                     }
                     );
-                    it(std:("should return valid for client error responses (< 500)"), [=]() mutable
+                    it(std::string("should return valid for client error responses (< 500)"), [=]() mutable
                     {
                         mockFetch->mockResolvedValue(object{
-                            object::pair{std:("status"), 404}
+                            object::pair{std::string("status"), 404}
                         });
-                        auto result = std::async([=]() { validationStrategies["url"]["webhook"](std:("https://example.com/webhook")); });
+                        auto result = std::async([=]() { validationStrategies["url"]["webhook"](std::string("https://example.com/webhook")); });
                         expect(result->isValid)->toBe(true);
-                        expect(result->details)->toBe(std:("Webhook URL is reachable"));
+                        expect(result->details)->toBe(std::string("Webhook URL is reachable"));
                     }
                     );
-                    it(std:("should return invalid for server error responses (>= 500)"), [=]() mutable
+                    it(std::string("should return invalid for server error responses (>= 500)"), [=]() mutable
                     {
                         mockFetch->mockResolvedValue(object{
-                            object::pair{std:("status"), 500}
+                            object::pair{std::string("status"), 500}
                         });
-                        auto result = std::async([=]() { validationStrategies["url"]["webhook"](std:("https://example.com/webhook")); });
+                        auto result = std::async([=]() { validationStrategies["url"]["webhook"](std::string("https://example.com/webhook")); });
                         expect(result->isValid)->toBe(false);
-                        expect(result->error)->toBe(std:("Webhook URL returned server error: 500"));
+                        expect(result->error)->toBe(std::string("Webhook URL returned server error: 500"));
                     }
                     );
-                    it(std:("should handle network errors"), [=]() mutable
+                    it(std::string("should handle network errors"), [=]() mutable
                     {
-                        mockFetch->mockRejectedValue(std::make_shared<Error>(std:("ECONNREFUSED")));
-                        auto result = std::async([=]() { validationStrategies["url"]["webhook"](std:("https://example.com/webhook")); });
+                        mockFetch->mockRejectedValue(std::make_shared<Error>(std::string("ECONNREFUSED")));
+                        auto result = std::async([=]() { validationStrategies["url"]["webhook"](std::string("https://example.com/webhook")); });
                         expect(result->isValid)->toBe(false);
-                        expect(result->error)->toBe(std:("Webhook URL is not reachable"));
-                        expect(result->details)->toBe(std:("ECONNREFUSED"));
+                        expect(result->error)->toBe(std::string("Webhook URL is not reachable"));
+                        expect(result->details)->toBe(std::string("ECONNREFUSED"));
                     }
                     );
                 }
                 );
-                describe(std:("api_endpoint"), [=]() mutable
+                describe(std::string("api_endpoint"), [=]() mutable
                 {
-                    it(std:("should return valid for successful API response"), [=]() mutable
+                    it(std::string("should return valid for successful API response"), [=]() mutable
                     {
                         mockFetch->mockResolvedValue(object{
-                            object::pair{std:("ok"), true}, 
-                            object::pair{std:("status"), 200}
+                            object::pair{std::string("ok"), true}, 
+                            object::pair{std::string("status"), 200}
                         });
-                        auto result = std::async([=]() { validationStrategies["url"]["api_endpoint"](std:("https://api.example.com")); });
+                        auto result = std::async([=]() { validationStrategies["url"]["api_endpoint"](std::string("https://api.example.com")); });
                         expect(result->isValid)->toBe(true);
-                        expect(result->details)->toBe(std:("API endpoint is reachable"));
-                        expect(mockFetch)->toHaveBeenCalledWith(std:("https://api.example.com"));
+                        expect(result->details)->toBe(std::string("API endpoint is reachable"));
+                        expect(mockFetch)->toHaveBeenCalledWith(std::string("https://api.example.com"));
                     }
                     );
-                    it(std:("should return invalid for failed API response"), [=]() mutable
+                    it(std::string("should return invalid for failed API response"), [=]() mutable
                     {
                         mockFetch->mockResolvedValue(object{
-                            object::pair{std:("ok"), false}, 
-                            object::pair{std:("status"), 404}
+                            object::pair{std::string("ok"), false}, 
+                            object::pair{std::string("status"), 404}
                         });
-                        auto result = std::async([=]() { validationStrategies["url"]["api_endpoint"](std:("https://api.example.com")); });
+                        auto result = std::async([=]() { validationStrategies["url"]["api_endpoint"](std::string("https://api.example.com")); });
                         expect(result->isValid)->toBe(false);
-                        expect(result->error)->toBe(std:("API endpoint returned error: 404"));
+                        expect(result->error)->toBe(std::string("API endpoint returned error: 404"));
                     }
                     );
-                    it(std:("should handle network errors"), [=]() mutable
+                    it(std::string("should handle network errors"), [=]() mutable
                     {
-                        mockFetch->mockRejectedValue(std::make_shared<Error>(std:("Timeout")));
-                        auto result = std::async([=]() { validationStrategies["url"]["api_endpoint"](std:("https://api.example.com")); });
+                        mockFetch->mockRejectedValue(std::make_shared<Error>(std::string("Timeout")));
+                        auto result = std::async([=]() { validationStrategies["url"]["api_endpoint"](std::string("https://api.example.com")); });
                         expect(result->isValid)->toBe(false);
-                        expect(result->error)->toBe(std:("API endpoint is not reachable"));
-                        expect(result->details)->toBe(std:("Timeout"));
+                        expect(result->error)->toBe(std::string("API endpoint is not reachable"));
+                        expect(result->details)->toBe(std::string("Timeout"));
                     }
                     );
                 }
                 );
             }
             );
-            describe(std:("credential"), [=]() mutable
+            describe(std::string("credential"), [=]() mutable
             {
-                describe(std:("database_url"), [=]() mutable
+                describe(std::string("database_url"), [=]() mutable
                 {
-                    it(std:("should return valid for proper database URL"), [=]() mutable
+                    it(std::string("should return valid for proper database URL"), [=]() mutable
                     {
-                        auto result = std::async([=]() { validationStrategies["credential"]["database_url"](std:("postgresql://user:pass@localhost:5432/db")); });
+                        auto result = std::async([=]() { validationStrategies["credential"]["database_url"](std::string("postgresql://user:pass@localhost:5432/db")); });
                         expect(result->isValid)->toBe(true);
-                        expect(result->details)->toBe(std:("Database URL format is valid"));
+                        expect(result->details)->toBe(std::string("Database URL format is valid"));
                     }
                     );
-                    it(std:("should return valid for MongoDB URL"), [=]() mutable
+                    it(std::string("should return valid for MongoDB URL"), [=]() mutable
                     {
-                        auto result = std::async([=]() { validationStrategies["credential"]["database_url"](std:("mongodb://user:pass@localhost:27017/db")); });
+                        auto result = std::async([=]() { validationStrategies["credential"]["database_url"](std::string("mongodb://user:pass@localhost:27017/db")); });
                         expect(result->isValid)->toBe(true);
-                        expect(result->details)->toBe(std:("Database URL format is valid"));
+                        expect(result->details)->toBe(std::string("Database URL format is valid"));
                     }
                     );
-                    it(std:("should return invalid for malformed URL"), [=]() mutable
+                    it(std::string("should return invalid for malformed URL"), [=]() mutable
                     {
-                        auto result = std::async([=]() { validationStrategies["credential"]["database_url"](std:("not-a-url")); });
+                        auto result = std::async([=]() { validationStrategies["credential"]["database_url"](std::string("not-a-url")); });
                         expect(result->isValid)->toBe(false);
-                        expect(result->error)->toBe(std:("Invalid database URL format"));
+                        expect(result->error)->toBe(std::string("Invalid database URL format"));
                     }
                     );
-                    it(std:("should return invalid for URL without hostname"), [=]() mutable
+                    it(std::string("should return invalid for URL without hostname"), [=]() mutable
                     {
-                        auto result = std::async([=]() { validationStrategies["credential"]["database_url"](std:("postgresql://")); });
+                        auto result = std::async([=]() { validationStrategies["credential"]["database_url"](std::string("postgresql://")); });
                         expect(result->isValid)->toBe(false);
-                        expect(result->error)->toBe(std:("Invalid database URL format"));
+                        expect(result->error)->toBe(std::string("Invalid database URL format"));
                     }
                     );
                 }
                 );
             }
             );
-            describe(std:("private_key"), [=]() mutable
+            describe(std::string("private_key"), [=]() mutable
             {
-                it(std:("should have rsa validation strategy"), [=]() mutable
+                it(std::string("should have rsa validation strategy"), [=]() mutable
                 {
                     expect(validationStrategies["private_key"]["rsa"])->toBeDefined();
-                    expect(type_of(validationStrategies["private_key"]["rsa"]))->toBe(std:("function"));
+                    expect(type_of(validationStrategies["private_key"]["rsa"]))->toBe(std::string("function"));
                 }
                 );
-                it(std:("should have ed25519 validation strategy"), [=]() mutable
+                it(std::string("should have ed25519 validation strategy"), [=]() mutable
                 {
                     expect(validationStrategies["private_key"]["ed25519"])->toBeDefined();
-                    expect(type_of(validationStrategies["private_key"]["ed25519"]))->toBe(std:("function"));
+                    expect(type_of(validationStrategies["private_key"]["ed25519"]))->toBe(std::string("function"));
                 }
                 );
             }

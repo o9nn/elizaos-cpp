@@ -21,7 +21,7 @@ namespace elizaos {
 /**
  * Determines the project type using comprehensive directory detection
  */
-DirectoryInfo getProjectType(std::optional<std:> testPath);
+DirectoryInfo getProjectType(std::optional<std::string> testPath);
 
 // Note: findMonorepoRoot() has been removed - use UserEnvironment.getInstance().findMonorepoRoot() instead
 // This centralized version looks for packages/core directory instead of lerna.json for better reliability
@@ -30,13 +30,13 @@ DirectoryInfo getProjectType(std::optional<std:> testPath);
  * Process filter name to remove extensions consistently
  *
  * Note: Test filtering works in two ways:
- * 1. Matching test suite names (the std: in describe() blocks)
+ * 1. Matching test suite names (the std::string in describe() blocks)
  * 2. Matching file names (without extension)
  *
  * For best results, use the specific test suite name you want to run.
  * The filter is applied case-insensitively for better user experience.
  */
-std: processFilterName(std::optional<std:> name);
+std::string processFilterName(std::optional<std::string> name);
 
 /**
  * Install plugin dependencies for testing

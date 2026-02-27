@@ -1,10 +1,11 @@
 #include "files.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std: loadFile(const std:& filepath) {
+std::string loadFile(const std::string& filepath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!filepath) {

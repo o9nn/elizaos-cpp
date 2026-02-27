@@ -1,4 +1,5 @@
 #include "getChain.hpp"
+#include <string>
 #include <cstdlib>
 #include <iostream>
 #include <stdexcept>
@@ -20,7 +21,7 @@ Chain getChain() {
 
 }
 
-std: getRpcUrl() {
+std::string getRpcUrl() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto config = getEvmConfig();
@@ -28,7 +29,7 @@ std: getRpcUrl() {
 
 }
 
-std: getRpcUrlForChain(const std:& chainType) {
+std::string getRpcUrlForChain(const std::string& chainType) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     switch (chainType) {

@@ -1,10 +1,11 @@
 #include "uuid-utils.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std: generateUUIDFromString(const std:& inputString) {
+std::string generateUUIDFromString(const std::string& inputString) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -29,7 +30,7 @@ std: generateUUIDFromString(const std:& inputString) {
     }
 }
 
-std: generateQueryRoomId(const std:& seed, const std:& query) {
+std::string generateQueryRoomId(const std::string& seed, const std::string& query) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Simple sanitization and combination

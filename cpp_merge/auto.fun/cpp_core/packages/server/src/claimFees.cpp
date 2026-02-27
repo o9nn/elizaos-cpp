@@ -1,4 +1,5 @@
 #include "claimFees.hpp"
+#include <string>
 #include <future>
 #include <cstdlib>
 #include <iostream>
@@ -6,7 +7,7 @@
 
 namespace elizaos {
 
-std::future<std:> claimFees(PublicKey nftMint, PublicKey poolId, Connection connection, PublicKey claimer, WebSocketClient websocket, Token token) {
+std::future<std::string> claimFees(PublicKey nftMint, PublicKey poolId, Connection connection, PublicKey claimer, WebSocketClient websocket, Token token) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

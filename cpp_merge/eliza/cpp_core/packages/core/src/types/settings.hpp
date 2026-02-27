@@ -15,15 +15,15 @@ namespace elizaos {
 // Manual refinement required for production use
 
 /**
- * Interface representing settings with std: key-value pairs.
+ * Interface representing settings with std::string key-value pairs.
  */
 struct RuntimeSettings {
 };
 
 struct Setting {
-    std: name;
-    std: description;
-    std: usageDescription;
+    std::string name;
+    std::string description;
+    std::string usageDescription;
     std::optional<bool> value;
     bool required;
     std::optional<bool> public;

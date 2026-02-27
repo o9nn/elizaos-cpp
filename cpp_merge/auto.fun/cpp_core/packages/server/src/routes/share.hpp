@@ -22,14 +22,14 @@ namespace elizaos {
  * Custom Error Types
  * ------------------------------------------------------------------
  */
-class TwitterAPIError extends Error {
-  constructor(message: std:) {
+class TwitterAPIError : public Error {
+  /* constructor */ (message: std::string) {
     super(message);
     this.name = "TwitterAPIError";
   }
 
-class LLMError extends Error {
-  constructor(message: std:) {
+class LLMError : public Error {
+  /* constructor */ (message: std::string) {
     super(message);
     this.name = "LLMError";
   }
@@ -46,9 +46,9 @@ using TwitterMessage = z.infer<typeof TwitterMessageSchema>;
  * OAuth Utilities
  * ------------------------------------------------------------------
  */
-std: generateRandomString(number = 32 length);
+std::string generateRandomString(number = 32 length);
 
-std::future<std:> generateCodeChallenge(const std:& codeVerifier);
+std::future<std::string> generateCodeChallenge(const std::string& codeVerifier);
 
 /**
  * ------------------------------------------------------------------
@@ -56,22 +56,22 @@ std::future<std:> generateCodeChallenge(const std:& codeVerifier);
  * ------------------------------------------------------------------
  */
 
-std::future<std:> fetchTwitterUser(const std:& userId, const std:& accessToken, boolean = false useTestData);
+std::future<std::string> fetchTwitterUser(const std::string& userId, const std::string& accessToken, boolean = false useTestData);
 
 /**
  * ------------------------------------------------------------------
  * Database Functions (Using Drizzle/D1 instead of Supabase)
  * ------------------------------------------------------------------
  */
-std::future<void> storeOAuthState(const std:& state, const std:& codeVerifier);
+std::future<void> storeOAuthState(const std::string& state, const std::string& codeVerifier);
 
-std::future<void> storeAccessToken(const std:& userId, const std:& token, const std:& refresh, double expiresIn);
+std::future<void> storeAccessToken(const std::string& userId, const std::string& token, const std::string& refresh, double expiresIn);
 
-std::future<std: | null> getRefreshToken(const std:& userId);
+std::future<std::string | null> getRefreshToken(const std::string& userId);
 
-std::future<void> updateAccessToken(const std:& userId, const std:& token, const std:& refresh, double expiresIn);
+std::future<void> updateAccessToken(const std::string& userId, const std::string& token, const std::string& refresh, double expiresIn);
 
-std::future<bool> validateToken(const std:& token, const std:& userId);
+std::future<bool> validateToken(const std::string& token, const std::string& userId);
 
 /**
  * ------------------------------------------------------------------
@@ -89,7 +89,7 @@ std::future<bool> validateToken(const std:& token, const std:& userId);
  */
 
 // Add a new std::function to check if timestamps are off
-std: getNormalizedTimestamp();
+std::string getNormalizedTimestamp();
 
 // OAuth Request Token
   // Check if the query parameter specifies OAuth 1.0a flow
@@ -189,11 +189,11 @@ std: getNormalizedTimestamp();
  * OAuth1 Signature Utilities
  * ------------------------------------------------------------------
  */
-std: generateAuthHeader(Record<std: oauthParams, auto string>, const std:& signature);
+std::string generateAuthHeader(Record<std::string oauthParams, auto string>, const std::string& signature);
 
-std: encodeRFC3986(const std:& str);
+std::string encodeRFC3986(const std::string& str);
 
-std::future<std:> generateOAuth1Signature(const std:& method, const std:& url, Record<std: params, auto string>, const std:& consumerSecret, const std:& tokenSecret);
+std::future<std::string> generateOAuth1Signature(const std::string& method, const std::string& url, Record<std::string params, auto string>, const std::string& consumerSecret, const std::string& tokenSecret);
 
 // Export the router
 

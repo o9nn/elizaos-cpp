@@ -1,10 +1,11 @@
 #include "recentMessages.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std: getEntityUsername(Entity entity) {
+std::string getEntityUsername(Entity entity) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!entity.metadata) return "unknown";

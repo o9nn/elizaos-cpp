@@ -53,12 +53,12 @@ public:
     std::shared_ptr<JSDocValidator> jsDocValidator;
 
     DocumentationGenerator(std::shared_ptr<DirectoryTraversal> directoryTraversal_, std::shared_ptr<TypeScriptParser> typeScriptParser_, std::shared_ptr<JsDocAnalyzer> jsDocAnalyzer_, std::shared_ptr<JsDocGenerator> jsDocGenerator_, std::shared_ptr<GitManager> gitManager_, std::shared_ptr<Configuration> configuration_, std::shared_ptr<AIService> aiService_);
-    virtual std::shared_ptr<Promise<object>> generate(double pullNumber = undefined);
+    virtual std::shared_ptr<Promise<object>> generate(double pullNumber = std::nullopt);
     virtual void processNode(std::shared_ptr<TSESTree::Node> node, string filePath, std::shared_ptr<TSESTree::Program> ast);
     virtual std::shared_ptr<Promise<void>> updateFileWithJSDoc(string filePath, string jsDoc, double insertLine);
     virtual string getNodeCode(string filePath, std::shared_ptr<TSESTree::Node> node);
     virtual std::shared_ptr<Promise<string>> getFileContent(string contentsUrl);
-    virtual std::shared_ptr<Promise<object>> generatePRContent(double pullNumber = undefined);
+    virtual std::shared_ptr<Promise<object>> generatePRContent(double pullNumber = std::nullopt);
     virtual string generateDefaultPRBody();
     virtual std::shared_ptr<Promise<object>> analyzeCodebase();
 };

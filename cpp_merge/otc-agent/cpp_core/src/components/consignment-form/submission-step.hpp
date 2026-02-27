@@ -15,19 +15,19 @@ namespace elizaos {
 
 
 struct StepState {
-    std: id;
-    std: label;
+    std::string id;
+    std::string label;
     "pending" | "processing" | "complete" | "error" status;
-    std::optional<std:> statusMessage;
-    std::optional<std:> errorMessage;
-    std::optional<std:> txHash;
+    std::optional<std::string> statusMessage;
+    std::optional<std::string> errorMessage;
+    std::optional<std::string> txHash;
     std::optional<bool> canRetry;
 };
 
 struct SubmissionStepProps {
     { formData;
-    std: tokenId;
-    std: amount;
+    std::string tokenId;
+    std::string amount;
     bool isNegotiable;
     double fixedDiscountBps;
     double fixedLockupDays;
@@ -35,24 +35,24 @@ struct SubmissionStepProps {
     double maxDiscountBps;
     double minLockupDays;
     double maxLockupDays;
-    std: minDealAmount;
-    std: maxDealAmount;
+    std::string minDealAmount;
+    std::string maxDealAmount;
     bool isFractionalized;
     bool isPrivate;
     double maxPriceVolatilityBps;
     double maxTimeToExecuteSeconds;
-    std: consignerAddress;
-    std: chain;
+    std::string consignerAddress;
+    std::string chain;
     "evm" | "solana" | null activeFamily;
     double selectedTokenDecimals;
-    std: selectedTokenSymbol;
-    std::optional<std:> selectedTokenName;
-    std::optional<std:> selectedTokenAddress;
-    std::optional<std: | null> selectedTokenLogoUrl;
+    std::string selectedTokenSymbol;
+    std::optional<std::string> selectedTokenName;
+    std::optional<std::string> selectedTokenAddress;
+    std::optional<std::string | null> selectedTokenLogoUrl;
     [&]() { return Promise<string> onApproveToken; };
     [&]( onCreateConsignment;
-    std::optional<(txHash: std:) { return void> onTxSubmitted; };
-    [&](txHash: std:) { return std: getBlockExplorerUrl; };
+    std::optional<(txHash: std::string) { return void> onTxSubmitted; };
+    [&](txHash: std::string) { return std::string getBlockExplorerUrl; };
     [&]() { return void onBack; };
 };
 

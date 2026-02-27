@@ -1,13 +1,14 @@
 #include "sessions.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std: toTimestampString(const std::variant<std::chrono::system_clock::time_point, std:, double>& value, const std:& paramName) {
+std::string toTimestampString(const std::variant<std::chrono::system_clock::time_point, std::string, double>& value, const std::string& paramName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (!value) return undefined;
+    if (!value) return std::nullopt;
 
     auto timestamp;
 
@@ -19,7 +20,7 @@ std: toTimestampString(const std::variant<std::chrono::system_clock::time_point,
 
             // Check for invalid date
             if (isNaN(timestamp)) {
-                std::cout << "Invalid date std: for " + paramName + ": " + value << std::endl;
+                std::cout << "Invalid date std::string for " + paramName + ": " + value << std::endl;
                 return std::nullopt;
             }
             } else if (typeof value == "number") {
@@ -33,7 +34,7 @@ std: toTimestampString(const std::variant<std::chrono::system_clock::time_point,
 
 }
 
-asserts value is std: validateRequiredParam(const std:& value, const std:& paramName) {
+asserts value is std::string validateRequiredParam(const std::string& value, const std::string& paramName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

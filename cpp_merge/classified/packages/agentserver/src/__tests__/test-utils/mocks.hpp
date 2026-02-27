@@ -6,11 +6,11 @@
 #include "express.hpp"
 #include "bun:test.h"
 
-std::shared_ptr<IAgentRuntime> createMockAgentRuntime(Partial<std::shared_ptr<IAgentRuntime>> overrides = undefined);
+std::shared_ptr<IAgentRuntime> createMockAgentRuntime(Partial<std::shared_ptr<IAgentRuntime>> overrides = std::nullopt);
 
-any createMockDatabaseAdapter(any overrides = undefined);
+any createMockDatabaseAdapter(any overrides = std::nullopt);
 
-std::shared_ptr<Request> createMockRequest(Partial<std::shared_ptr<Request>> overrides = undefined);
+std::shared_ptr<Request> createMockRequest(Partial<std::shared_ptr<Request>> overrides = std::nullopt);
 
 std::shared_ptr<Response> createMockResponse();
 
@@ -20,8 +20,8 @@ any createMockWebsocket();
 
 any createMockHttpServer();
 
-std::shared_ptr<Service> createMockService(Partial<std::shared_ptr<Service>> overrides = undefined);
+std::shared_ptr<Service> createMockService(Partial<std::shared_ptr<Service>> overrides = std::nullopt);
 
-std::shared_ptr<Express::Multer::File> createMockUploadedFile(Partial<std::shared_ptr<Express::Multer::File>> overrides = undefined);
+std::shared_ptr<Express::Multer::File> createMockUploadedFile(Partial<std::shared_ptr<Express::Multer::File>> overrides = std::nullopt);
 
 #endif

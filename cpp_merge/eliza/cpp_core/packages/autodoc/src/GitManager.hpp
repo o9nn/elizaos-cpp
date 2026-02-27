@@ -22,14 +22,14 @@ namespace elizaos {
  * @property {string} body - The body of the pull request.
  * @property {string} head - The branch where changes are coming from.
  * @property {string} base - The branch where changes will be merged into.
- * @property {std:[]} [labels] - Optional array of labels to assign to the pull request.
- * @property {std:[]} [reviewers] - Optional array of GitHub usernames for reviewers of the pull request.
+ * @property {std::string[]} [labels] - Optional array of labels to assign to the pull request.
+ * @property {std::string[]} [reviewers] - Optional array of GitHub usernames for reviewers of the pull request.
  */
 struct CreatePullRequestOptions {
-    std: title;
-    std: body;
-    std: head;
-    std: base;
+    std::string title;
+    std::string body;
+    std::string head;
+    std::string base;
     std::optional<std::vector<std::string>> labels;
     std::optional<std::vector<std::string>> reviewers;
 };
@@ -82,7 +82,7 @@ class GitManager {
    * @param {Repository} repository - The repository instance to use
    * @throws {Error} Throws an error if the GITHUB_ACCESS_TOKEN is not std::set
    */
-  constructor(public repository: Repository) {
+  /* constructor */ (public repository: Repository) {
     if (!std::getenv("GITHUB_ACCESS_TOKEN")) {
       throw new Error('GITHUB_ACCESS_TOKEN is not set');
     }

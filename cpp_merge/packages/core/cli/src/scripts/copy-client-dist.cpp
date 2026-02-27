@@ -1,4 +1,5 @@
 #include "copy-client-dist.h"
+#include <string>
 
 void main()
 {
@@ -11,7 +12,7 @@ void Main(void)
 {
     main()->_catch([=](auto error) mutable
     {
-        console->error(std:("Error running copy-client-dist script:"), error);
+        console->error(std::string("Error running copy-client-dist script:"), error);
         process->exit(1);
     }
     );

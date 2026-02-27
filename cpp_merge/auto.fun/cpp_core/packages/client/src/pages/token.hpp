@@ -30,7 +30,7 @@ namespace elizaos {
 // ";
 
 // Add a custom component for middle ellipsis
-void MiddleEllipsis(std::optional<{ text: std:; suffix: std: }> { text });
+void MiddleEllipsis(std::optional<{ text: std::string; suffix: std::string }> { text });
 
 // Helper to safely get tabs object from localStorage
 

@@ -16,7 +16,7 @@ namespace elizaos {
 // Interface compatible with @solana/wallet-adapter-react for downstream components
 struct SolanaTransaction {
     Array<{ signatures;
-    { toBase58(): std: } publicKey;
+    { toBase58(): std::string } publicKey;
     Uint8Array | null signature;
 };
 
@@ -42,14 +42,14 @@ using MultiWalletContextValue = std::variant<{
 
 // Solana provider interface (Privy doesn't these types)
 struct SolanaProvider {
-    <T extends SolanaTransaction>[&](tx: T) { return Promise<T> signTransaction; };
-    <T extends SolanaTransaction>[&](txs: T[]) { return Promise<T[]> signAllTransactions; };
+    <T : public SolanaTransaction>[&](tx: T) { return Promise<T> signTransaction; };
+    <T : public SolanaTransaction>[&](txs: T[]) { return Promise<T[]> signAllTransactions; };
 };
 
 // Extended wallet type for accessing Privy's Solana provider
 struct PrivySolanaWallet {
-    std: address;
-    std::optional<std:> chainType;
+    std::string address;
+    std::optional<std::string> chainType;
     std::optional<[&]() { return Promise<SolanaProvider>> getProvider; };
 };
 

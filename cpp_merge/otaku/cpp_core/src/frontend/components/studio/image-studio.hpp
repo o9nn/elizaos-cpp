@@ -17,9 +17,9 @@ namespace elizaos {
 
 
 struct GeneratedImage {
-    std: id;
-    std: url;
-    std: prompt;
+    std::string id;
+    std::string url;
+    std::string prompt;
 };
 
 void ImageStudio();

@@ -28,7 +28,7 @@ namespace elizaos {
  * Checks if the default MinIO bucket exists and creates it if not.
  * Should only be called once during MinIO client initialization.
  */
-std::future<void> ensureMinioBucketExists(S3Client client, const std:& bucketName);
+std::future<void> ensureMinioBucketExists(S3Client client, const std::string& bucketName);
 
 /**
  * Initializes and returns the shared S3 client instance (MinIO or S3 compatible),

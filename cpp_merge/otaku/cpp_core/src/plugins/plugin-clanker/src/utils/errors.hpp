@@ -15,16 +15,16 @@ namespace elizaos {
 
 
 
-class ClankerError extends Error {
+class ClankerError : public Error {
   code: ErrorCode;
-  details?: std:;
-  suggestions?: std:[];
+  details?: std::string;
+  suggestions?: std::string[];
 
-  constructor(
+  /* constructor */ (
     code: ErrorCode,
-    message: std:,
-    details?: std:,
-    suggestions?: std:[],
+    message: std::string,
+    details?: std::string,
+    suggestions?: std::string[],
   ) {
     super(message);
     this.name = "ClankerError";
@@ -35,8 +35,8 @@ class ClankerError extends Error {
 
 ErrorResponse handleError(unknown error);
 
-bool validateAddress(const std:& address);
+bool validateAddress(const std::string& address);
 
-bool validateAmount(const std:& amount);
+bool validateAmount(const std::string& amount);
 
 } // namespace elizaos

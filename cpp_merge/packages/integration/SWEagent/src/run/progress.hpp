@@ -24,7 +24,7 @@ public:
 
     string yamlReportPath;
 
-    RunBatchProgressManager(double _numInstances, string yamlReportPath = undefined);
+    RunBatchProgressManager(double _numInstances, string yamlReportPath = std::nullopt);
     virtual double get_nCompleted();
     virtual void updateExitStatusTable();
     virtual string shortenStr(string s, double maxLen, boolean shortenLeft = false);

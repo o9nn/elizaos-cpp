@@ -1,8 +1,9 @@
 #include "todoDataService.test.h"
+#include <string>
 
 void Main(void)
 {
-    describe(std:("TodoService"), [=]() mutable
+    describe(std::string("TodoService"), [=]() mutable
     {
         shared<std::shared_ptr<IAgentRuntime>> mockRuntime;
         shared<std::shared_ptr<TodoDataManager>> service;
@@ -11,18 +12,18 @@ void Main(void)
         beforeEach([=]() mutable
         {
             mockThenable = object{
-                object::pair{std:("from"), mock()}, 
-                object::pair{std:("where"), mock()}, 
-                object::pair{std:("orderBy"), mock()}, 
-                object::pair{std:("limit"), mock()}, 
-                object::pair{std:("returning"), mock()}, 
-                object::pair{std:("values"), mock()}, 
-                object::pair{std:("set"), mock()}, 
-                object::pair{std:("then"), mock()}, 
-                object::pair{std:("execute"), mock()}, 
-                object::pair{std:("findFirst"), mock()}, 
-                object::pair{std:("all"), mock()}, 
-                object::pair{std:("$dynamic"), mock()}
+                object::pair{std::string("from"), mock()}, 
+                object::pair{std::string("where"), mock()}, 
+                object::pair{std::string("orderBy"), mock()}, 
+                object::pair{std::string("limit"), mock()}, 
+                object::pair{std::string("returning"), mock()}, 
+                object::pair{std::string("values"), mock()}, 
+                object::pair{std::string("set"), mock()}, 
+                object::pair{std::string("then"), mock()}, 
+                object::pair{std::string("execute"), mock()}, 
+                object::pair{std::string("findFirst"), mock()}, 
+                object::pair{std::string("all"), mock()}, 
+                object::pair{std::string("$dynamic"), mock()}
             };
             mockThenable->from["mockReturnThis"]();
             mockThenable->where["mockReturnThis"]();
@@ -35,15 +36,15 @@ void Main(void)
             mockThenable->all["mockReturnThis"]();
             mockThenable->$dynamic["mockReturnThis"]();
             mockDb = object{
-                object::pair{std:("insert"), mock()->mockReturnValue(mockThenable)}, 
-                object::pair{std:("select"), mock()->mockReturnValue(mockThenable)}, 
-                object::pair{std:("update"), mock()->mockReturnValue(mockThenable)}, 
-                object::pair{std:("delete"), mock()->mockReturnValue(mockThenable)}, 
-                object::pair{std:("execute"), mock()}
+                object::pair{std::string("insert"), mock()->mockReturnValue(mockThenable)}, 
+                object::pair{std::string("select"), mock()->mockReturnValue(mockThenable)}, 
+                object::pair{std::string("update"), mock()->mockReturnValue(mockThenable)}, 
+                object::pair{std::string("delete"), mock()->mockReturnValue(mockThenable)}, 
+                object::pair{std::string("execute"), mock()}
             };
             mockRuntime = createMockRuntime(object{
-                object::pair{std:("agentId"), as<std::shared_ptr<UUID>>(std:("test-agent"))}, 
-                object::pair{std:("db"), mockDb}
+                object::pair{std::string("agentId"), as<std::shared_ptr<UUID>>(std::string("test-agent"))}, 
+                object::pair{std::string("db"), mockDb}
             });
             service = createTodoDataService(mockRuntime);
         }
@@ -53,12 +54,12 @@ void Main(void)
             mock->restore();
         }
         );
-        describe(std:("createTodo"), [=]() mutable
+        describe(std::string("createTodo"), [=]() mutable
         {
-            it(std:("should create a new todo with tags"), [=]() mutable
+            it(std::string("should create a new todo with tags"), [=]() mutable
             {
                 shared mockTodo = object{
-                    object::pair{std:("id"), std:("00000000-0000-0000-0000-000000000001")}
+                    object::pair{std::string("id"), std::string("00000000-0000-0000-0000-000000000001")}
                 };
                 mockThenable->then["mockImplementationOnce"]([=](auto resolve) mutable
                 {
@@ -71,31 +72,31 @@ void Main(void)
                 }
                 );
                 auto todoId = std::async([=]() { service->createTodo(object{
-                    object::pair{std:("agentId"), as<std::shared_ptr<UUID>>(std:("agent-1"))}, 
-                    object::pair{std:("worldId"), as<std::shared_ptr<UUID>>(std:("world-1"))}, 
-                    object::pair{std:("roomId"), as<std::shared_ptr<UUID>>(std:("room-1"))}, 
-                    object::pair{std:("entityId"), as<std::shared_ptr<UUID>>(std:("entity-1"))}, 
-                    object::pair{std:("name"), std:("Test Todo")}, 
-                    object::pair{std:("description"), std:("Test Description")}, 
-                    object::pair{std:("type"), std:("one-off")}, 
-                    object::pair{std:("priority"), 2}, 
-                    object::pair{std:("isUrgent"), true}, 
-                    object::pair{std:("dueDate"), std::make_shared<Date>(std:("2024-12-31"))}, 
-                    object::pair{std:("metadata"), object{
-                        object::pair{std:("custom"), std:("data")}
+                    object::pair{std::string("agentId"), as<std::shared_ptr<UUID>>(std::string("agent-1"))}, 
+                    object::pair{std::string("worldId"), as<std::shared_ptr<UUID>>(std::string("world-1"))}, 
+                    object::pair{std::string("roomId"), as<std::shared_ptr<UUID>>(std::string("room-1"))}, 
+                    object::pair{std::string("entityId"), as<std::shared_ptr<UUID>>(std::string("entity-1"))}, 
+                    object::pair{std::string("name"), std::string("Test Todo")}, 
+                    object::pair{std::string("description"), std::string("Test Description")}, 
+                    object::pair{std::string("type"), std::string("one-off")}, 
+                    object::pair{std::string("priority"), 2}, 
+                    object::pair{std::string("isUrgent"), true}, 
+                    object::pair{std::string("dueDate"), std::make_shared<Date>(std::string("2024-12-31"))}, 
+                    object::pair{std::string("metadata"), object{
+                        object::pair{std::string("custom"), std::string("data")}
                     }}, 
-                    object::pair{std:("tags"), array<string>{ std:("TODO"), std:("urgent") }}
+                    object::pair{std::string("tags"), array<string>{ std::string("TODO"), std::string("urgent") }}
                 }); });
                 expect(mockDb->insert)->toHaveBeenCalledWith(todosTable);
                 expect(mockThenable->values)->toHaveBeenCalled();
                 expect(mockDb->insert)->toHaveBeenCalledWith(todoTagsTable);
-                expect(todoId)->toBe(std:("00000000-0000-0000-0000-000000000001"));
+                expect(todoId)->toBe(std::string("00000000-0000-0000-0000-000000000001"));
             }
             );
-            it(std:("should create daily todo"), [=]() mutable
+            it(std::string("should create daily todo"), [=]() mutable
             {
                 shared mockTodo = object{
-                    object::pair{std:("id"), std:("00000000-0000-0000-0000-000000000002")}
+                    object::pair{std::string("id"), std::string("00000000-0000-0000-0000-000000000002")}
                 };
                 mockThenable->then["mockImplementationOnce"]([=](auto resolve) mutable
                 {
@@ -108,49 +109,49 @@ void Main(void)
                 }
                 );
                 auto todoId = std::async([=]() { service->createTodo(object{
-                    object::pair{std:("agentId"), as<std::shared_ptr<UUID>>(std:("agent-1"))}, 
-                    object::pair{std:("worldId"), as<std::shared_ptr<UUID>>(std:("world-1"))}, 
-                    object::pair{std:("roomId"), as<std::shared_ptr<UUID>>(std:("room-1"))}, 
-                    object::pair{std:("entityId"), as<std::shared_ptr<UUID>>(std:("entity-1"))}, 
-                    object::pair{std:("name"), std:("Daily Exercise")}, 
-                    object::pair{std:("type"), std:("daily")}, 
-                    object::pair{std:("tags"), array<string>{ std:("TODO"), std:("daily") }}
+                    object::pair{std::string("agentId"), as<std::shared_ptr<UUID>>(std::string("agent-1"))}, 
+                    object::pair{std::string("worldId"), as<std::shared_ptr<UUID>>(std::string("world-1"))}, 
+                    object::pair{std::string("roomId"), as<std::shared_ptr<UUID>>(std::string("room-1"))}, 
+                    object::pair{std::string("entityId"), as<std::shared_ptr<UUID>>(std::string("entity-1"))}, 
+                    object::pair{std::string("name"), std::string("Daily Exercise")}, 
+                    object::pair{std::string("type"), std::string("daily")}, 
+                    object::pair{std::string("tags"), array<string>{ std::string("TODO"), std::string("daily") }}
                 }); });
                 expect(mockDb->insert)->toHaveBeenCalledWith(todosTable);
-                expect(todoId)->toBe(std:("00000000-0000-0000-0000-000000000002"));
+                expect(todoId)->toBe(std::string("00000000-0000-0000-0000-000000000002"));
             }
             );
-            it(std:("should handle creation failure"), [=]() mutable
+            it(std::string("should handle creation failure"), [=]() mutable
             {
                 mockThenable->then["mockImplementationOnce"]([=](auto resolve, auto reject) mutable
                 {
-                    return reject(std::make_shared<Error>(std:("DB error")));
+                    return reject(std::make_shared<Error>(std::string("DB error")));
                 }
                 );
                 std::async([=]() { expect(service->createTodo(object{
-                    object::pair{std:("agentId"), as<std::shared_ptr<UUID>>(std:("agent-1"))}, 
-                    object::pair{std:("worldId"), as<std::shared_ptr<UUID>>(std:("world-1"))}, 
-                    object::pair{std:("roomId"), as<std::shared_ptr<UUID>>(std:("room-1"))}, 
-                    object::pair{std:("entityId"), as<std::shared_ptr<UUID>>(std:("entity-1"))}, 
-                    object::pair{std:("name"), std:("Test Todo")}, 
-                    object::pair{std:("type"), std:("one-off")}
-                }))->rejects->toThrow(std:("DB error")); });
+                    object::pair{std::string("agentId"), as<std::shared_ptr<UUID>>(std::string("agent-1"))}, 
+                    object::pair{std::string("worldId"), as<std::shared_ptr<UUID>>(std::string("world-1"))}, 
+                    object::pair{std::string("roomId"), as<std::shared_ptr<UUID>>(std::string("room-1"))}, 
+                    object::pair{std::string("entityId"), as<std::shared_ptr<UUID>>(std::string("entity-1"))}, 
+                    object::pair{std::string("name"), std::string("Test Todo")}, 
+                    object::pair{std::string("type"), std::string("one-off")}
+                }))->rejects->toThrow(std::string("DB error")); });
             }
             );
         }
         );
-        describe(std:("getTodos"), [=]() mutable
+        describe(std::string("getTodos"), [=]() mutable
         {
-            it(std:("should get todos with filters"), [=]() mutable
+            it(std::string("should get todos with filters"), [=]() mutable
             {
                 shared mockTodos = array<object>{ object{
-                    object::pair{std:("id"), std:("00000000-0000-0000-0000-000000000001")}, 
-                    object::pair{std:("name"), std:("Todo 1")}, 
-                    object::pair{std:("type"), std:("one-off")}
+                    object::pair{std::string("id"), std::string("00000000-0000-0000-0000-000000000001")}, 
+                    object::pair{std::string("name"), std::string("Todo 1")}, 
+                    object::pair{std::string("type"), std::string("one-off")}
                 }, object{
-                    object::pair{std:("id"), std:("todo-2")}, 
-                    object::pair{std:("name"), std:("Todo 2")}, 
-                    object::pair{std:("type"), std:("daily")}
+                    object::pair{std::string("id"), std::string("todo-2")}, 
+                    object::pair{std::string("name"), std::string("Todo 2")}, 
+                    object::pair{std::string("type"), std::string("daily")}
                 } };
                 mockThenable->then["mockImplementationOnce"]([=](auto resolve) mutable
                 {
@@ -160,41 +161,41 @@ void Main(void)
                 mockThenable->then["mockImplementationOnce"]([=](auto resolve) mutable
                 {
                     return resolve(array<object>{ object{
-                        object::pair{std:("tag"), std:("TODO")}
+                        object::pair{std::string("tag"), std::string("TODO")}
                     }, object{
-                        object::pair{std:("tag"), std:("urgent")}
+                        object::pair{std::string("tag"), std::string("urgent")}
                     } });
                 }
                 );
                 mockThenable->then["mockImplementationOnce"]([=](auto resolve) mutable
                 {
                     return resolve(array<object>{ object{
-                        object::pair{std:("tag"), std:("TODO")}
+                        object::pair{std::string("tag"), std::string("TODO")}
                     }, object{
-                        object::pair{std:("tag"), std:("daily")}
+                        object::pair{std::string("tag"), std::string("daily")}
                     } });
                 }
                 );
                 auto todos = std::async([=]() { service->getTodos(object{
-                    object::pair{std:("entityId"), as<std::shared_ptr<UUID>>(std:("entity-1"))}, 
-                    object::pair{std:("type"), std:("one-off")}, 
-                    object::pair{std:("isCompleted"), false}
+                    object::pair{std::string("entityId"), as<std::shared_ptr<UUID>>(std::string("entity-1"))}, 
+                    object::pair{std::string("type"), std::string("one-off")}, 
+                    object::pair{std::string("isCompleted"), false}
                 }); });
                 expect(mockThenable->where)->toHaveBeenCalled();
                 expect(todos)->toHaveLength(2);
-                expect(const_(todos)[0]->tags)->toEqual(array<string>{ std:("TODO"), std:("urgent") });
-                expect(const_(todos)[1]->tags)->toEqual(array<string>{ std:("TODO"), std:("daily") });
+                expect(const_(todos)[0]->tags)->toEqual(array<string>{ std::string("TODO"), std::string("urgent") });
+                expect(const_(todos)[1]->tags)->toEqual(array<string>{ std::string("TODO"), std::string("daily") });
             }
             );
-            it(std:("should filter by tags"), [=]() mutable
+            it(std::string("should filter by tags"), [=]() mutable
             {
                 shared mockTodos = array<object>{ object{
-                    object::pair{std:("id"), std:("00000000-0000-0000-0000-000000000001")}, 
-                    object::pair{std:("name"), std:("Todo 1")}
+                    object::pair{std::string("id"), std::string("00000000-0000-0000-0000-000000000001")}, 
+                    object::pair{std::string("name"), std::string("Todo 1")}
                 } };
                 shared mockTags = array<object>{ object{
-                    object::pair{std:("todoId"), std:("00000000-0000-0000-0000-000000000001")}, 
-                    object::pair{std:("tag"), std:("urgent")}
+                    object::pair{std::string("todoId"), std::string("00000000-0000-0000-0000-000000000001")}, 
+                    object::pair{std::string("tag"), std::string("urgent")}
                 } };
                 mockThenable->then["mockImplementationOnce"]([=](auto resolve) mutable
                 {
@@ -207,30 +208,30 @@ void Main(void)
                 }
                 );
                 auto todos = std::async([=]() { service->getTodos(object{
-                    object::pair{std:("tags"), array<string>{ std:("urgent") }}
+                    object::pair{std::string("tags"), array<string>{ std::string("urgent") }}
                 }); });
                 expect(mockThenable->where)->toHaveBeenCalled();
                 expect(todos)->toHaveLength(1);
-                expect(const_(todos)[0]->id)->toBe(std:("00000000-0000-0000-0000-000000000001"));
-                expect(const_(todos)[0]->tags)->toEqual(array<string>{ std:("urgent") });
+                expect(const_(todos)[0]->id)->toBe(std::string("00000000-0000-0000-0000-000000000001"));
+                expect(const_(todos)[0]->tags)->toEqual(array<string>{ std::string("urgent") });
             }
             );
         }
         );
-        describe(std:("getTodo"), [=]() mutable
+        describe(std::string("getTodo"), [=]() mutable
         {
-            it(std:("should get a single todo by ID"), [=]() mutable
+            it(std::string("should get a single todo by ID"), [=]() mutable
             {
                 shared mockTodo = object{
-                    object::pair{std:("id"), std:("00000000-0000-0000-0000-000000000001")}, 
-                    object::pair{std:("name"), std:("Test Todo")}
+                    object::pair{std::string("id"), std::string("00000000-0000-0000-0000-000000000001")}, 
+                    object::pair{std::string("name"), std::string("Test Todo")}
                 };
                 shared mockTags = array<object>{ object{
-                    object::pair{std:("todoId"), std:("00000000-0000-0000-0000-000000000001")}, 
-                    object::pair{std:("tag"), std:("TODO")}
+                    object::pair{std::string("todoId"), std::string("00000000-0000-0000-0000-000000000001")}, 
+                    object::pair{std::string("tag"), std::string("TODO")}
                 }, object{
-                    object::pair{std:("todoId"), std:("00000000-0000-0000-0000-000000000001")}, 
-                    object::pair{std:("tag"), std:("urgent")}
+                    object::pair{std::string("todoId"), std::string("00000000-0000-0000-0000-000000000001")}, 
+                    object::pair{std::string("tag"), std::string("urgent")}
                 } };
                 mockThenable->then["mockImplementationOnce"]([=](auto resolve) mutable
                 {
@@ -242,84 +243,84 @@ void Main(void)
                     return resolve(mockTags);
                 }
                 );
-                auto todo = std::async([=]() { service->getTodo(as<std::shared_ptr<UUID>>(std:("00000000-0000-0000-0000-000000000001"))); });
+                auto todo = std::async([=]() { service->getTodo(as<std::shared_ptr<UUID>>(std::string("00000000-0000-0000-0000-000000000001"))); });
                 expect(mockThenable->where)->toHaveBeenCalled();
                 expect(todo)->not->toBeNull();
-                expect(todo->id)->toBe(std:("00000000-0000-0000-0000-000000000001"));
+                expect(todo->id)->toBe(std::string("00000000-0000-0000-0000-000000000001"));
                 expect(todo->tags)->toHaveLength(2);
-                expect(todo->tags)->toContain(std:("TODO"));
-                expect(todo->tags)->toContain(std:("urgent"));
+                expect(todo->tags)->toContain(std::string("TODO"));
+                expect(todo->tags)->toContain(std::string("urgent"));
             }
             );
-            it(std:("should return null for non-existent todo"), [=]() mutable
+            it(std::string("should return null for non-existent todo"), [=]() mutable
             {
                 mockThenable->then["mockImplementationOnce"]([=](auto resolve) mutable
                 {
                     return resolve(array<any>());
                 }
                 );
-                auto todo = std::async([=]() { service->getTodo(as<std::shared_ptr<UUID>>(std:("non-existent"))); });
+                auto todo = std::async([=]() { service->getTodo(as<std::shared_ptr<UUID>>(std::string("non-existent"))); });
                 expect(todo)->toBeNull();
             }
             );
         }
         );
-        describe(std:("updateTodo"), [=]() mutable
+        describe(std::string("updateTodo"), [=]() mutable
         {
-            it(std:("should update todo fields"), [=]() mutable
+            it(std::string("should update todo fields"), [=]() mutable
             {
                 mockThenable->then["mockImplementationOnce"]([=](auto resolve) mutable
                 {
                     return resolve(true);
                 }
                 );
-                auto success = std::async([=]() { service->updateTodo(as<std::shared_ptr<UUID>>(std:("00000000-0000-0000-0000-000000000001")), object{
-                    object::pair{std:("name"), std:("Updated Name")}, 
-                    object::pair{std:("priority"), 1}, 
-                    object::pair{std:("isCompleted"), true}, 
-                    object::pair{std:("completedAt"), std::make_shared<Date>()}
+                auto success = std::async([=]() { service->updateTodo(as<std::shared_ptr<UUID>>(std::string("00000000-0000-0000-0000-000000000001")), object{
+                    object::pair{std::string("name"), std::string("Updated Name")}, 
+                    object::pair{std::string("priority"), 1}, 
+                    object::pair{std::string("isCompleted"), true}, 
+                    object::pair{std::string("completedAt"), std::make_shared<Date>()}
                 }); });
                 expect(mockThenable->set)->toHaveBeenCalled();
                 expect(mockThenable->where)->toHaveBeenCalled();
                 expect(success)->toBe(true);
             }
             );
-            it(std:("should handle update failure"), [=]() mutable
+            it(std::string("should handle update failure"), [=]() mutable
             {
                 mockThenable->then["mockImplementationOnce"]([=](auto resolve, auto reject) mutable
                 {
-                    return reject(std::make_shared<Error>(std:("Update failed")));
+                    return reject(std::make_shared<Error>(std::string("Update failed")));
                 }
                 );
-                std::async([=]() { expect(service->updateTodo(as<std::shared_ptr<UUID>>(std:("00000000-0000-0000-0000-000000000002")), object{
-                    object::pair{std:("name"), std:("Updated Name")}
-                }))->rejects->toThrow(std:("Update failed")); });
+                std::async([=]() { expect(service->updateTodo(as<std::shared_ptr<UUID>>(std::string("00000000-0000-0000-0000-000000000002")), object{
+                    object::pair{std::string("name"), std::string("Updated Name")}
+                }))->rejects->toThrow(std::string("Update failed")); });
             }
             );
         }
         );
-        describe(std:("deleteTodo"), [=]() mutable
+        describe(std::string("deleteTodo"), [=]() mutable
         {
-            it(std:("should delete a todo"), [=]() mutable
+            it(std::string("should delete a todo"), [=]() mutable
             {
                 mockThenable->then["mockImplementationOnce"]([=](auto resolve) mutable
                 {
                     return resolve(true);
                 }
                 );
-                auto success = std::async([=]() { service->deleteTodo(as<std::shared_ptr<UUID>>(std:("00000000-0000-0000-0000-000000000001"))); });
+                auto success = std::async([=]() { service->deleteTodo(as<std::shared_ptr<UUID>>(std::string("00000000-0000-0000-0000-000000000001"))); });
                 expect(mockThenable->where)->toHaveBeenCalled();
                 expect(success)->toBe(true);
             }
             );
         }
         );
-        describe(std:("addTags"), [=]() mutable
+        describe(std::string("addTags"), [=]() mutable
         {
-            it(std:("should add new tags to a todo"), [=]() mutable
+            it(std::string("should add new tags to a todo"), [=]() mutable
             {
                 shared existingTags = array<object>{ object{
-                    object::pair{std:("tag"), std:("TODO")}
+                    object::pair{std::string("tag"), std::string("TODO")}
                 } };
                 mockThenable->then["mockImplementationOnce"]([=](auto resolve) mutable
                 {
@@ -331,25 +332,25 @@ void Main(void)
                     return resolve(true);
                 }
                 );
-                auto success = std::async([=]() { service->addTags(as<std::shared_ptr<UUID>>(std:("00000000-0000-0000-0000-000000000001")), array<string>{ std:("urgent"), std:("high-priority") }); });
+                auto success = std::async([=]() { service->addTags(as<std::shared_ptr<UUID>>(std::string("00000000-0000-0000-0000-000000000001")), array<string>{ std::string("urgent"), std::string("high-priority") }); });
                 expect(mockDb->select)->toHaveBeenCalled();
                 expect(mockDb->insert)->toHaveBeenCalledWith(todoTagsTable);
                 expect(success)->toBe(true);
             }
             );
-            it(std:("should not add duplicate tags"), [=]() mutable
+            it(std::string("should not add duplicate tags"), [=]() mutable
             {
                 shared existingTags = array<object>{ object{
-                    object::pair{std:("tag"), std:("TODO")}
+                    object::pair{std::string("tag"), std::string("TODO")}
                 }, object{
-                    object::pair{std:("tag"), std:("urgent")}
+                    object::pair{std::string("tag"), std::string("urgent")}
                 } };
                 mockThenable->then["mockImplementationOnce"]([=](auto resolve) mutable
                 {
                     return resolve(existingTags);
                 }
                 );
-                auto success = std::async([=]() { service->addTags(as<std::shared_ptr<UUID>>(std:("00000000-0000-0000-0000-000000000002")), array<string>{ std:("urgent"), std:("TODO") }); });
+                auto success = std::async([=]() { service->addTags(as<std::shared_ptr<UUID>>(std::string("00000000-0000-0000-0000-000000000002")), array<string>{ std::string("urgent"), std::string("TODO") }); });
                 expect(mockDb->select)->toHaveBeenCalled();
                 expect(mockDb->insert)->not->toHaveBeenCalled();
                 expect(success)->toBe(true);
@@ -357,16 +358,16 @@ void Main(void)
             );
         }
         );
-        describe(std:("removeTags"), [=]() mutable
+        describe(std::string("removeTags"), [=]() mutable
         {
-            it(std:("should remove tags from a todo"), [=]() mutable
+            it(std::string("should remove tags from a todo"), [=]() mutable
             {
                 mockThenable->then["mockImplementationOnce"]([=](auto resolve) mutable
                 {
                     return resolve(true);
                 }
                 );
-                auto success = std::async([=]() { service->removeTags(as<std::shared_ptr<UUID>>(std:("00000000-0000-0000-0000-000000000001")), array<string>{ std:("urgent"), std:("outdated") }); });
+                auto success = std::async([=]() { service->removeTags(as<std::shared_ptr<UUID>>(std::string("00000000-0000-0000-0000-000000000001")), array<string>{ std::string("urgent"), std::string("outdated") }); });
                 expect(mockDb->delete)->toHaveBeenCalledWith(todoTagsTable);
                 expect(mockThenable->where)->toHaveBeenCalled();
                 expect(success)->toBe(true);
@@ -374,25 +375,25 @@ void Main(void)
             );
         }
         );
-        describe(std:("getOverdueTodos"), [=]() mutable
+        describe(std::string("getOverdueTodos"), [=]() mutable
         {
-            it(std:("should get overdue todos"), [=]() mutable
+            it(std::string("should get overdue todos"), [=]() mutable
             {
                 auto yesterday = std::make_shared<Date>();
                 yesterday->setDate(yesterday->getDate() - 1);
                 shared mockTodos = array<object>{ object{
-                    object::pair{std:("id"), std:("00000000-0000-0000-0000-000000000001")}, 
-                    object::pair{std:("name"), std:("Overdue Task")}, 
-                    object::pair{std:("type"), std:("one-off")}, 
-                    object::pair{std:("dueDate"), yesterday}, 
-                    object::pair{std:("isCompleted"), false}
+                    object::pair{std::string("id"), std::string("00000000-0000-0000-0000-000000000001")}, 
+                    object::pair{std::string("name"), std::string("Overdue Task")}, 
+                    object::pair{std::string("type"), std::string("one-off")}, 
+                    object::pair{std::string("dueDate"), yesterday}, 
+                    object::pair{std::string("isCompleted"), false}
                 } };
                 shared mockTags = array<object>{ object{
-                    object::pair{std:("todoId"), std:("00000000-0000-0000-0000-000000000001")}, 
-                    object::pair{std:("tag"), std:("TODO")}
+                    object::pair{std::string("todoId"), std::string("00000000-0000-0000-0000-000000000001")}, 
+                    object::pair{std::string("tag"), std::string("TODO")}
                 }, object{
-                    object::pair{std:("todoId"), std:("00000000-0000-0000-0000-000000000001")}, 
-                    object::pair{std:("tag"), std:("urgent")}
+                    object::pair{std::string("todoId"), std::string("00000000-0000-0000-0000-000000000001")}, 
+                    object::pair{std::string("tag"), std::string("urgent")}
                 } };
                 mockThenable->then["mockImplementationOnce"]([=](auto resolve) mutable
                 {
@@ -407,62 +408,62 @@ void Main(void)
                 auto overdueTodos = std::async([=]() { service->getOverdueTodos(); });
                 expect(mockThenable->where)->toHaveBeenCalled();
                 expect(overdueTodos)->toHaveLength(1);
-                expect(const_(overdueTodos)[0]->name)->toBe(std:("Overdue Task"));
+                expect(const_(overdueTodos)[0]->name)->toBe(std::string("Overdue Task"));
             }
             );
         }
         );
-        describe(std:("resetDailyTodos"), [=]() mutable
+        describe(std::string("resetDailyTodos"), [=]() mutable
         {
-            it(std:("should reset completed daily todos"), [=]() mutable
+            it(std::string("should reset completed daily todos"), [=]() mutable
             {
                 mockThenable->then["mockImplementationOnce"]([=](auto resolve) mutable
                 {
                     return resolve(object{
-                        object::pair{std:("count"), 3}
+                        object::pair{std::string("count"), 3}
                     });
                 }
                 );
                 shared count = std::async([=]() { service->resetDailyTodos(object{
-                    object::pair{std:("agentId"), as<std::shared_ptr<UUID>>(std:("agent-1"))}
+                    object::pair{std::string("agentId"), as<std::shared_ptr<UUID>>(std::string("agent-1"))}
                 }); });
                 expect(count)->toBe(0);
             }
             );
-            it(std:("should return 0 if no todos to reset"), [=]() mutable
+            it(std::string("should return 0 if no todos to reset"), [=]() mutable
             {
                 mockThenable->then["mockImplementationOnce"]([=](auto resolve) mutable
                 {
                     return resolve(object{
-                        object::pair{std:("count"), 0}
+                        object::pair{std::string("count"), 0}
                     });
                 }
                 );
                 shared count = std::async([=]() { service->resetDailyTodos(object{
-                    object::pair{std:("agentId"), as<std::shared_ptr<UUID>>(std:("agent-1"))}
+                    object::pair{std::string("agentId"), as<std::shared_ptr<UUID>>(std::string("agent-1"))}
                 }); });
                 expect(count)->toBe(0);
             }
             );
         }
         );
-        describe(std:("error handling"), [=]() mutable
+        describe(std::string("error handling"), [=]() mutable
         {
-            it(std:("should handle missing database gracefully"), [=]() mutable
+            it(std::string("should handle missing database gracefully"), [=]() mutable
             {
-                mockRuntime->db = undefined;
+                mockRuntime->db = std::nullopt;
                 auto service = createTodoDataService(mockRuntime);
                 expect(service)->toBeDefined();
             }
             );
-            it(std:("should handle database errors gracefully"), [=]() mutable
+            it(std::string("should handle database errors gracefully"), [=]() mutable
             {
                 mockThenable->then["mockImplementationOnce"]([=](auto resolve, auto reject) mutable
                 {
-                    return reject(std::make_shared<Error>(std:("Database error")));
+                    return reject(std::make_shared<Error>(std::string("Database error")));
                 }
                 );
-                std::async([=]() { expect(service->getTodos())->rejects->toThrow(std:("Database error")); });
+                std::async([=]() { expect(service->getTodos())->rejects->toThrow(std::string("Database error")); });
             }
             );
         }

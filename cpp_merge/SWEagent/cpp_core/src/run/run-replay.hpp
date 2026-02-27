@@ -29,10 +29,10 @@ namespace elizaos {
  * Run replay configuration
  */
 struct RunReplayConfig {
-    std: trajPath;
+    std::string trajPath;
     std::optional<DeploymentConfig> deployment;
-    std::optional<std:> outputDir;
-    std::optional<std:> envVarPath;
+    std::optional<std::string> outputDir;
+    std::optional<std::string> envVarPath;
     std::optional<std::vector<std::string>> updateConfig;
 };
 
@@ -44,26 +44,26 @@ struct RunReplayConfig {
  * Run replay - replay an agent trajectory
  */
 class RunReplay {
-  private trajPath: std:;
+  private trajPath: std::string;
   // private deployment?: AbstractDeployment;  // Not used currently
-  private outputDir: std:;
+  private outputDir: std::string;
   private catchErrors;
   private requireZeroExitCode;
   private logger: AgentLogger;
   private trajData: TrajectoryData;
 
-  constructor(config: {
-    trajPath: std:;
+  /* constructor */ (config: {
+    trajPath: std::string;
     deployment?: AbstractDeployment;
-    outputDir?: std:;
-    updateConfig?: std:[];
+    outputDir?: std::string;
+    updateConfig?: std::string[];
     catchErrors?;
     requireZeroExitCode?;
   }) {
     this.trajPath = config.trajPath;
     // this.deployment = config.deployment;  // Not used currently
     this.outputDir = config.outputDir || '.';
-    // this._updateConfig = (config as std:).updateConfig || [];  // Not implemented yet
+    // this._updateConfig = (config as std::string).updateConfig || [];  // Not implemented yet
     this.catchErrors = config.catchErrors != false;
     this.requireZeroExitCode = config.requireZeroExitCode || false;
     this.logger = getLogger('run-replay', '🔄');

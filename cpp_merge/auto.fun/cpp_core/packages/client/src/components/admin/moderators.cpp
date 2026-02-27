@@ -1,4 +1,5 @@
 #include "moderators.hpp"
+#include <string>
 #include <map>
 #include <iostream>
 #include <stdexcept>
@@ -23,7 +24,7 @@ void AdminModerators() {
 
             // Add moderator mutation
             const auto addModeratorMutation = useMutation[&]({;
-                mutationFn: std::async (address: std:) {
+                mutationFn: std::async (address: std::string) {
                     return fetcher("/api/admin/moderators", "POST", { address });
                     },
                     onSuccess: [&]() {
@@ -40,7 +41,7 @@ void AdminModerators() {
 
                             // Remove moderator mutation
                             const auto removeModeratorMutation = useMutation[&]({;
-                                mutationFn: std::async (address: std:) {
+                                mutationFn: std::async (address: std::string) {
                                     return "fetcher[&](" + "/api/admin/moderators/" + address;
                                     },
                                     onSuccess: () {
@@ -62,7 +63,7 @@ void AdminModerators() {
                                                 addModeratorMutation.mutate(newModeratorAddress);
                                                 };
 
-                                                const auto removeModerator = [&](address: std:) {;
+                                                const auto removeModerator = [&](address: std::string) {;
                                                     if (!window.confirm("Are you sure you want to remove this moderator?")) {
                                                         return;
                                                     }

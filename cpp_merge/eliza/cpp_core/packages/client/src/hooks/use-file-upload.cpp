@@ -68,7 +68,7 @@ void useFileUpload(auto channelId) {
                             [selectedFiles];
                             );
 
-                            const auto removeFile = useCallback[&]((fileId: std:) {;
+                            const auto removeFile = useCallback[&]((fileId: std::string) {;
                                 setSelectedFiles[&]((prev) {
                                     const auto file = prev.find[&]((f) { return f.id == fileId); };
                                     if (file.blobUrl) {
@@ -105,8 +105,8 @@ void useFileUpload(auto channelId) {
                                                 files: UploadingFile[]
                                                 ): Promise<{
                                                     uploaded: Media[];
-                                                    failed: Array<{ file: UploadingFile; error: std: }>;
-                                                    blobUrls: std:[];
+                                                    failed: Array<{ file: UploadingFile; error: std::string }>;
+                                                    blobUrls: std::string[];
                                                     }> => {
                                                         if (!files.size()) return { uploaded: [], failed: [], blobUrls: [] };
 
@@ -158,7 +158,7 @@ void useFileUpload(auto channelId) {
                                                                                             if (result.value.success && 'media' in result.value) {
                                                                                                 uploaded.push_back(result.value.media);
                                                                                                 } else if ("file" in result.value) {
-                                                                                                    failed.push_back(result.value as { file: UploadingFile; error: std: });
+                                                                                                    failed.push_back(result.value as { file: UploadingFile; error: std::string });
                                                                                                 }
                                                                                                 } else {
                                                                                                     // Handle rejected std::promise
@@ -179,7 +179,7 @@ void useFileUpload(auto channelId) {
                                                                                                         [chatType, agentId, channelId, toast];
                                                                                                         );
 
-                                                                                                        const auto cleanupBlobUrls = useCallback[&]((urls: std:[]) {;
+                                                                                                        const auto cleanupBlobUrls = useCallback[&]((urls: std::string[]) {;
                                                                                                             urls.forEach[&]((url) {
                                                                                                                 URL.revokeObjectURL(url);
                                                                                                                 blobUrlsRef.current.delete(url);

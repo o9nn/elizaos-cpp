@@ -1,4 +1,5 @@
 #include "setEnvVar.hpp"
+#include <string>
 #include <vector>
 #include <future>
 #include <map>
@@ -42,7 +43,7 @@ std::future<std::vector<EnvVarUpdate>> extractEnvVarValues(IAgentRuntime runtime
                             });
 
                             // Custom parsing for arrays since parseJSONObjectFromText only handles objects
-                            auto parsed: std:;
+                            auto parsed: std::string;
                             const auto jsonBlockMatch = "result.match(/" + "json\n([\s\S]*?)\n";
 
                             try {
@@ -90,12 +91,12 @@ std::future<std::vector<EnvVarUpdate>> extractEnvVarValues(IAgentRuntime runtime
 
 std::future<> processEnvVarUpdates(IAgentRuntime runtime, const std::vector<EnvVarUpdate>& updates) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    updatedAny; messages: std:[]
+    updatedAny; messages: std::string[]
 }
 
 void getNextMissingEnvVar(EnvVarMetadata envVars) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    plugin: std:; varName: std:; config: EnvVarConfig
+    plugin: std::string; varName: std::string; config: EnvVarConfig
 }
 
 } // namespace elizaos

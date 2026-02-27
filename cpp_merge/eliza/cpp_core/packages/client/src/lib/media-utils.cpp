@@ -1,4 +1,5 @@
 #include "media-utils.hpp"
+#include <string>
 #include <vector>
 #include <map>
 #include <iostream>
@@ -6,7 +7,7 @@
 
 namespace elizaos {
 
-std: getFileExtension(const std:& url) {
+std::string getFileExtension(const std::string& url) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -20,7 +21,7 @@ std: getFileExtension(const std:& url) {
 
 }
 
-bool isImageUrl(const std:& url) {
+bool isImageUrl(const std::string& url) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto extension = getFileExtension(url);
@@ -28,7 +29,7 @@ bool isImageUrl(const std:& url) {
 
 }
 
-bool isVideoFileUrl(const std:& url) {
+bool isVideoFileUrl(const std::string& url) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto extension = getFileExtension(url);
@@ -36,12 +37,12 @@ bool isVideoFileUrl(const std:& url) {
 
 }
 
-void getVideoPlatformInfo(const std:& url) {
+void getVideoPlatformInfo(const std::string& url) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    platform: std:; id: std:; embedUrl: std:
+    platform: std::string; id: std::string; embedUrl: std::string
 }
 
-std::vector<MediaInfo> parseMediaFromText(const std:& text) {
+std::vector<MediaInfo> parseMediaFromText(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!text) return [];
@@ -90,7 +91,7 @@ std::vector<MediaInfo> parseMediaFromText(const std:& text) {
 
 }
 
-std: removeMediaUrlsFromText(const std:& text, const std::vector<MediaInfo>& mediaInfos) {
+std::string removeMediaUrlsFromText(const std::string& text, const std::vector<MediaInfo>& mediaInfos) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     auto cleanText = text;

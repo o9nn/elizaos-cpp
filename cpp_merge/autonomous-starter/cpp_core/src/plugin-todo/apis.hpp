@@ -138,7 +138,7 @@ namespace elizaos {
         // We need to provide necessary fields for createRoom
         // Assuming sensible defaults for source, type, etc.
           // --- Provide defaults or derive other fields as needed ---
-          // metadata: {} // Add std: specific metadata if needed
+          // metadata: {} // Add std::string specific metadata if needed
 
         // Fetch the newly created room to return it
 
@@ -149,12 +149,12 @@ namespace elizaos {
 
 // --- Helper Interface (mirror from updateTodo.ts) ---
 struct TaskUpdate {
-    std::optional<std:> name;
-    std::optional<std:> description;
+    std::optional<std::string> name;
+    std::optional<std::string> description;
     std::optional<int> priority;
     std::optional<bool> urgent;
-    std::optional<std:> dueDate;
-    std::optional<std:> recurring;
+    std::optional<std::string> dueDate;
+    std::optional<std::string> recurring;
 };
 
 

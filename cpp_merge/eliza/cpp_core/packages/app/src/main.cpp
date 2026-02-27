@@ -1,4 +1,5 @@
 #include "main.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -9,7 +10,7 @@ void ElizaWrapper() {
     try {
 
         const auto [status, setStatus] = useState<"starting" | "running" | "error">("starting");
-        const auto [error, setError] = useState<std: | nullptr>(nullptr);
+        const auto [error, setError] = useState<std::string | nullptr>(nullptr);
         const auto [retryCount, setRetryCount] = useState(0);
         const auto [isServerAccessible, setIsServerAccessible] = useState(false);
 

@@ -1,8 +1,9 @@
 #include "otc.pool-price.h"
+#include <string>
 
 void Main(void)
 {
-    describe(std:("OTC Pool Price Tests"), [=]() mutable
+    describe(std::string("OTC Pool Price Tests"), [=]() mutable
     {
         shared provider = anchor->AnchorProvider->env();
         anchor->setProvider(provider);
@@ -31,24 +32,24 @@ void Main(void)
             tokenMint = std::async([=]() { createMint(provider->connection, owner, owner->publicKey, nullptr, 9); });
             quoteMint = std::async([=]() { createMint(provider->connection, owner, owner->publicKey, nullptr, 6); });
             std::async([=]() { program->methods->initDesk(std::make_shared<anchor->BN>(5 * 100000000), std::make_shared<anchor->BN>(1800))->accounts(object{
-                object::pair{std:("payer"), owner->publicKey}, 
-                object::pair{std:("owner"), owner->publicKey}, 
-                object::pair{std:("agent"), owner->publicKey}, 
-                object::pair{std:("usdcMint"), quoteMint}, 
-                object::pair{std:("desk"), desk->publicKey}
+                object::pair{std::string("payer"), owner->publicKey}, 
+                object::pair{std::string("owner"), owner->publicKey}, 
+                object::pair{std::string("agent"), owner->publicKey}, 
+                object::pair{std::string("usdcMint"), quoteMint}, 
+                object::pair{std::string("desk"), desk->publicKey}
             })->signers(array<any>{ owner, desk })->rpc(); });
             poolAddress = Keypair->generate()->publicKey;
         }
         );
-        it(std:("registers token permissionlessly with pool"), [=]() mutable
+        it(std::string("registers token permissionlessly with pool"), [=]() mutable
         {
-            auto [registryPda] = PublicKey->findProgramAddressSync(array<std::shared_ptr<Buffer>>{ Buffer::from(std:("registry")), desk->publicKey->toBuffer(), tokenMint->toBuffer() }, program->programId);
+            auto [registryPda] = PublicKey->findProgramAddressSync(array<std::shared_ptr<Buffer>>{ Buffer::from(std::string("registry")), desk->publicKey->toBuffer(), tokenMint->toBuffer() }, program->programId);
             tokenRegistry = registryPda;
             auto priceFeedId = Buffer::alloc(32)->fill(1);
             std::async([=]() { program->methods->registerToken(array<any>{ priceFeedId }, poolAddress, 1)->accounts(object{
-                object::pair{std:("desk"), desk->publicKey}, 
-                object::pair{std:("payer"), payer->publicKey}, 
-                object::pair{std:("tokenMint"), tokenMint}
+                object::pair{std::string("desk"), desk->publicKey}, 
+                object::pair{std::string("payer"), payer->publicKey}, 
+                object::pair{std::string("tokenMint"), tokenMint}
             })->signers(array<any>{ payer })->rpc(); });
             auto regAccount = std::async([=]() { program->account->tokenRegistry->fetch(registryPda); });
             assert->equal(regAccount->desk->toBase58(), desk->publicKey->toBase58());
@@ -57,17 +58,17 @@ void Main(void)
             assert->equal(regAccount->registeredBy->toBase58(), payer->publicKey->toBase58());
         }
         );
-        it(std:("updates price from pool"), [=]() mutable
+        it(std::string("updates price from pool"), [=]() mutable
         {
             vaultA = std::async([=]() { createAccount(provider->connection, payer, tokenMint, poolAddress, Keypair->generate()); });
             vaultB = std::async([=]() { createAccount(provider->connection, payer, quoteMint, poolAddress, Keypair->generate()); });
             std::async([=]() { mintTo(provider->connection, payer, tokenMint, vaultA, owner, 100 * Math.pow(10, 9)); });
             std::async([=]() { mintTo(provider->connection, payer, quoteMint, vaultB, owner, 200 * Math.pow(10, 6)); });
             std::async([=]() { program->methods->updateTokenPriceFromPool()->accounts(object{
-                object::pair{std:("tokenRegistry"), tokenRegistry}, 
-                object::pair{std:("pool"), poolAddress}, 
-                object::pair{std:("vaultA"), vaultA}, 
-                object::pair{std:("vaultB"), vaultB}
+                object::pair{std::string("tokenRegistry"), tokenRegistry}, 
+                object::pair{std::string("pool"), poolAddress}, 
+                object::pair{std::string("vaultA"), vaultA}, 
+                object::pair{std::string("vaultB"), vaultB}
             })->rpc(); });
             auto regAccount = std::async([=]() { program->account->tokenRegistry->fetch(tokenRegistry); });
             auto price = regAccount->tokenUsdPrice8d->toNumber();

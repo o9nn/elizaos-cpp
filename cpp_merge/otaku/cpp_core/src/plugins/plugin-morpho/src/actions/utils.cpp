@@ -8,7 +8,7 @@
 
 namespace elizaos {
 
-std: fmtUSD(BigNumber::Value v, auto dp) {
+std::string fmtUSD(BigNumber::Value v, auto dp) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto n = toBN(v);
@@ -21,7 +21,7 @@ std: fmtUSD(BigNumber::Value v, auto dp) {
 
 }
 
-std: fmtPct(const std::optional<double>& v, auto dp) {
+std::string fmtPct(const std::optional<double>& v, auto dp) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (v == null || !isFinite(v)) return "—";
@@ -29,7 +29,7 @@ std: fmtPct(const std::optional<double>& v, auto dp) {
 
 }
 
-std: fmtTok(BigNumber::Value v, const std:& sym, auto dp) {
+std::string fmtTok(BigNumber::Value v, const std::string& sym, auto dp) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto s = stripZeros(toBN(v).toFormat(dp));
@@ -37,7 +37,7 @@ std: fmtTok(BigNumber::Value v, const std:& sym, auto dp) {
 
 }
 
-std: fmtNum(BigNumber::Value v, auto dp) {
+std::string fmtNum(BigNumber::Value v, auto dp) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto n = toBN(v);
@@ -45,7 +45,7 @@ std: fmtNum(BigNumber::Value v, auto dp) {
 
 }
 
-void shortHex(std::optional<std:> id, auto prefix, auto suffix) {
+void shortHex(std::optional<std::string> id, auto prefix, auto suffix) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!id) return "";
@@ -54,7 +54,7 @@ void shortHex(std::optional<std:> id, auto prefix, auto suffix) {
 
 }
 
-std: fmtAbbrev(BigNumber::Value v, auto digits) {
+std::string fmtAbbrev(BigNumber::Value v, auto digits) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto n = toBN(v);
@@ -86,14 +86,14 @@ std: fmtAbbrev(BigNumber::Value v, auto digits) {
 
 }
 
-std: fmtTokCompact(BigNumber::Value v, const std:& sym, auto digits) {
+std::string fmtTokCompact(BigNumber::Value v, const std::string& sym, auto digits) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return std::to_string(fmtAbbrev(v, digits)) + " " + sym;
 
 }
 
-std: formatDataList(const std:& title, const std::vector<std::string>& items) {
+std::string formatDataList(const std::string& title, const std::vector<std::string>& items) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto lines = "[" + "**" + title + "**";
@@ -111,7 +111,7 @@ std: formatDataList(const std:& title, const std::vector<std::string>& items) {
 
 }
 
-std: formatItemDetails(const std:& title, const std::unordered_map<std:, std:>& data, std::optional<std:> link) {
+std::string formatItemDetails(const std::string& title, const std::unordered_map<std::string, std::string>& data, std::optional<std::string> link) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto lines = "[" + "**" + title + "**";

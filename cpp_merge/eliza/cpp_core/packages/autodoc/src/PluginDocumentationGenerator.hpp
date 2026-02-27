@@ -23,7 +23,7 @@ namespace elizaos {
 
 class PluginDocumentationGenerator {
   private fullDocumentationGenerator: FullDocumentationGenerator;
-  constructor(
+  /* constructor */ (
     private aiService: AIService,
     private gitManager: GitManager,
     private configuration: Configuration

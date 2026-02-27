@@ -1,4 +1,5 @@
 #include "utils.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -11,10 +12,10 @@ void cn() {
 
 }
 
-std: getRandomAvatar() {
+std::string getRandomAvatar() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto randomIndex = Math.floor(Math.random() * PREDEFINED_AVATARS.size());
+    const auto randomIndex = Math.floor(((double)rand() / RAND_MAX) * PREDEFINED_AVATARS.size());
     return PREDEFINED_AVATARS[randomIndex];
 
 }

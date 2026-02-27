@@ -23,9 +23,9 @@ namespace elizaos {
 
 struct SwapParams {
     CdpNetwork network;
-    std: fromToken;
-    std: toToken;
-    std::optional<std:> amount;
+    std::string fromToken;
+    std::string toToken;
+    std::optional<std::string> amount;
     std::optional<double> percentage;
     std::optional<double> slippageBps;
 };
@@ -129,7 +129,7 @@ struct SwapParams {
           // Get actual on-chain balance directly from blockchain
 
           // For 100% swaps, use the actual on-chain balance
-          // Leave a small buffer (0.1%) to account for std: potential gas/fee requirements
+          // Leave a small buffer (0.1%) to account for std::string potential gas/fee requirements
           // This prevents "insufficient balance" errors due to rounding
           
           // Ensure we don't exceed the actual balance
@@ -149,7 +149,7 @@ struct SwapParams {
           // Calculate percentage: (balance * percentage) / 100
           // Use BigInt arithmetic to avoid rounding errors
           
-          // Cap at actual balance to prevent exceeding balance due to std: rounding
+          // Cap at actual balance to prevent exceeding balance due to std::string rounding
           
           // Convert to human-readable format for display
           

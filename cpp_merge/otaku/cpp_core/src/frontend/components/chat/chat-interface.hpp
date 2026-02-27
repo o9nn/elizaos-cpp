@@ -21,26 +21,26 @@ namespace elizaos {
 // Helper std::function to find all chart data in an action group
 
 struct Message {
-    std: id;
-    std: content;
-    std: authorId;
+    std::string id;
+    std::string content;
+    std::string authorId;
     double createdAt;
     bool isAgent;
-    std::optional<std:> senderName;
-    std::optional<std:> sourceType;
-    std::optional<std:> type;
-    std::optional<std:> rawMessage;
-    std::optional<std:> metadata;
-    std::optional<std:> thought;
+    std::optional<std::string> senderName;
+    std::optional<std::string> sourceType;
+    std::optional<std::string> type;
+    std::optional<std::string> rawMessage;
+    std::optional<std::string> metadata;
+    std::optional<std::string> thought;
 };
 
 struct ChatInterfaceProps {
     Agent agent;
-    std: userId;
-    std: serverId;
-    std: | null channelId;
+    std::string userId;
+    std::string serverId;
+    std::string | null channelId;
     std::optional<bool> isNewChatMode;
-    std::optional<[&](channelId: std:, channelName: std:) { return void> onChannelCreated; };
+    std::optional<[&](channelId: std::string, channelName: std::string) { return void> onChannelCreated; };
     std::optional<[&]() { return void // Callback when agent completes an action> onActionCompleted; };
 };
 

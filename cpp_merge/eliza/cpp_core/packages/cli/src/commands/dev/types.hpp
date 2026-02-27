@@ -25,7 +25,7 @@ namespace elizaos {
  */
 struct DevOptions {
     std::optional<double> port;
-    std::optional<std:> configDir;
+    std::optional<std::string> configDir;
     std::optional<std::vector<std::string>> character;
     std::optional<bool> configure;
 };
@@ -54,8 +54,8 @@ struct WatcherConfig {
  * Development context information
  */
 struct DevContext {
-    std: directory;
-    std: watchDirectory;
+    std::string directory;
+    std::string watchDirectory;
     bool buildRequired;
 };
 
@@ -63,8 +63,8 @@ struct DevContext {
  * File change event
  */
 struct FileChangeEvent {
-    std: type;
-    std: path;
+    std::string type;
+    std::string path;
 };
 
 /**

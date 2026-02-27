@@ -1,4 +1,5 @@
 #include "rooms.hpp"
+#include <string>
 #include <vector>
 #include <iostream>
 #include <stdexcept>
@@ -158,7 +159,7 @@ express::Router createRoomManagementRouter(ElizaOS elizaOS) {
                                                 }
 
                                                 // Enrich room data with world name
-                                                auto worldName: std: | std::nullopt;
+                                                auto worldName: std::string | std::nullopt;
                                                 if (room.worldId) {
                                                     const auto world = runtime.getWorld(room.worldId);
                                                     worldName = world.name;

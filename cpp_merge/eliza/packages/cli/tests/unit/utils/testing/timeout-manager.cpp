@@ -1,24 +1,25 @@
 #include "timeout-manager.test.h"
+#include <string>
 
 std::function<any(double)> originalmockExit = process->exit;
 any mockExit = mock([=]() mutable
 {
-    throw any(std::make_shared<Error>(std:("process.exit called")));
+    throw any(std::make_shared<Error>(std::string("process.exit called")));
 }
 );
 
 void Main(void)
 {
-    mock->module(std:("@elizaos/core"), [=]() mutable
+    mock->module(std::string("@elizaos/core"), [=]() mutable
     {
         return (object{
-            object::pair{std:("logger"), object{
-                object::pair{std:("error"), mock()}
+            object::pair{std::string("logger"), object{
+                object::pair{std::string("error"), mock()}
             }}
         });
     }
     );
-    describe(std:("TestTimeoutManager"), [=]() mutable
+    describe(std::string("TestTimeoutManager"), [=]() mutable
     {
         shared<std::shared_ptr<TestTimeoutManager>> manager;
         beforeEach([=]() mutable
@@ -31,9 +32,9 @@ void Main(void)
             manager->clearAll();
         }
         );
-        describe(std:("getInstance"), [=]() mutable
+        describe(std::string("getInstance"), [=]() mutable
         {
-            it(std:("should return singleton instance"), [=]() mutable
+            it(std::string("should return singleton instance"), [=]() mutable
             {
                 auto instance1 = TestTimeoutManager::getInstance();
                 auto instance2 = TestTimeoutManager::getInstance();
@@ -42,83 +43,83 @@ void Main(void)
             );
         }
         );
-        describe(std:("startTimeout"), [=]() mutable
+        describe(std::string("startTimeout"), [=]() mutable
         {
-            it(std:("should start timeout with default duration"), [=]() mutable
+            it(std::string("should start timeout with default duration"), [=]() mutable
             {
-                manager->startTimeout(std:("test1"));
+                manager->startTimeout(std::string("test1"));
                 expect(true)->toBe(true);
                 expect([=]() mutable
                 {
                     return mockExit;
                 }
-                )->toThrow(std:("process.exit called"));
+                )->toThrow(std::string("process.exit called"));
             }
             );
-            it(std:("should start timeout with custom duration"), [=]() mutable
+            it(std::string("should start timeout with custom duration"), [=]() mutable
             {
-                manager->startTimeout(std:("test2"), 5000);
+                manager->startTimeout(std::string("test2"), 5000);
                 expect(true)->toBe(true);
             }
             );
-            it(std:("should clear existing timeout when starting new one with same name"), [=]() mutable
+            it(std::string("should clear existing timeout when starting new one with same name"), [=]() mutable
             {
-                manager->startTimeout(std:("test3"), 5000);
-                manager->startTimeout(std:("test3"), 5000);
+                manager->startTimeout(std::string("test3"), 5000);
+                manager->startTimeout(std::string("test3"), 5000);
                 expect(true)->toBe(true);
             }
             );
         }
         );
-        describe(std:("clearTimeout"), [=]() mutable
+        describe(std::string("clearTimeout"), [=]() mutable
         {
-            it(std:("should clear timeout and prevent it from firing"), [=]() mutable
+            it(std::string("should clear timeout and prevent it from firing"), [=]() mutable
             {
-                manager->startTimeout(std:("test4"), 5000);
-                manager->clearTimeout(std:("test4"));
+                manager->startTimeout(std::string("test4"), 5000);
+                manager->clearTimeout(std::string("test4"));
                 expect(true)->toBe(true);
             }
             );
-            it(std:("should handle clearing non-existent timeout gracefully"), [=]() mutable
+            it(std::string("should handle clearing non-existent timeout gracefully"), [=]() mutable
             {
                 expect([=]() mutable
                 {
-                    return manager->clearTimeout(std:("non-existent"));
+                    return manager->clearTimeout(std::string("non-existent"));
                 }
                 )->not->toThrow();
             }
             );
         }
         );
-        describe(std:("clearAll"), [=]() mutable
+        describe(std::string("clearAll"), [=]() mutable
         {
-            it(std:("should clear all timeouts"), [=]() mutable
+            it(std::string("should clear all timeouts"), [=]() mutable
             {
-                manager->startTimeout(std:("test5"), 5000);
-                manager->startTimeout(std:("test6"), 10000);
-                manager->startTimeout(std:("test7"), 15000);
+                manager->startTimeout(std::string("test5"), 5000);
+                manager->startTimeout(std::string("test6"), 10000);
+                manager->startTimeout(std::string("test7"), 15000);
                 manager->clearAll();
                 expect(true)->toBe(true);
             }
             );
         }
         );
-        describe(std:("elapsed time tracking"), [=]() mutable
+        describe(std::string("elapsed time tracking"), [=]() mutable
         {
-            it(std:("should track elapsed time correctly"), [=]() mutable
+            it(std::string("should track elapsed time correctly"), [=]() mutable
             {
                 auto startTime = Date->now();
-                manager->startTimeout(std:("test8"), 10000);
+                manager->startTimeout(std::string("test8"), 10000);
                 expect(true)->toBe(true);
             }
             );
         }
         );
-        describe(std:("process.exit behavior"), [=]() mutable
+        describe(std::string("process.exit behavior"), [=]() mutable
         {
-            it(std:("should call process.exit with code 1 on timeout"), [=]() mutable
+            it(std::string("should call process.exit with code 1 on timeout"), [=]() mutable
             {
-                manager->startTimeout(std:("test9"), 1000);
+                manager->startTimeout(std::string("test9"), 1000);
                 expect(true)->toBe(true);
             }
             );

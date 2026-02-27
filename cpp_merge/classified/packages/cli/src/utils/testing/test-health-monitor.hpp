@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_CLI_SRC_UTILS_TESTING_TEST_HEALTH_MONITOR_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_CLI_SRC_UTILS_TESTING_TEST_HEALTH_MONITOR_H
 #include "core.hpp"
+#include <string>
 #include "node:fs.h"
 #include "node:path.h"
 // Using alias removed (invalid transpilation)
@@ -67,7 +68,7 @@ public:
 
     double maxHistorySize = 100;
 
-    TestHealthMonitor(string dataDir = std:(".test-health"));
+    TestHealthMonitor(string dataDir = std::string(".test-health"));
     virtual void ensureDataDir();
     virtual void recordTestRun(std::shared_ptr<TestRun> results);
     virtual void updateFlakyTests(std::shared_ptr<TestHealth> health);

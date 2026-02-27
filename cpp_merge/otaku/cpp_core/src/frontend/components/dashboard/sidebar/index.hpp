@@ -17,8 +17,8 @@ namespace elizaos {
 
 
 struct Channel {
-    std: id;
-    std: name;
+    std::string id;
+    std::string name;
     std::optional<double> createdAt;
     std::optional<double> lastMessageAt;
 };

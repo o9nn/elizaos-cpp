@@ -1,11 +1,12 @@
 #include "startPluginConfiguration.hpp"
+#include <string>
 #include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<std:> extractPluginNameFromMessage(IAgentRuntime runtime, const std:& text) {
+std::future<std::string> extractPluginNameFromMessage(IAgentRuntime runtime, const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // First try simple extraction patterns

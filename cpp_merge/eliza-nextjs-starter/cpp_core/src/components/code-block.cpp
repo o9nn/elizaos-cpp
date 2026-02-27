@@ -1,4 +1,5 @@
 #include "code-block.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -20,7 +21,7 @@ void CodeBlock() {
             setElement(node);
             }, []);
 
-            const auto getLanguageExtension = useCallback[&]((lang: std:) {;
+            const auto getLanguageExtension = useCallback[&]((lang: std::string) {;
                 switch (lang.toLowerCase()) {
                     // case "javascript":
                     // case "js":
@@ -90,7 +91,7 @@ void CodeBlock() {
                                             setTimeout[&](() {
                                                 setCopySuccess("");
                                                 }, 500);
-                                                } catch (err: std:) {
+                                                } catch (err: std::string) {
                                                     setCopySuccess("Failed to copy.");
                                                     std::cerr << err << std::endl;
                                                 }

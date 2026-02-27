@@ -1,4 +1,5 @@
 #include "chat.hpp"
+#include <string>
 #include <map>
 #include <iostream>
 #include <stdexcept>
@@ -10,7 +11,7 @@ void ChatPage() {
     try {
 
         const auto { publicKey } = useWallet();
-        const auto { mint: selectedMint } = useParams<{ mint: std: }>();
+        const auto { mint: selectedMint } = useParams<{ mint: std::string }>();
         const auto navigate = useNavigate();
         const auto { solPrice } = useSolPriceContext(); // Get SOL price;
 
@@ -52,7 +53,7 @@ void ChatPage() {
                             data.error || "Invalid response format for platform tokens",
                             );
                         }
-                        } catch (err: std:) {
+                        } catch (err: std::string) {
                             std::cerr << "Error fetching platform tokens:" << err << std::endl;
                             setErrorLoadingTokens(;
                             true /* instanceof check */ ? err : std::runtime_error("Failed to load tokens"),
@@ -139,7 +140,7 @@ void ChatPage() {
                                     (!sortedUserTokens || sortedUserTokens.size() == 0) && (;
                                     <div className="text-center text-neutral-500 text-xs p-2">;
                                     {publicKey;
-                                    ? "You don't seem to hold std: platform tokens.";
+                                    ? "You don't seem to hold std::string platform tokens.";
                                 : "Connect wallet to see your tokens."}
                                 </div>;
                             )}

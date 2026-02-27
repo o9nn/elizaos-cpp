@@ -8,14 +8,14 @@
 
 namespace elizaos {
 
-std::vector<Plugin> resolvePluginDependencies(const std::unordered_map<std:, Plugin>& availablePlugins, bool isTestMode = false) {
+std::vector<Plugin> resolvePluginDependencies(const std::unordered_map<std::string, Plugin>& availablePlugins, bool isTestMode = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::vector<std::string> resolutionOrder = [];
     const auto visited = new Set<string>();
     const auto visiting = new Set<string>();
 
-    std::function visit(pluginName: std:) {
+    std::function visit(pluginName: std::string) {
         if (!availablePlugins.has(pluginName)) {
             std::cout << "Plugin dependency \"" + pluginName + "\" not found and will be skipped." << std::endl;
             return;

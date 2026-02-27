@@ -1,11 +1,12 @@
 #include "index.hpp"
+#include <string>
 #include <optional>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-IDatabaseAdapter createDatabaseAdapter(std::optional<std:> config, UUID agentId) {
+IDatabaseAdapter createDatabaseAdapter(std::optional<std::string> config, UUID agentId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (config.postgresUrl) {

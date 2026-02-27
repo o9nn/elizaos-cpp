@@ -21,13 +21,13 @@ namespace elizaos {
  * Service builder class that provides type-safe service creation
  * with automatic type inference
  */
-class ServiceBuilder<TService extends Service = Service> {
-  protected serviceType: ServiceTypeName | std:;
+class ServiceBuilder<TService : public Service = Service> {
+  protected serviceType: ServiceTypeName | std::string;
   protected startFn: [&](runtime: IAgentRuntime) { return Promise<TService>; };
   protected stopFn?: [&]() { return Promise<void>; };
-  protected description: std:;
+  protected description: std::string;
 
-  constructor(serviceType: ServiceTypeName | std:) {
+  /* constructor */ (serviceType: ServiceTypeName | std::string) {
     this.serviceType = serviceType;
     this.description = '';
   }

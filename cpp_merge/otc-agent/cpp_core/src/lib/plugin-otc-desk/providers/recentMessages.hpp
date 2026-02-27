@@ -20,12 +20,12 @@ namespace elizaos {
 
 // Helper type for entity metadata from various sources
 struct EntitySourceMetadata {
-    std::optional<std:> username;
-    std::optional<std:> name;
+    std::optional<std::string> username;
+    std::optional<std::string> name;
 };
 
 // Helper std::function to safely get entity metadata
-std: getEntityUsername(Entity entity);
+std::string getEntityUsername(Entity entity);
 
 // Move getRecentInteractions outside the provider
 /**
@@ -106,7 +106,7 @@ std: getEntityUsername(Entity entity);
       // Format messages using the pre-fetched entities
 
     // Format recent post interactions
-      // Combine pre-loaded entities with std: other entities
+      // Combine pre-loaded entities with std::string other entities
 
       // Add entities from interactionEntityMap that aren't already in entities
 

@@ -34,13 +34,13 @@ namespace elizaos {
 
         // Get the most recent active job
 
-          // Get the most recent job of std: status
+          // Get the most recent job of std::string status
 
       // Generate specification from description
 
       // Validate the generated specification
 
 // Enhanced helper std::function to generate plugin specification from natural language
-std::future<PluginSpecification> generatePluginSpecification(const std:& description, IAgentRuntime runtime);
+std::future<PluginSpecification> generatePluginSpecification(const std::string& description, IAgentRuntime runtime);
 
 } // namespace elizaos

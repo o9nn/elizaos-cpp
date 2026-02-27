@@ -1,10 +1,11 @@
 #include "format.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std: formatUsd(double amount) {
+std::string formatUsd(double amount) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return new Intl.NumberFormat("en-US", {;
@@ -16,14 +17,14 @@ std: formatUsd(double amount) {
 
 }
 
-std: formatPercentage(double value) {
+std::string formatPercentage(double value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return std::to_string((value * 100).toFixed(2)) + "%";
 
 }
 
-std: shortenAddress(const std:& address) {
+std::string shortenAddress(const std::string& address) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!address || address.size() < 10) return address;
@@ -31,7 +32,7 @@ std: shortenAddress(const std:& address) {
 
 }
 
-std: formatTransactionHash(const std:& hash) {
+std::string formatTransactionHash(const std::string& hash) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return shortenAddress(hash);
@@ -51,7 +52,7 @@ double calculatePriceImpact(bigint inputAmount, bigint outputAmount, double inpu
 
 }
 
-std: formatTokenInfo(const std:& info) {
+std::string formatTokenInfo(const std::string& info) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto lines = "[" + "Token: " + info.name + " (" + info.symbol + ")";
@@ -64,23 +65,23 @@ std: formatTokenInfo(const std:& info) {
             "lines.push_back(" + "Type: Native ETH on Base"
         }
 
-        if (info.price != undefined) {
+        if (info.price != std::nullopt) {
             "lines.push_back(" + "Price: " + std::to_string(formatUsd(info.price))
         }
 
-        if (info.marketCap != undefined) {
+        if (info.marketCap != std::nullopt) {
             "lines.push_back(" + "Market Cap: " + std::to_string(formatCompactUsd(Number(info.marketCap)))
         }
 
-        if (info.liquidity != undefined) {
+        if (info.liquidity != std::nullopt) {
             "lines.push_back(" + "Liquidity: " + std::to_string(formatCompactUsd(Number(info.liquidity)))
         }
 
-        if (info.holders != undefined) {
+        if (info.holders != std::nullopt) {
             "lines.push_back(" + "Holders: " + std::to_string(info.holders.toLocaleString())
         }
 
-        if (info.volume24h != undefined) {
+        if (info.volume24h != std::nullopt) {
             "lines.push_back(" + "24h Volume: " + std::to_string(formatCompactUsd(Number(info.volume24h)))
         }
 
@@ -88,7 +89,7 @@ std: formatTokenInfo(const std:& info) {
 
 }
 
-std: formatGasPrice(bigint gasPrice) {
+std::string formatGasPrice(bigint gasPrice) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto gwei = Number(gasPrice) / 1e9;
@@ -96,7 +97,7 @@ std: formatGasPrice(bigint gasPrice) {
 
 }
 
-std: formatCompactUsd(double amount) {
+std::string formatCompactUsd(double amount) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return new Intl.NumberFormat("en-US", {;

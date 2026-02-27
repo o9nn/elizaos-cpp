@@ -81,7 +81,7 @@ public:
     virtual boolean isActive();
     virtual string getCurrentTranscription();
     virtual boolean isSpeechActive();
-    StreamingAudioCaptureService(std::shared_ptr<EventEmitterOptions> options = undefined);
+    StreamingAudioCaptureService(std::shared_ptr<EventEmitterOptions> options = std::nullopt);
 };
 
 #endif

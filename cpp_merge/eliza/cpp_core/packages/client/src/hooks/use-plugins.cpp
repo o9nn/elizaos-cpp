@@ -26,7 +26,7 @@ void usePlugins() {
 
                 // Extract plugin names from registry that support v1 and are plugins
                 const auto registryPlugins = Object.entries(registryData.registry || {});
-                .filter[&](([name, data]: [std:, PluginInfo]) {
+                .filter[&](([name, data]: [std::string, PluginInfo]) {
                     // Check if it's a plugin and has v1 support
                     const auto isPlugin = (std::find(name.begin(), name.end(), "plugin") != name.end());
                     const auto hasV1Support = data.supports.v1 == true;

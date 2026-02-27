@@ -35,7 +35,7 @@ namespace elizaos {
 /**
  * Get default output directory
  */
-std: getDefaultOutputDir(const std:& outputDir, ProblemStatement problemStatement, AgentConfig agent);
+std::string getDefaultOutputDir(const std::string& outputDir, ProblemStatement problemStatement, AgentConfig agent);
 
 /**
  * Run single instance
@@ -44,16 +44,16 @@ class RunSingle {
   private env: SWEEnv;
   private agent: AbstractAgent;
   private problemStatement: ProblemStatement | ProblemStatementConfig;
-  private outputDir: std:;
+  private outputDir: std::string;
   private hooks: RunHook[];
   private actions: RunSingleActionConfig;
   private logger: AgentLogger;
 
-  constructor(config: {
+  /* constructor */ (config: {
     env: SWEEnv;
     agent: AbstractAgent;
     problemStatement: ProblemStatement | ProblemStatementConfig;
-    outputDir?: std:;
+    outputDir?: std::string;
     hooks?: RunHook[];
     actions?: RunSingleActionConfig;
   }) {

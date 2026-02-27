@@ -62,6 +62,6 @@ public:
     string label;
 };
 
-std::shared_ptr<Promise<void>> sendCheckInReportForm(std::shared_ptr<HandlerCallback> callback, array<object> channels = undefined, object serverInfo = undefined);
+std::shared_ptr<Promise<void>> sendCheckInReportForm(std::shared_ptr<HandlerCallback> callback, array<object> channels = std::nullopt, object serverInfo = std::nullopt);
 
 #endif

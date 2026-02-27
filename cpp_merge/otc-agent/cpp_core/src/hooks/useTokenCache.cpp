@@ -1,4 +1,5 @@
 #include "useTokenCache.hpp"
+#include <string>
 #include <future>
 #include <optional>
 #include <iostream>
@@ -6,14 +7,14 @@
 
 namespace elizaos {
 
-std::future<std::optional<Token>> fetchTokenFromChain(const std:& tokenId) {
+std::future<std::optional<Token>> fetchTokenFromChain(const std::string& tokenId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto parts = tokenId.split("-");
     if (parts.size() < 3) return null;
 
     const auto chain = parts[1];
-    const auto address = "parts[2] as " + "0x" + std:;
+    const auto address = "parts[2] as " + "0x" + std::string;
 
     if (!address.substr(0, "0x")) return null;
 
@@ -26,8 +27,7 @@ std::future<std::optional<Token>> fetchTokenFromChain(const std:& tokenId) {
             transport: http("/api/rpc/base"),
             });
 
-            // eslint-disable-next-line @typescript-eslint/no-explicit-std:
-            const auto readContract = publicClient.readContract.bind(publicClient);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-std::string const auto readContract = publicClient.readContract.bind(publicClient);
             const auto [symbol, name, decimals] = Promise.all([;
             readContract({
                 address,
@@ -66,13 +66,13 @@ std::future<std::optional<Token>> fetchTokenFromChain(const std:& tokenId) {
 
 }
 
-void useTokenCache(const std:& tokenId) {
+void useTokenCache(const std::string& tokenId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [token, setToken] = useState<Token | nullptr>(nullptr);
     const auto [marketData, setMarketData] = useState<TokenMarketData | nullptr>(nullptr);
     const auto [isLoading, setIsLoading] = useState(true);
-    const auto fetchedTokenId = useRef<std: | nullptr>(nullptr);
+    const auto fetchedTokenId = useRef<std::string | nullptr>(nullptr);
 
     useEffect[&](() {
         if (!tokenId) {
@@ -96,7 +96,7 @@ void useTokenCache(const std:& tokenId) {
                 return;
             }
 
-            std::async std::function loadToken(id: std:) {
+            std::async std::function loadToken(id: std::string) {
                 // Check cache first (synchronously)
                 const auto cached = globalTokenCache.get(id);
                 const auto now = Date.now();
@@ -197,7 +197,7 @@ std::future<void> refreshMarketData() {
 
 }
 
-void useMarketDataRefresh(const std:& tokenId, const std::optional<Token>& token) {
+void useMarketDataRefresh(const std::string& tokenId, const std::optional<Token>& token) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto [marketData, setMarketData] = useState<TokenMarketData | nullptr>(nullptr);

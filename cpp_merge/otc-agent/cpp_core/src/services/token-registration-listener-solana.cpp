@@ -74,7 +74,7 @@ std::future<void> handleProgramLogs(Logs logs) {
 
     // Look for register_token instruction signature
     const auto hasRegisterToken = logMessages.some[&](;
-    (log: std:) { return (std::find(log.begin(), log.end(), "Instruction: RegisterToken") != log.end()) ||
+    (log: std::string) { return (std::find(log.begin(), log.end(), "Instruction: RegisterToken") != log.end()) ||
     (std::find(log.begin(), log.end(), "register_token") != log.end()),
     ); };
 

@@ -1,4 +1,5 @@
 #include "bun-installation-helper.hpp"
+#include <string>
 #include <future>
 #include <iostream>
 #include <stdexcept>
@@ -36,7 +37,7 @@ void displayBunInstallationTips() {
 
 }
 
-std: displayBunInstallationTipCompact() {
+std::string displayBunInstallationTipCompact() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto platform = process.platform;

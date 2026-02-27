@@ -16,9 +16,9 @@ namespace elizaos {
 struct AvatarPanelProps {
     Agent characterValue;
     { setCharacterValue;
-    std::optional<[&](avatarUrl: std:) { return void> updateAvatar; };
-    std::optional<<T>[&](path: std:, value: T) { return void> updateSetting; };
-    std::optional<<T>[&](path: std:, value: T) { return void> updateField; };
+    std::optional<[&](avatarUrl: std::string) { return void> updateAvatar; };
+    std::optional<<T>[&](path: std::string, value: T) { return void> updateSetting; };
+    std::optional<<T>[&](path: std::string, value: T) { return void> updateField; };
 };
 
 

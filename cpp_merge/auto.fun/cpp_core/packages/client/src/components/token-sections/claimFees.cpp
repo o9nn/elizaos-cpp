@@ -1,4 +1,5 @@
 #include "claimFees.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -19,7 +20,7 @@ void ClaimFees() {
                     headers: {
                         "Content-Type": "application/json",
                         },
-                        body: /* JSON.stringify */ std:({ tokenMint }),
+                        body: /* JSON.stringify */ std::string({ tokenMint }),
                         });
 
                         if (!response.ok) {

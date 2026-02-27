@@ -1,4 +1,5 @@
 #include "emoji-handler.hpp"
+#include <string>
 #include <cstdlib>
 #include <optional>
 #include <iostream>
@@ -38,7 +39,7 @@ bool detectEmojiSupport() {
         }
 
         // PowerShell 7+ generally supports emojis
-        if (std::getenv("PSModulePath") && std::getenv("POWERSHELL_TELEMETRY_OPTOUT") != undefined) {
+        if (std::getenv("PSModulePath") && std::getenv("POWERSHELL_TELEMETRY_OPTOUT") != std::nullopt) {
             return true;
         }
 
@@ -71,7 +72,7 @@ bool detectEmojiSupport() {
 
 }
 
-std: getEmoji(EmojiKey key) {
+std::string getEmoji(EmojiKey key) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto emojiDef = EMOJIS[key];
@@ -105,7 +106,7 @@ bool areEmojisEnabled() {
 
 }
 
-std: withEmoji(EmojiKey key, const std:& message, bool spacing = true) {
+std::string withEmoji(EmojiKey key, const std::string& message, bool spacing = true) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto emoji = getEmoji(key);

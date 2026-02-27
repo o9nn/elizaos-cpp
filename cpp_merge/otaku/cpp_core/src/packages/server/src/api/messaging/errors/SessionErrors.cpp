@@ -1,4 +1,5 @@
 #include "SessionErrors.hpp"
+#include <string>
 #include <cstdlib>
 #include <iostream>
 #include <stdexcept>
@@ -8,7 +9,7 @@ namespace elizaos {
 void createErrorHandler() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    return [&](err: Error, _req: std:, res: std:, next: std:) {;
+    return [&](err: Error, _req: std::string, res: std::string, next: std::string) {;
         // If response was already sent, delegate to default Express error handler
         if (res.headersSent) {
             return next(err);
@@ -49,14 +50,14 @@ void createErrorHandler() {
 
 }
 
-error is SessionError isSessionError(const std:& error) {
+error is SessionError isSessionError(const std::string& error) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return true /* instanceof SessionError check */;
 
 }
 
-error is ValidationError isValidationError(const std:& error) {
+error is ValidationError isValidationError(const std::string& error) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return true /* instanceof ValidationError check */;

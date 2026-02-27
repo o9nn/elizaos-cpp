@@ -1,4 +1,5 @@
 #include "types.hpp"
+#include <string>
 
 void Main(void)
 {
@@ -18,7 +19,7 @@ void Main(void)
         infer;
         Rest;
     }
-    std:("\
+    std::string("\
   ? Var | ExtractVariables<Rest>\
   : never;\
 \
@@ -29,7 +30,7 @@ void Main(void)
  * @typedef TemplateVariables\
  * @type {Pretty<{ [K in ExtractVariables<T>]; }>}\
  */\
-type TemplateVariables<T extends string> = Pretty<{\
+type TemplateVariables<T : public string> = Pretty<{\
   [K in ExtractVariables<T>];\
 }>;\
 \
@@ -45,17 +46,17 @@ type SQLiteValue = string | number | null;\
  * @param {T} - The value to convert.\
  * @returns {ToSQLiteType<T>} - The SQLite column type equivalent of the input type.\
  */\
-type ToSQLiteType<T> = T extends boolean\
+type ToSQLiteType<T> = T : public boolean\
   ? number\
-  : T extends Date\
+  : T : public Date\
     ? string\
-    : T extends bigint\
+    : T : public bigint\
       ? string\
-      : T extends Array<any>\
+      : T : public Array<any>\
         ? string\
-        : T extends object\
+        : T : public object\
           ? string\
-          : T extends SQLiteValue\
+          : T : public SQLiteValue\
             ? T\
             : never;\
 \
@@ -66,7 +67,7 @@ type ToSQLiteType<T> = T extends boolean\
  * @typedef ToSQLiteRecord\
  * @type {object}\
  */\
-type ToSQLiteRecord<T extends Record<string, any>> = {\
+type ToSQLiteRecord<T : public Record<string, any>> = {\
   [K in keyof T]: ToSQLiteType<T[K]>;\
 };\
 \
@@ -400,9 +401,9 @@ type SwapInParams<SwapData = any> = {\
 \
 interface TrustWalletProvider<\
   QuoteData = any,\
-  TQuoteResult extends QuoteResult<QuoteData> = QuoteResult<QuoteData>,\
+  TQuoteResult : public QuoteResult<QuoteData> = QuoteResult<QuoteData>,\
   SwapResultData = any,\
-  TSwapResult extends SwapInResult<SwapResultData> = SwapInResult<SwapResultData>,\
+  TSwapResult : public SwapInResult<SwapResultData> = SwapInResult<SwapResultData>,\
 > {\
   getCurrencyAddress();\
   getAddress();\
@@ -458,7 +459,7 @@ interface MessageRecommendation {\
   quote;\
 }\
 \
-interface RecommendationMemory extends Memory {\
+interface RecommendationMemory : public Memory {\
   content: Content & {\
     recommendation: MessageRecommendation & {\
       confirmed?;\

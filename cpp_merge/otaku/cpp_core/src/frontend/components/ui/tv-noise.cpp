@@ -60,14 +60,14 @@ void TVNoise(auto opacity, auto intensity, auto speed) {
 
                     // Generate random noise
                     for (int i = 0; i < data.size(); i += 4) {
-                        const auto noise = Math.random();
+                        const auto noise = ((double)rand() / RAND_MAX);
 
                         if (noise < intensity) {
-                            const auto value = Math.floor(Math.random() * 255);
+                            const auto value = Math.floor(((double)rand() / RAND_MAX) * 255);
                             data[i] = value; // Red;
                             data[i + 1] = value; // Green;
                             data[i + 2] = value; // Blue;
-                            data[i + 3] = Math.floor(Math.random() * 100 + 50); // Alpha (transparency);
+                            data[i + 3] = Math.floor(((double)rand() / RAND_MAX) * 100 + 50); // Alpha (transparency);
                             } else {
                                 data[i + 3] = 0; // Fully transparent;
                             }

@@ -29,7 +29,7 @@ using TvlSummary = {
 
 using ProtocolHistoryResponse = {
 
-std: determineSlug(ProtocolSummary summary);
+std::string determineSlug(ProtocolSummary summary);
 
 
 } // namespace elizaos

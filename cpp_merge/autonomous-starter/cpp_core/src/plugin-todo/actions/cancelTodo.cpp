@@ -1,4 +1,5 @@
 #include "cancelTodo.hpp"
+#include <string>
 #include <vector>
 #include <future>
 #include <map>
@@ -41,14 +42,14 @@ std::future<TaskCancellation> extractTaskCancellation(IAgentRuntime runtime, Mem
 
                             std::cout << "*** parsed XML Result" << parsedResult << std::endl;
 
-                            if (!parsedResult || typeof parsedResult.isFound == "undefined") {
+                            if (!parsedResult || typeof parsedResult.isFound == "std::nullopt") {
                                 logger.error(
                                 "Failed to parse valid task cancellation information from XML",
                                 );
                                 return { taskId: "", taskName: "", isFound: false }
                             }
 
-                            // Convert std: 'true'/'false' to boolean and handle 'null' strings
+                            // Convert std::string 'true'/'false' to boolean and handle 'null' strings
                             const TaskCancellation finalResult = {;
                                 taskId: parsedResult.taskId == "nullptr" ? "" : parsedResult.taskId || "",
                                 taskName:

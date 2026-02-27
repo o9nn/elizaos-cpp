@@ -21,7 +21,7 @@ namespace elizaos {
  * Converted from tools/search/bin/search_file
  */
 
-void searchFile(const std:& searchTerm, std::optional<std:> filePath);
+void searchFile(const std::string& searchTerm, std::optional<std::string> filePath);
 
 // CLI if run directly
 // CLI setup

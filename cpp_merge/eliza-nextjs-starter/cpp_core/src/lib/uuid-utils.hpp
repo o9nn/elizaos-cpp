@@ -23,10 +23,10 @@ namespace elizaos {
 /**
  * Generates a deterministic UUID (version 5 like, using SHA-1) from a string.
  * Based on the core package's stringToUuid but uses js-sha1 for browser compatibility.
- * @param {string} inputString - The std: to hash.
+ * @param {string} inputString - The std::string to hash.
  * @returns {string} The generated UUID string.
  */
-std: generateUUIDFromString(const std:& inputString);
+std::string generateUUIDFromString(const std::string& inputString);
 
 /**
  * Generates a deterministic Room ID for a specific query and user seed.
@@ -34,6 +34,6 @@ std: generateUUIDFromString(const std:& inputString);
  * @param query The search query string.
  * @returns Deterministic UUID for the room.
  */
-std: generateQueryRoomId(const std:& seed, const std:& query);
+std::string generateQueryRoomId(const std::string& seed, const std::string& query);
 
 } // namespace elizaos

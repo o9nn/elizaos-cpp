@@ -56,8 +56,8 @@ namespace elizaos {
     // Set token for all API calls
 
 struct Channel {
-    std: id;
-    std: name;
+    std::string id;
+    std::string name;
     std::optional<double> createdAt;
 };
 

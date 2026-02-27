@@ -1,4 +1,5 @@
 #include "dependency-resolver.h"
+#include <string>
 
 array<std::shared_ptr<Plugin>> resolvePluginDependencies(std::shared_ptr<Map<string, std::shared_ptr<Plugin>>> availablePlugins, boolean isTestMode)
 {
@@ -8,12 +9,12 @@ array<std::shared_ptr<Plugin>> resolvePluginDependencies(std::shared_ptr<Map<str
     auto visit = [=](auto pluginName) mutable
     {
         if (!availablePlugins->has(pluginName)) {
-            logger->warn(std:("Plugin dependency "") + pluginName + std:("" not found and will be skipped."));
+            logger->warn(std::string("Plugin dependency "") + pluginName + std::string("" not found and will be skipped."));
             return;
         }
         if (visited->has(pluginName)) return;
         if (visiting->has(pluginName)) {
-            logger->error(std:("Circular dependency detected involving plugin: ") + pluginName + string_empty);
+            logger->error(std::string("Circular dependency detected involving plugin: ") + pluginName + string_empty);
             return;
         }
         visiting->add(pluginName);
@@ -48,11 +49,11 @@ array<std::shared_ptr<Plugin>> resolvePluginDependencies(std::shared_ptr<Map<str
         return p;
     }
     ));
-    logger->info(std:("Final plugins being loaded: ") + finalPlugins->map([=](auto p) mutable
+    logger->info(std::string("Final plugins being loaded: ") + finalPlugins->map([=](auto p) mutable
     {
         return p->name;
     }
-    )->join(std:(", ")) + string_empty);
+    )->join(std::string(", ")) + string_empty);
     return finalPlugins;
 };
 

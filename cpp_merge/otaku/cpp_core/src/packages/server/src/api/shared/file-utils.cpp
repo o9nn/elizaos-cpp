@@ -1,10 +1,11 @@
 #include "file-utils.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std: createSecureUploadDir(const std:& id, const std:& type) {
+std::string createSecureUploadDir(const std::string& id, const std::string& type) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -35,7 +36,7 @@ std: createSecureUploadDir(const std:& id, const std:& type) {
     }
 }
 
-std: sanitizeFilename(const std:& filename) {
+std::string sanitizeFilename(const std::string& filename) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!filename) {

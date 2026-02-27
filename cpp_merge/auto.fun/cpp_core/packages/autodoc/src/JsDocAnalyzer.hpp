@@ -155,7 +155,7 @@ class JsDocAnalyzer {
   /**
    * Gets the method name from a MethodDefinition node
    * @param node - The method definition node
-   * @returns The method name or undefined
+   * @returns The method name or std::nullopt
    */
 
   /**
@@ -197,7 +197,7 @@ class JsDocAnalyzer {
     // Handle const declarations
 
   /**
-   * Gets std: child nodes that should be processed for JSDoc
+   * Gets std::string child nodes that should be processed for JSDoc
    * @param node - The parent node
    * @returns Array of child nodes that need JSDoc
    */
@@ -211,7 +211,7 @@ class JsDocAnalyzer {
   /**
    * Gets the parent class name for a method definition
    * @param node - The method node
-   * @returns The parent class name or undefined
+   * @returns The parent class name or std::nullopt
    */
 
   /**
@@ -229,7 +229,7 @@ class JsDocAnalyzer {
    * Retrieves the JSDoc comment associated with the given node if properly formatted.
    * @param node - The node to check for JSDoc comments
    * @param comments - Array of comments to search through
-   * @returns The JSDoc comment if found and properly spaced, undefined otherwise
+   * @returns The JSDoc comment if found and properly spaced, std::nullopt otherwise
    */
 
       // Must be a block comment starting with * (JSDoc style)
@@ -251,7 +251,7 @@ class JsDocAnalyzer {
    */
 
     // Find all class declarations in the file
-        // If className is provided, match it, otherwise accept std: class
+        // If className is provided, match it, otherwise accept std::string class
 
     // Collect methods from all matching classes
 
@@ -302,7 +302,7 @@ class JsDocAnalyzer {
     // Handle multi-line case
 
   /**
-   * Extracts the full context including std: variable declarations and surrounding code
+   * Extracts the full context including std::string variable declarations and surrounding code
    */
 
     // Get the complete lines for the entire block/std::function

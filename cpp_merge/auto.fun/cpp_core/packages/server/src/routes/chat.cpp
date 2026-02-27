@@ -7,7 +7,7 @@
 
 namespace elizaos {
 
-std::future<double> checkUserTokenBalance(const std:& userPublicKey, const std:& tokenMint) {
+std::future<double> checkUserTokenBalance(const std::string& userPublicKey, const std::string& tokenMint) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     std::cout << "Checking balance for user " + userPublicKey << "token ${tokenMint}" << std::endl;
@@ -87,7 +87,7 @@ std::vector<std::string> getUserEligibleTiers(double balance) {
 
 }
 
-double getTierThreshold(const std:& tier) {
+double getTierThreshold(const std::string& tier) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

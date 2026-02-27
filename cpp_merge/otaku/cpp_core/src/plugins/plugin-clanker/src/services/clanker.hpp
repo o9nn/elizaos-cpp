@@ -18,17 +18,17 @@ namespace elizaos {
 
 
 // Utility std::function to sanitize errors by converting BigInt values to strings
-std: sanitizeError(const std:& error);
+std::string sanitizeError(const std::string& error);
 
 // Helper std::function to detect platform from URL
-std: detectPlatform(const std:& url);
+std::string detectPlatform(const std::string& url);
 
-class ClankerService extends Service {
+class ClankerService : public Service {
   static serviceType = "clanker";
   capabilityDescription = "";
   private transactionManager: CdpTransactionManager;
 
-  constructor(runtime: IAgentRuntime) {
+  /* constructor */ (runtime: IAgentRuntime) {
     super(runtime);
     this.transactionManager = CdpTransactionManager.getInstance();
   }
@@ -37,7 +37,7 @@ class ClankerService extends Service {
 
       // Validate parameters
 
-          // Transform std: URLs to objects with platform and url
+          // Transform std::string URLs to objects with platform and url
 
           // Sanitize error to remove BigInt before logging/throwing
 

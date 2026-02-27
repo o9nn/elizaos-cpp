@@ -20,12 +20,12 @@ namespace elizaos {
 /**
  * Formats environment variable status for display
  */
-std: formatEnvVarStatus(EnvVarConfig config, bool showValues = false);
+std::string formatEnvVarStatus(EnvVarConfig config, bool showValues = false);
 
 /**
  * Generates a comprehensive status message for all environment variables
  */
-std: generateEnvStatusMessage(EnvVarMetadata envVars, bool showValues = false);
+std::string generateEnvStatusMessage(EnvVarMetadata envVars, bool showValues = false);
 
 /**
  * Environment status provider that shows current state of all environment variables

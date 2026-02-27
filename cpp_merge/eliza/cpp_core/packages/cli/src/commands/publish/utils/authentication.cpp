@@ -1,11 +1,12 @@
 #include "authentication.hpp"
+#include <string>
 #include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<std:> getNpmUsername() {
+std::future<std::string> getNpmUsername() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     console.info(

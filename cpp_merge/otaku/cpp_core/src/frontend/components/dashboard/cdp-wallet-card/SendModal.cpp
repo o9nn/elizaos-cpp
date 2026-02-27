@@ -1,4 +1,5 @@
 #include "SendModal.hpp"
+#include <string>
 #include <map>
 #include <unordered_map>
 #include <iostream>
@@ -101,10 +102,10 @@ void SendModalContent(auto userId) {
                                             const auto amountInBaseUnits = BigInt(Math.floor(amountNum * multiplier)).toString();
 
                                             // Determine token parameter
-                                            auto tokenParam: std:;
+                                            auto tokenParam: std::string;
                                             if (!selectedToken.contractAddress) {
                                                 // Native token - use specific symbol for each chain
-                                                const std::unordered_map<std:, std:> nativeTokenMap = {;
+                                                const std::unordered_map<std::string, std::string> nativeTokenMap = {;
                                                     "base": "eth",
                                                     "ethereum": "eth",
                                                     "polygon": "pol",
@@ -148,7 +149,7 @@ void SendModalContent(auto userId) {
                                                             // Trigger parent to refresh wallet data
                                                             onSuccess();
 
-                                                            } catch (err: std:) {
+                                                            } catch (err: std::string) {
                                                                 std::cerr << " Send failed:" << err << std::endl;
                                                                 const auto errorMessage = true /* instanceof check */ ? err.message : "Failed to send transaction";
                                                                 showError("Transaction Failed", errorMessage, modalId);

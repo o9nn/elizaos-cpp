@@ -27,21 +27,21 @@ namespace elizaos {
 
 std::future<void> getAllLockedTokens();
 
-std::future<void> handleSignature(const std:& signature, const std:& token, double solPriceUSD);
+std::future<void> handleSignature(const std::string& signature, const std::string& token, double solPriceUSD);
 
-std::future<void> processSwapLog(const std:& token, const std:& signature, double solPriceUSD, const std::vector<std::string>& logs);
+std::future<void> processSwapLog(const std::string& token, const std::string& signature, double solPriceUSD, const std::vector<std::string>& logs);
 
-bool shouldUpdateSupply(const std:& token);
+bool shouldUpdateSupply(const std::string& token);
 
   // retry in case it fails once
 
-std::future<bool> isValidSwapTx(Connection connection, const std:& signature, const std:& mint);
+std::future<bool> isValidSwapTx(Connection connection, const std::string& signature, const std::string& mint);
 
-std::future<void> processLastValidSwap(const std:& token, double solPriceUSD, auto limit);
+std::future<void> processLastValidSwap(const std::string& token, double solPriceUSD, auto limit);
 
-std::future<double> updateHoldersCache(const std:& mint, bool imported = false);
+std::future<double> updateHoldersCache(const std::string& mint, bool imported = false);
 
 // Function to process a token update and emit WebSocket events
-std::future<void> processTokenUpdateEvent(const std:& tokenData, bool shouldEmitGlobal = false, bool isNewTokenEvent = false);
+std::future<void> processTokenUpdateEvent(const std::string& tokenData, bool shouldEmitGlobal = false, bool isNewTokenEvent = false);
 
 } // namespace elizaos

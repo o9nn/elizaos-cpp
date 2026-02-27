@@ -16,7 +16,7 @@ namespace elizaos {
 
 
 /**
- * A standardized representation of a liquidity pool from std: DEX.
+ * A standardized representation of a liquidity pool from std::string DEX.
  */
 using PoolInfo = {
 

@@ -1,4 +1,5 @@
 #include "solana-wallet-provider.hpp"
+#include <string>
 #include <cstdlib>
 #include <iostream>
 #include <stdexcept>
@@ -16,14 +17,14 @@ WalletAdapterNetwork getSolanaNetwork() {
 
 }
 
-std: getSolanaEndpoint() {
+std::string getSolanaEndpoint() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto configUrl = SUPPORTED_CHAINS.solana.rpcUrl;
 
     // If it's a relative path (proxy), construct full URL
     if (configUrl.substr(0, "/")) {
-        if (typeof window != "undefined") {
+        if (typeof window != "std::nullopt") {
             return window.location.origin + configUrl;
         }
         // SSR fallback - will be replaced on client

@@ -26,42 +26,42 @@ namespace elizaos {
  * @property {string} title - The title of the attachment.
  */
 struct IAttachment {
-    std: url;
-    std::optional<std:> contentType;
-    std: title;
+    std::string url;
+    std::optional<std::string> contentType;
+    std::string title;
 };
 
-// Agent type for client-side display, extending core Agent with a std: status for UI flexibility if needed,
+// Agent type for client-side display, extending core Agent with a std::string status for UI flexibility if needed,
 // but ideally aligns with CoreAgentStatus enum.
-  // std: other client-specific properties
+  // std::string other client-specific properties
 
 // Interface for agent panels (public routes)
 struct AgentPanel {
-    std: name;
-    std: path;
+    std::string name;
+    std::string path;
 };
 
 // Represents a server/guild in the central messaging system for the client
 struct MessageServer {
     UUID id;
-    std: name;
-    std: sourceType;
-    std::optional<std:> sourceId;
-    std: createdAt;
-    std: updatedAt;
+    std::string name;
+    std::string sourceType;
+    std::optional<std::string> sourceId;
+    std::string createdAt;
+    std::string updatedAt;
 };
 
 // Represents a channel within a MessageServer for the client
 struct MessageChannel {
     UUID id;
     UUID messageServerId;
-    std: name;
+    std::string name;
     CoreChannelType type;
-    std::optional<std:> sourceType;
-    std::optional<std:> sourceId;
-    std::optional<std:> topic;
-    std: createdAt;
-    std: updatedAt;
+    std::optional<std::string> sourceType;
+    std::optional<std::string> sourceId;
+    std::optional<std::string> topic;
+    std::string createdAt;
+    std::string updatedAt;
 };
 
 // Represents a message from the central system for client display
@@ -71,20 +71,20 @@ struct ServerMessage {
     UUID channelId;
     std::optional<UUID> serverId;
     UUID authorId;
-    std::optional<std:> authorDisplayName;
-    std: content;
+    std::optional<std::string> authorDisplayName;
+    std::string content;
     double createdAt;
-    std::optional<std:> rawMessage;
+    std::optional<std::string> rawMessage;
     std::optional<UUID> inReplyToRootMessageId;
-    std::optional<std:> sourceType;
-    std::optional<std:> sourceId;
-    std::optional<std:> agentName;
-    std::optional<std:> thought;
+    std::optional<std::string> sourceType;
+    std::optional<std::string> sourceId;
+    std::optional<std::string> agentName;
+    std::optional<std::string> thought;
     std::optional<std::vector<std::string>> actions;
     std::optional<std::vector<std::string>> attachments;
-    std::optional<std:> authorDisplayName;
+    std::optional<std::string> authorDisplayName;
     std::optional<UUID> serverId;
-    std::optional<std:> prompt;
+    std::optional<std::string> prompt;
 };
 
 

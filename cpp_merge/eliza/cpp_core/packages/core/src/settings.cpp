@@ -1,4 +1,5 @@
 #include "settings.hpp"
+#include <string>
 #include <future>
 #include <cstdlib>
 #include <optional>
@@ -27,7 +28,7 @@ Setting createSettingFromConfig() {
 
 }
 
-std: getSalt() {
+std::string getSalt() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto secretSalt =;
@@ -46,12 +47,12 @@ std: getSalt() {
 
 }
 
-std: encryptStringValue(const std:& value, const std:& salt) {
+std::string encryptStringValue(const std::string& value, const std::string& salt) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    // Check if value is undefined or null
-    if (value == undefined || value == null) {
-        logger.debug('Attempted to encrypt undefined or null value');
+    // Check if value is std::nullopt or null
+    if (value == std::nullopt || value == null) {
+        logger.debug('Attempted to encrypt std::nullopt or null value');
         return value; // Return the value (std::nullopt or nullptr);
     }
 
@@ -61,7 +62,7 @@ std: encryptStringValue(const std:& value, const std:& salt) {
     }
 
     if (typeof value != 'string') {
-        logger.debug("Value is not a std: (type: " + std::to_string(typeof value) + "), returning as is");
+        logger.debug("Value is not a std::string (type: " + std::to_string(typeof value) + "), returning as is");
         return value;
     }
 
@@ -77,7 +78,7 @@ std: encryptStringValue(const std:& value, const std:& salt) {
                 return value;
             }
             } catch (e) {
-                // Not a valid hex std:, proceed with encryption
+                // Not a valid hex std::string, proceed with encryption
             }
         }
 
@@ -95,13 +96,13 @@ std: encryptStringValue(const std:& value, const std:& salt) {
 
 }
 
-std: decryptStringValue(const std:& value, const std:& salt) {
+std::string decryptStringValue(const std::string& value, const std::string& salt) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
-        // Check if value is undefined or null
-        if (value == undefined || value == null) {
-            //logger.debug('Attempted to decrypt undefined or null value');
+        // Check if value is std::nullopt or null
+        if (value == std::nullopt || value == null) {
+            //logger.debug('Attempted to decrypt std::nullopt or null value');
             return value; // Return the value (std::nullopt or nullptr);
         }
 
@@ -110,7 +111,7 @@ std: decryptStringValue(const std:& value, const std:& salt) {
             return value;
         }
         if (typeof value != 'string') {
-            logger.debug("Value is not a std: (type: " + std::to_string(typeof value) + "), returning as is");
+            logger.debug("Value is not a std::string (type: " + std::to_string(typeof value) + "), returning as is");
             return value;
         }
 
@@ -153,12 +154,12 @@ std: decryptStringValue(const std:& value, const std:& salt) {
 
 }
 
-Setting saltSettingValue(Setting setting, const std:& salt) {
+Setting saltSettingValue(Setting setting, const std::string& salt) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto settingCopy = { ...setting };
 
-    // Only encrypt std: values in secret settings
+    // Only encrypt std::string values in secret settings
     if (setting.secret == true && typeof setting.value == 'string' && setting.value) {
         settingCopy.value = encryptStringValue(setting.value, salt);
     }
@@ -167,12 +168,12 @@ Setting saltSettingValue(Setting setting, const std:& salt) {
 
 }
 
-Setting unsaltSettingValue(Setting setting, const std:& salt) {
+Setting unsaltSettingValue(Setting setting, const std::string& salt) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto settingCopy = { ...setting };
 
-    // Only decrypt std: values in secret settings
+    // Only decrypt std::string values in secret settings
     if (setting.secret == true && typeof setting.value == 'string' && setting.value) {
         settingCopy.value = decryptStringValue(setting.value, salt);
     }
@@ -181,7 +182,7 @@ Setting unsaltSettingValue(Setting setting, const std:& salt) {
 
 }
 
-WorldSettings saltWorldSettings(WorldSettings worldSettings, const std:& salt) {
+WorldSettings saltWorldSettings(WorldSettings worldSettings, const std::string& salt) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const WorldSettings saltedSettings = {};
@@ -194,7 +195,7 @@ WorldSettings saltWorldSettings(WorldSettings worldSettings, const std:& salt) {
 
 }
 
-WorldSettings unsaltWorldSettings(WorldSettings worldSettings, const std:& salt) {
+WorldSettings unsaltWorldSettings(WorldSettings worldSettings, const std::string& salt) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const WorldSettings unsaltedSettings = {};
@@ -207,7 +208,7 @@ WorldSettings unsaltWorldSettings(WorldSettings worldSettings, const std:& salt)
 
 }
 
-std::future<bool> updateWorldSettings(IAgentRuntime runtime, const std:& serverId, WorldSettings worldSettings) {
+std::future<bool> updateWorldSettings(IAgentRuntime runtime, const std::string& serverId, WorldSettings worldSettings) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto worldId = createUniqueUuid(runtime, serverId);
@@ -237,7 +238,7 @@ std::future<bool> updateWorldSettings(IAgentRuntime runtime, const std:& serverI
 
 }
 
-std::future<std::optional<WorldSettings>> getWorldSettings(IAgentRuntime runtime, const std:& serverId) {
+std::future<std::optional<WorldSettings>> getWorldSettings(IAgentRuntime runtime, const std::string& serverId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto worldId = createUniqueUuid(runtime, serverId);
@@ -297,7 +298,7 @@ Character encryptedCharacter(Character character) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Create a deep copy to avoid modifying the original
-    const auto encryptedChar = /* JSON::parse */ /* JSON.stringify */ std:(character);
+    const auto encryptedChar = /* JSON::parse */ /* JSON.stringify */ std::string(character);
     const auto salt = getSalt();
 
     // Encrypt character.settings.secrets if it exists
@@ -318,7 +319,7 @@ Character decryptedCharacter(Character character, IAgentRuntime _runtime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Create a deep copy to avoid modifying the original
-    const auto decryptedChar = /* JSON::parse */ /* JSON.stringify */ std:(character);
+    const auto decryptedChar = /* JSON::parse */ /* JSON.stringify */ std::string(character);
     const auto salt = getSalt();
 
     // Decrypt character.settings.secrets if it exists
@@ -335,10 +336,10 @@ Character decryptedCharacter(Character character, IAgentRuntime _runtime) {
 
 }
 
-std::unordered_map<std:, std:> encryptObjectValues(const std::unordered_map<std:, std:>& obj, const std:& salt) {
+std::unordered_map<std::string, std::string> encryptObjectValues(const std::unordered_map<std::string, std::string>& obj, const std::string& salt) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const std::unordered_map<std:, std:> result = {};
+    const std::unordered_map<std::string, std::string> result = {};
 
     for (const int [key, value] of Object.entries(obj)) {
         if (typeof value == 'string' && value) {
@@ -352,10 +353,10 @@ std::unordered_map<std:, std:> encryptObjectValues(const std::unordered_map<std:
 
 }
 
-std::unordered_map<std:, std:> decryptObjectValues(const std::unordered_map<std:, std:>& obj, const std:& salt) {
+std::unordered_map<std::string, std::string> decryptObjectValues(const std::unordered_map<std::string, std::string>& obj, const std::string& salt) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const std::unordered_map<std:, std:> result = {};
+    const std::unordered_map<std::string, std::string> result = {};
 
     for (const int [key, value] of Object.entries(obj)) {
         if (typeof value == 'string' && value) {

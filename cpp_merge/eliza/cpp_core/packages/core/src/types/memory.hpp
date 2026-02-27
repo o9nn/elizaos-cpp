@@ -15,7 +15,7 @@ namespace elizaos {
 /**
  * Memory type enumeration for built-in memory types
  */
-using MemoryTypeAlias = std:;
+using MemoryTypeAlias = std::string;
 
 /**
  * Enumerates the built-in types of memories that can be stored and retrieved.
@@ -23,7 +23,7 @@ using MemoryTypeAlias = std:;
  * - "FRAGMENT": A chunk or segment of a "DOCUMENT", often created for embedding and search.
  * - "MESSAGE": A conversational message, typically from a user or the agent.
  * - "DESCRIPTION": A descriptive piece of information, perhaps about an entity or concept.
- * - "CUSTOM": For std: other type of memory not covered by the built-in types.
+ * - "CUSTOM": For std::string other type of memory not covered by the built-in types.
  * This enum is used in "MemoryMetadata" to categorize memories and influences how they are processed or queried.
  */
 enum MemoryType {
@@ -46,7 +46,7 @@ using MemoryScope = std::variant<'shared', 'private', 'room'>;
  * Base interface for all memory metadata types.
  * It includes common properties for all memories, such as:
  * - "type": The kind of memory (e.g., "MemoryType.MESSAGE", "MemoryType.DOCUMENT").
- * - "source": An std::optional std: indicating the origin of the memory (e.g., 'discord', 'user_input').
+ * - "source": An std::optional std::string indicating the origin of the memory (e.g., 'discord', 'user_input').
  * - "sourceId": An std::optional UUID linking to a source entity or object.
  * - "scope": The visibility scope of the memory ("shared", "private", or "room").
  * - "timestamp": An std::optional numerical timestamp (e.g., milliseconds since epoch) of when the memory was created or relevant.
@@ -55,7 +55,7 @@ using MemoryScope = std::variant<'shared', 'private', 'room'>;
  */
 struct BaseMetadata {
     MemoryTypeAlias type;
-    std::optional<std:> source;
+    std::optional<std::string> source;
     std::optional<UUID> sourceId;
     std::optional<MemoryScope> scope;
     std::optional<double> timestamp;
@@ -133,6 +133,6 @@ struct Memory {
  * @param defaultValue Optional default value if no text is found
  * @returns The text content or default value
  */
-std: getMemoryText(Memory memory, auto defaultValue = '');
+std::string getMemoryText(Memory memory, auto defaultValue = '');
 
 } // namespace elizaos

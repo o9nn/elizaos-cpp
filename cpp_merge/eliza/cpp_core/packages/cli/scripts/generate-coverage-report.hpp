@@ -20,10 +20,10 @@ struct CoverageReport {
     std::vector<std::string> untestedFiles;
     double coverage;
     { byCategory;
-    { total; tested; untested: std:[] } commands;
-    { total; tested; untested: std:[] } utils;
-    { total; tested; untested: std:[] } types;
-    { total; tested; untested: std:[] } other;
+    { total; tested; untested: std::string[] } commands;
+    { total; tested; untested: std::string[] } utils;
+    { total; tested; untested: std::string[] } types;
+    { total; tested; untested: std::string[] } other;
 };
 
 std::future<CoverageReport> generateCoverageReport();

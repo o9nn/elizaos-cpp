@@ -29,7 +29,7 @@ void useAgents(auto options) {
             network.effectiveType == "slow-2g" && {
                 refetchInterval: STALE_TIMES.STANDARD, // Poll less frequently on slow connections
                 }),
-                // Allow overriding std: options
+                // Allow overriding std::string options
                 ...options,
                 });
 
@@ -59,7 +59,7 @@ void useAgent(const std::optional<UUID>& agentId, auto options) {
                 network.effectiveType == "slow-2g" && {
                     refetchInterval: STALE_TIMES.STANDARD, // Poll less frequently on slow connections
                     }),
-                    // Allow overriding std: options
+                    // Allow overriding std::string options
                     ...options,
                     });
 
@@ -76,7 +76,7 @@ void useStartAgent() {
         const auto queryClient = useQueryClient();
         const auto { toast } = useToast();
 
-        return useMutation<{ data: { id: UUID; name: std:; status: std: } }, Error, UUID>[&]({;
+        return useMutation<{ data: { id: UUID; name: std::string; status: std::string } }, Error, UUID>[&]({;
             mutationFn: std::async (agentId: UUID) {
                 try {
                     const auto result = elizaClient.agents.startAgent(agentId);
@@ -134,7 +134,7 @@ void useStopAgent() {
     const auto queryClient = useQueryClient();
     const auto { toast } = useToast();
 
-    return useMutation<{ data: { message: std: } }, Error, UUID>[&]({;
+    return useMutation<{ data: { message: std::string } }, Error, UUID>[&]({;
         mutationFn: std::async (agentId: UUID) {
             const auto result = elizaClient.agents.stopAgent(agentId);
             return { data: { message: "Agent " + std::to_string(result.status) + "" } }
@@ -223,7 +223,7 @@ void useDeleteLog() {
 
                 // Update cache if we have the data
                 if (previousLogs) {
-                    queryClient.setQueryData[&](["agentActions", agentId], (oldData: std:) { return oldData.filter[&]((log: std:) { return log.id != logId)
+                    queryClient.setQueryData[&](["agentActions", agentId], (oldData: std::string) { return oldData.filter[&]((log: std::string) { return log.id != logId)
                     ); }; };
                 }
 
@@ -259,7 +259,7 @@ void useDeleteLog() {
 
 }
 
-void useAgentMemories(UUID agentId, std::optional<std:> tableName, std::optional<UUID> channelId) {
+void useAgentMemories(UUID agentId, std::optional<std::string> tableName, std::optional<UUID> channelId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto queryKey = channelId;
@@ -282,7 +282,7 @@ void useAgentMemories(UUID agentId, std::optional<std:> tableName, std::optional
                     result,
                     dataLength: result.memories.size(),
                     firstMemory: result.memories.[0],
-                    hasEmbeddings: (result.memories || []).some[&]((m: std:) { return m.embedding.size() > 0),
+                    hasEmbeddings: (result.memories || []).some[&]((m: std::string) { return m.embedding.size() > 0),
                     }); };
                     return result.memories || [];
                     },
@@ -445,7 +445,7 @@ void useAgentPanels(const std::optional<UUID>& agentId, auto options) {
         return useQuery<{;
             success;
             data: AgentPanel[];
-            error?: { code: std:; message: std:; details?: std: };
+            error?: { code: std::string; message: std::string; details?: std::string };
             }>[&]({
                 queryKey: ["agentPanels", agentId],
                 queryFn: std::async () {
@@ -573,7 +573,7 @@ void useDeleteAgentInternalLog() {
 
 }
 
-void useAgentInternalMemories(const std::optional<UUID>& agentId, const std::optional<UUID>& agentPerspectiveRoomId, std: tableName = "messages", auto includeEmbedding) {
+void useAgentInternalMemories(const std::optional<UUID>& agentId, const std::optional<UUID>& agentPerspectiveRoomId, std::string tableName = "messages", auto includeEmbedding) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return useQuery<CoreMemory[], Error>[&]({;
@@ -671,8 +671,8 @@ void useUpdateAgentInternalMemory() {
     return useMutation<;
     {
         agentId: UUID;
-        memoryId: std:;
-        response: { success; data: { id: UUID; message: std: } };
+        memoryId: std::string;
+        response: { success; data: { id: UUID; message: std::string } };
         },
         Error,
     { agentId = UUID; memoryId = UUID; memoryData = Partial<CoreMemory> }
@@ -742,7 +742,7 @@ void useChannels(UUID serverId, auto options) {
 void useChannelDetails(UUID channelId, auto options) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    // Allow undefined
+    // Allow std::nullopt
     const auto network = useNetworkStatus();
     return useQuery<{ success; data: ClientMessageChannel | nullptr }>[&]({;
         queryKey: ["channelDetails", channelId],
@@ -762,7 +762,7 @@ void useChannelDetails(UUID channelId, auto options) {
 void useChannelParticipants(UUID channelId, auto options) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    // Allow undefined
+    // Allow std::nullopt
     const auto network = useNetworkStatus();
     return useQuery<{ success; data: UUID[] }>[&]({;
         queryKey: ["channelParticipants", channelId],

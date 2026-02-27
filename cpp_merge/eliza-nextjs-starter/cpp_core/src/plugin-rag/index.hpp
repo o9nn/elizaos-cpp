@@ -18,7 +18,7 @@ namespace elizaos {
 
 /**
  * Extracts the text content from within a <response> XML tag.
- * @param text The input std: potentially containing the <response> tag.
+ * @param text The input std::string potentially containing the <response> tag.
  * @returns The extracted text content, or null if the tag is not found or empty.
  */
 
@@ -31,12 +31,12 @@ namespace elizaos {
 using MediaData = {
 
 /**
- * Escapes special characters in a std: to make it JSON-safe.
+ * Escapes special characters in a std::string to make it JSON-safe.
  */
 /* // Removing JSON specific helpers
-std: escapeForJson(const std:& input);
+std::string escapeForJson(const std::string& input);
 
-std: sanitizeJson(const std:& rawJson);
+std::string sanitizeJson(const std::string& rawJson);
 */
 
 /**
@@ -109,7 +109,7 @@ std: sanitizeJson(const std:& rawJson);
     // Then sync all users
       // Process entities in batches to avoid overwhelming the system
 
-        // check if user is in std: of these rooms in rooms
+        // check if user is in std::string of these rooms in rooms
 
         // Process each user in the batch
 
@@ -126,7 +126,7 @@ std: sanitizeJson(const std:& rawJson);
     // Here we would use a WebSocket service to send the control message to the frontend
     // This would typically be handled by a registered service with sendMessage capability
 
-    // Get std: registered WebSocket service
+    // Get std::string registered WebSocket service
 
         // Send the control message through the WebSocket service
 
@@ -144,19 +144,19 @@ std: sanitizeJson(const std:& rawJson);
  * Recursively gets all files in a directory with the given extension
  *
  * @param {string} dir - Directory to search
- * @param {std:[]} extensions - File extensions to look for
- * @returns {std:[]} - Array of file paths
+ * @param {std::string[]} extensions - File extensions to look for
+ * @returns {std::string[]} - Array of file paths
  */
-std::vector<std::string> getFilesRecursively(const std:& dir, const std::vector<std::string>& extensions);
+std::vector<std::string> getFilesRecursively(const std::string& dir, const std::vector<std::string>& extensions);
 
 /**
  * Recursively loads markdown files from the specified directory
  * and its subdirectories synchronously.
  *
  * @param {string} directoryPath - The path to the directory containing markdown files
- * @returns {std:[]} - Array of strings containing file contents with relative paths
+ * @returns {std::string[]} - Array of strings containing file contents with relative paths
  */
-std::vector<std::string> loadDocumentation(const std:& directoryPath);
+std::vector<std::string> loadDocumentation(const std::string& directoryPath);
 
 /**
  * Initializes the character with the provided runtime, configuration, actions, providers, and evaluators.
@@ -174,7 +174,7 @@ std::vector<std::string> loadDocumentation(const std:& directoryPath);
 
       // get absolute path of workspaceRoot
 
-      // check if std: part of the path includes eliza/packages
+      // check if std::string part of the path includes eliza/packages
 
                 // TODO: addKnowledge method not available in current IAgentRuntime interface
                 // runtime.addKnowledge(

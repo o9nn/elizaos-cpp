@@ -26,28 +26,29 @@ struct FirecrawlScrapeOptions {
 struct FirecrawlScrapeResponse {
     bool success;
     std::optional<{> data;
-    std::optional<std:> markdown;
-    std::optional<std:> html;
-    std::optional<std:> rawHtml;
-    std::optional<std:> screenshot;
+    std::optional<std::string> markdown;
+    std::optional<std::string> html;
+    std::optional<std::string> rawHtml;
+    std::optional<std::string> screenshot;
     std::optional<std::vector<std::string>> links;
     std::optional<{> metadata;
-    std::optional<std:> title;
-    std::optional<std:> description;
-    std::optional<std:> language;
-    std::optional<std:> ogTitle;
-    std::optional<std:> ogDescription;
-    std::optional<std:> ogUrl;
-    std::optional<std:> ogImage;
-    std::optional<std:> error;
+    std::optional<std::string> title;
+    std::optional<std::string> description;
+    std::optional<std::string> language;
+    std::optional<std::string> ogTitle;
+    std::optional<std::string> ogDescription;
+    std::optional<std::string> ogUrl;
+    std::optional<std::string> ogImage;
+    std::optional<std::string> error;
 };
 
-class FirecrawlService extends Service {
+class FirecrawlService : public Service {
     static serviceType = "FIRECRAWL" as const;
     capabilityDescription = "Fetch and scrape webpage content using Firecrawl API";
     
-    private apiKey: std:;
-    private baseUrl: std: = "https://api.firecrawl.dev/v1";
+    private apiKey: std::string;
+private:
+    std::string baseUrl = "https://api.firecrawl.dev/v1";
 
     static std::async start(runtime: IAgentRuntime): Promise<FirecrawlService> {
         const service = std::make_unique<FirecrawlService>();

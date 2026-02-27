@@ -19,8 +19,8 @@ namespace elizaos {
 /**
  * Base std::exception for format errors
  */
-class FormatError extends Error {
-  constructor(message: std:) {
+class FormatError : public Error {
+  /* constructor */ (message: std::string) {
     super(message);
     this.name = 'FormatError';
   }
@@ -28,7 +28,7 @@ class FormatError extends Error {
 /**
  * Exception for std::function calling format errors
  */
-class FunctionCallingFormatError extends FormatError {
+class FunctionCallingFormatError : public FormatError {
   errorCode:
     | 'missing'
     | 'multiple'
@@ -37,10 +37,10 @@ class FunctionCallingFormatError extends FormatError {
     | 'invalid_command'
     | 'missing_arg'
     | 'unexpected_arg';
-  extraInfo: Record<std:, any>;
+  extraInfo: Record<std::string, any>;
 
-  constructor(
-    message: std:,
+  /* constructor */ (
+    message: std::string,
     errorCode:
       | 'missing'
       | 'multiple'
@@ -49,13 +49,13 @@ class FunctionCallingFormatError extends FormatError {
       | 'invalid_command'
       | 'missing_arg'
       | 'unexpected_arg',
-    extraInfo: Record<std:, any> = {},
+    extraInfo: Record<std::string, any> = {},
 
 /**
  * Exception for context window exceeded
  */
-class ContextWindowExceededError extends Error {
-  constructor(message?: std:) {
+class ContextWindowExceededError : public Error {
+  /* constructor */ (message?: std::string) {
     super(message || 'Context window exceeded');
     this.name = 'ContextWindowExceededError';
   }
@@ -63,8 +63,8 @@ class ContextWindowExceededError extends Error {
 /**
  * Base std::exception for cost limit errors
  */
-class CostLimitExceededError extends Error {
-  constructor(message?: std:) {
+class CostLimitExceededError : public Error {
+  /* constructor */ (message?: std::string) {
     super(message || 'Cost limit exceeded');
     this.name = 'CostLimitExceededError';
   }
@@ -72,8 +72,8 @@ class CostLimitExceededError extends Error {
 /**
  * Exception for instance cost limit exceeded
  */
-class InstanceCostLimitExceededError extends CostLimitExceededError {
-  constructor(message?: std:) {
+class InstanceCostLimitExceededError : public CostLimitExceededError {
+  /* constructor */ (message?: std::string) {
     super(message || 'Instance cost limit exceeded');
     this.name = 'InstanceCostLimitExceededError';
   }
@@ -81,8 +81,8 @@ class InstanceCostLimitExceededError extends CostLimitExceededError {
 /**
  * Exception for total cost limit exceeded
  */
-class TotalCostLimitExceededError extends CostLimitExceededError {
-  constructor(message?: std:) {
+class TotalCostLimitExceededError : public CostLimitExceededError {
+  /* constructor */ (message?: std::string) {
     super(message || 'Total cost limit exceeded');
     this.name = 'TotalCostLimitExceededError';
   }
@@ -90,8 +90,8 @@ class TotalCostLimitExceededError extends CostLimitExceededError {
 /**
  * Exception for instance call limit exceeded
  */
-class InstanceCallLimitExceededError extends CostLimitExceededError {
-  constructor(message?: std:) {
+class InstanceCallLimitExceededError : public CostLimitExceededError {
+  /* constructor */ (message?: std::string) {
     super(message || 'Instance call limit exceeded');
     this.name = 'InstanceCallLimitExceededError';
   }
@@ -99,8 +99,8 @@ class InstanceCallLimitExceededError extends CostLimitExceededError {
 /**
  * Exception for content policy violations
  */
-class ContentPolicyViolationError extends Error {
-  constructor(message?: std:) {
+class ContentPolicyViolationError : public Error {
+  /* constructor */ (message?: std::string) {
     super(message || 'Content policy violation');
     this.name = 'ContentPolicyViolationError';
   }
@@ -108,8 +108,8 @@ class ContentPolicyViolationError extends Error {
 /**
  * Exception for model configuration errors
  */
-class ModelConfigurationError extends Error {
-  constructor(message?: std:) {
+class ModelConfigurationError : public Error {
+  /* constructor */ (message?: std::string) {
     super(message || 'Model configuration error');
     this.name = 'ModelConfigurationError';
   }
@@ -117,8 +117,8 @@ class ModelConfigurationError extends Error {
 /**
  * Exception for EOF errors
  */
-class EOFError extends Error {
-  constructor(message?: std:) {
+class EOFError : public Error {
+  /* constructor */ (message?: std::string) {
     super(message || 'End of file reached');
     this.name = 'EOFError';
   }
@@ -126,8 +126,8 @@ class EOFError extends Error {
 /**
  * Exception for blocked actions
  */
-class BlockedActionError extends Error {
-  constructor(message?: std:) {
+class BlockedActionError : public Error {
+  /* constructor */ (message?: std::string) {
     super(message || 'Action is blocked');
     this.name = 'BlockedActionError';
   }
@@ -135,8 +135,8 @@ class BlockedActionError extends Error {
 /**
  * Exception for retry with output
  */
-class RetryWithOutputError extends Error {
-  constructor(message?: std:) {
+class RetryWithOutputError : public Error {
+  /* constructor */ (message?: std::string) {
     super(message || 'Retry with output');
     this.name = 'RetryWithOutputError';
   }
@@ -144,8 +144,8 @@ class RetryWithOutputError extends Error {
 /**
  * Exception for retry without output
  */
-class RetryWithoutOutputError extends Error {
-  constructor(message?: std:) {
+class RetryWithoutOutputError : public Error {
+  /* constructor */ (message?: std::string) {
     super(message || 'Retry without output');
     this.name = 'RetryWithoutOutputError';
   }
@@ -153,8 +153,8 @@ class RetryWithoutOutputError extends Error {
 /**
  * Exception for exit forfeit
  */
-class ExitForfeitError extends Error {
-  constructor(message?: std:) {
+class ExitForfeitError : public Error {
+  /* constructor */ (message?: std::string) {
     super(message || 'Exit forfeit');
     this.name = 'ExitForfeitError';
   }
@@ -162,8 +162,8 @@ class ExitForfeitError extends Error {
 /**
  * Exception for total execution time exceeded
  */
-class TotalExecutionTimeExceededError extends Error {
-  constructor(message?: std:) {
+class TotalExecutionTimeExceededError : public Error {
+  /* constructor */ (message?: std::string) {
     super(message || 'Total execution time exceeded');
     this.name = 'TotalExecutionTimeExceededError';
   }
@@ -171,8 +171,8 @@ class TotalExecutionTimeExceededError extends Error {
 /**
  * Exception for command timeout
  */
-class CommandTimeoutError extends Error {
-  constructor(message?: std:) {
+class CommandTimeoutError : public Error {
+  /* constructor */ (message?: std::string) {
     super(message || 'Command timed out');
     this.name = 'CommandTimeoutError';
   }
@@ -180,10 +180,10 @@ class CommandTimeoutError extends Error {
 /**
  * Exception for bash syntax errors
  */
-class BashIncorrectSyntaxError extends Error {
-  extraInfo?: Record<std:, any>;
+class BashIncorrectSyntaxError : public Error {
+  extraInfo?: Record<std::string, any>;
 
-  constructor(message?: std:, extraInfo?: Record<std:, any>) {
+  /* constructor */ (message?: std::string, extraInfo?: Record<std::string, any>) {
     super(message || 'Bash syntax error');
     this.name = 'BashIncorrectSyntaxError';
     this.extraInfo = extraInfo;

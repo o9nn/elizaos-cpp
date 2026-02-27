@@ -102,7 +102,7 @@ public:
     virtual std::shared_ptr<Promise<std::shared_ptr<ClaudeResponse>>> handleOllamaRequest(std::shared_ptr<ClaudeMessagesRequest> claudeRequest);
     virtual array<std::shared_ptr<OpenAIMessage>> convertClaudeToOpenAI(std::shared_ptr<ClaudeMessagesRequest> claudeRequest);
     virtual string convertClaudeToPrompt(std::shared_ptr<ClaudeMessagesRequest> claudeRequest);
-    virtual string formatOpenAIPrompt(array<std::shared_ptr<OpenAIMessage>> messages, string system = undefined);
+    virtual string formatOpenAIPrompt(array<std::shared_ptr<OpenAIMessage>> messages, string system = std::nullopt);
     virtual std::shared_ptr<ClaudeResponse> formatClaudeResponse(string text, string model);
 };
 

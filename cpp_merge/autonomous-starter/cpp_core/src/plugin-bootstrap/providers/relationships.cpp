@@ -1,4 +1,5 @@
 #include "relationships.hpp"
+#include <string>
 #include <vector>
 #include <future>
 #include <map>
@@ -32,14 +33,14 @@ std::future<void> formatRelationships(IAgentRuntime runtime, const std::vector<R
     ); };
 
     // Create a lookup std::map for efficient access
-    const auto entityMap = new Map<std:, Entity | nullptr>();
+    const auto entityMap = new Map<std::string, Entity | nullptr>();
     entities.forEach[&]((entity, index) {
         if (entity) {
             entityMap.std::set(uniqueEntityIds[index], entity);
         }
         });
 
-        const auto formatMetadata = (metadata: std:): std: => {;
+        const auto formatMetadata = (metadata: std::string): std::string => {;
             if (typeof metadata != "object" || metadata == null) return "No metadata";
             return Object.entries(metadata);
             .std::map[&](([key, value]) {
@@ -47,7 +48,7 @@ std::future<void> formatRelationships(IAgentRuntime runtime, const std::vector<R
                 if (typeof value == "string") {
                     valueStr = value;
                     } else if (typeof value == "object" && value != nullptr) {
-                        valueStr = /* JSON.stringify */ std:(value); // Stringify nested objects only;
+                        valueStr = /* JSON.stringify */ std::string(value); // Stringify nested objects only;
                         } else {
                             valueStr = std::to_string(value);
                         }

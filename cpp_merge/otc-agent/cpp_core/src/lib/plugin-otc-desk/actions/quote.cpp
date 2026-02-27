@@ -1,4 +1,5 @@
 #include "quote.hpp"
+#include <string>
 #include <future>
 #include <optional>
 #include <iostream>
@@ -6,26 +7,26 @@
 
 namespace elizaos {
 
-void parseQuoteRequest(const std:& text) {
+void parseQuoteRequest(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    tokenAmount?: std:;
+    tokenAmount?: std::string;
     discountBps?;
     paymentCurrency?: "ETH" | "USDC";
 
 }
 
-void parseNegotiationRequest(const std:& text) {
+void parseNegotiationRequest(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    tokenAmount?: std:;
+    tokenAmount?: std::string;
     requestedDiscountBps?;
     lockupMonths?;
     paymentCurrency?: "ETH" | "USDC";
 
 }
 
-std::future<std:> extractTokenContext(const std:& text) {
+std::future<std::string> extractTokenContext(const std::string& text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto allTokens = TokenDB.getAllTokens();
@@ -74,7 +75,7 @@ std::future<std:> extractTokenContext(const std:& text) {
 
 }
 
-std::future<std::optional<OTCConsignment>> findSuitableConsignment(const std:& tokenId, const std:& tokenAmount, double discountBps, double lockupDays) {
+std::future<std::optional<OTCConsignment>> findSuitableConsignment(const std::string& tokenId, const std::string& tokenAmount, double discountBps, double lockupDays) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto consignmentService = std::make_unique<ConsignmentService>();
@@ -88,14 +89,14 @@ std::future<std::optional<OTCConsignment>> findSuitableConsignment(const std:& t
 
 }
 
-std::future<> negotiateTerms(IAgentRuntime _runtime, const std:& request, const std:& existingQuote, std::optional<OTCConsignment> consignment) {
+std::future<> negotiateTerms(IAgentRuntime _runtime, const std::string& request, const std::string& existingQuote, std::optional<OTCConsignment> consignment) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     lockupMonths;
     discountBps;
     paymentCurrency: "ETH" | "USDC";
-    reasoning: std:;
-    consignmentId?: std:;
+    reasoning: std::string;
+    consignmentId?: std::string;
 
 }
 

@@ -24,6 +24,6 @@ void cn();
  * Returns a random avatar URL from the predefined avatars
  * @returns A random avatar URL path
  */
-std: getRandomAvatar();
+std::string getRandomAvatar();
 
 } // namespace elizaos

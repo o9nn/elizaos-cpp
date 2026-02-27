@@ -1,4 +1,5 @@
 #include "cli-update.hpp"
+#include <string>
 #include <future>
 #include <filesystem>
 #include <iostream>
@@ -14,7 +15,7 @@ std::future<bool> performCliUpdate(GlobalUpdateOptions options = {}) {
             const auto currentVersion = getVersion();
             const auto targetVersion = options.version || "latest";
 
-            auto latestVersion: std:;
+            auto latestVersion: std::string;
             if (targetVersion == 'latest') {
                 const auto fetchedVersion = fetchLatestVersion("@elizaos/cli");
                 if (!fetchedVersion) {

@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_PROJECT_TEE_STARTER_E2E_STARTER_PLUGIN_TEST_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_PROJECT_TEE_STARTER_E2E_STARTER_PLUGIN_TEST_H
 #include "core.hpp"
+#include <string>
 #include "../src/index.h"
 #include "uuid.hpp"
 using uuidv4 = v4;
@@ -56,59 +57,59 @@ public:
 class StarterTestSuite : public TestSuite, public std::enable_shared_from_this<StarterTestSuite> {
 public:
     using std::enable_shared_from_this<StarterTestSuite>::shared_from_this;
-    string name = std:("starter");
+    string name = std::string("starter");
 
-    string description = std:("E2E tests for the starter project");
+    string description = std::string("E2E tests for the starter project");
 
     array<object> tests = array<object>{ object{
-        object::pair{std:("name"), std:("Character configuration test")}, 
-        object::pair{std:("fn"), [=](auto runtime) mutable
+        object::pair{std::string("name"), std::string("Character configuration test")}, 
+        object::pair{std::string("fn"), [=](auto runtime) mutable
         {
-            auto requiredFields = array<string>{ std:("name"), std:("bio"), std:("plugins"), std:("system"), std:("messageExamples") };
+            auto requiredFields = array<string>{ std::string("name"), std::string("bio"), std::string("plugins"), std::string("system"), std::string("messageExamples") };
             auto missingFields = requiredFields->filter([=](auto field) mutable
             {
                 return !(in(field, character));
             }
             );
             if (missingFields->get_length() > 0) {
-                throw any(std::make_shared<Error>(std:("Missing required fields: ") + missingFields->join(std:(", ")) + string_empty));
+                throw any(std::make_shared<Error>(std::string("Missing required fields: ") + missingFields->join(std::string(", ")) + string_empty));
             }
-            if (character->name != std:("Mr. TEE")) {
-                throw any(std::make_shared<Error>(std:("Expected character name to be 'Mr. TEE', got '") + character->name + std:("'")));
+            if (character->name != std::string("Mr. TEE")) {
+                throw any(std::make_shared<Error>(std::string("Expected character name to be 'Mr. TEE', got '") + character->name + std::string("'")));
             }
             if (!Array->isArray(character->plugins)) {
-                throw any(std::make_shared<Error>(std:("Character plugins should be an array")));
+                throw any(std::make_shared<Error>(std::string("Character plugins should be an array")));
             }
             if (!character->system) {
-                throw any(std::make_shared<Error>(std:("Character system prompt is required")));
+                throw any(std::make_shared<Error>(std::string("Character system prompt is required")));
             }
             if (!Array->isArray(character->bio)) {
-                throw any(std::make_shared<Error>(std:("Character bio should be an array")));
+                throw any(std::make_shared<Error>(std::string("Character bio should be an array")));
             }
             if (!Array->isArray(character->messageExamples)) {
-                throw any(std::make_shared<Error>(std:("Character message examples should be an array")));
+                throw any(std::make_shared<Error>(std::string("Character message examples should be an array")));
             }
         }
         }
     }, object{
-        object::pair{std:("name"), std:("Plugin initialization test")}, 
-        object::pair{std:("fn"), [=](auto runtime) mutable
+        object::pair{std::string("name"), std::string("Plugin initialization test")}, 
+        object::pair{std::string("fn"), [=](auto runtime) mutable
         {
             try
             {
                 std::async([=]() { runtime["registerPlugin"](object{
-                    object::pair{std:("name"), std:("starter")}, 
-                    object::pair{std:("description"), std:("A starter plugin for Eliza")}, 
-                    object::pair{std:("init"), [=]() mutable
+                    object::pair{std::string("name"), std::string("starter")}, 
+                    object::pair{std::string("description"), std::string("A starter plugin for Eliza")}, 
+                    object::pair{std::string("init"), [=]() mutable
                     {
                     }
                     }, 
-                    object::pair{std:("config"), object{}}
+                    object::pair{std::string("config"), object{}}
                 }); });
             }
             catch (const any& error)
             {
-                throw any(std::make_shared<Error>(std:("Failed to register plugin: ") + error["message"] + string_empty));
+                throw any(std::make_shared<Error>(std::string("Failed to register plugin: ") + error["message"] + string_empty));
             }
         }
         }

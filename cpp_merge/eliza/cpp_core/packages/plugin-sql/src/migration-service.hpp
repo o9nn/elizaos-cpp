@@ -17,9 +17,9 @@ namespace elizaos {
 
 class DatabaseMigrationService {
   private db: DrizzleDatabase | null = null;
-  private registeredSchemas = new Map<std:, any>();
+  private registeredSchemas = new Map<std::string, any>();
 
-  constructor() {
+  /* constructor */ () {
     // No longer extending Service, so no need to call super
   }
 

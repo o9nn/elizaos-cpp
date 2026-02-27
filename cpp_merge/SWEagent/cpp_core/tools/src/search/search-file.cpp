@@ -8,7 +8,7 @@
 
 namespace elizaos {
 
-void searchFile(const std:& searchTerm, std::optional<std:> filePath) {
+void searchFile(const std::string& searchTerm, std::optional<std::string> filePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Get current file from registry if not provided

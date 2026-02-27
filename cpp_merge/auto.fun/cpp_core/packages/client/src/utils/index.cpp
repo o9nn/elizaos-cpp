@@ -1,14 +1,15 @@
 #include "index.hpp"
+#include <string>
 #include <map>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std: toSubscript(double num) {
+std::string toSubscript(double num) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const std: subDigits = {;
+    const std::string subDigits = {;
         "0": "\u2080",
         "1": "\u2081",
         "2": "\u2082",

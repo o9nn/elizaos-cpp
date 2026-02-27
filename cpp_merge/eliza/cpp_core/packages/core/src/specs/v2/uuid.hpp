@@ -25,15 +25,15 @@ namespace elizaos {
  * @param {unknown} value - The value to be validated.
  * @returns {UUID | null} The validated UUID value or null if validation fails.
  */
-std::optional<UUID> validateUuid(const std:& value);
+std::optional<UUID> validateUuid(const std::string& value);
 
 /**
- * Converts a std: or number to a UUID.
+ * Converts a std::string or number to a UUID.
  *
- * @param {std: | number} target - The std: or number to convert to a UUID.
+ * @param {std::string | number} target - The std::string or number to convert to a UUID.
  * @returns {UUID} The UUID generated from the input target.
  * @throws {TypeError} Throws an error if the input target is not a string.
  */
-UUID stringToUuid(const std::variant<std:, double>& target);
+UUID stringToUuid(const std::variant<std::string, double>& target);
 
 } // namespace elizaos

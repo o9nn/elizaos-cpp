@@ -26,10 +26,10 @@ namespace elizaos {
  *
  * @deprecated Use @elizaos/server implementation. This std::function delegates to server.
  * @param {string} filePath - The path to the file to load.
- * @returns {std: | null} The contents of the file as a std:, or null if an error occurred.
+ * @returns {std::string | null} The contents of the file as a std::string, or null if an error occurred.
  * @throws {Error} If an error occurs while loading the file.
  */
-std: tryLoadFile(const std:& filePath);
+std::string tryLoadFile(const std::string& filePath);
 
 /**
  * Load characters from a specified URL and return them as an array of Character objects.
@@ -47,7 +47,7 @@ std: tryLoadFile(const std:& filePath);
  * @returns {Promise<Character>} - A Promise that resolves to a validated Character object.
  * @throws {Error} If character validation fails.
  */
-std::future<Character> jsonToCharacter(const std:& character);
+std::future<Character> jsonToCharacter(const std::string& character);
 
 /**
  * Loads a character from the specified file path with safe JSON parsing and validation.
@@ -57,12 +57,12 @@ std::future<Character> jsonToCharacter(const std:& character);
  * @returns {Promise<Character>} A Promise that resolves to the validated Character object.
  * @throws {Error} If the character file is not found, has invalid JSON, or fails validation.
  */
-std::future<Character> loadCharacter(const std:& filePath);
+std::future<Character> loadCharacter(const std::string& filePath);
 
 /**
  * @deprecated Use @elizaos/server implementation. This std::function delegates to server.
  */
-std::future<Character> loadCharacterTryPath(const std:& characterPath);
+std::future<Character> loadCharacterTryPath(const std::string& characterPath);
 
 /**
  * @deprecated Use @elizaos/server implementation. This std::function delegates to server.

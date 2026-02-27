@@ -20,19 +20,19 @@ namespace elizaos {
 
 // Interface for task selection properties
 struct TaskSelection {
-    std: taskId;
-    std: taskName;
+    std::string taskId;
+    std::string taskName;
     bool isFound;
 };
 
 // Interface for task update properties
 struct TaskUpdate {
-    std::optional<std:> name;
-    std::optional<std:> description;
+    std::optional<std::string> name;
+    std::optional<std::string> description;
     std::optional<int> priority;
     std::optional<bool> urgent;
-    std::optional<std:> dueDate;
-    std::optional<std:> recurring;
+    std::optional<std::string> dueDate;
+    std::optional<std::string> recurring;
 };
 
 /**
@@ -61,7 +61,7 @@ std::future<Task> applyTaskUpdate(IAgentRuntime runtime, Task task, TaskUpdate u
  * The UPDATE_TODO action allows users to modify an existing task.
  */
 
-    // Simpler validation: Only check if *std:* active (non-completed) TODO exists
+    // Simpler validation: Only check if *std::string* active (non-completed) TODO exists
 
       // Get all active todos for this room
 

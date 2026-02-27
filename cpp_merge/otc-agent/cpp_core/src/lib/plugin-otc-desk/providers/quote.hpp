@@ -25,7 +25,7 @@ namespace elizaos {
 
     // Use QuoteService for consistent quote lookup
 
-std::future<QuoteMemory> getUserQuote(const std:& walletAddress);
+std::future<QuoteMemory> getUserQuote(const std::string& walletAddress);
 
     // Token metadata (std::optional)
 
@@ -39,6 +39,6 @@ std::future<QuoteMemory> getUserQuote(const std:& walletAddress);
 
   // Add to beneficiary index for faster lookups
 
-std::future<void> deleteUserQuote(const std:& walletAddress);
+std::future<void> deleteUserQuote(const std::string& walletAddress);
 
 } // namespace elizaos

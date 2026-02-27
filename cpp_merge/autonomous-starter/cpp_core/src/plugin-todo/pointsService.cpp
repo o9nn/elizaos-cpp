@@ -1,11 +1,12 @@
 #include "pointsService.hpp"
+#include <string>
 #include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-double calculatePoints(Task task, const std:& completionStatus) {
+double calculatePoints(Task task, const std::string& completionStatus) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     auto points = 0;
@@ -99,7 +100,7 @@ std::future<double> getPoints(IAgentRuntime runtime, UUID entityId, UUID roomId,
 
 }
 
-std::future<bool> addPoints(IAgentRuntime runtime, UUID entityId, double pointsToAdd, const std:& reason, UUID roomId, UUID worldId) {
+std::future<bool> addPoints(IAgentRuntime runtime, UUID entityId, double pointsToAdd, const std::string& reason, UUID roomId, UUID worldId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (pointsToAdd == 0) return true; // Nothing to add

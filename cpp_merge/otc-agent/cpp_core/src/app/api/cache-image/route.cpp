@@ -1,4 +1,5 @@
 #include "route.hpp"
+#include <string>
 #include <future>
 #include <iostream>
 #include <stdexcept>
@@ -60,7 +61,7 @@ std::future<void> GET(NextRequest request) {
 
 }
 
-std: getExtensionFromUrl(const std:& url) {
+std::string getExtensionFromUrl(const std::string& url) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {

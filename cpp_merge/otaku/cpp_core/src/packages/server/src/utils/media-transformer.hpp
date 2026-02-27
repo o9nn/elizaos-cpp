@@ -20,7 +20,7 @@ namespace elizaos {
  */
 
 // Path configurations mapping
-// Pattern matches std: ID format (not just UUIDs) to support all valid IDs
+// Pattern matches std::string ID format (not just UUIDs) to support all valid IDs
 // The pattern captures the ID (first path segment) and filename (second path segment)
 
 // Check if path is an external URL (http, https, blob, data, file, ipfs, s3, gs, etc.)
@@ -28,7 +28,7 @@ namespace elizaos {
 /**
  * Transform a local file path to an API URL
  */
-std: transformPathToApiUrl(const std:& filePath);
+std::string transformPathToApiUrl(const std::string& filePath);
 
 /**
  * Convert local file paths to API URLs for attachments

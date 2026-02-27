@@ -20,24 +20,24 @@ namespace elizaos {
 // Codex GraphQL endpoint and Solana network ID
 
 struct TokenInfo {
-    std: address;
-    std: symbol;
-    std: name;
+    std::string address;
+    std::string symbol;
+    std::string name;
     double decimals;
-    std: logoUrl;
-    std: chain;
+    std::string logoUrl;
+    std::string chain;
     std::optional<double> priceUsd;
 };
 
 /**
  * Check if address looks like a Solana address (base58, 32-44 chars)
  */
-bool isSolanaAddress(const std:& address);
+bool isSolanaAddress(const std::string& address);
 
 /**
  * Check if address looks like an EVM address (0x followed by 40 hex chars)
  */
-bool isEvmAddress(const std:& address);
+bool isEvmAddress(const std::string& address);
 
 /**
  * Look up Solana token via Codex API

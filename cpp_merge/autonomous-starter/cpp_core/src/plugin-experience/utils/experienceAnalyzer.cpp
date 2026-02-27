@@ -1,4 +1,5 @@
 #include "experienceAnalyzer.hpp"
+#include <string>
 #include <vector>
 #include <future>
 #include <optional>
@@ -76,7 +77,7 @@ std::future<ExperienceAnalysis> analyzeExperience(const std::optional<Experience
                     // Default: Record if confidence is high enough
                     return {
                         isSignificant:
-                        partialExperience.type != ExperienceType.SUCCESS || Math.random() > 0.7,
+                        partialExperience.type != ExperienceType.SUCCESS || ((double)rand() / RAND_MAX) > 0.7,
                         confidence: 0.5,
                         };
 
@@ -106,7 +107,7 @@ std::vector<Experience> findContradictions(const std::optional<Experience>& part
 
 }
 
-bool similarContext(const std:& context1, const std:& context2) {
+bool similarContext(const std::string& context1, const std::string& context2) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Simple similarity check - could be enhanced with better NLP
@@ -158,9 +159,9 @@ std::optional<FailurePattern> detectFailurePattern(const std::optional<Experienc
 std::future<std::vector> detectPatterns(const std::vector<Experience>& experiences) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    description: std:;
+    description: std::string;
     frequency;
-    experiences: std:[];
+    experiences: std::string[];
     significance: "low" | "medium" | "high";
 
 }

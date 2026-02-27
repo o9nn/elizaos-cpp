@@ -21,7 +21,7 @@ namespace elizaos {
  * This pattern allows for modular and extensible background task processing.
  */
 struct TaskWorker {
-    std: name;
+    std::string name;
     Task task;
 };
 
@@ -29,7 +29,7 @@ struct TaskWorker {
  * Defines metadata associated with a "Task".
  * This can include scheduling information like "updateInterval" or UI-related details
  * for presenting task options to a user.
- * The "[key: std:]: unknown;" allows for additional, unspecified metadata fields.
+ * The "[key: std::string]: unknown;" allows for additional, unspecified metadata fields.
  */
 using TaskMetadata = {
   /** Optional. If the task is recurring, this specifies the interval in milliseconds between updates or executions. */
@@ -44,10 +44,10 @@ using TaskMetadata = {
  */
 struct Task {
     std::optional<UUID> id;
-    std: name;
+    std::string name;
     std::optional<double> updatedAt;
     std::optional<TaskMetadata> metadata;
-    std: description;
+    std::string description;
     std::optional<UUID> roomId;
     std::optional<UUID> worldId;
     std::optional<UUID> entityId;

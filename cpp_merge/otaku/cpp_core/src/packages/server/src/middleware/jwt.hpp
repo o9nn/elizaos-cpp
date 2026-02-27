@@ -18,9 +18,9 @@ namespace elizaos {
 
 
 struct AuthTokenPayload {
-    std: userId;
-    std: email;
-    std: username;
+    std::string userId;
+    std::string email;
+    std::string username;
     std::optional<bool> isAdmin;
     double iat;
     double exp;
@@ -30,13 +30,13 @@ struct AuthTokenPayload {
  * Generate JWT authentication token
  * Uses CDP's userId directly (no generation or salting needed)
  */
-std: generateAuthToken(const std:& userId, const std:& email, const std:& username, std::optional<bool> isAdmin);
+std::string generateAuthToken(const std::string& userId, const std::string& email, const std::string& username, std::optional<bool> isAdmin);
 
 /**
  * Middleware to verify JWT token and extract user info
  * Requires authentication - returns 401 if no valid token
  */
-void requireAuth(AuthenticatedRequest req, const std:& res, NextFunction next);
+void requireAuth(AuthenticatedRequest req, const std::string& res, NextFunction next);
 
 /**
  * Optional middleware for endpoints that work with or without auth
@@ -51,13 +51,13 @@ void optionalAuth(AuthenticatedRequest req, NextFunction next);
  * - If X-API-KEY matches ELIZA_SERVER_AUTH_TOKEN, marks request as server-authenticated.
  * - Otherwise, returns 401.
  */
-void requireAuthOrApiKey(AuthenticatedRequest req, const std:& res, NextFunction next);
+void requireAuthOrApiKey(AuthenticatedRequest req, const std::string& res, NextFunction next);
 
 /**
  * Middleware to require admin access
  * Must be used after requireAuth middleware
  */
-void requireAdmin(AuthenticatedRequest req, const std:& res, NextFunction next);
+void requireAdmin(AuthenticatedRequest req, const std::string& res, NextFunction next);
 
 
 } // namespace elizaos

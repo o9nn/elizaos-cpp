@@ -15,16 +15,16 @@ namespace elizaos {
 
 
 
-class PluginConfigurationService extends Service {
+class PluginConfigurationService : public Service {
   static override serviceType: ServiceTypeName =
     PluginManagerServiceType.PLUGIN_CONFIGURATION;
   override capabilityDescription =
     "Manages secure plugin configurations and environment variables";
 
   private encryptionKey: Buffer | null = null;
-  private configStore: Map<std:, Record<std:, any>> = std::make_unique<Map>();
+  private configStore: Map<std::string, Record<std::string, any>> = std::make_unique<Map>();
 
-  constructor(runtime: IAgentRuntime) {
+  /* constructor */ (runtime: IAgentRuntime) {
     super(runtime);
   }
 

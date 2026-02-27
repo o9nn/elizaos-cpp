@@ -1,4 +1,5 @@
 #include "crud.hpp"
+#include <string>
 #include <map>
 #include <unordered_map>
 #include <iostream>
@@ -27,12 +28,12 @@ express::Router createAgentCrudRouter(const std::unordered_map<UUID, IAgentRunti
                 .std::map((agent: Partial<Agent>) => ({
                     id: agent.id,
                     name: agent.name || "",
-                    characterName: agent.name || "", // Since Agent extends Character, agent.name is the character name
+                    characterName: agent.name || "", // Since Agent : public Character, agent.name is the character name
                     bio: agent.bio.[0] || "",
                     status: agent.id && (std::find(runtimes.begin(), runtimes.end(), agent.id) != runtimes.end()) ? "active" : "inactive",
                     }));
                     .filter[&]((agent) { return agent.id) // Filter out agents without IDs; };
-                    .sort[&]((a: std:, b: std:) {
+                    .sort[&]((a: std::string, b: std::string) {
                         if (a.status == b.status) {
                             return a.name.localeCompare(b.name);
                         }
@@ -173,7 +174,7 @@ express::Router createAgentCrudRouter(const std::unordered_map<UUID, IAgentRunti
                                                                                 try {
                                                                                     if (updates.settings.secrets) {
                                                                                         const auto salt = getSalt();
-                                                                                        const std::variant<Record<std:, std:, null>> encryptedSecrets = {};
+                                                                                        const std::variant<Record<std::string, std::string, null>> encryptedSecrets = {};
                                                                                         Object.entries(updates.settings.secrets).forEach[&](([key, value]) {
                                                                                             if (value == null) {
                                                                                                 encryptedSecrets[key] = nullptr;
@@ -255,7 +256,7 @@ express::Router createAgentCrudRouter(const std::unordered_map<UUID, IAgentRunti
 
                                                                                                                 const auto MAX_RETRIES = 2;
                                                                                                                 auto retryCount = 0;
-                                                                                                                std: lastError = nullptr;
+                                                                                                                std::string lastError = nullptr;
 
                                                                                                                 while (retryCount <= MAX_RETRIES) {
                                                                                                                     try {

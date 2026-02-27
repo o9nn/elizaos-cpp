@@ -1,4 +1,5 @@
 #include "priceFeed.hpp"
+#include <string>
 #include <future>
 #include <optional>
 #include <iostream>
@@ -6,7 +7,7 @@
 
 namespace elizaos {
 
-std::future<std::optional<PriceCache>> getCachedPrice(const std:& key) {
+std::future<std::optional<PriceCache>> getCachedPrice(const std::string& key) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { agentRuntime } = import("../../agent-runtime");
@@ -15,7 +16,7 @@ std::future<std::optional<PriceCache>> getCachedPrice(const std:& key) {
 
 }
 
-std::future<void> setCachedPrice(const std:& key, PriceCache value) {
+std::future<void> setCachedPrice(const std::string& key, PriceCache value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { agentRuntime } = import("../../agent-runtime");
@@ -110,7 +111,7 @@ std::future<double> getSolPriceUsd() {
     }
 }
 
-std: formatTokenAmount(const std::variant<std:, double>& amount) {
+std::string formatTokenAmount(const std::variant<std::string, double>& amount) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto num = typeof amount == "string" ? parseFloat(amount) : amount;

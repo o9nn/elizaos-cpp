@@ -1,11 +1,12 @@
 #include "strategy_copy.hpp"
+#include <string>
 
 void copyStrategy(std::shared_ptr<IAgentRuntime> runtime)
 {
-    auto service = std::async([=]() { acquireService(runtime, std:("TRADER_STRATEGY"), std:("copy trading strategy")); });
-    auto infoService = std::async([=]() { acquireService(runtime, std:("TRADER_DATAPROVIDER"), std:("copy trading info")); });
+    auto service = std::async([=]() { acquireService(runtime, std::string("TRADER_STRATEGY"), std::string("copy trading strategy")); });
+    auto infoService = std::async([=]() { acquireService(runtime, std::string("TRADER_DATAPROVIDER"), std::string("copy trading info")); });
     auto me = object{
-        object::pair{std:("name"), std:("Copy trading strategy")}
+        object::pair{std::string("name"), std::string("Copy trading strategy")}
     };
     auto hndl = std::async([=]() { service["register_strategy"](me); });
 };

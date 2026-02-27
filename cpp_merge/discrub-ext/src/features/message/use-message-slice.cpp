@@ -1,4 +1,5 @@
 #include "use-message-slice.h"
+#include <string>
 
 std::function<object()> useMessageSlice = [=]() mutable
 {
@@ -97,17 +98,17 @@ std::function<object()> useMessageSlice = [=]() mutable
         );
     };
     auto state = object{
-        object::pair{std:("messages"), useMessages}, 
-        object::pair{std:("selectedMessages"), useSelectedMessages}, 
-        object::pair{std:("filteredMessages"), useFilteredMessages}, 
-        object::pair{std:("filters"), useFilters}, 
-        object::pair{std:("isLoading"), useIsLoading}, 
-        object::pair{std:("order"), useOrder}, 
-        object::pair{std:("orderBy"), useOrderBy}, 
-        object::pair{std:("searchBeforeDate"), useSearchBeforeDate}, 
-        object::pair{std:("searchAfterDate"), useSearchAfterDate}, 
-        object::pair{std:("searchMessageContent"), useSearchMessageContent}, 
-        object::pair{std:("selectedHasTypes"), useSelectedHasTypes}
+        object::pair{std::string("messages"), useMessages}, 
+        object::pair{std::string("selectedMessages"), useSelectedMessages}, 
+        object::pair{std::string("filteredMessages"), useFilteredMessages}, 
+        object::pair{std::string("filters"), useFilters}, 
+        object::pair{std::string("isLoading"), useIsLoading}, 
+        object::pair{std::string("order"), useOrder}, 
+        object::pair{std::string("orderBy"), useOrderBy}, 
+        object::pair{std::string("searchBeforeDate"), useSearchBeforeDate}, 
+        object::pair{std::string("searchAfterDate"), useSearchAfterDate}, 
+        object::pair{std::string("searchMessageContent"), useSearchMessageContent}, 
+        object::pair{std::string("selectedHasTypes"), useSelectedHasTypes}
     };
     auto setIsLoading = [=](auto value) mutable
     {
@@ -181,7 +182,7 @@ std::function<object()> useMessageSlice = [=]() mutable
     {
         dispatch(deleteReactionAction(channelId, messageId, emoji));
     };
-    auto deleteMessages = [=](auto messages, auto deleteConfig = undefined) mutable
+    auto deleteMessages = [=](auto messages, auto deleteConfig = std::nullopt) mutable
     {
         dispatch(deleteMessagesAction(messages, deleteConfig));
     };
@@ -194,28 +195,28 @@ std::function<object()> useMessageSlice = [=]() mutable
         dispatch(resetMessageDataAction());
     };
     return object{
-        object::pair{std:("state"), std:("state")}, 
-        object::pair{std:("setIsLoading"), std:("setIsLoading")}, 
-        object::pair{std:("setSelectedHasTypes"), std:("setSelectedHasTypes")}, 
-        object::pair{std:("setSearchMessageContent"), std:("setSearchMessageContent")}, 
-        object::pair{std:("setSearchBeforeDate"), std:("setSearchBeforeDate")}, 
-        object::pair{std:("setSearchAfterDate"), std:("setSearchAfterDate")}, 
-        object::pair{std:("setSelected"), std:("setSelected")}, 
-        object::pair{std:("setOrder"), std:("setOrder")}, 
-        object::pair{std:("setMessages"), std:("setMessages")}, 
-        object::pair{std:("setFilteredMessages"), std:("setFilteredMessages")}, 
-        object::pair{std:("resetFilters"), std:("resetFilters")}, 
-        object::pair{std:("resetAdvancedFilters"), std:("resetAdvancedFilters")}, 
-        object::pair{std:("updateFilters"), std:("updateFilters")}, 
-        object::pair{std:("filterMessages"), std:("filterMessages")}, 
-        object::pair{std:("deleteAttachment"), std:("deleteAttachment")}, 
-        object::pair{std:("updateMessage"), std:("updateMessage")}, 
-        object::pair{std:("editMessages"), std:("editMessages")}, 
-        object::pair{std:("deleteMessage"), std:("deleteMessage")}, 
-        object::pair{std:("deleteMessages"), std:("deleteMessages")}, 
-        object::pair{std:("getMessageData"), std:("getMessageData")}, 
-        object::pair{std:("resetMessageData"), std:("resetMessageData")}, 
-        object::pair{std:("deleteReaction"), std:("deleteReaction")}
+        object::pair{std::string("state"), std::string("state")}, 
+        object::pair{std::string("setIsLoading"), std::string("setIsLoading")}, 
+        object::pair{std::string("setSelectedHasTypes"), std::string("setSelectedHasTypes")}, 
+        object::pair{std::string("setSearchMessageContent"), std::string("setSearchMessageContent")}, 
+        object::pair{std::string("setSearchBeforeDate"), std::string("setSearchBeforeDate")}, 
+        object::pair{std::string("setSearchAfterDate"), std::string("setSearchAfterDate")}, 
+        object::pair{std::string("setSelected"), std::string("setSelected")}, 
+        object::pair{std::string("setOrder"), std::string("setOrder")}, 
+        object::pair{std::string("setMessages"), std::string("setMessages")}, 
+        object::pair{std::string("setFilteredMessages"), std::string("setFilteredMessages")}, 
+        object::pair{std::string("resetFilters"), std::string("resetFilters")}, 
+        object::pair{std::string("resetAdvancedFilters"), std::string("resetAdvancedFilters")}, 
+        object::pair{std::string("updateFilters"), std::string("updateFilters")}, 
+        object::pair{std::string("filterMessages"), std::string("filterMessages")}, 
+        object::pair{std::string("deleteAttachment"), std::string("deleteAttachment")}, 
+        object::pair{std::string("updateMessage"), std::string("updateMessage")}, 
+        object::pair{std::string("editMessages"), std::string("editMessages")}, 
+        object::pair{std::string("deleteMessage"), std::string("deleteMessage")}, 
+        object::pair{std::string("deleteMessages"), std::string("deleteMessages")}, 
+        object::pair{std::string("getMessageData"), std::string("getMessageData")}, 
+        object::pair{std::string("resetMessageData"), std::string("resetMessageData")}, 
+        object::pair{std::string("deleteReaction"), std::string("deleteReaction")}
     };
 };
 

@@ -8,14 +8,14 @@
 
 namespace elizaos {
 
-std::variant<PythonValidator, TypeScriptValidator> getValidator(const std:& language) {
+std::variant<PythonValidator, TypeScriptValidator> getValidator(const std::string& language) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return language == "python" ? std::make_unique<PythonValidator>() : std::make_unique<TypeScriptValidator>();
 
 }
 
-std::future<ValidationResult> validateFile(const std:& filePath) {
+std::future<ValidationResult> validateFile(const std::string& filePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto ext = path.extname(filePath);
@@ -45,7 +45,7 @@ std::future<std::vector<ValidationResult>> validateFiles(const std::vector<std::
 
 }
 
-std: formatValidationResults(const std::vector<ValidationResult>& results) {
+std::string formatValidationResults(const std::vector<ValidationResult>& results) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::vector<std::string> output = [];

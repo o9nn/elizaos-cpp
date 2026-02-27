@@ -20,22 +20,22 @@ namespace elizaos {
 
 // Re-from plugin types
 
-//========
+//====
 // CHAIN TYPES
-//========
+//====
 
 using EVMChain = std::variant<"base", "bsc">;
 
-//========
+//====
 // OTC CONTRACT TYPES
-//========
+//====
 
 /**
  * OTC Offer structure (matches Solidity contract)
  */
 struct Offer {
     bigint consignmentId;
-    std:; // bytes32 hex std: tokenId;
+    std::string; // bytes32 hex std::string tokenId;
     Address beneficiary;
     bigint tokenAmount;
     bigint discountBps;
@@ -57,8 +57,8 @@ struct Offer {
  * Consignment parameters for on-chain creation
  */
 struct ConsignmentParams {
-    std: tokenId;
-    std: tokenSymbol;
+    std::string tokenId;
+    std::string tokenSymbol;
     bigint amount;
     bool isNegotiable;
     double fixedDiscountBps;
@@ -80,10 +80,10 @@ struct ConsignmentParams {
  * OTC Quote for XML parsing and frontend display
  */
 struct OTCQuote {
-    std: quoteId;
-    std: tokenSymbol;
+    std::string quoteId;
+    std::string tokenSymbol;
     double tokenAmount;
-    std: tokenChain;
+    std::string tokenChain;
     double discountBps;
     double discountPercent;
     double lockupDays;
@@ -92,8 +92,8 @@ struct OTCQuote {
     double apr;
     double totalUsd;
     double discountedUsd;
-    std: paymentAmount;
-    std::optional<std:> signature;
+    std::string paymentAmount;
+    std::optional<std::string> signature;
     std::optional<bool> isFixedPrice;
 };
 
@@ -101,28 +101,28 @@ struct OTCQuote {
  * Quote accepted message
  */
 struct QuoteAccepted {
-    std: quoteId;
-    std: txHash;
+    std::string quoteId;
+    std::string txHash;
 };
 
-//========
+//====
 // DATABASE TYPES
-//========
+//====
 
 /**
  * Token in database
  */
 struct Token {
-    std: id;
-    std: symbol;
-    std: name;
-    std: contractAddress;
+    std::string id;
+    std::string symbol;
+    std::string name;
+    std::string contractAddress;
     Chain chain;
     double decimals;
-    std: logoUrl;
-    std: description;
-    std::optional<std:> website;
-    std::optional<std:> twitter;
+    std::string logoUrl;
+    std::string description;
+    std::optional<std::string> website;
+    std::optional<std::string> twitter;
     bool isActive;
     double createdAt;
     double updatedAt;
@@ -132,7 +132,7 @@ struct Token {
  * Token market data
  */
 struct TokenMarketData {
-    std: tokenId;
+    std::string tokenId;
     double priceUsd;
     double marketCap;
     double volume24h;
@@ -145,12 +145,12 @@ struct TokenMarketData {
  * OTC Consignment in database
  */
 struct OTCConsignment {
-    std: id;
-    std: tokenId;
-    std: consignerAddress;
-    std: consignerEntityId;
-    std: totalAmount;
-    std: remainingAmount;
+    std::string id;
+    std::string tokenId;
+    std::string consignerAddress;
+    std::string consignerEntityId;
+    std::string totalAmount;
+    std::string remainingAmount;
     bool isNegotiable;
     std::optional<double> fixedDiscountBps;
     std::optional<double> fixedLockupDays;
@@ -158,15 +158,15 @@ struct OTCConsignment {
     double maxDiscountBps;
     double minLockupDays;
     double maxLockupDays;
-    std: minDealAmount;
-    std: maxDealAmount;
+    std::string minDealAmount;
+    std::string maxDealAmount;
     bool isFractionalized;
     bool isPrivate;
     std::optional<std::vector<std::string>> allowedBuyers;
     double maxPriceVolatilityBps;
     double maxTimeToExecuteSeconds;
     "active" | "paused" | "depleted" | "withdrawn" status;
-    std::optional<std:> contractConsignmentId;
+    std::optional<std::string> contractConsignmentId;
     Chain chain;
     double createdAt;
     double updatedAt;
@@ -177,41 +177,41 @@ struct OTCConsignment {
  * Consignment deal record
  */
 struct ConsignmentDeal {
-    std: id;
-    std: consignmentId;
-    std: quoteId;
-    std: tokenId;
-    std: buyerAddress;
-    std: amount;
+    std::string id;
+    std::string consignmentId;
+    std::string quoteId;
+    std::string tokenId;
+    std::string buyerAddress;
+    std::string amount;
     double discountBps;
     double lockupDays;
     double executedAt;
-    std::optional<std:> offerId;
+    std::optional<std::string> offerId;
     "pending" | "executed" | "failed" status;
 };
 
-//========
+//====
 // USER SESSION TYPES
-//========
+//====
 
 /**
  * User session memory
  */
 struct UserSessionMemory {
-    std: id;
-    std: entityId;
-    std: walletAddress;
+    std::string id;
+    std::string entityId;
+    std::string walletAddress;
     "evm" | "solana" chainFamily;
-    std::optional<std:> preferredChain;
+    std::optional<std::string> preferredChain;
     double lastActiveAt;
-    std::optional<std::unordered_map<std:, unknown>> sessionData;
+    std::optional<std::unordered_map<std::string, unknown>> sessionData;
     double createdAt;
     double updatedAt;
 };
 
-//========
+//====
 // UTILITY TYPES
-//========
+//====
 
 /**
  * Token with balance information

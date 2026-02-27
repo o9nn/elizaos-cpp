@@ -39,7 +39,7 @@ std::future<State> refreshStateAfterAction(IAgentRuntime runtime, Memory message
  * @param error - Optional error message
  * @returns Updated state
  */
-State updateActionPlanStep(State state, double stepIndex, const std:& status, std::optional<std::unordered_map<std:, std:>> result, std::optional<std:> error);
+State updateActionPlanStep(State state, double stepIndex, const std::string& status, std::optional<std::unordered_map<std::string, std::string>> result, std::optional<std::string> error);
 
 /**
  * Initializes or updates working memory in state
@@ -49,7 +49,7 @@ State updateActionPlanStep(State state, double stepIndex, const std:& status, st
  * @param value - Memory value
  * @returns Updated state
  */
-State updateWorkingMemory(State state, const std:& key, const std::unordered_map<std:, std:>& value);
+State updateWorkingMemory(State state, const std::string& key, const std::unordered_map<std::string, std::string>& value);
 
 
 } // namespace elizaos

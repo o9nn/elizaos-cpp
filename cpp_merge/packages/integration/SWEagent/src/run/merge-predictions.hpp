@@ -6,7 +6,7 @@
 #include "../utils/log.h"
 
 extern std::shared_ptr<AgentLogger> logger;
-void mergePredictions(array<string> directories, string output = undefined);
+void mergePredictions(array<string> directories, string output = std::nullopt);
 
 array<string> findPredFiles(string directory);
 

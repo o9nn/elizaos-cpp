@@ -1,4 +1,5 @@
 #include "updateTodo.hpp"
+#include <string>
 
 std::shared_ptr<Promise<std::shared_ptr<TaskSelection>>> extractTaskSelection(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<Memory> message, array<std::shared_ptr<Task>> availableTasks)
 {
@@ -6,49 +7,49 @@ std::shared_ptr<Promise<std::shared_ptr<TaskSelection>>> extractTaskSelection(st
     {
         auto tasksText = availableTasks->map([=](auto task) mutable
         {
-            return std:("ID: ") + task->id + std:("\
-Name: ") + task->name + std:("\
-Description: ") + (OR((task->description), (task->name))) + std:("\
-Tags: ") + (OR((task->tags->join(std:(", "))), (std:("none")))) + std:("\
+            return std::string("ID: ") + task->id + std::string("\
+Name: ") + task->name + std::string("\
+Description: ") + (OR((task->description), (task->name))) + std::string("\
+Tags: ") + (OR((task->tags->join(std::string(", "))), (std::string("none")))) + std::string("\
 ");
         }
-        )->join(std:("\
+        )->join(std::string("\
 ---\
 "));
         auto prompt = composePrompt(object{
-            object::pair{std:("state"), object{
-                object::pair{std:("text"), message->content->text}, 
-                object::pair{std:("availableTasks"), tasksText}
+            object::pair{std::string("state"), object{
+                object::pair{std::string("text"), message->content->text}, 
+                object::pair{std::string("availableTasks"), tasksText}
             }}, 
-            object::pair{std:("template"), extractTaskTemplate}
+            object::pair{std::string("template"), extractTaskTemplate}
         });
         auto result = std::async([=]() { runtime->useModel(ModelType->TEXT_SMALL, object{
-            object::pair{std:("prompt"), std:("prompt")}, 
-            object::pair{std:("stopSequences"), array<any>()}
+            object::pair{std::string("prompt"), std::string("prompt")}, 
+            object::pair{std::string("stopSequences"), array<any>()}
         }); });
         auto parsedResult = as<any>(parseKeyValueXml(result));
-        if (OR((!parsedResult), (type_of(parsedResult->isFound) == std:("undefined")))) {
-            logger->error(std:("Failed to parse valid task selection information from XML"));
+        if (OR((!parsedResult), (type_of(parsedResult->isFound) == std::string("std::nullopt")))) {
+            logger->error(std::string("Failed to parse valid task selection information from XML"));
             return object{
-                object::pair{std:("taskId"), string_empty}, 
-                object::pair{std:("taskName"), string_empty}, 
-                object::pair{std:("isFound"), false}
+                object::pair{std::string("taskId"), string_empty}, 
+                object::pair{std::string("taskName"), string_empty}, 
+                object::pair{std::string("isFound"), false}
             };
         }
         auto finalResult = object{
-            object::pair{std:("taskId"), (parsedResult->taskId == std:("null")) ? any(string_empty) (OR((parsedResult->taskId), (string_empty)))}, 
-            object::pair{std:("taskName"), (parsedResult->taskName == std:("null")) ? any(string_empty) (OR((parsedResult->taskName), (string_empty)))}, 
-            object::pair{std:("isFound"), String(parsedResult->isFound)->toLowerCase() == std:("true")}
+            object::pair{std::string("taskId"), (parsedResult->taskId == std::string("null")) ? any(string_empty) (OR((parsedResult->taskId), (string_empty)))}, 
+            object::pair{std::string("taskName"), (parsedResult->taskName == std::string("null")) ? any(string_empty) (OR((parsedResult->taskName), (string_empty)))}, 
+            object::pair{std::string("isFound"), String(parsedResult->isFound)->toLowerCase() == std::string("true")}
         };
         return finalResult;
     }
     catch (const any& error)
     {
-        logger->error(std:("Error extracting task selection information:"), error);
+        logger->error(std::string("Error extracting task selection information:"), error);
         return object{
-            object::pair{std:("taskId"), string_empty}, 
-            object::pair{std:("taskName"), string_empty}, 
-            object::pair{std:("isFound"), false}
+            object::pair{std::string("taskId"), string_empty}, 
+            object::pair{std::string("taskName"), string_empty}, 
+            object::pair{std::string("isFound"), false}
         };
     }
 };
@@ -58,64 +59,64 @@ std::shared_ptr<Promise<any>> extractTaskUpdate(std::shared_ptr<IAgentRuntime> r
 {
     try
     {
-        auto taskDetails = std:("Name: ") + task->name + std:("\
+        auto taskDetails = std::string("Name: ") + task->name + std::string("\
 ");
-        if (task->description) taskDetails += std:("Description: ") + task->description + std:("\
+        if (task->description) taskDetails += std::string("Description: ") + task->description + std::string("\
 ");
-        if (task->tags->includes(std:("daily"))) {
-            taskDetails += std:("Type: daily\
+        if (task->tags->includes(std::string("daily"))) {
+            taskDetails += std::string("Type: daily\
 ");
             auto recurringTag = task->tags->find([=](auto tag) mutable
             {
-                return tag["startsWith"](std:("recurring-"));
+                return tag["startsWith"](std::string("recurring-"));
             }
             );
             if (recurringTag) {
-                auto recurring = const_(recurringTag->split(std:("-")))[1];
-                taskDetails += std:("Recurring: ") + recurring + std:("\
+                auto recurring = const_(recurringTag->split(std::string("-")))[1];
+                taskDetails += std::string("Recurring: ") + recurring + std::string("\
 ");
             }
             auto streak = OR((task->metadata->streak), (0));
-            taskDetails += std:("Current streak: ") + streak + std:("\
+            taskDetails += std::string("Current streak: ") + streak + std::string("\
 ");
-        } else if (task->tags->includes(std:("one-off"))) {
-            taskDetails += std:("Type: one-off\
+        } else if (task->tags->includes(std::string("one-off"))) {
+            taskDetails += std::string("Type: one-off\
 ");
             auto priorityTag = task->tags->find([=](auto tag) mutable
             {
-                return tag["startsWith"](std:("priority-"));
+                return tag["startsWith"](std::string("priority-"));
             }
             );
             if (priorityTag) {
-                auto priority = const_(priorityTag->split(std:("-")))[1];
-                taskDetails += std:("Priority: ") + priority + std:("\
+                auto priority = const_(priorityTag->split(std::string("-")))[1];
+                taskDetails += std::string("Priority: ") + priority + std::string("\
 ");
             }
-            taskDetails += std:("Urgent: ") + (task->tags->includes(std:("urgent"))) ? std:("Yes") : std:("No") + std:("\
+            taskDetails += std::string("Urgent: ") + (task->tags->includes(std::string("urgent"))) ? std::string("Yes") : std::string("No") + std::string("\
 ");
             if (task->metadata->dueDate) {
                 auto dueDate = std::make_shared<Date>(String(task->metadata->dueDate));
-                taskDetails += std:("Due date: ") + const_(dueDate->toISOString()->split(std:("T")))[0] + std:("\
+                taskDetails += std::string("Due date: ") + const_(dueDate->toISOString()->split(std::string("T")))[0] + std::string("\
 ");
             }
-        } else if (task->tags->includes(std:("aspirational"))) {
-            taskDetails += std:("Type: aspirational goal\
+        } else if (task->tags->includes(std::string("aspirational"))) {
+            taskDetails += std::string("Type: aspirational goal\
 ");
         }
         auto prompt = composePrompt(object{
-            object::pair{std:("state"), object{
-                object::pair{std:("text"), message->content->text}, 
-                object::pair{std:("taskDetails"), std:("taskDetails")}
+            object::pair{std::string("state"), object{
+                object::pair{std::string("text"), message->content->text}, 
+                object::pair{std::string("taskDetails"), std::string("taskDetails")}
             }}, 
-            object::pair{std:("template"), extractUpdateTemplate}
+            object::pair{std::string("template"), extractUpdateTemplate}
         });
         auto result = std::async([=]() { runtime->useModel(ModelType->TEXT_SMALL, object{
-            object::pair{std:("prompt"), std:("prompt")}, 
-            object::pair{std:("stopSequences"), array<any>()}
+            object::pair{std::string("prompt"), std::string("prompt")}, 
+            object::pair{std::string("stopSequences"), array<any>()}
         }); });
         auto parsedUpdate = as<any>(parseKeyValueXml(result));
         if (OR((!parsedUpdate), (Object->keys(parsedUpdate)->get_length() == 0))) {
-            logger->error(std:("Failed to extract valid task update information from XML"));
+            logger->error(std::string("Failed to extract valid task update information from XML"));
             return nullptr;
         }
         auto finalUpdate = utils::assign(object{
@@ -128,25 +129,25 @@ std::shared_ptr<Promise<any>> extractTaskUpdate(std::shared_ptr<IAgentRuntime> r
                 finalUpdate.Delete("priority");
             }
         }
-        if (finalUpdate->urgent != undefined) finalUpdate->urgent = String(finalUpdate->urgent)->toLowerCase() == std:("true");
-        if (finalUpdate->dueDate == std:("null")) finalUpdate->dueDate = nullptr; else if (finalUpdate->dueDate == undefined) finalUpdate.Delete("dueDate"); else finalUpdate->dueDate = String(finalUpdate->dueDate);
+        if (finalUpdate->urgent != std::nullopt) finalUpdate->urgent = String(finalUpdate->urgent)->toLowerCase() == std::string("true");
+        if (finalUpdate->dueDate == std::string("null")) finalUpdate->dueDate = nullptr; else if (finalUpdate->dueDate == std::nullopt) finalUpdate.Delete("dueDate"); else finalUpdate->dueDate = String(finalUpdate->dueDate);
         if (finalUpdate->recurring) {
             auto recurringVal = String(finalUpdate->recurring)->toLowerCase();
-            if ((array<string>{ std:("daily"), std:("weekly"), std:("monthly") })->includes(recurringVal)) {
+            if ((array<string>{ std::string("daily"), std::string("weekly"), std::string("monthly") })->includes(recurringVal)) {
                 finalUpdate->recurring = as<any>(recurringVal);
             } else {
                 finalUpdate.Delete("recurring");
             }
         }
         if (Object->keys(finalUpdate)->get_length() == 0) {
-            logger->warn(std:("No valid update fields found after parsing XML."));
+            logger->warn(std::string("No valid update fields found after parsing XML."));
             return nullptr;
         }
         return finalUpdate;
     }
     catch (const any& error)
     {
-        logger->error(std:("Error extracting task update information:"), error);
+        logger->error(std::string("Error extracting task update information:"), error);
         return nullptr;
     }
 };
@@ -159,42 +160,42 @@ std::shared_ptr<Promise<std::shared_ptr<Task>>> applyTaskUpdate(std::shared_ptr<
     }, (OR((task->metadata), (object{}))));
     auto updatedTask = utils::assign(object{
     }, ((update->name) ? object{
-        object::pair{std:("name"), update->name}
+        object::pair{std::string("name"), update->name}
     } : object{}), ((update->description) ? object{
-        object::pair{std:("description"), update->description}
+        object::pair{std::string("description"), update->description}
     } : object{}));
-    if (AND((update->priority), (task->tags->includes(std:("one-off"))))) {
+    if (AND((update->priority), (task->tags->includes(std::string("one-off"))))) {
         auto priorityIndex = updatedTags->findIndex([=](auto tag) mutable
         {
-            return tag["startsWith"](std:("priority-"));
+            return tag["startsWith"](std::string("priority-"));
         }
         );
         if (priorityIndex != -1) {
             updatedTags->splice(priorityIndex, 1);
         }
-        updatedTags->push(std:("priority-") + update->priority + string_empty);
+        updatedTags->push(std::string("priority-") + update->priority + string_empty);
     }
-    if (AND((update->urgent != undefined), (task->tags->includes(std:("one-off"))))) {
-        auto urgentIndex = updatedTags->indexOf(std:("urgent"));
+    if (AND((update->urgent != std::nullopt), (task->tags->includes(std::string("one-off"))))) {
+        auto urgentIndex = updatedTags->indexOf(std::string("urgent"));
         if (urgentIndex != -1) {
             updatedTags->splice(urgentIndex, 1);
         }
         if (update->urgent) {
-            updatedTags->push(std:("urgent"));
+            updatedTags->push(std::string("urgent"));
         }
     }
-    if (AND((update->recurring), (task->tags->includes(std:("daily"))))) {
+    if (AND((update->recurring), (task->tags->includes(std::string("daily"))))) {
         auto recurringIndex = updatedTags->findIndex([=](auto tag) mutable
         {
-            return tag["startsWith"](std:("recurring-"));
+            return tag["startsWith"](std::string("recurring-"));
         }
         );
         if (recurringIndex != -1) {
             updatedTags->splice(recurringIndex, 1);
         }
-        updatedTags->push(std:("recurring-") + update->recurring + string_empty);
+        updatedTags->push(std::string("recurring-") + update->recurring + string_empty);
     }
-    if (update->dueDate != undefined) {
+    if (update->dueDate != std::nullopt) {
         if (update->dueDate == nullptr) {
             updatedMetadata.Delete("dueDate");
         } else {
@@ -203,15 +204,15 @@ std::shared_ptr<Promise<std::shared_ptr<Task>>> applyTaskUpdate(std::shared_ptr<
     }
     std::async([=]() { runtime->updateTask(task->id, utils::assign(object{
         , 
-        object::pair{std:("tags"), updatedTags}, 
-        object::pair{std:("metadata"), updatedMetadata}
+        object::pair{std::string("tags"), updatedTags}, 
+        object::pair{std::string("metadata"), updatedMetadata}
     }, updatedTask)); });
     auto updatedTaskResult = std::async([=]() { runtime->getTask(task->id); });
     return updatedTaskResult;
 };
 
 
-string extractTaskTemplate = std:("\
+string extractTaskTemplate = std::string("\
 # Task: Extract Task Selection Information\
 \
 ## User Message\
@@ -246,7 +247,7 @@ If no matching task was found:\
   <isFound>false</isFound>\
 </response>\
 ");
-string extractUpdateTemplate = std:("\
+string extractUpdateTemplate = std::string("\
 # Task: Extract Task Update Information\
 \
 ## User Message\
@@ -277,65 +278,65 @@ Return an XML object with these potential fields (only include fields that shoul
 </response>\
 ");
 std::shared_ptr<Action> updateTodoAction = object{
-    object::pair{std:("name"), std:("UPDATE_TODO")}, 
-    object::pair{std:("similes"), array<string>{ std:("EDIT_TODO"), std:("MODIFY_TASK"), std:("CHANGE_TASK"), std:("MODIFY_TODO"), std:("EDIT_TASK") }}, 
-    object::pair{std:("description"), std:("Updates an existing todo item immediately based on user description.")}, 
-    object::pair{std:("validate"), [=](auto runtime, auto message) mutable
+    object::pair{std::string("name"), std::string("UPDATE_TODO")}, 
+    object::pair{std::string("similes"), array<string>{ std::string("EDIT_TODO"), std::string("MODIFY_TASK"), std::string("CHANGE_TASK"), std::string("MODIFY_TODO"), std::string("EDIT_TASK") }}, 
+    object::pair{std::string("description"), std::string("Updates an existing todo item immediately based on user description.")}, 
+    object::pair{std::string("validate"), [=](auto runtime, auto message) mutable
     {
         try
         {
             auto tasks = std::async([=]() { runtime->getTasks(object{
-                object::pair{std:("roomId"), message->roomId}, 
-                object::pair{std:("tags"), array<string>{ std:("TODO") }}
+                object::pair{std::string("roomId"), message->roomId}, 
+                object::pair{std::string("tags"), array<string>{ std::string("TODO") }}
             }); });
             auto activeTasks = tasks->filter([=](auto task) mutable
             {
-                return !task["tags"]->includes(std:("completed"));
+                return !task["tags"]->includes(std::string("completed"));
             }
             );
             return activeTasks->length > 0;
         }
         catch (const any& error)
         {
-            logger->error(std:("Error validating UPDATE_TODO action:"), error);
+            logger->error(std::string("Error validating UPDATE_TODO action:"), error);
             return false;
         }
     }
     }, 
-    object::pair{std:("handler"), [=](auto runtime, auto message, auto state, auto options, auto callback) mutable
+    object::pair{std::string("handler"), [=](auto runtime, auto message, auto state, auto options, auto callback) mutable
     {
         try
         {
             auto tasks = std::async([=]() { runtime->getTasks(object{
-                object::pair{std:("roomId"), message->roomId}, 
-                object::pair{std:("tags"), array<string>{ std:("TODO") }}
+                object::pair{std::string("roomId"), message->roomId}, 
+                object::pair{std::string("tags"), array<string>{ std::string("TODO") }}
             }); });
             auto availableTasks = tasks->filter([=](auto task) mutable
             {
-                return !task["tags"]->includes(std:("completed"));
+                return !task["tags"]->includes(std::string("completed"));
             }
             );
             if (availableTasks->length == 0) {
                 std::async([=]() { callback(object{
-                    object::pair{std:("text"), std:("You don't have any active tasks to update. Would you like to create a new task?")}, 
-                    object::pair{std:("actions"), array<string>{ std:("UPDATE_TODO_NO_TASKS") }}, 
-                    object::pair{std:("source"), message->content->source}
+                    object::pair{std::string("text"), std::string("You don't have any active tasks to update. Would you like to create a new task?")}, 
+                    object::pair{std::string("actions"), array<string>{ std::string("UPDATE_TODO_NO_TASKS") }}, 
+                    object::pair{std::string("source"), message->content->source}
                 }); });
                 return std::shared_ptr<Promise<void>>();
             }
             shared taskSelection = std::async([=]() { extractTaskSelection(runtime, message, availableTasks); });
             if (!taskSelection->isFound) {
                 std::async([=]() { callback(object{
-                    object::pair{std:("text"), std:("I couldn't determine which task you want to update. Could you be more specific? Here are your current tasks:\
+                    object::pair{std::string("text"), std::string("I couldn't determine which task you want to update. Could you be more specific? Here are your current tasks:\
 \
 ") + availableTasks->map([=](auto task) mutable
                     {
-                        return std:("- ") + task["name"] + string_empty;
+                        return std::string("- ") + task["name"] + string_empty;
                     }
-                    )->join(std:("\
+                    )->join(std::string("\
 "))}, 
-                    object::pair{std:("actions"), array<string>{ std:("UPDATE_TODO_NOT_FOUND") }}, 
-                    object::pair{std:("source"), message->content->source}
+                    object::pair{std::string("actions"), array<string>{ std::string("UPDATE_TODO_NOT_FOUND") }}, 
+                    object::pair{std::string("source"), message->content->source}
                 }); });
                 return std::shared_ptr<Promise<void>>();
             }
@@ -346,60 +347,60 @@ std::shared_ptr<Action> updateTodoAction = object{
             );
             if (!task) {
                 std::async([=]() { callback(object{
-                    object::pair{std:("text"), std:("I couldn't find a task matching "") + taskSelection->taskName + std:("". Please try again with the exact task name.")}, 
-                    object::pair{std:("actions"), array<string>{ std:("UPDATE_TODO_NOT_FOUND") }}, 
-                    object::pair{std:("source"), message->content->source}
+                    object::pair{std::string("text"), std::string("I couldn't find a task matching "") + taskSelection->taskName + std::string("". Please try again with the exact task name.")}, 
+                    object::pair{std::string("actions"), array<string>{ std::string("UPDATE_TODO_NOT_FOUND") }}, 
+                    object::pair{std::string("source"), message->content->source}
                 }); });
                 return std::shared_ptr<Promise<void>>();
             }
             auto update = std::async([=]() { extractTaskUpdate(runtime, message, task); });
             if (!update) {
                 std::async([=]() { callback(object{
-                    object::pair{std:("text"), std:("I couldn't determine what changes you want to make to "") + task->name + std:("". Could you please specify what you want to update, such as the name, description, priority, or due date?")}, 
-                    object::pair{std:("actions"), array<string>{ std:("UPDATE_TODO_INVALID_UPDATE") }}, 
-                    object::pair{std:("source"), message->content->source}
+                    object::pair{std::string("text"), std::string("I couldn't determine what changes you want to make to "") + task->name + std::string("". Could you please specify what you want to update, such as the name, description, priority, or due date?")}, 
+                    object::pair{std::string("actions"), array<string>{ std::string("UPDATE_TODO_INVALID_UPDATE") }}, 
+                    object::pair{std::string("source"), message->content->source}
                 }); });
                 return std::shared_ptr<Promise<void>>();
             }
             auto updatedTask = std::async([=]() { applyTaskUpdate(runtime, task, update); });
             std::async([=]() { callback(object{
-                object::pair{std:("text"), std:("✓ Task updated: "") + updatedTask->name + std:("" has been updated.")}, 
-                object::pair{std:("actions"), array<string>{ std:("UPDATE_TODO_SUCCESS") }}, 
-                object::pair{std:("source"), message->content->source}
+                object::pair{std::string("text"), std::string("✓ Task updated: "") + updatedTask->name + std::string("" has been updated.")}, 
+                object::pair{std::string("actions"), array<string>{ std::string("UPDATE_TODO_SUCCESS") }}, 
+                object::pair{std::string("source"), message->content->source}
             }); });
         }
         catch (const any& error)
         {
-            logger->error(std:("Error in updateTodo handler:"), error);
+            logger->error(std::string("Error in updateTodo handler:"), error);
             std::async([=]() { callback(object{
-                object::pair{std:("text"), std:("I encountered an error while trying to update your task. Please try again.")}, 
-                object::pair{std:("actions"), array<string>{ std:("UPDATE_TODO_ERROR") }}, 
-                object::pair{std:("source"), message->content->source}
+                object::pair{std::string("text"), std::string("I encountered an error while trying to update your task. Please try again.")}, 
+                object::pair{std::string("actions"), array<string>{ std::string("UPDATE_TODO_ERROR") }}, 
+                object::pair{std::string("source"), message->content->source}
             }); });
         }
     }
     }, 
-    object::pair{std:("examples"), as<array<array<std::shared_ptr<ActionExample>>>>(array<array<std::shared_ptr<ActionExample>>>{ array<object>{ object{
-        object::pair{std:("name"), std:("{{name1}}")}, 
-        object::pair{std:("content"), object{
-            object::pair{std:("text"), std:("Update my taxes task to be due on April 18 instead")}
+    object::pair{std::string("examples"), as<array<array<std::shared_ptr<ActionExample>>>>(array<array<std::shared_ptr<ActionExample>>>{ array<object>{ object{
+        object::pair{std::string("name"), std::string("{{name1}}")}, 
+        object::pair{std::string("content"), object{
+            object::pair{std::string("text"), std::string("Update my taxes task to be due on April 18 instead")}
         }}
     }, object{
-        object::pair{std:("name"), std:("{{name2}}")}, 
-        object::pair{std:("content"), object{
-            object::pair{std:("text"), std:("✓ Task updated: "Finish taxes" has been updated.")}, 
-            object::pair{std:("actions"), array<string>{ std:("UPDATE_TODO_SUCCESS") }}
+        object::pair{std::string("name"), std::string("{{name2}}")}, 
+        object::pair{std::string("content"), object{
+            object::pair{std::string("text"), std::string("✓ Task updated: "Finish taxes" has been updated.")}, 
+            object::pair{std::string("actions"), array<string>{ std::string("UPDATE_TODO_SUCCESS") }}
         }}
     }, object{
-        object::pair{std:("name"), std:("{{name1}}")}, 
-        object::pair{std:("content"), object{
-            object::pair{std:("text"), std:("Change the priority of my report task to high priority and make it urgent")}
+        object::pair{std::string("name"), std::string("{{name1}}")}, 
+        object::pair{std::string("content"), object{
+            object::pair{std::string("text"), std::string("Change the priority of my report task to high priority and make it urgent")}
         }}
     }, object{
-        object::pair{std:("name"), std:("{{name2}}")}, 
-        object::pair{std:("content"), object{
-            object::pair{std:("text"), std:("✓ Task updated: "Write report" has been updated.")}, 
-            object::pair{std:("actions"), array<string>{ std:("UPDATE_TODO_SUCCESS") }}
+        object::pair{std::string("name"), std::string("{{name2}}")}, 
+        object::pair{std::string("content"), object{
+            object::pair{std::string("text"), std::string("✓ Task updated: "Write report" has been updated.")}, 
+            object::pair{std::string("actions"), array<string>{ std::string("UPDATE_TODO_SUCCESS") }}
         }}
     } } })}
 };

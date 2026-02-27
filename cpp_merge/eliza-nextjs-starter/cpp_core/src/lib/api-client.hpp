@@ -21,65 +21,65 @@ namespace elizaos {
 
 // Backend Memory type from ElizaOS
 struct BackendMemory {
-    std: id;
-    std:; // UUID of sender (user or agent) entityId;
-    std:; // UUID of the agent this memory belongs to agentId;
-    std:; // UUID of the room roomId;
+    std::string id;
+    std::string; // UUID of sender (user or agent) entityId;
+    std::string; // UUID of the agent this memory belongs to agentId;
+    std::string; // UUID of the room roomId;
     { content;
-    std::optional<std:> text;
-    std::optional<std:> source;
-    std::optional<std:> thought;
+    std::optional<std::string> text;
+    std::optional<std::string> source;
+    std::optional<std::string> thought;
     std::optional<std::vector<std::string>> actions;
     std::optional<std::vector<std::string>> attachments;
     std::optional<{> metadata;
-    std::optional<std:> entityName;
+    std::optional<std::string> entityName;
     double createdAt;
-    std::optional<std:> worldId;
+    std::optional<std::string> worldId;
     std::optional<double> importance;
 };
 
 // Agent information
 struct Agent {
-    std: id;
-    std: name;
-    std::optional<std:> bio;
-    std::optional<std::unordered_map<std:, std:>> settings;
+    std::string id;
+    std::string name;
+    std::optional<std::string> bio;
+    std::optional<std::unordered_map<std::string, std::string>> settings;
     std::optional<"active" | "inactive"> status;
 };
 
 // Room information
 struct Room {
-    std: id;
-    std: name;
+    std::string id;
+    std::string name;
     "dm" | "group" | "channel" type;
-    std: agentId;
-    std::optional<std:> worldId;
-    std::optional<std:> serverId;
-    std::optional<std::unordered_map<std:, std:>> metadata;
+    std::string agentId;
+    std::optional<std::string> worldId;
+    std::optional<std::string> serverId;
+    std::optional<std::unordered_map<std::string, std::string>> metadata;
 };
 
 // Channel information
 struct Channel {
-    std: id;
-    std: name;
-    std: serverId;
-    std::optional<std:> description;
+    std::string id;
+    std::string name;
+    std::string serverId;
+    std::optional<std::string> description;
     std::optional<std::vector<std::string>> participants;
     std::optional<std::vector<std::string>> agents;
 };
 
 // Message submission payload
 struct MessageSubmission {
-    std: message;
-    std: agentId;
-    std::optional<std:> roomId;
-    std::optional<std:> channelId;
-    std::optional<std:> serverId;
-    std::optional<std:> senderId;
-    std::optional<std:> senderName;
-    std::optional<std:> source;
+    std::string message;
+    std::string agentId;
+    std::optional<std::string> roomId;
+    std::optional<std::string> channelId;
+    std::optional<std::string> serverId;
+    std::optional<std::string> senderId;
+    std::optional<std::string> senderName;
+    std::optional<std::string> source;
     std::optional<std::vector<std::string>> attachments;
-    std::optional<std::unordered_map<std:, std:>> metadata;
+    std::optional<std::unordered_map<std::string, std::string>> metadata;
 };
 
 /**
@@ -166,16 +166,16 @@ std::vector<ChatMessage> transformMemoriesToChatMessages(const std::vector<Backe
 // == DM CHANNEL MANAGEMENT ==
 
 struct DMChannel {
-    std: id;
-    std: name;
+    std::string id;
+    std::string name;
     "DM" type;
     { metadata;
-    std: user1;
-    std: user2;
-    std: forAgent;
-    std: createdAt;
-    std::optional<std:> sessionId;
-    std::optional<std:> title;
+    std::string user1;
+    std::string user2;
+    std::string forAgent;
+    std::string createdAt;
+    std::optional<std::string> sessionId;
+    std::optional<std::string> title;
     std::vector<std::string> participants;
 };
 

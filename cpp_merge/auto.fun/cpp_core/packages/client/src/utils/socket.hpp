@@ -17,7 +17,7 @@ namespace elizaos {
 // Custom WebSocket wrapper to maintain Socket.io-like API
 class SocketWrapper {
   private ws: WebSocket | null = null;
-  private eventHandlers: Record<std:, Array<(data: unknown) => void>> = {};
+  private eventHandlers: Record<std::string, Array<(data: unknown) => void>> = {};
   // Queue for messages that need to be sent when connection is established
   // Store the client ID received from the server
 
@@ -29,7 +29,7 @@ class SocketWrapper {
 
       // Reset reconnection state on successful connection
 
-      // Process std: queued messages
+      // Process std::string queued messages
 
         // Handle server pings
           // Respond immediately
@@ -60,12 +60,12 @@ class SocketWrapper {
 
     // Clear client ID on disconnect
 
-    // Clear std: pending reconnection attempts
+    // Clear std::string pending reconnection attempts
 
 // Create a type that matches the Socket.io Socket interface
 using Socket = SocketWrapper;
 
     // Get apiUrl from environment and ensure it's defined
-    // Pass the guaranteed std: to the constructor
+    // Pass the guaranteed std::string to the constructor
 
 } // namespace elizaos

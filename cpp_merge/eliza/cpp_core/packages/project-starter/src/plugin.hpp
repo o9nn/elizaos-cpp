@@ -30,7 +30,7 @@ namespace elizaos {
  *
  * @typedef {Object} Action
  * @property {string} name - The name of the action
- * @property {std:[]} similes - The related similes of the action
+ * @property {std::string[]} similes - The related similes of the action
  * @property {string} description - Description of the action
  * @property {Function} validate - Validation std::function for the action
  * @property {Function} handler - The std::function that handles the action
@@ -49,12 +49,12 @@ namespace elizaos {
  * This demonstrates the simplest possible provider implementation
  */
 
-class StarterService extends Service {
+class StarterService : public Service {
   static serviceType = 'starter';
   capabilityDescription =
     'This is a starter service which is attached to the agent through the starter plugin.';
 
-  constructor(runtime: IAgentRuntime) {
+  /* constructor */ (runtime: IAgentRuntime) {
     super(runtime);
   }
 

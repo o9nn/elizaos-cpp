@@ -1,4 +1,5 @@
 #include "share-card.hpp"
+#include <string>
 #include <future>
 #include <optional>
 #include <iostream>
@@ -24,9 +25,9 @@ std::future<void*> loadBusinessImage() {
 
 }
 
-std::future<> createDealShareImage(std::optional<std:> args) {
+std::future<> createDealShareImage(std::optional<std::string> args) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    file: File; dataUrl: std:
+    file: File; dataUrl: std::string
 }
 
 } // namespace elizaos

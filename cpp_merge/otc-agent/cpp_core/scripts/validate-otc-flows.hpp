@@ -28,51 +28,51 @@ namespace elizaos {
  * With real transactions: EXECUTE_TX=true bun scripts/validate-otc-flows.ts
  */
 
-// ========
+// ====
 // CONFIGURATION
-// ========
+// ====
 
 // Load deployment config
 
-// ========
+// ====
 // ABI (Load from artifact or use parseAbi)
-// ========
+// ====
 
-// ========
+// ====
 // UTILITIES
-// ========
+// ====
 
-void log(const std:& category, const std:& message, std::optional<Record<string> data, auto unknown>);
+void log(const std::string& category, const std::string& message, std::optional<Record<string> data, auto unknown>);
 
-void section(const std:& title);
+void section(const std::string& title);
 
-// ========
+// ====
 // EVM VALIDATION
-// ========
+// ====
 
 std::future<void> validateEVM();
 
-// ========
+// ====
 // SOLANA VALIDATION
-// ========
+// ====
 
 std::future<void> validateSolana();
 
-// ========
+// ====
 // FLOW VALIDATION
-// ========
+// ====
 
 std::future<void> validateFlows();
 
-// ========
+// ====
 // EXECUTE REAL TRANSACTIONS (Optional)
-// ========
+// ====
 
 std::future<void> executeRealTransactions();
 
-// ========
+// ====
 // MAIN
-// ========
+// ====
 
 std::future<void> main();
 

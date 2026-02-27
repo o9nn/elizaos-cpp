@@ -1,17 +1,18 @@
 #include "e2e-browser.test.h"
+#include <string>
 
 std::function<any()> createMockRuntime = [=]() mutable
 {
     return as<std::shared_ptr<IAgentRuntime>>(as<any>((object{
-        object::pair{std:("getSetting"), [=](auto key) mutable
+        object::pair{std::string("getSetting"), [=](auto key) mutable
         {
-            if (OR((key == std:("ENABLE_BROWSER")), (key == std:("BROWSER_ENABLED")))) {
-                return std:("true");
+            if (OR((key == std::string("ENABLE_BROWSER")), (key == std::string("BROWSER_ENABLED")))) {
+                return std::string("true");
             }
-            return undefined;
+            return std::nullopt;
         }
         }, 
-        object::pair{std:("getService"), [=](auto serviceName) mutable
+        object::pair{std::string("getService"), [=](auto serviceName) mutable
         {
             if (serviceName == StagehandService::serviceType) {
                 return service;
@@ -19,20 +20,20 @@ std::function<any()> createMockRuntime = [=]() mutable
             return nullptr;
         }
         }, 
-        object::pair{std:("registerService"), mock()}
+        object::pair{std::string("registerService"), mock()}
     })));
 };
 std::function<any(string)> createMemory = [=](auto text) mutable
 {
     return as<std::shared_ptr<Memory>>((object{
-        object::pair{std:("id"), std:("mem-") + Date->now() + string_empty}, 
-        object::pair{std:("userId"), std:("test-user")}, 
-        object::pair{std:("agentId"), std:("test-agent")}, 
-        object::pair{std:("roomId"), std:("test-room")}, 
-        object::pair{std:("content"), object{
-            object::pair{std:("text"), std:("text")}
+        object::pair{std::string("id"), std::string("mem-") + Date->now() + string_empty}, 
+        object::pair{std::string("userId"), std::string("test-user")}, 
+        object::pair{std::string("agentId"), std::string("test-agent")}, 
+        object::pair{std::string("roomId"), std::string("test-room")}, 
+        object::pair{std::string("content"), object{
+            object::pair{std::string("text"), std::string("text")}
         }}, 
-        object::pair{std:("createdAt"), std::make_shared<Date>()}
+        object::pair{std::string("createdAt"), std::make_shared<Date>()}
     }));
 };
 std::shared_ptr<StagehandService> service;
@@ -40,7 +41,7 @@ std::shared_ptr<IAgentRuntime> runtime;
 
 void Main(void)
 {
-    describe(std:("E2E Browser Actions"), [=]() mutable
+    describe(std::string("E2E Browser Actions"), [=]() mutable
     {
         beforeAll([=]() mutable
         {
@@ -61,15 +62,15 @@ void Main(void)
             }
         }
         , 10000);
-        it(std:("should navigate to a URL"), [=]() mutable
+        it(std::string("should navigate to a URL"), [=]() mutable
         {
             auto navigateAction = stagehandPlugin->actions->find([=](auto a) mutable
             {
-                return a["name"] == std:("BROWSER_NAVIGATE");
+                return a["name"] == std::string("BROWSER_NAVIGATE");
             }
             );
             expect(navigateAction)->toBeDefined();
-            auto message = createMemory(std:("Navigate to https://example.com"));
+            auto message = createMemory(std::string("Navigate to https://example.com"));
             auto state = as<std::shared_ptr<State>>(object{});
             auto canNavigate = std::async([=]() { navigateAction->validate(runtime, message, state); });
             expect(canNavigate)->toBe(true);
@@ -77,22 +78,22 @@ void Main(void)
             auto result = std::async([=]() { navigateAction->handler(runtime, message, state, object{}, mockCallback); });
             expect(mockCallback)->toHaveBeenCalled();
             auto callbackArgs = const_(const_(mockCallback->mock->calls)[0])[0];
-            expect(callbackArgs->text)->toContain(std:("navigated to https://example.com"));
-            expect(callbackArgs->actions)->toContain(std:("BROWSER_NAVIGATE"));
+            expect(callbackArgs->text)->toContain(std::string("navigated to https://example.com"));
+            expect(callbackArgs->actions)->toContain(std::string("BROWSER_NAVIGATE"));
             expect(result)->toBeDefined();
             expect(result->success)->toBe(true);
-            expect(result->data->url)->toBe(std:("https://example.com"));
+            expect(result->data->url)->toBe(std::string("https://example.com"));
         }
         , 30000);
-        it(std:("should click on an element"), [=]() mutable
+        it(std::string("should click on an element"), [=]() mutable
         {
             auto clickAction = stagehandPlugin->actions->find([=](auto a) mutable
             {
-                return a["name"] == std:("BROWSER_CLICK");
+                return a["name"] == std::string("BROWSER_CLICK");
             }
             );
             expect(clickAction)->toBeDefined();
-            auto message = createMemory(std:("Click on the submit button"));
+            auto message = createMemory(std::string("Click on the submit button"));
             auto state = as<std::shared_ptr<State>>(object{});
             auto canClick = std::async([=]() { clickAction->validate(runtime, message, state); });
             expect(canClick)->toBe(true);
@@ -100,19 +101,19 @@ void Main(void)
             std::async([=]() { clickAction->handler(runtime, message, state, object{}, mockCallback); });
             expect(mockCallback)->toHaveBeenCalled();
             auto callbackArgs = const_(const_(mockCallback->mock->calls)[0])[0];
-            expect(callbackArgs->text)->toContain(std:("clicked on "the submit button""));
-            expect(callbackArgs->actions)->toContain(std:("BROWSER_CLICK"));
+            expect(callbackArgs->text)->toContain(std::string("clicked on "the submit button""));
+            expect(callbackArgs->actions)->toContain(std::string("BROWSER_CLICK"));
         }
         , 30000);
-        it(std:("should type text into a field"), [=]() mutable
+        it(std::string("should type text into a field"), [=]() mutable
         {
             auto typeAction = stagehandPlugin->actions->find([=](auto a) mutable
             {
-                return a["name"] == std:("BROWSER_TYPE");
+                return a["name"] == std::string("BROWSER_TYPE");
             }
             );
             expect(typeAction)->toBeDefined();
-            auto message = createMemory(std:("Type "hello world" in the search box"));
+            auto message = createMemory(std::string("Type "hello world" in the search box"));
             auto state = as<std::shared_ptr<State>>(object{});
             auto canType = std::async([=]() { typeAction->validate(runtime, message, state); });
             expect(canType)->toBe(true);
@@ -120,19 +121,19 @@ void Main(void)
             std::async([=]() { typeAction->handler(runtime, message, state, object{}, mockCallback); });
             expect(mockCallback)->toHaveBeenCalled();
             auto callbackArgs = const_(const_(mockCallback->mock->calls)[0])[0];
-            expect(callbackArgs->text)->toContain(std:("typed "hello world" in the search box"));
-            expect(callbackArgs->actions)->toContain(std:("BROWSER_TYPE"));
+            expect(callbackArgs->text)->toContain(std::string("typed "hello world" in the search box"));
+            expect(callbackArgs->actions)->toContain(std::string("BROWSER_TYPE"));
         }
         , 30000);
-        it(std:("should select an option from dropdown"), [=]() mutable
+        it(std::string("should select an option from dropdown"), [=]() mutable
         {
             auto selectAction = stagehandPlugin->actions->find([=](auto a) mutable
             {
-                return a["name"] == std:("BROWSER_SELECT");
+                return a["name"] == std::string("BROWSER_SELECT");
             }
             );
             expect(selectAction)->toBeDefined();
-            auto message = createMemory(std:("Select "United States" from the country dropdown"));
+            auto message = createMemory(std::string("Select "United States" from the country dropdown"));
             auto state = as<std::shared_ptr<State>>(object{});
             auto canSelect = std::async([=]() { selectAction->validate(runtime, message, state); });
             expect(canSelect)->toBe(true);
@@ -140,19 +141,19 @@ void Main(void)
             std::async([=]() { selectAction->handler(runtime, message, state, object{}, mockCallback); });
             expect(mockCallback)->toHaveBeenCalled();
             auto callbackArgs = const_(const_(mockCallback->mock->calls)[0])[0];
-            expect(callbackArgs->text)->toContain(std:("selected "United States" from the country dropdown"));
-            expect(callbackArgs->actions)->toContain(std:("BROWSER_SELECT"));
+            expect(callbackArgs->text)->toContain(std::string("selected "United States" from the country dropdown"));
+            expect(callbackArgs->actions)->toContain(std::string("BROWSER_SELECT"));
         }
         , 30000);
-        it(std:("should extract data from page"), [=]() mutable
+        it(std::string("should extract data from page"), [=]() mutable
         {
             auto extractAction = stagehandPlugin->actions->find([=](auto a) mutable
             {
-                return a["name"] == std:("BROWSER_EXTRACT");
+                return a["name"] == std::string("BROWSER_EXTRACT");
             }
             );
             expect(extractAction)->toBeDefined();
-            auto message = createMemory(std:("Extract the main heading from the page"));
+            auto message = createMemory(std::string("Extract the main heading from the page"));
             auto state = as<std::shared_ptr<State>>(object{});
             auto canExtract = std::async([=]() { extractAction->validate(runtime, message, state); });
             expect(canExtract)->toBe(true);
@@ -160,19 +161,19 @@ void Main(void)
             std::async([=]() { extractAction->handler(runtime, message, state, object{}, mockCallback); });
             expect(mockCallback)->toHaveBeenCalled();
             auto callbackArgs = const_(const_(mockCallback->mock->calls)[0])[0];
-            expect(callbackArgs->text)->toMatch((new RegExp(std:("found the main heading|couldn't fin"))));
-            expect(callbackArgs->actions)->toContain(std:("BROWSER_EXTRACT"));
+            expect(callbackArgs->text)->toMatch((new RegExp(std::string("found the main heading|couldn't fin"))));
+            expect(callbackArgs->actions)->toContain(std::string("BROWSER_EXTRACT"));
         }
         , 30000);
-        it(std:("should take a screenshot"), [=]() mutable
+        it(std::string("should take a screenshot"), [=]() mutable
         {
             auto screenshotAction = stagehandPlugin->actions->find([=](auto a) mutable
             {
-                return a["name"] == std:("BROWSER_SCREENSHOT");
+                return a["name"] == std::string("BROWSER_SCREENSHOT");
             }
             );
             expect(screenshotAction)->toBeDefined();
-            auto message = createMemory(std:("Take a screenshot of the page"));
+            auto message = createMemory(std::string("Take a screenshot of the page"));
             auto state = as<std::shared_ptr<State>>(object{});
             auto canScreenshot = std::async([=]() { screenshotAction->validate(runtime, message, state); });
             expect(canScreenshot)->toBe(true);
@@ -180,28 +181,28 @@ void Main(void)
             std::async([=]() { screenshotAction->handler(runtime, message, state, object{}, mockCallback); });
             expect(mockCallback)->toHaveBeenCalled();
             auto callbackArgs = const_(const_(mockCallback->mock->calls)[0])[0];
-            expect(callbackArgs->text)->toContain(std:("taken a screenshot"));
-            expect(callbackArgs->actions)->toContain(std:("BROWSER_SCREENSHOT"));
+            expect(callbackArgs->text)->toContain(std::string("taken a screenshot"));
+            expect(callbackArgs->actions)->toContain(std::string("BROWSER_SCREENSHOT"));
             expect(callbackArgs->data)->toBeDefined();
-            expect(callbackArgs->data->mimeType)->toBe(std:("image/png"));
+            expect(callbackArgs->data->mimeType)->toBe(std::string("image/png"));
         }
         , 30000);
-        it(std:("should handle navigation errors gracefully"), [=]() mutable
+        it(std::string("should handle navigation errors gracefully"), [=]() mutable
         {
             auto navigateAction = stagehandPlugin->actions->find([=](auto a) mutable
             {
-                return a["name"] == std:("BROWSER_NAVIGATE");
+                return a["name"] == std::string("BROWSER_NAVIGATE");
             }
             );
             expect(navigateAction)->toBeDefined();
-            auto message = createMemory(std:("Navigate to invalid://not-a-url"));
+            auto message = createMemory(std::string("Navigate to invalid://not-a-url"));
             auto state = as<std::shared_ptr<State>>(object{});
             auto mockCallback = mock();
             auto result = std::async([=]() { navigateAction->handler(runtime, message, state, object{}, mockCallback); });
             expect(mockCallback)->toHaveBeenCalled();
             auto callbackArgs = const_(const_(mockCallback->mock->calls)[0])[0];
             expect(callbackArgs->error)->toBe(true);
-            expect(callbackArgs->text)->toContain(std:("Security error"));
+            expect(callbackArgs->text)->toContain(std::string("Security error"));
             expect(result->success)->toBe(false);
         }
         , 30000);

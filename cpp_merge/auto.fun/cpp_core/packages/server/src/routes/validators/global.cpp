@@ -1,10 +1,11 @@
 #include "global.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std: parseSolanaAddress(const std:& raw, auto name) {
+std::string parseSolanaAddress(const std::string& raw, auto name) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -19,7 +20,7 @@ std: parseSolanaAddress(const std:& raw, auto name) {
     }
 }
 
-Pagination parsePaginationQuery(const std::variant<Record<std:, std:, undefined>>& query, auto maxLimit, auto maxPage) {
+Pagination parsePaginationQuery(const std::variant<Record<std::string, std::string, std::nullopt>>& query, auto maxLimit, auto maxPage) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto rawLimit = parseInt(query.limit || "", 10);

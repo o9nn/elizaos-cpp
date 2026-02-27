@@ -1,4 +1,5 @@
 #include "session.hpp"
+#include <string>
 #include <future>
 #include <optional>
 #include <iostream>
@@ -6,7 +7,7 @@
 
 namespace elizaos {
 
-std::future<std:> createSession(SessionData data) {
+std::future<std::string> createSession(SessionData data) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto redis = getGlobalRedisCache();
@@ -16,7 +17,7 @@ std::future<std:> createSession(SessionData data) {
 
 }
 
-std::future<std::optional<SessionData>> getSession(const std:& sid) {
+std::future<std::optional<SessionData>> getSession(const std::string& sid) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto redis = getGlobalRedisCache();
@@ -25,7 +26,7 @@ std::future<std::optional<SessionData>> getSession(const std:& sid) {
 
 }
 
-std::future<void> destroySession(const std:& sid) {
+std::future<void> destroySession(const std::string& sid) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto redis = getGlobalRedisCache();

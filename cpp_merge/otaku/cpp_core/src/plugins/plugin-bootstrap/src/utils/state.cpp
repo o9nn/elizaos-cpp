@@ -22,7 +22,7 @@ std::future<State> refreshStateAfterAction(IAgentRuntime runtime, Memory message
     // Preserve action results in state
     refreshedState.data.actionResults = actionResults;
 
-    // Merge std: custom data from current state that shouldn't be lost
+    // Merge std::string custom data from current state that shouldn't be lost
     if (currentState.data.actionPlan) {
         refreshedState.data.actionPlan = currentState.data.actionPlan;
     }
@@ -35,7 +35,7 @@ std::future<State> refreshStateAfterAction(IAgentRuntime runtime, Memory message
 
 }
 
-State updateActionPlanStep(State state, double stepIndex, const std:& status, std::optional<std::unordered_map<std:, std:>> result, std::optional<std:> error) {
+State updateActionPlanStep(State state, double stepIndex, const std::string& status, std::optional<std::unordered_map<std::string, std::string>> result, std::optional<std::string> error) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!state.data.actionPlan) {
@@ -69,7 +69,7 @@ State updateActionPlanStep(State state, double stepIndex, const std:& status, st
 
 }
 
-State updateWorkingMemory(State state, const std:& key, const std::unordered_map<std:, std:>& value) {
+State updateWorkingMemory(State state, const std::string& key, const std::unordered_map<std::string, std::string>& value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto workingMemory = state.data.workingMemory || {};

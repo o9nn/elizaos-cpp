@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_CORE_SRC_TYPES_PRIMITIVES_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_CORE_SRC_TYPES_PRIMITIVES_H
 #include "core.hpp"
+#include <string>
 
 typedef  UUID;
 
@@ -38,6 +39,6 @@ public:
 };
 
 enum struct ContentType {
-    IMAGE = std:("image"), VIDEO = std:("video"), AUDIO = std:("audio"), DOCUMENT = std:("document"), LINK = std:("link")
+    IMAGE = std::string("image"), VIDEO = std::string("video"), AUDIO = std::string("audio"), DOCUMENT = std::string("document"), LINK = std::string("link")
 };
 #endif

@@ -78,7 +78,7 @@ namespace elizaos {
  * ]
  */
 
-    // Check if we have std: registered sources or existing components that could be updated
+    // Check if we have std::string registered sources or existing components that could be updated
     // const worldId = message.roomId;
     // const agentId = runtime.agentId;
 

@@ -30,7 +30,7 @@ struct ActionSamplerOutput {
     ModelOutput completion;
     History messages;
     Trajectory trajectoryItems;
-    std::unordered_map<std:, unknown> extraInfo;
+    std::unordered_map<std::string, unknown> extraInfo;
 };
 
 /**
@@ -53,10 +53,10 @@ struct AskColleaguesConfig {
  * AskColleagues action sampler
  * Queries multiple model instances and synthesizes their responses
  */
-class AskColleagues extends AbstractActionSampler {
+class AskColleagues : public AbstractActionSampler {
   private config: AskColleaguesConfig;
 
-  constructor(config: AskColleaguesConfig, model: AbstractModel, tools: ToolHandler) {
+  /* constructor */ (config: AskColleaguesConfig, model: AbstractModel, tools: ToolHandler) {
     super(model, tools);
     this.config = config;
   }
@@ -77,19 +77,19 @@ struct BinaryTrajectoryComparisonConfig {
     double minNSamples;
     double maxNSamples;
     std::optional<double> comparisonTemperature;
-    std: systemTemplate;
-    std: instanceTemplate;
-    std: comparisonTemplate;
+    std::string systemTemplate;
+    std::string instanceTemplate;
+    std::string comparisonTemplate;
 };
 
 /**
  * BinaryTrajectoryComparison action sampler
  * Compares pairs of proposed actions and selects the best one
  */
-class BinaryTrajectoryComparison extends AbstractActionSampler {
+class BinaryTrajectoryComparison : public AbstractActionSampler {
   private config: BinaryTrajectoryComparisonConfig;
 
-  constructor(config: BinaryTrajectoryComparisonConfig, model: AbstractModel, tools: ToolHandler) {
+  /* constructor */ (config: BinaryTrajectoryComparisonConfig, model: AbstractModel, tools: ToolHandler) {
     super(model, tools);
     this.config = config;
   }
@@ -99,7 +99,7 @@ class BinaryTrajectoryComparison extends AbstractActionSampler {
     struct ComparisonLogEntry {
     [number, number] comparisonBetween;
     History messages;
-    std: response;
+    std::string response;
     double idx;
 };
 
@@ -107,7 +107,7 @@ class BinaryTrajectoryComparison extends AbstractActionSampler {
  * Base action sampler configuration
  */
 struct BaseActionSamplerConfig {
-    std: type;
+    std::string type;
 };
 
 /**

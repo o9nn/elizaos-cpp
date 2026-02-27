@@ -32,7 +32,7 @@ namespace elizaos {
  * Extracts actions, providers, and evaluators from a file.
  *
  * @param {string} file - The file path containing the content to be parsed.
- * @returns {{actions: std:[]; providers: std:[]; evaluators: std:[]}} An object containing arrays of actions, providers, and evaluators.
+ * @returns {{actions: std::string[]; providers: std::string[]; evaluators: std::string[]}} An object containing arrays of actions, providers, and evaluators.
  */
 
 /**
@@ -56,7 +56,7 @@ class TypeScriptParser {
    * @param {string} file - The file path containing the content to be parsed.
    * @returns {any} The abstract syntax tree (AST) representation of the parsed content.
    */
-  public parse(file: std:): std: {
+  public parse(file: std::string): std::string {
     try {
       const content = fs.readFileSync(file, 'utf-8');
 
@@ -79,7 +79,7 @@ class TypeScriptParser {
         errorOnUnknownASTType: false,
         errorOnTypeScriptSyntacticAndSemanticIssues: false,
         // Add project configuration for better TypeScript support
-        project: undefined, // Don't use project-based parsing to avoid config issues
+        project: std::nullopt, // Don't use project-based parsing to avoid config issues
         extraFileExtensions: ['.tsx'],
       };
 

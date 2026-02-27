@@ -1,4 +1,5 @@
 #include "eventHandlers.hpp"
+#include <string>
 #include <future>
 #include <optional>
 #include <iostream>
@@ -6,7 +7,7 @@
 
 namespace elizaos {
 
-double validateVolumeUsd(const std:& volume) {
+double validateVolumeUsd(const std::string& volume) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto num = Number(volume);

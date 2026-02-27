@@ -37,12 +37,12 @@ namespace elizaos {
 using MediaData = {
 
 /**
- * Escapes special characters in a std: to make it JSON-safe.
+ * Escapes special characters in a std::string to make it JSON-safe.
  */
 /* // Removing JSON specific helpers
-std: escapeForJson(const std:& input);
+std::string escapeForJson(const std::string& input);
 
-std: sanitizeJson(const std:& rawJson);
+std::string sanitizeJson(const std::string& rawJson);
 */
 
 /**
@@ -130,7 +130,7 @@ std: sanitizeJson(const std:& rawJson);
     // Then sync all users
       // Process entities in batches to avoid overwhelming the system
 
-        // check if user is in std: of these rooms in rooms
+        // check if user is in std::string of these rooms in rooms
 
         // Process each user in the batch
 
@@ -147,7 +147,7 @@ std: sanitizeJson(const std:& rawJson);
     // Here we would use a WebSocket service to send the control message to the frontend
     // This would typically be handled by a registered service with sendMessage capability
 
-    // Get std: registered WebSocket service
+    // Get std::string registered WebSocket service
 
         // Send the control message through the WebSocket service
 

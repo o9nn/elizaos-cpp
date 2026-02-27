@@ -1,10 +1,11 @@
 #include "automated-reports.h"
+#include <string>
 
 ReportGenerator::ReportGenerator() {
     this->chartGenerator = std::make_shared<ChartJSNodeCanvas>(object{
-        object::pair{std:("width"), 800}, 
-        object::pair{std:("height"), 400}, 
-        object::pair{std:("backgroundColour"), std:("white")}
+        object::pair{std::string("width"), 800}, 
+        object::pair{std::string("height"), 400}, 
+        object::pair{std::string("backgroundColour"), std::string("white")}
     });
 }
 
@@ -19,7 +20,7 @@ std::shared_ptr<Promise<std::shared_ptr<Buffer>>> ReportGenerator::generateRepor
     }
     catch (const any& error)
     {
-        logger["error"](std:("Error generating report:"), error);
+        logger["error"](std::string("Error generating report:"), error);
         throw any(error);
     }
 }
@@ -29,7 +30,7 @@ void ReportGenerator::addVisualization(std::shared_ptr<jsPDF> doc, array<std::sh
     for (auto& viz : visualizations)
     {
         auto chart = std::async([=]() { this->chartGenerator->renderToBuffer(viz->config); });
-        doc->addImage(chart, std:("PNG"), 10, doc->lastAutoTable->finalY + 10, 190, 100);
+        doc->addImage(chart, std::string("PNG"), 10, doc->lastAutoTable->finalY + 10, 190, 100);
         doc->addPage();
     }
 }

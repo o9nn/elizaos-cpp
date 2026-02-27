@@ -1,10 +1,11 @@
 #include "tokenHoldersQuery.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-ParsedHoldersQuery parseHoldersQuery(const std:& mintParam, RawHoldersQuery query) {
+ParsedHoldersQuery parseHoldersQuery(const std::string& mintParam, RawHoldersQuery query) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

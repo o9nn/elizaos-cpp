@@ -1,55 +1,56 @@
 #include "utils.test.h"
+#include <string>
 
 void Main(void)
 {
-    describe(std:("Utils"), [=]() mutable
+    describe(std::string("Utils"), [=]() mutable
     {
-        describe(std:("expandTildePath"), [=]() mutable
+        describe(std::string("expandTildePath"), [=]() mutable
         {
-            it(std:("should expand paths starting with ~"), [=]() mutable
+            it(std::string("should expand paths starting with ~"), [=]() mutable
             {
-                auto result = expandTildePath(std:("~/test/path"));
-                expect(result)->toBe(path->join(process->cwd(), std:("test/path")));
+                auto result = expandTildePath(std::string("~/test/path"));
+                expect(result)->toBe(path->join(process->cwd(), std::string("test/path")));
             }
             );
-            it(std:("should return unchanged paths not starting with ~"), [=]() mutable
+            it(std::string("should return unchanged paths not starting with ~"), [=]() mutable
             {
-                auto result = expandTildePath(std:("/absolute/path"));
-                expect(result)->toBe(std:("/absolute/path"));
+                auto result = expandTildePath(std::string("/absolute/path"));
+                expect(result)->toBe(std::string("/absolute/path"));
             }
             );
-            it(std:("should handle empty strings"), [=]() mutable
+            it(std::string("should handle empty strings"), [=]() mutable
             {
                 auto result = expandTildePath(string_empty);
                 expect(result)->toBe(string_empty);
             }
             );
-            it(std:("should handle just tilde"), [=]() mutable
+            it(std::string("should handle just tilde"), [=]() mutable
             {
-                auto result = expandTildePath(std:("~"));
+                auto result = expandTildePath(std::string("~"));
                 expect(result)->toBe(process->cwd());
             }
             );
         }
         );
-        describe(std:("resolveEnvFile"), [=]() mutable
+        describe(std::string("resolveEnvFile"), [=]() mutable
         {
-            it(std:("should find .env in current directory if it exists"), [=]() mutable
+            it(std::string("should find .env in current directory if it exists"), [=]() mutable
             {
                 auto result = resolveEnvFile();
-                expect(result)->toMatch((new RegExp(std:("\.env"))));
+                expect(result)->toMatch((new RegExp(std::string("\.env"))));
             }
             );
-            it(std:("should return .env path even if not found"), [=]() mutable
+            it(std::string("should return .env path even if not found"), [=]() mutable
             {
-                auto testDir = std:("/some/nonexistent/path");
+                auto testDir = std::string("/some/nonexistent/path");
                 auto result = resolveEnvFile(testDir);
-                expect(result)->toBe(path->join(testDir, std:(".env")));
+                expect(result)->toBe(path->join(testDir, std::string(".env")));
             }
             );
         }
         );
-        describe(std:("resolvePgliteDir"), [=]() mutable
+        describe(std::string("resolvePgliteDir"), [=]() mutable
         {
             shared<any> originalEnv;
             beforeEach([=]() mutable
@@ -60,46 +61,46 @@ void Main(void)
             );
             afterEach([=]() mutable
             {
-                if (originalEnv == undefined) {
+                if (originalEnv == std::nullopt) {
                     process->env.Delete("PGLITE_DATA_DIR");
                 } else {
                     process->env->PGLITE_DATA_DIR = originalEnv;
                 }
             }
             );
-            it(std:("should prioritize dir argument"), [=]() mutable
+            it(std::string("should prioritize dir argument"), [=]() mutable
             {
-                auto result = resolvePgliteDir(std:("/custom/dir"));
-                expect(result)->toBe(std:("/custom/dir"));
+                auto result = resolvePgliteDir(std::string("/custom/dir"));
+                expect(result)->toBe(std::string("/custom/dir"));
             }
             );
-            it(std:("should use PGLITE_DATA_DIR env var if no dir provided"), [=]() mutable
+            it(std::string("should use PGLITE_DATA_DIR env var if no dir provided"), [=]() mutable
             {
-                process->env->PGLITE_DATA_DIR = std:("/env/pglite/dir");
+                process->env->PGLITE_DATA_DIR = std::string("/env/pglite/dir");
                 auto result = resolvePgliteDir();
-                expect(result)->toBe(std:("/env/pglite/dir"));
+                expect(result)->toBe(std::string("/env/pglite/dir"));
             }
             );
-            it(std:("should use default .eliza/.elizadb dir if no dir or env var"), [=]() mutable
+            it(std::string("should use default .eliza/.elizadb dir if no dir or env var"), [=]() mutable
             {
                 process->env.Delete("PGLITE_DATA_DIR");
                 auto result = resolvePgliteDir();
-                auto projectRoot = path->resolve(process->cwd(), std:(".."), std:(".."));
-                expect(result)->toBe(path->join(projectRoot, std:(".elizadb")));
+                auto projectRoot = path->resolve(process->cwd(), std::string(".."), std::string(".."));
+                expect(result)->toBe(path->join(projectRoot, std::string(".elizadb")));
             }
             );
-            it(std:("should use default path if no arguments or env var"), [=]() mutable
+            it(std::string("should use default path if no arguments or env var"), [=]() mutable
             {
                 process->env.Delete("PGLITE_DATA_DIR");
                 auto result = resolvePgliteDir();
-                auto projectRoot = path->resolve(process->cwd(), std:(".."), std:(".."));
-                expect(result)->toBe(path->join(projectRoot, std:(".elizadb")));
+                auto projectRoot = path->resolve(process->cwd(), std::string(".."), std::string(".."));
+                expect(result)->toBe(path->join(projectRoot, std::string(".elizadb")));
             }
             );
-            it(std:("should expand tilde paths"), [=]() mutable
+            it(std::string("should expand tilde paths"), [=]() mutable
             {
-                auto result = resolvePgliteDir(std:("~/data/pglite"));
-                expect(result)->toBe(path->join(process->cwd(), std:("data/pglite")));
+                auto result = resolvePgliteDir(std::string("~/data/pglite"));
+                expect(result)->toBe(path->join(process->cwd(), std::string("data/pglite")));
             }
             );
         }

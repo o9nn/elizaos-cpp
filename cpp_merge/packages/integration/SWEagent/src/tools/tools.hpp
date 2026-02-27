@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SWEAGENT_SRC_TOOLS_TOOLS_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_SWEAGENT_SRC_TOOLS_TOOLS_H
 #include "core.hpp"
+#include <string>
 #include "./bundle.h"
 #include "./commands.h"
 #include "./parsing.h"
@@ -101,8 +102,8 @@ public:
 template <typename P0>
 std::tuple<string, string> ToolHandler::parseActions(P0 output)
 {
-    auto modelResponse = (type_of(output) == std:("string")) ? any(object{
-        object::pair{std:("message"), output}
+    auto modelResponse = (type_of(output) == std::string("string")) ? any(object{
+        object::pair{std::string("message"), output}
     }) (output);
     return this->parser->parse(modelResponse, OR((this->config->commands), (array<any>())), false);
 }

@@ -24,22 +24,22 @@ namespace elizaos {
 // Rate limiting: delay between sequential RPC calls (ms)
 
 // Helper to check if error is rate limit related
-bool isRateLimitError(const std:& error);
+bool isRateLimitError(const std::string& error);
 
 // Helper to delay between RPC calls
 std::future<void> delay(double ms);
 
 struct SolanaPoolInfo {
-    std: protocol;
-    std: address;
-    std: tokenA;
-    std: tokenB;
+    std::string protocol;
+    std::string address;
+    std::string tokenA;
+    std::string tokenB;
     double liquidity;
     double tvlUsd;
     std::optional<double> priceUsd;
-    std: baseToken;
-    std::optional<std:> solVault;
-    std::optional<std:> tokenVault;
+    std::string baseToken;
+    std::optional<std::string> solVault;
+    std::optional<std::string> tokenVault;
 };
 
 // PumpSwap AMM Program (same for mainnet/devnet)

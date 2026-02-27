@@ -17,7 +17,7 @@ namespace elizaos {
 /**
  * Service for JWT authentication endpoints
  */
-class AuthService extends BaseApiClient {
+class AuthService : public BaseApiClient {
   /**
    * Login with email and get JWT token
    * 

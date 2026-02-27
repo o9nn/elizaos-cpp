@@ -1,18 +1,19 @@
 #include "record-experience.h"
+#include <string>
 
 std::shared_ptr<Action> recordExperienceAction = object{
-    object::pair{std:("name"), std:("RECORD_EXPERIENCE")}, 
-    object::pair{std:("description"), std:("Manually record a learning experience")}, 
-    object::pair{std:("examples"), array<array<any>>{ array<object>{ object{
-        object::pair{std:("name"), std:("User")}, 
-        object::pair{std:("content"), object{
-            object::pair{std:("text"), std:("Remember that installing dependencies is required for Python scripts")}
+    object::pair{std::string("name"), std::string("RECORD_EXPERIENCE")}, 
+    object::pair{std::string("description"), std::string("Manually record a learning experience")}, 
+    object::pair{std::string("examples"), array<array<any>>{ array<object>{ object{
+        object::pair{std::string("name"), std::string("User")}, 
+        object::pair{std::string("content"), object{
+            object::pair{std::string("text"), std::string("Remember that installing dependencies is required for Python scripts")}
         }}
     }, object{
-        object::pair{std:("name"), std:("Agent")}, 
-        object::pair{std:("content"), object{
-            object::pair{std:("text"), std:("I'll record that experience. Learning: Need to install dependencies before running Python scripts.")}, 
-            object::pair{std:("action"), std:("RECORD_EXPERIENCE")}
+        object::pair{std::string("name"), std::string("Agent")}, 
+        object::pair{std::string("content"), object{
+            object::pair{std::string("text"), std::string("I'll record that experience. Learning: Need to install dependencies before running Python scripts.")}, 
+            object::pair{std::string("action"), std::string("RECORD_EXPERIENCE")}
         }}
     } } }}, 
     , 

@@ -1,10 +1,11 @@
 #include "getHistoricalPrice.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std: formatMarketCap(double value) {
+std::string formatMarketCap(double value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (value >= 1000000000) return "" + std::to_string((value / 1000000000).toFixed(2)) + "B";
@@ -14,7 +15,7 @@ std: formatMarketCap(double value) {
 
 }
 
-std: parseDateToApiFormat(const std:& dateStr) {
+std::string parseDateToApiFormat(const std::string& dateStr) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -55,7 +56,7 @@ std: parseDateToApiFormat(const std:& dateStr) {
                                 date = std::make_unique<Date>();
                                 date.setFullYear(date.getFullYear() - years);
                                 } else {
-                                    // Try parsing as a date std: (yyyy-mm-dd, mm/dd/yyyy, etc.)
+                                    // Try parsing as a date std::string (yyyy-mm-dd, mm/dd/yyyy, etc.)
                                     date = new Date(dateStr);
                                     if (isNaN(date.getTime())) {
                                         throw std::runtime_error("Unable to parse date: " + std::to_string(dateStr) + "");

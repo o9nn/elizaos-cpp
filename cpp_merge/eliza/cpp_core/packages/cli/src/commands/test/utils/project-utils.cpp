@@ -1,4 +1,5 @@
 #include "project-utils.hpp"
+#include <string>
 #include <future>
 #include <filesystem>
 #include <optional>
@@ -7,7 +8,7 @@
 
 namespace elizaos {
 
-DirectoryInfo getProjectType(std::optional<std:> testPath) {
+DirectoryInfo getProjectType(std::optional<std::string> testPath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto targetPath = testPath ? path.resolve(std::filesystem::current_path().string(), testPath) : std::filesystem::current_path().string();
@@ -15,10 +16,10 @@ DirectoryInfo getProjectType(std::optional<std:> testPath) {
 
 }
 
-std: processFilterName(std::optional<std:> name) {
+std::string processFilterName(std::optional<std::string> name) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (!name) return undefined;
+    if (!name) return std::nullopt;
 
     // Handle common filter formats (case-insensitive)
     auto baseName = name.toLowerCase();
@@ -64,7 +65,7 @@ std::future<void> installPluginDependencies(DirectoryInfo projectInfo) {
                 description: "A temporary package for installing test plugin dependencies",
                 dependencies: {},
                 };
-                fs.promises.writeFile(packageJsonPath, /* JSON.stringify */ std:(packageJsonContent, nullptr, 2));
+                fs.promises.writeFile(packageJsonPath, /* JSON.stringify */ std::string(packageJsonContent, nullptr, 2));
             }
 
             const auto { installPlugin } = import("@/src/utils");

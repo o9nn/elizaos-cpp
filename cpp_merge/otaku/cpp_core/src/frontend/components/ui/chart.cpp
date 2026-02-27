@@ -1,4 +1,5 @@
 #include "chart.hpp"
+#include <string>
 #include <map>
 #include <iostream>
 #include <stdexcept>
@@ -97,7 +98,7 @@ void ChartLegendContent(auto hideIcon, auto payload, auto verticalAlign, auto na
 
 }
 
-void getPayloadConfigFromPayload(ChartConfig config, const std:& payload, const std:& key) {
+void getPayloadConfigFromPayload(ChartConfig config, const std::string& payload, const std::string& key) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (typeof payload != "object" || payload == null) {
@@ -111,7 +112,7 @@ void getPayloadConfigFromPayload(ChartConfig config, const std:& payload, const 
     ? payload.payload;
     : std::nullopt;
 
-    std: configLabelKey = key;
+    std::string configLabelKey = key;
 
     if (
     key in payload &&;

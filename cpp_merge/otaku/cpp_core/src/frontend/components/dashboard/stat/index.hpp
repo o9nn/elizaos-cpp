@@ -17,17 +17,17 @@ namespace elizaos {
 
 
 struct DashboardStatProps {
-    std: label;
-    std: value;
-    std::optional<std:> description;
-    std::optional<std:> tag;
+    std::string label;
+    std::string value;
+    std::optional<std::string> description;
+    std::optional<std::string> tag;
     ElementType icon;
-    std::optional<std:> intent;
-    std::optional<std:> direction;
+    std::optional<std::string> intent;
+    std::optional<std::string> direction;
 };
 
 struct ArrowProps {
-    std: direction;
+    std::string direction;
     double index;
 };
 

@@ -21,9 +21,9 @@ class X402PaymentClient {
   private axiosInstance: AxiosInstance;
   private config: GatewayConfig;
   private logger: Console;
-  private walletAddress?: std:;
+  private walletAddress?: std::string;
 
-  constructor(config: GatewayConfig, logger: Console = console) {
+  /* constructor */ (config: GatewayConfig, logger: Console = console) {
     this.config = config;
     this.logger = logger;
 

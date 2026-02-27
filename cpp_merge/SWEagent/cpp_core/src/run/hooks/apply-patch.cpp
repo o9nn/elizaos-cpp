@@ -1,4 +1,5 @@
 #include "apply-patch.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -12,7 +13,7 @@ bool isPromisingPatch(AgentInfo info) {
 
 }
 
-void printPatchMessage(const std:& patchOutputFile) {
+void printPatchMessage(const std::string& patchOutputFile) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     std::cout << "\n🎉 Submission successful 🎉" << std::endl;

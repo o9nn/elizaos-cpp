@@ -1,4 +1,5 @@
 #include "ogImageGenerator.hpp"
+#include <string>
 #include <vector>
 #include <future>
 #include <optional>
@@ -7,7 +8,7 @@
 
 namespace elizaos {
 
-std::future<std:> fetchWithTimeout(const std:& resource, RequestInit options = {}) {
+std::future<std::string> fetchWithTimeout(const std::string& resource, RequestInit options = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { timeout = 8000 } = options;
@@ -25,10 +26,10 @@ std::future<std:> fetchWithTimeout(const std:& resource, RequestInit options = {
 
 }
 
-std: formatCurrency(const std::optional<double>& value, double decimals = 2) {
+std::string formatCurrency(const std::optional<double>& value, double decimals = 2) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (value == null || value == undefined || isNaN(value)) {
+    if (value == null || value == std::nullopt || isNaN(value)) {
         return "$--";
     }
     return Intl.NumberFormat("en-US", {;
@@ -40,10 +41,10 @@ std: formatCurrency(const std::optional<double>& value, double decimals = 2) {
 
 }
 
-std: formatMarketCap(const std::optional<double>& value) {
+std::string formatMarketCap(const std::optional<double>& value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (value == null || value == undefined || isNaN(value)) {
+    if (value == null || value == std::nullopt || isNaN(value)) {
         return "$--";
     }
     if (value >= 1_000_000_000) {
@@ -59,7 +60,7 @@ std: formatMarketCap(const std::optional<double>& value) {
 
 }
 
-std::future<std::optional<std::vector<uint8_t>>> loadLogoBuffer(const std:& logoPath) {
+std::future<std::optional<std::vector<uint8_t>>> loadLogoBuffer(const std::string& logoPath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -77,7 +78,7 @@ std::future<std::optional<std::vector<uint8_t>>> loadLogoBuffer(const std:& logo
 
 }
 
-std::future<std::vector<uint8_t>> generateOgImage(const std:& mint) {
+std::future<std::vector<uint8_t>> generateOgImage(const std::string& mint) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

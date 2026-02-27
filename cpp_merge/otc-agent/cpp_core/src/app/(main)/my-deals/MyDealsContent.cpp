@@ -1,4 +1,5 @@
 #include "MyDealsContent.hpp"
+#include <string>
 #include <vector>
 #include <map>
 #include <iostream>
@@ -6,7 +7,7 @@
 
 namespace elizaos {
 
-std: formatDate(bigint tsSeconds) {
+std::string formatDate(bigint tsSeconds) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto d = new Date(Number(tsSeconds) * 1000);
@@ -18,7 +19,7 @@ std: formatDate(bigint tsSeconds) {
 
 }
 
-std: formatTokenAmount(bigint amount) {
+std::string formatTokenAmount(bigint amount) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Amount is already in human-readable form (not wei)
@@ -29,7 +30,7 @@ std: formatTokenAmount(bigint amount) {
 
 }
 
-std: getLockupLabel(bigint createdAt, bigint unlockTime) {
+std::string getLockupLabel(bigint createdAt, bigint unlockTime) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto seconds = Math.max(0, Number(unlockTime) - Number(createdAt));
@@ -38,7 +39,7 @@ std: getLockupLabel(bigint createdAt, bigint unlockTime) {
 
 }
 
-OfferWithQuoteId transformSolanaDeal(DealFromAPI deal, const std:& walletAddress) {
+OfferWithQuoteId transformSolanaDeal(DealFromAPI deal, const std::string& walletAddress) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto createdTs = deal.createdAt;
@@ -84,7 +85,7 @@ OfferWithQuoteId transformSolanaDeal(DealFromAPI deal, const std:& walletAddress
 
 }
 
-OfferWithQuoteId transformEvmDeal(DealFromAPI deal, const std:& walletAddress) {
+OfferWithQuoteId transformEvmDeal(DealFromAPI deal, const std::string& walletAddress) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto createdTs = deal.createdAt;
@@ -128,7 +129,7 @@ OfferWithQuoteId transformEvmDeal(DealFromAPI deal, const std:& walletAddress) {
 
 }
 
-std::vector<OfferWithQuoteId> mergeDealsWithOffers(const std::vector<DealFromAPI>& dbDeals, const std::vector<OfferWithQuoteId>& contractOffers, const std:& walletAddress) {
+std::vector<OfferWithQuoteId> mergeDealsWithOffers(const std::vector<DealFromAPI>& dbDeals, const std::vector<OfferWithQuoteId>& contractOffers, const std::string& walletAddress) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::vector<OfferWithQuoteId> result = [];
@@ -214,7 +215,7 @@ void MyDealsContent() {
                         const auto [refunding, setRefunding] = useState<bigint | nullptr>(nullptr);
                         const auto [refundStatus, setRefundStatus] = useState<{;
                             type: "success" | "error" | "info";
-                            message: std:;
+                            message: std::string;
                             } | nullptr>(nullptr);
                             const auto [solanaDeals, setSolanaDeals] = useState<DealFromAPI[]>([]);
                             const auto [evmDeals, setEvmDeals] = useState<DealFromAPI[]>([]);

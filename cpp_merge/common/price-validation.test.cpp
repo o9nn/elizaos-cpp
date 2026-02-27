@@ -1,22 +1,23 @@
 #include "price-validation.test.h"
+#include <string>
 
-boolean skipIntegration = OR((process->env->CI == std:("true")), (process->env->SKIP_INTEGRATION == std:("true")));
+boolean skipIntegration = OR((process->env->CI == std::string("true")), (process->env->SKIP_INTEGRATION == std::string("true")));
 double TEST_TIMEOUT = 60000;
 object BASE_TOKENS = object{
-    object::pair{std:("WETH"), std:("0x4200000000000000000000000000000000000006")}, 
-    object::pair{std:("USDC"), std:("0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913")}
+    object::pair{std::string("WETH"), std::string("0x4200000000000000000000000000000000000006")}, 
+    object::pair{std::string("USDC"), std::string("0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913")}
 };
 object SOLANA_TOKENS = object{
-    object::pair{std:("JUP"), std:("JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN")}, 
-    object::pair{std:("SOL"), std:("So11111111111111111111111111111111111111112")}
+    object::pair{std::string("JUP"), std::string("JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN")}, 
+    object::pair{std::string("SOL"), std::string("So11111111111111111111111111111111111111112")}
 };
 double PRICE_DIVERGENCE_THRESHOLD = 10;
 
 void Main(void)
 {
-    describe(std:("Price Divergence Calculation"), [=]() mutable
+    describe(std::string("Price Divergence Calculation"), [=]() mutable
     {
-        it(std:("correctly calculates 10% divergence threshold"), [=]() mutable
+        it(std::string("correctly calculates 10% divergence threshold"), [=]() mutable
         {
             auto aggregatedPrice = 100;
             auto poolPrice = 110;
@@ -27,7 +28,7 @@ void Main(void)
             expect(divergencePercent <= 10)->toBe(true);
         }
         );
-        it(std:("correctly identifies >10% divergence"), [=]() mutable
+        it(std::string("correctly identifies >10% divergence"), [=]() mutable
         {
             auto aggregatedPrice = 100;
             auto poolPrice = 115;
@@ -38,7 +39,7 @@ void Main(void)
             expect(divergencePercent > 10)->toBe(true);
         }
         );
-        it(std:("handles pool price lower than aggregated"), [=]() mutable
+        it(std::string("handles pool price lower than aggregated"), [=]() mutable
         {
             auto aggregatedPrice = 100;
             auto poolPrice = 85;
@@ -51,9 +52,9 @@ void Main(void)
         );
     }
     );
-    describe(std:("Agent Offer Rejection Logic"), [=]() mutable
+    describe(std::string("Agent Offer Rejection Logic"), [=]() mutable
     {
-        it(std:("rejects offer when price diverges >10%"), [=]() mutable
+        it(std::string("rejects offer when price diverges >10%"), [=]() mutable
         {
             auto MAX_PRICE_DIVERGENCE_BPS = 1000;
             auto offerPriceUsd = 100;
@@ -62,10 +63,10 @@ void Main(void)
             auto divergencePercent = (diff / marketPriceUsd) * 100;
             auto shouldReject = divergencePercent > (MAX_PRICE_DIVERGENCE_BPS / 100);
             expect(shouldReject)->toBe(true);
-            console->log(std:("[Agent Rejection] Divergence: ") + divergencePercent->toFixed(2) + std:("% - Should Reject: ") + shouldReject + string_empty);
+            console->log(std::string("[Agent Rejection] Divergence: ") + divergencePercent->toFixed(2) + std::string("% - Should Reject: ") + shouldReject + string_empty);
         }
         );
-        it(std:("accepts offer when price is within tolerance"), [=]() mutable
+        it(std::string("accepts offer when price is within tolerance"), [=]() mutable
         {
             auto MAX_PRICE_DIVERGENCE_BPS = 1000;
             auto offerPriceUsd = 100;
@@ -74,10 +75,10 @@ void Main(void)
             auto divergencePercent = (diff / marketPriceUsd) * 100;
             auto shouldReject = divergencePercent > (MAX_PRICE_DIVERGENCE_BPS / 100);
             expect(shouldReject)->toBe(false);
-            console->log(std:("[Agent Acceptance] Divergence: ") + divergencePercent->toFixed(2) + std:("% - Should Accept: ") + !shouldReject + string_empty);
+            console->log(std::string("[Agent Acceptance] Divergence: ") + divergencePercent->toFixed(2) + std::string("% - Should Accept: ") + !shouldReject + string_empty);
         }
         );
-        it(std:("handles edge case at exactly 10%"), [=]() mutable
+        it(std::string("handles edge case at exactly 10%"), [=]() mutable
         {
             auto MAX_PRICE_DIVERGENCE_BPS = 1000;
             auto offerPriceUsd = 110;
@@ -86,14 +87,14 @@ void Main(void)
             auto divergencePercent = (diff / marketPriceUsd) * 100;
             auto shouldReject = divergencePercent > (MAX_PRICE_DIVERGENCE_BPS / 100);
             expect(shouldReject)->toBe(false);
-            console->log(std:("[Edge Case] Divergence: ") + divergencePercent->toFixed(2) + std:("% - Should Accept: ") + !shouldReject + string_empty);
+            console->log(std::string("[Edge Case] Divergence: ") + divergencePercent->toFixed(2) + std::string("% - Should Accept: ") + !shouldReject + string_empty);
         }
         );
     }
     );
-    describe(std:("Price Protection Service Logic"), [=]() mutable
+    describe(std::string("Price Protection Service Logic"), [=]() mutable
     {
-        it(std:("validates quote price against current price"), [=]() mutable
+        it(std::string("validates quote price against current price"), [=]() mutable
         {
             auto priceAtQuote = 100;
             auto currentPrice = 105;
@@ -103,10 +104,10 @@ void Main(void)
             auto isValid = deviationBps <= maxDeviationBps;
             expect(deviationBps)->toBe(500);
             expect(isValid)->toBe(true);
-            console->log(std:("[Price Protection] Deviation: ") + (deviationBps / 100) + std:("% - Valid: ") + isValid + string_empty);
+            console->log(std::string("[Price Protection] Deviation: ") + (deviationBps / 100) + std::string("% - Valid: ") + isValid + string_empty);
         }
         );
-        it(std:("rejects when price moves beyond threshold"), [=]() mutable
+        it(std::string("rejects when price moves beyond threshold"), [=]() mutable
         {
             auto priceAtQuote = 100;
             auto currentPrice = 115;
@@ -116,136 +117,136 @@ void Main(void)
             auto isValid = deviationBps <= maxDeviationBps;
             expect(deviationBps)->toBe(1500);
             expect(isValid)->toBe(false);
-            console->log(std:("[Price Protection] Deviation: ") + (deviationBps / 100) + std:("% - Valid: ") + isValid + string_empty);
+            console->log(std::string("[Price Protection] Deviation: ") + (deviationBps / 100) + std::string("% - Valid: ") + isValid + string_empty);
         }
         );
     }
     );
-    describe(std:("checkPriceDivergence Function"), [=]() mutable
+    describe(std::string("checkPriceDivergence Function"), [=]() mutable
     {
-        it(std:("fails open when no aggregated price found"), [=]() mutable
+        it(std::string("fails open when no aggregated price found"), [=]() mutable
         {
-            auto result = std::async([=]() { checkPriceDivergence(std:("0x0000000000000000000000000000000000000001"), std:("base"), 100); });
+            auto result = std::async([=]() { checkPriceDivergence(std::string("0x0000000000000000000000000000000000000001"), std::string("base"), 100); });
             expect(result->valid)->toBe(true);
         }
         );
-        it(std:("handles missing chain gracefully"), [=]() mutable
+        it(std::string("handles missing chain gracefully"), [=]() mutable
         {
-            auto result = std::async([=]() { checkPriceDivergence(std:("0x0000000000000000000000000000000000000001"), as<any>(std:("unknown")), 100); });
+            auto result = std::async([=]() { checkPriceDivergence(std::string("0x0000000000000000000000000000000000000001"), as<any>(std::string("unknown")), 100); });
             expect(result->valid)->toBe(true);
         }
         );
-        it(std:("handles zero pool price"), [=]() mutable
+        it(std::string("handles zero pool price"), [=]() mutable
         {
-            auto result = std::async([=]() { checkPriceDivergence(std:("0x0000000000000000000000000000000000000001"), std:("base"), 0); });
+            auto result = std::async([=]() { checkPriceDivergence(std::string("0x0000000000000000000000000000000000000001"), std::string("base"), 0); });
             expect(result->valid)->toBe(true);
         }
         );
-        it(std:("handles negative pool price"), [=]() mutable
+        it(std::string("handles negative pool price"), [=]() mutable
         {
-            auto result = std::async([=]() { checkPriceDivergence(std:("0x0000000000000000000000000000000000000001"), std:("base"), -100); });
+            auto result = std::async([=]() { checkPriceDivergence(std::string("0x0000000000000000000000000000000000000001"), std::string("base"), -100); });
             expect(result->valid)->toBe(true);
         }
         );
     }
     );
-    describe(std:("Base Chain Pool Discovery"), [=]() mutable
+    describe(std::string("Base Chain Pool Discovery"), [=]() mutable
     {
-        it->skipIf(skipIntegration)(std:("finds WETH pool with accurate price"), [=]() mutable
+        it->skipIf(skipIntegration)(std::string("finds WETH pool with accurate price"), [=]() mutable
         {
             auto pool = std::async([=]() { findBestPool(BASE_TOKENS["WETH"], 8453); });
             if (!pool) {
-                console->log(std:("[Base/WETH] Pool not found (likely RPC rate limited)"));
+                console->log(std::string("[Base/WETH] Pool not found (likely RPC rate limited)"));
                 return std::shared_ptr<Promise<void>>();
             }
-            expect(pool->protocol)->toBe(std:("Uniswap V3"));
+            expect(pool->protocol)->toBe(std::string("Uniswap V3"));
             expect(pool->tvlUsd)->toBeGreaterThan(1000000);
             expect(pool->priceUsd)->toBeGreaterThan(2000);
             expect(pool->priceUsd)->toBeLessThan(10000);
-            console->log(std:("[Base/WETH] Pool: ") + pool->protocol + string_empty);
-            console->log(std:("  - TVL: $") + pool->tvlUsd->toLocaleString() + string_empty);
-            console->log(std:("  - Price: $") + pool->priceUsd->toFixed(2) + string_empty);
-            auto priceCheck = std::async([=]() { checkPriceDivergence(BASE_TOKENS["WETH"], std:("base"), OR((pool->priceUsd), (0))); });
-            console->log(std:("  - CoinGecko: $") + (OR((priceCheck->aggregatedPrice->toFixed(2)), (std:("N/A")))) + string_empty);
-            console->log(std:("  - Divergence: ") + (OR((priceCheck->divergencePercent->toFixed(2)), (std:("N/A")))) + std:("%"));
+            console->log(std::string("[Base/WETH] Pool: ") + pool->protocol + string_empty);
+            console->log(std::string("  - TVL: $") + pool->tvlUsd->toLocaleString() + string_empty);
+            console->log(std::string("  - Price: $") + pool->priceUsd->toFixed(2) + string_empty);
+            auto priceCheck = std::async([=]() { checkPriceDivergence(BASE_TOKENS["WETH"], std::string("base"), OR((pool->priceUsd), (0))); });
+            console->log(std::string("  - CoinGecko: $") + (OR((priceCheck->aggregatedPrice->toFixed(2)), (std::string("N/A")))) + string_empty);
+            console->log(std::string("  - Divergence: ") + (OR((priceCheck->divergencePercent->toFixed(2)), (std::string("N/A")))) + std::string("%"));
             if (priceCheck->aggregatedPrice) {
                 expect(priceCheck->divergencePercent)->toBeLessThan(PRICE_DIVERGENCE_THRESHOLD);
             }
         }
         , TEST_TIMEOUT);
-        it(std:("finds USDC pool with stable price"), [=]() mutable
+        it(std::string("finds USDC pool with stable price"), [=]() mutable
         {
             auto pool = std::async([=]() { findBestPool(BASE_TOKENS["USDC"], 8453); });
             if (pool) {
-                console->log(std:("[Base/USDC] Pool: ") + pool->protocol + string_empty);
-                console->log(std:("  - Price: $") + pool->priceUsd->toFixed(4) + string_empty);
+                console->log(std::string("[Base/USDC] Pool: ") + pool->protocol + string_empty);
+                console->log(std::string("  - Price: $") + pool->priceUsd->toFixed(4) + string_empty);
                 expect(pool->priceUsd)->toBeGreaterThan(0.95);
                 expect(pool->priceUsd)->toBeLessThan(1.05);
             } else {
-                console->log(std:("[Base/USDC] No direct pool (expected for stablecoin)"));
+                console->log(std::string("[Base/USDC] No direct pool (expected for stablecoin)"));
             }
         }
         , TEST_TIMEOUT);
     }
     );
-    describe(std:("Solana Chain Pool Discovery"), [=]() mutable
+    describe(std::string("Solana Chain Pool Discovery"), [=]() mutable
     {
-        it->skip(std:("attempts to find JUP pool (skipped - RPC rate limits)"), [=]() mutable
+        it->skip(std::string("attempts to find JUP pool (skipped - RPC rate limits)"), [=]() mutable
         {
-            console->log(std:("[Solana/JUP] Attempting pool discovery..."));
+            console->log(std::string("[Solana/JUP] Attempting pool discovery..."));
             try
             {
-                auto pool = std::async([=]() { findBestSolanaPool(SOLANA_TOKENS["JUP"], std:("mainnet")); });
+                auto pool = std::async([=]() { findBestSolanaPool(SOLANA_TOKENS["JUP"], std::string("mainnet")); });
                 if (pool) {
-                    expect(array<string>{ std:("Raydium"), std:("PumpSwap") })->toContain(pool->protocol);
+                    expect(array<string>{ std::string("Raydium"), std::string("PumpSwap") })->toContain(pool->protocol);
                     expect(pool->tvlUsd)->toBeGreaterThan(0);
                     expect(pool->priceUsd)->toBeDefined();
-                    console->log(std:("  - Protocol: ") + pool->protocol + string_empty);
-                    console->log(std:("  - TVL: $") + pool->tvlUsd->toLocaleString() + string_empty);
-                    console->log(std:("  - Price: $") + pool->priceUsd->toFixed(8) + string_empty);
+                    console->log(std::string("  - Protocol: ") + pool->protocol + string_empty);
+                    console->log(std::string("  - TVL: $") + pool->tvlUsd->toLocaleString() + string_empty);
+                    console->log(std::string("  - Price: $") + pool->priceUsd->toFixed(8) + string_empty);
                 } else {
-                    console->log(std:("  - No pool found (public RPC may block getProgramAccounts)"));
+                    console->log(std::string("  - No pool found (public RPC may block getProgramAccounts)"));
                 }
             }
             catch (const any& error)
             {
-                console->log(std:("  - RPC error (expected on public RPCs):"), (as<std::shared_ptr<Error>>(error))->message->slice(0, 50));
+                console->log(std::string("  - RPC error (expected on public RPCs):"), (as<std::shared_ptr<Error>>(error))->message->slice(0, 50));
             }
         }
         , TEST_TIMEOUT);
     }
     );
-    describe(std:("Price Divergence Detection"), [=]() mutable
+    describe(std::string("Price Divergence Detection"), [=]() mutable
     {
-        it->skipIf(skipIntegration)(std:("detects when pool price is within tolerance"), [=]() mutable
+        it->skipIf(skipIntegration)(std::string("detects when pool price is within tolerance"), [=]() mutable
         {
             auto pool = std::async([=]() { findBestPool(BASE_TOKENS["WETH"], 8453); });
             if (!pool->priceUsd) {
-                console->log(std:("Skipping - no pool price available"));
+                console->log(std::string("Skipping - no pool price available"));
                 return std::shared_ptr<Promise<void>>();
             }
-            auto result = std::async([=]() { checkPriceDivergence(BASE_TOKENS["WETH"], std:("base"), pool->priceUsd); });
-            console->log(std:("[Within Tolerance]"));
-            console->log(std:("  - Pool: $") + pool->priceUsd->toFixed(2) + string_empty);
-            console->log(std:("  - Aggregated: $") + (OR((result->aggregatedPrice->toFixed(2)), (std:("N/A")))) + string_empty);
-            console->log(std:("  - Divergence: ") + (OR((result->divergencePercent->toFixed(2)), (std:("N/A")))) + std:("%"));
-            console->log(std:("  - Valid: ") + result->valid + string_empty);
+            auto result = std::async([=]() { checkPriceDivergence(BASE_TOKENS["WETH"], std::string("base"), pool->priceUsd); });
+            console->log(std::string("[Within Tolerance]"));
+            console->log(std::string("  - Pool: $") + pool->priceUsd->toFixed(2) + string_empty);
+            console->log(std::string("  - Aggregated: $") + (OR((result->aggregatedPrice->toFixed(2)), (std::string("N/A")))) + string_empty);
+            console->log(std::string("  - Divergence: ") + (OR((result->divergencePercent->toFixed(2)), (std::string("N/A")))) + std::string("%"));
+            console->log(std::string("  - Valid: ") + result->valid + string_empty);
             if (result->aggregatedPrice) {
                 expect(result->valid)->toBe(true);
                 expect(result->divergencePercent)->toBeLessThan(PRICE_DIVERGENCE_THRESHOLD);
             }
         }
         , TEST_TIMEOUT);
-        it->skipIf(skipIntegration)(std:("detects when pool price exceeds tolerance"), [=]() mutable
+        it->skipIf(skipIntegration)(std::string("detects when pool price exceeds tolerance"), [=]() mutable
         {
             auto badPoolPrice = 1500;
-            auto result = std::async([=]() { checkPriceDivergence(BASE_TOKENS["WETH"], std:("base"), badPoolPrice); });
-            console->log(std:("[Exceeds Tolerance]"));
-            console->log(std:("  - Bad Pool: $") + badPoolPrice + string_empty);
-            console->log(std:("  - Aggregated: $") + (OR((result->aggregatedPrice->toFixed(2)), (std:("N/A")))) + string_empty);
-            console->log(std:("  - Divergence: ") + (OR((result->divergencePercent->toFixed(2)), (std:("N/A")))) + std:("%"));
-            console->log(std:("  - Valid: ") + result->valid + string_empty);
-            console->log(std:("  - Warning: ") + (OR((result->warning), (std:("None")))) + string_empty);
+            auto result = std::async([=]() { checkPriceDivergence(BASE_TOKENS["WETH"], std::string("base"), badPoolPrice); });
+            console->log(std::string("[Exceeds Tolerance]"));
+            console->log(std::string("  - Bad Pool: $") + badPoolPrice + string_empty);
+            console->log(std::string("  - Aggregated: $") + (OR((result->aggregatedPrice->toFixed(2)), (std::string("N/A")))) + string_empty);
+            console->log(std::string("  - Divergence: ") + (OR((result->divergencePercent->toFixed(2)), (std::string("N/A")))) + std::string("%"));
+            console->log(std::string("  - Valid: ") + result->valid + string_empty);
+            console->log(std::string("  - Warning: ") + (OR((result->warning), (std::string("None")))) + string_empty);
             if (result->aggregatedPrice) {
                 expect(result->valid)->toBe(false);
                 expect(result->warning)->toBeDefined();
@@ -253,24 +254,24 @@ void Main(void)
             }
         }
         , TEST_TIMEOUT);
-        it(std:("handles missing aggregated price gracefully"), [=]() mutable
+        it(std::string("handles missing aggregated price gracefully"), [=]() mutable
         {
-            auto fakeToken = std:("0x0000000000000000000000000000000000000001");
-            auto result = std::async([=]() { checkPriceDivergence(fakeToken, std:("base"), 100); });
-            console->log(std:("[Missing Aggregated Price]"));
-            console->log(std:("  - Result: ") + (result->valid) ? std:("PASS (fail-open)") : std:("FAIL") + string_empty);
+            auto fakeToken = std::string("0x0000000000000000000000000000000000000001");
+            auto result = std::async([=]() { checkPriceDivergence(fakeToken, std::string("base"), 100); });
+            console->log(std::string("[Missing Aggregated Price]"));
+            console->log(std::string("  - Result: ") + (result->valid) ? std::string("PASS (fail-open)") : std::string("FAIL") + string_empty);
             expect(result->valid)->toBe(true);
         }
         , TEST_TIMEOUT);
     }
     );
-    describe(std:("Price Protection Integration"), [=]() mutable
+    describe(std::string("Price Protection Integration"), [=]() mutable
     {
-        it->skipIf(skipIntegration)(std:("validates quote price against current market"), [=]() mutable
+        it->skipIf(skipIntegration)(std::string("validates quote price against current market"), [=]() mutable
         {
             auto pool = std::async([=]() { findBestPool(BASE_TOKENS["WETH"], 8453); });
             if (!pool->priceUsd) {
-                console->log(std:("Skipping - no pool price"));
+                console->log(std::string("Skipping - no pool price"));
                 return std::shared_ptr<Promise<void>>();
             }
             auto priceAtQuote = pool->priceUsd * 0.98;
@@ -278,19 +279,19 @@ void Main(void)
             auto deviation = Math->abs(pool->priceUsd - priceAtQuote);
             auto deviationBps = Math->floor((deviation / priceAtQuote) * 10000);
             auto isValid = deviationBps <= maxDeviationBps;
-            console->log(std:("[Quote Validation]"));
-            console->log(std:("  - Quote Price: $") + priceAtQuote->toFixed(2) + string_empty);
-            console->log(std:("  - Current: $") + pool->priceUsd->toFixed(2) + string_empty);
-            console->log(std:("  - Deviation: ") + (deviationBps / 100) + std:("%"));
-            console->log(std:("  - Should Accept: ") + isValid + string_empty);
+            console->log(std::string("[Quote Validation]"));
+            console->log(std::string("  - Quote Price: $") + priceAtQuote->toFixed(2) + string_empty);
+            console->log(std::string("  - Current: $") + pool->priceUsd->toFixed(2) + string_empty);
+            console->log(std::string("  - Deviation: ") + (deviationBps / 100) + std::string("%"));
+            console->log(std::string("  - Should Accept: ") + isValid + string_empty);
             expect(isValid)->toBe(true);
         }
         , TEST_TIMEOUT);
-        it->skipIf(skipIntegration)(std:("rejects deal when price moves too much"), [=]() mutable
+        it->skipIf(skipIntegration)(std::string("rejects deal when price moves too much"), [=]() mutable
         {
             auto pool = std::async([=]() { findBestPool(BASE_TOKENS["WETH"], 8453); });
             if (!pool->priceUsd) {
-                console->log(std:("Skipping - no pool price"));
+                console->log(std::string("Skipping - no pool price"));
                 return std::shared_ptr<Promise<void>>();
             }
             auto priceAtQuote = pool->priceUsd * 0.85;
@@ -298,21 +299,21 @@ void Main(void)
             auto deviation = Math->abs(pool->priceUsd - priceAtQuote);
             auto deviationBps = Math->floor((deviation / priceAtQuote) * 10000);
             auto isValid = deviationBps <= maxDeviationBps;
-            console->log(std:("[Price Moved Too Much]"));
-            console->log(std:("  - Quote Price: $") + priceAtQuote->toFixed(2) + string_empty);
-            console->log(std:("  - Current: $") + pool->priceUsd->toFixed(2) + string_empty);
-            console->log(std:("  - Deviation: ") + (deviationBps / 100) + std:("%"));
-            console->log(std:("  - Should Reject: ") + !isValid + string_empty);
+            console->log(std::string("[Price Moved Too Much]"));
+            console->log(std::string("  - Quote Price: $") + priceAtQuote->toFixed(2) + string_empty);
+            console->log(std::string("  - Current: $") + pool->priceUsd->toFixed(2) + string_empty);
+            console->log(std::string("  - Deviation: ") + (deviationBps / 100) + std::string("%"));
+            console->log(std::string("  - Should Reject: ") + !isValid + string_empty);
             expect(isValid)->toBe(false);
         }
         , TEST_TIMEOUT);
     }
     );
-    describe(std:("Test Summary"), [=]() mutable
+    describe(std::string("Test Summary"), [=]() mutable
     {
-        it(std:("displays results"), [=]() mutable
+        it(std::string("displays results"), [=]() mutable
         {
-            console->log(std:("\
+            console->log(std::string("\
 ═══════════════════════════════════════════════════════════════════════════════\
                         PRICE VALIDATION TEST SUMMARY\
 ═══════════════════════════════════════════════════════════════════════════════\

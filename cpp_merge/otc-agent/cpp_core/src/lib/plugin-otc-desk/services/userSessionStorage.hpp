@@ -19,9 +19,9 @@ namespace elizaos {
 // User session storage service using Eliza's cache system
 
 struct UserSessionMemory {
-    std: id;
-    std: entityId;
-    std: walletAddress;
+    std::string id;
+    std::string entityId;
+    std::string walletAddress;
     double quotesCreated;
     double lastQuoteAt;
     double dailyQuoteCount;
@@ -39,10 +39,10 @@ public:
     std::future<void> initialize();
     std::future<void> stop();
     static std::future<UserSessionStorageService> start(IAgentRuntime runtime);
-    std::future<UserSessionMemory> getOrCreateSession(const std:& entityId, const std:& walletAddress);
-    std::future<void> checkRateLimit(const std:& entityId, const std:& walletAddress);
-    std::future<void> incrementQuoteCount(const std:& entityId, const std:& walletAddress);
-    std::future<void> updateDealStats(const std:& entityId, const std:& walletAddress, double volumeUsd, double savedUsd);
+    std::future<UserSessionMemory> getOrCreateSession(const std::string& entityId, const std::string& walletAddress);
+    std::future<void> checkRateLimit(const std::string& entityId, const std::string& walletAddress);
+    std::future<void> incrementQuoteCount(const std::string& entityId, const std::string& walletAddress);
+    std::future<void> updateDealStats(const std::string& entityId, const std::string& walletAddress, double volumeUsd, double savedUsd);
 };
 
 UserSessionStorageService getUserSessionStorageService(IAgentRuntime runtime);

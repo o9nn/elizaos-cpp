@@ -23,9 +23,9 @@ namespace elizaos {
  * @property {string} title - The title of the attachment.
  */
 struct IAttachment {
-    std: url;
-    std: contentType;
-    std: title;
+    std::string url;
+    std::string contentType;
+    std::string title;
 };
 
 

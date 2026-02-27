@@ -21,6 +21,6 @@ namespace elizaos {
 /**
  * Build and publish package to npm
  */
-std::future<void> publishToNpm(const std:& cwd, PackageJson packageJson, const std:& npmUsername);
+std::future<void> publishToNpm(const std::string& cwd, PackageJson packageJson, const std::string& npmUsername);
 
 } // namespace elizaos

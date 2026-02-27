@@ -1,4 +1,5 @@
 #include "directory-utils.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -7,7 +8,7 @@ namespace elizaos {
 void handleInvalidDirectory(DirectoryInfo directoryInfo) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const std::variant<Record<std:, (std:, undefined)[]>> messages = {;
+    const std::variant<Record<std::string, (std::string, std::nullopt)[]>> messages = {;
         "non-elizaos-dir": [
         "This directory doesn't appear to be an ElizaOS project.",
         "directoryInfo.packageName && " + "Found package: " + directoryInfo.packageName

@@ -16,7 +16,7 @@ namespace elizaos {
 
 
 
-class EntitiesService extends BaseApiClient {
+class EntitiesService : public BaseApiClient {
   /**
    * Get entity by ID
    */

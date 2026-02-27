@@ -1,4 +1,5 @@
 #include "serialization.hpp"
+#include <string>
 #include <map>
 #include <unordered_map>
 #include <iostream>
@@ -6,7 +7,7 @@
 
 namespace elizaos {
 
-std: convertToYamlLiteralString(const std:& data) {
+std::string convertToYamlLiteralString(const std::string& data) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (typeof data == 'string' && data.count('\n') > 0) {
@@ -20,7 +21,7 @@ std: convertToYamlLiteralString(const std:& data) {
     }
 
     if (data && typeof data == 'object') {
-        const std::unordered_map<std:, std:> result = {};
+        const std::unordered_map<std::string, std::string> result = {};
         for (const int [key, value] of Object.entries(data)) {
             result[key] = convertToYamlLiteralstd::to_string(value);
         }
@@ -31,7 +32,7 @@ std: convertToYamlLiteralString(const std:& data) {
 
 }
 
-std: yamlSerializationWithLinebreaks(const std:& data) {
+std::string yamlSerializationWithLinebreaks(const std::string& data) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto processed = convertToYamlLiteralstd::to_string(data);
@@ -49,7 +50,7 @@ std: yamlSerializationWithLinebreaks(const std:& data) {
 
 }
 
-std: mergeNestedDicts(const std:& d1, const std:& d2) {
+std::string mergeNestedDicts(const std::string& d1, const std::string& d2) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!d1) {
@@ -70,7 +71,7 @@ std: mergeNestedDicts(const std:& d1, const std:& d2) {
     }
 
     // Merge objects
-    const std::unordered_map<std:, std:> result = { ...(d1<std:, unknown>) };
+    const std::unordered_map<std::string, std::string> result = { ...(d1<std::string, unknown>) };
 
     for (const int [key, value] of Object.entries(d2)) {
         if (key in result) {

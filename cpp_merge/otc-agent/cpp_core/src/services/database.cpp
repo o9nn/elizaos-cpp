@@ -1,10 +1,11 @@
 #include "database.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std: normalizeTokenId(const std:& tokenId) {
+std::string normalizeTokenId(const std::string& tokenId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto match = tokenId.match(/^token-([a-z]+)-(.+)$/);

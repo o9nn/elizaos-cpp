@@ -1,45 +1,46 @@
 #include "setup.hpp"
+#include <string>
 
 void Main(void)
 {
-    mock->module(std:("@elizaos/server"), [=]() mutable
+    mock->module(std::string("@elizaos/server"), [=]() mutable
     {
         return (object{
-            object::pair{std:("AgentServer"), mock([=]() mutable
+            object::pair{std::string("AgentServer"), mock([=]() mutable
             {
                 return (object{
-                    object::pair{std:("initialize"), mock()}, 
-                    object::pair{std:("startAgent"), mock()}, 
-                    object::pair{std:("stopAgent"), mock()}, 
-                    object::pair{std:("loadCharacterTryPath"), mock()}, 
-                    object::pair{std:("jsonToCharacter"), mock()}
+                    object::pair{std::string("initialize"), mock()}, 
+                    object::pair{std::string("startAgent"), mock()}, 
+                    object::pair{std::string("stopAgent"), mock()}, 
+                    object::pair{std::string("loadCharacterTryPath"), mock()}, 
+                    object::pair{std::string("jsonToCharacter"), mock()}
                 });
             }
             )}, 
-            object::pair{std:("expandTildePath"), mock([=](auto path) mutable
+            object::pair{std::string("expandTildePath"), mock([=](auto path) mutable
             {
                 return path;
             }
             )}, 
-            object::pair{std:("resolvePgliteDir"), mock([=](auto dir = undefined) mutable
+            object::pair{std::string("resolvePgliteDir"), mock([=](auto dir = std::nullopt) mutable
             {
-                return OR((dir), (std:("./.elizadb")));
+                return OR((dir), (std::string("./.elizadb")));
             }
             )}
         });
     }
     );
-    mock->module(std:("socket.io"), [=]() mutable
+    mock->module(std::string("socket.io"), [=]() mutable
     {
         return (object{
-            object::pair{std:("Server"), mock([=]() mutable
+            object::pair{std::string("Server"), mock([=]() mutable
             {
                 return (object{
-                    object::pair{std:("on"), mock()}, 
-                    object::pair{std:("emit"), mock()}, 
-                    object::pair{std:("use"), mock()}, 
-                    object::pair{std:("engine"), object{
-                        object::pair{std:("on"), mock()}
+                    object::pair{std::string("on"), mock()}, 
+                    object::pair{std::string("emit"), mock()}, 
+                    object::pair{std::string("use"), mock()}, 
+                    object::pair{std::string("engine"), object{
+                        object::pair{std::string("on"), mock()}
                     }}
                 });
             }
@@ -47,16 +48,16 @@ void Main(void)
         });
     }
     );
-    mock->module(std:("express"), [=]() mutable
+    mock->module(std::string("express"), [=]() mutable
     {
         shared mockApp = object{
-            object::pair{std:("use"), mock()}, 
-            object::pair{std:("get"), mock()}, 
-            object::pair{std:("post"), mock()}, 
-            object::pair{std:("put"), mock()}, 
-            object::pair{std:("delete"), mock()}, 
-            object::pair{std:("listen"), mock()}, 
-            object::pair{std:("set"), mock()}
+            object::pair{std::string("use"), mock()}, 
+            object::pair{std::string("get"), mock()}, 
+            object::pair{std::string("post"), mock()}, 
+            object::pair{std::string("put"), mock()}, 
+            object::pair{std::string("delete"), mock()}, 
+            object::pair{std::string("listen"), mock()}, 
+            object::pair{std::string("set"), mock()}
         };
         auto mockExpress = mock([=]() mutable
         {
@@ -69,23 +70,23 @@ void Main(void)
         mockExpress->Router = mock([=]() mutable
         {
             return (object{
-                object::pair{std:("use"), mock()}, 
-                object::pair{std:("get"), mock()}, 
-                object::pair{std:("post"), mock()}, 
-                object::pair{std:("put"), mock()}, 
-                object::pair{std:("delete"), mock()}
+                object::pair{std::string("use"), mock()}, 
+                object::pair{std::string("get"), mock()}, 
+                object::pair{std::string("post"), mock()}, 
+                object::pair{std::string("put"), mock()}, 
+                object::pair{std::string("delete"), mock()}
             });
         }
         );
         return utils::assign(object{
-            object::pair{std:("default"), mockExpress}
+            object::pair{std::string("default"), mockExpress}
         }, mockExpress);
     }
     );
-    mock->module(std:("body-parser"), [=]() mutable
+    mock->module(std::string("body-parser"), [=]() mutable
     {
         return (object{
-            object::pair{std:("json"), mock([=]() mutable
+            object::pair{std::string("json"), mock([=]() mutable
             {
                 return [=](auto req, auto res, auto next) mutable
                 {
@@ -93,7 +94,7 @@ void Main(void)
                 };
             }
             )}, 
-            object::pair{std:("urlencoded"), mock([=]() mutable
+            object::pair{std::string("urlencoded"), mock([=]() mutable
             {
                 return [=](auto req, auto res, auto next) mutable
                 {
@@ -101,7 +102,7 @@ void Main(void)
                 };
             }
             )}, 
-            object::pair{std:("text"), mock([=]() mutable
+            object::pair{std::string("text"), mock([=]() mutable
             {
                 return [=](auto req, auto res, auto next) mutable
                 {
@@ -109,7 +110,7 @@ void Main(void)
                 };
             }
             )}, 
-            object::pair{std:("raw"), mock([=]() mutable
+            object::pair{std::string("raw"), mock([=]() mutable
             {
                 return [=](auto req, auto res, auto next) mutable
                 {
@@ -120,7 +121,7 @@ void Main(void)
         });
     }
     );
-    mock->module(std:("helmet"), [=]() mutable
+    mock->module(std::string("helmet"), [=]() mutable
     {
         auto helmet = mock([=]() mutable
         {
@@ -131,11 +132,11 @@ void Main(void)
         }
         );
         return utils::assign(object{
-            object::pair{std:("default"), helmet}
+            object::pair{std::string("default"), helmet}
         }, helmet);
     }
     );
-    mock->module(std:("cors"), [=]() mutable
+    mock->module(std::string("cors"), [=]() mutable
     {
         auto cors = mock([=]() mutable
         {
@@ -146,14 +147,14 @@ void Main(void)
         }
         );
         return utils::assign(object{
-            object::pair{std:("default"), cors}
+            object::pair{std::string("default"), cors}
         }, cors);
     }
     );
     global->console = utils::assign(object{
         , 
-        object::pair{std:("debug"), console->log}, 
-        object::pair{std:("trace"), console->log}
+        object::pair{std::string("debug"), console->log}, 
+        object::pair{std::string("trace"), console->log}
     }, console);
 }
 

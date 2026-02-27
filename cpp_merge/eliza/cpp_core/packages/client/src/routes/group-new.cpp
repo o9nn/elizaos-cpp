@@ -44,7 +44,7 @@ void GroupNew() {
     <GroupPanel;
     // agents={agents} // Removed prop
     onClose={[&]() { return navigate(-1)} // Navigate back on close; };
-    // channelId is undefined, so it's in "create" mode
+    // channelId is std::nullopt, so it's in "create" mode
     />;
     </div>;
     );

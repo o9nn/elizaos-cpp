@@ -94,11 +94,11 @@ namespace elizaos {
       // Try to capture input params even in failure
         // If we can't get params, just use empty object
 
-std: formatBridgeResponse(RelayStatus status, ResolvedBridgeRequest request, const std:& requestId, std::vector<std::string> collectedTxHashes = {}, std::optional<std:> tokenSymbol);
+std::string formatBridgeResponse(RelayStatus status, ResolvedBridgeRequest request, const std::string& requestId, std::vector<std::string> collectedTxHashes = {}, std::optional<std::string> tokenSymbol);
 
-std: getChainName(double chainId);
+std::string getChainName(double chainId);
 
-std: formatAmount(const std:& amount, const std:& currency);
+std::string formatAmount(const std::string& amount, const std::string& currency);
 
 
 } // namespace elizaos

@@ -1,4 +1,5 @@
 #include "timeout-manager.h"
+#include <string>
 
 std::shared_ptr<TestTimeoutManager> TestTimeoutManager::instance;
 
@@ -17,7 +18,7 @@ void TestTimeoutManager::startTimeout(string testName, double duration)
     auto timeout = setTimeout([=]() mutable
     {
         auto elapsed = Date->now() - (OR((this->testStartTimes->get(testName)), (0)));
-        logger->error(std:("Test "") + testName + std:("" exceeded timeout of ") + duration + std:("ms (elapsed: ") + elapsed + std:("ms)"));
+        logger->error(std::string("Test "") + testName + std::string("" exceeded timeout of ") + duration + std::string("ms (elapsed: ") + elapsed + std::string("ms)"));
         process->exit(1);
     }
     , duration);

@@ -21,21 +21,21 @@ namespace elizaos {
 
 
 struct Token {
-    std: symbol;
-    std: name;
-    std: balance;
-    std: balanceFormatted;
+    std::string symbol;
+    std::string name;
+    std::string balance;
+    std::string balanceFormatted;
     number | null usdValue;
     number | null usdPrice;
-    std: | null contractAddress;
-    std: chain;
+    std::string | null contractAddress;
+    std::string chain;
     double decimals;
-    std::optional<std:> icon;
+    std::optional<std::string> icon;
 };
 
 struct SendModalContentProps {
     std::vector<Token> tokens;
-    std: userId;
+    std::string userId;
     [&]() { return void onSuccess; };
 };
 

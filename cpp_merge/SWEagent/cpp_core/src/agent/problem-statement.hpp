@@ -25,7 +25,7 @@ namespace elizaos {
  * Any class that implements this interface can be used as a problem statement
  */
 struct ProblemStatement {
-    std: id;
+    std::string id;
 };
 
 /**
@@ -35,11 +35,11 @@ struct ProblemStatement {
 /**
  * Empty problem statement
  */
-class EmptyProblemStatement extends BuiltinProblemStatementBase {
-  id: std:;
+class EmptyProblemStatement : public BuiltinProblemStatementBase {
+  id: std::string;
   type: 'empty' = 'empty';
 
-  constructor() {
+  /* constructor */ () {
     super();
     this.id = crypto.randomUUID();
   }
@@ -47,13 +47,13 @@ class EmptyProblemStatement extends BuiltinProblemStatementBase {
 /**
  * Text-based problem statement
  */
-class TextProblemStatement extends BuiltinProblemStatementBase {
-  id: std:;
-  text: std:;
+class TextProblemStatement : public BuiltinProblemStatementBase {
+  id: std::string;
+  text: std::string;
   extraFields: ExtraFields;
   type: 'text' = 'text';
 
-  constructor(config: { text: std:; extraFields?: ExtraFields; id?: std: }) {
+  /* constructor */ (config: { text: std::string; extraFields?: ExtraFields; id?: std::string }) {
     super();
     this.text = config.text;
     this.extraFields = config.extraFields || {};
@@ -69,13 +69,13 @@ class TextProblemStatement extends BuiltinProblemStatementBase {
 /**
  * File-based problem statement
  */
-class FileProblemStatement extends BuiltinProblemStatementBase {
-  id: std:;
-  filepath: std:;
+class FileProblemStatement : public BuiltinProblemStatementBase {
+  id: std::string;
+  filepath: std::string;
   extraFields: ExtraFields;
   type: 'text_file' = 'text_file';
 
-  constructor(config: { path: std:; extraFields?: ExtraFields; id?: std: }) {
+  /* constructor */ (config: { path: std::string; extraFields?: ExtraFields; id?: std::string }) {
     super();
     this.filepath = config.path;
     this.extraFields = config.extraFields || {};
@@ -92,13 +92,13 @@ class FileProblemStatement extends BuiltinProblemStatementBase {
 /**
  * GitHub issue problem statement
  */
-class GithubIssue extends BuiltinProblemStatementBase {
-  id: std:;
-  githubUrl: std:;
+class GithubIssue : public BuiltinProblemStatementBase {
+  id: std::string;
+  githubUrl: std::string;
   extraFields: ExtraFields;
   type: 'github' = 'github';
 
-  constructor(config: { githubUrl: std:; extraFields?: ExtraFields; id?: std: }) {
+  /* constructor */ (config: { githubUrl: std::string; extraFields?: ExtraFields; id?: std::string }) {
     super();
     this.githubUrl = config.githubUrl;
     this.extraFields = config.extraFields || {};
@@ -123,21 +123,21 @@ class GithubIssue extends BuiltinProblemStatementBase {
 /**
  * SWE-Bench multimodal problem statement with image support
  */
-class SWEBenchMultimodalProblemStatement extends BuiltinProblemStatementBase {
-  id: std:;
-  text: std:;
-  issueImages: std:[];
+class SWEBenchMultimodalProblemStatement : public BuiltinProblemStatementBase {
+  id: std::string;
+  text: std::string;
+  issueImages: std::string[];
   disableImageProcessing;
   extraFields: ExtraFields;
   type: 'swe_bench_multimodal' = 'swe_bench_multimodal';
-  private cachedProblemStatement: std: | null = null;
+  private cachedProblemStatement: std::string | null = null;
 
-  constructor(config: {
-    text: std:;
-    issueImages?: std:[];
+  /* constructor */ (config: {
+    text: std::string;
+    issueImages?: std::string[];
     disableImageProcessing?;
-    extraFields?: Record<std:, any>;
-    id?: std:;
+    extraFields?: Record<std::string, any>;
+    id?: std::string;
   }) {
     super();
     this.text = config.text;
@@ -173,7 +173,7 @@ class SWEBenchMultimodalProblemStatement extends BuiltinProblemStatementBase {
 /**
  * Factory std::function to create problem statement from simplified input
  */
-ProblemStatement problemStatementFromSimplifiedInput(const std:& input, 'text' | 'text_file' | 'github_issue' | 'swe_bench_multimodal' type);
+ProblemStatement problemStatementFromSimplifiedInput(const std::string& input, 'text' | 'text_file' | 'github_issue' | 'swe_bench_multimodal' type);
 
 /**
  * Type for problem statement configurations

@@ -24,9 +24,9 @@ struct RouteContext {
 };
 
 // POST /api/rooms/[roomId]/messages - Send a message
-std::future<void> POST(const std:& request, RouteContext ctx);
+std::future<void> POST(const std::string& request, RouteContext ctx);
 
 // GET /api/rooms/[roomId]/messages - Get messages (for polling)
-std::future<void> GET(const std:& request, RouteContext ctx);
+std::future<void> GET(const std::string& request, RouteContext ctx);
 
 } // namespace elizaos

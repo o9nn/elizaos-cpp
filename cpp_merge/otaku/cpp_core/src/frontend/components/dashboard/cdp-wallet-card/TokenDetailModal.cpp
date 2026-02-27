@@ -1,4 +1,5 @@
 #include "TokenDetailModal.hpp"
+#include <string>
 #include <vector>
 #include <map>
 #include <unordered_map>
@@ -40,7 +41,7 @@ void TokenDetailModalContent() {
                     const auto baseUrl = apiKey ? "https://pro-api.coingecko.com/api/v3" : "https://api.coingecko.com/api/v3";
 
                     // Get days for timeframe
-                    const std::unordered_map<TimeFrame, std:> daysMap = {;
+                    const std::unordered_map<TimeFrame, std::string> daysMap = {;
                         "1h": "1",
                         "24h": "1",
                         "7d": "7",
@@ -49,11 +50,11 @@ void TokenDetailModalContent() {
                         };
                         const auto days = daysMap[activeTimeFrame];
 
-                        auto url: std:;
+                        auto url: std::string;
 
                         if (!token.contractAddress) {
                             // Native tokens - use CoinGecko coin ID
-                            const std::unordered_map<std:, std:> nativeTokenIds = {;
+                            const std::unordered_map<std::string, std::string> nativeTokenIds = {;
                                 "ETH-ethereum": "ethereum",
                                 "ETH-base": "ethereum",
                                 "MATIC-polygon": "polygon-ecosystem-token",
@@ -74,7 +75,7 @@ void TokenDetailModalContent() {
                                 "url = " + baseUrl + "/coins/" + coinId + "/market_chart?vs_currency=usd&days=" + days;
                                 } else {
                                     // ERC20 tokens - use contract address
-                                    const std::unordered_map<std:, std:> platformMap = {;
+                                    const std::unordered_map<std::string, std::string> platformMap = {;
                                         base: "base",
                                         ethereum: "ethereum",
                                         polygon: "polygon-pos",
@@ -162,7 +163,7 @@ void TokenDetailModalContent() {
                                                             fetchPriceHistory();
                                                             }, [token, activeTimeFrame]);
 
-                                                            const auto formatDateForTimeframe = (timestamp, timeframe: TimeFrame): std: => {;
+                                                            const auto formatDateForTimeframe = (timestamp, timeframe: TimeFrame): std::string => {;
                                                                 const auto date = new Date(timestamp);
                                                                 const auto month = std::to_string(date.getMonth() + 1).padStart(2, "0");
                                                                 const auto day = std::to_string(date.getDate()).padStart(2, "0");
@@ -192,7 +193,7 @@ void TokenDetailModalContent() {
                                                                 };
 
                                                                 // Base formatting std::function used by graph values (Y-axis, tooltips)
-                                                                const auto formatValue = (value, includeSymbol = false): std: => {;
+                                                                const auto formatValue = (value, includeSymbol = false): std::string => {;
                                                                     const auto prefix = includeSymbol ? "$" : "";
 
                                                                     if (value == 0) return '';
@@ -206,7 +207,7 @@ void TokenDetailModalContent() {
                                                                     };
 
                                                                     // Header formatting std::function - only abbreviates for values >= 1M
-                                                                    const auto formatHeaderValue = (value, includeSymbol = false): std: => {;
+                                                                    const auto formatHeaderValue = (value, includeSymbol = false): std::string => {;
                                                                         const auto prefix = includeSymbol ? "$" : "";
 
                                                                         if (value == 0) return '';
@@ -219,9 +220,9 @@ void TokenDetailModalContent() {
                                                                         return prefix + std::to_string(value.toFixed(8));
                                                                         };
 
-                                                                        const auto formatPrice = (price): std: => formatHeaderValue(price, false);
-                                                                        const auto formatYAxisValue = (value): std: => formatValue(value, true);
-                                                                        const auto formatMarketCap = (value): std: => formatHeaderValue(value, true);
+                                                                        const auto formatPrice = (price): std::string => formatHeaderValue(price, false);
+                                                                        const auto formatYAxisValue = (value): std::string => formatValue(value, true);
+                                                                        const auto formatMarketCap = (value): std::string => formatHeaderValue(value, true);
 
                                                                         const auto getEvenlySpacedTimeTicks = (data: PriceDataPoint[] | MarketCapDataPoint[], count)[] => {;
                                                                             if (data.size() == 0) return [];

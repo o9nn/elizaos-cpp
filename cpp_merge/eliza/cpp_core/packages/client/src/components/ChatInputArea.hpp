@@ -15,11 +15,11 @@ namespace elizaos {
 
 
 struct ChatInputAreaProps {
-    std: input;
-    [&](value: std:) { return void setInput; };
+    std::string input;
+    [&](value: std::string) { return void setInput; };
     bool inputDisabled;
     std::vector<UploadingFile> selectedFiles;
-    [&](fileId: std:) { return void removeFile; };
+    [&](fileId: std::string) { return void removeFile; };
     [&](e: React.ChangeEvent<HTMLInputElement>) { return void handleFileChange; };
     [&](e: React.FormEvent<HTMLFormElement>) { return void handleSendMessage; };
     [&](e: React.KeyboardEvent<HTMLTextAreaElement>) { return void handleKeyDown; };

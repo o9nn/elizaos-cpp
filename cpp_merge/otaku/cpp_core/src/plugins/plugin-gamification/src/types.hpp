@@ -28,7 +28,7 @@ struct GamificationEventInput {
     GamificationEventType actionType;
     std::optional<UUID> sourceEventId;
     std::optional<double> volumeUsd;
-    std::optional<std:> chain;
+    std::optional<std::string> chain;
 };
 
 /**
@@ -41,7 +41,7 @@ struct PointBalance {
     double streakDays;
     std::optional<std::chrono::system_clock::time_point> lastLoginDate;
     double level;
-    std: levelName;
+    std::string levelName;
     std::chrono::system_clock::time_point updatedAt;
 };
 
@@ -54,9 +54,9 @@ struct UserSummary {
     double weeklyPoints;
     double streakDays;
     double level;
-    std: levelName;
+    std::string levelName;
     double level;
-    std: levelName;
+    std::string levelName;
     double pointsNeeded;
     std::optional<std::chrono::system_clock::time_point> lastLoginDate;
     std::optional<double> swapsCompleted;
@@ -70,9 +70,9 @@ struct LeaderboardEntry {
     UUID userId;
     double points;
     double level;
-    std: levelName;
-    std::optional<std:> username;
-    std::optional<std:> avatar;
+    std::string levelName;
+    std::optional<std::string> username;
+    std::optional<std::string> avatar;
 };
 
 /**
@@ -80,9 +80,9 @@ struct LeaderboardEntry {
  */
 struct ReferralCode {
     UUID userId;
-    std: code;
+    std::string code;
     std::optional<UUID> referrerId;
-    std: status;
+    std::string status;
     std::chrono::system_clock::time_point createdAt;
 };
 
@@ -99,8 +99,8 @@ struct ReferralStats {
  * Campaign configuration
  */
 struct Campaign {
-    std: id;
-    std: name;
+    std::string id;
+    std::string name;
     std::optional<GamificationEventType> actionType;
     double multiplier;
     std::chrono::system_clock::time_point startAt;

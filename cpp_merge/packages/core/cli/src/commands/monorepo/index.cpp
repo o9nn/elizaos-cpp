@@ -1,17 +1,18 @@
 #include "index.hpp"
+#include <string>
 
-any monorepo = ((std::make_shared<Command>()))->name(std:("monorepo"))->description(std:("Clone ElizaOS monorepo from a specific branch, defaults to develop"))->option(std:("-b, --branch <branch>"), std:("Branch to install"), std:("develop"))->option(std:("-d, --dir <directory>"), std:("Destination directory"), std:("./eliza"))->action([=](auto options) mutable
+any monorepo = ((std::make_shared<Command>()))->name(std::string("monorepo"))->description(std::string("Clone ElizaOS monorepo from a specific branch, defaults to develop"))->option(std::string("-b, --branch <branch>"), std::string("Branch to install"), std::string("develop"))->option(std::string("-d, --dir <directory>"), std::string("Destination directory"), std::string("./eliza"))->action([=](auto options) mutable
 {
     try
     {
-        auto repo = std:("elizaOS/eliza");
-        auto branch = OR((options->branch), (std:("develop")));
-        auto dir = OR((options->dir), (std:("./eliza")));
+        auto repo = std::string("elizaOS/eliza");
+        auto branch = OR((options->branch), (std::string("develop")));
+        auto dir = OR((options->dir), (std::string("./eliza")));
         auto destinationDir = prepareDestination(dir);
         auto cloneInfo = object{
-            object::pair{std:("repo"), std:("repo")}, 
-            object::pair{std:("branch"), std:("branch")}, 
-            object::pair{std:("destination"), dir}
+            object::pair{std::string("repo"), std::string("repo")}, 
+            object::pair{std::string("branch"), std::string("branch")}, 
+            object::pair{std::string("destination"), dir}
         };
         std::async([=]() { cloneMonorepo(cloneInfo); });
         displayNextSteps(destinationDir);

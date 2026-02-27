@@ -1,4 +1,5 @@
 #include "use-dm-slice.h"
+#include <string>
 
 std::function<object()> useDmSlice = [=]() mutable
 {
@@ -46,11 +47,11 @@ std::function<object()> useDmSlice = [=]() mutable
         );
     };
     auto state = object{
-        object::pair{std:("dms"), useDms}, 
-        object::pair{std:("selectedDms"), useSelectedDms}, 
-        object::pair{std:("isLoading"), useIsLoading}, 
-        object::pair{std:("preFilterUserId"), usePreFilterUserId}, 
-        object::pair{std:("preFilterUsers"), usePreFilterUsers}
+        object::pair{std::string("dms"), useDms}, 
+        object::pair{std::string("selectedDms"), useSelectedDms}, 
+        object::pair{std::string("isLoading"), useIsLoading}, 
+        object::pair{std::string("preFilterUserId"), usePreFilterUserId}, 
+        object::pair{std::string("preFilterUsers"), usePreFilterUsers}
     };
     auto setIsLoading = [=](auto value) mutable
     {
@@ -77,13 +78,13 @@ std::function<object()> useDmSlice = [=]() mutable
         dispatch(mutateSelectedDmsAction(dmIds));
     };
     return object{
-        object::pair{std:("state"), std:("state")}, 
-        object::pair{std:("setIsLoading"), std:("setIsLoading")}, 
-        object::pair{std:("setDms"), std:("setDms")}, 
-        object::pair{std:("resetDm"), std:("resetDm")}, 
-        object::pair{std:("setPreFilterUserId"), std:("setPreFilterUserId")}, 
-        object::pair{std:("getDms"), std:("getDms")}, 
-        object::pair{std:("setSelectedDms"), std:("setSelectedDms")}
+        object::pair{std::string("state"), std::string("state")}, 
+        object::pair{std::string("setIsLoading"), std::string("setIsLoading")}, 
+        object::pair{std::string("setDms"), std::string("setDms")}, 
+        object::pair{std::string("resetDm"), std::string("resetDm")}, 
+        object::pair{std::string("setPreFilterUserId"), std::string("setPreFilterUserId")}, 
+        object::pair{std::string("getDms"), std::string("getDms")}, 
+        object::pair{std::string("setSelectedDms"), std::string("setSelectedDms")}
     };
 };
 

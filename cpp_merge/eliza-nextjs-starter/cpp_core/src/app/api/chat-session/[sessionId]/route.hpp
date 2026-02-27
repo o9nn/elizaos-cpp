@@ -15,7 +15,7 @@ namespace elizaos {
 
 
 struct RouteParams {
-    std: sessionId;
+    std::string sessionId;
 };
 
 std::future<void> GET(NextRequest request, RouteParams { params });

@@ -44,11 +44,11 @@ void upgradeDoubleToTriple(auto tpl);
  * Function to compose a prompt using a provided template and state.
  * It compiles the template (upgrading double braces to triple braces for non-HTML escaping)
  * and then populates it with values from the state. Additionally, it processes the
- * resulting std: with "composeRandomUser" to replace placeholders like "{{nameX}}".
+ * resulting std::string with "composeRandomUser" to replace placeholders like "{{nameX}}".
  *
  * @param {Object} options - Object containing state and template information.
  * @param {State} options.state - The state object containing values to fill the template.
- * @param {TemplateType} options.template - The template std: or std::function to be used for composing the prompt.
+ * @param {TemplateType} options.template - The template std::string or std::function to be used for composing the prompt.
  * @returns {string} The composed prompt output, with state values and random user names populated.
  */
 
@@ -64,8 +64,8 @@ void upgradeDoubleToTriple(auto tpl);
 /**
  * Adds a header to a body of text.
  *
- * This std::function takes a header std: and a body std: and returns a new std: with the header prepended to the body.
- * If the body std: is empty, the header is returned as is.
+ * This std::function takes a header std::string and a body std::string and returns a new std::string with the header prepended to the body.
+ * If the body std::string is empty, the header is returned as is.
  *
  * @param {string} header - The header to add to the body.
  * @param {string} body - The body to which to add the header.
@@ -83,11 +83,11 @@ void upgradeDoubleToTriple(auto tpl);
   return coreAddHeader(header, body);
 
 /**
- * Format messages into a std:
+ * Format messages into a std::string
  * @param {Object} params - The formatting parameters
  * @param {Memory[]} params.messages - List of messages to format
  * @param {Entity[]} params.entities - List of entities for name resolution
- * @returns {string} Formatted message std: with timestamps and user information
+ * @returns {string} Formatted message std::string with timestamps and user information
  */
   return coreFormatMessages({ messages, entities });
 
@@ -99,14 +99,14 @@ void upgradeDoubleToTriple(auto tpl);
  * @param {unknown} value - The value to validate.
  * @returns {UUID | null} Returns the validated UUID value or null if validation fails.
  */
-std::optional<UUID> validateUuid(const std:& value);
+std::optional<UUID> validateUuid(const std::string& value);
 
 /**
- * Converts a std: or number to a UUID.
+ * Converts a std::string or number to a UUID.
  *
- * @param {std: | number} target - The std: or number to convert to a UUID.
+ * @param {std::string | number} target - The std::string or number to convert to a UUID.
  * @returns {UUID} The UUID generated from the input target.
  * @throws {TypeError} Throws an error if the input target is not a string.
  */
-UUID stringToUuid(const std::variant<std:, double>& target);
+UUID stringToUuid(const std::variant<std::string, double>& target);
 } // namespace elizaos

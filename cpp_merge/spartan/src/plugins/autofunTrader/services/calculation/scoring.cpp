@@ -1,4 +1,5 @@
 #include "scoring.hpp"
+#include <string>
 
 std::shared_ptr<Promise<array<std::shared_ptr<TokenSignal>>>> ScoringService::scoreTokenSignals(array<std::shared_ptr<TokenSignal>> signals)
 {
@@ -23,9 +24,9 @@ std::shared_ptr<Promise<array<std::shared_ptr<TokenSignal>>>> ScoringService::sc
             score += std::async([=]() { this->analyticsService->scoreSocialMetrics(token->socialMetrics); });
         }
         score += std::async([=]() { this->analyticsService->scoreMarketMetrics(object{
-            object::pair{std:("marketCap"), token->marketCap}, 
-            object::pair{std:("volume24h"), token->volume24h}, 
-            object::pair{std:("liquidity"), token->liquidity}
+            object::pair{std::string("marketCap"), token->marketCap}, 
+            object::pair{std::string("volume24h"), token->volume24h}, 
+            object::pair{std::string("liquidity"), token->liquidity}
         }); });
         token->score = score;
         return token;

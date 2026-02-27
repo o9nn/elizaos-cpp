@@ -15,18 +15,18 @@ namespace elizaos {
 
 
 struct CoinDeskArticle {
-    std: id;
-    std: title;
-    std: url;
-    std::optional<std:> summary;
-    std::optional<std:> body;
-    std::optional<std:> publishedAt;
-    std::optional<std:> updatedAt;
+    std::string id;
+    std::string title;
+    std::string url;
+    std::optional<std::string> summary;
+    std::optional<std::string> body;
+    std::optional<std::string> publishedAt;
+    std::optional<std::string> updatedAt;
     std::optional<std::vector<std::string>> authors;
     std::optional<std::vector<std::string>> categories;
     std::optional<std::vector<std::string>> tags;
-    std::optional<std:> thumbnail;
-    std::optional<std:> source;
+    std::optional<std::string> thumbnail;
+    std::optional<std::string> source;
 };
 
 struct CoinDeskNewsResponse {
@@ -36,22 +36,22 @@ struct CoinDeskNewsResponse {
     std::optional<double> total;
     std::optional<double> page;
     std::optional<double> pageSize;
-    std::optional<std:> error;
+    std::optional<std::string> error;
 };
 
 struct CoinDeskSearchOptions {
-    std::optional<std:;                    // Search query for article content> query;
-    std::optional<std:[];               // Specific keywords to filter by> keywords;
+    std::optional<std::string;                    // Search query for article content> query;
+    std::optional<std::string[];               // Specific keywords to filter by> keywords;
     std::optional<number;                    // Number of results (1-100)> limit;
     std::optional<number;                   // Pagination offset> offset;
     std::optional<number;                     // Page number> page;
-    std::optional<std:[];             // Filter by categories (e.g., 'markets', 'tech', 'policy', 'defi')> categories;
-    std::optional<std:[];                   // Filter by tags> tags;
-    std::optional<std:[];                // Filter by author names> authors;
-    std::optional<std:;                // Start date (YYYY-MM-DD or ISO 8601)> startDate;
-    std::optional<std:;                  // End date (YYYY-MM-DD or ISO 8601)> endDate;
-    std::optional<std:;           // Articles published after this timestamp> publishedAfter;
-    std::optional<std:;          // Articles published before this timestamp> publishedBefore;
+    std::optional<std::string[];             // Filter by categories (e.g., 'markets', 'tech', 'policy', 'defi')> categories;
+    std::optional<std::string[];                   // Filter by tags> tags;
+    std::optional<std::string[];                // Filter by author names> authors;
+    std::optional<std::string;                // Start date (YYYY-MM-DD or ISO 8601)> startDate;
+    std::optional<std::string;                  // End date (YYYY-MM-DD or ISO 8601)> endDate;
+    std::optional<std::string;           // Articles published after this timestamp> publishedAfter;
+    std::optional<std::string;          // Articles published before this timestamp> publishedBefore;
     std::optional<'published' | 'updated' | 'relevance';  // Sort field> sortBy;
     std::optional<'asc' | 'desc';        // Sort direction> sortOrder;
     std::optional<boolean;             // Include full article body> includeBody;
@@ -59,12 +59,13 @@ struct CoinDeskSearchOptions {
     std::optional<boolean;        // Include thumbnail image URL> includeThumbnail;
 };
 
-class CoinDeskService extends Service {
+class CoinDeskService : public Service {
     static serviceType = "COINDESK_NEWS" as const;
     capabilityDescription = "Fetch cryptocurrency news articles from CoinDesk API";
     
-    private apiKey: std:;
-    private baseUrl: std: = "https://data-api.coindesk.com";
+    private apiKey: std::string;
+private:
+    std::string baseUrl = "https://data-api.coindesk.com";
 
     static std::async start(runtime: IAgentRuntime): Promise<CoinDeskService> {
         const service = std::make_unique<CoinDeskService>();

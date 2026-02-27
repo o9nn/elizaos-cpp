@@ -33,7 +33,7 @@ public:
 class E2bService : public object, public std::enable_shared_from_this<E2bService> {
 public:
     using std::enable_shared_from_this<E2bService>::shared_from_this;
-    virtual std::shared_ptr<Promise<any>> executeCode(string code, any options = undefined) = 0;
+    virtual std::shared_ptr<Promise<any>> executeCode(string code, any options = std::nullopt) = 0;
     virtual std::shared_ptr<Promise<void>> stop() = 0;
 };
 

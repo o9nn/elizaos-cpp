@@ -20,16 +20,16 @@ struct SplitButtonAction {
     ReactNode label;
     std::optional<ReactNode> icon;
     std::optional<bool> disabled;
-    std::optional<std:> std::variant;
+    std::optional<std::string> std::variant;
 };
 
 struct SplitButtonProps {
     SplitButtonAction mainAction;
     std::vector<SplitButtonAction> actions;
-    std::optional<std:> std::variant;
-    std::optional<std:> size;
+    std::optional<std::string> std::variant;
+    std::optional<std::string> size;
     std::optional<bool> disabled;
-    std::optional<std:> className;
+    std::optional<std::string> className;
 };
 
 

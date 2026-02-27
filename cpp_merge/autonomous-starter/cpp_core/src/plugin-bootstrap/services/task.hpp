@@ -16,7 +16,7 @@ namespace elizaos {
 
 /**
  * TaskService class representing a service that schedules and executes tasks.
- * @extends Service
+ * @: public Service
  * @property {NodeJS.Timeout|null} timer - Timer for executing tasks
  * @property {number} TICK_INTERVAL - Interval in milliseconds to check for tasks
  * @property {ServiceTypeName} serviceType - Service type of TASK
@@ -36,7 +36,7 @@ namespace elizaos {
  * Start the TaskService with the given runtime.
  * @param {IAgentRuntime} runtime - The runtime for the TaskService.
  */
-class TaskService extends Service {
+class TaskService : public Service {
   private timer: NodeJS.Timeout | null = null;
   private readonly TICK_INTERVAL = 1000; // Check every second
   static serviceType: ServiceTypeName = ServiceType.TASK;

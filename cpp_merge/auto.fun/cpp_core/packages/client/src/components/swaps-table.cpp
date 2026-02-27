@@ -1,4 +1,5 @@
 #include "swaps-table.hpp"
+#include <string>
 #include <map>
 #include <iostream>
 #include <stdexcept>
@@ -26,7 +27,7 @@ void SwapsTable() {
             const auto showMoreTrades =;
             token.status == "locked" || token.status == "migrated";
 
-            const auto dataExtractor = [&](swap: std:) {;
+            const auto dataExtractor = [&](swap: std::string) {;
                 if (isCodex) return swap;
                 const auto account = swap.user || "NA";
                 const auto swapType = swap.direction == 0 ? "Buy" : "Sell";

@@ -17,13 +17,13 @@ namespace elizaos {
 // Utilities for extracting normalized user info from CDP currentUser
 
 struct CdpAuthMethod {
-    std::optional<std:> email;
-    std::optional<std:> name;
+    std::optional<std::string> email;
+    std::optional<std::string> name;
 };
 
 struct CdpSmsMethod {
-    std::optional<std:> phoneNumber;
-    std::optional<std:> countryCode;
+    std::optional<std::string> phoneNumber;
+    std::optional<std::string> countryCode;
 };
 
 struct CdpAuthenticationMethods {
@@ -34,10 +34,10 @@ struct CdpAuthenticationMethods {
 };
 
 struct CdpUser {
-    std::optional<std:> userId;
-    std::optional<std:> email;
-    std::optional<std:> name;
-    std::optional<std:> displayName;
+    std::optional<std::string> userId;
+    std::optional<std::string> email;
+    std::optional<std::string> name;
+    std::optional<std::string> displayName;
     std::optional<CdpAuthenticationMethods> authenticationMethods;
 };
 
@@ -46,18 +46,18 @@ struct CdpUserInfoOptions {
 };
 
 struct CdpUserInfo {
-    std::optional<std:> email;
-    std::optional<std:> username;
-    std::optional<std:> phoneNumber;
+    std::optional<std::string> email;
+    std::optional<std::string> username;
+    std::optional<std::string> phoneNumber;
 };
 
-std: extractEmailFromCdpUser(CdpUser user, bool isSignedIn);
+std::string extractEmailFromCdpUser(CdpUser user, bool isSignedIn);
 
-std: extractUsernameFromCdpUser(CdpUser user, std::optional<std:> emailForFallback);
+std::string extractUsernameFromCdpUser(CdpUser user, std::optional<std::string> emailForFallback);
 
-std: extractPhoneFromCdpUser(CdpUser user);
+std::string extractPhoneFromCdpUser(CdpUser user);
 
-std: generateEmailFromPhone(const std:& phone);
+std::string generateEmailFromPhone(const std::string& phone);
 
 CdpUserInfo resolveCdpUserInfo(CdpUser user, std::optional<CdpUserInfoOptions> options);
 

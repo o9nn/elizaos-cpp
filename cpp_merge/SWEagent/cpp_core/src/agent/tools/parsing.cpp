@@ -1,4 +1,5 @@
 #include "parsing.hpp"
+#include <string>
 #include <vector>
 #include <optional>
 #include <iostream>
@@ -6,7 +7,7 @@
 
 namespace elizaos {
 
-AbstractParseFunction getParser(const std:& parserName) {
+AbstractParseFunction getParser(const std::string& parserName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -41,7 +42,7 @@ AbstractParseFunction getParser(const std:& parserName) {
     }
 }
 
-std::tuple<std:, std:> parseAction(const std::variant<ModelOutput, std:>& modelResponse, std::variant<std:, AbstractParseFunction> parseFunction = "thought_action", std::optional<std::vector<Command>> commands, bool strict = false) {
+std::tuple<std::string, std::string> parseAction(const std::variant<ModelOutput, std::string>& modelResponse, std::variant<std::string, AbstractParseFunction> parseFunction = "thought_action", std::optional<std::vector<Command>> commands, bool strict = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     auto parser: AbstractParseFunction;
@@ -56,7 +57,7 @@ std::tuple<std:, std:> parseAction(const std::variant<ModelOutput, std:>& modelR
 
 }
 
-AbstractParseFunction createParser(const std:& type) {
+AbstractParseFunction createParser(const std::string& type) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return getParser(type);

@@ -10,7 +10,7 @@
 
 namespace elizaos {
 
-std::future<std::vector<ScannedToken>> scanEvmTokens(const std:& address, Chain chain, auto forceRefresh) {
+std::future<std::vector<ScannedToken>> scanEvmTokens(const std::string& address, Chain chain, auto forceRefresh) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -27,12 +27,12 @@ std::future<std::vector<ScannedToken>> scanEvmTokens(const std:& address, Chain 
                 }
 
                 interface EvmToken {
-                    contractAddress: std:;
-                    symbol: std:;
-                    name: std:;
+                    contractAddress: std::string;
+                    symbol: std::string;
+                    name: std::string;
                     decimals;
-                    balance: std:;
-                    logoUrl?: std:;
+                    balance: std::string;
+                    logoUrl?: std::string;
                     priceUsd?;
                     balanceUsd?;
                 }
@@ -62,7 +62,7 @@ std::future<std::vector<ScannedToken>> scanEvmTokens(const std:& address, Chain 
     }
 }
 
-std::future<std::vector<ScannedToken>> scanSolanaTokens(const std:& address, auto forceRefresh) {
+std::future<std::vector<ScannedToken>> scanSolanaTokens(const std::string& address, auto forceRefresh) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -80,12 +80,12 @@ std::future<std::vector<ScannedToken>> scanSolanaTokens(const std:& address, aut
             const auto data = response.json();
 
             interface SolanaToken {
-                mint: std:;
+                mint: std::string;
                 amount;
                 decimals;
-                symbol?: std:;
-                name?: std:;
-                logoURI?: std: | nullptr;
+                symbol?: std::string;
+                name?: std::string;
+                logoURI?: std::string | nullptr;
                 priceUsd?;
                 balanceUsd?;
             }
@@ -111,14 +111,14 @@ std::future<std::vector<ScannedToken>> scanSolanaTokens(const std:& address, aut
 
 }
 
-std::future<std::unordered_set<std:>> getRegisteredAddresses(Chain chain) {
+std::future<std::unordered_set<std::string>> getRegisteredAddresses(Chain chain) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
         const auto response = "fetch(" + "/api/tokens?chain=" + chain;
         const auto data = response.json();
 
-        // API returns { success, tokens: Array<{ contractAddress: std: }> }
+        // API returns { success, tokens: Array<{ contractAddress: std::string }> }
         if (!data.success || !data.tokens) {
             return std::make_unique<Set>();
         }
@@ -139,7 +139,7 @@ std::future<std::unordered_set<std:>> getRegisteredAddresses(Chain chain) {
 
 }
 
-std::future<std::vector<ScannedToken>> scanWalletTokens(const std:& address, Chain chain, auto forceRefresh) {
+std::future<std::vector<ScannedToken>> scanWalletTokens(const std::string& address, Chain chain, auto forceRefresh) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -179,10 +179,10 @@ std::future<std::vector<ScannedToken>> scanWalletTokens(const std:& address, Cha
     }
 }
 
-std::future<std::unordered_map<Chain, std::vector<ScannedToken>>> scanWalletMultiChain(std::optional<std:> evmAddress, std::optional<std:> solanaAddress) {
+std::future<std::unordered_map<Chain, std::vector<ScannedToken>>> scanWalletMultiChain(std::optional<std::string> evmAddress, std::optional<std::string> solanaAddress) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const std::unordered_map<std:, std::vector<ScannedToken>> results = {};
+    const std::unordered_map<std::string, std::vector<ScannedToken>> results = {};
 
     const std::vector<std::future<void>> promises = [];
 

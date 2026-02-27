@@ -1,10 +1,11 @@
 #include "webFetch.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std: MaxTokens(const std:& data, double maxTokens = DEFAULT_MAX_FETCH_CHARS) {
+std::string MaxTokens(const std::string& data, double maxTokens = DEFAULT_MAX_FETCH_CHARS) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Character-based truncation to cap response length

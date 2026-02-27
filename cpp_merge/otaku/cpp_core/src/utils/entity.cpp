@@ -1,4 +1,5 @@
 #include "entity.hpp"
+#include <string>
 #include <future>
 #include <optional>
 #include <iostream>
@@ -6,7 +7,7 @@
 
 namespace elizaos {
 
-std::future<EntityWalletResponse> getEntityWallet(IAgentRuntime runtime, Memory message, const std:& actionName, std::optional<HandlerCallback> callback) {
+std::future<EntityWalletResponse> getEntityWallet(IAgentRuntime runtime, Memory message, const std::string& actionName, std::optional<HandlerCallback> callback) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

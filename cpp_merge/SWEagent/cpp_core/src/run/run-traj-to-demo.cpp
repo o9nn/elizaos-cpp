@@ -1,4 +1,5 @@
 #include "run-traj-to-demo.hpp"
+#include <string>
 #include <map>
 #include <unordered_map>
 #include <iostream>
@@ -6,7 +7,7 @@
 
 namespace elizaos {
 
-void saveDemo(const std:& data, const std:& file, const std:& trajPath) {
+void saveDemo(const std::string& data, const std::string& file, const std::string& trajPath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto content = yaml.dump(data, {;
@@ -21,7 +22,7 @@ void saveDemo(const std:& data, const std:& file, const std:& trajPath) {
 
 }
 
-void convertTrajToActionDemo(const std:& trajPath, const std:& outputFile, bool includeUser = false) {
+void convertTrajToActionDemo(const std::string& trajPath, const std::string& outputFile, bool includeUser = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto traj = /* JSON::parse */ fs.readFileSync(trajPath, "utf-8");
@@ -39,12 +40,12 @@ void convertTrajToActionDemo(const std:& trajPath, const std:& outputFile, bool 
 
     const auto filteredHistory = history;
     .filter[&](;
-    (step: Record<std:, unknown>) { return admissibleRoles.has(step.role) &&; };
+    (step: Record<std::string, unknown>) { return admissibleRoles.has(step.role) &&; };
     (!step.agent || step.agent == "main" || step.agent == "primary") &&;
     !step.is_demo,
     );
-    .std::map[&]((step: Record<std:, unknown>) {
-        const std::unordered_map<std:, std:> filtered = {};
+    .std::map[&]((step: Record<std::string, unknown>) {
+        const std::unordered_map<std::string, std::string> filtered = {};
         for (const auto& key : copyFields)
             if (key in step) {
                 filtered[key] = step[key];
@@ -63,7 +64,7 @@ void convertTrajToActionDemo(const std:& trajPath, const std:& outputFile, bool 
 
 }
 
-void trajToDemo(const std:& trajPath, std: outputDir = "./demos", std: suffix = "", bool overwrite = false, bool includeUser = false) {
+void trajToDemo(const std::string& trajPath, std::string outputDir = "./demos", std::string suffix = "", bool overwrite = false, bool includeUser = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

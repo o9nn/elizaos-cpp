@@ -23,27 +23,27 @@ struct MessageServiceMessage {
     UUID channel_id;
     UUID server_id;
     UUID; // UUID of a central user identity author_id;
-    std::optional<std:; // Display name from central user identity> author_display_name;
-    std: content;
+    std::optional<std::string; // Display name from central user identity> author_display_name;
+    std::string content;
     std::optional<unknown> raw_message;
-    std::optional<std:; // original platform message ID> source_id;
-    std::optional<std:> source_type;
+    std::optional<std::string; // original platform message ID> source_id;
+    std::optional<std::string> source_type;
     std::optional<UUID> in_reply_to_message_id;
     double created_at;
     std::optional<MessageMetadata> metadata;
 };
 
-class MessageBusService extends Service {
+class MessageBusService : public Service {
   static serviceType = 'message-bus-service';
   capabilityDescription = 'Manages connection and message synchronization with the message server.';
 
   private boundHandleIncomingMessage: [&](data: unknown) { return void; };
-  private boundHandleServerAgentUpdate: [&](data: std:) { return Promise<void>; };
-  private boundHandleMessageDeleted: [&](data: std:) { return Promise<void>; };
-  private boundHandleChannelCleared: [&](data: std:) { return Promise<void>; };
+  private boundHandleServerAgentUpdate: [&](data: std::string) { return Promise<void>; };
+  private boundHandleMessageDeleted: [&](data: std::string) { return Promise<void>; };
+  private boundHandleChannelCleared: [&](data: std::string) { return Promise<void>; };
   private subscribedServers: Set<UUID> = std::make_unique<Set>();
 
-  constructor(runtime: IAgentRuntime) {
+  /* constructor */ (runtime: IAgentRuntime) {
     super(runtime);
     this.boundHandleIncomingMessage = [&](data: unknown) {
       this.handleIncomingMessage(data).catch[&]((error) {
@@ -102,7 +102,7 @@ class MessageBusService extends Service {
     // but the same agent will always generate the same ID for the same message
 
         // Include message metadata first (which includes session metadata)
-        // System fields should override std: user-provided values
+        // System fields should override std::string user-provided values
 
     // Validate the incoming data structure
 
@@ -167,7 +167,7 @@ class MessageBusService extends Service {
 
       // Validate port range
 
-      // Remove std: potentially dangerous URL components
+      // Remove std::string potentially dangerous URL components
 
 // Minimal plugin definition to register the service
 

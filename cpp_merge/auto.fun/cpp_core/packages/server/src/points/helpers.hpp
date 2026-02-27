@@ -24,9 +24,9 @@ using PointEvent = std::variant<, { type: "wallet_connected" }, { type: "creator
 // helper calc points per event
 double calculatePoints(PointEvent evt);
 
-std::future<void> awardUserPoints(const std:& userAddress, PointEvent event, auto description = "");
+std::future<void> awardUserPoints(const std::string& userAddress, PointEvent event, auto description = "");
 
-std::future<void> awardGraduationPoints(const std:& mint);
+std::future<void> awardGraduationPoints(const std::string& mint);
 
 /* Malibu To do: add this to a cron job to run once a week */
 

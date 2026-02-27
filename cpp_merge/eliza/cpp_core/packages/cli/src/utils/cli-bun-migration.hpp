@@ -37,17 +37,17 @@ std::future<void> removeNpmInstallation();
 /**
  * Install the CLI using bun globally
  */
-std::future<void> installCliWithBun(const std:& version);
+std::future<void> installCliWithBun(const std::string& version);
 
 /**
  * Verify the CLI installation works and returns expected version
  */
-std::future<bool> verifyCliInstallation(const std:& expectedVersion);
+std::future<bool> verifyCliInstallation(const std::string& expectedVersion);
 
 /**
  * Atomic migration: CLI from npm to bun installation
  * Installs bun version first, only removes npm if successful
  */
-std::future<void> migrateCliToBun(const std:& targetVersion);
+std::future<void> migrateCliToBun(const std::string& targetVersion);
 
 } // namespace elizaos

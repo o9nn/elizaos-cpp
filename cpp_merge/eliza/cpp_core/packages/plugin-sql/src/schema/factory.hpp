@@ -30,7 +30,7 @@ using IntegerColumn = ReturnType<typeof pgInteger>;
  * Since Pglite is PostgreSQL-compatible, we use the same constructs for both
  */
 class SchemaFactory {
-  constructor(public dbType: DatabaseType) {}
+  /* constructor */ (public dbType: DatabaseType) {}
 
     // Both postgres and pglite use pgTable
 

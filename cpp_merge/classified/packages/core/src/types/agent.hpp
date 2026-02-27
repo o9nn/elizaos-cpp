@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_CORE_SRC_TYPES_AGENT_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_CORE_SRC_TYPES_AGENT_H
 #include "core.hpp"
+#include <string>
 #include "./knowledge.h"
 #include "./primitives.h"
 #include "./state.h"
@@ -55,7 +56,7 @@ public:
 };
 
 enum struct AgentStatus {
-    ACTIVE = std:("active"), INACTIVE = std:("inactive")
+    ACTIVE = std::string("active"), INACTIVE = std::string("inactive")
 };
 class Agent : public Character, public std::enable_shared_from_this<Agent> {
 public:

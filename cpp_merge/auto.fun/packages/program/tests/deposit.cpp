@@ -1,8 +1,9 @@
 #include "deposit.hpp"
+#include <string>
 
 void Main(void)
 {
-    describe(std:("raydium_vault"), [=]() mutable
+    describe(std::string("raydium_vault"), [=]() mutable
     {
         auto provider = anchor->AnchorProvider->env();
         anchor->setProvider(provider);
@@ -10,7 +11,7 @@ void Main(void)
         auto nodeWallet = as<std::shared_ptr<NodeWallet>>(provider->wallet);
         shared signerWallet = anchor->web3->Keypair->fromSecretKey(nodeWallet->payer->secretKey);
         shared program = as<std::shared_ptr<Program<std::shared_ptr<RaydiumVault>>>>(anchor->workspace->RaydiumVault);
-        it(std:("Deposit Position"), [=]() mutable
+        it(std::string("Deposit Position"), [=]() mutable
         {
             auto isDev = isDevnet(connection);
             auto position_nft = getNftAddress(isDev);
@@ -20,15 +21,15 @@ void Main(void)
             auto [nft_token_faucet] = anchor->web3->PublicKey->findProgramAddressSync(array<std::shared_ptr<Buffer>>{ Buffer::from(nftFaucetSeed), position_nft["toBuffer"]() }, program->programId);
             auto claimer_address = signerWallet->publicKey;
             std::async([=]() { program->rpc->deposit(claimer_address, object{
-                object::pair{std:("accounts"), object{
-                    object::pair{std:("authority"), signerWallet->publicKey}, 
-                    object::pair{std:("vaultConfig"), vault_config}, 
-                    object::pair{std:("userPosition"), user_position}, 
-                    object::pair{std:("positionNft"), position_nft}, 
-                    object::pair{std:("fromAccount"), from_account}, 
-                    object::pair{std:("nftTokenFaucet"), nft_token_faucet}, 
-                    object::pair{std:("tokenProgram"), spl->TOKEN_PROGRAM_ID}, 
-                    object::pair{std:("systemProgram"), anchor->web3->SystemProgram->programId}
+                object::pair{std::string("accounts"), object{
+                    object::pair{std::string("authority"), signerWallet->publicKey}, 
+                    object::pair{std::string("vaultConfig"), vault_config}, 
+                    object::pair{std::string("userPosition"), user_position}, 
+                    object::pair{std::string("positionNft"), position_nft}, 
+                    object::pair{std::string("fromAccount"), from_account}, 
+                    object::pair{std::string("nftTokenFaucet"), nft_token_faucet}, 
+                    object::pair{std::string("tokenProgram"), spl->TOKEN_PROGRAM_ID}, 
+                    object::pair{std::string("systemProgram"), anchor->web3->SystemProgram->programId}
                 }}
             }); });
         }

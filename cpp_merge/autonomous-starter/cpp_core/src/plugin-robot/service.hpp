@@ -17,7 +17,7 @@ namespace elizaos {
 
 // @ts-ignore - Mocked module, will be replaced by actual implementation
 
-class RobotService extends Service {
+class RobotService : public Service {
   static serviceType: ServiceTypeName = RobotServiceType.ROBOT;
   capabilityDescription =
     "Controls the screen and provides recent screen context with intelligent change detection and local OCR.";
@@ -25,7 +25,8 @@ class RobotService extends Service {
   private context: ScreenContext | null = null;
   private previousScreenshot: Buffer | null = null;
   private descriptionHistory: ScreenDescription[] = [];
-  private tesseractWorker: std: = null;
+private:
+    std::string tesseractWorker = null;
   private isProcessing = false;
   private processingQueue: Promise<void> = Promise.resolve();
 

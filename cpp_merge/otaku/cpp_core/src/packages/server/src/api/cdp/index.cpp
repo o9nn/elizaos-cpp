@@ -1,4 +1,5 @@
 #include "index.hpp"
+#include <string>
 #include <optional>
 #include <unordered_map>
 #include <iostream>
@@ -22,7 +23,7 @@ express::Router cdpRouter(AgentServer serverInstance) {
         /**
         * Helper: Get wallet address from entity metadata for GET requests
         */
-        std::async std::function getWalletAddressFromEntity(userId: std:): Promise<std: | nullptr> {
+        std::async std::function getWalletAddressFromEntity(userId: std::string): Promise<std::string | nullptr> {
             if (!db) {
                 std::cout << '[CDP API] Database not available << cannot fetch entity metadata' << std::endl;
                 return nullptr;
@@ -98,7 +99,7 @@ express::Router cdpRouter(AgentServer serverInstance) {
                             const auto chain = req.query.chain | std::nullopt;
 
                             // Validate chain if provided
-                            if (chain && !MAINNET_NETWORKS.count(chain as std:) > 0) {
+                            if (chain && !MAINNET_NETWORKS.count(chain as std::string) > 0) {
                                 return "sendError(res, 400, "INVALID_CHAIN", " + "Invalid or unsupported chain: " + chain;
                             }
 
@@ -138,7 +139,7 @@ express::Router cdpRouter(AgentServer serverInstance) {
                                     const auto { chain } = req.body;
 
                                     // Validate chain if provided
-                                    if (chain && !MAINNET_NETWORKS.count(chain as std:) > 0) {
+                                    if (chain && !MAINNET_NETWORKS.count(chain as std::string) > 0) {
                                         return "sendError(res, 400, "INVALID_CHAIN", " + "Invalid or unsupported chain: " + chain;
                                     }
 
@@ -179,7 +180,7 @@ express::Router cdpRouter(AgentServer serverInstance) {
                                             const auto chain = req.query.chain | std::nullopt;
 
                                             // Validate chain if provided
-                                            if (chain && !MAINNET_NETWORKS.count(chain as std:) > 0) {
+                                            if (chain && !MAINNET_NETWORKS.count(chain as std::string) > 0) {
                                                 return "sendError(res, 400, "INVALID_CHAIN", " + "Invalid or unsupported chain: " + chain;
                                             }
 
@@ -219,7 +220,7 @@ express::Router cdpRouter(AgentServer serverInstance) {
                                                     const auto { chain } = req.body;
 
                                                     // Validate chain if provided
-                                                    if (chain && !MAINNET_NETWORKS.count(chain as std:) > 0) {
+                                                    if (chain && !MAINNET_NETWORKS.count(chain as std::string) > 0) {
                                                         return "sendError(res, 400, "INVALID_CHAIN", " + "Invalid or unsupported chain: " + chain;
                                                     }
 
@@ -358,7 +359,7 @@ express::Router cdpRouter(AgentServer serverInstance) {
                                                                                     /**
                                                                                     * Wrapped token addresses - matches action handler exactly
                                                                                     */
-                                                                                    const std::unordered_map<std:, std:> WETH_ADDRESSES = {;
+                                                                                    const std::unordered_map<std::string, std::string> WETH_ADDRESSES = {;
                                                                                         "base": "0x4200000000000000000000000000000000000006",
                                                                                         "base-sepolia": "0x4200000000000000000000000000000000000006",
                                                                                         "ethereum": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
@@ -374,10 +375,9 @@ express::Router cdpRouter(AgentServer serverInstance) {
                                                                                         * Uses the same logic as cdp-wallet-swap.ts action handler
                                                                                         */
                                                                                         std::async std::function resolveTokenToAddress(;
-                                                                                        token: std:,
-                                                                                        network: std:
-                                                                                        "): Promise<" + "0x" + std:
-                                                                                            logger.debug("[CDP API] Resolving token: " + std::to_string(token) + " on network: " + std::to_string(network) + "");
+                                                                                        token: std::string,
+                                                                                        network: std::string
+                                                                                        "): Promise<" + "0x" + std::string logger.debug("[CDP API] Resolving token: " + std::to_string(token) + " on network: " + std::to_string(network) + "");
                                                                                             const auto trimmedToken = token;
 
                                                                                             // For native ETH - CDP uses special native token address
@@ -386,10 +386,10 @@ express::Router cdpRouter(AgentServer serverInstance) {
                                                                                                 if (network == "polygon") {
                                                                                                     const auto wethAddress = WETH_ADDRESSES[network];
                                                                                                     std::cout << "[CDP API] Using WETH contract address for ETH on Polygon: " + wethAddress << std::endl;
-                                                                                                    return "wethAddress as " + "0x" + std:;
+                                                                                                    return "wethAddress as " + "0x" + std::string;
                                                                                                 }
                                                                                                 std::cout << "[CDP API] Using native token address for ETH: " + NATIVE_TOKEN_ADDRESS << std::endl;
-                                                                                                return "NATIVE_TOKEN_ADDRESS as " + "0x" + std:;
+                                                                                                return "NATIVE_TOKEN_ADDRESS as " + "0x" + std::string;
                                                                                             }
 
                                                                                             // For explicit WETH - use actual WETH contract address
@@ -397,7 +397,7 @@ express::Router cdpRouter(AgentServer serverInstance) {
                                                                                                 const auto wethAddress = WETH_ADDRESSES[network];
                                                                                                 if (wethAddress) {
                                                                                                     std::cout << "[CDP API] Using WETH contract address for " + network + ": " + wethAddress << std::endl;
-                                                                                                    return "wethAddress as " + "0x" + std:;
+                                                                                                    return "wethAddress as " + "0x" + std::string;
                                                                                                 }
                                                                                                 std::cout << "[CDP API] No WETH address configured for network " + network << std::endl;
                                                                                             }
@@ -407,13 +407,13 @@ express::Router cdpRouter(AgentServer serverInstance) {
                                                                                             // POL on Ethereum would fall through to token search resolution (ERC20 contract address)
                                                                                             if ((trimmedToken.toLowerCase() == "matic" || trimmedToken.toLowerCase() == "pol") && network == "polygon") {
                                                                                                 std::cout << "[CDP API] Using native token address for " + std::to_string(trimmedToken.toUpperCase()) + ": " + NATIVE_TOKEN_ADDRESS << std::endl;
-                                                                                                return "NATIVE_TOKEN_ADDRESS as " + "0x" + std:;
+                                                                                                return "NATIVE_TOKEN_ADDRESS as " + "0x" + std::string;
                                                                                             }
 
                                                                                             // For explicit WMATIC on Polygon - use actual WMATIC contract address
                                                                                             if (trimmedToken.toLowerCase() == "wmatic" && network == "polygon") {
                                                                                                 std::cout << "[CDP API] Using WMATIC contract address for Polygon: " + WMATIC_ADDRESS << std::endl;
-                                                                                                return "WMATIC_ADDRESS as " + "0x" + std:;
+                                                                                                return "WMATIC_ADDRESS as " + "0x" + std::string;
                                                                                             }
 
                                                                                             // If it looks like an address, validate it via searchTokens (simpler than CoinGecko validation for API route)
@@ -427,19 +427,19 @@ express::Router cdpRouter(AgentServer serverInstance) {
 
                                                                                                         // Check if address exists in search results
                                                                                                         const auto foundToken = searchResult.tokens.find(;
-                                                                                                        [&](t: std:) { return t.contractAddress.toLowerCase() == trimmedToken.toLowerCase() && t.chain == network; }
+                                                                                                        [&](t: std::string) { return t.contractAddress.toLowerCase() == trimmedToken.toLowerCase() && t.chain == network; }
                                                                                                         );
 
                                                                                                         if (foundToken) {
                                                                                                             std::cout << "[CDP API] Validated address " + token + " exists: " + foundToken.symbol + " (" + foundToken.name + ")" << std::endl;
-                                                                                                            return "trimmedToken as " + "0x" + std:;
+                                                                                                            return "trimmedToken as " + "0x" + std::string;
                                                                                                         }
                                                                                                         std::cout << "[CDP API] Address " + token + " not found via searchTokens for network " + network + " - may be fake/invalid" << std::endl;
                                                                                                         } catch (error) {
                                                                                                             std::cout << "[CDP API] Failed to validate address " + token + ":" << true /* instanceof check */ ? error.message : std::to_string(error) << std::endl;
                                                                                                         }
                                                                                                         // Still return the address even if validation fails (let transaction manager handle it)
-                                                                                                        return "trimmedToken as " + "0x" + std:;
+                                                                                                        return "trimmedToken as " + "0x" + std::string;
                                                                                                     }
 
                                                                                                     // Try to resolve symbol to address via searchTokens
@@ -452,12 +452,12 @@ express::Router cdpRouter(AgentServer serverInstance) {
 
                                                                                                             // Find exact symbol match
                                                                                                             const auto matchedToken = searchResult.tokens.find(;
-                                                                                                            [&](t: std:) { return t.symbol.toLowerCase() == trimmedToken.toLowerCase() && t.chain == network && t.contractAddress; }
+                                                                                                            [&](t: std::string) { return t.symbol.toLowerCase() == trimmedToken.toLowerCase() && t.chain == network && t.contractAddress; }
                                                                                                             );
 
                                                                                                             if (matchedToken.contractAddress) {
                                                                                                                 std::cout << "[CDP API] Resolved " + token + " to " + matchedToken.contractAddress + " via searchTokens" << std::endl;
-                                                                                                                return "matchedToken.contractAddress.toLowerCase() as " + "0x" + std:;
+                                                                                                                return "matchedToken.contractAddress.toLowerCase() as " + "0x" + std::string;
                                                                                                             }
                                                                                                             } catch (error) {
                                                                                                                 std::cout << "[CDP API] Failed to resolve token symbol " + token + ":" << true /* instanceof check */ ? error.message : std::to_string(error) << std::endl;
@@ -542,7 +542,7 @@ express::Router cdpRouter(AgentServer serverInstance) {
                                                                                                                             const auto userId = req.userId!;
                                                                                                                             const auto { network, fromToken, toToken, fromAmount, slippageBps } = req.body;
 
-                                                                                                                            if (!network || !fromToken || !toToken || !fromAmount || slippageBps == undefined) {
+                                                                                                                            if (!network || !fromToken || !toToken || !fromAmount || slippageBps == std::nullopt) {
                                                                                                                                 return sendError(res, 400, "INVALID_REQUEST", "Missing required fields: network, fromToken, toToken, fromAmount, slippageBps");
                                                                                                                             }
 

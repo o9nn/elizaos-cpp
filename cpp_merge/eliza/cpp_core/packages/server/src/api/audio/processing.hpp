@@ -25,7 +25,7 @@ namespace elizaos {
 /**
  * Securely validates a file path to prevent path traversal attacks
  */
-std: validateSecureFilePath(const std:& filePath);
+std::string validateSecureFilePath(const std::string& filePath);
 
 /**
  * Audio processing functionality - upload and transcription

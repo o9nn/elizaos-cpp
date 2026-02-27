@@ -7,7 +7,7 @@
 
 namespace elizaos {
 
-void searchDir(const std:& searchTerm, std: dir = "./") {
+void searchDir(const std::string& searchTerm, std::string dir = "./") {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -23,12 +23,12 @@ void searchDir(const std:& searchTerm, std: dir = "./") {
             // Use grep to search files (excluding hidden files)
             const auto grepCmd = "find \"" + absDir + "\" -type f ! -path "*/.*" -exec grep -nIH -- \"" + searchTerm + "\" {} + 2>/dev/nullptr | cut -d: -f1 | sort | uniq -c";
 
-            auto matches: std:;
+            auto matches: std::string;
             try {
                 matches = execSync(grepCmd, { encoding: "utf-8", stdio: ["pipe", "pipe", "ignore"] });
                 } catch (error: unknown) {
                     // grep returns non-zero when no matches found
-                    const auto execError = error as { status?; stdout?: std: };
+                    const auto execError = error as { status?; stdout?: std::string };
                     if (execError.status == 1 || !execError.stdout) {
                         std::cout << "No matches found for \"" + searchTerm + "\" in " + absDir << std::endl;
                         return;

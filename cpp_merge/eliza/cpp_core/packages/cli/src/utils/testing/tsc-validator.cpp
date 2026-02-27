@@ -1,11 +1,12 @@
 #include "tsc-validator.hpp"
+#include <string>
 #include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<TypeCheckResult> runTypeCheck(const std:& projectPath, bool strict = true) {
+std::future<TypeCheckResult> runTypeCheck(const std::string& projectPath, bool strict = true) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto tsconfigPath = path.join(projectPath, "tsconfig.json");
@@ -36,7 +37,7 @@ std::future<TypeCheckResult> runTypeCheck(const std:& projectPath, bool strict =
                     errors: hasErrors ? [stderr || stdout] : [],
                     warnings: (std::find(stderr.begin(), stderr.end(), "warning") != stderr.end()) ? [stderr] : [],
                     };
-                    } catch (error: std:) {
+                    } catch (error: std::string) {
                         std::cerr << "TypeScript validation failed:" << error << std::endl;
                         return {
                             success: false,

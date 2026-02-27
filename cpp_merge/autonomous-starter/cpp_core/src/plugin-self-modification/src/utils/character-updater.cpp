@@ -1,4 +1,5 @@
 #include "character-updater.hpp"
+#include <string>
 #include <vector>
 #include <iostream>
 #include <stdexcept>
@@ -10,7 +11,7 @@ Character applyOperationsToCharacter(Character character, const std::vector<Modi
     try {
 
         // Deep clone to avoid mutating original
-        const auto updatedCharacter = /* JSON::parse */ /* JSON.stringify */ std:(character);
+        const auto updatedCharacter = /* JSON::parse */ /* JSON.stringify */ std::string(character);
 
         for (const auto& op : operations)
             try {
@@ -40,7 +41,7 @@ Character applyOperationsToCharacter(Character character, const std::vector<Modi
     }
 }
 
-void addValue(const std:& obj, const std:& path, const std:& value) {
+void addValue(const std::string& obj, const std::string& path, const std::string& value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Convert JSONPath to property path
@@ -91,7 +92,7 @@ void addValue(const std:& obj, const std:& path, const std:& value) {
 
 }
 
-void modifyValue(const std:& obj, const std:& path, const std:& value) {
+void modifyValue(const std::string& obj, const std::string& path, const std::string& value) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -102,7 +103,7 @@ void modifyValue(const std:& obj, const std:& path, const std:& value) {
             path: normalizedPath,
             json: obj,
             callback: std::function (val, type, payload) {
-                if (payload && payload.parent && payload.parentProperty != undefined) {
+                if (payload && payload.parent && payload.parentProperty != std::nullopt) {
                     payload.parent[payload.parentProperty] = value;
                     found = true;
                 }
@@ -119,7 +120,7 @@ void modifyValue(const std:& obj, const std:& path, const std:& value) {
     }
 }
 
-void deleteValue(const std:& obj, const std:& path) {
+void deleteValue(const std::string& obj, const std::string& path) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto normalizedPath = "path.substr(0, \"$\") ? path : " + "$." + path;
@@ -145,7 +146,7 @@ void deleteValue(const std:& obj, const std:& path) {
 
 }
 
-bool validateCharacterStructure(const std:& character) {
+bool validateCharacterStructure(const std::string& character) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Basic validation to ensure required fields exist
@@ -164,7 +165,7 @@ bool validateCharacterStructure(const std:& character) {
     ];
     for (const auto& field : arrayFields)
         if (character[field] && !Array.isArray(character[field])) {
-            // Special case: bio can be std: or array
+            // Special case: bio can be std::string or array
             if (field == "bio" && typeof character[field] == "string") {
                 continue;
             }

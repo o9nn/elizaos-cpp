@@ -1,4 +1,5 @@
 #include "matchPatterns.hpp"
+#include <string>
 
 array<std::shared_ptr<TagPattern>> matchPatterns(array<std::shared_ptr<TagPattern>> patterns, MatchContent content)
 {
@@ -29,7 +30,7 @@ array<std::shared_ptr<TagPattern>> matchPatterns(array<std::shared_ptr<TagPatter
         }
         catch (const any& error)
         {
-            console->error(std:("Error executing negative matcher for pattern "") + pattern->pattern + std:("" (type: ") + pattern->patternType + std:(", target: ") + pattern->target + std:("):"), error);
+            console->error(std::string("Error executing negative matcher for pattern "") + pattern->pattern + std::string("" (type: ") + pattern->patternType + std::string(", target: ") + pattern->target + std::string("):"), error);
         }
     }
     auto matchingPatterns = array<std::shared_ptr<TagPattern>>();
@@ -49,7 +50,7 @@ array<std::shared_ptr<TagPattern>> matchPatterns(array<std::shared_ptr<TagPatter
         }
         catch (const any& error)
         {
-            console->error(std:("Error executing matcher for pattern "") + pattern->pattern + std:("" (type: ") + pattern->patternType + std:(", target: ") + pattern->target + std:("):"), error);
+            console->error(std::string("Error executing matcher for pattern "") + pattern->pattern + std::string("" (type: ") + pattern->patternType + std::string(", target: ") + pattern->target + std::string("):"), error);
         }
     }
     return matchingPatterns;
@@ -80,7 +81,7 @@ boolean matchAnyPattern(array<std::shared_ptr<TagPattern>> patterns, MatchConten
         }
         catch (const any& error)
         {
-            console->error(std:("Error executing matcher for pattern "") + pattern->pattern + std:("" during matchAnyPattern:"), error);
+            console->error(std::string("Error executing matcher for pattern "") + pattern->pattern + std::string("" during matchAnyPattern:"), error);
         }
     }
     return false;

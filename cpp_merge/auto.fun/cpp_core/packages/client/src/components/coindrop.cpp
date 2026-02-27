@@ -1,4 +1,5 @@
 #include "coindrop.hpp"
+#include <string>
 #include <vector>
 #include <iostream>
 #include <stdexcept>
@@ -16,13 +17,13 @@ void createCoin() {
 
     // Set random position across the window-sized container
     // Keep it within the box bounds with some padding
-    const auto x = (Math.random() - 0.5) * boxWidthRef.current * 0.9;
-    const auto y = 2 + Math.random() * 2; // Start high up in the container;
-    const auto z = (Math.random() - 0.5) * boxDepthRef.current * 0.9;
+    const auto x = (((double)rand() / RAND_MAX) - 0.5) * boxWidthRef.current * 0.9;
+    const auto y = 2 + ((double)rand() / RAND_MAX) * 2; // Start high up in the container;
+    const auto z = (((double)rand() / RAND_MAX) - 0.5) * boxDepthRef.current * 0.9;
 
     // Set initial rotation
-    const auto rotX = Math.random() * Math.PI;
-    const auto rotZ = Math.random() * Math.PI;
+    const auto rotX = ((double)rand() / RAND_MAX) * Math.PI;
+    const auto rotZ = ((double)rand() / RAND_MAX) * Math.PI;
 
     // Update the instance matrix
     dummyObject.position.std::set(x, y, z);
@@ -58,16 +59,16 @@ void createCoin() {
 
         // Add initial velocity for more natural falling
         coinBody.velocity.std::set(;
-        (Math.random() - 0.5) * 8, // More horizontal movement;
-        -20 - Math.random() * 30, // Much stronger downward velocity;
-        (Math.random() - 0.5) * 8, // More depth movement;
+        (((double)rand() / RAND_MAX) - 0.5) * 8, // More horizontal movement;
+        -20 - ((double)rand() / RAND_MAX) * 30, // Much stronger downward velocity;
+        (((double)rand() / RAND_MAX) - 0.5) * 8, // More depth movement;
         );
 
         // Add initial angular velocity for more dramatic spinning
         coinBody.angularVelocity.std::set(;
-        (Math.random() - 0.5) * 25, // Much stronger spin;
-        (Math.random() - 0.5) * 25, // Much stronger spin;
-        (Math.random() - 0.5) * 25, // Much stronger spin;
+        (((double)rand() / RAND_MAX) - 0.5) * 25, // Much stronger spin;
+        (((double)rand() / RAND_MAX) - 0.5) * 25, // Much stronger spin;
+        (((double)rand() / RAND_MAX) - 0.5) * 25, // Much stronger spin;
         );
 
         // Store the instance index with the body for updates
@@ -105,10 +106,10 @@ void handleCollisions(CANNON::ContactEvent event) {
         // Get impact velocity (how hard the collision was)
         const auto impactVelocity = event.contact.getImpactVelocityAlongNormal();
 
-        // Add larger random spin on std: collision, like in the dice code
-        const auto randomX = (Math.random() - 0.5) * 15; // Increased from 5*intensity;
-        const auto randomY = (Math.random() - 0.5) * 15;
-        const auto randomZ = (Math.random() - 0.5) * 15;
+        // Add larger random spin on std::string collision, like in the dice code
+        const auto randomX = (((double)rand() / RAND_MAX) - 0.5) * 15; // Increased from 5*intensity;
+        const auto randomY = (((double)rand() / RAND_MAX) - 0.5) * 15;
+        const auto randomZ = (((double)rand() / RAND_MAX) - 0.5) * 15;
 
         coinBody.angularVelocity.x += randomX;
         coinBody.angularVelocity.y += randomY;
@@ -118,11 +119,11 @@ void handleCollisions(CANNON::ContactEvent event) {
         // This matches the dice behavior which adds upward velocity
         if (coinBody.velocity.y < 0.5 && impactVelocity > 0.5) {
             // Add a small upward bounce for better movement
-            coinBody.velocity.y += Math.random() * 3;
+            coinBody.velocity.y += ((double)rand() / RAND_MAX) * 3;
 
             // Also add a small random horizontal movement for more interesting collisions
-            coinBody.velocity.x += (Math.random() - 0.5) * 2;
-            coinBody.velocity.z += (Math.random() - 0.5) * 2;
+            coinBody.velocity.x += (((double)rand() / RAND_MAX) - 0.5) * 2;
+            coinBody.velocity.z += (((double)rand() / RAND_MAX) - 0.5) * 2;
         }
 
         // For coin-to-coin collisions, make them more energetic
@@ -136,7 +137,7 @@ void handleCollisions(CANNON::ContactEvent event) {
             otherBody.velocity.x += impulseDir.x;
             otherBody.velocity.z += impulseDir.z;
             // Add a bit of upward velocity for coin-to-coin collisions
-            otherBody.velocity.y += Math.abs(impulseDir.y) + Math.random() * 1.5;
+            otherBody.velocity.y += Math.abs(impulseDir.y) + ((double)rand() / RAND_MAX) * 1.5;
         }
         } catch (error) {
             std::cerr << "Error in collision handler:" << error << std::endl;

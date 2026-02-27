@@ -19,6 +19,6 @@ any resolveModelToPlugin(string modelName);
 
 std::shared_ptr<Promise<void>> installModelPlugin(string modelName, string targetDir, string purpose = string_empty);
 
-std::shared_ptr<Promise<void>> setupProjectEnvironment(string targetDir, string database, string aiModel, string embeddingModel = undefined, boolean isNonInteractive = false);
+std::shared_ptr<Promise<void>> setupProjectEnvironment(string targetDir, string database, string aiModel, string embeddingModel = std::nullopt, boolean isNonInteractive = false);
 
 #endif

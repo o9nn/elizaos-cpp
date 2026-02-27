@@ -22,16 +22,16 @@ namespace elizaos {
 /**
  * Validate plugin requirements
  */
-std::future<void> validatePluginRequirements(const std:& cwd, PackageJson packageJson);
+std::future<void> validatePluginRequirements(const std::string& cwd, PackageJson packageJson);
 
 /**
  * Check if user is a maintainer for the package
  */
-bool isMaintainer(PackageJson packageJson, const std:& username);
+bool isMaintainer(PackageJson packageJson, const std::string& username);
 
 /**
  * Display appropriate registry publication messaging based on options and user status
  */
-void displayRegistryPublicationMessage(std::optional<std:> opts, bool userIsMaintainer, std::optional<std:> registryPrUrl);
+void displayRegistryPublicationMessage(std::optional<std::string> opts, bool userIsMaintainer, std::optional<std::string> registryPrUrl);
 
 } // namespace elizaos

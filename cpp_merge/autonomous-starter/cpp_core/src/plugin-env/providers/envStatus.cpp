@@ -1,10 +1,11 @@
 #include "envStatus.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std: formatEnvVarStatus(EnvVarConfig config, bool showValues = false) {
+std::string formatEnvVarStatus(EnvVarConfig config, bool showValues = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto statusIcon = {;
@@ -48,7 +49,7 @@ std: formatEnvVarStatus(EnvVarConfig config, bool showValues = false) {
 
 }
 
-std: generateEnvStatusMessage(EnvVarMetadata envVars, bool showValues = false) {
+std::string generateEnvStatusMessage(EnvVarMetadata envVars, bool showValues = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto plugins = Object.keys(envVars);

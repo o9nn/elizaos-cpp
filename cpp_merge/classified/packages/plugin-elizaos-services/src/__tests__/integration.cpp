@@ -1,4 +1,5 @@
 #include "integration.test.h"
+#include <string>
 
 void Main(void)
 {
@@ -11,14 +12,14 @@ void Main(void)
     {
     }
     );
-    describe(std:("Integration: ElizaOS Models with ElizaOSService"), [=]() mutable
+    describe(std::string("Integration: ElizaOS Models with ElizaOSService"), [=]() mutable
     {
         shared<std::shared_ptr<MockRuntime>> mockRuntime;
         beforeEach([=]() mutable
         {
             shared mockService = object{
-                object::pair{std:("capabilityDescription"), std:("ElizaOS hosted AI inference and storage services with multi-provider support")}, 
-                object::pair{std:("stop"), [=]() mutable
+                object::pair{std::string("capabilityDescription"), std::string("ElizaOS hosted AI inference and storage services with multi-provider support")}, 
+                object::pair{std::string("stop"), [=]() mutable
                 {
                     return Promise->resolve();
                 }
@@ -26,60 +27,60 @@ void Main(void)
             };
             auto getServiceImpl = [=](auto serviceType) mutable
             {
-                if (serviceType == std:("elizaos-services")) {
+                if (serviceType == std::string("elizaos-services")) {
                     return mockService;
                 }
                 return nullptr;
             };
             mockRuntime = createMockRuntime(object{
-                object::pair{std:("getService"), mock()->mockImplementation(getServiceImpl)}
+                object::pair{std::string("getService"), mock()->mockImplementation(getServiceImpl)}
             });
         }
         );
-        it(std:("should handle TEXT_SMALL model with ElizaOSService available"), [=]() mutable
+        it(std::string("should handle TEXT_SMALL model with ElizaOSService available"), [=]() mutable
         {
             auto textSmallModel = elizaOSServicesPlugin->models->TEXT_SMALL;
             expect(textSmallModel)->toBeDefined();
             try
             {
                 std::async([=]() { textSmallModel(as<std::shared_ptr<IAgentRuntime>>(as<any>(mockRuntime)), object{
-                    object::pair{std:("prompt"), std:("test prompt")}, 
-                    object::pair{std:("maxTokens"), 10}, 
-                    object::pair{std:("temperature"), 0.5}
+                    object::pair{std::string("prompt"), std::string("test prompt")}, 
+                    object::pair{std::string("maxTokens"), 10}, 
+                    object::pair{std::string("temperature"), 0.5}
                 }); });
             }
             catch (const any& error)
             {
-                expect((as<std::shared_ptr<Error>>(error))->message)->toContain(std:("No API provider available"));
+                expect((as<std::shared_ptr<Error>>(error))->message)->toContain(std::string("No API provider available"));
             }
-            auto service = mockRuntime->getService(std:("elizaos-services"));
+            auto service = mockRuntime->getService(std::string("elizaos-services"));
             expect(service)->toBeDefined();
-            expect(service["capabilityDescription"])->toContain(std:("ElizaOS"));
+            expect(service["capabilityDescription"])->toContain(std::string("ElizaOS"));
         }
         );
     }
     );
-    describe(std:("Integration: Plugin initialization and service registration"), [=]() mutable
+    describe(std::string("Integration: Plugin initialization and service registration"), [=]() mutable
     {
-        it(std:("should initialize the plugin and register the service"), [=]() mutable
+        it(std::string("should initialize the plugin and register the service"), [=]() mutable
         {
             auto mockRuntime = createMockRuntime();
             shared registerServiceCalls = array<any>();
             mockRuntime->registerService = mock()->mockImplementation([=](auto type, auto service) mutable
             {
                 registerServiceCalls->push(object{
-                    object::pair{std:("type"), std:("type")}, 
-                    object::pair{std:("service"), std:("service")}
+                    object::pair{std::string("type"), std::string("type")}, 
+                    object::pair{std::string("service"), std::string("service")}
                 });
             }
             );
             if (elizaOSServicesPlugin->init) {
                 std::async([=]() { elizaOSServicesPlugin->init(object{
-                    object::pair{std:("ELIZAOS_API_KEY"), std:("test-value")}
+                    object::pair{std::string("ELIZAOS_API_KEY"), std::string("test-value")}
                 }, as<std::shared_ptr<IAgentRuntime>>(as<any>(mockRuntime))); });
                 if (elizaOSServicesPlugin->services) {
                     auto ElizaOSServiceClass = const_(elizaOSServicesPlugin->services)[0];
-                    if (in(std:("start"), ElizaOSServiceClass)) {
+                    if (in(std::string("start"), ElizaOSServiceClass)) {
                         auto serviceInstance = std::async([=]() { ElizaOSServiceClass->start(as<std::shared_ptr<IAgentRuntime>>(as<any>(mockRuntime))); });
                         mockRuntime->registerService(ElizaOSServiceClass);
                     }

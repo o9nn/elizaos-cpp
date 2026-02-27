@@ -1,12 +1,13 @@
 #include "schema.test.h"
+#include <string>
 
 void Main(void)
 {
-    describe(std:("Goals Schema Tests"), [=]() mutable
+    describe(std::string("Goals Schema Tests"), [=]() mutable
     {
-        describe(std:("goalsTable"), [=]() mutable
+        describe(std::string("goalsTable"), [=]() mutable
         {
-            it(std:("should have correct columns"), [=]() mutable
+            it(std::string("should have correct columns"), [=]() mutable
             {
                 auto columns = getTableColumns(goalsTable);
                 expect(columns->id)->toBeDefined();
@@ -22,7 +23,7 @@ void Main(void)
                 expect(columns->metadata)->toBeDefined();
             }
             );
-            it(std:("should have correct defaults"), [=]() mutable
+            it(std::string("should have correct defaults"), [=]() mutable
             {
                 auto columns = getTableColumns(goalsTable);
                 expect(columns->isCompleted->default)->toBe(false);
@@ -31,9 +32,9 @@ void Main(void)
             );
         }
         );
-        describe(std:("goalTagsTable"), [=]() mutable
+        describe(std::string("goalTagsTable"), [=]() mutable
         {
-            it(std:("should have correct columns"), [=]() mutable
+            it(std::string("should have correct columns"), [=]() mutable
             {
                 auto columns = getTableColumns(goalTagsTable);
                 expect(columns->id)->toBeDefined();
@@ -42,7 +43,7 @@ void Main(void)
                 expect(columns->createdAt)->toBeDefined();
             }
             );
-            it(std:("should have foreign key reference to goals"), [=]() mutable
+            it(std::string("should have foreign key reference to goals"), [=]() mutable
             {
                 auto columns = getTableColumns(goalTagsTable);
                 auto goalIdColumn = columns->goalId;

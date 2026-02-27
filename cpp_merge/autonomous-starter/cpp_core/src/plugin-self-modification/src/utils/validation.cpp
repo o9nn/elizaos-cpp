@@ -86,7 +86,7 @@ ValidationResult validateCharacterDiff(CharacterDiff diff) {
 
 }
 
-bool validateDataType(const std:& value, const std:& expectedType) {
+bool validateDataType(const std::string& value, const std::string& expectedType) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     switch (expectedType) {

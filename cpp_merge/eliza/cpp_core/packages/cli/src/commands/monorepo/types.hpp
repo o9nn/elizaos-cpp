@@ -18,24 +18,24 @@ namespace elizaos {
  * Options for the monorepo command
  */
 struct MonorepoOptions {
-    std::optional<std:> branch;
-    std::optional<std:> dir;
+    std::optional<std::string> branch;
+    std::optional<std::string> dir;
 };
 
 /**
  * Information about the cloning operation
  */
 struct CloneInfo {
-    std: repo;
-    std: branch;
-    std: destination;
+    std::string repo;
+    std::string branch;
+    std::string destination;
 };
 
 /**
  * Platform-specific installation instructions
  */
 struct PlatformInstructions {
-    std: platform;
+    std::string platform;
     std::vector<std::string> commands;
     std::optional<std::vector<std::string>> alternatives;
 };

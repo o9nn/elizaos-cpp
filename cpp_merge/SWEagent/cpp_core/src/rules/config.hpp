@@ -33,21 +33,21 @@ namespace elizaos {
 /**
  * Helper std::function to rules to Cursor IDE format
  */
-std: exportToCursorFormat(Rule rule);
+std::string exportToCursorFormat(Rule rule);
 
 /**
  * Convert all rules to Cursor IDE format
  */
-std::unordered_map<std:, std:> exportAllRulesToCursor();
+std::unordered_map<std::string, std::string> exportAllRulesToCursor();
 
 /**
  * Get configuration for a specific language
  */
-void getLanguageConfig(const std:& language);
+void getLanguageConfig(const std::string& language);
 
 /**
  * Check if a file should have rules applied based on globs
  */
-bool shouldApplyRules(const std:& filePath, Rule rule);
+bool shouldApplyRules(const std::string& filePath, Rule rule);
 
 } // namespace elizaos

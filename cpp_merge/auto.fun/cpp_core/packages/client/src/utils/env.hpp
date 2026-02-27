@@ -16,7 +16,7 @@ namespace elizaos {
 
 
 
-// Parse admin addresses from comma-separated std: to array
+// Parse admin addresses from comma-separated std::string to array
 
 
 } // namespace elizaos

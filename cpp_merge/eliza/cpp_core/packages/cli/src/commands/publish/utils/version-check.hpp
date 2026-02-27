@@ -21,6 +21,6 @@ namespace elizaos {
 /**
  * Check if the current CLI version is up to date
  */
-std::future<std:> checkCliVersion();
+std::future<std::string> checkCliVersion();
 
 } // namespace elizaos

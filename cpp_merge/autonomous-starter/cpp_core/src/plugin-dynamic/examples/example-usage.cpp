@@ -1,4 +1,5 @@
 #include "example-usage.hpp"
+#include <string>
 #include <future>
 #include <optional>
 #include <iostream>
@@ -58,7 +59,7 @@ std::future<void> createWeatherPlugin(Agent agent) {
 
                                         // Simulate agent conversation
                                         std::cout << "User: Create a weather plugin with the following spec:" << std::endl;
-                                        std::cout << /* JSON.stringify */ std:(weatherPluginSpec, nullptr, 2) << std::endl;
+                                        std::cout << /* JSON.stringify */ std::string(weatherPluginSpec, nullptr, 2) << std::endl;
 
                                         // Agent would process this through the createPlugin action
                                         // const result = agent.processMessage("Create plugin: " + nlohmann::json().dump(weatherPluginSpec));
@@ -176,7 +177,7 @@ void getSocialMediaPluginSpec() {
             description: "Post a message to Twitter/X",
             parameters: {
                 message: "string",
-                mediaUrls: "std:[]",
+                mediaUrls: "std::string[]",
                 },
                 },
                 {
@@ -222,10 +223,10 @@ std::future<void> main() {
         createTodoPlugin(agent);
 
         std::cout << "\n== Database Plugin Specification ==" << std::endl;
-        std::cout << /* JSON.stringify */ std:(getDatabasePluginSpec(), nullptr, 2) << std::endl;
+        std::cout << /* JSON.stringify */ std::string(getDatabasePluginSpec(), nullptr, 2) << std::endl;
 
         std::cout << "\n== Social Media Plugin Specification ==" << std::endl;
-        std::cout << /* JSON.stringify */ std:(getSocialMediaPluginSpec(), nullptr, 2) << std::endl;
+        std::cout << /* JSON.stringify */ std::string(getSocialMediaPluginSpec(), nullptr, 2) << std::endl;
 
 }
 

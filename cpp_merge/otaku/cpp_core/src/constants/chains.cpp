@@ -1,4 +1,5 @@
 #include "chains.hpp"
+#include <string>
 #include <vector>
 #include <optional>
 #include <iostream>
@@ -6,14 +7,14 @@
 
 namespace elizaos {
 
-std::optional<ChainConfig> getChainConfig(const std:& network) {
+std::optional<ChainConfig> getChainConfig(const std::string& network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return CHAIN_CONFIGS[network] || nullptr;
 
 }
 
-std::optional<Chain> getViemChain(const std:& network) {
+std::optional<Chain> getViemChain(const std::string& network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto config = getChainConfig(network);
@@ -21,7 +22,7 @@ std::optional<Chain> getViemChain(const std:& network) {
 
 }
 
-std: getRpcUrl(const std:& network, const std:& alchemyKey) {
+std::string getRpcUrl(const std::string& network, const std::string& alchemyKey) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto config = getChainConfig(network);
@@ -29,7 +30,7 @@ std: getRpcUrl(const std:& network, const std:& alchemyKey) {
 
 }
 
-std: getExplorerUrl(const std:& network) {
+std::string getExplorerUrl(const std::string& network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto config = getChainConfig(network);
@@ -37,7 +38,7 @@ std: getExplorerUrl(const std:& network) {
 
 }
 
-std: getTxExplorerUrl(const std:& network, const std:& txHash) {
+std::string getTxExplorerUrl(const std::string& network, const std::string& txHash) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto explorerUrl = getExplorerUrl(network);
@@ -45,7 +46,7 @@ std: getTxExplorerUrl(const std:& network, const std:& txHash) {
 
 }
 
-std: getAddressExplorerUrl(const std:& network, const std:& address) {
+std::string getAddressExplorerUrl(const std::string& network, const std::string& address) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto explorerUrl = getExplorerUrl(network);
@@ -53,7 +54,7 @@ std: getAddressExplorerUrl(const std:& network, const std:& address) {
 
 }
 
-void getNativeTokenInfo(const std:& network) {
+void getNativeTokenInfo(const std::string& network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto config = getChainConfig(network);
@@ -61,7 +62,7 @@ void getNativeTokenInfo(const std:& network) {
 
 }
 
-std: getCoingeckoPlatform(const std:& network) {
+std::string getCoingeckoPlatform(const std::string& network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto config = getChainConfig(network);
@@ -69,28 +70,28 @@ std: getCoingeckoPlatform(const std:& network) {
 
 }
 
-network is SupportedNetwork isSupportedNetwork(const std:& network) {
+network is SupportedNetwork isSupportedNetwork(const std::string& network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return network in CHAIN_CONFIGS;
 
 }
 
-bool isMainnet(const std:& network) {
+bool isMainnet(const std::string& network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (std::find(MAINNET_NETWORKS.begin(), MAINNET_NETWORKS.end(), network) != MAINNET_NETWORKS.end());
 
 }
 
-bool isTestnet(const std:& network) {
+bool isTestnet(const std::string& network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (std::find(TESTNET_NETWORKS.begin(), TESTNET_NETWORKS.end(), network) != TESTNET_NETWORKS.end());
 
 }
 
-bool isCdpSwapSupported(const std:& network) {
+bool isCdpSwapSupported(const std::string& network) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto config = getChainConfig(network);
@@ -105,7 +106,7 @@ std::vector<SupportedNetwork> getCdpSwapSupportedNetworks() {
 
 }
 
-std: normalizeTokenAddress(const std:& token) {
+std::string normalizeTokenAddress(const std::string& token) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Check if it's already a valid contract address (0x followed by 40 hex chars)

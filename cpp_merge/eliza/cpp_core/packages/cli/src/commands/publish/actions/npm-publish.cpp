@@ -1,11 +1,12 @@
 #include "npm-publish.hpp"
+#include <string>
 #include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<void> publishToNpm(const std:& cwd, PackageJson packageJson, const std:& npmUsername) {
+std::future<void> publishToNpm(const std::string& cwd, PackageJson packageJson, const std::string& npmUsername) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     std::cout << "Publishing user: " + npmUsername << std::endl;
@@ -17,7 +18,7 @@ std::future<void> publishToNpm(const std:& cwd, PackageJson packageJson, const s
 
         // Save updated package.json
         const auto packageJsonPath = path.join(cwd, "package.json");
-        fs.writeFile(packageJsonPath, /* JSON.stringify */ std:(packageJson, nullptr, 2), "utf-8");
+        fs.writeFile(packageJsonPath, /* JSON.stringify */ std::string(packageJson, nullptr, 2), "utf-8");
     }
 
     // Build the package

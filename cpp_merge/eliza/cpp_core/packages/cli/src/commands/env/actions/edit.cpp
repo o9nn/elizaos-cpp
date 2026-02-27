@@ -1,4 +1,5 @@
 #include "edit.hpp"
+#include <string>
 #include <future>
 #include <filesystem>
 #include <map>
@@ -139,7 +140,7 @@ std::future<bool> editEnvVars(EditEnvOptions options, auto fromMainMenu) {
                                         std::exit(0);
                                     }
 
-                                    if (value != undefined) {
+                                    if (value != std::nullopt) {
                                         envVars[selection] = value;
                                         writeEnvFile(localEnvPath, envVars);
                                         std::cout << "✓ Updated " + selection << std::endl;
@@ -171,7 +172,7 @@ std::future<bool> editEnvVars(EditEnvOptions options, auto fromMainMenu) {
 
 }
 
-std::future<void> addNewVariable(const std:& envPath, EnvVars envVars, auto yes) {
+std::future<void> addNewVariable(const std::string& envPath, EnvVars envVars, auto yes) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (yes) {
@@ -203,7 +204,7 @@ std::future<void> addNewVariable(const std:& envPath, EnvVars envVars, auto yes)
                 std::exit(0);
             }
 
-            if (value != undefined) {
+            if (value != std::nullopt) {
                 envVars[key] = value;
                 writeEnvFile(envPath, envVars);
                 std::cout << "✓ Added " + key << std::endl;

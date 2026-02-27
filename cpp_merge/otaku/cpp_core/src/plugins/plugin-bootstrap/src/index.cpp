@@ -1,4 +1,5 @@
 #include "index.hpp"
+#include <string>
 #include <vector>
 #include <future>
 #include <optional>
@@ -52,8 +53,8 @@ std::future<StrategyResult> runMultiStepCore(auto message, auto state, Memory me
 
                     // Retry logic for parsing failures
                     const auto maxParseRetries = parseInt(runtime.getSetting("MULTISTEP_PARSE_RETRIES") || "5");
-                    std: stepResultRaw = "";
-                    std: parsedStep = nullptr;
+                    std::string stepResultRaw = "";
+                    std::string parsedStep = nullptr;
 
                     for (int parseAttempt = 1; parseAttempt <= maxParseRetries; parseAttempt++) {
                         try {
@@ -124,8 +125,8 @@ std::future<StrategyResult> runMultiStepCore(auto message, auto state, Memory me
 
                                         try {
                                             // ensure workingMemory exists on accumulatedState
-                                            if (!accumulatedState.data) accumulatedState.data = {} as std:;
-                                            if (!accumulatedState.data.workingMemory) accumulatedState.data.workingMemory = {} as std:;
+                                            if (!accumulatedState.data) accumulatedState.data = {} as std::string;
+                                            if (!accumulatedState.data.workingMemory) accumulatedState.data.workingMemory = {} as std::string;
 
                                             // Parse and store parameters if provided
                                             auto actionParams = {};
@@ -157,7 +158,7 @@ std::future<StrategyResult> runMultiStepCore(auto message, auto state, Memory me
                                                             };
 
                                                             runtime.logger.info(
-                                                            "[MultiStep] Stored parameters for " + action + ": " + std::to_string(/* JSON.stringify */ std:(actionParams))
+                                                            "[MultiStep] Stored parameters for " + action + ": " + std::to_string(/* JSON.stringify */ std::string(actionParams))
                                                             );
                                                         }
 
@@ -242,8 +243,8 @@ std::future<StrategyResult> runMultiStepCore(auto message, auto state, Memory me
 
                                                                             // Retry logic for summary parsing failures
                                                                             const auto maxSummaryRetries = parseInt(runtime.getSetting("MULTISTEP_SUMMARY_PARSE_RETRIES") || "5");
-                                                                            std: finalOutput = "";
-                                                                            std: summary = nullptr;
+                                                                            std::string finalOutput = "";
+                                                                            std::string summary = nullptr;
 
                                                                             for (int summaryAttempt = 1; summaryAttempt <= maxSummaryRetries; summaryAttempt++) {
                                                                                 try {

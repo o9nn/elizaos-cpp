@@ -1,4 +1,5 @@
 #include "SignInModal.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -23,7 +24,7 @@ void SignInModal() {
         // Local state for auth flow
         const auto [authMethod, setAuthMethod] = useState<AuthMethod>("email");
         const auto [authStep, setAuthStep] = useState<AuthStep>("credentials");
-        const auto [flowId, setFlowId] = useState<std: | nullptr>(nullptr);
+        const auto [flowId, setFlowId] = useState<std::string | nullptr>(nullptr);
 
         // Email auth state
         const auto [email, setEmail] = useState("");
@@ -76,9 +77,9 @@ void SignInModal() {
                             setFlowId(result.flowId);
                             setAuthStep("verification");
                             std::cout << " OTP sent to:" << email << std::endl;
-                            } catch (err: std:) {
+                            } catch (err: std::string) {
                                 std::cerr << " CDP email sign in failed:" << err << std::endl;
-                                std::cerr << "Error details:" << /* JSON.stringify */ std:(err, nullptr, 2) << std::endl;
+                                std::cerr << "Error details:" << /* JSON.stringify */ std::string(err, nullptr, 2) << std::endl;
                                 const auto errorMessage = err.message || err.errorMessage || "Failed to send OTP";
                                 setError(errorMessage);
                                 } finally {
@@ -98,7 +99,7 @@ void SignInModal() {
                                         setFlowId(result.flowId);
                                         setAuthStep("verification");
                                         std::cout << " OTP sent to:" << fullPhoneNumber << std::endl;
-                                        } catch (err: std:) {
+                                        } catch (err: std::string) {
                                             std::cerr << " CDP SMS sign in failed:" << err << std::endl;
                                             const auto errorMessage = err.message || err.errorMessage || "Failed to send SMS OTP";
                                             setError(errorMessage);
@@ -116,7 +117,7 @@ void SignInModal() {
                                                     const auto { user } = emailOtpHook.verifyEmailOTP({ flowId, otp });
                                                     std::cout << " CDP wallet connected via email!" << user.evmAccounts.[0] << std::endl;
                                                     resetForm();
-                                                    } catch (err: std:) {
+                                                    } catch (err: std::string) {
                                                         std::cerr << " CDP email OTP verification failed:" << err << std::endl;
                                                         const auto errorMessage = err.message || err.errorMessage || "Invalid OTP code";
                                                         setError(errorMessage);
@@ -134,7 +135,7 @@ void SignInModal() {
                                                                 const auto { user } = smsOtpHook.verifySmsOTP({ flowId, otp });
                                                                 std::cout << " CDP wallet connected via SMS!" << user.evmAccounts.[0] << std::endl;
                                                                 resetForm();
-                                                                } catch (err: std:) {
+                                                                } catch (err: std::string) {
                                                                     std::cerr << " CDP SMS OTP verification failed:" << err << std::endl;
                                                                     const auto errorMessage = err.message || err.errorMessage || "Invalid OTP code";
                                                                     setError(errorMessage);
@@ -152,7 +153,7 @@ void SignInModal() {
                                                                             oauthHook.signInWithOAuth("google");
                                                                             std::cout << " Redirecting to Google OAuth..." << std::endl;
                                                                             // OAuth will redirect, so we don't need to do anything else
-                                                                            } catch (err: std:) {
+                                                                            } catch (err: std::string) {
                                                                                 std::cerr << " CDP Google OAuth failed:" << err << std::endl;
                                                                                 const auto errorMessage = err.message || err.errorMessage || "Failed to start Google sign-in";
                                                                                 setError(errorMessage);

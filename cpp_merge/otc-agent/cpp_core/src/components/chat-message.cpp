@@ -1,4 +1,5 @@
 #include "chat-message.hpp"
+#include <string>
 #include <map>
 #include <iostream>
 #include <stdexcept>
@@ -56,7 +57,7 @@ void ChatMessage(auto i, auto citations, auto followUpPrompts, auto onFollowUpCl
                             index,
                             }: {
                                 children: React.ReactNode;
-                                index: std: | number;
+                                index: std::string | number;
                                 }) {
                                     const auto citationIndex = Number(index);
                                     const auto citation = citations.find[&]((c, i) { return i == citationIndex); };
@@ -116,15 +117,15 @@ void ChatMessage(auto i, auto citations, auto followUpPrompts, auto onFollowUpCl
                                             messageText =;
                                             typeof safeMessage.content == "string";
                                             ? safeMessage.content;
-                                            : /* JSON.stringify */ std:(safeMessage.content);
+                                            : /* JSON.stringify */ std::string(safeMessage.content);
                                         }
 
-                                        // Clean up std: XML artifacts or special formatting for agent messages
+                                        // Clean up std::string XML artifacts or special formatting for agent messages
                                         const auto cleanMessageText = !isUser;
                                         ? messageText.replace(/<\/?thought>/gi, "").replace(/<\/?actions>/gi, "").replace(/<\/?providers>/gi, "").replace(/<\/?response>/gi, "").replace(/<\/?text>/gi, "");
                                         // Remove embedded XML block between markers to avoid React rendering unknown tags
                                         .replace(/<!--\s*XML_START\s*-->[\s\S]*?<!--\s*XML_END\s*-->/gi, "");
-                                        // Fallback: strip std: bare <quote>...</quote> blocks if markers are missing
+                                        // Fallback: strip std::string bare <quote>...</quote> blocks if markers are missing
                                         .replace(/<quote[\s\S]*?<\/quote>/gi, "");
                                         ;
                                         : messageText;
@@ -256,7 +257,7 @@ void ChatMessage(auto i, auto citations, auto followUpPrompts, auto onFollowUpCl
     {!isUser && followUpPrompts && followUpPrompts.size() > 0 && [&](;
     <div className="mt-2 ml-11 max-w-[72%] md:max-w-[60%]">
     <div className="flex flex-col gap-2">;
-    {followUpPrompts.std::map((prompt: std:, index) { return (
+    {followUpPrompts.std::map((prompt: std::string, index) { return (
     <button; };
     key={index}
     onClick={() => onFollowUpClick.(prompt)}

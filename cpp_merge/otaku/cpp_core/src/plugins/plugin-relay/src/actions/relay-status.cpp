@@ -1,4 +1,5 @@
 #include "relay-status.hpp"
+#include <string>
 #include <vector>
 #include <unordered_map>
 #include <iostream>
@@ -6,7 +7,7 @@
 
 namespace elizaos {
 
-std: formatStatusResponse(const std::vector<RelayStatus>& statuses) {
+std::string formatStatusResponse(const std::vector<RelayStatus>& statuses) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (statuses.size() == 1) {
@@ -34,7 +35,7 @@ std: formatStatusResponse(const std::vector<RelayStatus>& statuses) {
 
 }
 
-std: formatSingleStatus(RelayStatus status) {
+std::string formatSingleStatus(RelayStatus status) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto statusIndicator = getStatusIndicator(status.status);
@@ -83,10 +84,10 @@ std: formatSingleStatus(RelayStatus status) {
 
 }
 
-std: getStatusIndicator(const std:& status) {
+std::string getStatusIndicator(const std::string& status) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const std::unordered_map<std:, std:> indicators = {;
+    const std::unordered_map<std::string, std::string> indicators = {;
         success: "",
         pending: "",
         failed: "",
@@ -96,10 +97,10 @@ std: getStatusIndicator(const std:& status) {
 
 }
 
-std: getChainName(double chainId) {
+std::string getChainName(double chainId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const std::unordered_map<double, std:> chains = {;
+    const std::unordered_map<double, std::string> chains = {;
         1: "Ethereum",
         8453: "Base",
         42161: "Arbitrum",

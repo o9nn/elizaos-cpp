@@ -1,43 +1,44 @@
 #include "use-elevenlabs-voices.h"
+#include <string>
 
 any useElevenLabsVoices()
 {
     auto [apiKey, setApiKey] = useState<any>(nullptr);
     useEffect([=]() mutable
     {
-        auto storedKey = localStorage->getItem(std:("ELEVENLABS_API_KEY"));
+        auto storedKey = localStorage->getItem(std::string("ELEVENLABS_API_KEY"));
         setApiKey(storedKey);
     }
     , array<any>());
     return useQuery(object{
-        object::pair{std:("queryKey"), array<string>{ std:("elevenlabs-voices"), apiKey }}, 
-        object::pair{std:("queryFn"), [=]() mutable
+        object::pair{std::string("queryKey"), array<string>{ std::string("elevenlabs-voices"), apiKey }}, 
+        object::pair{std::string("queryFn"), [=]() mutable
         {
             if (!apiKey) {
                 return elevenLabsVoiceModels;
             }
             try
             {
-                auto response = std::async([=]() { fetch(std:("https://api.elevenlabs.io/v2/voices"), object{
-                    object::pair{std:("method"), std:("GET")}, 
-                    object::pair{std:("headers"), object{
-                        object::pair{std:("xi-api-key"), apiKey}
+                auto response = std::async([=]() { fetch(std::string("https://api.elevenlabs.io/v2/voices"), object{
+                    object::pair{std::string("method"), std::string("GET")}, 
+                    object::pair{std::string("headers"), object{
+                        object::pair{std::string("xi-api-key"), apiKey}
                     }}
                 }); });
                 if (!response->ok) {
-                    console->error(std:("Failed to fetch ElevenLabs voices:"), response->statusText);
+                    console->error(std::string("Failed to fetch ElevenLabs voices:"), response->statusText);
                     return elevenLabsVoiceModels;
                 }
                 auto data = std::async([=]() { response->json(); });
                 auto apiVoices = data["voices"]["map"]([=](auto voice) mutable
                 {
                     return (object{
-                        object::pair{std:("value"), voice->voice_id}, 
-                        object::pair{std:("label"), std:("ElevenLabs - ") + voice->name + string_empty}, 
-                        object::pair{std:("provider"), std:("elevenlabs")}, 
-                        object::pair{std:("gender"), (voice->labels->gender == std:("female")) ? std:("female") : std:("male")}, 
-                        object::pair{std:("language"), std:("en")}, 
-                        object::pair{std:("features"), array<any>{ OR((voice->category), (std:("professional"))), OR((voice->labels->description), (std:("natural"))) }}
+                        object::pair{std::string("value"), voice->voice_id}, 
+                        object::pair{std::string("label"), std::string("ElevenLabs - ") + voice->name + string_empty}, 
+                        object::pair{std::string("provider"), std::string("elevenlabs")}, 
+                        object::pair{std::string("gender"), (voice->labels->gender == std::string("female")) ? std::string("female") : std::string("male")}, 
+                        object::pair{std::string("language"), std::string("en")}, 
+                        object::pair{std::string("features"), array<any>{ OR((voice->category), (std::string("professional"))), OR((voice->labels->description), (std::string("natural"))) }}
                     });
                 }
                 );
@@ -45,13 +46,13 @@ any useElevenLabsVoices()
             }
             catch (const any& error)
             {
-                console->error(std:("Error fetching ElevenLabs voices:"), error);
+                console->error(std::string("Error fetching ElevenLabs voices:"), error);
                 return elevenLabsVoiceModels;
             }
         }
         }, 
-        object::pair{std:("staleTime"), 60 * 60 * 1000}, 
-        object::pair{std:("refetchOnWindowFocus"), false}
+        object::pair{std::string("staleTime"), 60 * 60 * 1000}, 
+        object::pair{std::string("refetchOnWindowFocus"), false}
     });
 };
 

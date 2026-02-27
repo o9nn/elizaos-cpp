@@ -1,6 +1,7 @@
 #include "prompts.hpp"
+#include <string>
 
-string shouldRespondTemplate = std:("<task>Decide on behalf of {{agentName}} whether they should respond to the message, ignore it or stop the conversation.</task>\
+string shouldRespondTemplate = std::string("<task>Decide on behalf of {{agentName}} whether they should respond to the message, ignore it or stop the conversation.</task>\
 \
 <providers>\
 {{providers}}\
@@ -24,7 +25,7 @@ Respond using XML format like this:\
 \
 IMPORTANT: Your response must ONLY contain the <response></response> XML block above. Do not include any text, thinking, or reasoning before or after this XML block. Start your response immediately with <response> and end with </response>.\
 </output>");
-string messageHandlerTemplate = std:("<task>Generate dialog and actions for the character {{agentName}}.</task>\
+string messageHandlerTemplate = std::string("<task>Generate dialog and actions for the character {{agentName}}.</task>\
 \
 <providers>\
 {{providers}}\
@@ -89,7 +90,7 @@ Respond using XML format like this:\
 \
 IMPORTANT: Your response must ONLY contain the <response></response> XML block above. Do not include any text, thinking, or reasoning before or after this XML block. Start your response immediately with <response> and end with </response>.\
 </output>");
-string postCreationTemplate = std:("# Task: Create a post in the voice and style and perspective of {{agentName}} @{{twitterUserName}}.\
+string postCreationTemplate = std::string("# Task: Create a post in the voice and style and perspective of {{agentName}} @{{twitterUserName}}.\
 \
 Example task outputs:\
 1. A post about the importance of AI in our lives\
@@ -134,8 +135,8 @@ Do NOT include any thinking, reasoning, or <think> sections in your response. \
 Go directly to the XML response format without any preamble or explanation.\
 \
 IMPORTANT: Your response must ONLY contain the <response></response> XML block above. Do not include any text, thinking, or reasoning before or after this XML block. Start your response immediately with <response> and end with </response>.");
-string booleanFooter = std:("Respond with only a YES or a NO.");
-string imageDescriptionTemplate = std:("<task>Analyze the provided image and generate a comprehensive description with multiple levels of detail.</task>\
+string booleanFooter = std::string("Respond with only a YES or a NO.");
+string imageDescriptionTemplate = std::string("<task>Analyze the provided image and generate a comprehensive description with multiple levels of detail.</task>\
 \
 <instructions>\
 Carefully examine the image and provide:\

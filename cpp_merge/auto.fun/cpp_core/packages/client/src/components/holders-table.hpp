@@ -18,7 +18,7 @@ namespace elizaos {
 
 
 
-std::variant<std:, double> getPercentageOfTotal(double value, double total);
+std::variant<std::string, double> getPercentageOfTotal(double value, double total);
 
 
 } // namespace elizaos

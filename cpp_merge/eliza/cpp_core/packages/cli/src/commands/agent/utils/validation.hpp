@@ -27,6 +27,6 @@ namespace elizaos {
 /**
  * Resolves the ID of an agent based on the provided name, ID, or index.
  */
-std::future<std:> resolveAgentId(const std:& idOrNameOrIndex, OptionValues opts);
+std::future<std::string> resolveAgentId(const std::string& idOrNameOrIndex, OptionValues opts);
 
 } // namespace elizaos

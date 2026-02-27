@@ -18,25 +18,25 @@ namespace elizaos {
  * A standardized representation of a token holding.
  */
 struct TokenBalance {
-    std:; // Token mint address, or a native identifier like 'SOL' or 'ETH' address;
-    std:; // Raw balance as a std: to handle large numbers with precision balance;
+    std::string; // Token mint address, or a native identifier like 'SOL' or 'ETH' address;
+    std::string; // Raw balance as a std::string to handle large numbers with precision balance;
     double decimals;
     std::optional<number; // User-friendly balance, adjusted for decimals> uiAmount;
-    std::optional<std:> name;
-    std::optional<std:> symbol;
-    std::optional<std:> logoURI;
+    std::optional<std::string> name;
+    std::optional<std::string> symbol;
+    std::optional<std::string> logoURI;
 };
 
 /**
  * Generic representation of token data that can be provided by various services.
  */
 struct TokenData {
-    std:; // Unique identifier (e.g., contract address or a composite ID) id;
-    std: symbol;
-    std: name;
-    std:; // Contract address address;
-    std:; // e.g., 'solana', 'ethereum', 'base' chain;
-    std:; // e.g., 'birdeye', 'coinmarketcap' sourceProvider;
+    std::string; // Unique identifier (e.g., contract address or a composite ID) id;
+    std::string symbol;
+    std::string name;
+    std::string; // Contract address address;
+    std::string; // e.g., 'solana', 'ethereum', 'base' chain;
+    std::string; // e.g., 'birdeye', 'coinmarketcap' sourceProvider;
     std::optional<double> price;
     std::optional<double> priceChange24hPercent;
     std::optional<number; // Absolute change> priceChange24hUSD;
@@ -44,10 +44,10 @@ struct TokenData {
     std::optional<double> marketCapUSD;
     std::optional<double> liquidity;
     std::optional<double> holders;
-    std::optional<std:> logoURI;
+    std::optional<std::string> logoURI;
     std::optional<double> decimals;
     std::optional<Date; // When this specific data point was last updated from the source> lastUpdatedAt;
-    std::optional<std:> raw;
+    std::optional<std::string> raw;
 };
 
 /**
@@ -85,7 +85,7 @@ struct TokenData {
    */
 
   // Future potential methods:
-  // getHistoricalPriceData(address: std:, chain: std:, timeFrame: std:): Promise<std:[]>;
-  // getTokenMarketChart(address: std:, chain: std:, days): Promise<std:[]>;
+  // getHistoricalPriceData(address: std::string, chain: std::string, timeFrame: std::string): Promise<std::string[]>;
+  // getTokenMarketChart(address: std::string, chain: std::string, days): Promise<std::string[]>;
 
 } // namespace elizaos

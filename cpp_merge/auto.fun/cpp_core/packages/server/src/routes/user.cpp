@@ -1,4 +1,5 @@
 #include "user.hpp"
+#include <string>
 #include <future>
 #include <optional>
 #include <iostream>
@@ -6,7 +7,7 @@
 
 namespace elizaos {
 
-std: generateRandomName() {
+std::string generateRandomName() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Directly return the result from the library
@@ -14,7 +15,7 @@ std: generateRandomName() {
 
 }
 
-std::future<User> ensureUserProfile(const std:& address) {
+std::future<User> ensureUserProfile(const std::string& address) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -43,7 +44,7 @@ std::future<User> ensureUserProfile(const std:& address) {
                         throw std::runtime_error("Failed find user profile immediately after creation for " + std::to_string(address) + "");
                     }
                     std::cout << "[ensureUserProfile] User " + address + " created and fetched successfully." << std::endl;
-                    } catch (insertError: std:) {
+                    } catch (insertError: std::string) {
                         std::cerr << "[ensureUserProfile] FAILED to insert new user profile for " + address + ":" << insertError << std::endl;
                         std::cerr << "[ensureUserProfile] Insert error code: " + insertError.code << "constraint: ${insertError.constraint}" << std::endl;
                         // Attempt to fetch again in case of race condition
@@ -78,7 +79,7 @@ std::future<User> ensureUserProfile(const std:& address) {
                                 if (updatePayload.display_name) user.display_name = updatePayload.display_name;
                                 if (updatePayload.profile_picture_url) user.profile_picture_url = updatePayload.profile_picture_url;
                                 std::cout << "[ensureUserProfile] Updated user " + address + " with defaults successfully." << std::endl;
-                                } catch (updateError: std:) {
+                                } catch (updateError: std::string) {
                                     std::cerr << "[ensureUserProfile] FAILED to update profile defaults for " + address + ":" << updateError << std::endl;
                                     // Continue with the fetched user, defaults might not be critical immediately
                                 }

@@ -1,4 +1,5 @@
 #include "pool-finder-base.hpp"
+#include <string>
 #include <future>
 #include <optional>
 #include <iostream>
@@ -6,7 +7,7 @@
 
 namespace elizaos {
 
-std::future<std::optional<PoolInfo>> findBestPool(const std:& tokenAddress, double chainId = 8453) {
+std::future<std::optional<PoolInfo>> findBestPool(const std::string& tokenAddress, double chainId = 8453) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -14,7 +15,7 @@ std::future<std::optional<PoolInfo>> findBestPool(const std:& tokenAddress, doub
 
         // Check cache first
         const auto cached = getCached<PoolInfo | nullptr>(cacheKey);
-        if (cached != undefined) {
+        if (cached != std::nullopt) {
             return cached;
         }
 
@@ -76,11 +77,11 @@ void validatePoolLiquidity(PoolInfo pool) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     valid;
-    warning?: std:;
+    warning?: std::string;
 
 }
 
-std: formatPoolInfo(PoolInfo pool) {
+std::string formatPoolInfo(PoolInfo pool) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (pool.protocol == "Aerodrome") {

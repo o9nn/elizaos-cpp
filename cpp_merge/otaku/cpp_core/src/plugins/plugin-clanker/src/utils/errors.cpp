@@ -1,10 +1,11 @@
 #include "errors.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-ErrorResponse handleError(const std:& error) {
+ErrorResponse handleError(const std::string& error) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -78,14 +79,14 @@ ErrorResponse handleError(const std:& error) {
     }
 }
 
-bool validateAddress(const std:& address) {
+bool validateAddress(const std::string& address) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return /^0x[a-fA-F0-9]{40}$/.test(address);
 
 }
 
-bool validateAmount(const std:& amount) {
+bool validateAmount(const std::string& amount) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {

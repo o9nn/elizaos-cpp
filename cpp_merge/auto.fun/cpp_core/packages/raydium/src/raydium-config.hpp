@@ -16,7 +16,7 @@ namespace elizaos {
 
 
 
-using Cluster = std:;
+using Cluster = std::string;
 
 
 } // namespace elizaos

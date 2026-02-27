@@ -1,4 +1,5 @@
 #include "review-step.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -10,10 +11,10 @@ void ReviewStep(auto onBack, auto onNext, auto requiredChain, auto isConnectedTo
 
         const auto { activeFamily, evmAddress, solanaPublicKey } = useMultiWallet();
         const auto [copied, setCopied] = useState(false);
-        const auto [error, setError] = useState<std: | nullptr>(nullptr);
+        const auto [error, setError] = useState<std::string | nullptr>(nullptr);
 
         // Extract chain and address from tokenId (format: token-{chain}-{address})
-        const auto getTokenInfo = [&](tokenId: std:) {;
+        const auto getTokenInfo = [&](tokenId: std::string) {;
             const auto parts = tokenId.split("-") || [];
             const auto chain = parts[1] || "";
             const auto address = parts.substr(2).join("-") || "";
@@ -24,7 +25,7 @@ void ReviewStep(auto onBack, auto onNext, auto requiredChain, auto isConnectedTo
             formData.tokenId,
             );
 
-            const auto getDisplayAddress = [&](addr: std:) {;
+            const auto getDisplayAddress = [&](addr: std::string) {;
                 if (!addr || addr.size() <= 12) return addr;
                 return std::to_string(addr.substr(0, 6-0)) + "..." + std::to_string(addr.slice(-4));
                 };
@@ -59,7 +60,7 @@ void ReviewStep(auto onBack, auto onNext, auto requiredChain, auto isConnectedTo
                         onNext();
                         };
 
-                        const auto formatAmount = [&](amount: std:) {;
+                        const auto formatAmount = [&](amount: std::string) {;
                             const auto num = parseFloat(amount) || 0;
                             return num.toLocaleString();
                             };

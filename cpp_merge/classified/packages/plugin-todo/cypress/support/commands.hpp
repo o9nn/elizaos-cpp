@@ -13,8 +13,8 @@ namespace global {
         class Chainable : public object, public std::enable_shared_from_this<Chainable> {
         public:
             using std::enable_shared_from_this<Chainable>::shared_from_this;
-            virtual std::shared_ptr<Chainable<void>> uploadFile(string selector, string fileName, string fileContent, string mimeType = undefined) = 0;
-            virtual std::shared_ptr<Chainable<void>> waitForApi(string alias, double timeout = undefined) = 0;
+            virtual std::shared_ptr<Chainable<void>> uploadFile(string selector, string fileName, string fileContent, string mimeType = std::nullopt) = 0;
+            virtual std::shared_ptr<Chainable<void>> waitForApi(string alias, double timeout = std::nullopt) = 0;
         };
 
     }

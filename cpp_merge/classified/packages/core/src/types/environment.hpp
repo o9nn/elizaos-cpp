@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_CORE_SRC_TYPES_ENVIRONMENT_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_CORE_SRC_TYPES_ENVIRONMENT_H
 #include "core.hpp"
+#include <string>
 #include "./primitives.h"
 
 typedef object World;
@@ -53,10 +54,10 @@ public:
 };
 
 enum struct Role {
-    OWNER = std:("OWNER"), ADMIN = std:("ADMIN"), NONE = std:("NONE")
+    OWNER = std::string("OWNER"), ADMIN = std::string("ADMIN"), NONE = std::string("NONE")
 };
 enum struct ChannelType {
-    SELF = std:("SELF"), DM = std:("DM"), GROUP = std:("GROUP"), VOICE_DM = std:("VOICE_DM"), VOICE_GROUP = std:("VOICE_GROUP"), FEED = std:("FEED"), THREAD = std:("THREAD"), WORLD = std:("WORLD"), FORUM = std:("FORUM"), API = std:("API")
+    SELF = std::string("SELF"), DM = std::string("DM"), GROUP = std::string("GROUP"), VOICE_DM = std::string("VOICE_DM"), VOICE_GROUP = std::string("VOICE_GROUP"), FEED = std::string("FEED"), THREAD = std::string("THREAD"), WORLD = std::string("WORLD"), FORUM = std::string("FORUM"), API = std::string("API")
 };
 class Participant : public object, public std::enable_shared_from_this<Participant> {
 public:

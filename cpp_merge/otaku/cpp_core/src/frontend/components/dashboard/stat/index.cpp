@@ -1,4 +1,5 @@
 #include "index.hpp"
+#include <string>
 #include <optional>
 #include <iostream>
 #include <stdexcept>
@@ -10,8 +11,7 @@ void DashboardStat(auto value, auto description, auto icon, auto tag, auto inten
 
     const auto Icon = icon;
 
-    // Extract prefix, numeric value, and suffix from the value std:
-    const auto parseValue = [&](val: std:) {;
+    // Extract prefix, numeric value, and suffix from the value std::string const auto parseValue = [&](val: std::string) {;
         // Match pattern: std::optional prefix + number + std::optional suffix
         const auto match = val.match(/^([^\d.-]*)([+-]?\d*\.?\d+)([^\d]*)$/);
 

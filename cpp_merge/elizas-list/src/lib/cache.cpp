@@ -1,4 +1,5 @@
 #include "cache.hpp"
+#include <string>
 
 any CacheManager::get(string key)
 {
@@ -9,7 +10,7 @@ any CacheManager::get(string key)
     }
     catch (const any& error)
     {
-        console->error(std:("Cache get error:"), error);
+        console->error(std::string("Cache get error:"), error);
         return nullptr;
     }
 }
@@ -22,11 +23,11 @@ void CacheManager::set(string key, any data, double ttl)
     }
     catch (const any& error)
     {
-        console->error(std:("Cache set error:"), error);
+        console->error(std::string("Cache set error:"), error);
     }
 }
 
-any redis = std::make_shared<Redis>(OR((process->env->REDIS_URL), (std:("redis://localhost:6379"))));
+any redis = std::make_shared<Redis>(OR((process->env->REDIS_URL), (std::string("redis://localhost:6379"))));
 
 void Main(void)
 {

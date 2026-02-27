@@ -18,20 +18,20 @@ namespace elizaos {
 
 
 
-std: formatUsd(double amount);
+std::string formatUsd(double amount);
 
-std: formatPercentage(double value);
+std::string formatPercentage(double value);
 
-std: shortenAddress(const std:& address);
+std::string shortenAddress(const std::string& address);
 
-std: formatTransactionHash(const std:& hash);
+std::string formatTransactionHash(const std::string& hash);
 
 double calculatePriceImpact(bigint inputAmount, bigint outputAmount, double inputPrice, double outputPrice);
 
-std: formatTokenInfo(const std:& info);
+std::string formatTokenInfo(const std::string& info);
 
-std: formatGasPrice(bigint gasPrice);
+std::string formatGasPrice(bigint gasPrice);
 
-std: formatCompactUsd(double amount);
+std::string formatCompactUsd(double amount);
 
 } // namespace elizaos

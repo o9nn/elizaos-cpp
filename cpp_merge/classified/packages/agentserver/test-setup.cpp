@@ -1,164 +1,165 @@
 #include "test-setup.h"
+#include <string>
 
 std::function<object(string)> createMockPlugin = [=](auto name) mutable
 {
     return (object{
-        object::pair{std:("name"), std:("name")}, 
-        object::pair{std:("description"), string_empty + name + std:(" plugin mock")}, 
-        object::pair{std:("actions"), array<any>()}, 
-        object::pair{std:("providers"), array<any>()}, 
-        object::pair{std:("evaluators"), array<any>()}, 
-        object::pair{std:("services"), array<any>()}
+        object::pair{std::string("name"), std::string("name")}, 
+        object::pair{std::string("description"), string_empty + name + std::string(" plugin mock")}, 
+        object::pair{std::string("actions"), array<any>()}, 
+        object::pair{std::string("providers"), array<any>()}, 
+        object::pair{std::string("evaluators"), array<any>()}, 
+        object::pair{std::string("services"), array<any>()}
     });
 };
 
 void Main(void)
 {
-    mock->module(std:("@elizaos/core"), [=]() mutable
+    mock->module(std::string("@elizaos/core"), [=]() mutable
     {
         return (object{
-            object::pair{std:("logger"), object{
-                object::pair{std:("info"), [=]() mutable
+            object::pair{std::string("logger"), object{
+                object::pair{std::string("info"), [=]() mutable
                 {
                 }
                 }, 
-                object::pair{std:("error"), [=]() mutable
+                object::pair{std::string("error"), [=]() mutable
                 {
                 }
                 }, 
-                object::pair{std:("warn"), [=]() mutable
+                object::pair{std::string("warn"), [=]() mutable
                 {
                 }
                 }, 
-                object::pair{std:("debug"), [=]() mutable
+                object::pair{std::string("debug"), [=]() mutable
                 {
                 }
                 }
             }}, 
-            object::pair{std:("validateUuid"), [=](auto id) mutable
+            object::pair{std::string("validateUuid"), [=](auto id) mutable
             {
-                return (new RegExp(std:("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")))->test(id);
+                return (new RegExp(std::string("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")))->test(id);
             }
             }, 
-            object::pair{std:("stringToUuid"), [=](auto _str) mutable
+            object::pair{std::string("stringToUuid"), [=](auto _str) mutable
             {
-                return std:("00000000-0000-0000-0000-000000000000");
+                return std::string("00000000-0000-0000-0000-000000000000");
             }
             }, 
-            object::pair{std:("ModelType"), object{
-                object::pair{std:("TEXT_LARGE"), std:("text-large")}, 
-                object::pair{std:("TEXT_MEDIUM"), std:("text-medium")}, 
-                object::pair{std:("TEXT_SMALL"), std:("text-small")}
+            object::pair{std::string("ModelType"), object{
+                object::pair{std::string("TEXT_LARGE"), std::string("text-large")}, 
+                object::pair{std::string("TEXT_MEDIUM"), std::string("text-medium")}, 
+                object::pair{std::string("TEXT_SMALL"), std::string("text-small")}
             }}, 
-            object::pair{std:("ChannelType"), object{
-                object::pair{std:("DISCORD"), std:("discord")}, 
-                object::pair{std:("TWITTER"), std:("twitter")}, 
-                object::pair{std:("TELEGRAM"), std:("telegram")}
+            object::pair{std::string("ChannelType"), object{
+                object::pair{std::string("DISCORD"), std::string("discord")}, 
+                object::pair{std::string("TWITTER"), std::string("twitter")}, 
+                object::pair{std::string("TELEGRAM"), std::string("telegram")}
             }}
         });
     }
     );
-    mock->module(std:("@elizaos/plugin-sql"), [=]() mutable
+    mock->module(std::string("@elizaos/plugin-sql"), [=]() mutable
     {
         return (object{
-            object::pair{std:("createDatabaseAdapter"), [=]() mutable
+            object::pair{std::string("createDatabaseAdapter"), [=]() mutable
             {
                 return (object{
-                    object::pair{std:("query"), [=]() mutable
+                    object::pair{std::string("query"), [=]() mutable
                     {
                         return (object{
-                            object::pair{std:("rows"), array<any>()}
+                            object::pair{std::string("rows"), array<any>()}
                         });
                     }
                     }, 
-                    object::pair{std:("init"), [=]() mutable
+                    object::pair{std::string("init"), [=]() mutable
                     {
                     }
                     }
                 });
             }
             }, 
-            object::pair{std:("schema"), object{
-                object::pair{std:("public"), object{
-                    object::pair{std:("Tables"), object{}}
+            object::pair{std::string("schema"), object{
+                object::pair{std::string("public"), object{
+                    object::pair{std::string("Tables"), object{}}
                 }}
             }}, 
-            object::pair{std:("plugin"), object{
-                object::pair{std:("name"), std:("sql")}, 
-                object::pair{std:("description"), std:("SQL plugin mock")}
+            object::pair{std::string("plugin"), object{
+                object::pair{std::string("name"), std::string("sql")}, 
+                object::pair{std::string("description"), std::string("SQL plugin mock")}
             }}
         });
     }
     );
-    mock->module(std:("@elizaos/plugin-autonomy"), [=]() mutable
+    mock->module(std::string("@elizaos/plugin-autonomy"), [=]() mutable
     {
         return (object{
-            object::pair{std:("autonomyPlugin"), createMockPlugin(std:("autonomy"))}
+            object::pair{std::string("autonomyPlugin"), createMockPlugin(std::string("autonomy"))}
         });
     }
     );
-    mock->module(std:("@elizaos/plugin-bootstrap"), [=]() mutable
+    mock->module(std::string("@elizaos/plugin-bootstrap"), [=]() mutable
     {
         return (object{
-            object::pair{std:("bootstrapPlugin"), createMockPlugin(std:("bootstrap"))}
+            object::pair{std::string("bootstrapPlugin"), createMockPlugin(std::string("bootstrap"))}
         });
     }
     );
-    mock->module(std:("@elizaos/plugin-goals"), [=]() mutable
+    mock->module(std::string("@elizaos/plugin-goals"), [=]() mutable
     {
         return (object{
-            object::pair{std:("default"), createMockPlugin(std:("goals"))}, 
-            object::pair{std:("GoalsPlugin"), createMockPlugin(std:("goals"))}
+            object::pair{std::string("default"), createMockPlugin(std::string("goals"))}, 
+            object::pair{std::string("GoalsPlugin"), createMockPlugin(std::string("goals"))}
         });
     }
     );
-    mock->module(std:("@elizaos/plugin-todo"), [=]() mutable
+    mock->module(std::string("@elizaos/plugin-todo"), [=]() mutable
     {
         return (object{
-            object::pair{std:("default"), createMockPlugin(std:("todo"))}, 
-            object::pair{std:("TodoPlugin"), createMockPlugin(std:("todo"))}
+            object::pair{std::string("default"), createMockPlugin(std::string("todo"))}, 
+            object::pair{std::string("TodoPlugin"), createMockPlugin(std::string("todo"))}
         });
     }
     );
-    mock->module(std:("@elizaos/plugin-shell"), [=]() mutable
+    mock->module(std::string("@elizaos/plugin-shell"), [=]() mutable
     {
         return (object{
-            object::pair{std:("default"), createMockPlugin(std:("shell"))}
+            object::pair{std::string("default"), createMockPlugin(std::string("shell"))}
         });
     }
     );
-    mock->module(std:("@elizaos/plugin-knowledge"), [=]() mutable
+    mock->module(std::string("@elizaos/plugin-knowledge"), [=]() mutable
     {
         return (object{
-            object::pair{std:("knowledgePlugin"), createMockPlugin(std:("knowledge"))}
+            object::pair{std::string("knowledgePlugin"), createMockPlugin(std::string("knowledge"))}
         });
     }
     );
-    mock->module(std:("@elizaos/plugin-inference"), [=]() mutable
+    mock->module(std::string("@elizaos/plugin-inference"), [=]() mutable
     {
         return (object{
-            object::pair{std:("inferencePlugin"), createMockPlugin(std:("inference"))}
+            object::pair{std::string("inferencePlugin"), createMockPlugin(std::string("inference"))}
         });
     }
     );
-    mock->module(std:("@elizaos/plugin-personality"), [=]() mutable
+    mock->module(std::string("@elizaos/plugin-personality"), [=]() mutable
     {
         return (object{
-            object::pair{std:("default"), createMockPlugin(std:("personality"))}
+            object::pair{std::string("default"), createMockPlugin(std::string("personality"))}
         });
     }
     );
-    mock->module(std:("@elizaos/plugin-experience"), [=]() mutable
+    mock->module(std::string("@elizaos/plugin-experience"), [=]() mutable
     {
         return (object{
-            object::pair{std:("experiencePlugin"), createMockPlugin(std:("experience"))}
+            object::pair{std::string("experiencePlugin"), createMockPlugin(std::string("experience"))}
         });
     }
     );
-    mock->module(std:("@elizaos/plugin-stagehand"), [=]() mutable
+    mock->module(std::string("@elizaos/plugin-stagehand"), [=]() mutable
     {
         return (object{
-            object::pair{std:("stagehandPlugin"), createMockPlugin(std:("stagehand"))}
+            object::pair{std::string("stagehandPlugin"), createMockPlugin(std::string("stagehand"))}
         });
     }
     );

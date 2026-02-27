@@ -1,34 +1,35 @@
 #include "provider.test.h"
+#include <string>
 
 void documentTestResult(string testName, any result, any error)
 {
-    logger->info(std:("✓ Testing: ") + testName + string_empty);
+    logger->info(std::string("✓ Testing: ") + testName + string_empty);
     if (error) {
-        logger->error(std:("✗ Error: ") + error->message + string_empty);
+        logger->error(std::string("✗ Error: ") + error->message + string_empty);
         if (error->stack) {
-            logger->error(std:("Stack: ") + error->stack + string_empty);
+            logger->error(std::string("Stack: ") + error->stack + string_empty);
         }
         return;
     }
     if (result) {
-        if (type_of(result) == std:("string")) {
+        if (type_of(result) == std::string("string")) {
             if (AND((result->trim()), (result->get_length() > 0))) {
-                auto preview = (result->get_length() > 60) ? string_empty + result->substring(0, 60) + std:("...") : result;
-                logger->info(std:("  → ") + preview + string_empty);
+                auto preview = (result->get_length() > 60) ? string_empty + result->substring(0, 60) + std::string("...") : result;
+                logger->info(std::string("  → ") + preview + string_empty);
             }
-        } else if (type_of(result) == std:("object")) {
+        } else if (type_of(result) == std::string("object")) {
             try
             {
                 auto keys = Object->keys(result);
                 if (keys->get_length() > 0) {
-                    auto preview = keys->slice(0, 3)->join(std:(", "));
-                    auto more = (keys->get_length() > 3) ? any(std:(" +") + (keys->get_length() - 3) + std:(" more")) (string_empty);
-                    logger->info(std:("  → {") + preview + string_empty + more + std:("}"));
+                    auto preview = keys->slice(0, 3)->join(std::string(", "));
+                    auto more = (keys->get_length() > 3) ? any(std::string(" +") + (keys->get_length() - 3) + std::string(" more")) (string_empty);
+                    logger->info(std::string("  → {") + preview + string_empty + more + std::string("}"));
                 }
             }
             catch (const any& e)
             {
-                logger->info(std:("  → [Complex object]"));
+                logger->info(std::string("  → [Complex object]"));
             }
         }
     }
@@ -38,72 +39,72 @@ void documentTestResult(string testName, any result, any error)
 std::shared_ptr<IAgentRuntime> createRealRuntime()
 {
     return as<std::shared_ptr<IAgentRuntime>>(as<any>(object{
-        object::pair{std:("character"), object{
-            object::pair{std:("name"), std:("Test Character")}, 
-            object::pair{std:("system"), std:("You are a helpful assistant for testing.")}, 
-            object::pair{std:("plugins"), array<any>()}, 
-            object::pair{std:("settings"), object{}}
+        object::pair{std::string("character"), object{
+            object::pair{std::string("name"), std::string("Test Character")}, 
+            object::pair{std::string("system"), std::string("You are a helpful assistant for testing.")}, 
+            object::pair{std::string("plugins"), array<any>()}, 
+            object::pair{std::string("settings"), object{}}
         }}, 
-        object::pair{std:("getSetting"), [=](auto key) mutable
+        object::pair{std::string("getSetting"), [=](auto key) mutable
         {
             return nullptr;
         }
         }, 
-        object::pair{std:("models"), plugin->models}, 
-        object::pair{std:("db"), object{
-            object::pair{std:("get"), [=](auto key) mutable
+        object::pair{std::string("models"), plugin->models}, 
+        object::pair{std::string("db"), object{
+            object::pair{std::string("get"), [=](auto key) mutable
             {
                 return nullptr;
             }
             }, 
-            object::pair{std:("set"), [=](auto key, auto value) mutable
+            object::pair{std::string("set"), [=](auto key, auto value) mutable
             {
                 return true;
             }
             }, 
-            object::pair{std:("delete"), [=](auto key) mutable
+            object::pair{std::string("delete"), [=](auto key) mutable
             {
                 return true;
             }
             }, 
-            object::pair{std:("getKeys"), [=](auto pattern) mutable
+            object::pair{std::string("getKeys"), [=](auto pattern) mutable
             {
                 return array<any>();
             }
             }
         }}, 
-        object::pair{std:("memory"), object{
-            object::pair{std:("add"), [=](auto memory) mutable
+        object::pair{std::string("memory"), object{
+            object::pair{std::string("add"), [=](auto memory) mutable
             {
             }
             }, 
-            object::pair{std:("get"), [=](auto id) mutable
-            {
-                return nullptr;
-            }
-            }, 
-            object::pair{std:("getByEntityId"), [=](auto entityId) mutable
-            {
-                return array<any>();
-            }
-            }, 
-            object::pair{std:("getLatest"), [=](auto entityId) mutable
+            object::pair{std::string("get"), [=](auto id) mutable
             {
                 return nullptr;
             }
             }, 
-            object::pair{std:("getRecentMessages"), [=](auto options) mutable
+            object::pair{std::string("getByEntityId"), [=](auto entityId) mutable
             {
                 return array<any>();
             }
             }, 
-            object::pair{std:("search"), [=](auto query) mutable
+            object::pair{std::string("getLatest"), [=](auto entityId) mutable
+            {
+                return nullptr;
+            }
+            }, 
+            object::pair{std::string("getRecentMessages"), [=](auto options) mutable
+            {
+                return array<any>();
+            }
+            }, 
+            object::pair{std::string("search"), [=](auto query) mutable
             {
                 return array<any>();
             }
             }
         }}, 
-        object::pair{std:("getService"), [=](auto serviceType) mutable
+        object::pair{std::string("getService"), [=](auto serviceType) mutable
         {
             return nullptr;
         }
@@ -117,19 +118,19 @@ std::shared_ptr<Memory> createRealMemory()
     auto entityId = uuidv4();
     auto roomId = uuidv4();
     return as<std::shared_ptr<Memory>>(object{
-        object::pair{std:("id"), uuidv4()}, 
-        object::pair{std:("entityId"), std:("entityId")}, 
-        object::pair{std:("roomId"), std:("roomId")}, 
-        object::pair{std:("timestamp"), Date->now()}, 
-        object::pair{std:("content"), object{
-            object::pair{std:("text"), std:("What can you provide?")}, 
-            object::pair{std:("source"), std:("test")}, 
-            object::pair{std:("actions"), array<any>()}
+        object::pair{std::string("id"), uuidv4()}, 
+        object::pair{std::string("entityId"), std::string("entityId")}, 
+        object::pair{std::string("roomId"), std::string("roomId")}, 
+        object::pair{std::string("timestamp"), Date->now()}, 
+        object::pair{std::string("content"), object{
+            object::pair{std::string("text"), std::string("What can you provide?")}, 
+            object::pair{std::string("source"), std::string("test")}, 
+            object::pair{std::string("actions"), array<any>()}
         }}, 
-        object::pair{std:("metadata"), object{
-            object::pair{std:("type"), std:("custom")}, 
-            object::pair{std:("sessionId"), uuidv4()}, 
-            object::pair{std:("conversationId"), uuidv4()}
+        object::pair{std::string("metadata"), object{
+            object::pair{std::string("type"), std::string("custom")}, 
+            object::pair{std::string("sessionId"), uuidv4()}, 
+            object::pair{std::string("conversationId"), uuidv4()}
         }}
     });
 };
@@ -141,26 +142,26 @@ void Main(void)
     dotenv->config();
     beforeAll([=]() mutable
     {
-        spyOn(logger, std:("info"));
-        spyOn(logger, std:("error"));
-        spyOn(logger, std:("warn"));
-        spyOn(logger, std:("debug"));
+        spyOn(logger, std::string("info"));
+        spyOn(logger, std::string("error"));
+        spyOn(logger, std::string("warn"));
+        spyOn(logger, std::string("debug"));
     }
     );
     afterAll([=]() mutable
     {
     }
     );
-    describe(std:("Provider Tests"), [=]() mutable
+    describe(std::string("Provider Tests"), [=]() mutable
     {
         shared helloWorldProvider = plugin->providers->find([=](auto provider) mutable
         {
-            return provider["name"] == std:("HELLO_WORLD_PROVIDER");
+            return provider["name"] == std::string("HELLO_WORLD_PROVIDER");
         }
         );
-        describe(std:("HELLO_WORLD_PROVIDER"), [=]() mutable
+        describe(std::string("HELLO_WORLD_PROVIDER"), [=]() mutable
         {
-            it(std:("should exist in the plugin"), [=]() mutable
+            it(std::string("should exist in the plugin"), [=]() mutable
             {
                 expect(plugin->providers)->toBeDefined();
                 expect(Array->isArray(plugin->providers))->toBe(true);
@@ -168,13 +169,13 @@ void Main(void)
                     expect(plugin->providers->length)->toBeGreaterThan(0);
                     auto result = plugin->providers->find([=](auto p) mutable
                     {
-                        return p["name"] == std:("HELLO_WORLD_PROVIDER");
+                        return p["name"] == std::string("HELLO_WORLD_PROVIDER");
                     }
                     );
                     expect(result)->toBeDefined();
-                    documentTestResult(std:("Provider exists check"), object{
-                        object::pair{std:("found"), !!result}, 
-                        object::pair{std:("providers"), plugin->providers->map([=](auto p) mutable
+                    documentTestResult(std::string("Provider exists check"), object{
+                        object::pair{std::string("found"), !!result}, 
+                        object::pair{std::string("providers"), plugin->providers->map([=](auto p) mutable
                         {
                             return p["name"];
                         }
@@ -183,120 +184,120 @@ void Main(void)
                 }
             }
             );
-            it(std:("should have the correct structure"), [=]() mutable
+            it(std::string("should have the correct structure"), [=]() mutable
             {
                 if (helloWorldProvider) {
-                    expect(helloWorldProvider)->toHaveProperty(std:("name"), std:("HELLO_WORLD_PROVIDER"));
-                    expect(helloWorldProvider)->toHaveProperty(std:("description"));
-                    expect(helloWorldProvider)->toHaveProperty(std:("get"));
-                    expect(type_of(helloWorldProvider->get))->toBe(std:("function"));
-                    documentTestResult(std:("Provider structure check"), object{
-                        object::pair{std:("name"), helloWorldProvider->name}, 
-                        object::pair{std:("description"), helloWorldProvider->description}, 
-                        object::pair{std:("hasGetMethod"), type_of(helloWorldProvider->get) == std:("function")}
+                    expect(helloWorldProvider)->toHaveProperty(std::string("name"), std::string("HELLO_WORLD_PROVIDER"));
+                    expect(helloWorldProvider)->toHaveProperty(std::string("description"));
+                    expect(helloWorldProvider)->toHaveProperty(std::string("get"));
+                    expect(type_of(helloWorldProvider->get))->toBe(std::string("function"));
+                    documentTestResult(std::string("Provider structure check"), object{
+                        object::pair{std::string("name"), helloWorldProvider->name}, 
+                        object::pair{std::string("description"), helloWorldProvider->description}, 
+                        object::pair{std::string("hasGetMethod"), type_of(helloWorldProvider->get) == std::string("function")}
                     });
                 }
             }
             );
-            it(std:("should have a description explaining its purpose"), [=]() mutable
+            it(std::string("should have a description explaining its purpose"), [=]() mutable
             {
                 if (AND((helloWorldProvider), (helloWorldProvider->description))) {
-                    expect(type_of(helloWorldProvider->description))->toBe(std:("string"));
+                    expect(type_of(helloWorldProvider->description))->toBe(std::string("string"));
                     expect(helloWorldProvider->description->length)->toBeGreaterThan(0);
-                    documentTestResult(std:("Provider description check"), object{
-                        object::pair{std:("description"), helloWorldProvider->description}
+                    documentTestResult(std::string("Provider description check"), object{
+                        object::pair{std::string("description"), helloWorldProvider->description}
                     });
                 }
             }
             );
-            it(std:("should return provider data from the get method"), [=]() mutable
+            it(std::string("should return provider data from the get method"), [=]() mutable
             {
                 if (helloWorldProvider) {
                     auto runtime = createRealRuntime();
                     auto message = createRealMemory();
                     auto state = as<std::shared_ptr<State>>(object{
-                        object::pair{std:("values"), object{
-                            object::pair{std:("example"), std:("test value")}
+                        object::pair{std::string("values"), object{
+                            object::pair{std::string("example"), std::string("test value")}
                         }}, 
-                        object::pair{std:("data"), object{
-                            object::pair{std:("additionalContext"), std:("some context")}
+                        object::pair{std::string("data"), object{
+                            object::pair{std::string("additionalContext"), std::string("some context")}
                         }}, 
-                        object::pair{std:("text"), std:("Current state context")}
+                        object::pair{std::string("text"), std::string("Current state context")}
                     });
                     auto result = nullptr;
                     auto error = nullptr;
                     try
                     {
-                        logger->info(std:("Calling provider.get with real implementation"));
+                        logger->info(std::string("Calling provider.get with real implementation"));
                         result = std::async([=]() { helloWorldProvider->get(runtime, message, state); });
                         expect(result)->toBeDefined();
-                        expect(result)->toHaveProperty(std:("text"));
-                        expect(result)->toHaveProperty(std:("values"));
-                        expect(result)->toHaveProperty(std:("data"));
+                        expect(result)->toHaveProperty(std::string("text"));
+                        expect(result)->toHaveProperty(std::string("values"));
+                        expect(result)->toHaveProperty(std::string("data"));
                         if (AND((result), ((OR((!result["text"]), (result["text"]["length"] == 0)))))) {
-                            logger->warn(std:("Provider returned empty text"));
+                            logger->warn(std::string("Provider returned empty text"));
                         }
                         if (AND((result), (Object->keys(result["values"])->get_length() == 0))) {
-                            logger->warn(std:("Provider returned empty values object"));
+                            logger->warn(std::string("Provider returned empty values object"));
                         }
                         if (AND((result), (Object->keys(result["data"])->get_length() == 0))) {
-                            logger->warn(std:("Provider returned empty data object"));
+                            logger->warn(std::string("Provider returned empty data object"));
                         }
                     }
                     catch (const any& e)
                     {
                         error = as<std::shared_ptr<Error>>(e);
-                        logger->error(std:("Error in provider.get:"), e);
+                        logger->error(std::string("Error in provider.get:"), e);
                     }
-                    documentTestResult(std:("Provider get method"), result, error);
+                    documentTestResult(std::string("Provider get method"), result, error);
                 }
             }
             );
-            it(std:("should handle error conditions gracefully"), [=]() mutable
+            it(std::string("should handle error conditions gracefully"), [=]() mutable
             {
                 if (helloWorldProvider) {
                     auto runtime = createRealRuntime();
                     auto invalidMemory = as<std::shared_ptr<Memory>>(as<any>(object{
-                        object::pair{std:("id"), uuidv4()}
+                        object::pair{std::string("id"), uuidv4()}
                     }));
                     auto state = as<std::shared_ptr<State>>(object{
-                        object::pair{std:("values"), object{}}, 
-                        object::pair{std:("data"), object{}}, 
-                        object::pair{std:("text"), string_empty}
+                        object::pair{std::string("values"), object{}}, 
+                        object::pair{std::string("data"), object{}}, 
+                        object::pair{std::string("text"), string_empty}
                     });
                     auto result = nullptr;
                     auto error = nullptr;
                     try
                     {
-                        logger->info(std:("Calling provider.get with invalid memory object"));
+                        logger->info(std::string("Calling provider.get with invalid memory object"));
                         result = std::async([=]() { helloWorldProvider->get(runtime, invalidMemory, state); });
                         expect(result)->toBeDefined();
-                        logger->info(std:("Provider handled invalid input without throwing"));
+                        logger->info(std::string("Provider handled invalid input without throwing"));
                     }
                     catch (const any& e)
                     {
                         error = as<std::shared_ptr<Error>>(e);
-                        logger->error(std:("Provider threw an error with invalid input:"), e);
+                        logger->error(std::string("Provider threw an error with invalid input:"), e);
                     }
-                    documentTestResult(std:("Provider error handling"), result, error);
+                    documentTestResult(std::string("Provider error handling"), result, error);
                 }
             }
             );
         }
         );
-        describe(std:("Provider Registration"), [=]() mutable
+        describe(std::string("Provider Registration"), [=]() mutable
         {
-            it(std:("should include providers in the plugin definition"), [=]() mutable
+            it(std::string("should include providers in the plugin definition"), [=]() mutable
             {
-                expect(plugin)->toHaveProperty(std:("providers"));
+                expect(plugin)->toHaveProperty(std::string("providers"));
                 expect(Array->isArray(plugin->providers))->toBe(true);
-                documentTestResult(std:("Plugin providers check"), object{
-                    object::pair{std:("hasProviders"), !!plugin->providers}, 
-                    object::pair{std:("providersCount"), OR((plugin->providers->length), (0))}
+                documentTestResult(std::string("Plugin providers check"), object{
+                    object::pair{std::string("hasProviders"), !!plugin->providers}, 
+                    object::pair{std::string("providersCount"), OR((plugin->providers->length), (0))}
                 });
             }
             );
-            it(std:("should correctly initialize providers array"), [=]() mutable
+            it(std::string("should correctly initialize providers array"), [=]() mutable
             {
                 if (plugin->providers) {
                     expect(plugin->providers->length)->toBeGreaterThan(0);
@@ -304,26 +305,26 @@ void Main(void)
                     shared invalidProviders = array<string>();
                     plugin->providers->forEach([=](auto provider) mutable
                     {
-                        auto isValid = AND((AND((provider->name != undefined), (provider->description != undefined))), (type_of(provider->get) == std:("function")));
+                        auto isValid = AND((AND((provider->name != std::nullopt), (provider->description != std::nullopt))), (type_of(provider->get) == std::string("function")));
                         if (!isValid) {
                             allValid = false;
-                            invalidProviders->push(OR((provider->name), (std:("unnamed"))));
+                            invalidProviders->push(OR((provider->name), (std::string("unnamed"))));
                         }
-                        expect(provider)->toHaveProperty(std:("name"));
-                        expect(provider)->toHaveProperty(std:("description"));
-                        expect(provider)->toHaveProperty(std:("get"));
-                        expect(type_of(provider->get))->toBe(std:("function"));
+                        expect(provider)->toHaveProperty(std::string("name"));
+                        expect(provider)->toHaveProperty(std::string("description"));
+                        expect(provider)->toHaveProperty(std::string("get"));
+                        expect(type_of(provider->get))->toBe(std::string("function"));
                     }
                     );
-                    documentTestResult(std:("Provider initialization check"), object{
-                        object::pair{std:("providersCount"), plugin->providers->length}, 
-                        object::pair{std:("allValid"), std:("allValid")}, 
-                        object::pair{std:("invalidProviders"), std:("invalidProviders")}
+                    documentTestResult(std::string("Provider initialization check"), object{
+                        object::pair{std::string("providersCount"), plugin->providers->length}, 
+                        object::pair{std::string("allValid"), std::string("allValid")}, 
+                        object::pair{std::string("invalidProviders"), std::string("invalidProviders")}
                     });
                 }
             }
             );
-            it(std:("should have unique provider names"), [=]() mutable
+            it(std::string("should have unique provider names"), [=]() mutable
             {
                 if (plugin->providers) {
                     shared providerNames = plugin->providers->map([=](auto provider) mutable
@@ -338,10 +339,10 @@ void Main(void)
                     }
                     );
                     expect(providerNames->length)->toBe(uniqueNames->size);
-                    documentTestResult(std:("Provider uniqueness check"), object{
-                        object::pair{std:("totalProviders"), providerNames->length}, 
-                        object::pair{std:("uniqueProviders"), uniqueNames->size}, 
-                        object::pair{std:("duplicates"), std:("duplicates")}
+                    documentTestResult(std::string("Provider uniqueness check"), object{
+                        object::pair{std::string("totalProviders"), providerNames->length}, 
+                        object::pair{std::string("uniqueProviders"), uniqueNames->size}, 
+                        object::pair{std::string("duplicates"), std::string("duplicates")}
                     });
                 }
             }

@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_CORE_SRC_TYPES_EMAIL_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_CORE_SRC_TYPES_EMAIL_H
 #include "core.hpp"
+#include <string>
 #include "./service.h"
 
 class EmailAddress;
@@ -147,20 +148,20 @@ public:
 
     string serviceType = ServiceType["EMAIL"];
 
-    string capabilityDescription = std:("Email sending, receiving, and management capabilities");
+    string capabilityDescription = std::string("Email sending, receiving, and management capabilities");
 
-    virtual std::shared_ptr<Promise<string>> sendEmail(std::shared_ptr<EmailMessage> message, std::shared_ptr<EmailSendOptions> options = undefined) = 0;
-    virtual std::shared_ptr<Promise<array<std::shared_ptr<EmailMessage>>>> getEmails(std::shared_ptr<EmailSearchOptions> options = undefined) = 0;
+    virtual std::shared_ptr<Promise<string>> sendEmail(std::shared_ptr<EmailMessage> message, std::shared_ptr<EmailSendOptions> options = std::nullopt) = 0;
+    virtual std::shared_ptr<Promise<array<std::shared_ptr<EmailMessage>>>> getEmails(std::shared_ptr<EmailSearchOptions> options = std::nullopt) = 0;
     virtual std::shared_ptr<Promise<std::shared_ptr<EmailMessage>>> getEmail(string messageId) = 0;
     virtual std::shared_ptr<Promise<void>> deleteEmail(string messageId) = 0;
     virtual std::shared_ptr<Promise<void>> markEmailAsRead(string messageId, boolean read) = 0;
     virtual std::shared_ptr<Promise<void>> flagEmail(string messageId, boolean flagged) = 0;
     virtual std::shared_ptr<Promise<void>> moveEmail(string messageId, string folderPath) = 0;
     virtual std::shared_ptr<Promise<array<std::shared_ptr<EmailFolder>>>> getFolders() = 0;
-    virtual std::shared_ptr<Promise<void>> createFolder(string folderName, string parentPath = undefined) = 0;
+    virtual std::shared_ptr<Promise<void>> createFolder(string folderName, string parentPath = std::nullopt) = 0;
     virtual std::shared_ptr<Promise<std::shared_ptr<EmailAccount>>> getAccountInfo() = 0;
-    virtual std::shared_ptr<Promise<array<std::shared_ptr<EmailMessage>>>> searchEmails(string query, std::shared_ptr<EmailSearchOptions> options = undefined) = 0;
-    IEmailService(std::shared_ptr<IAgentRuntime> runtime = undefined);
+    virtual std::shared_ptr<Promise<array<std::shared_ptr<EmailMessage>>>> searchEmails(string query, std::shared_ptr<EmailSearchOptions> options = std::nullopt) = 0;
+    IEmailService(std::shared_ptr<IAgentRuntime> runtime = std::nullopt);
 };
 
 #endif

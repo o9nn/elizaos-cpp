@@ -29,7 +29,7 @@ public:
     virtual std::shared_ptr<Promise<void>> trackGoalCreation(Record<string, any> goalData);
     virtual std::shared_ptr<Promise<void>> trackTodoCreation(Record<string, any> todoData);
     virtual std::shared_ptr<Promise<void>> trackAgentNaming(string name);
-    virtual std::shared_ptr<Promise<void>> trackAction(string actionType, Record<string, any> details = undefined);
+    virtual std::shared_ptr<Promise<void>> trackAction(string actionType, Record<string, any> details = std::nullopt);
     virtual Record<string, any> getProgressionStatus();
     virtual void cleanup();
 };

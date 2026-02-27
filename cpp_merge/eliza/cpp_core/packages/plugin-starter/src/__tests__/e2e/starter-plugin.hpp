@@ -16,7 +16,7 @@ namespace elizaos {
 
 /**
  * E2E (End-to-End) Test Suite for ElizaOS Plugins
- * =====
+ * ===
  *
  * This file contains end-to-end tests that run within a real ElizaOS runtime environment.
  * Unlike unit tests that test individual components in isolation, e2e tests validate
@@ -60,7 +60,7 @@ namespace elizaos {
  * - Use descriptive test names that explain what's being tested
  * - Include clear error messages that help diagnose failures
  * - Test both success and failure paths
- * - Clean up std: resources created during tests
+ * - Clean up std::string resources created during tests
  *
  * AVAILABLE RUNTIME METHODS:
  * --------------------------
@@ -76,11 +76,11 @@ namespace elizaos {
 
 // Define a minimal TestSuite interface that matches what's needed
 struct TestSuite {
-    std: name;
-    std::optional<std:> description;
+    std::string name;
+    std::optional<std::string> description;
     Array<{ tests;
-    std: name;
-    [&](runtime: std:) { return Promise<any> fn; };
+    std::string name;
+    [&](runtime: std::string) { return Promise<any> fn; };
 };
 
 // Define minimal interfaces for the types we need
@@ -90,15 +90,15 @@ struct Memory {
     UUID entityId;
     UUID roomId;
     { content;
-    std: text;
-    std: source;
+    std::string text;
+    std::string source;
     std::optional<std::vector<std::string>> actions;
 };
 
 struct State {
-    std::unordered_map<std:, std:> values;
-    std::unordered_map<std:, std:> data;
-    std: text;
+    std::unordered_map<std::string, std::string> values;
+    std::unordered_map<std::string, std::string> data;
+    std::string text;
 };
 
     /**
@@ -186,7 +186,7 @@ struct State {
      * {
      *   name: 'your_test_name',
      *   fn: std::async [&](runtime) {
-     *     // Setup: Create std: test data needed
+     *     // Setup: Create std::string test data needed
      *
      *     // Action: Perform the operation you want to test
      *

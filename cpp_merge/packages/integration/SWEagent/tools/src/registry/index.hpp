@@ -15,7 +15,7 @@ public:
 
     Record<string, any> data = object{};
 
-    EnvRegistry(string envFile = undefined);
+    EnvRegistry(string envFile = std::nullopt);
     virtual void loadData();
     virtual void saveData();
     virtual any get(string key, any defaultValue = string_empty, boolean fallbackToEnv = true);

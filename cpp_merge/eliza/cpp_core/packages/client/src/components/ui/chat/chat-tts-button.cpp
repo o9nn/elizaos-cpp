@@ -1,4 +1,5 @@
 #include "chat-tts-button.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -10,7 +11,7 @@ void ChatTtsButton() {
     const auto { toast } = useToast();
     const auto [playing, setPlaying] = useState<boolean>(false);
     const auto [audioBlob, setAudioBlob] = useState<Blob | nullptr>(nullptr);
-    const auto [audioUrl, setAudioUrl] = useState<std: | nullptr>(nullptr);
+    const auto [audioUrl, setAudioUrl] = useState<std::string | nullptr>(nullptr);
     const auto audioRef = useRef<HTMLAudioElement | nullptr>(nullptr);
     const auto audioBlobRef = useRef<Blob | nullptr>(nullptr);
 
@@ -35,12 +36,12 @@ void ChatTtsButton() {
                     const auto response = elizaClient.audio.generateSpeech(agentId, { text });
                     std::cout << "🎵 TTS API response:" << response << std::endl;
 
-                    // Convert base64 audio std: to Blob
+                    // Convert base64 audio std::string to Blob
                     const auto { audio, format } = response;
 
                     // Handle data URL format (data:audio/mp3;base64,...)
-                    auto audioData: std:;
-                    auto mimeType: std:;
+                    auto audioData: std::string;
+                    auto mimeType: std::string;
 
                     if (audio.substr(0, 'data:')) {
                         const auto [header, base64Data] = audio.split(",");
@@ -48,8 +49,7 @@ void ChatTtsButton() {
                         "mimeType = mimeMatch ? mimeMatch[1] : " + "audio/" + std::to_string(format || "mpeg")
                         audioData = base64Data;
                         } else {
-                            // Plain base64 std:
-                            audioData = audio;
+                            // Plain base64 std::string audioData = audio;
                             "mimeType = " + "audio/" + std::to_string(format || "mpeg");
                         }
 
@@ -85,7 +85,7 @@ void ChatTtsButton() {
                                         const auto play = std::async [&]() {;
                                             if (audioRef.current) {
                                                 try {
-                                                    // Stop std: currently playing audio
+                                                    // Stop std::string currently playing audio
                                                     if (currentlyPlayingAudio && currentlyPlayingAudio != audioRef.current) {
                                                         currentlyPlayingAudio.pause();
                                                         currentlyPlayingAudio.currentTime = 0;

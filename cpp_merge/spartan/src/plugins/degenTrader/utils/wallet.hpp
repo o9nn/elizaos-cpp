@@ -7,7 +7,7 @@
 
 class TokenBalance;
 
-std::shared_ptr<Keypair> getWalletKeypair(std::shared_ptr<IAgentRuntime> runtime = undefined);
+std::shared_ptr<Keypair> getWalletKeypair(std::shared_ptr<IAgentRuntime> runtime = std::nullopt);
 
 std::shared_ptr<Promise<double>> getWalletBalance(std::shared_ptr<IAgentRuntime> runtime);
 

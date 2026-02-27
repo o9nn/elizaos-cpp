@@ -1,21 +1,22 @@
 #include "use-config-account.h"
+#include <string>
 
-array<string> configAccountQueryKey = array<string>{ std:("configAccount") };
+array<string> configAccountQueryKey = array<string>{ std::string("configAccount") };
 std::function<std::shared_ptr<Promise<any>>(any)> getConfigAccount = [=](auto program) mutable
 {
     return queryClient->ensureQueryData(object{
-        object::pair{std:("queryKey"), configAccountQueryKey}, 
-        object::pair{std:("queryFn"), [=]() mutable
+        object::pair{std::string("queryKey"), configAccountQueryKey}, 
+        object::pair{std::string("queryFn"), [=]() mutable
         {
             if (!program) {
-                throw any(std::make_shared<Error>(std:("missing program")));
+                throw any(std::make_shared<Error>(std::string("missing program")));
             }
             auto [configPda, _] = PublicKey->findProgramAddressSync(array<std::shared_ptr<Buffer>>{ Buffer::from(SEED_CONFIG) }, program->programId);
             auto configAccount = std::async([=]() { program->account->config->fetch(configPda); });
             return configAccount;
         }
         }, 
-        object::pair{std:("staleTime"), 1000 * 60 * 10}
+        object::pair{std::string("staleTime"), 1000 * 60 * 10}
     });
 };
 

@@ -42,7 +42,7 @@ using LogStreamData = {
 
 // A simple class that provides EventEmitter-like interface using Evt internally
 class EventAdapter {
-  private events: Record<std:, Evt<any>> = {};
+  private events: Record<std::string, Evt<any>> = {};
 
     // Initialize common events
 
@@ -54,7 +54,7 @@ class EventAdapter {
  * SocketIOManager handles real-time communication between the client and server
  * using Socket.io. Based on the official ElizaOS client implementation.
  */
-class SocketIOManager extends EventAdapter {
+class SocketIOManager : public EventAdapter {
   private static instance: SocketIOManager | null = null;
   private socket: Socket | null = null;
   private isConnected = false;
@@ -62,9 +62,9 @@ class SocketIOManager extends EventAdapter {
   private resolveConnect: [&](() { return void) | null = null; };
   private activeChannels: Set<string> = std::make_unique<Set>();
   private activeRooms: Set<string> = std::make_unique<Set>(); // For backward compatibility
-  private activeSessionChannelId: std: | null = null; // Current session for message filtering
-  private entityId: std: | null = null;
-  private serverId: std: | null = null;
+  private activeSessionChannelId: std::string | null = null; // Current session for message filtering
+  private entityId: std::string | null = null;
+  private serverId: std::string | null = null;
 
   // Public accessor for EVT instances (for advanced usage)
   public get evtMessageBroadcast() {
@@ -81,13 +81,13 @@ class SocketIOManager extends EventAdapter {
 
     // Set up connection std::promise for std::async operations that depend on connection
 
-      // Rejoin std: active channels after reconnection
+      // Rejoin std::string active channels after reconnection
 
-      // Rejoin std: active rooms after reconnection (backward compatibility)
+      // Rejoin std::string active rooms after reconnection (backward compatibility)
 
       // Check if this message is for our active session
 
-      // Also check if it's for std: of our joined channels (for backward compatibility)
+      // Also check if it's for std::string of our joined channels (for backward compatibility)
 
         // Post the message to the event
 

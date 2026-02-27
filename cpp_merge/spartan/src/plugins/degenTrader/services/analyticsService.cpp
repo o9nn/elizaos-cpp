@@ -1,11 +1,12 @@
 #include "analyticsService.hpp"
+#include <string>
 
 AnalyticsService::AnalyticsService(std::shared_ptr<IAgentRuntime> runtime_) : runtime(runtime_)  {
 }
 
 std::shared_ptr<Promise<void>> AnalyticsService::initialize()
 {
-    logger->info(std:("Initializing analytics service"));
+    logger->info(std::string("Initializing analytics service"));
     return std::shared_ptr<Promise<void>>();
 }
 
@@ -24,7 +25,7 @@ std::shared_ptr<Promise<double>> AnalyticsService::scoreTechnicalSignals(any sig
     } else if (AND((signals["macd"]["value"] < 0), (Math->abs(signals["macd"]["value"]) > Math->abs(signals["macd"]["signal"])))) {
         score -= 5;
     }
-    if (AND((signals["volumeProfile"]["trend"] == std:("increasing")), (!signals["volumeProfile"]["unusualActivity"]))) {
+    if (AND((signals["volumeProfile"]["trend"] == std::string("increasing")), (!signals["volumeProfile"]["unusualActivity"]))) {
         score += 10;
     }
     if (signals["volatility"] < 0.2) score += 10; else if (signals["volatility"] > 0.5) score -= 5;
@@ -61,34 +62,34 @@ std::shared_ptr<Promise<void>> AnalyticsService::trackSlippageImpact(string toke
         auto expected = Number(expectedAmount);
         auto actual = Number(actualAmount);
         if (OR((expected <= 0), (actual <= 0))) {
-            logger->warn(std:("Invalid amounts for slippage tracking"), object{
-                object::pair{std:("tokenAddress"), std:("tokenAddress")}, 
-                object::pair{std:("expectedAmount"), std:("expectedAmount")}, 
-                object::pair{std:("actualAmount"), std:("actualAmount")}
+            logger->warn(std::string("Invalid amounts for slippage tracking"), object{
+                object::pair{std::string("tokenAddress"), std::string("tokenAddress")}, 
+                object::pair{std::string("expectedAmount"), std::string("expectedAmount")}, 
+                object::pair{std::string("actualAmount"), std::string("actualAmount")}
             });
             return std::shared_ptr<Promise<void>>();
         }
         auto actualSlippage = ((expected - actual) / expected) * 100;
         auto actualSlippageBps = Math->floor(actualSlippage * 100);
-        std::async([=]() { this->runtime->setCache(std:("slippage_impact:") + tokenAddress + std:(":") + Date->now() + string_empty, object{
-            object::pair{std:("tokenAddress"), std:("tokenAddress")}, 
-            object::pair{std:("timestamp"), ((std::make_shared<Date>()))->toISOString()}, 
-            object::pair{std:("expectedAmount"), std:("expectedAmount")}, 
-            object::pair{std:("actualAmount"), std:("actualAmount")}, 
-            object::pair{std:("slippageBpsUsed"), slippageBps}, 
-            object::pair{std:("actualSlippageBps"), std:("actualSlippageBps")}, 
-            object::pair{std:("isSell"), std:("isSell")}
+        std::async([=]() { this->runtime->setCache(std::string("slippage_impact:") + tokenAddress + std::string(":") + Date->now() + string_empty, object{
+            object::pair{std::string("tokenAddress"), std::string("tokenAddress")}, 
+            object::pair{std::string("timestamp"), ((std::make_shared<Date>()))->toISOString()}, 
+            object::pair{std::string("expectedAmount"), std::string("expectedAmount")}, 
+            object::pair{std::string("actualAmount"), std::string("actualAmount")}, 
+            object::pair{std::string("slippageBpsUsed"), slippageBps}, 
+            object::pair{std::string("actualSlippageBps"), std::string("actualSlippageBps")}, 
+            object::pair{std::string("isSell"), std::string("isSell")}
         }); });
-        logger->info(std:("Trade slippage impact tracked"), object{
-            object::pair{std:("tokenAddress"), std:("tokenAddress")}, 
-            object::pair{std:("slippageBpsUsed"), slippageBps}, 
-            object::pair{std:("actualSlippageBps"), std:("actualSlippageBps")}, 
-            object::pair{std:("efficiency"), actualSlippageBps / slippageBps}
+        logger->info(std::string("Trade slippage impact tracked"), object{
+            object::pair{std::string("tokenAddress"), std::string("tokenAddress")}, 
+            object::pair{std::string("slippageBpsUsed"), slippageBps}, 
+            object::pair{std::string("actualSlippageBps"), std::string("actualSlippageBps")}, 
+            object::pair{std::string("efficiency"), actualSlippageBps / slippageBps}
         });
     }
     catch (const any& error)
     {
-        console->log(std:("Error tracking slippage impact"), error);
+        console->log(std::string("Error tracking slippage impact"), error);
     }
 }
 
@@ -132,9 +133,9 @@ object AnalyticsService::calculateMACD(array<double> prices)
     auto signalPeriod = 9;
     if (prices->get_length() < longPeriod) {
         return object{
-            object::pair{std:("macd"), 0}, 
-            object::pair{std:("signal"), 0}, 
-            object::pair{std:("histogram"), 0}
+            object::pair{std::string("macd"), 0}, 
+            object::pair{std::string("signal"), 0}, 
+            object::pair{std::string("histogram"), 0}
         };
     }
     auto shortEMA = this->calculateEMA(prices, shortPeriod);
@@ -143,9 +144,9 @@ object AnalyticsService::calculateMACD(array<double> prices)
     auto signalLine = this->calculateEMA(array<double>{ macdLine }, signalPeriod);
     auto histogram = macdLine - signalLine;
     return object{
-        object::pair{std:("macd"), macdLine}, 
-        object::pair{std:("signal"), signalLine}, 
-        object::pair{std:("histogram"), std:("histogram")}
+        object::pair{std::string("macd"), macdLine}, 
+        object::pair{std::string("signal"), signalLine}, 
+        object::pair{std::string("histogram"), std::string("histogram")}
     };
 }
 
@@ -172,18 +173,18 @@ std::shared_ptr<Promise<void>> AnalyticsService::trackTradeExecution(object data
     try
     {
         auto tradeData = utils::assign(object{
-            object::pair{std:("id"), uuidv4()}, 
-            object::pair{std:("timestamp"), ((std::make_shared<Date>()))->toISOString()}
+            object::pair{std::string("id"), uuidv4()}, 
+            object::pair{std::string("timestamp"), ((std::make_shared<Date>()))->toISOString()}
         }, data);
-        std::async([=]() { this->runtime->setCache(std:("trade_execution:") + tradeData["id"] + string_empty, tradeData); });
-        logger->info(std:("Trade execution tracked: ") + data["type"] + string_empty, object{
-            object::pair{std:("tokenAddress"), data["tokenAddress"]}, 
-            object::pair{std:("amount"), data["amount"]}
+        std::async([=]() { this->runtime->setCache(std::string("trade_execution:") + tradeData["id"] + string_empty, tradeData); });
+        logger->info(std::string("Trade execution tracked: ") + data["type"] + string_empty, object{
+            object::pair{std::string("tokenAddress"), data["tokenAddress"]}, 
+            object::pair{std::string("amount"), data["amount"]}
         });
     }
     catch (const any& error)
     {
-        console->log(std:("Error tracking trade execution:"), error);
+        console->log(std::string("Error tracking trade execution:"), error);
     }
     return std::shared_ptr<Promise<void>>();
 }
@@ -193,27 +194,27 @@ std::shared_ptr<Promise<any>> AnalyticsService::addTradePerformance(std::shared_
     try
     {
         auto id = as<std::shared_ptr<>>(uuidv4());
-        string_empty + string + std:("-") + string + std:("-") + string + std:("-") + string + std:("-") + string + string_empty;
+        string_empty + string + std::string("-") + string + std::string("-") + string + std::string("-") + string + std::string("-") + string + string_empty;
         auto tradeData = utils::assign(object{
-            object::pair{std:("id"), std:("id")}, 
-            object::pair{std:("isSimulation"), std:("isSimulation")}, 
-            object::pair{std:("created_at"), ((std::make_shared<Date>()))->toISOString()}
+            object::pair{std::string("id"), std::string("id")}, 
+            object::pair{std::string("isSimulation"), std::string("isSimulation")}, 
+            object::pair{std::string("created_at"), ((std::make_shared<Date>()))->toISOString()}
         }, data);
-        std::async([=]() { this->runtime->setCache(std:("trade_performance:") + data->token_address + std:(":") + data->buy_timeStamp + string_empty, tradeData); });
-        auto allTradesKey = (isSimulation) ? std:("all_simulation_trades") : std:("all_trades");
+        std::async([=]() { this->runtime->setCache(std::string("trade_performance:") + data->token_address + std::string(":") + data->buy_timeStamp + string_empty, tradeData); });
+        auto allTradesKey = (isSimulation) ? std::string("all_simulation_trades") : std::string("all_trades");
         auto allTrades = OR(((std::async([=]() { this->runtime->getCache<array<string>>(allTradesKey); }))), (array<any>()));
-        allTrades["push"](string_empty + data->token_address + std:(":") + data->buy_timeStamp + string_empty);
+        allTrades["push"](string_empty + data->token_address + std::string(":") + data->buy_timeStamp + string_empty);
         std::async([=]() { this->runtime->setCache(allTradesKey, allTrades); });
         std::async([=]() { this->updateTokenStatistics(data->token_address, object{
-            object::pair{std:("profit_usd"), data->profit_usd}, 
-            object::pair{std:("profit_percent"), data->profit_percent}, 
-            object::pair{std:("rapidDump"), data->rapidDump}
+            object::pair{std::string("profit_usd"), data->profit_usd}, 
+            object::pair{std::string("profit_percent"), data->profit_percent}, 
+            object::pair{std::string("rapidDump"), data->rapidDump}
         }); });
         return tradeData;
     }
     catch (const any& error)
     {
-        console->log(std:("Error adding trade performance:"), error);
+        console->log(std::string("Error adding trade performance:"), error);
         throw any(error);
     }
 }
@@ -222,21 +223,21 @@ std::shared_ptr<Promise<void>> AnalyticsService::updateTokenStatistics(string to
 {
     try
     {
-        auto stats = OR(((std::async([=]() { this->runtime->getCache<any>(std:("token_stats:") + tokenAddress + string_empty); }))), (object{
-            object::pair{std:("trades"), 0}, 
-            object::pair{std:("total_profit_usd"), 0}, 
-            object::pair{std:("average_profit_percent"), 0}, 
-            object::pair{std:("rapid_dumps"), 0}
+        auto stats = OR(((std::async([=]() { this->runtime->getCache<any>(std::string("token_stats:") + tokenAddress + string_empty); }))), (object{
+            object::pair{std::string("trades"), 0}, 
+            object::pair{std::string("total_profit_usd"), 0}, 
+            object::pair{std::string("average_profit_percent"), 0}, 
+            object::pair{std::string("rapid_dumps"), 0}
         }));
         stats["trades"] += 1;
         stats["total_profit_usd"] += data["profit_usd"];
         stats["average_profit_percent"] = (stats["average_profit_percent"] * (stats["trades"] - 1) + data["profit_percent"]) / stats["trades"];
         if (data["rapidDump"]) stats["rapid_dumps"] += 1;
-        std::async([=]() { this->runtime->setCache(std:("token_stats:") + tokenAddress + string_empty, stats); });
+        std::async([=]() { this->runtime->setCache(std::string("token_stats:") + tokenAddress + string_empty, stats); });
     }
     catch (const any& error)
     {
-        console->log(std:("Error updating token statistics:"), error);
+        console->log(std::string("Error updating token statistics:"), error);
     }
     return std::shared_ptr<Promise<void>>();
 }

@@ -34,22 +34,22 @@ double calculateAmountOutBuy(double reserveToken, double amount, double _solDeci
 
 // Type definition for token metadata from JSON
 struct TokenMetadataJson {
-    std: name;
-    std: symbol;
-    std: description;
-    std: image;
-    std::optional<std:> twitter;
-    std::optional<std:> telegram;
-    std::optional<std:> farcaster;
-    std::optional<std:> website;
-    std::optional<std:> discord;
+    std::string name;
+    std::string symbol;
+    std::string description;
+    std::string image;
+    std::optional<std::string> twitter;
+    std::optional<std::string> telegram;
+    std::optional<std::string> farcaster;
+    std::optional<std::string> website;
+    std::optional<std::string> discord;
 };
 
 /**
  * Fetches metadata with exponential backoff retry
  */
 
-std::future<void> getTxIdAndCreatorFromTokenAddress(const std:& tokenAddress);
+std::future<void> getTxIdAndCreatorFromTokenAddress(const std::string& tokenAddress);
 
 /**
  * Creates a new token record with all required data
@@ -110,7 +110,7 @@ std::future<void> getTxIdAndCreatorFromTokenAddress(const std:& tokenAddress);
  * @param db Database instance
  * @returns Object containing maxVolume and maxHolders values for normalization
  */
-std::future<void> getFeaturedMaxValues(const std:& db);
+std::future<void> getFeaturedMaxValues(const std::string& db);
 
 /**
  * Creates a SQL expression for calculating the weighted featured score
@@ -142,7 +142,7 @@ double calculateFeaturedScore(std::optional<{ volume24h | null; holderCount | nu
  * @param sortOrder Sort direction ("asc" or "desc")
  * @returns Updated tokens query with the weighted sorting applied
  */
-void applyFeaturedSort(const std:& tokensQuery, double maxVolume, double maxHolders, const std:& sortOrder);
+void applyFeaturedSort(const std::string& tokensQuery, double maxVolume, double maxHolders, const std::string& sortOrder);
 
 
 } // namespace elizaos

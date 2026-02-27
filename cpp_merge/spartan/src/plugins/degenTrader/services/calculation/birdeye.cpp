@@ -1,4 +1,5 @@
 #include "birdeye.hpp"
+#include <string>
 
 BirdeyeService::BirdeyeService(string apiKey_) : apiKey(apiKey_)  {
 }
@@ -6,10 +7,10 @@ BirdeyeService::BirdeyeService(string apiKey_) : apiKey(apiKey_)  {
 any BirdeyeService::getBirdeyeFetchOptions()
 {
     return object{
-        object::pair{std:("headers"), object{
-            object::pair{std:("accept"), std:("application/json")}, 
-            object::pair{std:("x-CHAIN"), std:("solana")}, 
-            object::pair{std:("X-API-KEY"), this->apiKey}
+        object::pair{std::string("headers"), object{
+            object::pair{std::string("accept"), std::string("application/json")}, 
+            object::pair{std::string("x-CHAIN"), std::string("solana")}, 
+            object::pair{std::string("X-API-KEY"), this->apiKey}
         }}
     };
 }
@@ -18,24 +19,24 @@ std::shared_ptr<Promise<object>> BirdeyeService::getTokenMarketData(string token
 {
     try
     {
-        if (tokenAddress == std:("So11111111111111111111111111111111111111111")) {
-            tokenAddress = std:("So11111111111111111111111111111111111111112");
+        if (tokenAddress == std::string("So11111111111111111111111111111111111111111")) {
+            tokenAddress = std::string("So11111111111111111111111111111111111111112");
         }
-        auto [response, volResponse, priceHistoryResponse] = std::async([=]() { Promise->all(std::tuple<std::shared_ptr<Promise<std::shared_ptr<Response>>>, std::shared_ptr<Promise<std::shared_ptr<Response>>>, std::shared_ptr<Promise<std::shared_ptr<Response>>>>{ fetch(string_empty + PROVIDER_CONFIG["BIRDEYE_API"] + std:("/defi/v3/token/market-data?address=") + tokenAddress + string_empty, this->getBirdeyeFetchOptions()), fetch(string_empty + PROVIDER_CONFIG["BIRDEYE_API"] + std:("/defi/price_volume/single?address=") + tokenAddress + std:("&type=24h"), this->getBirdeyeFetchOptions()), fetch(string_empty + PROVIDER_CONFIG["BIRDEYE_API"] + std:("/defi/history_price?address=") + tokenAddress + std:("&address_type=token&type=15m"), this->getBirdeyeFetchOptions()) }); });
+        auto [response, volResponse, priceHistoryResponse] = std::async([=]() { Promise->all(std::tuple<std::shared_ptr<Promise<std::shared_ptr<Response>>>, std::shared_ptr<Promise<std::shared_ptr<Response>>>, std::shared_ptr<Promise<std::shared_ptr<Response>>>>{ fetch(string_empty + PROVIDER_CONFIG["BIRDEYE_API"] + std::string("/defi/v3/token/market-data?address=") + tokenAddress + string_empty, this->getBirdeyeFetchOptions()), fetch(string_empty + PROVIDER_CONFIG["BIRDEYE_API"] + std::string("/defi/price_volume/single?address=") + tokenAddress + std::string("&type=24h"), this->getBirdeyeFetchOptions()), fetch(string_empty + PROVIDER_CONFIG["BIRDEYE_API"] + std::string("/defi/history_price?address=") + tokenAddress + std::string("&address_type=token&type=15m"), this->getBirdeyeFetchOptions()) }); });
         if (OR((OR((!response->ok), (!volResponse->ok))), (!priceHistoryResponse->ok))) {
-            throw any(std::make_shared<Error>(std:("Birdeye API error for token ") + tokenAddress + string_empty));
+            throw any(std::make_shared<Error>(std::string("Birdeye API error for token ") + tokenAddress + string_empty));
         }
         auto [data, volData, priceHistoryData] = std::async([=]() { Promise->all(std::tuple<std::shared_ptr<Promise<any>>, std::shared_ptr<Promise<any>>, std::shared_ptr<Promise<any>>>{ response->json(), volResponse->json(), priceHistoryResponse->json() }); });
         if (!data["data"]) {
-            logger->warn(std:("getTokenMarketData - cant save result"), data, std:("for"), tokenAddress);
+            logger->warn(std::string("getTokenMarketData - cant save result"), data, std::string("for"), tokenAddress);
             return this->getEmptyMarketData();
         }
         return object{
-            object::pair{std:("price"), data["data"]["price"]}, 
-            object::pair{std:("marketCap"), OR((data["data"]["market_cap"]), (0))}, 
-            object::pair{std:("liquidity"), OR((data["data"]["liquidity"]), (0))}, 
-            object::pair{std:("volume24h"), OR((volData["data"]["volumeUSD"]), (0))}, 
-            object::pair{std:("priceHistory"), priceHistoryData["data"]["items"]["map"]([=](auto item) mutable
+            object::pair{std::string("price"), data["data"]["price"]}, 
+            object::pair{std::string("marketCap"), OR((data["data"]["market_cap"]), (0))}, 
+            object::pair{std::string("liquidity"), OR((data["data"]["liquidity"]), (0))}, 
+            object::pair{std::string("volume24h"), OR((volData["data"]["volumeUSD"]), (0))}, 
+            object::pair{std::string("priceHistory"), priceHistoryData["data"]["items"]["map"]([=](auto item) mutable
             {
                 return item["value"];
             }
@@ -44,7 +45,7 @@ std::shared_ptr<Promise<object>> BirdeyeService::getTokenMarketData(string token
     }
     catch (const any& error)
     {
-        logger->error(std:("Error fetching token market data:"), error);
+        logger->error(std::string("Error fetching token market data:"), error);
         return this->getEmptyMarketData();
     }
 }
@@ -65,8 +66,8 @@ std::shared_ptr<Promise<any>> BirdeyeService::getTokensMarketData(array<string> 
         auto hundos = chunkArray(tokenAddresses, 100);
         auto multipricePs = hundos->map([=](auto addresses) mutable
         {
-            auto listStr = addresses->join(std:(","));
-            return fetch(string_empty + PROVIDER_CONFIG["BIRDEYE_API"] + std:("/defi/multi_price?list_address=") + listStr + std:("&include_liquidity=true"), this->getBirdeyeFetchOptions());
+            auto listStr = addresses->join(std::string(","));
+            return fetch(string_empty + PROVIDER_CONFIG["BIRDEYE_API"] + std::string("/defi/multi_price?list_address=") + listStr + std::string("&include_liquidity=true"), this->getBirdeyeFetchOptions());
         }
         );
         auto multipriceResps = std::async([=]() { Promise->all(multipricePs); });
@@ -82,13 +83,13 @@ std::shared_ptr<Promise<any>> BirdeyeService::getTokensMarketData(array<string> 
                 auto t = const_(mpd["data"])[ca];
                 if (t) {
                     tokenDb[ca] = object{
-                        object::pair{std:("priceUsd"), t["value"]}, 
-                        object::pair{std:("priceSol"), t["priceInNative"]}, 
-                        object::pair{std:("liquidity"), t["liquidity"]}, 
-                        object::pair{std:("priceChange24h"), t["priceChange24h"]}
+                        object::pair{std::string("priceUsd"), t["value"]}, 
+                        object::pair{std::string("priceSol"), t["priceInNative"]}, 
+                        object::pair{std::string("liquidity"), t["liquidity"]}, 
+                        object::pair{std::string("priceChange24h"), t["priceChange24h"]}
                     };
                 } else {
-                    logger->warn(ca, std:("mpd error"), t);
+                    logger->warn(ca, std::string("mpd error"), t);
                 }
             }
         }
@@ -96,7 +97,7 @@ std::shared_ptr<Promise<any>> BirdeyeService::getTokensMarketData(array<string> 
     }
     catch (const any& error)
     {
-        logger->error(std:("Error fetching multiple tokens market data:"), error);
+        logger->error(std::string("Error fetching multiple tokens market data:"), error);
         return tokenDb;
     }
 }
@@ -104,11 +105,11 @@ std::shared_ptr<Promise<any>> BirdeyeService::getTokensMarketData(array<string> 
 any BirdeyeService::getEmptyMarketData()
 {
     return object{
-        object::pair{std:("price"), 0}, 
-        object::pair{std:("marketCap"), 0}, 
-        object::pair{std:("liquidity"), 0}, 
-        object::pair{std:("volume24h"), 0}, 
-        object::pair{std:("priceHistory"), array<any>()}
+        object::pair{std::string("price"), 0}, 
+        object::pair{std::string("marketCap"), 0}, 
+        object::pair{std::string("liquidity"), 0}, 
+        object::pair{std::string("volume24h"), 0}, 
+        object::pair{std::string("priceHistory"), array<any>()}
     };
 }
 

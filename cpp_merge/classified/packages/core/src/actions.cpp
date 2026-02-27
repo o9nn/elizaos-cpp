@@ -1,4 +1,5 @@
 #include "actions.hpp"
+#include <string>
 
 string formatActionNames(array<std::shared_ptr<Action>> actions)
 {
@@ -11,7 +12,7 @@ string formatActionNames(array<std::shared_ptr<Action>> actions)
     {
         return action->name;
     }
-    )->join(std:(", "));
+    )->join(std::string(", "));
 };
 
 
@@ -24,9 +25,9 @@ string formatActions(array<std::shared_ptr<Action>> actions)
     }
     )->map([=](auto action) mutable
     {
-        return std:("- **") + action->name + std:("**: ") + (OR((action->description), (std:("No description available")))) + string_empty;
+        return std::string("- **") + action->name + std::string("**: ") + (OR((action->description), (std::string("No description available")))) + string_empty;
     }
-    )->join(std:("\
+    )->join(std::string("\
 "));
 };
 
@@ -78,29 +79,29 @@ std::function<string(array<array<std::shared_ptr<ActionExample>>>)> formatSelect
     return examples->map([=](auto example) mutable
     {
         shared randomNames = Array->from(object{
-            object::pair{std:("length"), MAX_NAME_PLACEHOLDERS}
+            object::pair{std::string("length"), MAX_NAME_PLACEHOLDERS}
         }, [=]() mutable
         {
             return uniqueNamesGenerator(object{
-                object::pair{std:("dictionaries"), array<any>{ names }}
+                object::pair{std::string("dictionaries"), array<any>{ names }}
             });
         }
         );
         auto conversation = example->map([=](auto message) mutable
         {
-            auto messageText = string_empty + message->name + std:(": ") + message->content->text + string_empty;
+            auto messageText = string_empty + message->name + std::string(": ") + message->content->text + string_empty;
             for (auto i = 0; i < randomNames->get_length(); i++)
             {
-                messageText = messageText->replaceAll(std:("{{name") + (i + 1) + std:("}}"), const_(randomNames)[i]);
+                messageText = messageText->replaceAll(std::string("{{name") + (i + 1) + std::string("}}"), const_(randomNames)[i]);
             }
             return messageText;
         }
-        )->join(std:("\
+        )->join(std::string("\
 "));
-        return std:("\
+        return std::string("\
 ") + conversation + string_empty;
     }
-    )->join(std:("\
+    )->join(std::string("\
 "));
 };
 

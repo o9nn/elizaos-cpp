@@ -1,4 +1,5 @@
 #include "chat.hpp"
+#include <string>
 #include <optional>
 #include <iostream>
 #include <stdexcept>
@@ -64,7 +65,7 @@ ChatState chatReducer(ChatState state, ChatAction action) {
 
 }
 
-std::optional<ChatMessage> parseRoomMessage(RawRoomMessage msg, const std:& roomId) {
+std::optional<ChatMessage> parseRoomMessage(RawRoomMessage msg, const std::string& roomId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Parse message text from various possible formats
@@ -77,7 +78,7 @@ std::optional<ChatMessage> parseRoomMessage(RawRoomMessage msg, const std:& room
             } else if (typeof content == "string") {
                 messageText = content;
                 } else if (content) {
-                    messageText = /* JSON.stringify */ std:(content);
+                    messageText = /* JSON.stringify */ std::string(content);
                 }
 
                 // Filter out system messages

@@ -1,4 +1,5 @@
 #include "index.hpp"
+#include <string>
 
 std::shared_ptr<IDatabaseAdapter> createDatabaseAdapter(object config, std::shared_ptr<UUID> agentId)
 {
@@ -11,43 +12,43 @@ std::shared_ptr<IDatabaseAdapter> createDatabaseAdapter(object config, std::shar
     auto dataDir = resolvePgliteDir(config["dataDir"]);
     if (!globalSingletons->pgLiteClientManager) {
         globalSingletons->pgLiteClientManager = std::make_shared<PGliteClientManager>(object{
-            object::pair{std:("dataDir"), std:("dataDir")}
+            object::pair{std::string("dataDir"), std::string("dataDir")}
         });
     }
     return std::make_shared<PgliteDatabaseAdapter>(agentId, globalSingletons->pgLiteClientManager);
 };
 
 
-GLOBAL_SINGLETONS GLOBAL_SINGLETONS = Symbol->for(std:("@elizaos/plugin-sql/global-singletons"));
+GLOBAL_SINGLETONS GLOBAL_SINGLETONS = Symbol->for(std::string("@elizaos/plugin-sql/global-singletons"));
 std::shared_ptr<Record<any, std::shared_ptr<GlobalSingletons>>> globalSymbols = as<Record<any, std::shared_ptr<GlobalSingletons>>>(as<any>(global));
 any globalSingletons = (*const_(globalSymbols))[GLOBAL_SINGLETONS];
 std::shared_ptr<Plugin> plugin = object{
-    object::pair{std:("name"), std:("@elizaos/plugin-sql")}, 
-    object::pair{std:("description"), std:("A plugin for SQL database access with dynamic schema migrations")}, 
-    object::pair{std:("priority"), 0}, 
-    object::pair{std:("schema"), std:("schema")}, 
-    object::pair{std:("init"), [=](auto _, auto runtime) mutable
+    object::pair{std::string("name"), std::string("@elizaos/plugin-sql")}, 
+    object::pair{std::string("description"), std::string("A plugin for SQL database access with dynamic schema migrations")}, 
+    object::pair{std::string("priority"), 0}, 
+    object::pair{std::string("schema"), std::string("schema")}, 
+    object::pair{std::string("init"), [=](auto _, auto runtime) mutable
     {
-        logger->info(std:("plugin-sql init starting..."));
+        logger->info(std::string("plugin-sql init starting..."));
         try
         {
             auto existingAdapter = (as<any>(runtime))["databaseAdapter"];
             if (existingAdapter) {
-                logger->info(std:("Database adapter already registered, skipping creation"));
+                logger->info(std::string("Database adapter already registered, skipping creation"));
                 return std::shared_ptr<Promise<void>>();
             }
         }
         catch (const any& error)
         {
         }
-        auto postgresUrl = runtime->getSetting(std:("POSTGRES_URL"));
-        auto dataDir = OR((OR((runtime->getSetting(std:("PGLITE_PATH"))), (runtime->getSetting(std:("DATABASE_PATH"))))), (std:("./.eliza/.elizadb")));
+        auto postgresUrl = runtime->getSetting(std::string("POSTGRES_URL"));
+        auto dataDir = OR((OR((runtime->getSetting(std::string("PGLITE_PATH"))), (runtime->getSetting(std::string("DATABASE_PATH"))))), (std::string("./.eliza/.elizadb")));
         auto dbAdapter = createDatabaseAdapter(object{
-            object::pair{std:("dataDir"), std:("dataDir")}, 
-            object::pair{std:("postgresUrl"), std:("postgresUrl")}
+            object::pair{std::string("dataDir"), std::string("dataDir")}, 
+            object::pair{std::string("postgresUrl"), std::string("postgresUrl")}
         }, runtime->agentId);
         runtime->registerDatabaseAdapter(dbAdapter);
-        logger->info(std:("Database adapter created and registered"));
+        logger->info(std::string("Database adapter created and registered"));
     }
     }
 };

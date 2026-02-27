@@ -1,10 +1,11 @@
 #include "common.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std: formatDuration(double seconds) {
+std::string formatDuration(double seconds) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (seconds == 0) {
@@ -35,7 +36,7 @@ std: formatDuration(double seconds) {
 
 }
 
-std: truncateString(const std:& str, double maxLength) {
+std::string truncateString(const std::string& str, double maxLength) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!str || str.size() <= maxLength) {
@@ -45,10 +46,10 @@ std: truncateString(const std:& str, double maxLength) {
 
 }
 
-std: calculateHash(const std:& data) {
+std::string calculateHash(const std::string& data) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const auto stringData = typeof data == "object" ? /* JSON.stringify */ std:(data, Object.keys(data).sort()) : std::to_string(data);
+    const auto stringData = typeof data == "object" ? /* JSON.stringify */ std::string(data, Object.keys(data).sort()) : std::to_string(data);
 
     return crypto.createHash("sha256").update(stringData).digest("hex");
 

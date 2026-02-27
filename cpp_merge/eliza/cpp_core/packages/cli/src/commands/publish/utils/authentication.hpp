@@ -20,6 +20,6 @@ namespace elizaos {
 /**
  * Get or prompt for NPM username and ensure authentication
  */
-std::future<std:> getNpmUsername();
+std::future<std::string> getNpmUsername();
 
 } // namespace elizaos

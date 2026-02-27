@@ -1,4 +1,5 @@
 #include "agents.hpp"
+#include <string>
 #include <vector>
 #include <map>
 #include <unordered_map>
@@ -23,13 +24,13 @@ void AgentsSection() {
         // --- Token Agents State ---
         const auto [tokenAgents, setTokenAgents] = useState<TokenAgent[]>([]);
         const auto [isAgentsLoading, setIsAgentsLoading] = useState(false);
-        const auto [agentsError, setAgentsError] = useState<std: | nullptr>(nullptr);
+        const auto [agentsError, setAgentsError] = useState<std::string | nullptr>(nullptr);
         // --- End Token Agents State ---
 
         // --- Internal Token Mint Derivation ---
-        const auto { mint: urlTokenMint } = useParams<{ mint: std: }>();
+        const auto { mint: urlTokenMint } = useParams<{ mint: std::string }>();
         const auto location = useLocation();
-        const auto [detectedTokenMint, setDetectedTokenMint] = useState<std: | nullptr>(;
+        const auto [detectedTokenMint, setDetectedTokenMint] = useState<std::string | nullptr>(;
         nullptr,
         );
         useEffect[&](() {
@@ -55,7 +56,7 @@ void AgentsSection() {
 
             // Creator profile cache
             const auto [creatorProfiles, setCreatorProfiles] = useState<;
-            Record<std:, CreatorProfile>;
+            Record<std::string, CreatorProfile>;
             >({});
             const auto [isFetchingProfiles, setIsFetchingProfiles] = useState(false);
 
@@ -73,7 +74,7 @@ void AgentsSection() {
 
             // --- Fetch Creator Profiles ---
             const auto fetchProfileData = std::async (;
-            address: std:,
+            address: std::string,
             ): Promise<CreatorProfile | nullptr> => {
                 try {
                     const auto response = "fetch(" + API_BASE_URL + "/api/users/" + address;
@@ -102,7 +103,7 @@ void AgentsSection() {
                     try {
                         const auto profilePromises = addressesToFetch.std::map(fetchProfileData);
                         const auto profiles = Promise.all(profilePromises);
-                        const std::unordered_map<std:, CreatorProfile> newProfiles = {};
+                        const std::unordered_map<std::string, CreatorProfile> newProfiles = {};
                         addressesToFetch.forEach[&]((addr, index) {
                             newProfiles[addr] = profiles[index] || {
                                 displayName: shortenAddress(addr),
@@ -138,8 +139,8 @@ void AgentsSection() {
                                             ]);
 
                                             std::vector<TokenAgent> fetchedAgents = [];
-                                            std: agentsFetchError = nullptr;
-                                            std: tokenFetchError = nullptr;
+                                            std::string agentsFetchError = nullptr;
+                                            std::string tokenFetchError = nullptr;
 
                                             // Process Agents Response
                                             if (agentsResult.status == "fulfilled" && agentsResult.value.ok) {
@@ -151,7 +152,7 @@ void AgentsSection() {
                                                     // *** ADD LOG HERE ***
                                                     console.log(
                                                     "Received agents data from API:",
-                                                    /* JSON.stringify */ std:(fetchedAgents, nullptr, 2),
+                                                    /* JSON.stringify */ std::string(fetchedAgents, nullptr, 2),
                                                     );
                                                     // *** END LOGGING ***
 
@@ -183,7 +184,7 @@ void AgentsSection() {
                                                             console.log(
                                                             "[fetchData] tokenDataResult value:"
                                                             tokenDataResult.value;
-                                                            ? /* JSON.stringify */ std:(tokenDataResult.value, nullptr, 2);
+                                                            ? /* JSON.stringify */ std::string(tokenDataResult.value, nullptr, 2);
                                                             : "nullptr/std::nullopt",
                                                             );
                                                             if (tokenDataResult.value) {
@@ -206,7 +207,7 @@ void AgentsSection() {
                                                                     }
                                                                     // *** END LOG ***
 
-                                                                    // Combine errors if std: occurred
+                                                                    // Combine errors if std::string occurred
                                                                     const auto combinedError = [agentsFetchError, tokenFetchError].filter(Boolean).join(". ");
                                                                     if (combinedError) {
                                                                         setAgentsError(combinedError);
@@ -234,7 +235,7 @@ void AgentsSection() {
                                                                                     // *** ADD LOG: Log loaded credentials ***
                                                                                     console.log(
                                                                                     "[AgentsSection Mount] Loaded credentials from storage:",
-                                                                                    /* JSON.stringify */ std:(parsed, nullptr, 2),
+                                                                                    /* JSON.stringify */ std::string(parsed, nullptr, 2),
                                                                                     );
                                                                                     if (parsed.expiresAt > Date.now()) {
                                                                                         setTwitterCredentials(parsed);

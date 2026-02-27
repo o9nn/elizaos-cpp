@@ -1,4 +1,5 @@
 #include "server.hpp"
+#include <string>
 #include <optional>
 #include <map>
 #include <iostream>
@@ -109,7 +110,7 @@ TrajectoryContent addModelStats(TrajectoryContent content) {
 
 }
 
-std::optional<TrajectoryContent> getTrajectory(const std:& filePath) {
+std::optional<TrajectoryContent> getTrajectory(const std::string& filePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -147,7 +148,7 @@ std::optional<TrajectoryContent> getTrajectory(const std:& filePath) {
 
 }
 
-void startInspectorServer(std::optional<std:> options) {
+void startInspectorServer(std::optional<std::string> options) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto app = express();

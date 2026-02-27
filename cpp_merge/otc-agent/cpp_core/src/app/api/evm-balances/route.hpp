@@ -18,29 +18,29 @@ namespace elizaos {
 
 
 struct TokenBalance {
-    std: contractAddress;
-    std: symbol;
-    std: name;
+    std::string contractAddress;
+    std::string symbol;
+    std::string name;
     double decimals;
-    std: balance;
-    std::optional<std:> logoUrl;
+    std::string balance;
+    std::optional<std::string> logoUrl;
     std::optional<double> priceUsd;
     std::optional<double> balanceUsd;
 };
 
 // Metadata cache (permanent - token metadata doesn't change)
 struct CachedTokenMetadata {
-    std: symbol;
-    std: name;
+    std::string symbol;
+    std::string name;
     double decimals;
-    std::optional<std:> logoUrl;
+    std::optional<std::string> logoUrl;
 };
 
 // Bulk metadata cache - stores all known metadata per chain in one key
 struct BulkMetadataCache {
 };
 
-std::future<void> setBulkMetadataCache(const std:& chain, const std::unordered_map<std:, CachedTokenMetadata>& metadata);
+std::future<void> setBulkMetadataCache(const std::string& chain, const std::unordered_map<std::string, CachedTokenMetadata>& metadata);
 
 // Price cache TTL: 15 minutes
 
@@ -51,15 +51,15 @@ struct CachedWalletBalances {
     double cachedAt;
 };
 
-std::future<void> setCachedWalletBalances(const std:& chain, const std:& address, const std::vector<TokenBalance>& tokens);
+std::future<void> setCachedWalletBalances(const std::string& chain, const std::string& address, const std::vector<TokenBalance>& tokens);
 
 /**
  * Cache an image URL to Vercel Blob storage
  * Returns the cached blob URL, or null if caching fails
  */
-std::future<std:> cacheImageToBlob(const std:& imageUrl);
+std::future<std::string> cacheImageToBlob(const std::string& imageUrl);
 
-std: getExtensionFromUrl(const std:& url);
+std::string getExtensionFromUrl(const std::string& url);
 
 // Minimum thresholds to filter obvious dust
 // Very permissive - we want to show new tokens without prices
@@ -71,7 +71,7 @@ struct BulkPriceCache {
     double cachedAt;
 };
 
-std::future<void> setBulkPriceCache(const std:& chain, const std::unordered_map<std:, double>& prices);
+std::future<void> setBulkPriceCache(const std::string& chain, const std::unordered_map<std::string, double>& prices);
 
 /**
  * Fetch token balances using Alchemy's getTokenBalances + cached metadata

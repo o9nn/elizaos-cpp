@@ -1,51 +1,52 @@
 #include "logger.test.h"
+#include <string>
 
 object mockEnv = object{
-    object::pair{std:("LOG_LEVEL"), string_empty}, 
-    object::pair{std:("DEFAULT_LOG_LEVEL"), string_empty}, 
-    object::pair{std:("LOG_JSON_FORMAT"), string_empty}, 
-    object::pair{std:("SENTRY_LOGGING"), std:("false")}, 
-    object::pair{std:("LOG_DIAGNOSTIC"), string_empty}, 
-    object::pair{std:("LOG_TIMESTAMPS"), string_empty}
+    object::pair{std::string("LOG_LEVEL"), string_empty}, 
+    object::pair{std::string("DEFAULT_LOG_LEVEL"), string_empty}, 
+    object::pair{std::string("LOG_JSON_FORMAT"), string_empty}, 
+    object::pair{std::string("SENTRY_LOGGING"), std::string("false")}, 
+    object::pair{std::string("LOG_DIAGNOSTIC"), string_empty}, 
+    object::pair{std::string("LOG_TIMESTAMPS"), string_empty}
 };
 
 void Main(void)
 {
-    mock->module(std:("adze"), [=]() mutable
+    mock->module(std::string("adze"), [=]() mutable
     {
         return (object{
-            object::pair{std:("adze"), object{
-                object::pair{std:("withConfig"), mock([=]() mutable
+            object::pair{std::string("adze"), object{
+                object::pair{std::string("withConfig"), mock([=]() mutable
                 {
                     return (object{
-                        object::pair{std:("info"), mock()}, 
-                        object::pair{std:("error"), mock()}, 
-                        object::pair{std:("warn"), mock()}, 
-                        object::pair{std:("debug"), mock()}, 
-                        object::pair{std:("verbose"), mock()}, 
-                        object::pair{std:("trace"), mock()}, 
-                        object::pair{std:("custom"), mock()}
+                        object::pair{std::string("info"), mock()}, 
+                        object::pair{std::string("error"), mock()}, 
+                        object::pair{std::string("warn"), mock()}, 
+                        object::pair{std::string("debug"), mock()}, 
+                        object::pair{std::string("verbose"), mock()}, 
+                        object::pair{std::string("trace"), mock()}, 
+                        object::pair{std::string("custom"), mock()}
                     });
                 }
                 )}, 
-                object::pair{std:("use"), mock()}
+                object::pair{std::string("use"), mock()}
             }}, 
-            object::pair{std:("createShed"), mock([=]() mutable
+            object::pair{std::string("createShed"), mock([=]() mutable
             {
                 return (object{
-                    object::pair{std:("bundle"), mock([=]() mutable
+                    object::pair{std::string("bundle"), mock([=]() mutable
                     {
                         return (object{});
                     }
                     )}, 
-                    object::pair{std:("clear"), mock()}
+                    object::pair{std::string("clear"), mock()}
                 });
             }
             )}
         });
     }
     );
-    describe(std:("Logger"), [=]() mutable
+    describe(std::string("Logger"), [=]() mutable
     {
         shared<std::shared_ptr<NodeJS::ProcessEnv>> originalEnv;
         beforeEach([=]() mutable
@@ -65,140 +66,140 @@ void Main(void)
             process->env = originalEnv;
         }
         );
-        describe(std:("Logger Creation"), [=]() mutable
+        describe(std::string("Logger Creation"), [=]() mutable
         {
-            it(std:("should logger instance"), [=]() mutable
+            it(std::string("should logger instance"), [=]() mutable
             {
                 expect(logger)->toBeDefined();
-                expect(type_of(logger["info"]))->toBe(std:("function"));
-                expect(type_of(logger["error"]))->toBe(std:("function"));
+                expect(type_of(logger["info"]))->toBe(std::string("function"));
+                expect(type_of(logger["error"]))->toBe(std::string("function"));
                 expect(logger["warn"])->toBeDefined();
                 expect(logger["debug"])->toBeDefined();
-                expect(type_of(logger["warn"]))->toBe(std:("function"));
-                expect(type_of(logger["debug"]))->toBe(std:("function"));
+                expect(type_of(logger["warn"]))->toBe(std::string("function"));
+                expect(type_of(logger["debug"]))->toBe(std::string("function"));
             }
             );
-            it(std:("should elizaLogger as alias for backward compatibility"), [=]() mutable
+            it(std::string("should elizaLogger as alias for backward compatibility"), [=]() mutable
             {
                 expect(elizaLogger)->toBeDefined();
                 expect(elizaLogger)->toBe(logger);
             }
             );
-            it(std:("should have custom log levels"), [=]() mutable
+            it(std::string("should have custom log levels"), [=]() mutable
             {
                 auto testLogger = createLogger(object{
-                    object::pair{std:("agentName"), std:("test")}
+                    object::pair{std::string("agentName"), std::string("test")}
                 });
-                expect(type_of(testLogger["fatal"]))->toBe(std:("function"));
-                expect(type_of(testLogger["error"]))->toBe(std:("function"));
-                expect(type_of(testLogger["warn"]))->toBe(std:("function"));
-                expect(type_of(testLogger["info"]))->toBe(std:("function"));
-                expect(type_of(testLogger["debug"]))->toBe(std:("function"));
-                expect(type_of(testLogger["trace"]))->toBe(std:("function"));
-                expect(type_of(testLogger["verbose"]))->toBe(std:("function"));
+                expect(type_of(testLogger["fatal"]))->toBe(std::string("function"));
+                expect(type_of(testLogger["error"]))->toBe(std::string("function"));
+                expect(type_of(testLogger["warn"]))->toBe(std::string("function"));
+                expect(type_of(testLogger["info"]))->toBe(std::string("function"));
+                expect(type_of(testLogger["debug"]))->toBe(std::string("function"));
+                expect(type_of(testLogger["trace"]))->toBe(std::string("function"));
+                expect(type_of(testLogger["verbose"]))->toBe(std::string("function"));
             }
             );
-            it(std:("should have custom methods (log, progress, success)"), [=]() mutable
+            it(std::string("should have custom methods (log, progress, success)"), [=]() mutable
             {
                 auto testLogger = createLogger();
-                expect(type_of(testLogger["log"]))->toBe(std:("function"));
-                expect(type_of(testLogger["progress"]))->toBe(std:("function"));
-                expect(type_of(testLogger["success"]))->toBe(std:("function"));
+                expect(type_of(testLogger["log"]))->toBe(std::string("function"));
+                expect(type_of(testLogger["progress"]))->toBe(std::string("function"));
+                expect(type_of(testLogger["success"]))->toBe(std::string("function"));
             }
             );
         }
         );
-        describe(std:("createLogger Function"), [=]() mutable
+        describe(std::string("createLogger Function"), [=]() mutable
         {
-            it(std:("should create logger with bindings"), [=]() mutable
+            it(std::string("should create logger with bindings"), [=]() mutable
             {
                 auto bindings = object{
-                    object::pair{std:("agentName"), std:("TestAgent")}, 
-                    object::pair{std:("agentId"), std:("123")}
+                    object::pair{std::string("agentName"), std::string("TestAgent")}, 
+                    object::pair{std::string("agentId"), std::string("123")}
                 };
                 auto customLogger = createLogger(bindings);
                 expect(customLogger)->toBeDefined();
-                expect(type_of(customLogger["info"]))->toBe(std:("function"));
+                expect(type_of(customLogger["info"]))->toBe(std::string("function"));
             }
             );
-            it(std:("should create logger without bindings"), [=]() mutable
+            it(std::string("should create logger without bindings"), [=]() mutable
             {
                 auto customLogger = createLogger();
                 expect(customLogger)->toBeDefined();
-                expect(type_of(customLogger["info"]))->toBe(std:("function"));
+                expect(type_of(customLogger["info"]))->toBe(std::string("function"));
             }
             );
-            it(std:("should handle boolean bindings parameter"), [=]() mutable
+            it(std::string("should handle boolean bindings parameter"), [=]() mutable
             {
                 auto customLogger = createLogger(false);
                 expect(customLogger)->toBeDefined();
-                expect(type_of(customLogger["info"]))->toBe(std:("function"));
+                expect(type_of(customLogger["info"]))->toBe(std::string("function"));
             }
             );
         }
         );
-        describe(std:("Log Level Configuration"), [=]() mutable
+        describe(std::string("Log Level Configuration"), [=]() mutable
         {
-            it(std:("should use debug level when LOG_LEVEL is debug"), [=]() mutable
+            it(std::string("should use debug level when LOG_LEVEL is debug"), [=]() mutable
             {
-                process->env->LOG_LEVEL = std:("debug");
+                process->env->LOG_LEVEL = std::string("debug");
                 auto customLogger = createLogger();
                 expect(customLogger["level"])->toBeDefined();
-                expect(customLogger["level"])->toBe(std:("debug"));
+                expect(customLogger["level"])->toBe(std::string("debug"));
             }
             );
-            it(std:("should use DEFAULT_LOG_LEVEL when LOG_LEVEL is not debug"), [=]() mutable
+            it(std::string("should use DEFAULT_LOG_LEVEL when LOG_LEVEL is not debug"), [=]() mutable
             {
                 process->env->LOG_LEVEL = string_empty;
-                process->env->DEFAULT_LOG_LEVEL = std:("warn");
+                process->env->DEFAULT_LOG_LEVEL = std::string("warn");
                 auto customLogger = createLogger();
                 expect(customLogger["level"])->toBeDefined();
-                expect(customLogger["level"])->toBe(std:("warn"));
+                expect(customLogger["level"])->toBe(std::string("warn"));
             }
             );
-            it(std:("should default to info level when no log level is specified"), [=]() mutable
+            it(std::string("should default to info level when no log level is specified"), [=]() mutable
             {
                 process->env->LOG_LEVEL = string_empty;
                 process->env->DEFAULT_LOG_LEVEL = string_empty;
                 auto customLogger = createLogger();
                 expect(customLogger["level"])->toBeDefined();
-                expect(customLogger["level"])->toBe(std:("info"));
+                expect(customLogger["level"])->toBe(std::string("info"));
             }
             );
         }
         );
-        describe(std:("JSON Format Configuration"), [=]() mutable
+        describe(std::string("JSON Format Configuration"), [=]() mutable
         {
-            it(std:("should use JSON format when LOG_JSON_FORMAT is true"), [=]() mutable
+            it(std::string("should use JSON format when LOG_JSON_FORMAT is true"), [=]() mutable
             {
-                process->env->LOG_JSON_FORMAT = std:("true");
+                process->env->LOG_JSON_FORMAT = std::string("true");
                 auto customLogger = createLogger();
                 expect(customLogger)->toBeDefined();
             }
             );
-            it(std:("should use pretty format when LOG_JSON_FORMAT is false"), [=]() mutable
+            it(std::string("should use pretty format when LOG_JSON_FORMAT is false"), [=]() mutable
             {
-                process->env->LOG_JSON_FORMAT = std:("false");
+                process->env->LOG_JSON_FORMAT = std::string("false");
                 auto customLogger = createLogger();
                 expect(customLogger)->toBeDefined();
             }
             );
         }
         );
-        describe(std:("Log Filtering"), [=]() mutable
+        describe(std::string("Log Filtering"), [=]() mutable
         {
-            it(std:("should filter service registration logs in non-debug mode"), [=]() mutable
+            it(std::string("should filter service registration logs in non-debug mode"), [=]() mutable
             {
-                process->env->LOG_LEVEL = std:("info");
+                process->env->LOG_LEVEL = std::string("info");
                 shared customLogger = createLogger();
-                auto filteredMessages = array<string>{ std:("registered successfully"), std:("Registering"), std:("Success:"), std:("linked to"), std:("Started") };
+                auto filteredMessages = array<string>{ std::string("registered successfully"), std::string("Registering"), std::string("Success:"), std::string("linked to"), std::string("Started") };
                 filteredMessages->forEach([=](auto msg) mutable
                 {
                     expect([=]() mutable
                     {
                         return customLogger["info"](object{
-                            object::pair{std:("agentName"), std:("test")}, 
-                            object::pair{std:("agentId"), std:("123")}
+                            object::pair{std::string("agentName"), std::string("test")}, 
+                            object::pair{std::string("agentId"), std::string("123")}
                         }, msg);
                     }
                     )->not->toThrow();
@@ -206,22 +207,22 @@ void Main(void)
                 );
             }
             );
-            it(std:("should not filter service registration logs in debug mode"), [=]() mutable
+            it(std::string("should not filter service registration logs in debug mode"), [=]() mutable
             {
-                process->env->LOG_LEVEL = std:("debug");
+                process->env->LOG_LEVEL = std::string("debug");
                 auto customLogger = createLogger();
                 expect(customLogger["level"])->toBeDefined();
-                expect(customLogger["level"])->toBe(std:("debug"));
+                expect(customLogger["level"])->toBe(std::string("debug"));
             }
             );
         }
         );
-        describe(std:("Error Handling"), [=]() mutable
+        describe(std::string("Error Handling"), [=]() mutable
         {
-            it(std:("should handle Error objects in log messages"), [=]() mutable
+            it(std::string("should handle Error objects in log messages"), [=]() mutable
             {
                 shared customLogger = createLogger();
-                shared testError = std::make_shared<Error>(std:("Test error"));
+                shared testError = std::make_shared<Error>(std::string("Test error"));
                 expect([=]() mutable
                 {
                     return customLogger["error"](testError);
@@ -229,23 +230,23 @@ void Main(void)
                 )->not->toThrow();
                 expect([=]() mutable
                 {
-                    return customLogger["error"](std:("Message"), testError);
+                    return customLogger["error"](std::string("Message"), testError);
                 }
                 )->not->toThrow();
                 expect([=]() mutable
                 {
                     return customLogger["error"](object{
-                        object::pair{std:("context"), std:("test")}
-                    }, std:("Error occurred"), testError);
+                        object::pair{std::string("context"), std::string("test")}
+                    }, std::string("Error occurred"), testError);
                 }
                 )->not->toThrow();
             }
             );
-            it(std:("should format error messages properly"), [=]() mutable
+            it(std::string("should format error messages properly"), [=]() mutable
             {
                 shared customLogger = createLogger();
-                shared testError = std::make_shared<Error>(std:("Test error"));
-                testError->name = std:("TestError");
+                shared testError = std::make_shared<Error>(std::string("Test error"));
+                testError->name = std::string("TestError");
                 expect([=]() mutable
                 {
                     return customLogger["error"](testError);
@@ -255,12 +256,12 @@ void Main(void)
             );
         }
         );
-        describe(std:("Clear Method"), [=]() mutable
+        describe(std::string("Clear Method"), [=]() mutable
         {
-            it(std:("should have clear method"), [=]() mutable
+            it(std::string("should have clear method"), [=]() mutable
             {
                 shared customLogger = createLogger();
-                expect(type_of(customLogger["clear"]))->toBe(std:("function"));
+                expect(type_of(customLogger["clear"]))->toBe(std::string("function"));
                 expect([=]() mutable
                 {
                     return customLogger["clear"]();
@@ -268,11 +269,11 @@ void Main(void)
                 )->not->toThrow();
             }
             );
-            it(std:("should clear logs when called"), [=]() mutable
+            it(std::string("should clear logs when called"), [=]() mutable
             {
-                shared destination = const_((as<any>(logger)))[Symbol->for(std:("pino-destination"))];
+                shared destination = const_((as<any>(logger)))[Symbol->for(std::string("pino-destination"))];
                 expect(destination)->toBeDefined();
-                expect(type_of(destination["clear"]))->toBe(std:("function"));
+                expect(type_of(destination["clear"]))->toBe(std::string("function"));
                 expect([=]() mutable
                 {
                     return destination["clear"]();
@@ -282,59 +283,59 @@ void Main(void)
             );
         }
         );
-        describe(std:("Child Logger"), [=]() mutable
+        describe(std::string("Child Logger"), [=]() mutable
         {
-            it(std:("should create child logger with additional bindings"), [=]() mutable
+            it(std::string("should create child logger with additional bindings"), [=]() mutable
             {
                 auto customLogger = createLogger(object{
-                    object::pair{std:("parent"), std:("main")}
+                    object::pair{std::string("parent"), std::string("main")}
                 });
                 auto childLogger = customLogger["child"](object{
-                    object::pair{std:("child"), std:("sub")}
+                    object::pair{std::string("child"), std::string("sub")}
                 });
                 expect(childLogger)->toBeDefined();
-                expect(type_of(childLogger["info"]))->toBe(std:("function"));
+                expect(type_of(childLogger["info"]))->toBe(std::string("function"));
             }
             );
         }
         );
-        describe(std:("Log Input Formats"), [=]() mutable
+        describe(std::string("Log Input Formats"), [=]() mutable
         {
-            it(std:("should handle various log input formats"), [=]() mutable
+            it(std::string("should handle various log input formats"), [=]() mutable
             {
                 shared customLogger = createLogger();
                 expect([=]() mutable
                 {
-                    return customLogger["info"](std:("Simple string"));
+                    return customLogger["info"](std::string("Simple string"));
                 }
                 )->not->toThrow();
                 expect([=]() mutable
                 {
                     return customLogger["info"](object{
-                        object::pair{std:("key"), std:("value")}
-                    }, std:("With object"));
+                        object::pair{std::string("key"), std::string("value")}
+                    }, std::string("With object"));
                 }
                 )->not->toThrow();
                 expect([=]() mutable
                 {
-                    return customLogger["info"](std:("Multiple"), std:("string"), std:("parts"));
+                    return customLogger["info"](std::string("Multiple"), std::string("string"), std::string("parts"));
                 }
                 )->not->toThrow();
                 expect([=]() mutable
                 {
-                    return customLogger["error"](std::make_shared<Error>(std:("Test")), std:("With error"));
+                    return customLogger["error"](std::make_shared<Error>(std::string("Test")), std::string("With error"));
                 }
                 )->not->toThrow();
             }
             );
-            it(std:("should handle mixed arguments with errors"), [=]() mutable
+            it(std::string("should handle mixed arguments with errors"), [=]() mutable
             {
                 shared customLogger = createLogger();
-                shared error = std::make_shared<Error>(std:("Test error"));
+                shared error = std::make_shared<Error>(std::string("Test error"));
                 expect([=]() mutable
                 {
-                    return customLogger["error"](std:("Message"), error, object{
-                        object::pair{std:("extra"), std:("data")}
+                    return customLogger["error"](std::string("Message"), error, object{
+                        object::pair{std::string("extra"), std::string("data")}
                     });
                 }
                 )->not->toThrow();
@@ -342,127 +343,127 @@ void Main(void)
             );
         }
         );
-        describe(std:("Legacy Pino Compatibility"), [=]() mutable
+        describe(std::string("Legacy Pino Compatibility"), [=]() mutable
         {
-            it(std:("should have legacy pino-compatible properties"), [=]() mutable
+            it(std::string("should have legacy pino-compatible properties"), [=]() mutable
             {
                 auto customLogger = createLogger();
                 expect(customLogger["level"])->toBeDefined();
                 expect(customLogger["levels"])->toBeDefined();
                 expect(customLogger["levels"]["values"])->toBeDefined();
-                expect(type_of(customLogger["isLevelEnabled"]))->toBe(std:("function"));
-                expect(type_of(customLogger["flush"]))->toBe(std:("function"));
-                expect(type_of(customLogger["flushSync"]))->toBe(std:("function"));
+                expect(type_of(customLogger["isLevelEnabled"]))->toBe(std::string("function"));
+                expect(type_of(customLogger["flush"]))->toBe(std::string("function"));
+                expect(type_of(customLogger["flushSync"]))->toBe(std::string("function"));
             }
             );
-            it(std:("should have destination accessible via symbol"), [=]() mutable
+            it(std::string("should have destination accessible via symbol"), [=]() mutable
             {
                 auto customLogger = createLogger();
-                auto destination = const_((as<any>(customLogger)))[Symbol->for(std:("pino-destination"))];
+                auto destination = const_((as<any>(customLogger)))[Symbol->for(std::string("pino-destination"))];
                 expect(destination)->toBeDefined();
-                expect(type_of(destination["recentLogs"]))->toBe(std:("function"));
-                expect(type_of(destination["clear"]))->toBe(std:("function"));
+                expect(type_of(destination["recentLogs"]))->toBe(std::string("function"));
+                expect(type_of(destination["clear"]))->toBe(std::string("function"));
             }
             );
         }
         );
-        describe(std:("In-Memory Logger"), [=]() mutable
+        describe(std::string("In-Memory Logger"), [=]() mutable
         {
-            it(std:("should store recent logs"), [=]() mutable
+            it(std::string("should store recent logs"), [=]() mutable
             {
-                auto destination = const_((as<any>(logger)))[Symbol->for(std:("pino-destination"))];
+                auto destination = const_((as<any>(logger)))[Symbol->for(std::string("pino-destination"))];
                 expect(destination)->toBeDefined();
                 auto logs = destination["recentLogs"]();
                 expect(Array->isArray(logs))->toBe(true);
             }
             );
-            it(std:("should add logs with proper format"), [=]() mutable
+            it(std::string("should add logs with proper format"), [=]() mutable
             {
-                auto destination = const_((as<any>(logger)))[Symbol->for(std:("pino-destination"))];
+                auto destination = const_((as<any>(logger)))[Symbol->for(std::string("pino-destination"))];
                 destination["addLog"](object{
-                    object::pair{std:("time"), Date->now()}, 
-                    object::pair{std:("level"), 30}, 
-                    object::pair{std:("msg"), std:("Test message")}, 
-                    object::pair{std:("agentName"), std:("TestAgent")}
+                    object::pair{std::string("time"), Date->now()}, 
+                    object::pair{std::string("level"), 30}, 
+                    object::pair{std::string("msg"), std::string("Test message")}, 
+                    object::pair{std::string("agentName"), std::string("TestAgent")}
                 });
                 auto logs = destination["recentLogs"]();
                 auto lastLog = const_(logs)[logs["length"] - 1];
                 expect(lastLog)->toBeDefined();
-                expect(lastLog["msg"])->toBe(std:("Test message"));
-                expect(lastLog["agentName"])->toBe(std:("TestAgent"));
+                expect(lastLog["msg"])->toBe(std::string("Test message"));
+                expect(lastLog["agentName"])->toBe(std::string("TestAgent"));
             }
             );
         }
         );
-        describe(std:("Log Level Methods"), [=]() mutable
+        describe(std::string("Log Level Methods"), [=]() mutable
         {
-            it(std:("should support all log levels"), [=]() mutable
+            it(std::string("should support all log levels"), [=]() mutable
             {
                 shared customLogger = createLogger();
                 expect([=]() mutable
                 {
-                    return customLogger["fatal"](std:("Fatal message"));
+                    return customLogger["fatal"](std::string("Fatal message"));
                 }
                 )->not->toThrow();
                 expect([=]() mutable
                 {
-                    return customLogger["error"](std:("Error message"));
+                    return customLogger["error"](std::string("Error message"));
                 }
                 )->not->toThrow();
                 expect([=]() mutable
                 {
-                    return customLogger["warn"](std:("Warn message"));
+                    return customLogger["warn"](std::string("Warn message"));
                 }
                 )->not->toThrow();
                 expect([=]() mutable
                 {
-                    return customLogger["info"](std:("Info message"));
+                    return customLogger["info"](std::string("Info message"));
                 }
                 )->not->toThrow();
                 expect([=]() mutable
                 {
-                    return customLogger["debug"](std:("Debug message"));
+                    return customLogger["debug"](std::string("Debug message"));
                 }
                 )->not->toThrow();
                 expect([=]() mutable
                 {
-                    return customLogger["trace"](std:("Trace message"));
+                    return customLogger["trace"](std::string("Trace message"));
                 }
                 )->not->toThrow();
                 expect([=]() mutable
                 {
-                    return customLogger["verbose"](std:("Verbose message"));
+                    return customLogger["verbose"](std::string("Verbose message"));
                 }
                 )->not->toThrow();
                 expect([=]() mutable
                 {
-                    return customLogger["log"](std:("Log message"));
+                    return customLogger["log"](std::string("Log message"));
                 }
                 )->not->toThrow();
                 expect([=]() mutable
                 {
-                    return customLogger["progress"](std:("Progress message"));
+                    return customLogger["progress"](std::string("Progress message"));
                 }
                 )->not->toThrow();
                 expect([=]() mutable
                 {
-                    return customLogger["success"](std:("Success message"));
+                    return customLogger["success"](std::string("Success message"));
                 }
                 )->not->toThrow();
             }
             );
         }
         );
-        describe(std:("Timestamp Configuration"), [=]() mutable
+        describe(std::string("Timestamp Configuration"), [=]() mutable
         {
-            it(std:("should respect LOG_TIMESTAMPS setting"), [=]() mutable
+            it(std::string("should respect LOG_TIMESTAMPS setting"), [=]() mutable
             {
-                process->env->LOG_TIMESTAMPS = std:("false");
+                process->env->LOG_TIMESTAMPS = std::string("false");
                 auto customLogger = createLogger();
                 expect(customLogger)->toBeDefined();
             }
             );
-            it(std:("should default to showing timestamps"), [=]() mutable
+            it(std::string("should default to showing timestamps"), [=]() mutable
             {
                 process->env.Delete("LOG_TIMESTAMPS");
                 auto customLogger = createLogger();
@@ -471,13 +472,13 @@ void Main(void)
             );
         }
         );
-        describe(std:("Sentry Integration"), [=]() mutable
+        describe(std::string("Sentry Integration"), [=]() mutable
         {
-            it(std:("should not capture exceptions when SENTRY_LOGGING is false"), [=]() mutable
+            it(std::string("should not capture exceptions when SENTRY_LOGGING is false"), [=]() mutable
             {
-                process->env->SENTRY_LOGGING = std:("false");
+                process->env->SENTRY_LOGGING = std::string("false");
                 shared customLogger = createLogger();
-                shared error = std::make_shared<Error>(std:("Test error"));
+                shared error = std::make_shared<Error>(std::string("Test error"));
                 expect([=]() mutable
                 {
                     return customLogger["error"](error);
@@ -485,11 +486,11 @@ void Main(void)
                 )->not->toThrow();
             }
             );
-            it(std:("should handle Sentry integration when enabled"), [=]() mutable
+            it(std::string("should handle Sentry integration when enabled"), [=]() mutable
             {
                 process->env->SENTRY_LOGGING = string_empty;
                 shared customLogger = createLogger();
-                shared error = std::make_shared<Error>(std:("Sentry test"));
+                shared error = std::make_shared<Error>(std::string("Sentry test"));
                 expect([=]() mutable
                 {
                     return customLogger["error"](error);

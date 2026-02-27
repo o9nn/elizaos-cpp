@@ -21,6 +21,6 @@ namespace elizaos {
  * Note that this is only a type helper and is not the actual IDL. The original
  * IDL can be found at "target/idl/autofun.json".
  */
-using Autofun = std:;
+using Autofun = std::string;
 
 } // namespace elizaos

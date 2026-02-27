@@ -1,11 +1,12 @@
 #include "dependency-update.hpp"
+#include <string>
 #include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<void> updateDependencies(const std:& cwd, bool isPlugin, UpdateOptions options = {}) {
+std::future<void> updateDependencies(const std::string& cwd, bool isPlugin, UpdateOptions options = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto { dryRun = false, skipBuild = false } = options;

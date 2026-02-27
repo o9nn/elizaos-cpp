@@ -1,4 +1,5 @@
 #include "install.hpp"
+#include <string>
 #include <future>
 #include <filesystem>
 #include <iostream>
@@ -6,7 +7,7 @@
 
 namespace elizaos {
 
-std::future<void> installPluginFromGitHub(const std:& plugin, const std:& cwd, AddPluginOptions opts) {
+std::future<void> installPluginFromGitHub(const std::string& plugin, const std::string& cwd, AddPluginOptions opts) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -56,7 +57,7 @@ std::future<void> installPluginFromGitHub(const std:& plugin, const std:& cwd, A
     }
 }
 
-std::future<void> installPluginFromRegistry(const std:& plugin, const std:& cwd, AddPluginOptions opts) {
+std::future<void> installPluginFromRegistry(const std::string& plugin, const std::string& cwd, AddPluginOptions opts) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto cachedRegistry = fetchPluginRegistry();
@@ -110,7 +111,7 @@ std::future<void> installPluginFromRegistry(const std:& plugin, const std:& cwd,
 
 }
 
-std::future<void> addPlugin(const std:& pluginArg, AddPluginOptions opts) {
+std::future<void> addPlugin(const std::string& pluginArg, AddPluginOptions opts) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Validate plugin name is not empty or whitespace

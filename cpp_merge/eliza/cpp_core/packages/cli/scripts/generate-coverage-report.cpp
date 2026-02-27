@@ -8,7 +8,7 @@
 
 namespace elizaos {
 
-std::future<std::vector<std::string>> findAllSourceFiles(const std:& dir, std::vector<std::string> files = {}) {
+std::future<std::vector<std::string>> findAllSourceFiles(const std::string& dir, std::vector<std::string> files = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto entries = readdir(dir);
@@ -35,7 +35,7 @@ std::future<std::vector<std::string>> findAllSourceFiles(const std:& dir, std::v
 
 }
 
-std::future<std::vector<std::string>> findAllTestFiles(const std:& dir, std::vector<std::string> files = {}) {
+std::future<std::vector<std::string>> findAllTestFiles(const std::string& dir, std::vector<std::string> files = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -59,7 +59,7 @@ std::future<std::vector<std::string>> findAllTestFiles(const std:& dir, std::vec
 
 }
 
-std: categorizeFile(const std:& filePath) {
+std::string categorizeFile(const std::string& filePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (filePath.count('/commands/') > 0) return 'commands';
@@ -192,7 +192,7 @@ std::future<void> main() {
                 }
 
                 // Save detailed report
-                const auto detailedReport = /* JSON.stringify */ std:(report, nullptr, 2);
+                const auto detailedReport = /* JSON.stringify */ std::string(report, nullptr, 2);
                 Bun.write("unit-test-coverage-report.json", detailedReport);
                 std::cout << "\n💾 Detailed report saved to: unit-test-coverage-report.json" << std::endl;
 

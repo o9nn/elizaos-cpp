@@ -17,7 +17,7 @@ namespace elizaos {
 
 
 struct TVNoiseProps {
-    std::optional<std:> className;
+    std::optional<std::string> className;
     std::optional<double> opacity;
     std::optional<double> intensity;
     std::optional<double> speed;

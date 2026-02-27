@@ -35,7 +35,7 @@ std::future<void*> loadBusinessImage();
   // ctx.globalAlpha = 1;
 
   // Load and draw business image at full height, offset 20% off right edge
-  // Position so 20% extends beyond the right edge
+  // Position so 20% : public beyond the right edge
 
   // Title
 

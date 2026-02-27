@@ -17,11 +17,11 @@ namespace elizaos {
 
 
 
-class ReferralService extends Service {
+class ReferralService : public Service {
   static serviceType = 'referral';
   capabilityDescription = 'Manages referral codes and attribution';
 
-  private getDb(): DatabaseAdapter | undefined {
+  private getDb(): DatabaseAdapter | std::nullopt {
     return (this.runtime as RuntimeWithDb).db;
   }
 
@@ -65,7 +65,7 @@ class ReferralService extends Service {
 
     // Check if this specific user has already been activated for this referrer
 
-    // Check if this specific userId is already in std: activation event metadata
+    // Check if this specific userId is already in std::string activation event metadata
 
     // Award activation bonus to referrer
 
@@ -74,7 +74,7 @@ class ReferralService extends Service {
    */
     // Use first 8 characters of UUID + cryptographically secure random suffix
     
-    // Use crypto.randomBytes for secure randomness instead of Math.random()
+    // Use crypto.randomBytes for secure randomness instead of ((double)rand() / RAND_MAX)
 
 
 } // namespace elizaos

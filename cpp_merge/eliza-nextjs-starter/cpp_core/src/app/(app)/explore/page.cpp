@@ -1,4 +1,5 @@
 #include "page.hpp"
+#include <string>
 #include <map>
 #include <iostream>
 #include <stdexcept>
@@ -10,11 +11,11 @@ void Page() {
     try {
 
         const auto router = useRouter();
-        const auto [userEntity, setUserEntity] = useState<std: | nullptr>(nullptr);
+        const auto [userEntity, setUserEntity] = useState<std::string | nullptr>(nullptr);
 
         // Initialize user entity on client side only to avoid hydration mismatch
         useEffect[&](() {
-            if (typeof window != "undefined") {
+            if (typeof window != "std::nullopt") {
                 const auto storedEntity = localStorage.getItem("elizaHowUserEntity");
                 if (storedEntity) {
                     setUserEntity(storedEntity);
@@ -27,7 +28,7 @@ void Page() {
                 }, []);
 
                 const auto createNewSession = useCallback[&](;
-                std::async (initialMessage: std:) {
+                std::async (initialMessage: std::string) {
                     if (!userEntity) {
                         std::cerr << "User entity not available" << std::endl;
                         return;
@@ -67,7 +68,7 @@ void Page() {
                                     [userEntity, router],
                                     );
 
-                                    const auto handlePromptSelect = [&](prompt: std:) {;
+                                    const auto handlePromptSelect = [&](prompt: std::string) {;
                                         if (userEntity) {
                                             createNewSession(prompt);
                                         }

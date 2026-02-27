@@ -1,30 +1,31 @@
 #include "index.hpp"
+#include <string>
 
 string getAgentCommitHash()
 {
-    return OR((process->env->SWE_AGENT_COMMIT_HASH), (std:("unknown")));
+    return OR((process->env->SWE_AGENT_COMMIT_HASH), (std::string("unknown")));
 };
 
 
 string getRexCommitHash()
 {
-    return OR((process->env->SWE_REX_COMMIT_HASH), (std:("unknown")));
+    return OR((process->env->SWE_REX_COMMIT_HASH), (std::string("unknown")));
 };
 
 
 string getRexVersion()
 {
-    return OR((process->env->SWE_REX_VERSION), (std:("0.0.0")));
+    return OR((process->env->SWE_REX_VERSION), (std::string("0.0.0")));
 };
 
 
 string getAgentVersionInfo()
 {
-    return std:("SWE-agent ") + VERSION + string_empty;
+    return std::string("SWE-agent ") + VERSION + string_empty;
 };
 
 
-string VERSION = std:("1.0.0");
+string VERSION = std::string("1.0.0");
 
 void Main(void)
 {

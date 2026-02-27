@@ -1,4 +1,5 @@
 #include "oracle-finder-solana.hpp"
+#include <string>
 #include <vector>
 #include <future>
 #include <optional>
@@ -7,7 +8,7 @@
 
 namespace elizaos {
 
-std::future<std::optional<SolanaOracleInfo>> findSolanaOracle(const std:& tokenMint) {
+std::future<std::optional<SolanaOracleInfo>> findSolanaOracle(const std::string& tokenMint) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Try Pyth first (most reliable)
@@ -32,7 +33,7 @@ std::future<std::optional<SolanaOracleInfo>> findSolanaOracle(const std:& tokenM
 
 }
 
-std::future<std::optional<SolanaOracleInfo>> findPythFeed(const std:& tokenMint) {
+std::future<std::optional<SolanaOracleInfo>> findPythFeed(const std::string& tokenMint) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Query Pyth API for price feed
@@ -62,7 +63,7 @@ std::future<std::optional<SolanaOracleInfo>> findPythFeed(const std:& tokenMint)
 
 }
 
-std::future<std::optional<SolanaOracleInfo>> findJupiterPool(const std:& tokenMint) {
+std::future<std::optional<SolanaOracleInfo>> findJupiterPool(const std::string& tokenMint) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Query Jupiter API for available routes
@@ -92,7 +93,7 @@ std::future<std::optional<SolanaOracleInfo>> findJupiterPool(const std:& tokenMi
 
 }
 
-std::future<std::optional<SolanaOracleInfo>> findRaydiumPool(const std:& tokenMint) {
+std::future<std::optional<SolanaOracleInfo>> findRaydiumPool(const std::string& tokenMint) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Query Raydium API for pools (RPC connection not needed for API calls)
@@ -103,10 +104,10 @@ std::future<std::optional<SolanaOracleInfo>> findRaydiumPool(const std:& tokenMi
     }
 
     interface RaydiumPool {
-        baseMint: std:;
-        quoteMint: std:;
-        ammId: std:;
-        liquidity?: std:;
+        baseMint: std::string;
+        quoteMint: std::string;
+        ammId: std::string;
+        liquidity?: std::string;
     }
     const std::vector<RaydiumPool> pools = response.json();
 
@@ -147,11 +148,11 @@ void validateSolanaOracle(SolanaOracleInfo oracle) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     valid;
-    message: std:;
+    message: std::string;
 
 }
 
-std: formatOracleInfo(SolanaOracleInfo oracle) {
+std::string formatOracleInfo(SolanaOracleInfo oracle) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto tvl = oracle.liquidity;

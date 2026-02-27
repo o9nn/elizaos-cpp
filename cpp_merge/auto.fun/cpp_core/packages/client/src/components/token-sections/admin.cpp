@@ -1,4 +1,5 @@
 #include "admin.hpp"
+#include <string>
 #include <unordered_map>
 #include <iostream>
 #include <stdexcept>
@@ -9,7 +10,7 @@ void AdminTab() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const auto { mint: urlTokenMint } = useParams<{ mint: std: }>();
+        const auto { mint: urlTokenMint } = useParams<{ mint: std::string }>();
         const auto location = useLocation();
         const auto [isLoading, setIsLoading] = useState(false);
         const auto [isSaving, setIsSaving] = useState(false);
@@ -19,11 +20,11 @@ void AdminTab() {
             verified;
             }>({ hidden: false, featured: false, verified: false });
             const auto [originalData, setOriginalData] = useState<{;
-                website: std:;
-                twitter: std:;
-                telegram: std:;
-                discord: std:;
-                farcaster: std:;
+                website: std::string;
+                twitter: std::string;
+                telegram: std::string;
+                discord: std::string;
+                farcaster: std::string;
                 }>({
                     website: "",
                     twitter: "",
@@ -33,12 +34,12 @@ void AdminTab() {
                     });
                     const auto [selectedAudioFile, setSelectedAudioFile] = useState<File | nullptr>(nullptr);
                     const auto [isUploadingAudio, setIsUploadingAudio] = useState(false);
-                    const auto [existingAudioUrl, setExistingAudioUrl] = useState<std: | nullptr>(nullptr);
+                    const auto [existingAudioUrl, setExistingAudioUrl] = useState<std::string | nullptr>(nullptr);
                     const auto [audioTimestamp, setAudioTimestamp] = useState<number>(Date.now());
                     const auto audioInputRef = useRef<HTMLInputElement>(nullptr);
 
                     // Extract token mint from URL if not found in params
-                    const auto [detectedTokenMint, setDetectedTokenMint] = useState<std: | nullptr>(;
+                    const auto [detectedTokenMint, setDetectedTokenMint] = useState<std::string | nullptr>(;
                     nullptr,
                     );
 
@@ -175,10 +176,10 @@ void AdminTab() {
 
                                                                                             // --- Link Normalization ---
                                                                                             const auto normalizeUrl = (;
-                                                                                            url: std:,
-                                                                                            prefix: std:,
-                                                                                            domain?: std:,
-                                                                                            ): std: => {
+                                                                                            url: std::string,
+                                                                                            prefix: std::string,
+                                                                                            domain?: std::string,
+                                                                                            ): std::string => {
                                                                                                 if (!url) return "";
                                                                                                 try {
                                                                                                     url = url;
@@ -223,7 +224,7 @@ void AdminTab() {
                                                                                                     return url;
                                                                                                     };
 
-                                                                                                    const auto normalizeTwitter = (input: std:): std: => {;
+                                                                                                    const auto normalizeTwitter = (input: std::string): std::string => {;
                                                                                                         if (!input) return "";
                                                                                                         input = input;
                                                                                                         const auto twitterUrlMatch = input.match(;
@@ -264,7 +265,7 @@ void AdminTab() {
 
                                                                                                             try {
                                                                                                                 const auto authToken = localStorage.getItem("authToken");
-                                                                                                                const std::unordered_map<std:, std:> headers = {;
+                                                                                                                const std::unordered_map<std::string, std::string> headers = {;
                                                                                                                     "Content-Type": "application/json",
                                                                                                                     };
 
@@ -274,7 +275,7 @@ void AdminTab() {
 
                                                                                                                     // Create request payload with development override if needed
                                                                                                                     // Use normalized links
-                                                                                                                    const std::unordered_map<std:, std:> payload = {;
+                                                                                                                    const std::unordered_map<std::string, std::string> payload = {;
                                                                                                                         website: normalizedLinks.website,
                                                                                                                         twitter: normalizedLinks.twitter,
                                                                                                                         telegram: normalizedLinks.telegram,
@@ -288,7 +289,7 @@ void AdminTab() {
                                                                                                                         {
                                                                                                                             method: "POST",
                                                                                                                             headers,
-                                                                                                                            body: /* JSON.stringify */ std:(payload),
+                                                                                                                            body: /* JSON.stringify */ std::string(payload),
                                                                                                                             credentials: "include",
                                                                                                                             },
                                                                                                                             );
@@ -300,7 +301,7 @@ void AdminTab() {
                                                                                                                                 {
                                                                                                                                     method: "POST",
                                                                                                                                     headers,
-                                                                                                                                    body: /* JSON.stringify */ std:(payload),
+                                                                                                                                    body: /* JSON.stringify */ std::string(payload),
                                                                                                                                     credentials: "include",
                                                                                                                                     },
                                                                                                                                     );
@@ -309,7 +310,7 @@ void AdminTab() {
                                                                                                                                 if (!response.ok) {
                                                                                                                                     auto errorMessage = "Failed to update token";
                                                                                                                                     try {
-                                                                                                                                        const auto errorData = (response.json()) as { error?: std: };
+                                                                                                                                        const auto errorData = (response.json()) as { error?: std::string };
                                                                                                                                         errorMessage = errorData.error || errorMessage;
                                                                                                                                         } catch (e) {
                                                                                                                                             std::cerr << "Error parsing error response:" << e << std::endl;
@@ -424,7 +425,7 @@ void AdminTab() {
                                                                                                                                                                                                             const auto fetchTokenData = std::async [&]() {;
                                                                                                                                                                                                                 try {
                                                                                                                                                                                                                     const auto response = "fetch(" + env.apiUrl + "/api/token/" + mint;
-                                                                                                                                                                                                                    const auto data = (response.json()) as { creator: std: };
+                                                                                                                                                                                                                    const auto data = (response.json()) as { creator: std::string };
                                                                                                                                                                                                                     setIsTokenOwner(data.creator == std::to_string(publicKey));
                                                                                                                                                                                                                     // ... rest of the fetch logic
                                                                                                                                                                                                                     } catch (error) {
@@ -467,7 +468,7 @@ void AdminTab() {
                                                                                                                                                                                                                                 formData.append("audio", selectedAudioFile);
 
                                                                                                                                                                                                                                 const auto authToken = localStorage.getItem("authToken");
-                                                                                                                                                                                                                                const std::unordered_map<std:, std:> headers = {;
+                                                                                                                                                                                                                                const std::unordered_map<std::string, std::string> headers = {;
                                                                                                                                                                                                                                     "Authorization: " + "Bearer " + std::to_string(/* JSON::parse */ authToken || "{}")
                                                                                                                                                                                                                                     };
 
@@ -557,7 +558,7 @@ void AdminTab() {
                                                                                                                                                                                 control={control}
                                                                                                                                                                                 name="links.telegram";
                                                                                                                                                                                 rules={{
-                                                                                                                                                                                    validate: (value: std:) =>
+                                                                                                                                                                                    validate: (value: std::string) =>
                                                                                                                                                                                     !value || isFromDomain(value, "t.me") || "Invalid Telegram URL",
                                                                                                                                                                                 }}
                                                                                                                                                                                 render={[&]({ field, fieldState: { error } }) { return (
@@ -582,7 +583,7 @@ void AdminTab() {
                                                                                                                                                     control={control}
                                                                                                                                                     name="links.discord";
                                                                                                                                                     rules={{
-                                                                                                                                                        validate: [&](value: std:) { return !value ||; };
+                                                                                                                                                        validate: [&](value: std::string) { return !value ||; };
                                                                                                                                                         isFromDomain(value, "discord.gg") ||;
                                                                                                                                                         "Invalid Discord URL",
                                                                                                                                                     }}
@@ -608,7 +609,7 @@ void AdminTab() {
                                                                                                                         control={control}
                                                                                                                         name="links.farcaster";
                                                                                                                         rules={{
-                                                                                                                            validate: [&](value: std:) { return !value ||; };
+                                                                                                                            validate: [&](value: std::string) { return !value ||; };
                                                                                                                             isFromDomain(value, "warpcast.com") ||;
                                                                                                                             "Invalid Farcaster URL",
                                                                                                                         }}

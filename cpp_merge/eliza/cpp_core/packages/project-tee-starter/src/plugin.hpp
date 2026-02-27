@@ -24,12 +24,12 @@ namespace elizaos {
  * @returns {object} - The configured schema object
  */
 
-class StarterService extends Service {
+class StarterService : public Service {
   static serviceType = 'starter';
   capabilityDescription = 'This is a starter service, can be customized for Mr. TEE.';
   private teeClient: TappdClient;
-  private secretSalt: std:;
-  constructor(protected runtime: IAgentRuntime) {
+  private secretSalt: std::string;
+  /* constructor */ (protected runtime: IAgentRuntime) {
     super(runtime);
     this.teeClient = std::make_unique<TappdClient>();
     this.secretSalt = std::getenv("WALLET_SECRET_SALT") || 'secret_salt';

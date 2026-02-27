@@ -19,19 +19,19 @@ namespace elizaos {
  */
 
 /**
- * Format actors into a std:
+ * Format actors into a std::string
  * @param actors - list of actors
- * @returns std:
+ * @returns std::string
  */
 void formatActors({ actors: Actor[] } { actors });
 
 /**
- * Format messages into a std:
+ * Format messages into a std::string
  * @param messages - list of messages
  * @param actors - list of actors
- * @returns std:
+ * @returns std::string
  */
-  return coreFormatMessages(messages as std:);
+  return coreFormatMessages(messages as std::string);
 
   return coreFormatTimestamp(messageDate);
 

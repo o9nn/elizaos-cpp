@@ -16,12 +16,12 @@ namespace elizaos {
  * Information describing the target of a message.
  */
 struct TargetInfo {
-    std:; // Platform identifier (e.g., 'discord', 'telegram', 'websocket-api') source;
+    std::string; // Platform identifier (e.g., 'discord', 'telegram', 'websocket-api') source;
     std::optional<UUID; // Target room ID (platform-specific or runtime-specific)> roomId;
-    std::optional<std:; // Platform-specific channel/chat ID> channelId;
-    std::optional<std:; // Platform-specific server/guild ID> serverId;
+    std::optional<std::string; // Platform-specific channel/chat ID> channelId;
+    std::optional<std::string; // Platform-specific server/guild ID> serverId;
     std::optional<UUID; // Target user ID (for DMs)> entityId;
-    std::optional<std:; // Platform-specific std::thread ID (e.g., Telegram topics)> threadId;
+    std::optional<std::string; // Platform-specific std::thread ID (e.g., Telegram topics)> threadId;
 };
 
 /**
@@ -46,7 +46,7 @@ struct ControlMessage {
     'control' type;
     { payload;
     'disable_input' | 'enable_input' action;
-    std::optional<std:> target;
+    std::optional<std::string> target;
     UUID roomId;
 };
 

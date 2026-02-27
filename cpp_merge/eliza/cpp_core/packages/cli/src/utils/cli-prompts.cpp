@@ -7,7 +7,7 @@
 
 namespace elizaos {
 
-std::future<std::vector<std::string>> promptForMultipleItems(const std:& fieldName, std::vector<std::string> initial = {}) {
+std::future<std::vector<std::string>> promptForMultipleItems(const std::string& fieldName, std::vector<std::string> initial = {}) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto items = [...initial];
@@ -32,7 +32,7 @@ std::future<std::vector<std::string>> promptForMultipleItems(const std:& fieldNa
 
 }
 
-std::future<bool> confirmAction(const std:& message) {
+std::future<bool> confirmAction(const std::string& message) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto response = clack.confirm({;

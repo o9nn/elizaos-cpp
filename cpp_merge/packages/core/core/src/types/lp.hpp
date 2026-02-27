@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_CORE_SRC_TYPES_LP_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_ELIZA_PACKAGES_CORE_SRC_TYPES_LP_H
 #include "core.hpp"
+#include <string>
 #include "./primitives.h"
 #include "./service.h"
 #include "./token.h"
@@ -18,17 +19,17 @@ public:
     using std::enable_shared_from_this<ILpService>::shared_from_this;
     static any override;
 
-    string serviceType = std:("lp");
+    string serviceType = std::string("lp");
 
-    string capabilityDescription = std:("Provides standardized access to DEX liquidity pools.");
+    string capabilityDescription = std::string("Provides standardized access to DEX liquidity pools.");
 
     virtual string getDexName() = 0;
-    virtual std::shared_ptr<Promise<array<PoolInfo>>> getPools(string tokenAMint = undefined, string tokenBMint = undefined) = 0;
+    virtual std::shared_ptr<Promise<array<PoolInfo>>> getPools(string tokenAMint = std::nullopt, string tokenBMint = std::nullopt) = 0;
     virtual std::shared_ptr<Promise<any>> addLiquidity(object params) = 0;
     virtual std::shared_ptr<Promise<any>> removeLiquidity(object params) = 0;
     virtual std::shared_ptr<Promise<any>> getLpPositionDetails(string userAccountPublicKey, string poolOrPositionIdentifier) = 0;
     virtual std::shared_ptr<Promise<Record<string, Partial<PoolInfo>>>> getMarketDataForPools(array<string> poolIds) = 0;
-    ILpService(std::shared_ptr<IAgentRuntime> runtime = undefined);
+    ILpService(std::shared_ptr<IAgentRuntime> runtime = std::nullopt);
 };
 
 #endif

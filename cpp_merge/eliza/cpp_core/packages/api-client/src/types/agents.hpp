@@ -17,53 +17,53 @@ namespace elizaos {
 
 struct Agent {
     UUID id;
-    std: name;
-    std::optional<std:> description;
+    std::string name;
+    std::optional<std::string> description;
     'active' | 'inactive' | 'stopped' status;
     Date createdAt;
     Date updatedAt;
-    std::optional<std::unordered_map<std:, std:>> metadata;
+    std::optional<std::unordered_map<std::string, std::string>> metadata;
 };
 
 struct AgentCreateParams {
-    std: name;
-    std::optional<std:> description;
-    std::optional<std::unordered_map<std:, std:>> metadata;
+    std::string name;
+    std::optional<std::string> description;
+    std::optional<std::unordered_map<std::string, std::string>> metadata;
 };
 
 struct AgentUpdateParams {
-    std::optional<std:> name;
-    std::optional<std:> description;
-    std::optional<std::unordered_map<std:, std:>> metadata;
+    std::optional<std::string> name;
+    std::optional<std::string> description;
+    std::optional<std::unordered_map<std::string, std::string>> metadata;
 };
 
 struct AgentWorld {
     UUID id;
-    std: name;
-    std::optional<std:> description;
+    std::string name;
+    std::optional<std::string> description;
     std::optional<std::vector<Agent>> agents;
 };
 
 struct AgentWorldSettings {
     UUID worldId;
-    std::unordered_map<std:, std:> settings;
+    std::unordered_map<std::string, std::string> settings;
 };
 
 struct AgentPanel {
-    std: id;
-    std: name;
-    std: url;
-    std: type;
-    std::optional<std::unordered_map<std:, std:>> metadata;
+    std::string id;
+    std::string name;
+    std::string url;
+    std::string type;
+    std::optional<std::unordered_map<std::string, std::string>> metadata;
 };
 
 struct AgentLog {
     UUID id;
     UUID agentId;
     'debug' | 'info' | 'warn' | 'error' level;
-    std: message;
+    std::string message;
     Date timestamp;
-    std::optional<std::unordered_map<std:, std:>> metadata;
+    std::optional<std::unordered_map<std::string, std::string>> metadata;
 };
 
 

@@ -1,4 +1,5 @@
 #include "completeTodo.hpp"
+#include <string>
 #include <vector>
 #include <future>
 #include <map>
@@ -39,14 +40,14 @@ std::future<TaskCompletion> extractTaskCompletion(IAgentRuntime runtime, Memory 
                             // Parse XML from the text results
                             const auto parsedResult = parseKeyValueXml(result) | nullptr;
 
-                            if (!parsedResult || typeof parsedResult.isFound == "undefined") {
+                            if (!parsedResult || typeof parsedResult.isFound == "std::nullopt") {
                                 logger.error(
                                 "Failed to parse valid task completion information from XML",
                                 );
                                 return { taskId: "", taskName: "", isFound: false }
                             }
 
-                            // Convert std: 'true'/'false' to boolean and handle 'null' strings
+                            // Convert std::string 'true'/'false' to boolean and handle 'null' strings
                             const TaskCompletion finalResult = {;
                                 taskId: parsedResult.taskId == "nullptr" ? "" : parsedResult.taskId || "",
                                 taskName:

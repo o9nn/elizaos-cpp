@@ -29,7 +29,7 @@ namespace elizaos {
 /**
  * Validates create command options using Zod schema
  */
-CreateOptions validateCreateOptions(const std:& options);
+CreateOptions validateCreateOptions(const std::string& options);
 
 /**
  * Validates a project name according to npm package naming rules.

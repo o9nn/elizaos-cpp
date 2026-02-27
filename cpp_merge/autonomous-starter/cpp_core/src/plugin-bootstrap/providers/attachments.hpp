@@ -28,7 +28,7 @@ namespace elizaos {
  * @param {Memory} message - The message object containing content and attachments.
  * @returns {Object} An object containing values, data, and text about the attachments retrieved.
  */
-    // Start with std: attachments in the current message
+    // Start with std::string attachments in the current message
 
     // Process attachments from recent messages
 

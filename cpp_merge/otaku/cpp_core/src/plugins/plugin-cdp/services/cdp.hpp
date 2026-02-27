@@ -16,43 +16,43 @@ namespace elizaos {
 
 
 struct WalletToken {
-    std: symbol;
-    std: name;
-    std: balance;
-    std: balanceFormatted;
+    std::string symbol;
+    std::string name;
+    std::string balance;
+    std::string balanceFormatted;
     double usdValue;
     double usdPrice;
-    std: | null contractAddress;
-    std: chain;
+    std::string | null contractAddress;
+    std::string chain;
     double decimals;
 };
 
 struct WalletNFT {
-    std: chain;
-    std: contractAddress;
-    std: tokenId;
-    std: name;
-    std: description;
-    std: contractName;
-    std: tokenType;
-    std::optional<std:> balance;
+    std::string chain;
+    std::string contractAddress;
+    std::string tokenId;
+    std::string name;
+    std::string description;
+    std::string contractName;
+    std::string tokenType;
+    std::optional<std::string> balance;
     std::optional<std::vector<unknown>> attributes;
 };
 
 struct WalletInfo {
-    std: address;
+    std::string address;
     std::vector<WalletToken> tokens;
     std::vector<WalletNFT> nfts;
     double totalUsdValue;
 };
 
-class CdpService extends Service {
+class CdpService : public Service {
   static serviceType = "CDP_SERVICE";
   capabilityDescription = "Provides authenticated access to Coinbase CDP via Transaction Manager";
 
   private transactionManager: CdpTransactionManager;
 
-  constructor(runtime: IAgentRuntime) {
+  /* constructor */ (runtime: IAgentRuntime) {
     super(runtime);
     this.transactionManager = CdpTransactionManager.getInstance();
   }

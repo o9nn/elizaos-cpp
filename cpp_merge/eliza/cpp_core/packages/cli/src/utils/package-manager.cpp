@@ -8,7 +8,7 @@
 
 namespace elizaos {
 
-std::future<std:> getPackageManager() {
+std::future<std::string> getPackageManager() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     logger.debug('[PackageManager] Using bun as the package manager for ElizaOS CLI');
@@ -47,7 +47,7 @@ std::vector<std::string> getInstallCommand(bool isGlobal) {
 
 }
 
-std::future<void> removeFromBunLock(const std:& packageName, const std:& directory) {
+std::future<void> removeFromBunLock(const std::string& packageName, const std::string& directory) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto lockFilePath = path.join(directory, "bun.lock");
@@ -64,7 +64,7 @@ std::future<void> removeFromBunLock(const std:& packageName, const std:& directo
             stdio: "pipe", // Don't show output for cleanup operation
             });
             logger.debug("Successfully removed " + std::to_string(packageName) + " from bun.lock");
-            } catch (error: std:) {
+            } catch (error: std::string) {
                 // If the package isn't in the lockfile, that's fine - we just want to ensure it's not there
                 if (error.message.count('not found') > 0 || error.message.count('No such package') > 0) {
                     logger.debug("Package " + std::to_string(packageName) + " not found in lockfile (expected for cleanup)");
@@ -75,7 +75,7 @@ std::future<void> removeFromBunLock(const std:& packageName, const std:& directo
 
 }
 
-std: buildGitHubSpecifier(const std:& githubSpec, std::optional<std:> versionOrTag) {
+std::string buildGitHubSpecifier(const std::string& githubSpec, std::optional<std::string> versionOrTag) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!versionOrTag) {

@@ -1,4 +1,5 @@
 #include "chart.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -153,7 +154,7 @@ void Chart() {
                                                                                 if (!useCoingecko) {
                                                                                     /** Handle incoming data for non-bonded tokens */
                                                                                     socket = getSocket();
-                                                                                    socket.on[&]("newCandle", (data: std:) {
+                                                                                    socket.on[&]("newCandle", (data: std::string) {
                                                                                         if (data.token == mint && candlestickSeriesRef.current) {
                                                                                             const auto newCandle = {;
                                                                                                 time: data.time * 1000,

@@ -1,4 +1,5 @@
 #include "loader.hpp"
+#include <string>
 #include <vector>
 #include <future>
 #include <iostream>
@@ -6,42 +7,42 @@
 
 namespace elizaos {
 
-std: tryLoadFile(const std:& filePath) {
+std::string tryLoadFile(const std::string& filePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return serverTryLoadFile(filePath);
 
 }
 
-std::future<std::vector<Character>> loadCharactersFromUrl(const std:& url) {
+std::future<std::vector<Character>> loadCharactersFromUrl(const std::string& url) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return serverLoadCharactersFromUrl(url);
 
 }
 
-std::future<Character> jsonToCharacter(const std:& character) {
+std::future<Character> jsonToCharacter(const std::string& character) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return serverJsonToCharacter(character);
 
 }
 
-std::future<Character> loadCharacter(const std:& filePath) {
+std::future<Character> loadCharacter(const std::string& filePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return serverLoadCharacter(filePath);
 
 }
 
-std::future<Character> loadCharacterTryPath(const std:& characterPath) {
+std::future<Character> loadCharacterTryPath(const std::string& characterPath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return serverLoadCharacterTryPath(characterPath);
 
 }
 
-std::future<std::vector<Character>> loadCharacters(const std:& charactersArg) {
+std::future<std::vector<Character>> loadCharacters(const std::string& charactersArg) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Delegate to server implementation for main loading logic

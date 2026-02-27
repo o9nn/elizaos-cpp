@@ -16,7 +16,7 @@ namespace elizaos {
 
 
 
-class MemoryService extends BaseApiClient {
+class MemoryService : public BaseApiClient {
   /**
    * Get agent memories
    */

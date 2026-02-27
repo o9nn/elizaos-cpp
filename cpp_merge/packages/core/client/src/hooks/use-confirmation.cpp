@@ -1,18 +1,19 @@
 #include "use-confirmation.h"
+#include <string>
 
 any useConfirmation()
 {
     auto [confirmationState, setConfirmationState] = useState<object>(object{
-        object::pair{std:("open"), false}, 
-        object::pair{std:("options"), nullptr}, 
-        object::pair{std:("onConfirm"), nullptr}
+        object::pair{std::string("open"), false}, 
+        object::pair{std::string("options"), nullptr}, 
+        object::pair{std::string("onConfirm"), nullptr}
     });
     auto confirm = useCallback([=](auto options, auto onConfirm) mutable
     {
         setConfirmationState(object{
-            object::pair{std:("open"), true}, 
-            object::pair{std:("options"), std:("options")}, 
-            object::pair{std:("onConfirm"), std:("onConfirm")}
+            object::pair{std::string("open"), true}, 
+            object::pair{std::string("options"), std::string("options")}, 
+            object::pair{std::string("onConfirm"), std::string("onConfirm")}
         });
     }
     , array<any>());
@@ -20,9 +21,9 @@ any useConfirmation()
     {
         if (!open) {
             setConfirmationState(object{
-                object::pair{std:("open"), false}, 
-                object::pair{std:("options"), nullptr}, 
-                object::pair{std:("onConfirm"), nullptr}
+                object::pair{std::string("open"), false}, 
+                object::pair{std::string("options"), nullptr}, 
+                object::pair{std::string("onConfirm"), nullptr}
             });
         }
     }
@@ -36,11 +37,11 @@ any useConfirmation()
     }
     , array<any>{ confirmationState->onConfirm, handleOpenChange });
     return object{
-        object::pair{std:("confirm"), std:("confirm")}, 
-        object::pair{std:("isOpen"), confirmationState->open}, 
-        object::pair{std:("onOpenChange"), handleOpenChange}, 
-        object::pair{std:("onConfirm"), handleConfirm}, 
-        object::pair{std:("options"), confirmationState->options}
+        object::pair{std::string("confirm"), std::string("confirm")}, 
+        object::pair{std::string("isOpen"), confirmationState->open}, 
+        object::pair{std::string("onOpenChange"), handleOpenChange}, 
+        object::pair{std::string("onConfirm"), handleConfirm}, 
+        object::pair{std::string("options"), confirmationState->options}
     };
 };
 

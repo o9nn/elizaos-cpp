@@ -1,31 +1,32 @@
 #include "forms-provider.h"
+#include <string>
 
 std::shared_ptr<Provider> formsProvider = object{
-    object::pair{std:("name"), std:("FORMS_CONTEXT")}, 
-    object::pair{std:("description"), std:("Provides context about active forms and their current state")}, 
-    object::pair{std:("dynamic"), true}, 
-    object::pair{std:("position"), 50}, 
-    object::pair{std:("get"), [=](auto runtime, auto _message, auto _state = undefined) mutable
+    object::pair{std::string("name"), std::string("FORMS_CONTEXT")}, 
+    object::pair{std::string("description"), std::string("Provides context about active forms and their current state")}, 
+    object::pair{std::string("dynamic"), true}, 
+    object::pair{std::string("position"), 50}, 
+    object::pair{std::string("get"), [=](auto runtime, auto _message, auto _state = std::nullopt) mutable
     {
-        auto formsService = runtime->getService<std::shared_ptr<FormsService>>(std:("forms"));
+        auto formsService = runtime->getService<std::shared_ptr<FormsService>>(std::string("forms"));
         if (!formsService) {
             return object{
-                object::pair{std:("text"), std:("Forms service is not available.")}, 
-                object::pair{std:("values"), object{}}, 
-                object::pair{std:("data"), object{}}
+                object::pair{std::string("text"), std::string("Forms service is not available.")}, 
+                object::pair{std::string("values"), object{}}, 
+                object::pair{std::string("data"), object{}}
             };
         }
         try
         {
-            auto activeForms = std::async([=]() { formsService->listForms(std:("active")); });
+            auto activeForms = std::async([=]() { formsService->listForms(std::string("active")); });
             if (activeForms->length == 0) {
                 return object{
-                    object::pair{std:("text"), string_empty}, 
-                    object::pair{std:("values"), object{}}, 
-                    object::pair{std:("data"), object{}}
+                    object::pair{std::string("text"), string_empty}, 
+                    object::pair{std::string("values"), object{}}, 
+                    object::pair{std::string("data"), object{}}
                 };
             }
-            shared contextText = std:("[FORMS]\
+            shared contextText = std::string("[FORMS]\
 ");
             auto formsData = array<std::shared_ptr<Form>>();
             auto& __array1179_2866 = activeForms;
@@ -34,79 +35,79 @@ std::shared_ptr<Provider> formsProvider = object{
                 auto& form = const_(__array1179_2866)[__indx1179_2866];
                 {
                     auto currentStep = const_(form->steps)[form->currentStepIndex];
-                    contextText += std:("\
-Active Form: ") + form->name + std:(" (ID: ") + form->id + std:(")\
+                    contextText += std::string("\
+Active Form: ") + form->name + std::string(" (ID: ") + form->id + std::string(")\
 ");
-                    contextText += std:("Current Step: ") + (OR((currentStep->name), (currentStep->id))) + std:("\
+                    contextText += std::string("Current Step: ") + (OR((currentStep->name), (currentStep->id))) + std::string("\
 ");
                     auto completedFields = currentStep->fields->filter([=](auto f) mutable
                     {
-                        return f["value"] != undefined;
+                        return f["value"] != std::nullopt;
                     }
                     );
                     if (completedFields->length > 0) {
-                        contextText += std:("Completed fields:\
+                        contextText += std::string("Completed fields:\
 ");
                         completedFields->forEach([=](auto field) mutable
                         {
-                            auto displayValue = (field["secret"]) ? any(std:("[SECRET]")) (field["value"]);
-                            contextText += std:("  - ") + field["label"] + std:(": ") + displayValue + std:("\
+                            auto displayValue = (field["secret"]) ? any(std::string("[SECRET]")) (field["value"]);
+                            contextText += std::string("  - ") + field["label"] + std::string(": ") + displayValue + std::string("\
 ");
                         }
                         );
                     }
                     auto remainingRequired = currentStep->fields->filter([=](auto f) mutable
                     {
-                        return AND((!f["optional"]), (f["value"] == undefined));
+                        return AND((!f["optional"]), (f["value"] == std::nullopt));
                     }
                     );
                     if (remainingRequired->length > 0) {
-                        contextText += std:("Required fields:\
+                        contextText += std::string("Required fields:\
 ");
                         remainingRequired->forEach([=](auto field) mutable
                         {
-                            contextText += std:("  - ") + field["label"] + string_empty + (field["description"]) ? any(std:(" (") + field["description"] + std:(")")) (string_empty) + std:("\
+                            contextText += std::string("  - ") + field["label"] + string_empty + (field["description"]) ? any(std::string(" (") + field["description"] + std::string(")")) (string_empty) + std::string("\
 ");
                         }
                         );
                     }
                     auto optionalFields = currentStep->fields->filter([=](auto f) mutable
                     {
-                        return AND((f["optional"]), (f["value"] == undefined));
+                        return AND((f["optional"]), (f["value"] == std::nullopt));
                     }
                     );
                     if (optionalFields->length > 0) {
-                        contextText += std:("Optional fields:\
+                        contextText += std::string("Optional fields:\
 ");
                         optionalFields->forEach([=](auto field) mutable
                         {
-                            contextText += std:("  - ") + field["label"] + string_empty + (field["description"]) ? any(std:(" (") + field["description"] + std:(")")) (string_empty) + std:("\
+                            contextText += std::string("  - ") + field["label"] + string_empty + (field["description"]) ? any(std::string(" (") + field["description"] + std::string(")")) (string_empty) + std::string("\
 ");
                         }
                         );
                     }
-                    contextText += std:("Progress: Step ") + (form->currentStepIndex + 1) + std:(" of ") + form->steps->length + std:("\
+                    contextText += std::string("Progress: Step ") + (form->currentStepIndex + 1) + std::string(" of ") + form->steps->length + std::string("\
 ");
                     formsData->push(form);
                 }
             }
             return object{
-                object::pair{std:("text"), contextText}, 
-                object::pair{std:("values"), object{
-                    object::pair{std:("activeFormsCount"), activeForms->length}
+                object::pair{std::string("text"), contextText}, 
+                object::pair{std::string("values"), object{
+                    object::pair{std::string("activeFormsCount"), activeForms->length}
                 }}, 
-                object::pair{std:("data"), object{
-                    object::pair{std:("forms"), formsData}
+                object::pair{std::string("data"), object{
+                    object::pair{std::string("forms"), formsData}
                 }}
             };
         }
         catch (const any& error)
         {
-            auto errorMessage = (is<Error>(error)) ? any(error->message) (std:("Unknown error"));
+            auto errorMessage = (is<Error>(error)) ? any(error->message) (std::string("Unknown error"));
             return object{
-                object::pair{std:("text"), std:("Error retrieving forms context: ") + errorMessage + string_empty}, 
-                object::pair{std:("values"), object{}}, 
-                object::pair{std:("data"), object{}}
+                object::pair{std::string("text"), std::string("Error retrieving forms context: ") + errorMessage + string_empty}, 
+                object::pair{std::string("values"), object{}}, 
+                object::pair{std::string("data"), object{}}
             };
         }
     }

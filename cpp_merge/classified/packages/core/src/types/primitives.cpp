@@ -1,9 +1,10 @@
 #include "primitives.hpp"
+#include <string>
 
 UUID asUUID(string id)
 {
-    if (OR((!id), (!(new RegExp(std:("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")))->test(id)))) {
-        throw any(std::make_shared<Error>(std:("Invalid UUID format: ") + id + string_empty));
+    if (OR((!id), (!(new RegExp(std::string("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")))->test(id)))) {
+        throw any(std::make_shared<Error>(std::string("Invalid UUID format: ") + id + string_empty));
     }
     return as<UUID>(id);
 };
@@ -12,7 +13,7 @@ UUID asUUID(string id)
 
 void Main(void)
 {
-    string_empty + string + std:("-") + string + std:("-") + string + std:("-") + string + std:("-") + string + string_empty;
+    string_empty + string + std::string("-") + string + std::string("-") + string + std::string("-") + string + std::string("-") + string + string_empty;
 }
 
 MAIN

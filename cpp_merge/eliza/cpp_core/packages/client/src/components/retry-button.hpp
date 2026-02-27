@@ -17,7 +17,7 @@ namespace elizaos {
 
 
 struct RetryButtonProps {
-    std::optional<std:> className;
+    std::optional<std::string> className;
 };
 
 

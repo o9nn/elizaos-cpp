@@ -20,9 +20,9 @@ namespace elizaos {
 
 struct MessageServer {
     UUID id;
-    std: name;
-    std: sourceType;
-    std::optional<std:> sourceId;
+    std::string name;
+    std::string sourceType;
+    std::optional<std::string> sourceId;
     std::optional<ServerMetadata> metadata;
     std::chrono::system_clock::time_point createdAt;
     std::chrono::system_clock::time_point updatedAt;
@@ -31,11 +31,11 @@ struct MessageServer {
 struct MessageChannel {
     UUID id;
     UUID messageServerId;
-    std: name;
+    std::string name;
     ChannelType type;
-    std::optional<std:> sourceType;
-    std::optional<std:> sourceId;
-    std::optional<std:> topic;
+    std::optional<std::string> sourceType;
+    std::optional<std::string> sourceId;
+    std::optional<std::string> topic;
     std::optional<ChannelMetadata> metadata;
     std::chrono::system_clock::time_point createdAt;
     std::chrono::system_clock::time_point updatedAt;
@@ -45,11 +45,11 @@ struct CentralRootMessage {
     UUID id;
     UUID channelId;
     UUID authorId;
-    std: content;
-    std::optional<std:> rawMessage;
+    std::string content;
+    std::optional<std::string> rawMessage;
     std::optional<UUID> inReplyToRootMessageId;
-    std::optional<std:> sourceType;
-    std::optional<std:> sourceId;
+    std::optional<std::string> sourceType;
+    std::optional<std::string> sourceId;
     std::chrono::system_clock::time_point createdAt;
     std::chrono::system_clock::time_point updatedAt;
     std::optional<MessageMetadata> metadata;
@@ -61,11 +61,11 @@ struct MessageServiceStructure {
     UUID channel_id;
     UUID server_id;
     UUID author_id;
-    std::optional<std:> author_display_name;
-    std: content;
-    std::optional<std:> raw_message;
-    std::optional<std:> source_id;
-    std::optional<std:> source_type;
+    std::optional<std::string> author_display_name;
+    std::string content;
+    std::optional<std::string> raw_message;
+    std::optional<std::string> source_id;
+    std::optional<std::string> source_type;
     std::optional<UUID> in_reply_to_message_id;
     double created_at;
     std::optional<MessageMetadata> metadata;
@@ -73,10 +73,10 @@ struct MessageServiceStructure {
 
 // Attachment types for media transformation
 struct Attachment {
-    std::optional<std:> url;
+    std::optional<std::string> url;
 };
 
-using AttachmentInput = std::variant<std:, Attachment, (std:, std::vector<Attachment)>>;
+using AttachmentInput = std::variant<std::string, Attachment, (std::string, std::vector<Attachment)>>;
 
 struct MessageContentWithAttachments {
     std::optional<AttachmentInput> attachments;
@@ -87,7 +87,7 @@ struct MessageMetadataWithAttachments {
 };
 
 struct MessageWithAttachments {
-    std::optional<std::variant<MessageContentWithAttachments, std:>> content;
+    std::optional<std::variant<MessageContentWithAttachments, std::string>> content;
     std::optional<MessageMetadataWithAttachments> metadata;
 };
 

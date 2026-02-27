@@ -1,11 +1,12 @@
 #include "run-single.hpp"
+#include <string>
 #include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std: getDefaultOutputDir(const std:& outputDir, ProblemStatement problemStatement, AgentConfig agent) {
+std::string getDefaultOutputDir(const std::string& outputDir, ProblemStatement problemStatement, AgentConfig agent) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (outputDir != 'DEFAULT') {

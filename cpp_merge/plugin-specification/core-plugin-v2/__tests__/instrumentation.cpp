@@ -1,14 +1,15 @@
 #include "instrumentation.test.h"
+#include <string>
 
 void Main(void)
 {
-    describe(std:("InstrumentationService"), [=]() mutable
+    describe(std::string("InstrumentationService"), [=]() mutable
     {
-        it(std:("initializes and can flush and stop"), [=]() mutable
+        it(std::string("initializes and can flush and stop"), [=]() mutable
         {
             auto svc = std::make_shared<InstrumentationService>(object{
-                object::pair{std:("enabled"), true}, 
-                object::pair{std:("serviceName"), std:("test")}
+                object::pair{std::string("enabled"), true}, 
+                object::pair{std::string("serviceName"), std::string("test")}
             });
             expect(svc->isEnabled())->toBe(true);
             std::async([=]() { svc->flush(); });
@@ -16,11 +17,11 @@ void Main(void)
             expect(svc->isEnabled())->toBe(false);
         }
         );
-        it(std:("disabled service reports disabled"), [=]() mutable
+        it(std::string("disabled service reports disabled"), [=]() mutable
         {
             auto svc = std::make_shared<InstrumentationService>(object{
-                object::pair{std:("enabled"), false}, 
-                object::pair{std:("serviceName"), std:("x")}
+                object::pair{std::string("enabled"), false}, 
+                object::pair{std::string("serviceName"), std::string("x")}
             });
             expect(svc->isEnabled())->toBe(false);
         }

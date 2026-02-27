@@ -19,7 +19,7 @@ namespace elizaos {
 
 
 // Helper to safely read from contract bypassing viem's strict authorizationList requirement
-using ReadContractFn = std::function<std::future<std:>(std:)>;
+using ReadContractFn = std::function<std::future<std::string>(std::string)>;
 
 std::future<void> POST(NextRequest request);;
 
@@ -31,7 +31,7 @@ std::future<void> POST(NextRequest request);;
       // Pay with USDC
 
   // Resolve approver account: prefer PK; else use testWalletPrivateKey from deployment; else impersonate
-  // eslint-disable-next-line @typescript-eslint/no-explicit-std:
+  // eslint-disable-next-line @typescript-eslint/no-explicit-std::string
 
       // Impersonate approver on Anvil
 

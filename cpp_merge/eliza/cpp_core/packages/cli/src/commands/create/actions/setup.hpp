@@ -20,31 +20,31 @@ namespace elizaos {
 /**
  * Creates necessary project directories.
  */
-std::future<void> createProjectDirectories(const std:& targetDir);
+std::future<void> createProjectDirectories(const std::string& targetDir);
 
 /**
  * Sets up AI model configuration in the project's .env file based on user selection.
  */
-std::future<void> setupAIModelConfig(const std:& aiModel, const std:& envFilePath, auto isNonInteractive);
+std::future<void> setupAIModelConfig(const std::string& aiModel, const std::string& envFilePath, auto isNonInteractive);
 
 /**
  * Checks if an environment variable has a real value (not a placeholder) in the content
  */
-bool hasValidApiKey(const std:& content, const std:& keyName);
+bool hasValidApiKey(const std::string& content, const std::string& keyName);
 
 /**
  * Sets up embedding model configuration when the primary AI model doesn't support embeddings.
  */
-std::future<void> setupEmbeddingModelConfig(const std:& embeddingModel, const std:& envFilePath, auto isNonInteractive);
+std::future<void> setupEmbeddingModelConfig(const std::string& embeddingModel, const std::string& envFilePath, auto isNonInteractive);
 
 /**
  * Installs dependencies for the specified target directory.
  */
-std::future<void> installDependencies(const std:& targetDir);
+std::future<void> installDependencies(const std::string& targetDir);
 
 /**
  * Sets up the project environment including database and AI model configuration.
  */
-std::future<void> setupProjectEnvironment(const std:& targetDir, const std:& database, const std:& aiModel, std::optional<std:> embeddingModel, auto isNonInteractive);
+std::future<void> setupProjectEnvironment(const std::string& targetDir, const std::string& database, const std::string& aiModel, std::optional<std::string> embeddingModel, auto isNonInteractive);
 
 } // namespace elizaos

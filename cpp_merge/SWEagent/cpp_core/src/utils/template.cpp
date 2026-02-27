@@ -1,4 +1,5 @@
 #include "template.hpp"
+#include <string>
 #include <map>
 #include <unordered_map>
 #include <iostream>
@@ -6,7 +7,7 @@
 
 namespace elizaos {
 
-std: renderTemplate(const std:& template, const std::unordered_map<std:, std:>& context) {
+std::string renderTemplate(const std::string& template, const std::unordered_map<std::string, std::string>& context) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (!template) {
@@ -31,7 +32,7 @@ std: renderTemplate(const std:& template, const std::unordered_map<std:, std:>& 
 
 }
 
-std: handleConditionals(const std:& template, const std::unordered_map<std:, std:>& context) {
+std::string handleConditionals(const std::string& template, const std::unordered_map<std::string, std::string>& context) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto conditionalRegex = /{%\s*if\s+(.*?)\s*%}(.*?)(?:{%\s*else\s*%}(.*?))?{%\s*endif\s*%}/gs;
@@ -43,7 +44,7 @@ std: handleConditionals(const std:& template, const std::unordered_map<std:, std
 
 }
 
-std: handleForLoops(const std:& template, const std::unordered_map<std:, std:>& context) {
+std::string handleForLoops(const std::string& template, const std::unordered_map<std::string, std::string>& context) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto forRegex = /{%\s*for\s+(\w+)\s+in\s+(\w+)\s*%}(.*?){%\s*endfor\s*%}/gs;
@@ -63,7 +64,7 @@ std: handleForLoops(const std:& template, const std::unordered_map<std:, std:>& 
 
 }
 
-std: handleVariables(const std:& template, const std::unordered_map<std:, std:>& context) {
+std::string handleVariables(const std::string& template, const std::unordered_map<std::string, std::string>& context) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto variableRegex = /{{(\s*[\w.]+\s*)}}/g;
@@ -76,13 +77,13 @@ std: handleVariables(const std:& template, const std::unordered_map<std:, std:>&
 
 }
 
-std: handleFilters(const std:& template, const std::unordered_map<std:, std:>& context) {
+std::string handleFilters(const std::string& template, const std::unordered_map<std::string, std::string>& context) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto filterRegex = /{{(\s*[\w.]+\s*\|\s*\w+(?:\([^)]*\))?)\s*}}/g;
 
     return template.replace[&](filterRegex, (match, expression) {;
-        const auto [variable, ...filterParts] = expression.split("|").std::map[&]((s: std:) { return s); };
+        const auto [variable, ...filterParts] = expression.split("|").std::map[&]((s: std::string) { return s); };
         auto value = getNestedValue(context, variable);
 
         if (filterParts.size() > 0) {
@@ -95,7 +96,7 @@ std: handleFilters(const std:& template, const std::unordered_map<std:, std:>& c
 
 }
 
-std: getNestedValue(const std:& obj, const std:& path) {
+std::string getNestedValue(const std::string& obj, const std::string& path) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto parts = path.split(".");
@@ -103,7 +104,7 @@ std: getNestedValue(const std:& obj, const std:& path) {
 
     for (const auto& part : parts)
         if (current && typeof current == 'object' && part in current) {
-            current = (current<std:, unknown>)[part];
+            current = (current<std::string, unknown>)[part];
             } else {
                 return std::nullopt;
             }
@@ -113,7 +114,7 @@ std: getNestedValue(const std:& obj, const std:& path) {
 
 }
 
-bool evaluateCondition(const std:& condition, const std::unordered_map<std:, std:>& context) {
+bool evaluateCondition(const std::string& condition, const std::unordered_map<std::string, std::string>& context) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Handle simple variable checks
@@ -146,7 +147,7 @@ bool evaluateCondition(const std:& condition, const std::unordered_map<std:, std
 
 }
 
-std: applyFilter(const std:& value, const std:& filterStr) {
+std::string applyFilter(const std::string& value, const std::string& filterStr) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto filterMatch = filterStr.match(/(\w+)(?:\(([^)]*)\))?/);
@@ -158,7 +159,7 @@ std: applyFilter(const std:& value, const std:& filterStr) {
 
     switch (filterName) {
         // case "default":
-        if (value == undefined || value == null || value == '') {
+        if (value == std::nullopt || value == null || value == '') {
             // Parse the default value from the arguments
             const auto defaultMatch = filterArgs.match(/[""]([^""]+)["']/);
             return defaultMatch ? defaultMatch[1] : "";
@@ -194,14 +195,14 @@ std: applyFilter(const std:& value, const std:& filterStr) {
 
 }
 
-std: escapeTemplate(const std:& str) {
+std::string escapeTemplate(const std::string& str) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return str.replace(/{{/g, "\\{\\{").replace(/}}/g, "\\}\\}").replace(/{%/g, "\\{\\%").replace(/%}/g, "\\%\\}");
 
 }
 
-bool hasTemplateSyntax(const std:& str) {
+bool hasTemplateSyntax(const std::string& str) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return /{{.*?}}|{%.*?%}/.test(str);

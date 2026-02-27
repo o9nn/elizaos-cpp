@@ -1,4 +1,5 @@
 #include "updateGoal.hpp"
+#include <string>
 
 std::shared_ptr<Promise<std::shared_ptr<GoalSelection>>> extractGoalSelection(std::shared_ptr<IAgentRuntime> runtime, std::shared_ptr<Memory> message, array<std::shared_ptr<GoalData>> availableGoals)
 {
@@ -6,50 +7,50 @@ std::shared_ptr<Promise<std::shared_ptr<GoalSelection>>> extractGoalSelection(st
     {
         auto goalsText = availableGoals->map([=](auto goal) mutable
         {
-            return std:("ID: ") + goal->id + std:("\
-Name: ") + goal->name + std:("\
-Description: ") + (OR((goal->description), (goal->name))) + std:("\
-Owner Type: ") + goal->ownerType + std:("\
-Tags: ") + (OR((goal->tags->join(std:(", "))), (std:("none")))) + std:("\
+            return std::string("ID: ") + goal->id + std::string("\
+Name: ") + goal->name + std::string("\
+Description: ") + (OR((goal->description), (goal->name))) + std::string("\
+Owner Type: ") + goal->ownerType + std::string("\
+Tags: ") + (OR((goal->tags->join(std::string(", "))), (std::string("none")))) + std::string("\
 ");
         }
-        )->join(std:("\
+        )->join(std::string("\
 ---\
 "));
         auto prompt = composePrompt(object{
-            object::pair{std:("state"), object{
-                object::pair{std:("text"), OR((message->content->text), (string_empty))}, 
-                object::pair{std:("availableGoals"), goalsText}
+            object::pair{std::string("state"), object{
+                object::pair{std::string("text"), OR((message->content->text), (string_empty))}, 
+                object::pair{std::string("availableGoals"), goalsText}
             }}, 
-            object::pair{std:("template"), extractGoalTemplate}
+            object::pair{std::string("template"), extractGoalTemplate}
         });
         auto result = std::async([=]() { runtime->useModel(ModelType->TEXT_SMALL, object{
-            object::pair{std:("prompt"), std:("prompt")}, 
-            object::pair{std:("stopSequences"), array<any>()}
+            object::pair{std::string("prompt"), std::string("prompt")}, 
+            object::pair{std::string("stopSequences"), array<any>()}
         }); });
         auto parsedResult = as<any>(parseKeyValueXml(result));
-        if (OR((!parsedResult), (type_of(parsedResult->isFound) == std:("undefined")))) {
-            logger->error(std:("Failed to parse valid goal selection information from XML"));
+        if (OR((!parsedResult), (type_of(parsedResult->isFound) == std::string("std::nullopt")))) {
+            logger->error(std::string("Failed to parse valid goal selection information from XML"));
             return object{
-                object::pair{std:("goalId"), string_empty}, 
-                object::pair{std:("goalName"), string_empty}, 
-                object::pair{std:("isFound"), false}
+                object::pair{std::string("goalId"), string_empty}, 
+                object::pair{std::string("goalName"), string_empty}, 
+                object::pair{std::string("isFound"), false}
             };
         }
         auto finalResult = object{
-            object::pair{std:("goalId"), (parsedResult->goalId == std:("null")) ? any(string_empty) (String(OR((parsedResult->goalId), (string_empty))))}, 
-            object::pair{std:("goalName"), (parsedResult->goalName == std:("null")) ? any(string_empty) (String(OR((parsedResult->goalName), (string_empty))))}, 
-            object::pair{std:("isFound"), String(parsedResult->isFound) == std:("true")}
+            object::pair{std::string("goalId"), (parsedResult->goalId == std::string("null")) ? any(string_empty) (String(OR((parsedResult->goalId), (string_empty))))}, 
+            object::pair{std::string("goalName"), (parsedResult->goalName == std::string("null")) ? any(string_empty) (String(OR((parsedResult->goalName), (string_empty))))}, 
+            object::pair{std::string("isFound"), String(parsedResult->isFound) == std::string("true")}
         };
         return finalResult;
     }
     catch (const any& error)
     {
-        logger->error(std:("Error extracting goal selection information:"), error);
+        logger->error(std::string("Error extracting goal selection information:"), error);
         return object{
-            object::pair{std:("goalId"), string_empty}, 
-            object::pair{std:("goalName"), string_empty}, 
-            object::pair{std:("isFound"), false}
+            object::pair{std::string("goalId"), string_empty}, 
+            object::pair{std::string("goalName"), string_empty}, 
+            object::pair{std::string("isFound"), false}
         };
     }
 };
@@ -59,30 +60,30 @@ std::shared_ptr<Promise<any>> extractGoalUpdate(std::shared_ptr<IAgentRuntime> r
 {
     try
     {
-        auto goalDetails = std:("Name: ") + goal->name + std:("\
+        auto goalDetails = std::string("Name: ") + goal->name + std::string("\
 ");
         if (goal->description) {
-            goalDetails += std:("Description: ") + goal->description + std:("\
+            goalDetails += std::string("Description: ") + goal->description + std::string("\
 ");
         }
-        goalDetails += std:("Owner Type: ") + goal->ownerType + std:("\
+        goalDetails += std::string("Owner Type: ") + goal->ownerType + std::string("\
 ");
-        goalDetails += std:("Created: ") + (OR((goal->createdAt->toLocaleDateString()), (std:("Unknown")))) + std:("\
+        goalDetails += std::string("Created: ") + (OR((goal->createdAt->toLocaleDateString()), (std::string("Unknown")))) + std::string("\
 ");
         auto prompt = composePrompt(object{
-            object::pair{std:("state"), object{
-                object::pair{std:("text"), OR((message->content->text), (string_empty))}, 
-                object::pair{std:("goalDetails"), std:("goalDetails")}
+            object::pair{std::string("state"), object{
+                object::pair{std::string("text"), OR((message->content->text), (string_empty))}, 
+                object::pair{std::string("goalDetails"), std::string("goalDetails")}
             }}, 
-            object::pair{std:("template"), extractUpdateTemplate}
+            object::pair{std::string("template"), extractUpdateTemplate}
         });
         auto result = std::async([=]() { runtime->useModel(ModelType->TEXT_SMALL, object{
-            object::pair{std:("prompt"), std:("prompt")}, 
-            object::pair{std:("stopSequences"), array<any>()}
+            object::pair{std::string("prompt"), std::string("prompt")}, 
+            object::pair{std::string("stopSequences"), array<any>()}
         }); });
         auto parsedUpdate = as<any>(parseKeyValueXml(result));
         if (OR((!parsedUpdate), (Object->keys(parsedUpdate)->get_length() == 0))) {
-            logger->error(std:("Failed to extract valid goal update information from XML"));
+            logger->error(std::string("Failed to extract valid goal update information from XML"));
             return nullptr;
         }
         auto finalUpdate = object{};
@@ -93,20 +94,20 @@ std::shared_ptr<Promise<any>> extractGoalUpdate(std::shared_ptr<IAgentRuntime> r
             finalUpdate->description = String(parsedUpdate->description);
         }
         if (Object->keys(finalUpdate)->get_length() == 0) {
-            logger->warn(std:("No valid update fields found after parsing XML."));
+            logger->warn(std::string("No valid update fields found after parsing XML."));
             return nullptr;
         }
         return finalUpdate;
     }
     catch (const any& error)
     {
-        logger->error(std:("Error extracting goal update information:"), error);
+        logger->error(std::string("Error extracting goal update information:"), error);
         return nullptr;
     }
 };
 
 
-string extractGoalTemplate = std:("\
+string extractGoalTemplate = std::string("\
 # Task: Extract Goal Selection Information\
 \
 ## User Message\
@@ -141,7 +142,7 @@ If no matching goal was found:\
   <isFound>false</isFound>\
 </response>\
 ");
-string extractUpdateTemplate = std:("\
+string extractUpdateTemplate = std::string("\
 # Task: Extract Goal Update Information\
 \
 ## User Message\
@@ -167,117 +168,117 @@ Return an XML object with these potential fields (only include fields that shoul
 </response>\
 ");
 std::shared_ptr<Action> updateGoalAction = object{
-    object::pair{std:("name"), std:("UPDATE_GOAL")}, 
-    object::pair{std:("similes"), array<string>{ std:("EDIT_GOAL"), std:("MODIFY_GOAL"), std:("CHANGE_GOAL"), std:("REVISE_GOAL") }}, 
-    object::pair{std:("description"), std:("Updates an existing goal's name or description. Can be chained with LIST_GOALS to see updated goals or COMPLETE_GOAL to mark it done.")}, 
-    object::pair{std:("validate"), [=](auto runtime, auto message) mutable
+    object::pair{std::string("name"), std::string("UPDATE_GOAL")}, 
+    object::pair{std::string("similes"), array<string>{ std::string("EDIT_GOAL"), std::string("MODIFY_GOAL"), std::string("CHANGE_GOAL"), std::string("REVISE_GOAL") }}, 
+    object::pair{std::string("description"), std::string("Updates an existing goal's name or description. Can be chained with LIST_GOALS to see updated goals or COMPLETE_GOAL to mark it done.")}, 
+    object::pair{std::string("validate"), [=](auto runtime, auto message) mutable
     {
         try
         {
-            auto dataService = as<std::shared_ptr<GoalService>>(runtime->getService(std:("goals")));
-            auto agentGoalCount = std::async([=]() { dataService->countGoals(std:("agent"), runtime->agentId, false); });
-            auto entityGoalCount = (message->entityId) ? any(std::async([=]() { dataService->countGoals(std:("entity"), as<std::shared_ptr<UUID>>(message->entityId), false); })) (0);
+            auto dataService = as<std::shared_ptr<GoalService>>(runtime->getService(std::string("goals")));
+            auto agentGoalCount = std::async([=]() { dataService->countGoals(std::string("agent"), runtime->agentId, false); });
+            auto entityGoalCount = (message->entityId) ? any(std::async([=]() { dataService->countGoals(std::string("entity"), as<std::shared_ptr<UUID>>(message->entityId), false); })) (0);
             return agentGoalCount + entityGoalCount > 0;
         }
         catch (const any& error)
         {
-            logger->error(std:("Error validating UPDATE_GOAL action:"), error);
+            logger->error(std::string("Error validating UPDATE_GOAL action:"), error);
             return false;
         }
     }
     }, 
-    object::pair{std:("handler"), [=](auto runtime, auto message, auto state, auto options, auto callback = undefined) mutable
+    object::pair{std::string("handler"), [=](auto runtime, auto message, auto state, auto options, auto callback = std::nullopt) mutable
     {
         try
         {
             if (!state) {
                 if (callback) {
                     std::async([=]() { callback(object{
-                        object::pair{std:("text"), std:("Unable to process request without state context.")}, 
-                        object::pair{std:("actions"), array<string>{ std:("UPDATE_GOAL_ERROR") }}, 
-                        object::pair{std:("source"), message->content->source}
+                        object::pair{std::string("text"), std::string("Unable to process request without state context.")}, 
+                        object::pair{std::string("actions"), array<string>{ std::string("UPDATE_GOAL_ERROR") }}, 
+                        object::pair{std::string("source"), message->content->source}
                     }); });
                 }
                 return object{
-                    object::pair{std:("data"), object{
-                        object::pair{std:("actionName"), std:("UPDATE_GOAL")}, 
-                        object::pair{std:("error"), std:("No state context")}
+                    object::pair{std::string("data"), object{
+                        object::pair{std::string("actionName"), std::string("UPDATE_GOAL")}, 
+                        object::pair{std::string("error"), std::string("No state context")}
                     }}, 
-                    object::pair{std:("values"), object{
-                        object::pair{std:("success"), false}, 
-                        object::pair{std:("error"), std:("No state context")}
+                    object::pair{std::string("values"), object{
+                        object::pair{std::string("success"), false}, 
+                        object::pair{std::string("error"), std::string("No state context")}
                     }}, 
-                    object::pair{std:("success"), false}
+                    object::pair{std::string("success"), false}
                 };
             }
-            auto dataService = as<std::shared_ptr<GoalService>>(runtime->getService(std:("goals")));
+            auto dataService = as<std::shared_ptr<GoalService>>(runtime->getService(std::string("goals")));
             auto agentGoals = std::async([=]() { dataService->getGoals(object{
-                object::pair{std:("ownerType"), std:("agent")}, 
-                object::pair{std:("ownerId"), runtime->agentId}, 
-                object::pair{std:("isCompleted"), false}
+                object::pair{std::string("ownerType"), std::string("agent")}, 
+                object::pair{std::string("ownerId"), runtime->agentId}, 
+                object::pair{std::string("isCompleted"), false}
             }); });
             auto entityGoals = (message->entityId) ? std::async([=]() { dataService->getGoals(object{
-                object::pair{std:("ownerType"), std:("entity")}, 
-                object::pair{std:("ownerId"), as<std::shared_ptr<UUID>>(message->entityId)}, 
-                object::pair{std:("isCompleted"), false}
+                object::pair{std::string("ownerType"), std::string("entity")}, 
+                object::pair{std::string("ownerId"), as<std::shared_ptr<UUID>>(message->entityId)}, 
+                object::pair{std::string("isCompleted"), false}
             }); }) : array<any>();
             auto availableGoals = array<std::shared_ptr<GoalData>>{ agentGoals, entityGoals };
             if (availableGoals->get_length() == 0) {
                 if (callback) {
                     std::async([=]() { callback(object{
-                        object::pair{std:("text"), std:("There are no active goals to update. Would you like to create a new goal?")}, 
-                        object::pair{std:("actions"), array<string>{ std:("UPDATE_GOAL_NO_GOALS") }}, 
-                        object::pair{std:("source"), message->content->source}
+                        object::pair{std::string("text"), std::string("There are no active goals to update. Would you like to create a new goal?")}, 
+                        object::pair{std::string("actions"), array<string>{ std::string("UPDATE_GOAL_NO_GOALS") }}, 
+                        object::pair{std::string("source"), message->content->source}
                     }); });
                 }
                 return object{
-                    object::pair{std:("data"), object{
-                        object::pair{std:("actionName"), std:("UPDATE_GOAL")}, 
-                        object::pair{std:("error"), std:("No active goals")}
+                    object::pair{std::string("data"), object{
+                        object::pair{std::string("actionName"), std::string("UPDATE_GOAL")}, 
+                        object::pair{std::string("error"), std::string("No active goals")}
                     }}, 
-                    object::pair{std:("values"), object{
-                        object::pair{std:("success"), false}, 
-                        object::pair{std:("error"), std:("No active goals")}
+                    object::pair{std::string("values"), object{
+                        object::pair{std::string("success"), false}, 
+                        object::pair{std::string("error"), std::string("No active goals")}
                     }}, 
-                    object::pair{std:("success"), false}
+                    object::pair{std::string("success"), false}
                 };
             }
             shared goalSelection = std::async([=]() { extractGoalSelection(runtime, message, availableGoals); });
             if (!goalSelection->isFound) {
                 if (callback) {
                     std::async([=]() { callback(object{
-                        object::pair{std:("text"), std:("I couldn't determine which goal you want to update. Could you be more specific? Here are the current goals:\
+                        object::pair{std::string("text"), std::string("I couldn't determine which goal you want to update. Could you be more specific? Here are the current goals:\
 \
 ") + availableGoals->map([=](auto goal) mutable
                         {
-                            return std:("- ") + goal->name + std:(" (") + goal->ownerType + std:(" goal)");
+                            return std::string("- ") + goal->name + std::string(" (") + goal->ownerType + std::string(" goal)");
                         }
-                        )->join(std:("\
+                        )->join(std::string("\
 ")) + string_empty}, 
-                        object::pair{std:("actions"), array<string>{ std:("UPDATE_GOAL_NOT_FOUND") }}, 
-                        object::pair{std:("source"), message->content->source}
+                        object::pair{std::string("actions"), array<string>{ std::string("UPDATE_GOAL_NOT_FOUND") }}, 
+                        object::pair{std::string("source"), message->content->source}
                     }); });
                 }
                 return object{
-                    object::pair{std:("data"), object{
-                        object::pair{std:("actionName"), std:("UPDATE_GOAL")}, 
-                        object::pair{std:("error"), std:("Goal not found")}, 
-                        object::pair{std:("availableGoals"), availableGoals->map([=](auto g) mutable
+                    object::pair{std::string("data"), object{
+                        object::pair{std::string("actionName"), std::string("UPDATE_GOAL")}, 
+                        object::pair{std::string("error"), std::string("Goal not found")}, 
+                        object::pair{std::string("availableGoals"), availableGoals->map([=](auto g) mutable
                         {
                             return (object{
-                                object::pair{std:("id"), g->id}, 
-                                object::pair{std:("name"), g->name}, 
-                                object::pair{std:("ownerType"), g->ownerType}
+                                object::pair{std::string("id"), g->id}, 
+                                object::pair{std::string("name"), g->name}, 
+                                object::pair{std::string("ownerType"), g->ownerType}
                             });
                         }
                         )}
                     }}, 
-                    object::pair{std:("values"), object{
-                        object::pair{std:("success"), false}, 
-                        object::pair{std:("error"), std:("Goal not found")}, 
-                        object::pair{std:("needsClarification"), true}
+                    object::pair{std::string("values"), object{
+                        object::pair{std::string("success"), false}, 
+                        object::pair{std::string("error"), std::string("Goal not found")}, 
+                        object::pair{std::string("needsClarification"), true}
                     }}, 
-                    object::pair{std:("success"), false}
+                    object::pair{std::string("success"), false}
                 };
             }
             auto goal = availableGoals->find([=](auto g) mutable
@@ -288,149 +289,149 @@ std::shared_ptr<Action> updateGoalAction = object{
             if (!goal) {
                 if (callback) {
                     std::async([=]() { callback(object{
-                        object::pair{std:("text"), std:("I couldn't find a goal matching "") + goalSelection->goalName + std:("". Please try again with the exact goal name.")}, 
-                        object::pair{std:("actions"), array<string>{ std:("UPDATE_GOAL_NOT_FOUND") }}, 
-                        object::pair{std:("source"), message->content->source}
+                        object::pair{std::string("text"), std::string("I couldn't find a goal matching "") + goalSelection->goalName + std::string("". Please try again with the exact goal name.")}, 
+                        object::pair{std::string("actions"), array<string>{ std::string("UPDATE_GOAL_NOT_FOUND") }}, 
+                        object::pair{std::string("source"), message->content->source}
                     }); });
                 }
                 return object{
-                    object::pair{std:("data"), object{
-                        object::pair{std:("actionName"), std:("UPDATE_GOAL")}, 
-                        object::pair{std:("error"), std:("Goal not found")}, 
-                        object::pair{std:("attemptedGoalName"), goalSelection->goalName}
+                    object::pair{std::string("data"), object{
+                        object::pair{std::string("actionName"), std::string("UPDATE_GOAL")}, 
+                        object::pair{std::string("error"), std::string("Goal not found")}, 
+                        object::pair{std::string("attemptedGoalName"), goalSelection->goalName}
                     }}, 
-                    object::pair{std:("values"), object{
-                        object::pair{std:("success"), false}, 
-                        object::pair{std:("error"), std:("Goal not found")}
+                    object::pair{std::string("values"), object{
+                        object::pair{std::string("success"), false}, 
+                        object::pair{std::string("error"), std::string("Goal not found")}
                     }}, 
-                    object::pair{std:("success"), false}
+                    object::pair{std::string("success"), false}
                 };
             }
             auto update = std::async([=]() { extractGoalUpdate(runtime, message, goal); });
             if (!update) {
                 if (callback) {
                     std::async([=]() { callback(object{
-                        object::pair{std:("text"), std:("I couldn't determine what changes you want to make to "") + goal->name + std:("". You can update the goal's name or description.")}, 
-                        object::pair{std:("actions"), array<string>{ std:("UPDATE_GOAL_INVALID_UPDATE") }}, 
-                        object::pair{std:("source"), message->content->source}
+                        object::pair{std::string("text"), std::string("I couldn't determine what changes you want to make to "") + goal->name + std::string("". You can update the goal's name or description.")}, 
+                        object::pair{std::string("actions"), array<string>{ std::string("UPDATE_GOAL_INVALID_UPDATE") }}, 
+                        object::pair{std::string("source"), message->content->source}
                     }); });
                 }
                 return object{
-                    object::pair{std:("data"), object{
-                        object::pair{std:("actionName"), std:("UPDATE_GOAL")}, 
-                        object::pair{std:("error"), std:("Invalid update")}, 
-                        object::pair{std:("goalId"), goal->id}, 
-                        object::pair{std:("goalName"), goal->name}
+                    object::pair{std::string("data"), object{
+                        object::pair{std::string("actionName"), std::string("UPDATE_GOAL")}, 
+                        object::pair{std::string("error"), std::string("Invalid update")}, 
+                        object::pair{std::string("goalId"), goal->id}, 
+                        object::pair{std::string("goalName"), goal->name}
                     }}, 
-                    object::pair{std:("values"), object{
-                        object::pair{std:("success"), false}, 
-                        object::pair{std:("error"), std:("Invalid update")}
+                    object::pair{std::string("values"), object{
+                        object::pair{std::string("success"), false}, 
+                        object::pair{std::string("error"), std::string("Invalid update")}
                     }}, 
-                    object::pair{std:("success"), false}
+                    object::pair{std::string("success"), false}
                 };
             }
             std::async([=]() { dataService->updateGoal(goal->id, update); });
-            auto ownerText = (goal->ownerType == std:("agent")) ? std:("Agent") : std:("User");
+            auto ownerText = (goal->ownerType == std::string("agent")) ? std::string("Agent") : std::string("User");
             auto updateText = array<string>();
             if (update->name) {
-                updateText->push(std:("name to "") + update->name + std:("""));
+                updateText->push(std::string("name to "") + update->name + std::string("""));
             }
             if (update->description) {
-                updateText->push(std:("description to "") + update->description + std:("""));
+                updateText->push(std::string("description to "") + update->description + std::string("""));
             }
             if (callback) {
                 std::async([=]() { callback(object{
-                    object::pair{std:("text"), std:("✓ ") + ownerText + std:(" goal updated: Changed ") + updateText->join(std:(" and ")) + std:(".")}, 
-                    object::pair{std:("actions"), array<string>{ std:("UPDATE_GOAL_SUCCESS") }}, 
-                    object::pair{std:("source"), message->content->source}
+                    object::pair{std::string("text"), std::string("✓ ") + ownerText + std::string(" goal updated: Changed ") + updateText->join(std::string(" and ")) + std::string(".")}, 
+                    object::pair{std::string("actions"), array<string>{ std::string("UPDATE_GOAL_SUCCESS") }}, 
+                    object::pair{std::string("source"), message->content->source}
                 }); });
             }
             return object{
-                object::pair{std:("data"), object{
-                    object::pair{std:("actionName"), std:("UPDATE_GOAL")}, 
-                    object::pair{std:("updatedGoalId"), goal->id}, 
-                    object::pair{std:("updatedGoalName"), goal->name}, 
-                    object::pair{std:("updates"), update}, 
-                    object::pair{std:("updateText"), updateText->join(std:(" and "))}
+                object::pair{std::string("data"), object{
+                    object::pair{std::string("actionName"), std::string("UPDATE_GOAL")}, 
+                    object::pair{std::string("updatedGoalId"), goal->id}, 
+                    object::pair{std::string("updatedGoalName"), goal->name}, 
+                    object::pair{std::string("updates"), update}, 
+                    object::pair{std::string("updateText"), updateText->join(std::string(" and "))}
                 }}, 
-                object::pair{std:("values"), object{
-                    object::pair{std:("success"), true}, 
-                    object::pair{std:("goalId"), goal->id}, 
-                    object::pair{std:("goalName"), goal->name}, 
-                    object::pair{std:("updatedFields"), Object->keys(update)}
+                object::pair{std::string("values"), object{
+                    object::pair{std::string("success"), true}, 
+                    object::pair{std::string("goalId"), goal->id}, 
+                    object::pair{std::string("goalName"), goal->name}, 
+                    object::pair{std::string("updatedFields"), Object->keys(update)}
                 }}, 
-                object::pair{std:("success"), true}
+                object::pair{std::string("success"), true}
             };
         }
         catch (const any& error)
         {
-            logger->error(std:("Error in updateGoal handler:"), error);
+            logger->error(std::string("Error in updateGoal handler:"), error);
             if (callback) {
                 std::async([=]() { callback(object{
-                    object::pair{std:("text"), std:("I encountered an error while trying to update your goal. Please try again.")}, 
-                    object::pair{std:("actions"), array<string>{ std:("UPDATE_GOAL_ERROR") }}, 
-                    object::pair{std:("source"), message->content->source}
+                    object::pair{std::string("text"), std::string("I encountered an error while trying to update your goal. Please try again.")}, 
+                    object::pair{std::string("actions"), array<string>{ std::string("UPDATE_GOAL_ERROR") }}, 
+                    object::pair{std::string("source"), message->content->source}
                 }); });
             }
             return object{
-                object::pair{std:("data"), object{
-                    object::pair{std:("actionName"), std:("UPDATE_GOAL")}, 
-                    object::pair{std:("error"), (is<Error>(error)) ? error->message : String(error)}
+                object::pair{std::string("data"), object{
+                    object::pair{std::string("actionName"), std::string("UPDATE_GOAL")}, 
+                    object::pair{std::string("error"), (is<Error>(error)) ? error->message : String(error)}
                 }}, 
-                object::pair{std:("values"), object{
-                    object::pair{std:("success"), false}, 
-                    object::pair{std:("error"), (is<Error>(error)) ? error->message : String(error)}
+                object::pair{std::string("values"), object{
+                    object::pair{std::string("success"), false}, 
+                    object::pair{std::string("error"), (is<Error>(error)) ? error->message : String(error)}
                 }}, 
-                object::pair{std:("success"), false}
+                object::pair{std::string("success"), false}
             };
         }
     }
     }, 
-    object::pair{std:("examples"), as<array<array<std::shared_ptr<ActionExample>>>>(array<array<std::shared_ptr<ActionExample>>>{ array<object>{ object{
-        object::pair{std:("name"), std:("{{user}}")}, 
-        object::pair{std:("content"), object{
-            object::pair{std:("text"), std:("Update my French learning goal to Spanish and show me all my goals")}
+    object::pair{std::string("examples"), as<array<array<std::shared_ptr<ActionExample>>>>(array<array<std::shared_ptr<ActionExample>>>{ array<object>{ object{
+        object::pair{std::string("name"), std::string("{{user}}")}, 
+        object::pair{std::string("content"), object{
+            object::pair{std::string("text"), std::string("Update my French learning goal to Spanish and show me all my goals")}
         }}
     }, object{
-        object::pair{std:("name"), std:("{{agent}}")}, 
-        object::pair{std:("content"), object{
-            object::pair{std:("text"), std:("I've updated your goal to "Learn Spanish fluently". Now let me show you all your goals.")}, 
-            object::pair{std:("thought"), std:("The user wants to modify an existing goal and then see their complete goal list. I need to chain UPDATE_GOAL with LIST_GOALS to show the modification took effect in the context of all their goals.")}, 
-            object::pair{std:("actions"), array<string>{ std:("UPDATE_GOAL"), std:("LIST_GOALS") }}
+        object::pair{std::string("name"), std::string("{{agent}}")}, 
+        object::pair{std::string("content"), object{
+            object::pair{std::string("text"), std::string("I've updated your goal to "Learn Spanish fluently". Now let me show you all your goals.")}, 
+            object::pair{std::string("thought"), std::string("The user wants to modify an existing goal and then see their complete goal list. I need to chain UPDATE_GOAL with LIST_GOALS to show the modification took effect in the context of all their goals.")}, 
+            object::pair{std::string("actions"), array<string>{ std::string("UPDATE_GOAL"), std::string("LIST_GOALS") }}
         }}
     } }, array<object>{ object{
-        object::pair{std:("name"), std:("{{user}}")}, 
-        object::pair{std:("content"), object{
-            object::pair{std:("text"), std:("Change my exercise goal description to "30 minutes daily" and mark it complete")}
+        object::pair{std::string("name"), std::string("{{user}}")}, 
+        object::pair{std::string("content"), object{
+            object::pair{std::string("text"), std::string("Change my exercise goal description to "30 minutes daily" and mark it complete")}
         }}
     }, object{
-        object::pair{std:("name"), std:("{{agent}}")}, 
-        object::pair{std:("content"), object{
-            object::pair{std:("text"), std:("I've updated the description. Now I'll mark it as complete.")}, 
-            object::pair{std:("thought"), std:("The user wants to update a goal's details and then immediately complete it. This shows the update-complete workflow where we refine the goal definition before marking it as achieved.")}, 
-            object::pair{std:("actions"), array<string>{ std:("UPDATE_GOAL"), std:("COMPLETE_GOAL") }}
+        object::pair{std::string("name"), std::string("{{agent}}")}, 
+        object::pair{std::string("content"), object{
+            object::pair{std::string("text"), std::string("I've updated the description. Now I'll mark it as complete.")}, 
+            object::pair{std::string("thought"), std::string("The user wants to update a goal's details and then immediately complete it. This shows the update-complete workflow where we refine the goal definition before marking it as achieved.")}, 
+            object::pair{std::string("actions"), array<string>{ std::string("UPDATE_GOAL"), std::string("COMPLETE_GOAL") }}
         }}
     } }, array<object>{ object{
-        object::pair{std:("name"), std:("{{user}}")}, 
-        object::pair{std:("content"), object{
-            object::pair{std:("text"), std:("Update my French learning goal to be about Spanish instead")}
+        object::pair{std::string("name"), std::string("{{user}}")}, 
+        object::pair{std::string("content"), object{
+            object::pair{std::string("text"), std::string("Update my French learning goal to be about Spanish instead")}
         }}
     }, object{
-        object::pair{std:("name"), std:("{{agent}}")}, 
-        object::pair{std:("content"), object{
-            object::pair{std:("text"), std:("✓ User goal updated: Changed name to "Learn Spanish fluently".")}, 
-            object::pair{std:("actions"), array<string>{ std:("UPDATE_GOAL_SUCCESS") }}
+        object::pair{std::string("name"), std::string("{{agent}}")}, 
+        object::pair{std::string("content"), object{
+            object::pair{std::string("text"), std::string("✓ User goal updated: Changed name to "Learn Spanish fluently".")}, 
+            object::pair{std::string("actions"), array<string>{ std::string("UPDATE_GOAL_SUCCESS") }}
         }}
     } }, array<object>{ object{
-        object::pair{std:("name"), std:("{{user}}")}, 
-        object::pair{std:("content"), object{
-            object::pair{std:("text"), std:("Change the description of my marathon goal to include a specific time target")}
+        object::pair{std::string("name"), std::string("{{user}}")}, 
+        object::pair{std::string("content"), object{
+            object::pair{std::string("text"), std::string("Change the description of my marathon goal to include a specific time target")}
         }}
     }, object{
-        object::pair{std:("name"), std:("{{agent}}")}, 
-        object::pair{std:("content"), object{
-            object::pair{std:("text"), std:("✓ User goal updated: Changed description to "Complete a marathon in under 4 hours".")}, 
-            object::pair{std:("actions"), array<string>{ std:("UPDATE_GOAL_SUCCESS") }}
+        object::pair{std::string("name"), std::string("{{agent}}")}, 
+        object::pair{std::string("content"), object{
+            object::pair{std::string("text"), std::string("✓ User goal updated: Changed description to "Complete a marathon in under 4 hours".")}, 
+            object::pair{std::string("actions"), array<string>{ std::string("UPDATE_GOAL_SUCCESS") }}
         }}
     } } })}
 };

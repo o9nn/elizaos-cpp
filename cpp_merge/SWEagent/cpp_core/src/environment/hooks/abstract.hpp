@@ -59,7 +59,7 @@ struct EnvironmentInstance {
 /**
  * Combined environment hooks - allows multiple hooks to be registered
  */
-class CombinedEnvHooks extends EnvHook {
+class CombinedEnvHooks : public EnvHook {
   private hooks: EnvHook[] = [];
 
   addHook(hook: EnvHook) {

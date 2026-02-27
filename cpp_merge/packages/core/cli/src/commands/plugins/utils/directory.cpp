@@ -1,4 +1,5 @@
 #include "directory.hpp"
+#include <string>
 
 std::function<std::shared_ptr<Record<string, string>>(string)> getDependenciesFromDirectory = [=](auto cwd) mutable
 {
@@ -8,8 +9,8 @@ std::function<std::shared_ptr<Record<string, string>>(string)> getDependenciesFr
     }
     try
     {
-        auto packageJsonPath = path->join(cwd, std:("package.json"));
-        auto packageJsonContent = readFileSync(packageJsonPath, std:("utf-8"));
+        auto packageJsonPath = path->join(cwd, std::string("package.json"));
+        auto packageJsonContent = readFileSync(packageJsonPath, std::string("utf-8"));
         auto packageJson = JSON->parse(packageJsonContent);
         auto dependencies = OR((packageJson["dependencies"]), (object{}));
         auto devDependencies = OR((packageJson["devDependencies"]), (object{}));
@@ -19,9 +20,9 @@ std::function<std::shared_ptr<Record<string, string>>(string)> getDependenciesFr
     catch (const any& error)
     {
         if (is<SyntaxError>(error)) {
-            logger->warn(std:("Could not parse package.json: ") + error->message + string_empty);
+            logger->warn(std::string("Could not parse package.json: ") + error->message + string_empty);
         } else {
-            logger->warn(std:("Error reading package.json: ") + (is<Error>(error)) ? error->message : String(error) + string_empty);
+            logger->warn(std::string("Error reading package.json: ") + (is<Error>(error)) ? error->message : String(error) + string_empty);
         }
         return nullptr;
     }

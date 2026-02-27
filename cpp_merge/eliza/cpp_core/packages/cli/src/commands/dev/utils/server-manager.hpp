@@ -74,11 +74,11 @@ std::future<void> stopServer();
 /**
  * Start the server with given arguments
  */
-std::future<void> startServer(const std::vector<std:[] =>& args);
+std::future<void> startServer(const std::vector<std::string[] =>& args);
 
 /**
  * Restart the server with given arguments
  */
-std::future<void> restartServer(const std::vector<std:[] =>& args);
+std::future<void> restartServer(const std::vector<std::string[] =>& args);
 
 } // namespace elizaos

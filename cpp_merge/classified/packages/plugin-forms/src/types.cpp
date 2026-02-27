@@ -1,9 +1,10 @@
 #include "types.hpp"
+#include <string>
 
 namespace @elizaos/core {
 }
 object FormsServiceType = object{
-    object::pair{std:("FORMS"), as<std::shared_ptr<const>>(std:("FORMS"))}
+    object::pair{std::string("FORMS"), as<std::shared_ptr<const>>(std::string("FORMS"))}
 }, satisfies, Partial;
 
 void Main(void)

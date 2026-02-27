@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTAKU_SRC_PLUGINS_PLUGIN_DEFILLAMA_SRC_UTILS_ACTION_HELPERS_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTAKU_SRC_PLUGINS_PLUGIN_DEFILLAMA_SRC_UTILS_ACTION_HELPERS_H
 #include "core.hpp"
+#include <string>
 // External dependency removed
 // External dependency removed
 
@@ -17,7 +18,7 @@ template <typename T>
 any calculateTvlSummary(array<T> series);
 
 template <typename P3>
-std::shared_ptr<Promise<std::shared_ptr<ActionResult>>> respondWithError(any callback, string messageText, string errorCode, P3 details = undefined);
+std::shared_ptr<Promise<std::shared_ptr<ActionResult>>> respondWithError(any callback, string messageText, string errorCode, P3 details = std::nullopt);
 
 extern std::shared_ptr<RegExp> CHAIN_NAME_PATTERN;
 any sanitizeChainName(any value);
@@ -28,16 +29,16 @@ any sanitizeFilterSegment(any value);
 template <typename P0>
 any parsePositiveInteger(P0 value)
 {
-    if (AND((AND((type_of(value) == std:("number")), (Number->isInteger(value)))), (value > 0))) {
+    if (AND((AND((type_of(value) == std::string("number")), (Number->isInteger(value)))), (value > 0))) {
         return value;
     }
-    if (AND((type_of(value) == std:("string")), (value->trim()))) {
+    if (AND((type_of(value) == std::string("string")), (value->trim()))) {
         auto parsed = Number(value);
         if (AND((Number->isInteger(parsed)), (parsed > 0))) {
             return parsed;
         }
     }
-    return undefined;
+    return std::nullopt;
 };
 
 
@@ -106,20 +107,20 @@ any calculateTvlSummary(array<T> series)
     auto change = current - first;
     auto changePercent = (first != 0) ? any((change / first) * 100) (0);
     return object{
-        object::pair{std:("current"), Math->round(current)}, 
-        object::pair{std:("min"), Math->round(min)}, 
-        object::pair{std:("max"), Math->round(max)}, 
-        object::pair{std:("ath"), Math->round(athValue)}, 
-        object::pair{std:("athDate"), std:("athDate")}, 
-        object::pair{std:("athDaysAgo"), std:("athDaysAgo")}, 
-        object::pair{std:("fromAth"), Math->round(fromAth)}, 
-        object::pair{std:("fromAthPercent"), Math->round(fromAthPercent * 100) / 100}, 
-        object::pair{std:("average"), Math->round(average)}, 
-        object::pair{std:("change"), Math->round(change)}, 
-        object::pair{std:("changePercent"), Math->round(changePercent * 100) / 100}, 
-        object::pair{std:("dataPoints"), series->get_length()}, 
-        object::pair{std:("firstDate"), const_(series)[0]->date}, 
-        object::pair{std:("lastDate"), const_(series)[series->get_length() - 1]->date}
+        object::pair{std::string("current"), Math->round(current)}, 
+        object::pair{std::string("min"), Math->round(min)}, 
+        object::pair{std::string("max"), Math->round(max)}, 
+        object::pair{std::string("ath"), Math->round(athValue)}, 
+        object::pair{std::string("athDate"), std::string("athDate")}, 
+        object::pair{std::string("athDaysAgo"), std::string("athDaysAgo")}, 
+        object::pair{std::string("fromAth"), Math->round(fromAth)}, 
+        object::pair{std::string("fromAthPercent"), Math->round(fromAthPercent * 100) / 100}, 
+        object::pair{std::string("average"), Math->round(average)}, 
+        object::pair{std::string("change"), Math->round(change)}, 
+        object::pair{std::string("changePercent"), Math->round(changePercent * 100) / 100}, 
+        object::pair{std::string("dataPoints"), series->get_length()}, 
+        object::pair{std::string("firstDate"), const_(series)[0]->date}, 
+        object::pair{std::string("lastDate"), const_(series)[series->get_length() - 1]->date}
     };
 };
 
@@ -129,18 +130,18 @@ std::shared_ptr<Promise<std::shared_ptr<ActionResult>>> respondWithError(any cal
 {
     if (callback) {
         std::async([=]() { callback(object{
-            object::pair{std:("text"), messageText}, 
-            object::pair{std:("content"), object{
-                object::pair{std:("error"), errorCode}, 
-                object::pair{std:("details"), std:("details")}
+            object::pair{std::string("text"), messageText}, 
+            object::pair{std::string("content"), object{
+                object::pair{std::string("error"), errorCode}, 
+                object::pair{std::string("details"), std::string("details")}
             }}
         }); });
     }
     return object{
-        object::pair{std:("text"), messageText}, 
-        object::pair{std:("success"), false}, 
-        object::pair{std:("error"), errorCode}, 
-        object::pair{std:("data"), details}
+        object::pair{std::string("text"), messageText}, 
+        object::pair{std::string("success"), false}, 
+        object::pair{std::string("error"), errorCode}, 
+        object::pair{std::string("data"), details}
     };
 };
 

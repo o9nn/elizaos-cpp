@@ -1,4 +1,5 @@
 #include "agent-creator.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -14,7 +15,7 @@ void AgentCreator() {
         ...defaultCharacter,
         });
         const auto secretPanelRef = useRef<SecretPanelRef>(nullptr);
-        const auto [currentSecrets, setCurrentSecrets] = useState<Record<std:, std: | nullptr>>({});
+        const auto [currentSecrets, setCurrentSecrets] = useState<Record<std::string, std::string | nullptr>>({});
 
         // Use agent update hook for proper handling of nested fields
         const auto agentState = useAgentUpdate(initialCharacter);

@@ -43,11 +43,11 @@ namespace elizaos {
   // Check if login is required
 
 // Wait for app to be ready
-  // Wait for std: loading indicators to disappear
+  // Wait for std::string loading indicators to disappear
 
   // Ensure the app container is visible
 
-  // Wait a bit for std: animations
+  // Wait a bit for std::string animations
 
 // Navigate to agent
 

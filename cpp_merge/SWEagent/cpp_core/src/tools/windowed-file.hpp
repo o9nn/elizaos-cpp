@@ -17,36 +17,36 @@ namespace elizaos {
  * Converted from Python windowed_file.py
  */
 
-class TextNotFound extends Error {
-  constructor(message: std:) {
+class TextNotFound : public Error {
+  /* constructor */ (message: std::string) {
     super(message);
     this.name = 'TextNotFound';
   }
 
 struct WindowedFileConfig {
     std::optional<bool> exitOnException;
-    std::optional<std:> path;
+    std::optional<std::string> path;
 };
 
 class WindowedFile {
-  private _path: std:;
-  private _content: std:[];
+  private _path: std::string;
+  private _content: std::string[];
   private _firstLine;
   private _window;
   public offsetMultiplier;
   private exitOnException;
-  private editHistory: std:[][] = [];
+  private editHistory: std::string[][] = [];
 
-  constructor(config: WindowedFileConfig = {}) {
+  /* constructor */ (config: WindowedFileConfig = {}) {
     this.exitOnException = config.exitOnException || true;
     this.offsetMultiplier = 0.25;
 
     // Load file path from config or registry
-    this._path = config.path || (registry.get('CURRENT_FILE') as std:) || '';
+    this._path = config.path || (registry.get('CURRENT_FILE') as std::string) || '';
 
     // Load window settings from registry
-    this._firstLine = parseInt((registry.get('FIRST_LINE') as std:) || '0', 10);
-    this._window = parseInt((registry.get('WINDOW') as std:) || '10', 10);
+    this._firstLine = parseInt((registry.get('FIRST_LINE') as std::string) || '0', 10);
+    this._window = parseInt((registry.get('WINDOW') as std::string) || '10', 10);
 
     // Load file content if path is std::set
     if (this._path) {
@@ -67,11 +67,11 @@ class WindowedFile {
     // Handle empty file or file with only newlines
     // If the file is empty or contains only newlines, ensure we have exactly one empty line
 
-    // Print lines above if std:
+    // Print lines above if std::string
 
     // Print window content
 
-    // Print lines below if std:
+    // Print lines below if std::string
 
     // Replace text
 

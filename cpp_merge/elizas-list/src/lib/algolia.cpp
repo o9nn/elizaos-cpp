@@ -1,9 +1,10 @@
 #include "algolia.hpp"
+#include <string>
 
 void indexProject(any project)
 {
     std::async([=]() { index->saveObject(utils::assign(object{
-        object::pair{std:("objectID"), project["id"]}
+        object::pair{std::string("objectID"), project["id"]}
     }, project)); });
 };
 
@@ -15,7 +16,7 @@ void removeProject(string projectId)
 
 
 any client = algoliasearch(process->env->NEXT_PUBLIC_ALGOLIA_APP_ID, process->env->ALGOLIA_ADMIN_KEY);
-any index = client->initIndex(std:("projects"));
+any index = client->initIndex(std::string("projects"));
 
 void Main(void)
 {

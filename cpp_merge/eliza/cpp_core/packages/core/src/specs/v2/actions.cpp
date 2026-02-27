@@ -1,4 +1,5 @@
 #include "actions.hpp"
+#include <string>
 #include <vector>
 #include <map>
 #include <iostream>
@@ -6,14 +7,14 @@
 
 namespace elizaos {
 
-std: formatActionNames(const std::vector<Action>& actions) {
+std::string formatActionNames(const std::vector<Action>& actions) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return actions.std::map[&]((action) { return action.name).join(", "); };
 
 }
 
-std: formatActions(const std::vector<Action>& actions) {
+std::string formatActions(const std::vector<Action>& actions) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return "actions.std::map[&]((action) { return " + action.name + ": " + action.description; };

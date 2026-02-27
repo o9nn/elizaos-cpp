@@ -16,7 +16,7 @@ namespace elizaos {
 
 /**
  * Represents a single asset holding within a wallet, including its value.
- * This extends a generic TokenBalance with wallet-specific valuation.
+ * This : public a generic TokenBalance with wallet-specific valuation.
  */
 
 /**

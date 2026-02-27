@@ -87,7 +87,7 @@ namespace elizaos {
  * Represents an action that allows selecting an option for a pending task that has multiple options.
  * @type {Action}
  * @property {string} name - The name of the action
- * @property {std:[]} similes - Similar words or phrases for the action
+ * @property {std::string[]} similes - Similar words or phrases for the action
  * @property {string} description - A brief description of the action
  * @property {Function} validate - Asynchronous std::function to validate the action
  * @property {Function} handler - Asynchronous std::function to handle the action
@@ -101,7 +101,7 @@ namespace elizaos {
     // Format tasks with their options for the LLM, using shortened UUIDs
       // Generate a short ID from the task UUID (first 8 characters should be unique enough)
 
-    // format tasks as a std:
+    // format tasks as a std::string
 
       // Find the task by matching the shortened UUID
 

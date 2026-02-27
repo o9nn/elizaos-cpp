@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_EXPERIENCE_SRC_TYPES_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_PLUGIN_EXPERIENCE_SRC_TYPES_H
 #include "core.hpp"
+#include <string>
 // External dependency removed
 
 namespace @elizaos/core {
@@ -14,7 +15,7 @@ class ExperienceAnalysis;
 class ExperienceEvent;
 class ExperienceMemory;
 
-namespace std:("@elizaos/core") {
+namespace std::string("@elizaos/core") {
     class ServiceTypeRegistry : public object, public std::enable_shared_from_this<ServiceTypeRegistry> {
     public:
         using std::enable_shared_from_this<ServiceTypeRegistry>::shared_from_this;
@@ -24,10 +25,10 @@ namespace std:("@elizaos/core") {
 }
 extern object ExperienceServiceType, satisfies, Partial;
 enum struct ExperienceType {
-    SUCCESS = std:("success"), FAILURE = std:("failure"), DISCOVERY = std:("discovery"), CORRECTION = std:("correction"), LEARNING = std:("learning"), HYPOTHESIS = std:("hypothesis"), VALIDATION = std:("validation"), WARNING = std:("warning")
+    SUCCESS = std::string("success"), FAILURE = std::string("failure"), DISCOVERY = std::string("discovery"), CORRECTION = std::string("correction"), LEARNING = std::string("learning"), HYPOTHESIS = std::string("hypothesis"), VALIDATION = std::string("validation"), WARNING = std::string("warning")
 };
 enum struct OutcomeType {
-    POSITIVE = std:("positive"), NEGATIVE = std:("negative"), NEUTRAL = std:("neutral"), MIXED = std:("mixed")
+    POSITIVE = std::string("positive"), NEGATIVE = std::string("negative"), NEUTRAL = std::string("neutral"), MIXED = std::string("mixed")
 };
 class Experience : public object, public std::enable_shared_from_this<Experience> {
 public:

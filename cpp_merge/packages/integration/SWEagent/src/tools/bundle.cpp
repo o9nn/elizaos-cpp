@@ -1,4 +1,5 @@
 #include "bundle.hpp"
+#include <string>
 
 Bundle::Bundle(object config) {
     this->path = config["path"];
@@ -9,16 +10,16 @@ Bundle::Bundle(object config) {
 void Bundle::validateTools()
 {
     if (!fs->existsSync(this->path)) {
-        throw any(std::make_shared<Error>(std:("Bundle path does not exist: ") + this->path + string_empty));
+        throw any(std::make_shared<Error>(std::string("Bundle path does not exist: ") + this->path + string_empty));
     }
-    auto configPath = path->join(this->path, std:("config.yaml"));
+    auto configPath = path->join(this->path, std::string("config.yaml"));
     if (!fs->existsSync(configPath)) {
-        throw any(std::make_shared<Error>(std:("Bundle config not found: ") + configPath + string_empty));
+        throw any(std::make_shared<Error>(std::string("Bundle config not found: ") + configPath + string_empty));
     }
-    auto configContent = fs->readFileSync(configPath, std:("utf-8"));
+    auto configContent = fs->readFileSync(configPath, std::string("utf-8"));
     this->_config = as<std::shared_ptr<BundleConfig>>(yaml->load(configContent));
-    if (OR((!this->_config->tools), (type_of(this->_config->tools) != std:("object")))) {
-        throw any(std::make_shared<Error>(std:("Bundle config must contain tools object")));
+    if (OR((!this->_config->tools), (type_of(this->_config->tools) != std::string("object")))) {
+        throw any(std::make_shared<Error>(std::string("Bundle config must contain tools object")));
     }
 }
 
@@ -44,11 +45,11 @@ array<std::shared_ptr<Command>> Bundle::get_commands()
             continue;
         }
         auto command = std::make_shared<Command>(object{
-            object::pair{std:("name"), std:("name")}, 
-            object::pair{std:("docstring"), OR((toolConfig["docstring"]), (nullptr))}, 
-            object::pair{std:("signature"), OR((toolConfig["signature"]), (nullptr))}, 
-            object::pair{std:("endName"), OR((toolConfig["end_name"]), (nullptr))}, 
-            object::pair{std:("arguments"), OR((toolConfig["arguments"]), (array<any>()))}
+            object::pair{std::string("name"), std::string("name")}, 
+            object::pair{std::string("docstring"), OR((toolConfig["docstring"]), (nullptr))}, 
+            object::pair{std::string("signature"), OR((toolConfig["signature"]), (nullptr))}, 
+            object::pair{std::string("endName"), OR((toolConfig["end_name"]), (nullptr))}, 
+            object::pair{std::string("arguments"), OR((toolConfig["arguments"]), (array<any>()))}
         });
         commands->push(command);
     }

@@ -1,11 +1,12 @@
 #include "version-check.hpp"
+#include <string>
 #include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<std:> checkCliVersion() {
+std::future<std::string> checkCliVersion() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {

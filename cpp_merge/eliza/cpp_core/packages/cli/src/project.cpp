@@ -1,4 +1,5 @@
 #include "project.hpp"
+#include <string>
 #include <vector>
 #include <future>
 #include <optional>
@@ -7,7 +8,7 @@
 
 namespace elizaos {
 
-bool isPlugin(const std:& module) {
+bool isPlugin(const std::string& module) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Check for direct export of a plugin
@@ -49,7 +50,7 @@ bool isPlugin(const std:& module) {
 
 }
 
-Plugin extractPlugin(const std:& module) {
+Plugin extractPlugin(const std::string& module) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -96,7 +97,7 @@ Plugin extractPlugin(const std:& module) {
     }
 }
 
-std::future<Project> loadProject(const std:& dir) {
+std::future<Project> loadProject(const std::string& dir) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -232,7 +233,7 @@ std::future<Project> loadProject(const std:& dir) {
                                                             };
 
                                                             // Since we're in test mode, Eliza (our test agent) needs to already exist in the database
-                                                            // before std: entity is created, but we can't do this in the init std::function because
+                                                            // before std::string entity is created, but we can't do this in the init std::function because
                                                             // the adapter might not be ready. Let's ensure this is handled properly in the runtime's
                                                             // initialize method or by initializing the agent in the database separately.
 

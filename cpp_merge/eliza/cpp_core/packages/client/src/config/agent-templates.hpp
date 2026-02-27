@@ -19,9 +19,9 @@ namespace elizaos {
  * Templates for quick-start agent creation
  */
 struct AgentTemplate {
-    std: id;
-    std: label;
-    std: description;
+    std::string id;
+    std::string label;
+    std::string description;
     std::optional<Agent> template;
 };
 
@@ -34,6 +34,6 @@ struct AgentTemplate {
 /**
  * Get a template by its ID
  */
-AgentTemplate getTemplateById(const std:& id);
+AgentTemplate getTemplateById(const std::string& id);
 
 } // namespace elizaos

@@ -26,11 +26,11 @@ std::future<void> POST(NextRequest request);
 /**
  * Sync EVM token registration immediately (Base or BSC)
  */
-std::future<void> syncEvmToken(const std:& transactionHash, const std:& blockNumber, const std:& chain);
+std::future<void> syncEvmToken(const std::string& transactionHash, const std::string& blockNumber, const std::string& chain);
 
 /**
  * Sync Solana token registration immediately
  */
-std::future<void> syncSolanaToken(const std:& signature);
+std::future<void> syncSolanaToken(const std::string& signature);
 
 } // namespace elizaos

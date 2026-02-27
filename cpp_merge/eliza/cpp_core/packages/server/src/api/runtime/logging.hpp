@@ -23,7 +23,7 @@ namespace elizaos {
 /**
  * Defines a type "LogLevel" as the keys of the "LOG_LEVELS" object.
  */
-using LogLevel = std::variant<keyof typeof LOG_LEVELS, std:>;
+using LogLevel = std::variant<keyof typeof LOG_LEVELS, std::string>;
 
 /**
  * Represents a log entry with specific properties.
@@ -31,7 +31,7 @@ using LogLevel = std::variant<keyof typeof LOG_LEVELS, std:>;
 struct LogEntry {
     double level;
     double time;
-    std: msg;
+    std::string msg;
 };
 
 /**

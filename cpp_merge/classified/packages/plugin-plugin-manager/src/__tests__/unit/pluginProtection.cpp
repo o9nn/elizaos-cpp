@@ -1,30 +1,31 @@
 #include "pluginProtection.test.h"
+#include <string>
 
 void Main(void)
 {
-    describe(std:("Plugin Protection Mechanism"), [=]() mutable
+    describe(std::string("Plugin Protection Mechanism"), [=]() mutable
     {
         shared<std::shared_ptr<IAgentRuntime>> runtime;
         shared<std::shared_ptr<PluginManagerService>> pluginManager;
         shared mockPlugin = [=](auto name) mutable
         {
             return (object{
-                object::pair{std:("name"), std:("name")}, 
-                object::pair{std:("description"), std:("Mock ") + name + std:(" plugin")}, 
-                object::pair{std:("actions"), array<object>{ object{
-                    object::pair{std:("name"), string_empty + name + std:("_ACTION")}, 
-                    object::pair{std:("similes"), array<any>()}, 
-                    object::pair{std:("description"), std:("Test action")}, 
-                    object::pair{std:("validate"), [=]() mutable
+                object::pair{std::string("name"), std::string("name")}, 
+                object::pair{std::string("description"), std::string("Mock ") + name + std::string(" plugin")}, 
+                object::pair{std::string("actions"), array<object>{ object{
+                    object::pair{std::string("name"), string_empty + name + std::string("_ACTION")}, 
+                    object::pair{std::string("similes"), array<any>()}, 
+                    object::pair{std::string("description"), std::string("Test action")}, 
+                    object::pair{std::string("validate"), [=]() mutable
                     {
                         return true;
                     }
                     }, 
-                    object::pair{std:("handler"), [=]() mutable
+                    object::pair{std::string("handler"), [=]() mutable
                     {
                         return (object{
-                            object::pair{std:("text"), std:("Success")}, 
-                            object::pair{std:("success"), true}
+                            object::pair{std::string("text"), std::string("Success")}, 
+                            object::pair{std::string("success"), true}
                         });
                     }
                     }
@@ -33,53 +34,53 @@ void Main(void)
         };
         beforeEach([=]() mutable
         {
-            auto originalPlugins = array<any>{ mockPlugin(std:("@elizaos/plugin-sql")), mockPlugin(std:("bootstrap")), mockPlugin(std:("game-api")), mockPlugin(std:("inference")), mockPlugin(std:("autonomy")), mockPlugin(std:("knowledge")), mockPlugin(std:("@elizaos/plugin-personality")), mockPlugin(std:("experience")) };
+            auto originalPlugins = array<any>{ mockPlugin(std::string("@elizaos/plugin-sql")), mockPlugin(std::string("bootstrap")), mockPlugin(std::string("game-api")), mockPlugin(std::string("inference")), mockPlugin(std::string("autonomy")), mockPlugin(std::string("knowledge")), mockPlugin(std::string("@elizaos/plugin-personality")), mockPlugin(std::string("experience")) };
             runtime = as<any>(object{
-                object::pair{std:("agentId"), as<std::shared_ptr<UUID>>(std:("test-agent-id"))}, 
-                object::pair{std:("plugins"), array<any>{ originalPlugins }}, 
-                object::pair{std:("actions"), array<any>()}, 
-                object::pair{std:("providers"), array<any>()}, 
-                object::pair{std:("evaluators"), array<any>()}, 
-                object::pair{std:("services"), std::make_shared<Map>()}, 
-                object::pair{std:("registerPlugin"), vi->fn()->mockResolvedValue(undefined)}, 
-                object::pair{std:("registerAction"), vi->fn()}, 
-                object::pair{std:("registerProvider"), vi->fn()}, 
-                object::pair{std:("registerEvaluator"), vi->fn()}, 
-                object::pair{std:("registerEvent"), vi->fn()}, 
-                object::pair{std:("getService"), vi->fn()}
+                object::pair{std::string("agentId"), as<std::shared_ptr<UUID>>(std::string("test-agent-id"))}, 
+                object::pair{std::string("plugins"), array<any>{ originalPlugins }}, 
+                object::pair{std::string("actions"), array<any>()}, 
+                object::pair{std::string("providers"), array<any>()}, 
+                object::pair{std::string("evaluators"), array<any>()}, 
+                object::pair{std::string("services"), std::make_shared<Map>()}, 
+                object::pair{std::string("registerPlugin"), vi->fn()->mockResolvedValue(std::nullopt)}, 
+                object::pair{std::string("registerAction"), vi->fn()}, 
+                object::pair{std::string("registerProvider"), vi->fn()}, 
+                object::pair{std::string("registerEvaluator"), vi->fn()}, 
+                object::pair{std::string("registerEvent"), vi->fn()}, 
+                object::pair{std::string("getService"), vi->fn()}
             });
             pluginManager = std::async([=]() { PluginManagerService::start(runtime); });
         }
         );
-        describe(std:("Protected Plugin List"), [=]() mutable
+        describe(std::string("Protected Plugin List"), [=]() mutable
         {
-            it(std:("should have all core plugins in protected list"), [=]() mutable
+            it(std::string("should have all core plugins in protected list"), [=]() mutable
             {
                 auto protectedPlugins = pluginManager->getProtectedPlugins();
-                expect(protectedPlugins)->toContain(std:("plugin-manager"));
-                expect(protectedPlugins)->toContain(std:("@elizaos/plugin-sql"));
-                expect(protectedPlugins)->toContain(std:("bootstrap"));
-                expect(protectedPlugins)->toContain(std:("game-api"));
-                expect(protectedPlugins)->toContain(std:("inference"));
-                expect(protectedPlugins)->toContain(std:("autonomy"));
-                expect(protectedPlugins)->toContain(std:("knowledge"));
-                expect(protectedPlugins)->toContain(std:("@elizaos/plugin-personality"));
-                expect(protectedPlugins)->toContain(std:("experience"));
+                expect(protectedPlugins)->toContain(std::string("plugin-manager"));
+                expect(protectedPlugins)->toContain(std::string("@elizaos/plugin-sql"));
+                expect(protectedPlugins)->toContain(std::string("bootstrap"));
+                expect(protectedPlugins)->toContain(std::string("game-api"));
+                expect(protectedPlugins)->toContain(std::string("inference"));
+                expect(protectedPlugins)->toContain(std::string("autonomy"));
+                expect(protectedPlugins)->toContain(std::string("knowledge"));
+                expect(protectedPlugins)->toContain(std::string("@elizaos/plugin-personality"));
+                expect(protectedPlugins)->toContain(std::string("experience"));
             }
             );
         }
         );
-        describe(std:("canUnloadPlugin"), [=]() mutable
+        describe(std::string("canUnloadPlugin"), [=]() mutable
         {
-            it(std:("should return false for protected plugins"), [=]() mutable
+            it(std::string("should return false for protected plugins"), [=]() mutable
             {
-                expect(pluginManager->canUnloadPlugin(std:("@elizaos/plugin-sql")))->toBe(false);
-                expect(pluginManager->canUnloadPlugin(std:("bootstrap")))->toBe(false);
-                expect(pluginManager->canUnloadPlugin(std:("game-api")))->toBe(false);
-                expect(pluginManager->canUnloadPlugin(std:("plugin-manager")))->toBe(false);
+                expect(pluginManager->canUnloadPlugin(std::string("@elizaos/plugin-sql")))->toBe(false);
+                expect(pluginManager->canUnloadPlugin(std::string("bootstrap")))->toBe(false);
+                expect(pluginManager->canUnloadPlugin(std::string("game-api")))->toBe(false);
+                expect(pluginManager->canUnloadPlugin(std::string("plugin-manager")))->toBe(false);
             }
             );
-            it(std:("should return false for original plugins"), [=]() mutable
+            it(std::string("should return false for original plugins"), [=]() mutable
             {
                 auto originalPlugins = pluginManager->getOriginalPlugins();
                 for (auto& pluginName : originalPlugins)
@@ -88,124 +89,124 @@ void Main(void)
                 }
             }
             );
-            it(std:("should return true for non-protected dynamically loaded plugins"), [=]() mutable
+            it(std::string("should return true for non-protected dynamically loaded plugins"), [=]() mutable
             {
-                auto testPlugin = mockPlugin(std:("test-dynamic-plugin"));
+                auto testPlugin = mockPlugin(std::string("test-dynamic-plugin"));
                 auto pluginId = std::async([=]() { pluginManager->registerPlugin(testPlugin); });
                 std::async([=]() { pluginManager->loadPlugin(object{
-                    object::pair{std:("pluginId"), std:("pluginId")}
+                    object::pair{std::string("pluginId"), std::string("pluginId")}
                 }); });
-                expect(pluginManager->canUnloadPlugin(std:("test-dynamic-plugin")))->toBe(true);
+                expect(pluginManager->canUnloadPlugin(std::string("test-dynamic-plugin")))->toBe(true);
             }
             );
         }
         );
-        describe(std:("getProtectionReason"), [=]() mutable
+        describe(std::string("getProtectionReason"), [=]() mutable
         {
-            it(std:("should return appropriate reason for core system plugins"), [=]() mutable
+            it(std::string("should return appropriate reason for core system plugins"), [=]() mutable
             {
-                auto reason = pluginManager->getProtectionReason(std:("@elizaos/plugin-sql"));
-                expect(reason)->toContain(std:("core system plugin"));
+                auto reason = pluginManager->getProtectionReason(std::string("@elizaos/plugin-sql"));
+                expect(reason)->toContain(std::string("core system plugin"));
             }
             );
-            it(std:("should return appropriate reason for startup plugins"), [=]() mutable
+            it(std::string("should return appropriate reason for startup plugins"), [=]() mutable
             {
-                auto reason = pluginManager->getProtectionReason(std:("bootstrap"));
+                auto reason = pluginManager->getProtectionReason(std::string("bootstrap"));
                 expect(reason)->toBeTruthy();
-                expect(reason)->toMatch((new RegExp(std:("core system plugin|loaded at startu"))));
+                expect(reason)->toMatch((new RegExp(std::string("core system plugin|loaded at startu"))));
             }
             );
-            it(std:("should return null for unprotected plugins"), [=]() mutable
+            it(std::string("should return null for unprotected plugins"), [=]() mutable
             {
-                auto testPlugin = mockPlugin(std:("unprotected-plugin"));
+                auto testPlugin = mockPlugin(std::string("unprotected-plugin"));
                 auto pluginId = std::async([=]() { pluginManager->registerPlugin(testPlugin); });
-                auto reason = pluginManager->getProtectionReason(std:("unprotected-plugin"));
+                auto reason = pluginManager->getProtectionReason(std::string("unprotected-plugin"));
                 expect(reason)->toBeNull();
             }
             );
         }
         );
-        describe(std:("Plugin Registration Protection"), [=]() mutable
+        describe(std::string("Plugin Registration Protection"), [=]() mutable
         {
-            it(std:("should throw error when trying to register plugin with protected name"), [=]() mutable
+            it(std::string("should throw error when trying to register plugin with protected name"), [=]() mutable
             {
-                auto protectedPlugin = mockPlugin(std:("plugin-manager"));
-                std::async([=]() { expect(pluginManager->registerPlugin(protectedPlugin))->rejects->toThrow(std:("Cannot register protected plugin")); });
+                auto protectedPlugin = mockPlugin(std::string("plugin-manager"));
+                std::async([=]() { expect(pluginManager->registerPlugin(protectedPlugin))->rejects->toThrow(std::string("Cannot register protected plugin")); });
             }
             );
-            it(std:("should throw error when trying to register duplicate of original plugin"), [=]() mutable
+            it(std::string("should throw error when trying to register duplicate of original plugin"), [=]() mutable
             {
-                auto duplicatePlugin = mockPlugin(std:("@elizaos/plugin-sql"));
-                std::async([=]() { expect(pluginManager->registerPlugin(duplicatePlugin))->rejects->toThrow(std:("already registered")); });
+                auto duplicatePlugin = mockPlugin(std::string("@elizaos/plugin-sql"));
+                std::async([=]() { expect(pluginManager->registerPlugin(duplicatePlugin))->rejects->toThrow(std::string("already registered")); });
             }
             );
         }
         );
-        describe(std:("Plugin Unloading Protection"), [=]() mutable
+        describe(std::string("Plugin Unloading Protection"), [=]() mutable
         {
-            it(std:("should throw error when trying to unload protected plugin"), [=]() mutable
+            it(std::string("should throw error when trying to unload protected plugin"), [=]() mutable
             {
                 auto plugins = pluginManager->getAllPlugins();
                 auto sqlPlugin = plugins->find([=](auto p) mutable
                 {
-                    return p->name == std:("@elizaos/plugin-sql");
+                    return p->name == std::string("@elizaos/plugin-sql");
                 }
                 );
                 if (sqlPlugin) {
                     std::async([=]() { expect(pluginManager->unloadPlugin(object{
-                        object::pair{std:("pluginId"), sqlPlugin->id}
-                    }))->rejects->toThrow(std:("Cannot unload original plugin")); });
+                        object::pair{std::string("pluginId"), sqlPlugin->id}
+                    }))->rejects->toThrow(std::string("Cannot unload original plugin")); });
                 }
             }
             );
-            it(std:("should successfully unload non-protected plugin"), [=]() mutable
+            it(std::string("should successfully unload non-protected plugin"), [=]() mutable
             {
-                auto testPlugin = mockPlugin(std:("test-unloadable"));
+                auto testPlugin = mockPlugin(std::string("test-unloadable"));
                 auto pluginId = std::async([=]() { pluginManager->registerPlugin(testPlugin); });
                 std::async([=]() { pluginManager->loadPlugin(object{
-                    object::pair{std:("pluginId"), std:("pluginId")}
+                    object::pair{std::string("pluginId"), std::string("pluginId")}
                 }); });
                 std::async([=]() { expect(pluginManager->unloadPlugin(object{
-                    object::pair{std:("pluginId"), std:("pluginId")}
+                    object::pair{std::string("pluginId"), std::string("pluginId")}
                 }))->resolves->not->toThrow(); });
                 auto pluginState = pluginManager->getPlugin(pluginId);
-                expect(pluginState->status)->toBe(std:("unloaded"));
+                expect(pluginState->status)->toBe(std::string("unloaded"));
             }
             );
         }
         );
-        describe(std:("Force Loading Protection"), [=]() mutable
+        describe(std::string("Force Loading Protection"), [=]() mutable
         {
-            it(std:("should throw error when trying to force load protected plugin"), [=]() mutable
+            it(std::string("should throw error when trying to force load protected plugin"), [=]() mutable
             {
                 auto plugins = pluginManager->getAllPlugins();
                 auto protectedPlugin = plugins->find([=](auto p) mutable
                 {
-                    return p->name == std:("bootstrap");
+                    return p->name == std::string("bootstrap");
                 }
                 );
                 if (protectedPlugin) {
                     std::async([=]() { expect(pluginManager->loadPlugin(object{
-                        object::pair{std:("pluginId"), protectedPlugin->id}, 
-                        object::pair{std:("force"), true}
-                    }))->rejects->toThrow(std:("Cannot force load protected plugin")); });
+                        object::pair{std::string("pluginId"), protectedPlugin->id}, 
+                        object::pair{std::string("force"), true}
+                    }))->rejects->toThrow(std::string("Cannot force load protected plugin")); });
                 }
             }
             );
         }
         );
-        describe(std:("Name Variation Protection"), [=]() mutable
+        describe(std::string("Name Variation Protection"), [=]() mutable
         {
-            it(std:("should protect plugins with @elizaos prefix variations"), [=]() mutable
+            it(std::string("should protect plugins with @elizaos prefix variations"), [=]() mutable
             {
-                expect(pluginManager->canUnloadPlugin(std:("plugin-sql")))->toBe(false);
-                expect(pluginManager->canUnloadPlugin(std:("@elizaos/plugin-sql")))->toBe(false);
+                expect(pluginManager->canUnloadPlugin(std::string("plugin-sql")))->toBe(false);
+                expect(pluginManager->canUnloadPlugin(std::string("@elizaos/plugin-sql")))->toBe(false);
             }
             );
-            it(std:("should detect protection for plugins registered without prefix"), [=]() mutable
+            it(std::string("should detect protection for plugins registered without prefix"), [=]() mutable
             {
-                auto testPlugin = mockPlugin(std:("plugin-personality"));
-                std::async([=]() { expect(pluginManager->registerPlugin(testPlugin))->rejects->toThrow(std:("Cannot register protected plugin")); });
+                auto testPlugin = mockPlugin(std::string("plugin-personality"));
+                std::async([=]() { expect(pluginManager->registerPlugin(testPlugin))->rejects->toThrow(std::string("Cannot register protected plugin")); });
             }
             );
         }

@@ -9,7 +9,7 @@
 
 namespace elizaos {
 
-std: extractErrorMessage(const std:& error) {
+std::string extractErrorMessage(const std::string& error) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (error instanceof Error && 'cause' in error && error.cause) {
@@ -21,19 +21,19 @@ std: extractErrorMessage(const std:& error) {
 
 }
 
-void extractErrorDetails(const std:& error) {
+void extractErrorDetails(const std::string& error) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    message: std:; stack?: std:
+    message: std::string; stack?: std::string
 }
 
-std::vector<std::string> topologicalSort(const std::unordered_map<std:, TableDefinition>& tables) {
+std::vector<std::string> topologicalSort(const std::unordered_map<std::string, TableDefinition>& tables) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::vector<std::string> sorted = [];
     const auto visited = new Set<string>();
     const auto visiting = new Set<string>();
 
-    std::function visit(tableName: std:) {
+    std::function visit(tableName: std::string) {
         if (visiting.has(tableName)) {
             std::cout << "Circular dependency detected involving table: " + tableName << std::endl;
             return;
@@ -69,7 +69,7 @@ std::vector<std::string> topologicalSort(const std::unordered_map<std:, TableDef
 
 }
 
-std::future<void> runPluginMigrations(DrizzleDB db, const std:& pluginName, const std:& schema) {
+std::future<void> runPluginMigrations(DrizzleDB db, const std::string& pluginName, const std::string& schema) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -117,7 +117,7 @@ std::future<void> runPluginMigrations(DrizzleDB db, const std:& pluginName, cons
                 // ); };
 
                 // Parse all table definitions
-                const auto tableDefinitions = new Map<std:, TableDefinition>();
+                const auto tableDefinitions = new Map<std::string, TableDefinition>();
                 for (const int [exportKey, table] of tableEntries) {
                     const auto tableDef = introspector.parseTableDefinition(table, exportKey);
                     tableDefinitions.std::set(tableDef.name, tableDef);

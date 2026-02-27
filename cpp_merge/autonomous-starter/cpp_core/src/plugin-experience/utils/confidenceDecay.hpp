@@ -23,7 +23,7 @@ struct DecayConfig {
 class ConfidenceDecayManager {
   private config: DecayConfig;
 
-  constructor(config: Partial<DecayConfig> = {}) {
+  /* constructor */ (config: Partial<DecayConfig> = {}) {
     this.config = { ...DEFAULT_DECAY_CONFIG, ...config };
   }
 

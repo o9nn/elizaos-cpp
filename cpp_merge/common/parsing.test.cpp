@@ -1,75 +1,76 @@
 #include "parsing.test.h"
+#include <string>
 
 void Main(void)
 {
-    describe(std:("Parsing Module"), [=]() mutable
+    describe(std::string("Parsing Module"), [=]() mutable
     {
-        describe(std:("parseBooleanFromText"), [=]() mutable
+        describe(std::string("parseBooleanFromText"), [=]() mutable
         {
-            it(std:("should parse exact YES/NO matches"), [=]() mutable
+            it(std::string("should parse exact YES/NO matches"), [=]() mutable
             {
-                expect(parseBooleanFromText(std:("YES")))->toBe(true);
-                expect(parseBooleanFromText(std:("NO")))->toBe(false);
+                expect(parseBooleanFromText(std::string("YES")))->toBe(true);
+                expect(parseBooleanFromText(std::string("NO")))->toBe(false);
             }
             );
-            it(std:("should handle case insensitive input"), [=]() mutable
+            it(std::string("should handle case insensitive input"), [=]() mutable
             {
-                expect(parseBooleanFromText(std:("yes")))->toBe(true);
-                expect(parseBooleanFromText(std:("no")))->toBe(false);
+                expect(parseBooleanFromText(std::string("yes")))->toBe(true);
+                expect(parseBooleanFromText(std::string("no")))->toBe(false);
             }
             );
-            it(std:("should return null for invalid input"), [=]() mutable
+            it(std::string("should return null for invalid input"), [=]() mutable
             {
                 expect(parseBooleanFromText(string_empty))->toBe(false);
-                expect(parseBooleanFromText(std:("maybe")))->toBe(false);
-                expect(parseBooleanFromText(std:("YES NO")))->toBe(false);
+                expect(parseBooleanFromText(std::string("maybe")))->toBe(false);
+                expect(parseBooleanFromText(std::string("YES NO")))->toBe(false);
             }
             );
         }
         );
-        describe(std:("parseJSONObjectFromText"), [=]() mutable
+        describe(std::string("parseJSONObjectFromText"), [=]() mutable
         {
-            it(std:("should parse JSON object from code block"), [=]() mutable
+            it(std::string("should parse JSON object from code block"), [=]() mutable
             {
-                auto input = std:(""""json\
+                auto input = std::string(""""json\
 {"key": "value", "number": 42}\
 """");
                 expect(parseJSONObjectFromText(input))->toEqual(object{
-                    object::pair{std:("key"), std:("value")}, 
-                    object::pair{std:("number"), std:("42")}
+                    object::pair{std::string("key"), std::string("value")}, 
+                    object::pair{std::string("number"), std::string("42")}
                 });
             }
             );
-            it(std:("should parse JSON object without code block"), [=]() mutable
+            it(std::string("should parse JSON object without code block"), [=]() mutable
             {
-                auto input = std:("{"key": "value", "number": 42}");
+                auto input = std::string("{"key": "value", "number": 42}");
                 expect(parseJSONObjectFromText(input))->toEqual(object{
-                    object::pair{std:("key"), std:("value")}, 
-                    object::pair{std:("number"), std:("42")}
+                    object::pair{std::string("key"), std::string("value")}, 
+                    object::pair{std::string("number"), std::string("42")}
                 });
             }
             );
-            it(std:("should parse JSON objects containing array values"), [=]() mutable
+            it(std::string("should parse JSON objects containing array values"), [=]() mutable
             {
-                auto input = std:("{"key": ["item1", "item2", "item3"]}");
+                auto input = std::string("{"key": ["item1", "item2", "item3"]}");
                 expect(parseJSONObjectFromText(input))->toEqual(object{
-                    object::pair{std:("key"), array<string>{ std:("item1"), std:("item2"), std:("item3") }}
+                    object::pair{std::string("key"), array<string>{ std::string("item1"), std::string("item2"), std::string("item3") }}
                 });
             }
             );
-            it(std:("should handle empty objects"), [=]() mutable
+            it(std::string("should handle empty objects"), [=]() mutable
             {
-                expect(parseJSONObjectFromText(std:(""""json\
+                expect(parseJSONObjectFromText(std::string(""""json\
 {}\
 """")))->toEqual(object{});
-                expect(parseJSONObjectFromText(std:("{}")))->toEqual(object{});
+                expect(parseJSONObjectFromText(std::string("{}")))->toEqual(object{});
             }
             );
-            it(std:("should return null for invalid JSON"), [=]() mutable
+            it(std::string("should return null for invalid JSON"), [=]() mutable
             {
-                expect(parseJSONObjectFromText(std:("invalid")))->toBe(nullptr);
-                expect(parseJSONObjectFromText(std:("{invalid}")))->toBe(nullptr);
-                expect(parseJSONObjectFromText(std:(""""json\
+                expect(parseJSONObjectFromText(std::string("invalid")))->toBe(nullptr);
+                expect(parseJSONObjectFromText(std::string("{invalid}")))->toBe(nullptr);
+                expect(parseJSONObjectFromText(std::string(""""json\
 {invalid}\
 """")))->toBe(nullptr);
             }

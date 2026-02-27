@@ -18,17 +18,17 @@ struct AboutModalContentProps {
 };
 
 struct CapabilityItem {
-    std: title;
-    std: description;
-    std::optional<std:> emphasis;
+    std::string title;
+    std::string description;
+    std::optional<std::string> emphasis;
 };
 
 struct PluginItem {
-    std: name;
-    std: category;
-    std: summary;
+    std::string name;
+    std::string category;
+    std::string summary;
     std::vector<std::string> points;
-    std: example;
+    std::string example;
 };
 
 void AboutModalContent(AboutModalContentProps { onClose });

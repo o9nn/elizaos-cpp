@@ -15,22 +15,22 @@ namespace elizaos {
 
 // Define the interface for the ELIZA_CONFIG
 struct ElizaConfig {
-    std: agentId;
-    std: apiBase;
+    std::string agentId;
+    std::string apiBase;
 };
 
 // Define the interface for time response
 struct TimeResponse {
-    std: timestamp;
+    std::string timestamp;
     double unix;
-    std: formatted;
-    std: timezone;
+    std::string formatted;
+    std::string timezone;
 };
 
 /**
  * Time display component that fetches from backend
  */
-void TimeDisplay({ apiBase: std: } { apiBase });
+void TimeDisplay({ apiBase: std::string } { apiBase });
 
 /**
  * Main Example route component
@@ -40,22 +40,22 @@ void ExampleRoute();
 /**
  * Example provider component
  */
-void ExampleProvider(auto { agentId, { agentId: UUID; apiBase: std: } apiBase });
+void ExampleProvider(auto { agentId, { agentId: UUID; apiBase: std::string } apiBase });
 
 // Initialize the application - no router needed for iframe
 
 // Define types for integration with agent UI system
 struct AgentPanel {
-    std: name;
-    std: path;
+    std::string name;
+    std::string path;
     React.ComponentType<any> component;
-    std::optional<std:> icon;
+    std::optional<std::string> icon;
     std::optional<bool> public;
-    std::optional<std:; // Optional short label for mobile> shortLabel;
+    std::optional<std::string; // Optional short label for mobile> shortLabel;
 };
 
 struct PanelProps {
-    std: agentId;
+    std::string agentId;
 };
 
 /**

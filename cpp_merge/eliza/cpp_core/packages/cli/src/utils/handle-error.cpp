@@ -1,11 +1,12 @@
 #include "handle-error.hpp"
+#include <string>
 #include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-void handleError(const std:& error) {
+void handleError(const std::string& error) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Check for ENOSPC / "no space left on device" and print in red

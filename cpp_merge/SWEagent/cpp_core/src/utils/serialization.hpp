@@ -23,16 +23,16 @@ namespace elizaos {
 /**
  * Convert strings to YAML literal strings for better readability
  */
-std: convertToYamlLiteralString(const std:& data);
+std::string convertToYamlLiteralString(const std::string& data);
 
 /**
  * Serialize data to YAML with line breaks preserved
  */
-std: yamlSerializationWithLinebreaks(const std:& data);
+std::string yamlSerializationWithLinebreaks(const std::string& data);
 
 /**
  * Merge nested dictionaries/objects
  */
-std: mergeNestedDicts(const std:& d1, const std:& d2);
+std::string mergeNestedDicts(const std::string& d1, const std::string& d2);
 
 } // namespace elizaos

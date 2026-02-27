@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTC_AGENT_SRC_SERVICES_RECONCILIATION_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_OTC_AGENT_SRC_SERVICES_RECONCILIATION_H
 #include "core.hpp"
+#include <string>
 #include "viem.hpp"
 // External dependency removed
 // Using alias removed (invalid transpilation)
@@ -78,28 +79,28 @@ std::shared_ptr<Promise<void>> runReconciliationTask();
 template <typename P0>
 std::shared_ptr<Promise<std::shared_ptr<OnChainOffer>>> ReconciliationService::readContractOffer(P0 offerId)
 {
-    if (!this->otcAddress) throw any(std::make_shared<Error>(std:("OTC address not configured")));
+    if (!this->otcAddress) throw any(std::make_shared<Error>(std::string("OTC address not configured")));
     auto [beneficiary, tokenAmount, discountBps, createdAt, unlockTime, priceUsdPerToken, ethUsdPrice, currency, approved, paid, fulfilled, cancelled, payer, amountPaid] = as<std::tuple<std::shared_ptr<Address>, any, any, any, any, any, any, double, boolean, boolean, boolean, boolean, std::shared_ptr<Address>, any>>((std::async([=]() { this->client->readContract(object{
-        object::pair{std:("address"), this->otcAddress}, 
-        object::pair{std:("abi"), this->abi}, 
-        object::pair{std:("functionName"), std:("offers")}, 
-        object::pair{std:("args"), array<any>{ BigInt(offerId) }}
+        object::pair{std::string("address"), this->otcAddress}, 
+        object::pair{std::string("abi"), this->abi}, 
+        object::pair{std::string("functionName"), std::string("offers")}, 
+        object::pair{std::string("args"), array<any>{ BigInt(offerId) }}
     }); })));
     return object{
-        object::pair{std:("beneficiary"), std:("beneficiary")}, 
-        object::pair{std:("tokenAmount"), std:("tokenAmount")}, 
-        object::pair{std:("discountBps"), std:("discountBps")}, 
-        object::pair{std:("createdAt"), std:("createdAt")}, 
-        object::pair{std:("unlockTime"), std:("unlockTime")}, 
-        object::pair{std:("priceUsdPerToken"), std:("priceUsdPerToken")}, 
-        object::pair{std:("ethUsdPrice"), std:("ethUsdPrice")}, 
-        object::pair{std:("currency"), std:("currency")}, 
-        object::pair{std:("approved"), std:("approved")}, 
-        object::pair{std:("paid"), std:("paid")}, 
-        object::pair{std:("fulfilled"), std:("fulfilled")}, 
-        object::pair{std:("cancelled"), std:("cancelled")}, 
-        object::pair{std:("payer"), std:("payer")}, 
-        object::pair{std:("amountPaid"), std:("amountPaid")}
+        object::pair{std::string("beneficiary"), std::string("beneficiary")}, 
+        object::pair{std::string("tokenAmount"), std::string("tokenAmount")}, 
+        object::pair{std::string("discountBps"), std::string("discountBps")}, 
+        object::pair{std::string("createdAt"), std::string("createdAt")}, 
+        object::pair{std::string("unlockTime"), std::string("unlockTime")}, 
+        object::pair{std::string("priceUsdPerToken"), std::string("priceUsdPerToken")}, 
+        object::pair{std::string("ethUsdPrice"), std::string("ethUsdPrice")}, 
+        object::pair{std::string("currency"), std::string("currency")}, 
+        object::pair{std::string("approved"), std::string("approved")}, 
+        object::pair{std::string("paid"), std::string("paid")}, 
+        object::pair{std::string("fulfilled"), std::string("fulfilled")}, 
+        object::pair{std::string("cancelled"), std::string("cancelled")}, 
+        object::pair{std::string("payer"), std::string("payer")}, 
+        object::pair{std::string("amountPaid"), std::string("amountPaid")}
     };
 }
 

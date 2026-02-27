@@ -1,4 +1,5 @@
 #include "raydiumVault.hpp"
+#include <string>
 #include <future>
 #include <iostream>
 #include <stdexcept>
@@ -147,8 +148,7 @@ std::future<void> claim(Program<RaydiumVault> program, anchor.web3.Keypair signe
             });
             auto poolInfo = token.poolInfo;
 
-            // Parse poolInfo if it's a std:
-            if (typeof poolInfo == "string") {
+            // Parse poolInfo if it's a std::string if (typeof poolInfo == "string") {
                 try {
                     poolInfo = /* JSON::parse */ poolInfo;
                     } catch (e) {
@@ -165,7 +165,7 @@ std::future<void> claim(Program<RaydiumVault> program, anchor.web3.Keypair signe
                     // update poolInfo in the database for the next time
                     const auto db = getDB();
                     db.update(tokens);
-                    .std::set({ poolInfo: /* JSON.stringify */ std:(poolInfo) })
+                    .std::set({ poolInfo: /* JSON.stringify */ std::string(poolInfo) })
                     .where(eq(tokens.mint, token.mint));
                 }
 
@@ -305,7 +305,7 @@ std::future<void> claim(Program<RaydiumVault> program, anchor.web3.Keypair signe
                                                 if (error instanceof anchor.web3.SendTransactionError) {
                                                     std::cerr << "Transaction failed with logs:" << error.logs << std::endl;
                                                     throw new Error(
-                                                    "Transaction failed: " + error.message + "\nLogs: " + std::to_string(/* JSON.stringify */ std:(error.logs, nullptr, 2))
+                                                    "Transaction failed: " + error.message + "\nLogs: " + std::to_string(/* JSON.stringify */ std::string(error.logs, nullptr, 2))
                                                     );
                                                 }
                                                 std::cerr << "Error in claim:" << error << std::endl;

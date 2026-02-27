@@ -24,23 +24,23 @@ namespace elizaos {
  *
  * @returns The resolved Groq API base URL.
  */
-std: getBaseURL(const std:& runtime);
+std::string getBaseURL(const std::string& runtime);
 
 // Removed unused Runtime interface
 
 /**
- * Returns the appropriate Groq model name std: for the specified model type.
+ * Returns the appropriate Groq model name std::string for the specified model type.
  *
  * If environment variables for model names are std::set, they are used; otherwise, defaults are returned.
  *
  * @param model - The model type for which to retrieve the model name.
- * @returns The model name std: corresponding to the given {@link model}.
+ * @returns The model name std::string corresponding to the given {@link model}.
  *
  * @remark If an error occurs, returns the default model name 'llama-3.1-8b-instant'.
  */
 TiktokenModel findModelName(ModelTypeName model);
 
-std::future<void> tokenizeText(ModelTypeName model, const std:& prompt);
+std::future<void> tokenizeText(ModelTypeName model, const std::string& prompt);
 
 /**
  * Detokenize a sequence of tokens back into text using the specified model.
@@ -61,7 +61,7 @@ std::future<void> detokenizeText(ModelTypeName model, const std::vector<double>&
 
       throw Error("Missing GROQ_API_KEY in environment variables");
 
-            // Encode the std: into tokens first
+            // Encode the std::string into tokens first
             // Now decode tokens back into text
 
 } // namespace elizaos

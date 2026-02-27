@@ -21,18 +21,18 @@ namespace elizaos {
 class GatewayRegistry {
 public:
     GatewayRegistry(GatewayConfig config, Console logger = console);
-    std::future<void> refresh(const std::unordered_map<std:, ServerConnection>& connections);
-    std::future<void> collectTools(const std:& serverId, ServerConnection connection);
-    std::future<void> collectResources(const std:& serverId, ServerConnection connection);
-    std::future<void> collectPrompts(const std:& serverId, ServerConnection connection);
-    std: getNameWithNamespace(const std:& name, std::optional<std:> namespace);
-    std: getUriWithNamespace(const std:& uri, std::optional<std:> namespace);
+    std::future<void> refresh(const std::unordered_map<std::string, ServerConnection>& connections);
+    std::future<void> collectTools(const std::string& serverId, ServerConnection connection);
+    std::future<void> collectResources(const std::string& serverId, ServerConnection connection);
+    std::future<void> collectPrompts(const std::string& serverId, ServerConnection connection);
+    std::string getNameWithNamespace(const std::string& name, std::optional<std::string> namespace);
+    std::string getUriWithNamespace(const std::string& uri, std::optional<std::string> namespace);
     std::vector<AggregatedTool> getTools();
     std::vector<AggregatedResource> getResources();
     std::vector<AggregatedPrompt> getPrompts();
-    AggregatedTool findTool(const std:& name);
-    AggregatedResource findResource(const std:& uri);
-    AggregatedPrompt findPrompt(const std:& name);
+    AggregatedTool findTool(const std::string& name);
+    AggregatedResource findResource(const std::string& uri);
+    AggregatedPrompt findPrompt(const std::string& name);
      getStats();
 
 private:

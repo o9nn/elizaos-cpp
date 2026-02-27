@@ -7,7 +7,7 @@
 
 namespace elizaos {
 
-std::future<std:> getPackageVersion(const std:& packageName) {
+std::future<std::string> getPackageVersion(const std::string& packageName) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return UserEnvironment.getInstance().getPackageVersion(packageName);

@@ -53,7 +53,7 @@ double calculateAmountOutBuy(double reserveToken, double amount, double _solDeci
 
 }
 
-std::future<void> getTxIdAndCreatorFromTokenAddress(const std:& tokenAddress) {
+std::future<void> getTxIdAndCreatorFromTokenAddress(const std::string& tokenAddress) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -93,7 +93,7 @@ std::future<void> getTxIdAndCreatorFromTokenAddress(const std:& tokenAddress) {
     }
 }
 
-std::future<std::optional<Token>> createNewTokenData(const std:& txId, const std:& tokenAddress, const std:& creatorAddress) {
+std::future<std::optional<Token>> createNewTokenData(const std::string& txId, const std::string& tokenAddress, const std::string& creatorAddress) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -266,22 +266,22 @@ std::future<std::vector<Token>> bulkUpdatePartialTokens(const std::vector<Token>
 
 }
 
-std::future<> execWithdrawTx(Transaction tx, Connection connection, const std:& wallet, auto maxRetries) {
+std::future<> execWithdrawTx(Transaction tx, Connection connection, const std::string& wallet, auto maxRetries) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    signature: std:; logs: std:[]
+    signature: std::string; logs: std::string[]
 }
 
-std::vector<std::string> splitIntoLines(std::optional<std:> text) {
+std::vector<std::string> splitIntoLines(std::optional<std::string> text) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    if (!text) return undefined;
+    if (!text) return std::nullopt;
     return text.split("\n");
     .std::map[&]((line) { return line.replace("\n", "")); };
     .filter[&]((line) { return line.size() > 0); };
 
 }
 
-std::future<void> getFeaturedMaxValues(const std:& db) {
+std::future<void> getFeaturedMaxValues(const std::string& db) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Get max values for normalization with a subquery
@@ -319,7 +319,7 @@ void getFeaturedScoreExpression(double maxVolume, double maxHolders) {
 
 }
 
-double calculateFeaturedScore(std::optional<std:> token, double maxVolume, double maxHolders) {
+double calculateFeaturedScore(std::optional<std::string> token, double maxVolume, double maxHolders) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto normalizedMaxVolume = maxVolume || 1;
@@ -335,7 +335,7 @@ double calculateFeaturedScore(std::optional<std:> token, double maxVolume, doubl
 
 }
 
-void applyFeaturedSort(const std:& tokensQuery, double maxVolume, double maxHolders, const std:& sortOrder) {
+void applyFeaturedSort(const std::string& tokensQuery, double maxVolume, double maxHolders, const std::string& sortOrder) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto featuredScore = getFeaturedScoreExpression(maxVolume, maxHolders);

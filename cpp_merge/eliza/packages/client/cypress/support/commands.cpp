@@ -1,4 +1,5 @@
 #include "commands.hpp"
+#include <string>
 
 namespace global {
     namespace Cypress {
@@ -7,34 +8,34 @@ namespace global {
 
 void Main(void)
 {
-    Cypress->Commands->add(std:("waitForApp"), [=]() mutable
+    Cypress->Commands->add(std::string("waitForApp"), [=]() mutable
     {
-        cy->get(std:("#root"), object{
-            object::pair{std:("timeout"), 30000}
-        })->should(std:("exist"));
-        cy->document()->its(std:("readyState"))->should(std:("equal"), std:("complete"));
+        cy->get(std::string("#root"), object{
+            object::pair{std::string("timeout"), 30000}
+        })->should(std::string("exist"));
+        cy->document()->its(std::string("readyState"))->should(std::string("equal"), std::string("complete"));
         cy->wait(1000);
-        cy->get(std:("body"))->then([=](auto $body) mutable
+        cy->get(std::string("body"))->then([=](auto $body) mutable
         {
-            if ($body["find"](std:("[data-testid="loading"]"))["length"] > 0) {
-                cy->get(std:("[data-testid="loading"]"), object{
-                    object::pair{std:("timeout"), 30000}
-                })->should(std:("not.exist"));
+            if ($body["find"](std::string("[data-testid="loading"]"))["length"] > 0) {
+                cy->get(std::string("[data-testid="loading"]"), object{
+                    object::pair{std::string("timeout"), 30000}
+                })->should(std::string("not.exist"));
             }
         }
         );
     }
     );
-    Cypress->Commands->add(std:("login"), [=](auto email, auto password) mutable
+    Cypress->Commands->add(std::string("login"), [=](auto email, auto password) mutable
     {
-        cy->visit(std:("/login"));
-        cy->get(std:("input[name="email"]"))->type(email);
-        cy->get(std:("input[name="password"]"))->type(password);
-        cy->get(std:("button[type="submit"]"))->click();
-        cy->url()->should(std:("not.include"), std:("/login"));
+        cy->visit(std::string("/login"));
+        cy->get(std::string("input[name="email"]"))->type(email);
+        cy->get(std::string("input[name="password"]"))->type(password);
+        cy->get(std::string("button[type="submit"]"))->click();
+        cy->url()->should(std::string("not.include"), std::string("/login"));
     }
     );
-    Cypress->Commands->add(std:("connectWebSocket"), [=]() mutable
+    Cypress->Commands->add(std::string("connectWebSocket"), [=]() mutable
     {
         cy->window()->then([=](auto win) mutable
         {
@@ -45,7 +46,7 @@ void Main(void)
                     shared checkConnection = [=]() mutable
                     {
                         if ((as<any>(win))["socket"]["connected"]) {
-                            resolve(undefined);
+                            resolve(std::nullopt);
                         } else {
                             setTimeout(checkConnection, 100);
                         }
@@ -59,7 +60,7 @@ void Main(void)
         );
     }
     );
-    Cypress->Commands->add(std:("cleanupTestData"), [=]() mutable
+    Cypress->Commands->add(std::string("cleanupTestData"), [=]() mutable
     {
         cy->window()->then([=](auto win) mutable
         {
@@ -70,15 +71,15 @@ void Main(void)
         );
     }
     );
-    Cypress->Commands->add(std:("getByTestId"), [=](auto testId) mutable
+    Cypress->Commands->add(std::string("getByTestId"), [=](auto testId) mutable
     {
-        return cy->get(std:("[data-testid="") + testId + std:(""]"));
+        return cy->get(std::string("[data-testid="") + testId + std::string(""]"));
     }
     );
-    Cypress->Commands->add(std:("waitForApi"), [=](auto alias, auto timeout = 10000) mutable
+    Cypress->Commands->add(std::string("waitForApi"), [=](auto alias, auto timeout = 10000) mutable
     {
-        return cy->wait(std:("@") + alias + string_empty, object{
-            object::pair{std:("timeout"), std:("timeout")}
+        return cy->wait(std::string("@") + alias + string_empty, object{
+            object::pair{std::string("timeout"), std::string("timeout")}
         });
     }
     );

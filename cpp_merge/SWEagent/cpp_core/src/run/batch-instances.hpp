@@ -36,12 +36,12 @@ struct BatchInstance {
  * Simple batch instance for benchmarking
  */
 struct SimpleBatchInstance {
-    std: imageName;
-    std: problemStatement;
-    std: instanceId;
-    std::optional<std:> repoName;
-    std::optional<std:> baseCommit;
-    std::optional<std::unordered_map<std:, unknown>> extraFields;
+    std::string imageName;
+    std::string problemStatement;
+    std::string instanceId;
+    std::optional<std::string> repoName;
+    std::optional<std::string> baseCommit;
+    std::optional<std::unordered_map<std::string, unknown>> extraFields;
 };
 
 /**
@@ -52,7 +52,7 @@ BatchInstance simpleToFullBatchInstance(SimpleBatchInstance simple, DeploymentCo
 /**
  * Slice specification to slice object
  */
-void sliceSpecToSlice(const std:& sliceSpec); {
+void sliceSpecToSlice(const std::string& sliceSpec); {
 
 /**
  * Simple seeded random number generator
@@ -65,17 +65,17 @@ void sliceSpecToSlice(const std:& sliceSpec); {
 /**
  * Load instances from file
  */
-class InstancesFromFile extends AbstractInstanceSource {
-  private path: std:;
-  private _filter: std:;
-  private _slice: std:;
+class InstancesFromFile : public AbstractInstanceSource {
+  private path: std::string;
+  private _filter: std::string;
+  private _slice: std::string;
   private _shuffle;
   private _deployment: DeploymentConfig;
 
-  constructor(config: {
-    path: std:;
-    filter?: std:;
-    slice?: std:;
+  /* constructor */ (config: {
+    path: std::string;
+    filter?: std::string;
+    slice?: std::string;
     shuffle?;
     deployment?: DeploymentConfig;
   }) {
@@ -106,27 +106,27 @@ class InstancesFromFile extends AbstractInstanceSource {
 /**
  * Convert SWE-bench instance to SimpleBatchInstance
  */
-SimpleBatchInstance fromSWEBench(Record<std: sweBenchInstance, auto unknown>);
+SimpleBatchInstance fromSWEBench(Record<std::string sweBenchInstance, auto unknown>);
 
 /**
  * SWE-bench instances
  */
-class SWEBenchInstances extends AbstractInstanceSource {
+class SWEBenchInstances : public AbstractInstanceSource {
   public readonly subset: 'lite' | 'verified' | 'full' | 'multimodal' | 'multilingual';
   public readonly split: 'dev' | 'test';
-  private pathOverride?: std:;
-  private _filter: std:;
-  private _slice: std:;
+  private pathOverride?: std::string;
+  private _filter: std::string;
+  private _slice: std::string;
   private _shuffle;
   public readonly evaluate;
   private _deployment: DeploymentConfig;
 
-  constructor(config: {
+  /* constructor */ (config: {
     subset?: 'lite' | 'verified' | 'full' | 'multimodal' | 'multilingual';
     split?: 'dev' | 'test';
-    pathOverride?: std:;
-    filter?: std:;
-    slice?: std:;
+    pathOverride?: std::string;
+    filter?: std::string;
+    slice?: std::string;
     shuffle?;
     evaluate?;
     deployment?: DeploymentConfig;

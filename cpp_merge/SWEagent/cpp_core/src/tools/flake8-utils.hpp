@@ -17,18 +17,18 @@ namespace elizaos {
  */
 
 struct Flake8Error {
-    std: file;
+    std::string file;
     double line;
     double column;
-    std: message;
+    std::string message;
 };
 
 class Flake8ErrorClass implements Flake8Error {
-  constructor(
-    public file: std:,
+  /* constructor */ (
+    public file: std::string,
     public line,
     public column,
-    public message: std:,
+    public message: std::string,
   ) {}
 
   /**
@@ -39,12 +39,12 @@ class Flake8ErrorClass implements Flake8Error {
 /**
  * Format flake8 output, filtering out errors that existed before
  */
-std: formatFlake8Output(const std:& currentErrors, const std:& previousErrorsString, [number replacementWindow, auto number], double replacementNLines, boolean = false showLineNumbers);
+std::string formatFlake8Output(const std::string& currentErrors, const std::string& previousErrorsString, [number replacementWindow, auto number], double replacementNLines, boolean = false showLineNumbers);
 
 /**
  * Parse flake8 output into error objects
  */
-std::vector<Flake8ErrorClass> parseFlake8Output(const std:& output);
+std::vector<Flake8ErrorClass> parseFlake8Output(const std::string& output);
 
 /**
  * Update line numbers of previous errors based on replacement
@@ -59,6 +59,6 @@ std::vector<Flake8ErrorClass> findNewErrors(const std::vector<Flake8ErrorClass>&
 /**
  * Format errors for display
  */
-std: formatErrorsForDisplay(const std::vector<Flake8ErrorClass>& errors, bool showLineNumbers);
+std::string formatErrorsForDisplay(const std::vector<Flake8ErrorClass>& errors, bool showLineNumbers);
 
 } // namespace elizaos

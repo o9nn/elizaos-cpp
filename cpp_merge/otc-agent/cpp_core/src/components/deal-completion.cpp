@@ -1,4 +1,5 @@
 #include "deal-completion.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -8,7 +9,7 @@ void DealCompletion() {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
-        const auto [shareImageUrl, setShareImageUrl] = useState<std: | nullptr>(nullptr);
+        const auto [shareImageUrl, setShareImageUrl] = useState<std::string | nullptr>(nullptr);
         const auto hasPostedRef = useRef(false);
 
         // Memoized derived values

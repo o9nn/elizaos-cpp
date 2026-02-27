@@ -18,7 +18,7 @@ namespace elizaos {
 
 struct RebelsRankingProps {
     std::vector<RebelRanking> rebels;
-    std::optional<std:> maxHeight;
+    std::optional<std::string> maxHeight;
 };
 
 

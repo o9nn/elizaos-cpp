@@ -30,7 +30,7 @@ namespace elizaos {
  * @param res - Express response object.
  * @param next - Express next function.
  */
-void apiKeyAuthMiddleware(const std:& req, const std:& res, NextFunction next);
+void apiKeyAuthMiddleware(const std::string& req, const std::string& res, NextFunction next);
 
 
 } // namespace elizaos

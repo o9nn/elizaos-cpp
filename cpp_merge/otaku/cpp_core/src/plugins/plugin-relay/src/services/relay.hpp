@@ -15,14 +15,14 @@ namespace elizaos {
 
 
 
-class RelayService extends Service {
+class RelayService : public Service {
   static serviceType = "cross_chain_bridge" as const;
-
-  private apiUrl: std: = "";
-  private apiKey?: std:;
+private:
+    std::string apiUrl = "";
+  private apiKey?: std::string;
   private isTestnet = false;
 
-  constructor(runtime: IAgentRuntime) {
+  /* constructor */ (runtime: IAgentRuntime) {
     super(runtime);
   }
 

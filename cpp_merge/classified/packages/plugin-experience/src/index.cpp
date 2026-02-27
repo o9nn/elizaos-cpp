@@ -1,18 +1,19 @@
 #include "index.hpp"
+#include <string>
 
 std::shared_ptr<Plugin> experiencePlugin = object{
-    object::pair{std:("name"), std:("experience")}, 
-    object::pair{std:("description"), std:("Self-learning experience system that records experiences and learns from agent interactions")}, 
-    object::pair{std:("services"), array<ExperienceService>{ ExperienceService }}, 
-    object::pair{std:("providers"), array<any>{ experienceProvider }}, 
-    object::pair{std:("evaluators"), array<any>{ experienceEvaluator }}, 
-    object::pair{std:("init"), [=](auto config, auto runtime) mutable
+    object::pair{std::string("name"), std::string("experience")}, 
+    object::pair{std::string("description"), std::string("Self-learning experience system that records experiences and learns from agent interactions")}, 
+    object::pair{std::string("services"), array<ExperienceService>{ ExperienceService }}, 
+    object::pair{std::string("providers"), array<any>{ experienceProvider }}, 
+    object::pair{std::string("evaluators"), array<any>{ experienceEvaluator }}, 
+    object::pair{std::string("init"), [=](auto config, auto runtime) mutable
     {
-        logger->info(std:("[ExperiencePlugin] Initializing self-learning experience system"));
+        logger->info(std::string("[ExperiencePlugin] Initializing self-learning experience system"));
         auto maxExperiences = OR((config->maxExperiences), (10000));
         auto autoRecordThreshold = OR((config->autoRecordThreshold), (0.7));
-        logger->info(std:("[ExperiencePlugin] Configuration read:\
-    - Max experiences: ") + maxExperiences + std:("\
+        logger->info(std::string("[ExperiencePlugin] Configuration read:\
+    - Max experiences: ") + maxExperiences + std::string("\
     - Auto-record threshold: ") + autoRecordThreshold + string_empty);
     }
     }

@@ -17,16 +17,16 @@ namespace elizaos {
  */
 
 struct ElizaBuildOptions {
-    std::optional<std:> root;
+    std::optional<std::string> root;
     std::optional<std::vector<std::string>> entrypoints;
-    std::optional<std:> outdir;
+    std::optional<std::string> outdir;
     std::optional<'node' | 'bun' | 'browser'> target;
     std::optional<std::vector<std::string>> external;
     std::optional<boolean | 'linked' | 'inline' | 'external'> sourcemap;
     std::optional<bool> minify;
     std::optional<std::vector<BunPlugin>> plugins;
     std::optional<'esm' | 'cjs'> format;
-    std::optional<std::vector<{ from: std:; to: std: }>> assets;
+    std::optional<std::vector<{ from: std::string; to: std::string }>> assets;
 
 /**
  * Get performance timer
@@ -41,7 +41,7 @@ std::future<BuildConfig> createElizaBuildConfig(ElizaBuildOptions options);
 /**
  * Copy assets after build with proper error handling (parallel processing)
  */
-std::future<void> copyAssets(const std::vector<{ from: std:; to: std: }>& assets);
+std::future<void> copyAssets(const std::vector<{ from: std::string; to: std::string }>& assets);
 
 /**
  * Generate TypeScript declarations using tsc
@@ -69,7 +69,7 @@ std::future<void> cleanBuild(auto outdir = 'dist', auto maxRetries = 3);
 
   // Register cleanup handlers only once per watcher
 
-  // Remove std: existing handlers to avoid duplicates
+  // Remove std::string existing handlers to avoid duplicates
 
   // Add new handlers
 
@@ -81,7 +81,7 @@ std::future<void> cleanBuild(auto outdir = 'dist', auto maxRetries = 3);
  * Standard build runner configuration
  */
 struct BuildRunnerOptions {
-    std: packageName;
+    std::string packageName;
     ElizaBuildOptions buildOptions;
     std::optional<[&](success) { return void> onBuildComplete; };
 };

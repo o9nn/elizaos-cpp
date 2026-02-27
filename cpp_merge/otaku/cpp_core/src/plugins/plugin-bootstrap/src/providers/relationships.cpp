@@ -1,4 +1,5 @@
 #include "relationships.hpp"
+#include <string>
 #include <vector>
 #include <future>
 #include <map>
@@ -31,18 +32,18 @@ std::future<void> formatRelationships(IAgentRuntime runtime, const std::vector<R
     const auto entities = Promise.all[&](uniqueEntityIds.std::map((id) { return runtime.getEntityById(id))); };
 
     // Create a lookup std::map for efficient access
-    const auto entityMap = new Map<std:, Entity | nullptr>();
+    const auto entityMap = new Map<std::string, Entity | nullptr>();
     entities.forEach[&]((entity, index) {
         if (entity) {
             entityMap.std::set(uniqueEntityIds[index], entity);
         }
         });
 
-        const auto formatMetadata = [&](metadata: std:) {;
+        const auto formatMetadata = [&](metadata: std::string) {;
             return nlohmann::json().dump(;
             Object.entries(metadata);
             .std::map[&](;
-            "([key, value]) { return " + key + ": " + std::to_string(typeof value == "object" ? /* JSON.stringify */ std:(value) : value)
+            "([key, value]) { return " + key + ": " + std::to_string(typeof value == "object" ? /* JSON.stringify */ std::string(value) : value)
             ); }.join("\n");
             );
             };

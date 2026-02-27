@@ -19,7 +19,7 @@ namespace elizaos {
 
 // Forward declaration to avoid circular dependency
 struct DefaultAgent {
-    std: name;
+    std::string name;
 };
 
 /**
@@ -95,10 +95,10 @@ struct DefaultAgent {
 /**
  * Combined agent hook that manages multiple hooks
  */
-class CombinedAgentHook extends AbstractAgentHook {
+class CombinedAgentHook : public AbstractAgentHook {
   private hooks: AbstractAgentHook[] = [];
 
-  constructor(hooks?: AbstractAgentHook[]) {
+  /* constructor */ (hooks?: AbstractAgentHook[]) {
     super();
     this.hooks = hooks || [];
   }

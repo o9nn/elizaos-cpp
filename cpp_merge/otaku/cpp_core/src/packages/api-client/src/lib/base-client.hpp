@@ -15,11 +15,11 @@ namespace elizaos {
 
 
 
-class ApiError extends Error {
-  constructor(
-    public code: std:,
-    message: std:,
-    public details?: std:,
+class ApiError : public Error {
+  /* constructor */ (
+    public code: std::string,
+    message: std::string,
+    public details?: std::string,
     public status?
   ) {
     super(message);

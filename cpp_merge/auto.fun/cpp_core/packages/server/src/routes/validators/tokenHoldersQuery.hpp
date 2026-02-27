@@ -18,17 +18,17 @@ namespace elizaos {
 
 
 struct RawHoldersQuery {
-    std::optional<std:> limit;
-    std::optional<std:> page;
+    std::optional<std::string> limit;
+    std::optional<std::string> page;
 };
 
 struct ParsedHoldersQuery {
-    std: mint;
+    std::string mint;
     double limit;
     double page;
     double offset;
 };
 
-ParsedHoldersQuery parseHoldersQuery(const std:& mintParam, RawHoldersQuery query);
+ParsedHoldersQuery parseHoldersQuery(const std::string& mintParam, RawHoldersQuery query);
 
 } // namespace elizaos

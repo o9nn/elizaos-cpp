@@ -15,7 +15,7 @@ namespace elizaos {
 
 
 
-class LeaderboardService extends Service {
+class LeaderboardService : public Service {
   static serviceType = 'leaderboard-sync';
   capabilityDescription = 'Aggregates leaderboard snapshots and handles weekly resets';
 
@@ -24,7 +24,7 @@ class LeaderboardService extends Service {
   private isStopped = false;
   private readonly SNAPSHOT_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
 
-  private getDb(): DatabaseAdapter | undefined {
+  private getDb(): DatabaseAdapter | std::nullopt {
     return (this.runtime as RuntimeWithDb).db;
   }
 

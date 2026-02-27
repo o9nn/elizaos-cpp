@@ -1,6 +1,7 @@
 #ifndef _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_CLI_SCRIPTS_GENERATE_UNIT_TESTS_H
 #define _HOME_RUNNER_WORK_ELIZAOS_CPP_ELIZAOS_CPP_CLASSIFIED_PACKAGES_CLI_SCRIPTS_GENERATE_UNIT_TESTS_H
 #include "core.hpp"
+#include <string>
 #include "fs/promises.h"
 #include "path.hpp"
 #include "fs.hpp"
@@ -32,10 +33,10 @@ void main();
 template <typename RET>
 RET categorizeFile(string filePath)
 {
-    if (filePath->includes(std:("/commands/"))) return std:("commands");
-    if (filePath->includes(std:("/utils/"))) return std:("utils");
-    if (filePath->includes(std:("/types/"))) return std:("types");
-    return std:("other");
+    if (filePath->includes(std::string("/commands/"))) return std::string("commands");
+    if (filePath->includes(std::string("/utils/"))) return std::string("utils");
+    if (filePath->includes(std::string("/types/"))) return std::string("types");
+    return std::string("other");
 };
 
 

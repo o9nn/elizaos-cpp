@@ -1,10 +1,11 @@
 #include "commands.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::unordered_set<std:> extractKeys(const std:& formatString) {
+std::unordered_set<std::string> extractKeys(const std::string& formatString) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto keys = new Set<string>();

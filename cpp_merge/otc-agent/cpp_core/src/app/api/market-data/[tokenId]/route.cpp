@@ -1,4 +1,5 @@
 #include "route.hpp"
+#include <string>
 #include <future>
 #include <cstdlib>
 #include <iostream>
@@ -6,7 +7,7 @@
 
 namespace elizaos {
 
-bool isLocalDevelopment(const std:& chain, const std:& contractAddress) {
+bool isLocalDevelopment(const std::string& chain, const std::string& contractAddress) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // EVM local testnet (Anvil deploys to predictable addresses)

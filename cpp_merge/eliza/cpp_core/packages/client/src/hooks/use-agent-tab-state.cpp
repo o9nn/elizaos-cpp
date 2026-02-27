@@ -1,4 +1,5 @@
 #include "use-agent-tab-state.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -23,7 +24,7 @@ void useAgentTabState(UUID agentId) {
             // Save tab states to localStorage
             const auto saveTabStates = useCallback[&]((states: AgentTabStates) {;
                 try {
-                    localStorage.setItem(AGENT_TAB_STATE_KEY, /* JSON.stringify */ std:(states));
+                    localStorage.setItem(AGENT_TAB_STATE_KEY, /* JSON.stringify */ std::string(states));
                     } catch (error) {
                         clientLogger.error("Error saving agent tab states to localStorage:", error);
                     }

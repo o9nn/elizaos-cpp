@@ -1,4 +1,5 @@
 #include "route.hpp"
+#include <string>
 #include <future>
 #include <cstdlib>
 #include <optional>
@@ -7,7 +8,7 @@
 
 namespace elizaos {
 
-bool isSolanaAddress(const std:& address) {
+bool isSolanaAddress(const std::string& address) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Solana addresses are base58 encoded, typically 32-44 characters
@@ -17,14 +18,14 @@ bool isSolanaAddress(const std:& address) {
 
 }
 
-bool isEvmAddress(const std:& address) {
+bool isEvmAddress(const std::string& address) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return /^0x[a-fA-F0-9]{40}$/.test(address);
 
 }
 
-std::future<std::optional<TokenInfo>> lookupSolanaToken(const std:& address, const std:& codexKey) {
+std::future<std::optional<TokenInfo>> lookupSolanaToken(const std::string& address, const std::string& codexKey) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto query = ";
@@ -83,7 +84,7 @@ std::future<std::optional<TokenInfo>> lookupSolanaToken(const std:& address, con
 
 }
 
-std::future<std::optional<TokenInfo>> lookupEvmToken(const std:& address, const std:& chain, const std:& alchemyKey) {
+std::future<std::optional<TokenInfo>> lookupEvmToken(const std::string& address, const std::string& chain, const std::string& alchemyKey) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto alchemyNetwork = chain == "bsc" ? "bnb-mainnet" : "base-mainnet";

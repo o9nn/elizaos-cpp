@@ -1,13 +1,14 @@
 #include "agents.hpp"
+#include <string>
 #include <future>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-std::future<> saveUploadedFile(Express.Multer.File file, const std:& agentId) {
+std::future<> saveUploadedFile(Express.Multer.File file, const std::string& agentId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    filename: std:; url: std:
+    filename: std::string; url: std::string
 }
 
 express::Router createAgentMediaRouter() {

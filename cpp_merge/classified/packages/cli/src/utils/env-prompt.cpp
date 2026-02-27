@@ -1,4 +1,5 @@
 #include "env-prompt.h"
+#include <string>
 
 std::shared_ptr<Promise<string>> getEnvFilePath()
 {
@@ -18,8 +19,8 @@ std::shared_ptr<Promise<void>> writeEnvFile(Record<string, string> envVars)
 {
     auto service = std::async([=]() { getEnvFileService(); });
     std::async([=]() { service->write(envVars, object{
-        object::pair{std:("preserveComments"), false}, 
-        object::pair{std:("updateProcessEnv"), true}
+        object::pair{std::string("preserveComments"), false}, 
+        object::pair{std::string("updateProcessEnv"), true}
     }); });
     return std::shared_ptr<Promise<void>>();
 };

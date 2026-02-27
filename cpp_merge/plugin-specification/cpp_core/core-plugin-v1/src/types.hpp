@@ -13,7 +13,7 @@ namespace elizaos {
 
 
 /**
- * Represents a UUID std: in the format "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+ * Represents a UUID std::string in the format "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
  */
 using UUID = "" + std::to_string(string) + "-" + std::to_string(string) + "-" + std::to_string(string) + "-" + std::to_string(string) + "-" + std::to_string(string) + "";
 
@@ -21,10 +21,10 @@ using UUID = "" + std::to_string(string) + "-" + std::to_string(string) + "-" + 
  * Represents the content of a message or communication
  */
 struct Content {
-    std: text;
-    std::optional<std:> action;
-    std::optional<std:> source;
-    std::optional<std:> url;
+    std::string text;
+    std::optional<std::string> action;
+    std::optional<std::string> source;
+    std::optional<std::string> url;
     std::optional<UUID> inReplyTo;
     std::optional<std::vector<Media>> attachments;
 };
@@ -33,7 +33,7 @@ struct Content {
  * Example content with associated user for demonstration purposes
  */
 struct ActionExample {
-    std: user;
+    std::string user;
     Content content;
 };
 
@@ -49,12 +49,12 @@ struct ConversationExample {
  * Represents an actor/participant in a conversation
  */
 struct Actor {
-    std: name;
-    std: username;
+    std::string name;
+    std::string username;
     { details;
-    std: tagline;
-    std: summary;
-    std: quote;
+    std::string tagline;
+    std::string summary;
+    std::string quote;
     UUID id;
 };
 
@@ -62,8 +62,8 @@ struct Actor {
  * Represents a single objective within a goal
  */
 struct Objective {
-    std::optional<std:> id;
-    std: description;
+    std::optional<std::string> id;
+    std::string description;
     bool completed;
 };
 
@@ -83,7 +83,7 @@ struct Goal {
     std::optional<UUID> id;
     UUID roomId;
     UUID userId;
-    std: name;
+    std::string name;
     GoalStatus status;
     std::vector<Objective> objectives;
 };
@@ -187,32 +187,32 @@ enum ModelProviderName {
 struct State {
     std::optional<UUID> userId;
     std::optional<UUID> agentId;
-    std::optional<std:> bio;
-    std::optional<std:> lore;
-    std::optional<std:> messageDirections;
-    std::optional<std:> postDirections;
+    std::optional<std::string> bio;
+    std::optional<std::string> lore;
+    std::optional<std::string> messageDirections;
+    std::optional<std::string> postDirections;
     std::optional<UUID> roomId;
-    std::optional<std:> agentName;
-    std::optional<std:> senderName;
-    std::optional<std:> actors;
+    std::optional<std::string> agentName;
+    std::optional<std::string> senderName;
+    std::optional<std::string> actors;
     std::optional<std::vector<Actor>> actorsData;
-    std::optional<std:> goals;
+    std::optional<std::string> goals;
     std::optional<std::vector<Goal>> goalsData;
-    std::optional<std:> recentMessages;
+    std::optional<std::string> recentMessages;
     std::optional<std::vector<Memory>> recentMessagesData;
-    std::optional<std:> actionNames;
-    std::optional<std:> actions;
+    std::optional<std::string> actionNames;
+    std::optional<std::string> actions;
     std::optional<std::vector<Action>> actionsData;
-    std::optional<std:> actionExamples;
-    std::optional<std:> providers;
+    std::optional<std::string> actionExamples;
+    std::optional<std::string> providers;
     std::optional<Content> responseData;
     std::optional<std::vector<Memory>> recentInteractionsData;
-    std::optional<std:> recentInteractions;
-    std::optional<std:> formattedConversation;
-    std::optional<std:> knowledge;
+    std::optional<std::string> recentInteractions;
+    std::optional<std::string> formattedConversation;
+    std::optional<std::string> knowledge;
     std::optional<std::vector<KnowledgeItem>> knowledgeData;
     std::optional<std::vector<RAGKnowledgeItem>> ragKnowledgeData;
-    std::optional<std:> text;
+    std::optional<std::string> text;
 };
 
 /**
@@ -234,7 +234,7 @@ struct Memory {
  * Example message for demonstration
  */
 struct MessageExample {
-    std: user;
+    std::string user;
     Content content;
 };
 
@@ -258,10 +258,10 @@ using Validator = (
  */
 struct Action {
     std::vector<std::string> similes;
-    std: description;
+    std::string description;
     std::vector<std::vector<ActionExample>> examples;
     Handler handler;
-    std: name;
+    std::string name;
     Validator validate;
     std::optional<bool> suppressInitialMessage;
 };
@@ -270,9 +270,9 @@ struct Action {
  * Example for evaluating agent behavior
  */
 struct EvaluationExample {
-    std: context;
+    std::string context;
     std::vector<ActionExample> messages;
-    std: outcome;
+    std::string outcome;
 };
 
 /**
@@ -280,11 +280,11 @@ struct EvaluationExample {
  */
 struct Evaluator {
     std::optional<bool> alwaysRun;
-    std: description;
+    std::string description;
     std::vector<std::string> similes;
     std::vector<EvaluationExample> examples;
     Handler handler;
-    std: name;
+    std::string name;
     Validator validate;
 };
 
@@ -292,8 +292,8 @@ struct Evaluator {
  * Provider for external data/services
  */
 struct Provider {
-    std::optional<std:> name;
-    std::optional<std:> description;
+    std::optional<std::string> name;
+    std::optional<std::string> description;
     std::optional<bool> dynamic;
     std::optional<double> position;
     std::optional<bool> private;
@@ -309,8 +309,8 @@ struct Relationship {
     UUID userB;
     UUID userId;
     UUID roomId;
-    std: status;
-    std::optional<std:> createdAt;
+    std::string status;
+    std::optional<std::string> createdAt;
 };
 
 /**
@@ -318,9 +318,9 @@ struct Relationship {
  */
 struct Account {
     UUID id;
-    std: name;
-    std: username;
-    std::optional<{ [key: std:]: std: }> details;
+    std::string name;
+    std::string username;
+    std::optional<{ [key: std::string]: std::string }> details;
 
 /**
  * Room participant with account details
@@ -361,7 +361,7 @@ using Media = {
  */
 using ClientInstance = {
   /** Client name */
-  // name: std:;
+  // name: std::string;
 
   /** Stop client connection */
 
@@ -439,7 +439,7 @@ struct ModelConfiguration {
     std::optional<TelemetrySettings> experimental_telemetry;
 };
 
-using TemplateType = std::variant<std:, [&]((options: { state: State }) { return std:)>; };
+using TemplateType = std::variant<std::string, [&]((options: { state: State }) { return std::string)>; };
 
 /**
  * Configuration for an agent character
@@ -511,8 +511,8 @@ struct TwitterSpaceDecisionOptions {
     std::optional<bool> enableIdleMonitor;
     std::optional<bool> enableSttTts;
     std::optional<bool> enableRecording;
-    std::optional<std:> voiceId;
-    std::optional<std:> sttLanguage;
+    std::optional<std::string> voiceId;
+    std::optional<std::string> sttLanguage;
     std::optional<double> speakerMaxDurationMs;
 };
 
@@ -520,42 +520,42 @@ struct TwitterSpaceDecisionOptions {
  * Interface for database operations
  */
 struct IDatabaseAdapter {
-    std: db;
+    std::string db;
     UUID roomId;
     std::optional<double> count;
     std::optional<bool> unique;
-    std: tableName;
+    std::string tableName;
     UUID agentId;
     std::optional<double> start;
     std::optional<double> end;
-    std: tableName;
+    std::string tableName;
     UUID agentId;
     std::vector<UUID> roomIds;
     std::optional<double> limit;
-    std: query_table_name;
+    std::string query_table_name;
     double query_threshold;
-    std: query_input;
-    std: query_field_name;
-    std: query_field_sub_name;
+    std::string query_input;
+    std::string query_field_name;
+    std::string query_field_sub_name;
     double query_match_count;
-    { [key: std:]: unknown } body;
+    { [key: std::string]: unknown } body;
 
 struct IDatabaseCacheAdapter {
     UUID agentId;
-    std: key;
-    std: value;
+    std::string key;
+    std::string value;
 };
 
 struct IMemoryManager {
     IAgentRuntime runtime;
-    std: tableName;
+    std::string tableName;
     std::function constructor;
     UUID roomId;
     std::optional<double> count;
     std::optional<bool> unique;
     std::optional<double> start;
     std::optional<double> end;
-    std: content;
+    std::string content;
     std::vector<UUID> roomIds;
     std::optional<double> limit;
     std::vector<double> embedding;
@@ -568,19 +568,19 @@ struct IMemoryManager {
 
 struct IRAGKnowledgeManager {
     IAgentRuntime runtime;
-    std: tableName;
-    std::optional<std:> query;
+    std::string tableName;
+    std::optional<std::string> query;
     std::optional<UUID> id;
     std::optional<double> limit;
-    std::optional<std:> conversationContext;
+    std::optional<std::string> conversationContext;
     std::optional<UUID> agentId;
     UUID agentId;
     std::vector<Float32Array | number> embedding;
     std::optional<double> match_threshold;
     std::optional<double> match_count;
-    std::optional<std:> searchText;
-    std: path;
-    std: content;
+    std::optional<std::string> searchText;
+    std::string path;
+    std::string content;
     "pdf" | "md" | "txt" type;
     bool isShared;
 };
@@ -600,9 +600,9 @@ struct ICacheManager {
 
 struct IAgentRuntime {
     UUID agentId;
-    std: serverUrl;
+    std::string serverUrl;
     IDatabaseAdapter databaseAdapter;
-    std: | null token;
+    std::string | null token;
     ModelProviderName modelProvider;
     ModelProviderName imageModelProvider;
     ModelProviderName imageVisionModelProvider;
@@ -630,32 +630,32 @@ struct IAgentRuntime {
     std::optional<bool> didRespond;
     std::optional<HandlerCallback> callback;
     UUID userId;
-    std: | null userName;
-    std: | null name;
-    std: | null source;
+    std::string | null userName;
+    std::string | null name;
+    std::string | null source;
     UUID userId;
     UUID roomId;
-    std::optional<std:> userName;
-    std::optional<std:> userScreenName;
-    std::optional<std:> source;
+    std::optional<std::string> userName;
+    std::optional<std::string> userScreenName;
+    std::optional<std::string> source;
     Memory message;
-    std::optional<{ [key: std:]: unknown }> additionalKeys;
+    std::optional<{ [key: std::string]: unknown }> additionalKeys;
 
 struct UploadIrysResult {
     bool success;
-    std::optional<std:> url;
-    std::optional<std:> error;
-    std::optional<std:> data;
+    std::optional<std::string> url;
+    std::optional<std::string> error;
+    std::optional<std::string> data;
 };
 
 struct DataIrysFetchedFromGQL {
     bool success;
-    std: data;
-    std::optional<std:> error;
+    std::string data;
+    std::optional<std::string> error;
 };
 
 struct GraphQLTag {
-    std: name;
+    std::string name;
     std::vector<std::string> values;
 };
 
@@ -709,14 +709,14 @@ struct RAGKnowledgeItem {
     UUID id;
     UUID agentId;
     { content;
-    std: text;
+    std::string text;
     std::optional<{> metadata;
     std::optional<bool> isMain;
     std::optional<bool> isChunk;
     std::optional<UUID> originalId;
     std::optional<double> chunkIndex;
-    std::optional<std:> source;
-    std::optional<std:> type;
+    std::optional<std::string> source;
+    std::optional<std::string> type;
     std::optional<bool> isShared;
     std::optional<Float32Array> embedding;
     std::optional<double> createdAt;
@@ -756,12 +756,12 @@ enum CacheKeyPrefix {
 }
 
 struct DirectoryItem {
-    std: directory;
+    std::string directory;
     std::optional<bool> shared;
 };
 
 struct ChunkRow {
-    std: id;
+    std::string id;
 };
 
 

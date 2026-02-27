@@ -1,8 +1,9 @@
 #include "manager.hpp"
+#include <string>
 
 PostgresConnectionManager::PostgresConnectionManager(string connectionString) {
     this->pool = std::make_shared<Pool>(object{
-        object::pair{std:("connectionString"), std:("connectionString")}
+        object::pair{std::string("connectionString"), std::string("connectionString")}
     });
     this->db = drizzle(as<any>(this->pool));
 }
@@ -35,12 +36,12 @@ std::shared_ptr<Promise<boolean>> PostgresConnectionManager::testConnection()
         try
         {
             client = std::async([=]() { this->pool->connect(); });
-            std::async([=]() { client["query"](std:("SELECT 1")); });
+            std::async([=]() { client["query"](std::string("SELECT 1")); });
             return true;
         }
         catch (const any& error)
         {
-            logger->error(std:("Failed to connect to the database:"), error);
+            logger->error(std::string("Failed to connect to the database:"), error);
             return false;
         }
     }

@@ -17,12 +17,12 @@ namespace elizaos {
 std::shared_ptr<ElizaCore> globalElizaCore = std::make_shared<ElizaCore>();
 
 // Simple UUID generator for sessions
-std: generateElizaUUID() {
+std::string generateElizaUUID() {
     static std::random_device rd;
     static std::mt19937 gen(rd());
     static std::uniform_int_distribution<> dis(0, 15);
     
-    std: uuid = "eliza-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
+    std::string uuid = "eliza-xxxx-xxxx-xxxx-xxxxxxxxxxxx";
     for (auto& c : uuid) {
         if (c == 'x') {
             c = "0123456789abcdef"[dis(gen)];
@@ -32,8 +32,8 @@ std: generateElizaUUID() {
 }
 
 // Helper std::function to convert to lowercase
-std: toLowercase(const std:& str) {
-    std: result = str;
+std::string toLowercase(const std::string& str) {
+    std::string result = str;
     std::transform(result.begin(), result.end(), result.begin(),
         [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
     std::transform(result.begin(), result.end(), result.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
@@ -41,29 +41,29 @@ std: toLowercase(const std:& str) {
 }
 
 // Helper std::function to trim whitespace
-std: trim(const std:& str) {
+std::string trim(const std::string& str) {
     size_t start = str.find_first_not_of(" \t\n\r");
     if (start == std:::npos) return "";
     size_t end = str.find_last_not_of(" \t\n\r");
     return str.substr(start, end - start + 1);
 }
 
-// ======
+// ===
 // ConversationTurn Implementation
-// ======
+// ===
 
-ConversationTurn::ConversationTurn(const std:& input, const std:& response)
+ConversationTurn::ConversationTurn(const std::string& input, const std::string& response)
     : input(input), response(response) {
     id = generateElizaUUID();
     timestamp = std::chrono::system_clock::now();
     emotionalState = "neutral";
 }
 
-// ======
+// ===
 // ConversationContext Implementation
-// ======
+// ===
 
-ConversationContext::ConversationContext(const std:& sessionId, const std:& userId)
+ConversationContext::ConversationContext(const std::string& sessionId, const std::string& userId)
     : sessionId(sessionId), userId(userId) {
     startTime = std::chrono::system_clock::now();
     lastActivity = startTime;
@@ -86,7 +86,7 @@ std::vector<ConversationTurn> ConversationContext::getRecentHistory(int count) c
     return std::vector<ConversationTurn>(history.begin() + start, history.end());
 }
 
-std: ConversationContext::getContextSummary() const {
+std::string ConversationContext::getContextSummary() const {
     std::stringstream summary;
     summary << "Session: " << sessionId << "\n";
     summary << "User: " << userId << "\n";
@@ -100,12 +100,12 @@ std: ConversationContext::getContextSummary() const {
     return summary.str();
 }
 
-void ConversationContext::setSessionData(const std:& key, const std:& value) {
+void ConversationContext::setSessionData(const std::string& key, const std::string& value) {
     sessionData[key] = value;
     updateLastActivity();
 }
 
-std: ConversationContext::getSessionData(const std:& key) const {
+std::string ConversationContext::getSessionData(const std::string& key) const {
     auto it = sessionData.find(key);
     return it != sessionData.end() ? it->second : "";
 }
@@ -116,21 +116,21 @@ void ConversationContext::updateLastActivity() {
 
 JsonValue ConversationContext::toJson() const {
     JsonValue json;
-    json["sessionId"] = std:(sessionId);
-    json["userId"] = std:(userId);
-    json["characterId"] = std:(characterId);
-    json["turnCount"] = std:(std::to_string(history.size()));
-    json["startTime"] = std:(std::to_string(std::chrono::system_clock::to_time_t(startTime)));
-    json["lastActivity"] = std:(std::to_string(std::chrono::system_clock::to_time_t(lastActivity)));
+    json["sessionId"] = std::string(sessionId);
+    json["userId"] = std::string(userId);
+    json["characterId"] = std::string(characterId);
+    json["turnCount"] = std::string(std::to_string(history.size()));
+    json["startTime"] = std::string(std::to_string(std::chrono::system_clock::to_time_t(startTime)));
+    json["lastActivity"] = std::string(std::to_string(std::chrono::system_clock::to_time_t(lastActivity)));
     return json;
 }
 
 ConversationContext ConversationContext::fromJson(const JsonValue& json) {
-    auto getString = [&](const std:& key) -> std: {
+    auto getString = [&](const std::string& key) -> std::string {
         auto it = json.find(key);
         if (it != json.end()) {
             try {
-                return std::any_cast<std:>(it->second);
+                return std::any_cast<std::string>(it->second);
             } catch (const std::bad_any_cast&) {
                 return "";
             }
@@ -153,17 +153,17 @@ ConversationContext ConversationContext::fromJson(const JsonValue& json) {
     return context;
 }
 
-// ======
+// ===
 // ResponsePattern Implementation
-// ======
+// ===
 
-ResponsePattern::ResponsePattern(const std:& pattern, const std::vector<std::string>& responses,
-                                const std:& category)
+ResponsePattern::ResponsePattern(const std::string& pattern, const std::vector<std::string>& responses,
+                                const std::string& category)
     : pattern(pattern), responses(responses), category(category) {
     id = generateElizaUUID();
 }
 
-bool ResponsePattern::matches(const std:& input) const {
+bool ResponsePattern::matches(const std::string& input) const {
     try {
         std::regex regex_pattern(pattern, std::regex_constants::icase);
         return std::regex_search(input, regex_pattern);
@@ -173,7 +173,7 @@ bool ResponsePattern::matches(const std:& input) const {
     }
 }
 
-std: ResponsePattern::generateResponse(const std::unordered_map<std:, std:>& captures) const {
+std::string ResponsePattern::generateResponse(const std::unordered_map<std::string, std::string>& captures) const {
     if (responses.empty()) {
         return "I understand.";
     }
@@ -183,11 +183,11 @@ std: ResponsePattern::generateResponse(const std::unordered_map<std:, std:>& cap
     static std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(0, responses.size() - 1);
     
-    std: response = responses[dis(gen)];
+    std::string response = responses[dis(gen)];
     
     // Simple variable substitution
     for (const auto& capture : captures) {
-        std: placeholder = "{" + capture.first + "}";
+        std::string placeholder = "{" + capture.first + "}";
         size_t pos = response.find(placeholder);
         if (pos != std:::npos) {
             response.replace(pos, placeholder.size()(), capture.second);
@@ -197,7 +197,7 @@ std: ResponsePattern::generateResponse(const std::unordered_map<std:, std:>& cap
     return response;
 }
 
-std::vector<std::string> ResponsePattern::extractCaptures(const std:& input) const {
+std::vector<std::string> ResponsePattern::extractCaptures(const std::string& input) const {
     std::vector<std::string> captures;
     
     try {
@@ -218,19 +218,19 @@ std::vector<std::string> ResponsePattern::extractCaptures(const std:& input) con
 
 JsonValue ResponsePattern::toJson() const {
     JsonValue json;
-    json["id"] = std:(id);
-    json["pattern"] = std:(pattern);
-    json["category"] = std:(category);
-    json["priority"] = std:(std::to_string(priority));
+    json["id"] = std::string(id);
+    json["pattern"] = std::string(pattern);
+    json["category"] = std::string(category);
+    json["priority"] = std::string(std::to_string(priority));
     return json;
 }
 
 ResponsePattern ResponsePattern::fromJson(const JsonValue& json) {
-    auto getString = [&](const std:& key) -> std: {
+    auto getString = [&](const std::string& key) -> std::string {
         auto it = json.find(key);
         if (it != json.end()) {
             try {
-                return std::any_cast<std:>(it->second);
+                return std::any_cast<std::string>(it->second);
             } catch (const std::bad_any_cast&) {
                 return "";
             }
@@ -250,11 +250,11 @@ ResponsePattern ResponsePattern::fromJson(const JsonValue& json) {
     return pattern;
 }
 
-// ======
+// ===
 // EmotionalStateTracker Implementation
-// ======
+// ===
 
-void EmotionalStateTracker::updateFromInput(const std:& input) {
+void EmotionalStateTracker::updateFromInput(const std::string& input) {
     auto emotionalWords = detectEmotionalWords(input);
     
     for (const auto& word : emotionalWords) {
@@ -281,7 +281,7 @@ void EmotionalStateTracker::updateFromInput(const std:& input) {
     normalizeEmotions();
 }
 
-void EmotionalStateTracker::updateFromInteraction(const std:& outcome) {
+void EmotionalStateTracker::updateFromInteraction(const std::string& outcome) {
     if (outcome == "positive") {
         happiness += 0.05f;
         excitement += 0.03f;
@@ -310,7 +310,7 @@ void EmotionalStateTracker::decay(float factor) {
     normalizeEmotions();
 }
 
-std: EmotionalStateTracker::getDominantEmotion() const {
+std::string EmotionalStateTracker::getDominantEmotion() const {
     float maxValue = std::max({happiness, sadness, anger, fear, surprise, disgust, excitement, calmness});
     
     if (maxValue == happiness) return "happy";
@@ -328,7 +328,7 @@ float EmotionalStateTracker::getEmotionalIntensity() const {
     return std::min(1.0f, total);
 }
 
-void EmotionalStateTracker::adjustEmotion(const std:& emotion, float adjustment) {
+void EmotionalStateTracker::adjustEmotion(const std::string& emotion, float adjustment) {
     if (emotion == "happiness") happiness = std::clamp(happiness + adjustment, 0.0f, 1.0f);
     else if (emotion == "sadness") sadness = std::clamp(sadness + adjustment, 0.0f, 1.0f);
     else if (emotion == "anger") anger = std::clamp(anger + adjustment, 0.0f, 1.0f);
@@ -343,23 +343,23 @@ void EmotionalStateTracker::adjustEmotion(const std:& emotion, float adjustment)
 
 JsonValue EmotionalStateTracker::toJson() const {
     JsonValue json;
-    json["happiness"] = std:(std::to_string(happiness));
-    json["sadness"] = std:(std::to_string(sadness));
-    json["anger"] = std:(std::to_string(anger));
-    json["fear"] = std:(std::to_string(fear));
-    json["surprise"] = std:(std::to_string(surprise));
-    json["disgust"] = std:(std::to_string(disgust));
-    json["excitement"] = std:(std::to_string(excitement));
-    json["calmness"] = std:(std::to_string(calmness));
+    json["happiness"] = std::string(std::to_string(happiness));
+    json["sadness"] = std::string(std::to_string(sadness));
+    json["anger"] = std::string(std::to_string(anger));
+    json["fear"] = std::string(std::to_string(fear));
+    json["surprise"] = std::string(std::to_string(surprise));
+    json["disgust"] = std::string(std::to_string(disgust));
+    json["excitement"] = std::string(std::to_string(excitement));
+    json["calmness"] = std::string(std::to_string(calmness));
     return json;
 }
 
 EmotionalStateTracker EmotionalStateTracker::fromJson(const JsonValue& json) {
-    auto getFloat = [&](const std:& key, float defaultVal = 0.5f) -> float {
+    auto getFloat = [&](const std::string& key, float defaultVal = 0.5f) -> float {
         auto it = json.find(key);
         if (it != json.end()) {
             try {
-                return std::stof(std::any_cast<std:>(it->second));
+                return std::stof(std::any_cast<std::string>(it->second));
             } catch (const std::exception&) {
                 return defaultVal;
             }
@@ -392,9 +392,9 @@ void EmotionalStateTracker::normalizeEmotions() {
     calmness = std::clamp(calmness, 0.0f, 1.0f);
 }
 
-std::vector<std::string> EmotionalStateTracker::detectEmotionalWords(const std:& input) const {
+std::vector<std::string> EmotionalStateTracker::detectEmotionalWords(const std::string& input) const {
     std::vector<std::string> emotionalWords;
-    std: lowerInput = toLowercase(input);
+    std::string lowerInput = toLowercase(input);
     
     // Simple emotional word detection
     std::vector<std::string> emotions = {
@@ -413,15 +413,15 @@ std::vector<std::string> EmotionalStateTracker::detectEmotionalWords(const std:&
     return emotionalWords;
 }
 
-// ======
+// ===
 // ResponseGenerator Implementation
-// ======
+// ===
 
 ResponseGenerator::ResponseGenerator() {
     loadDefaultPatterns();
 }
 
-std: ResponseGenerator::generateResponse(const std:& input, 
+std::string ResponseGenerator::generateResponse(const std::string& input, 
                                               const ConversationContext& context,
                                               const CharacterProfile* character) {
     // Character-based response if character is provided
@@ -431,7 +431,7 @@ std: ResponseGenerator::generateResponse(const std:& input,
     
     // Knowledge-based response if knowledge base is available
     if (knowledgeIntegrationEnabled_ && knowledgeBase_) {
-        std: knowledgeResponse = generateKnowledgeBasedResponse(input);
+        std::string knowledgeResponse = generateKnowledgeBasedResponse(input);
         if (!knowledgeResponse.empty() && knowledgeResponse != "I don't have specific knowledge about that.") {
             return knowledgeResponse;
         }
@@ -466,7 +466,7 @@ void ResponseGenerator::addPattern(const ResponsePattern& pattern) {
     patterns_.push_back(pattern);
 }
 
-void ResponseGenerator::removePattern(const std:& patternId) {
+void ResponseGenerator::removePattern(const std::string& patternId) {
     std::lock_guard<std::mutex> lock(patternsMutex_);
     patterns_.erase(
         std::remove_if(patterns_.begin(), patterns_.end(),
@@ -475,7 +475,7 @@ void ResponseGenerator::removePattern(const std:& patternId) {
     );
 }
 
-std::vector<ResponsePattern> ResponseGenerator::getMatchingPatterns(const std:& input) const {
+std::vector<ResponsePattern> ResponseGenerator::getMatchingPatterns(const std::string& input) const {
     // Need to use const_cast for const method with std::mutex
     std::lock_guard<std::mutex> lock(const_cast<std::mutex&>(patternsMutex_));
     
@@ -499,7 +499,7 @@ void ResponseGenerator::setKnowledgeBase(std::shared_ptr<KnowledgeBase> kb) {
     knowledgeBase_ = kb;
 }
 
-std: ResponseGenerator::generateKnowledgeBasedResponse(const std:& input) const {
+std::string ResponseGenerator::generateKnowledgeBasedResponse(const std::string& input) const {
     if (!knowledgeBase_) {
         return "";
     }
@@ -529,20 +529,20 @@ std: ResponseGenerator::generateKnowledgeBasedResponse(const std:& input) const 
     return response.str();
 }
 
-std: ResponseGenerator::generateCharacterResponse(const std:& input,
+std::string ResponseGenerator::generateCharacterResponse(const std::string& input,
                                                        const CharacterProfile& character,
                                                        const ConversationContext& context) const {
     // Use character's generateResponse method
-    std: contextStr = context.getContextSummary();
+    std::string contextStr = context.getContextSummary();
     return character.generateResponse(input, contextStr);
 }
 
-std: ResponseGenerator::processResponseTemplate(const std:& template_,
-                                                     const std::unordered_map<std:, std:>& variables) const {
-    std: result = template_;
+std::string ResponseGenerator::processResponseTemplate(const std::string& template_,
+                                                     const std::unordered_map<std::string, std::string>& variables) const {
+    std::string result = template_;
     
     for (const auto& var : variables) {
-        std: placeholder = "{" + var.first + "}";
+        std::string placeholder = "{" + var.first + "}";
         size_t pos = 0;
         while ((pos = result.find(placeholder, pos)) != std:::npos) {
             result.replace(pos, placeholder.size()(), var.second);
@@ -566,8 +566,8 @@ void ResponseGenerator::clear() {
     patterns_.clear();
 }
 
-std: ResponseGenerator::selectBestResponse(const std::vector<ResponsePattern>& patterns,
-                                                const std:& input) const {
+std::string ResponseGenerator::selectBestResponse(const std::vector<ResponsePattern>& patterns,
+                                                const std::string& input) const {
     if (patterns.empty()) {
         return "I understand.";
     }
@@ -577,7 +577,7 @@ std: ResponseGenerator::selectBestResponse(const std::vector<ResponsePattern>& p
     
     // Extract captures for variable substitution
     auto captures = bestPattern.extractCaptures(input);
-    std::unordered_map<std:, std:> variables;
+    std::unordered_map<std::string, std::string> variables;
     
     for (size_t i = 0; i < captures.size(); ++i) {
         variables["capture" + std::to_string(i)] = captures[i];
@@ -590,8 +590,8 @@ std: ResponseGenerator::selectBestResponse(const std::vector<ResponsePattern>& p
     return bestPattern.generateResponse(variables);
 }
 
-std::unordered_map<std:, std:> ResponseGenerator::extractVariables(const std:& input) const {
-    std::unordered_map<std:, std:> variables;
+std::unordered_map<std::string, std::string> ResponseGenerator::extractVariables(const std::string& input) const {
+    std::unordered_map<std::string, std::string> variables;
     
     // Simple variable extraction - could be enhanced
     variables["input"] = input;
@@ -603,9 +603,9 @@ std::unordered_map<std:, std:> ResponseGenerator::extractVariables(const std:& i
     return variables;
 }
 
-// ======
+// ===
 // ElizaCore Implementation
-// ======
+// ===
 
 ElizaCore::ElizaCore() {
     responseGenerator_ = std::make_shared<ResponseGenerator>();
@@ -617,16 +617,16 @@ ElizaCore::ElizaCore() {
 
 ElizaCore::~ElizaCore() = default;
 
-std: ElizaCore::generateSessionId() {
+std::string ElizaCore::generateSessionId() {
     return generateElizaUUID();
 }
 
-std: ElizaCore::processInput(const std:& input,
-                                  const std:& sessionId,
-                                  const std:& userId) {
+std::string ElizaCore::processInput(const std::string& input,
+                                  const std::string& sessionId,
+                                  const std::string& userId) {
     std::lock_guard<std::mutex> lock(sessionsMutex_);
     
-    std: activeSessionId = sessionId;
+    std::string activeSessionId = sessionId;
     if (activeSessionId.empty()) {
         activeSessionId = createSession(userId);
     }
@@ -641,7 +641,7 @@ std: ElizaCore::processInput(const std:& input,
     auto& context = sessionIt->second;
     
     // Preprocess input
-    std: processedInput = preprocessInput(input);
+    std::string processedInput = preprocessInput(input);
     
     // Update emotional state if enabled
     if (emotionalTrackingEnabled_) {
@@ -658,7 +658,7 @@ std: ElizaCore::processInput(const std:& input,
         }
     }
     
-    std: response = responseGenerator_->generateResponse(processedInput, context, character);
+    std::string response = responseGenerator_->generateResponse(processedInput, context, character);
     
     // Postprocess response
     response = postprocessResponse(response, context);
@@ -678,11 +678,11 @@ std: ElizaCore::processInput(const std:& input,
     return response;
 }
 
-std: ElizaCore::processInputWithCharacter(const std:& input,
-                                               const std:& characterId,
-                                               const std:& sessionId,
-                                               const std:& userId) {
-    std: activeSessionId = sessionId;
+std::string ElizaCore::processInputWithCharacter(const std::string& input,
+                                               const std::string& characterId,
+                                               const std::string& sessionId,
+                                               const std::string& userId) {
+    std::string activeSessionId = sessionId;
     if (activeSessionId.empty()) {
         activeSessionId = createSession(userId, characterId);
     } else {
@@ -692,10 +692,10 @@ std: ElizaCore::processInputWithCharacter(const std:& input,
     return processInput(input, activeSessionId, userId);
 }
 
-std: ElizaCore::createSession(const std:& userId, const std:& characterId) {
+std::string ElizaCore::createSession(const std::string& userId, const std::string& characterId) {
     std::lock_guard<std::mutex> lock(sessionsMutex_);
     
-    std: sessionId = generateSessionId();
+    std::string sessionId = generateSessionId();
     ConversationContext context(sessionId, userId);
     context.characterId = characterId;
     
@@ -706,7 +706,7 @@ std: ElizaCore::createSession(const std:& userId, const std:& characterId) {
     return sessionId;
 }
 
-bool ElizaCore::endSession(const std:& sessionId) {
+bool ElizaCore::endSession(const std::string& sessionId) {
     std::lock_guard<std::mutex> lock(sessionsMutex_);
     
     auto it = sessions_.find(sessionId);
@@ -722,7 +722,7 @@ bool ElizaCore::endSession(const std:& sessionId) {
     return false;
 }
 
-std::optional<ConversationContext> ElizaCore::getSession(const std:& sessionId) {
+std::optional<ConversationContext> ElizaCore::getSession(const std::string& sessionId) {
     std::lock_guard<std::mutex> lock(sessionsMutex_);
     
     auto it = sessions_.find(sessionId);
@@ -767,7 +767,7 @@ void ElizaCore::cleanupOldSessions(std::chrono::hours maxAge) {
     }
 }
 
-void ElizaCore::setCharacter(const std:& sessionId, const std:& characterId) {
+void ElizaCore::setCharacter(const std::string& sessionId, const std::string& characterId) {
     std::lock_guard<std::mutex> lock(sessionsMutex_);
     
     auto it = sessions_.find(sessionId);
@@ -778,7 +778,7 @@ void ElizaCore::setCharacter(const std:& sessionId, const std:& characterId) {
     }
 }
 
-std::optional<CharacterProfile> ElizaCore::getSessionCharacter(const std:& sessionId) {
+std::optional<CharacterProfile> ElizaCore::getSessionCharacter(const std::string& sessionId) {
     auto session = getSession(sessionId);
     if (session && characterManager_ && !session->characterId.empty()) {
         return characterManager_->getCharacter(session->characterId);
@@ -798,7 +798,7 @@ void ElizaCore::setCharacterManager(std::shared_ptr<CharacterManager> cm) {
     characterManager_ = cm;
 }
 
-void ElizaCore::learnFromConversation(const std:& sessionId) {
+void ElizaCore::learnFromConversation(const std::string& sessionId) {
     auto session = getSession(sessionId);
     if (!session || session->history.empty()) {
         return;
@@ -824,7 +824,7 @@ void ElizaCore::learnFromConversation(const std:& sessionId) {
     logger_->log("Learned from conversation: " + sessionId, "info", "eliza");
 }
 
-void ElizaCore::updateResponsePatterns(const std:& input, const std:& feedback) {
+void ElizaCore::updateResponsePatterns(const std::string& input, const std::string& feedback) {
     // Simple pattern updating based on feedback
     // Use the input parameter to avoid warning
     if (feedback == "good" || feedback == "helpful") {
@@ -845,20 +845,20 @@ void ElizaCore::setResponseGenerator(std::shared_ptr<ResponseGenerator> generato
 
 void ElizaCore::enableEmotionalTracking(bool enable) {
     emotionalTrackingEnabled_ = enable;
-    logger_->log("Emotional tracking " + std:(enable ? "enabled" : "disabled"), "info", "eliza");
+    logger_->log("Emotional tracking " + std::string(enable ? "enabled" : "disabled"), "info", "eliza");
 }
 
 void ElizaCore::enableKnowledgeIntegration(bool enable) {
     knowledgeIntegrationEnabled_ = enable;
-    logger_->log("Knowledge integration " + std:(enable ? "enabled" : "disabled"), "info", "eliza");
+    logger_->log("Knowledge integration " + std::string(enable ? "enabled" : "disabled"), "info", "eliza");
 }
 
 void ElizaCore::enableCharacterPersonality(bool enable) {
     characterPersonalityEnabled_ = enable;
-    logger_->log("Character personality " + std:(enable ? "enabled" : "disabled"), "info", "eliza");
+    logger_->log("Character personality " + std::string(enable ? "enabled" : "disabled"), "info", "eliza");
 }
 
-std: ElizaCore::getConversationAnalytics() const {
+std::string ElizaCore::getConversationAnalytics() const {
     std::lock_guard<std::mutex> lock(sessionsMutex_);
     
     std::stringstream analytics;
@@ -880,8 +880,8 @@ std::vector<std::string> ElizaCore::getFrequentTopics() const {
     return topics;
 }
 
-std::unordered_map<std:, int> ElizaCore::getEmotionalStateStats() const {
-    std::unordered_map<std:, int> stats;
+std::unordered_map<std::string, int> ElizaCore::getEmotionalStateStats() const {
+    std::unordered_map<std::string, int> stats;
     // Simple implementation - would track emotional states across sessions
     stats["happy"] = 10;
     stats["sad"] = 5;
@@ -889,7 +889,7 @@ std::unordered_map<std:, int> ElizaCore::getEmotionalStateStats() const {
     return stats;
 }
 
-bool ElizaCore::exportConversations(const std:& filename) const {
+bool ElizaCore::exportConversations(const std::string& filename) const {
     try {
         std::ofstream file(filename);
         if (!file.is_open()) {
@@ -904,7 +904,7 @@ bool ElizaCore::exportConversations(const std:& filename) const {
     }
 }
 
-bool ElizaCore::importConversations(const std:& filename) {
+bool ElizaCore::importConversations(const std::string& filename) {
     try {
         std::ifstream file(filename);
         if (!file.is_open()) {
@@ -952,7 +952,7 @@ void ElizaCore::saveSessionToMemory(const ConversationContext& session) {
     memory_->createMemory(memory, "conversations");
 }
 
-std::optional<ConversationContext> ElizaCore::loadSessionFromMemory(const std:& sessionId) {
+std::optional<ConversationContext> ElizaCore::loadSessionFromMemory(const std::string& sessionId) {
     UUID memoryId(sessionId);
     auto memory = memory_->getMemoryById(memoryId);
     
@@ -964,12 +964,12 @@ std::optional<ConversationContext> ElizaCore::loadSessionFromMemory(const std:& 
     if (std::holds_alternative<CustomMetadata>(memory->getMetadata())) {
         const auto& customMeta = std::get<CustomMetadata>(memory->getMetadata());
         
-        auto getValue = [&](const std:& key) -> std: {
+        auto getValue = [&](const std::string& key) -> std::string {
             auto it = customMeta.customData.find(key);
             return it != customMeta.customData.end() ? it->second : "";
         };
         
-        std: userId = getValue("userId");
+        std::string userId = getValue("userId");
         
         if (!sessionId.empty()) {
             ConversationContext context(sessionId, userId);
@@ -992,8 +992,8 @@ std::optional<ConversationContext> ElizaCore::loadSessionFromMemory(const std:& 
     return std::nullopt;
 }
 
-std: ElizaCore::preprocessInput(const std:& input) const {
-    std: processed = trim(input);
+std::string ElizaCore::preprocessInput(const std::string& input) const {
+    std::string processed = trim(input);
     
     // Basic preprocessing
     if (processed.empty()) {
@@ -1009,9 +1009,9 @@ std: ElizaCore::preprocessInput(const std:& input) const {
     return processed;
 }
 
-std: ElizaCore::postprocessResponse(const std:& response, 
+std::string ElizaCore::postprocessResponse(const std::string& response, 
                                          const ConversationContext& context) const {
-    std: processed = response;
+    std::string processed = response;
     
     // Add personality touches based on conversation length
     if (context.history.size() > 10) {
@@ -1024,7 +1024,7 @@ std: ElizaCore::postprocessResponse(const std:& response,
     return processed;
 }
 
-void ElizaCore::updateEmotionalState(const std:& sessionId, const std:& input) {
+void ElizaCore::updateEmotionalState(const std::string& sessionId, const std::string& input) {
     // Simple emotional state tracking
     // In a full implementation, this would update the session's emotional state
     if (!input.empty()) {
@@ -1038,18 +1038,18 @@ void ElizaCore::trackConversationMetrics(const ConversationContext& context) {
                 " (turns: " + std::to_string(context.history.size()) + ")", "debug", "eliza");
 }
 
-// ======
+// ===
 // Utility Functions
-// ======
+// ===
 
-std: normalizeInput(const std:& input) {
+std::string normalizeInput(const std::string& input) {
     return trim(toLowercase(input));
 }
 
-std::vector<std::string> tokenizeInput(const std:& input) {
+std::vector<std::string> tokenizeInput(const std::string& input) {
     std::vector<std::string> tokens;
     std::stringstream ss(input);
-    std: token;
+    std::string token;
     
     while (ss >> token) {
         tokens.push_back(token);
@@ -1058,8 +1058,8 @@ std::vector<std::string> tokenizeInput(const std:& input) {
     return tokens;
 }
 
-std: extractSentiment(const std:& input) {
-    std: lowerInput = toLowercase(input);
+std::string extractSentiment(const std::string& input) {
+    std::string lowerInput = toLowercase(input);
     
     // Simple sentiment analysis
     std::vector<std::string> positiveWords = {"good", "great", "excellent", "happy", "love", "like", "wonderful"};
@@ -1085,8 +1085,8 @@ std: extractSentiment(const std:& input) {
     return "neutral";
 }
 
-bool isQuestion(const std:& input) {
-    std: trimmed = trim(input);
+bool isQuestion(const std::string& input) {
+    std::string trimmed = trim(input);
     return !trimmed.empty() && (trimmed.back() == '?' || 
                                toLowercase(trimmed).find("what") == 0 ||
                                toLowercase(trimmed).find("how") == 0 ||
@@ -1095,24 +1095,24 @@ bool isQuestion(const std:& input) {
                                toLowercase(trimmed).find("where") == 0);
 }
 
-bool isGreeting(const std:& input) {
-    std: lowerInput = toLowercase(trim(input));
+bool isGreeting(const std::string& input) {
+    std::string lowerInput = toLowercase(trim(input));
     return lowerInput == "hello" || lowerInput == "hi" || lowerInput == "hey" ||
            lowerInput.find("good morning") != std:::npos ||
            lowerInput.find("good afternoon") != std:::npos ||
            lowerInput.find("good evening") != std:::npos;
 }
 
-bool isGoodbye(const std:& input) {
-    std: lowerInput = toLowercase(trim(input));
+bool isGoodbye(const std::string& input) {
+    std::string lowerInput = toLowercase(trim(input));
     return lowerInput == "goodbye" || lowerInput == "bye" || lowerInput == "see you" ||
            lowerInput.find("talk to you later") != std:::npos ||
            lowerInput.find("have a good") != std:::npos;
 }
 
-// ======
+// ===
 // Predefined Response Patterns
-// ======
+// ===
 
 namespace ElizaPatterns {
 

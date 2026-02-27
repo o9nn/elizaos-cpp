@@ -1,8 +1,9 @@
 #include "AgentExportService.test.h"
+#include <string>
 
 void Main(void)
 {
-    describe(std:("AgentExportService"), [=]() mutable
+    describe(std::string("AgentExportService"), [=]() mutable
     {
         shared<std::shared_ptr<UUID>> mockAgentId;
         shared<std::shared_ptr<IAgentRuntime>> mockRuntime;
@@ -10,38 +11,38 @@ void Main(void)
         shared<any> mockDb;
         beforeEach([=]() mutable
         {
-            mockAgentId = as<std::shared_ptr<UUID>>(std:("test-agent-id"));
+            mockAgentId = as<std::shared_ptr<UUID>>(std::string("test-agent-id"));
             mockRuntime = as<std::shared_ptr<IAgentRuntime>>(object{});
             mockDb = object{
-                object::pair{std:("select"), [=]() mutable
+                object::pair{std::string("select"), [=]() mutable
                 {
                     return mockDb;
                 }
                 }, 
-                object::pair{std:("from"), [=]() mutable
+                object::pair{std::string("from"), [=]() mutable
                 {
                     return mockDb;
                 }
                 }, 
-                object::pair{std:("where"), [=]() mutable
+                object::pair{std::string("where"), [=]() mutable
                 {
                     return Promise->resolve(array<any>());
                 }
                 }, 
-                object::pair{std:("execute"), [=]() mutable
+                object::pair{std::string("execute"), [=]() mutable
                 {
                     return Promise->resolve();
                 }
                 }
             };
             mockServerInstance = as<any>(object{
-                object::pair{std:("db"), mockDb}
+                object::pair{std::string("db"), mockDb}
             });
         }
         );
-        describe(std:("constructor"), [=]() mutable
+        describe(std::string("constructor"), [=]() mutable
         {
-            it(std:("should create an instance of AgentExportService"), [=]() mutable
+            it(std::string("should create an instance of AgentExportService"), [=]() mutable
             {
                 auto exportService = std::make_shared<AgentExportService>(mockAgentId, mockRuntime, mockServerInstance);
                 expect(exportService)->toBeDefined();
@@ -50,23 +51,23 @@ void Main(void)
             );
         }
         );
-        describe(std:("exportToZip"), [=]() mutable
+        describe(std::string("exportToZip"), [=]() mutable
         {
-            it(std:("should throw error if agent not found"), [=]() mutable
+            it(std::string("should throw error if agent not found"), [=]() mutable
             {
                 mockDb["where"] = [=]() mutable
                 {
                     return Promise->resolve(array<any>());
                 };
                 auto exportService = std::make_shared<AgentExportService>(mockAgentId, mockRuntime, mockServerInstance);
-                std::async([=]() { expect(exportService->exportToZip())->rejects->toThrow(std:("Agent test-agent-id not found")); });
+                std::async([=]() { expect(exportService->exportToZip())->rejects->toThrow(std::string("Agent test-agent-id not found")); });
             }
             );
         }
         );
-        describe(std:("cleanup"), [=]() mutable
+        describe(std::string("cleanup"), [=]() mutable
         {
-            it(std:("should handle cleanup when pool is not initialized"), [=]() mutable
+            it(std::string("should handle cleanup when pool is not initialized"), [=]() mutable
             {
                 auto exportService = std::make_shared<AgentExportService>(mockAgentId, mockRuntime, mockServerInstance);
                 std::async([=]() { expect(exportService->cleanup())->resolves->toBeUndefined(); });

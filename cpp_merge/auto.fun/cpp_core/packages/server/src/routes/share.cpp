@@ -1,4 +1,5 @@
 #include "share.hpp"
+#include <string>
 #include <vector>
 #include <future>
 #include <map>
@@ -8,14 +9,14 @@
 
 namespace elizaos {
 
-std: generateRandomString(double length = 32) {
+std::string generateRandomString(double length = 32) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return randomBytes(length / 2).tostd::to_string("hex");
 
 }
 
-std::future<std:> generateCodeChallenge(const std:& codeVerifier) {
+std::future<std::string> generateCodeChallenge(const std::string& codeVerifier) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto digest = createHash("sha256").update(codeVerifier).digest();
@@ -24,7 +25,7 @@ std::future<std:> generateCodeChallenge(const std:& codeVerifier) {
 
 }
 
-std::future<std::vector<TwitterMessage>> fetchUserTweets(const std:& userId, const std:& accessToken, bool useTestData = false) {
+std::future<std::vector<TwitterMessage>> fetchUserTweets(const std::string& userId, const std::string& accessToken, bool useTestData = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -66,7 +67,7 @@ std::future<std::vector<TwitterMessage>> fetchUserTweets(const std:& userId, con
     }
 }
 
-std::future<std:> fetchTwitterUser(const std:& userId, const std:& accessToken, bool useTestData = false) {
+std::future<std::string> fetchTwitterUser(const std::string& userId, const std::string& accessToken, bool useTestData = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -91,7 +92,7 @@ std::future<std:> fetchTwitterUser(const std:& userId, const std:& accessToken, 
                         );
                     }
 
-                    const auto meData = (meResponse.json()) as { data: { id: std: } };
+                    const auto meData = (meResponse.json()) as { data: { id: std::string } };
                     std::cout << "Retrieved authenticated user ID:" << meData.data.id << std::endl;
                     return meData.data.id;
                 }
@@ -115,7 +116,7 @@ std::future<std:> fetchTwitterUser(const std:& userId, const std:& accessToken, 
                             }
 
                             const auto userLookupData = (userLookupResponse.json()) as {;
-                                data: { id: std: };
+                                data: { id: std::string };
                                 };
                                 std::cout << "Retrieved user ID for username:" << userLookupData.data.id << std::endl;
                                 return userLookupData.data.id;
@@ -131,7 +132,7 @@ std::future<std:> fetchTwitterUser(const std:& userId, const std:& accessToken, 
     }
 }
 
-std::future<void> storeOAuthState(const std:& state, const std:& codeVerifier) {
+std::future<void> storeOAuthState(const std::string& state, const std::string& codeVerifier) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -157,12 +158,12 @@ std::future<void> storeOAuthState(const std:& state, const std:& codeVerifier) {
     }
 }
 
-std::future<> getOAuthState(const std:& state) {
+std::future<> getOAuthState(const std::string& state) {
     // NOTE: Auto-converted from TypeScript - may need refinement
-    codeVerifier: std:; expiresAt: Date
+    codeVerifier: std::string; expiresAt: Date
 }
 
-std::future<void> storeAccessToken(const std:& userId, const std:& token, const std:& refresh, double expiresIn) {
+std::future<void> storeAccessToken(const std::string& userId, const std::string& token, const std::string& refresh, double expiresIn) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -195,7 +196,7 @@ std::future<void> storeAccessToken(const std:& userId, const std:& token, const 
     }
 }
 
-std::future<std:> getRefreshToken(const std:& userId) {
+std::future<std::string> getRefreshToken(const std::string& userId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -212,7 +213,7 @@ std::future<std:> getRefreshToken(const std:& userId) {
 
 }
 
-std::future<void> updateAccessToken(const std:& userId, const std:& token, const std:& refresh, double expiresIn) {
+std::future<void> updateAccessToken(const std::string& userId, const std::string& token, const std::string& refresh, double expiresIn) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 
@@ -237,7 +238,7 @@ std::future<void> updateAccessToken(const std:& userId, const std:& token, const
     }
 }
 
-std::future<bool> validateToken(const std:& token, const std:& userId) {
+std::future<bool> validateToken(const std::string& token, const std::string& userId) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     try {
@@ -256,7 +257,7 @@ std::future<bool> validateToken(const std:& token, const std:& userId) {
 
 }
 
-std: getNormalizedTimestamp() {
+std::string getNormalizedTimestamp() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     // Twitter's servers can have time sync issues, so using a slight offset can help
@@ -265,7 +266,7 @@ std: getNormalizedTimestamp() {
 
 }
 
-std: generateAuthHeader(const std::unordered_map<std:, std:>& oauthParams, const std:& signature) {
+std::string generateAuthHeader(const std::unordered_map<std::string, std::string>& oauthParams, const std::string& signature) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return (;
@@ -282,7 +283,7 @@ std: generateAuthHeader(const std::unordered_map<std:, std:>& oauthParams, const
 
 }
 
-std: encodeRFC3986(const std:& str) {
+std::string encodeRFC3986(const std::string& str) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return encodeURIComponent(str).replace(;
@@ -292,7 +293,7 @@ std: encodeRFC3986(const std:& str) {
 
 }
 
-std::future<std:> generateOAuth1Signature(const std:& method, const std:& url, const std::unordered_map<std:, std:>& params, const std:& consumerSecret, const std:& tokenSecret) {
+std::future<std::string> generateOAuth1Signature(const std::string& method, const std::string& url, const std::unordered_map<std::string, std::string>& params, const std::string& consumerSecret, const std::string& tokenSecret) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto paramString = Object.entries(params);

@@ -1,12 +1,13 @@
 #include "index.hpp"
+#include <string>
 
 std::shared_ptr<Plugin> degenTraderPlugin = object{
-    object::pair{std:("name"), std:("Degen Trader Plugin")}, 
-    object::pair{std:("description"), std:("Autonomous trading agent plugin")}, 
-    object::pair{std:("evaluators"), array<any>()}, 
-    object::pair{std:("providers"), array<any>()}, 
-    object::pair{std:("actions"), array<any>()}, 
-    object::pair{std:("services"), array<DegenTradingService>{ DegenTradingService }}
+    object::pair{std::string("name"), std::string("Degen Trader Plugin")}, 
+    object::pair{std::string("description"), std::string("Autonomous trading agent plugin")}, 
+    object::pair{std::string("evaluators"), array<any>()}, 
+    object::pair{std::string("providers"), array<any>()}, 
+    object::pair{std::string("actions"), array<any>()}, 
+    object::pair{std::string("services"), array<DegenTradingService>{ DegenTradingService }}
 };
 
 void Main(void)

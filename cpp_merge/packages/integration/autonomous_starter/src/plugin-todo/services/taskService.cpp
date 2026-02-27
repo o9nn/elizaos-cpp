@@ -1,4 +1,5 @@
 #include "taskService.hpp"
+#include <string>
 
 TaskService::TaskService(std::shared_ptr<IAgentRuntime> runtime_) : runtime(runtime_)  {
 }
@@ -16,7 +17,7 @@ std::shared_ptr<Promise<array<std::shared_ptr<Task>>>> TaskService::getTasks(obj
     }
     catch (const any& error)
     {
-        logger->error(std:("[TaskService] Error getting tasks:"), error);
+        logger->error(std::string("[TaskService] Error getting tasks:"), error);
         return array<any>();
     }
 }
@@ -30,7 +31,7 @@ std::shared_ptr<Promise<any>> TaskService::createTask(object params)
     }
     catch (const any& error)
     {
-        logger->error(std:("[TaskService] Error creating task:"), error);
+        logger->error(std::string("[TaskService] Error creating task:"), error);
         return nullptr;
     }
 }
@@ -44,7 +45,7 @@ std::shared_ptr<Promise<boolean>> TaskService::updateTask(std::shared_ptr<UUID> 
     }
     catch (const any& error)
     {
-        logger->error(std:("[TaskService] Error updating task:"), error);
+        logger->error(std::string("[TaskService] Error updating task:"), error);
         return false;
     }
 }
@@ -58,29 +59,29 @@ std::shared_ptr<Task> TaskService::normalizeTask(std::shared_ptr<Task> task)
         task->metadata = OR((dbCompat->parseJson(as<any>(task->metadata))), (object{}));
     }
     if (task->metadata) {
-        if (task->metadata->completedToday != undefined) {
+        if (task->metadata->completedToday != std::nullopt) {
             task->metadata->completedToday = dbCompat->parseBoolean(task->metadata->completedToday);
         }
-        if (task->metadata->urgent != undefined) {
+        if (task->metadata->urgent != std::nullopt) {
             task->metadata->urgent = dbCompat->parseBoolean(task->metadata->urgent);
         }
     }
     if (task->metadata) {
         if (task->metadata->dueDate) {
             auto parsedDate = dbCompat->parseDate(task->metadata->dueDate);
-            task->metadata->dueDate = (parsedDate) ? any(parsedDate->toISOString()) (undefined);
+            task->metadata->dueDate = (parsedDate) ? any(parsedDate->toISOString()) (std::nullopt);
         }
         if (task->metadata->completedAt) {
             auto parsedDate = dbCompat->parseDate(task->metadata->completedAt);
-            task->metadata->completedAt = (parsedDate) ? any(parsedDate->toISOString()) (undefined);
+            task->metadata->completedAt = (parsedDate) ? any(parsedDate->toISOString()) (std::nullopt);
         }
         if (task->metadata->lastCompletedAt) {
             auto parsedDate = dbCompat->parseDate(task->metadata->lastCompletedAt);
-            task->metadata->lastCompletedAt = (parsedDate) ? any(parsedDate->getTime()) (undefined);
+            task->metadata->lastCompletedAt = (parsedDate) ? any(parsedDate->getTime()) (std::nullopt);
         }
         if (task->metadata->lastReminderSent) {
             auto parsedDate = dbCompat->parseDate(task->metadata->lastReminderSent);
-            task->metadata->lastReminderSent = (parsedDate) ? any(parsedDate->toISOString()) (undefined);
+            task->metadata->lastReminderSent = (parsedDate) ? any(parsedDate->toISOString()) (std::nullopt);
         }
     }
     return task;

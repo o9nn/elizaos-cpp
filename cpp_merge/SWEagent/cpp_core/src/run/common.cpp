@@ -8,7 +8,7 @@
 
 namespace elizaos {
 
-std: shortenString(const std:& s, double maxLength, bool shortenLeft = false) {
+std::string shortenString(const std::string& s, double maxLength, bool shortenLeft = false) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (s.size() <= maxLength) {
@@ -23,7 +23,7 @@ std: shortenString(const std:& s, double maxLength, bool shortenLeft = false) {
 
 }
 
-std: shortenStrings(const std:& data, double maxLength = 30) {
+std::string shortenStrings(const std::string& data, double maxLength = 30) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     if (typeof data == 'string') {
@@ -35,7 +35,7 @@ std: shortenStrings(const std:& data, double maxLength = 30) {
     }
 
     if (data && typeof data == 'object') {
-        const std::unordered_map<std:, std:> result = {};
+        const std::unordered_map<std::string, std::string> result = {};
         for (const int [key, value] of Object.entries(data)) {
             result[key] = shortenStrings(value, maxLength);
         }
@@ -46,14 +46,14 @@ std: shortenStrings(const std:& data, double maxLength = 30) {
 
 }
 
-void savePredictions(const std::variant<std:, path::ParsedPath>& trajDir, const std:& instanceId, AgentRunResult result) {
+void savePredictions(const std::variant<std::string, path::ParsedPath>& trajDir, const std::string& instanceId, AgentRunResult result) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto dirPath = typeof trajDir == "string" ? trajDir : path.format(trajDir);
     const auto predPath = path.join(dirPath, "predictions.json");
 
     // Load existing predictions or create new
-    std::unordered_map<std:, std:> predictions = {};
+    std::unordered_map<std::string, std::string> predictions = {};
     if (fs.existsSync(predPath)) {
         const auto content = fs.readFileSync(predPath, "utf-8");
         predictions = /* JSON::parse */ content;
@@ -69,7 +69,7 @@ void savePredictions(const std::variant<std:, path::ParsedPath>& trajDir, const 
         };
 
         // Save predictions
-        fs.writeFileSync(predPath, /* JSON.stringify */ std:(predictions, nullptr, 2));
+        fs.writeFileSync(predPath, /* JSON.stringify */ std::string(predictions, nullptr, 2));
 
 }
 
@@ -106,13 +106,13 @@ bool isPromisingPatch(AgentInfo info) {
 
 }
 
-std::unordered_map<std:, std:> createNestedDict() {
+std::unordered_map<std::string, std::string> createNestedDict() {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return new Proxy[&](;
     {},
     {
-        get: (target: Record<std:, unknown>, prop: std:) {
+        get: (target: Record<std::string, unknown>, prop: std::string) {
             if (!(prop in target)) {
                 target[prop] = createNestedDict();
             }
@@ -123,7 +123,7 @@ std::unordered_map<std:, std:> createNestedDict() {
 
 }
 
-std::unordered_map<std:, std:> parseArgsToNestedDict(const std::vector<std::string>& args) {
+std::unordered_map<std::string, std::string> parseArgsToNestedDict(const std::vector<std::string>& args) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto result = createNestedDict();
@@ -133,16 +133,16 @@ std::unordered_map<std:, std:> parseArgsToNestedDict(const std::vector<std::stri
             const auto [keyPath, value] = arg.split("=", 2);
             const auto keys = keyPath.split(".");
 
-            std::unordered_map<std:, std:> current = result<std:, unknown>;
+            std::unordered_map<std::string, std::string> current = result<std::string, unknown>;
             for (int i = 0; i < keys.size() - 1; i++) {
                 if (!(keys[i] in current)) {
                     current[keys[i]] = {}
                 }
-                current = current[keys[i]]<std:, unknown>;
+                current = current[keys[i]]<std::string, unknown>;
             }
 
             // Try to parse value as JSON, number, or boolean
-            std: parsedValue = value;
+            std::string parsedValue = value;
             try {
                 parsedValue = /* JSON::parse */ value;
                 } catch {

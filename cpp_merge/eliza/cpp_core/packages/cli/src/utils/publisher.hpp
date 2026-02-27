@@ -21,16 +21,16 @@ namespace elizaos {
 
 
 struct PackageJson {
-    std: name;
-    std: version;
-    std::optional<std:> description;
-    std::optional<std:> author;
-    std::optional<std:> url;
+    std::string name;
+    std::string version;
+    std::optional<std::string> description;
+    std::optional<std::string> author;
+    std::optional<std::string> url;
     std::optional<std::vector<std::string>> keywords;
     std::optional<std::vector<std::string>> categories;
-    std::optional<std:> platform;
-    std::optional<std:> packageType;
-    std::optional<std:> type;
+    std::optional<std::string> platform;
+    std::optional<std::string> packageType;
+    std::optional<std::string> type;
 };
 
 /**
@@ -41,7 +41,7 @@ struct PackageJson {
  * @param cwd - The directory containing the npm package to test.
  * @returns "true" if all checks pass; otherwise, "false".
  */
-std::future<bool> testPublishToNpm(const std:& cwd);
+std::future<bool> testPublishToNpm(const std::string& cwd);
 
 /**
  * Tests whether the current user has the necessary GitHub credentials and permissions to publish a package and update the registry.
@@ -53,9 +53,9 @@ std::future<bool> testPublishToNpm(const std:& cwd);
  * @param username - The GitHub username to use for repository operations.
  * @returns "true" if all required GitHub permissions and operations succeed; otherwise, "false".
  */
-std::future<bool> testPublishToGitHub(PackageJson packageJson, const std:& username);
+std::future<bool> testPublishToGitHub(PackageJson packageJson, const std::string& username);
 
-std::future<bool> publishToNpm(const std:& cwd);
+std::future<bool> publishToNpm(const std::string& cwd);
 
 /**
  * Publishes a package to GitHub and optionally updates the ElizaOS registry for plugins.
@@ -75,7 +75,7 @@ std::future<bool> publishToNpm(const std:& cwd);
  * - For projects or when {@link skipRegistry} is true, registry updates are skipped and only the GitHub repository is updated.
  * - For plugins, registry updates include metadata and index updates, and a pull request to the registry repository.
  */
-std::future<bool> publishToGitHub(const std:& cwd, PackageJson packageJson, const std:& username, auto skipRegistry, auto isTest);> {
+std::future<bool> publishToGitHub(const std::string& cwd, PackageJson packageJson, const std::string& username, auto skipRegistry, auto isTest);> {
   // Get GitHub credentials using getGitHubCredentials which will prompt if needed
 
   // Validate required package type

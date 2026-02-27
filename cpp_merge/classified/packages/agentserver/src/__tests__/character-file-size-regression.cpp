@@ -1,31 +1,32 @@
 #include "character-file-size-regression.test.h"
+#include <string>
 
 void Main(void)
 {
-    describe(std:("Character File Size Limits - Issue #5268 Regression Test"), [=]() mutable
+    describe(std::string("Character File Size Limits - Issue #5268 Regression Test"), [=]() mutable
     {
         auto generateLargeCharacter = [=](auto targetSizeKB) mutable
         {
             auto baseCharacter = object{
-                object::pair{std:("name"), std:("LargeTestCharacter")}, 
-                object::pair{std:("bio"), array<string>{ std:("This is a test character with a large configuration.") }}, 
-                object::pair{std:("settings"), object{
-                    object::pair{std:("secrets"), object{}}, 
-                    object::pair{std:("voice"), object{
-                        object::pair{std:("model"), std:("en_US-hfc_female-medium")}
+                object::pair{std::string("name"), std::string("LargeTestCharacter")}, 
+                object::pair{std::string("bio"), array<string>{ std::string("This is a test character with a large configuration.") }}, 
+                object::pair{std::string("settings"), object{
+                    object::pair{std::string("secrets"), object{}}, 
+                    object::pair{std::string("voice"), object{
+                        object::pair{std::string("model"), std::string("en_US-hfc_female-medium")}
                     }}
                 }}, 
-                object::pair{std:("messageExamples"), array<any>()}, 
-                object::pair{std:("postExamples"), array<any>()}, 
-                object::pair{std:("topics"), array<any>()}, 
-                object::pair{std:("style"), object{
-                    object::pair{std:("all"), array<any>()}, 
-                    object::pair{std:("chat"), array<any>()}, 
-                    object::pair{std:("post"), array<any>()}
+                object::pair{std::string("messageExamples"), array<any>()}, 
+                object::pair{std::string("postExamples"), array<any>()}, 
+                object::pair{std::string("topics"), array<any>()}, 
+                object::pair{std::string("style"), object{
+                    object::pair{std::string("all"), array<any>()}, 
+                    object::pair{std::string("chat"), array<any>()}, 
+                    object::pair{std::string("post"), array<any>()}
                 }}, 
-                object::pair{std:("adjectives"), array<any>()}, 
-                object::pair{std:("people"), array<any>()}, 
-                object::pair{std:("clients"), array<any>()}
+                object::pair{std::string("adjectives"), array<any>()}, 
+                object::pair{std::string("people"), array<any>()}, 
+                object::pair{std::string("clients"), array<any>()}
             };
             auto currentSize = JSON->stringify(baseCharacter)->get_length();
             auto targetSize = targetSizeKB * 1024;
@@ -35,15 +36,15 @@ void Main(void)
                 auto entriesNeeded = Math->ceil(additionalBytesNeeded / singleBioSize);
                 for (auto i = 0; i < entriesNeeded; i++)
                 {
-                    baseCharacter->bio->push(std:("Extended biography section ") + (i + 1) + std:(": ") + std:("x")->repeat(singleBioSize - 50) + string_empty);
+                    baseCharacter->bio->push(std::string("Extended biography section ") + (i + 1) + std::string(": ") + std::string("x")->repeat(singleBioSize - 50) + string_empty);
                 }
             }
             return baseCharacter;
         };
 
-        describe(std:("Issue #5268 Reproduction and Fix Verification"), [=]() mutable
+        describe(std::string("Issue #5268 Reproduction and Fix Verification"), [=]() mutable
         {
-            it(std:("should handle 150KB character that was failing before fix"), [=]() mutable
+            it(std::string("should handle 150KB character that was failing before fix"), [=]() mutable
             {
                 auto character = generateLargeCharacter(150);
                 auto jsonSize = JSON->stringify(character)->get_length();
@@ -53,12 +54,12 @@ void Main(void)
                 expect(jsonSize)->toBeGreaterThan(oldLimit);
                 auto newLimit = 2 * 1024 * 1024;
                 expect(jsonSize)->toBeLessThan(newLimit);
-                expect(character->name)->toBe(std:("LargeTestCharacter"));
+                expect(character->name)->toBe(std::string("LargeTestCharacter"));
                 expect(Array->isArray(character->bio))->toBe(true);
                 expect(character->bio->length)->toBeGreaterThan(1);
             }
             );
-            it(std:("should handle various large character sizes up to reasonable limits"), [=]() mutable
+            it(std::string("should handle various large character sizes up to reasonable limits"), [=]() mutable
             {
                 auto sizes = array<double>{ 150, 500, 1000 };
                 sizes->forEach([=](auto sizeKB) mutable
@@ -67,8 +68,8 @@ void Main(void)
                     auto jsonSize = JSON->stringify(character)->get_length();
                     auto maxLimit = 2 * 1024 * 1024;
                     expect(jsonSize)->toBeLessThan(maxLimit);
-                    expect(character->name)->toBe(std:("LargeTestCharacter"));
-                    expect(type_of(character->bio))->toBe(std:("object"));
+                    expect(character->name)->toBe(std::string("LargeTestCharacter"));
+                    expect(type_of(character->bio))->toBe(std::string("object"));
                     expect(Array->isArray(character->bio))->toBe(true);
                     expect(character->settings)->toBeDefined();
                 }
@@ -77,9 +78,9 @@ void Main(void)
             );
         }
         );
-        describe(std:("Regression Prevention"), [=]() mutable
+        describe(std::string("Regression Prevention"), [=]() mutable
         {
-            it(std:("should document the fix - Express limit increased from 100KB to 2MB"), [=]() mutable
+            it(std::string("should document the fix - Express limit increased from 100KB to 2MB"), [=]() mutable
             {
                 auto oldLimit = 100 * 1024;
                 auto newLimit = 2 * 1024 * 1024;

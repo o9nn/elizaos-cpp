@@ -18,7 +18,7 @@ namespace elizaos {
 
 
 
-std: getFirstAvailableField(const std::unordered_map<std:, std:>& obj, const std::vector<std::string>& fields);
+std::string getFirstAvailableField(const std::unordered_map<std::string, std::string>& obj, const std::vector<std::string>& fields);
 
 std::optional<Content> extractAmbientContent(Memory response, const std::vector<std::string>& fieldKeys);
 

@@ -28,44 +28,44 @@ namespace elizaos {
  * @param url The URL to validate
  * @returns True if the URL appears valid
  */
-bool isValidPostgresUrl(const std:& url);
+bool isValidPostgresUrl(const std::string& url);
 
 /**
  * Retrieves the standard directory paths used by Eliza for configuration and database storage.
  *
  * @returns An object containing the Eliza configuration directory, the Eliza database directory for the current project, and the path to the Eliza ".env" file.
  */
-std::future<void> getElizaDirectories(std::optional<std:> targetProjectDir);
+std::future<void> getElizaDirectories(std::optional<std::string> targetProjectDir);
 
 /**
  * Generic std::function to ensure a directory exists
  * @param dirPath Path to the directory
  */
-std::future<void> ensureDir(const std:& dirPath);
+std::future<void> ensureDir(const std::string& dirPath);
 
 /**
  * Sets up the .env file by creating it if it doesn't exist or populating it with a hybrid
  * merge of process.env variables and example variables if it's empty
  * @param envFilePath Path to the .env file
  */
-std::future<void> setupEnvFile(const std:& envFilePath);
+std::future<void> setupEnvFile(const std::string& envFilePath);
 
 /**
  * Ensures the Eliza configuration directory exists and returns standard Eliza directory paths.
  *
  * @returns An object containing paths for the Eliza configuration directory, the Eliza database directory, and the ".env" file.
  */
-std::future<void> ensureElizaDir(std::optional<std:> targetProjectDir);
+std::future<void> ensureElizaDir(std::optional<std::string> targetProjectDir);
 
 /**
  * Sets up and configures PGLite database
  * @param elizaDbDir The directory for PGLite database
  * @param envFilePath Path to the .env file
  */
-std::future<void> setupPgLite(std: | undefined dbDir, std: | undefined envPath, std::optional<std:> targetProjectDir);
+std::future<void> setupPgLite(std::string | std::nullopt dbDir, std::string | std::nullopt envPath, std::optional<std::string> targetProjectDir);
 
 /**
- * Stores the provided Postgres connection URL in the specified ".env" file, replacing std: existing entry.
+ * Stores the provided Postgres connection URL in the specified ".env" file, replacing std::string existing entry.
  *
  * Updates the "POSTGRES_URL" environment variable in both the file and the current process.
  *
@@ -74,10 +74,10 @@ std::future<void> setupPgLite(std: | undefined dbDir, std: | undefined envPath, 
  *
  * @throws {Error} If reading from or writing to the ".env" file fails.
  */
-std::future<void> storePostgresUrl(const std:& url, const std:& envFilePath);
+std::future<void> storePostgresUrl(const std::string& url, const std::string& envFilePath);
 
 /**
- * Stores the provided PGLite data directory in the specified ".env" file, replacing std: existing entry.
+ * Stores the provided PGLite data directory in the specified ".env" file, replacing std::string existing entry.
  *
  * Updates the "PGLITE_DATA_DIR" environment variable in both the file and the current process.
  *
@@ -86,72 +86,72 @@ std::future<void> storePostgresUrl(const std:& url, const std:& envFilePath);
  *
  * @throws {Error} If reading from or writing to the ".env" file fails.
  */
-std::future<void> storePgliteDataDir(const std:& dataDir, const std:& envFilePath);
+std::future<void> storePgliteDataDir(const std::string& dataDir, const std::string& envFilePath);
 
 /**
  * Prompts the user for a Postgres URL, validates it, and stores it
  * @returns The configured Postgres URL or null if user cancels
  */
-std::future<std: | null> promptAndStorePostgresUrl(const std:& envFilePath);
+std::future<std::string | null> promptAndStorePostgresUrl(const std::string& envFilePath);
 
 /**
  * Validates an OpenAI API key format
  * @param key The API key to validate
  * @returns True if the key appears valid
  */
-bool isValidOpenAIKey(const std:& key);
+bool isValidOpenAIKey(const std::string& key);
 
 /**
  * Validates an Anthropic API key format
  * @param key The API key to validate
  * @returns True if the key appears valid
  */
-bool isValidAnthropicKey(const std:& key);
+bool isValidAnthropicKey(const std::string& key);
 
 /**
  * Validates a Google Generative AI API key format
  * @param key The API key to validate
  * @returns True if the key appears valid
  */
-bool isValidGoogleKey(const std:& key);
+bool isValidGoogleKey(const std::string& key);
 
 /**
  * Stores OpenAI API key in the .env file
  * @param key The OpenAI API key to store
  * @param envFilePath Path to the .env file
  */
-std::future<void> storeOpenAIKey(const std:& key, const std:& envFilePath);
+std::future<void> storeOpenAIKey(const std::string& key, const std::string& envFilePath);
 
 /**
  * Stores Google Generative AI API key in the .env file
  * @param key The Google API key to store
  * @param envFilePath Path to the .env file
  */
-std::future<void> storeGoogleKey(const std:& key, const std:& envFilePath);
+std::future<void> storeGoogleKey(const std::string& key, const std::string& envFilePath);
 
 /**
  * Stores Anthropic API key in the .env file
  * @param key The Anthropic API key to store
  * @param envFilePath Path to the .env file
  */
-std::future<void> storeAnthropicKey(const std:& key, const std:& envFilePath);
+std::future<void> storeAnthropicKey(const std::string& key, const std::string& envFilePath);
 
 /**
  * Generic configuration for provider prompts
  */
 struct ProviderPromptConfig {
-    std: name;
-    std: icon;
-    std: noteText;
+    std::string name;
+    std::string icon;
+    std::string noteText;
     Array<{ inputs;
-    std: key;
-    std: message;
-    std::optional<std:> placeholder;
-    std::optional<std:> initialValue;
+    std::string key;
+    std::string message;
+    std::optional<std::string> placeholder;
+    std::optional<std::string> initialValue;
     'text' | 'password' type;
-    [&](value: std:) { return std: | undefined validate; };
-    [&](config: std:, envFilePath: std:) { return Promise<void> storeFunction; };
-    std: successMessage;
+    [&](value: std::string) { return std::string | std::nullopt validate; };
+    [&](config: std::string, envFilePath: std::string) { return Promise<void> storeFunction; };
+    std::string successMessage;
 };
 
 /**
@@ -170,28 +170,28 @@ struct ProviderPromptConfig {
  * @param envFilePath Path to the .env file
  * @returns The configured OpenAI API key or null if user cancels
  */
-std::future<std: | null> promptAndStoreOpenAIKey(const std:& envFilePath);
+std::future<std::string | null> promptAndStoreOpenAIKey(const std::string& envFilePath);
 
 /**
  * Prompts the user for an Anthropic API key, validates it, and stores it
  * @param envFilePath Path to the .env file
  * @returns The configured Anthropic API key or null if user cancels
  */
-std::future<std: | null> promptAndStoreAnthropicKey(const std:& envFilePath);
+std::future<std::string | null> promptAndStoreAnthropicKey(const std::string& envFilePath);
 
 /**
  * Validates an Ollama API endpoint format
  * @param endpoint The endpoint URL to validate
  * @returns True if the endpoint appears valid
  */
-bool isValidOllamaEndpoint(const std:& endpoint);
+bool isValidOllamaEndpoint(const std::string& endpoint);
 
 /**
  * Stores Ollama configuration in the .env file
  * @param config The Ollama configuration to store
  * @param envFilePath Path to the .env file
  */
-std::future<void> storeOllamaConfig({ endpoint: std:; model: std: } config, const std:& envFilePath);
+std::future<void> storeOllamaConfig({ endpoint: std::string; model: std::string } config, const std::string& envFilePath);
 
 /**
  * Prompts the user for Ollama embedding model selection
@@ -225,35 +225,35 @@ std::future<void> storeOllamaConfig({ endpoint: std:; model: std: } config, cons
  * @param envFilePath Path to the .env file
  * @returns The configured Google API key or null if user cancels
  */
-std::future<std: | null> promptAndStoreGoogleKey(const std:& envFilePath);
+std::future<std::string | null> promptAndStoreGoogleKey(const std::string& envFilePath);
 
 /**
  * Validates an OpenRouter API key format
  * @param key The API key to validate
  * @returns True if the key appears to be in valid format
  */
-bool isValidOpenRouterKey(const std:& key);
+bool isValidOpenRouterKey(const std::string& key);
 
 /**
  * Stores OpenRouter API key in the .env file
  * @param key The API key to store
  * @param envFilePath Path to the .env file
  */
-std::future<void> storeOpenRouterKey(const std:& key, const std:& envFilePath);
+std::future<void> storeOpenRouterKey(const std::string& key, const std::string& envFilePath);
 
 /**
  * Prompts the user for an OpenRouter API key, validates it, and stores it
  * @param envFilePath Path to the .env file
  * @returns The configured OpenRouter API key or null if user cancels
  */
-std::future<std: | null> promptAndStoreOpenRouterKey(const std:& envFilePath);
+std::future<std::string | null> promptAndStoreOpenRouterKey(const std::string& envFilePath);
 
 /**
  * Configures the database to use, either PGLite or PostgreSQL
  * @param reconfigure If true, force reconfiguration even if already configured
  * @returns The postgres URL if using Postgres, otherwise null
  */
-std::future<std: | null> configureDatabaseSettings(auto reconfigure = false);
+std::future<std::string | null> configureDatabaseSettings(auto reconfigure = false);
 
 // Main config schema
 /**
@@ -278,7 +278,7 @@ using Config = z.infer<typeof configSchema>;
  * @param {RawConfig} config - The raw configuration object.
  * @returns {Promise<Config>} The resolved configuration object with updated paths.
  */
-std::future<void> resolveConfigPaths(const std:& cwd, RawConfig config);
+std::future<void> resolveConfigPaths(const std::string& cwd, RawConfig config);
 
 /**
  * Load environment variables from the project ".env" file if it exists.
@@ -292,7 +292,7 @@ std::future<void> resolveConfigPaths(const std:& cwd, RawConfig config);
  * @param templateContent The template content containing example variables
  * @returns Merged environment variables object
  */
-std::unordered_map<std:, std:> mergeProcessEnvWithTemplate(const std:& templateContent);
+std::unordered_map<std::string, std::string> mergeProcessEnvWithTemplate(const std::string& templateContent);
 
 /**
  * Converts environment variables object back to .env file format, preserving comments from template
@@ -300,6 +300,6 @@ std::unordered_map<std:, std:> mergeProcessEnvWithTemplate(const std:& templateC
  * @param templateContent Original template content for structure and comments
  * @returns Formatted .env file content
  */
-std: formatEnvFileWithTemplate(Record<std: envVars, auto string>, const std:& templateContent);
+std::string formatEnvFileWithTemplate(Record<std::string envVars, auto string>, const std::string& templateContent);
 
 } // namespace elizaos

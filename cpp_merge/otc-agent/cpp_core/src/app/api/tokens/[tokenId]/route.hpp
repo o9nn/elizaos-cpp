@@ -14,6 +14,6 @@ namespace elizaos {
 
 
 
-std::future<void> GET(NextRequest request, { params: Promise<{ tokenId: std: }> } { params });
+std::future<void> GET(NextRequest request, { params: Promise<{ tokenId: std::string }> } { params });
 
 } // namespace elizaos

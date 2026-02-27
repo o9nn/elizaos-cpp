@@ -26,7 +26,7 @@ class PGliteClientManager implements IDatabaseClientManager<PGlite> {
    * Initializes the PGlite client with additional extensions.
    * @param {PGliteOptions} options - The options to configure the PGlite client.
    */
-  constructor(options: PGliteOptions) {
+  /* constructor */ (options: PGliteOptions) {
     this.client = new PGlite({
       ...options,
       extensions: {

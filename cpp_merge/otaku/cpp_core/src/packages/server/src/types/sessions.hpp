@@ -30,17 +30,17 @@ struct SessionTimeoutConfig {
  * Metadata associated with a session
  */
 struct SessionMetadata {
-    std::optional<std:> platform;
-    std::optional<std:> username;
-    std::optional<std:> discriminator;
-    std::optional<std:> avatar;
+    std::optional<std::string> platform;
+    std::optional<std::string> username;
+    std::optional<std::string> discriminator;
+    std::optional<std::string> avatar;
 };
 
 /**
  * Represents a messaging session between a user and an agent
  */
 struct Session {
-    std: id;
+    std::string id;
     UUID agentId;
     UUID channelId;
     UUID userId;
@@ -58,8 +58,8 @@ struct Session {
  * Request body for creating a session
  */
 struct CreateSessionRequest {
-    std: agentId;
-    std: userId;
+    std::string agentId;
+    std::string userId;
     std::optional<SessionMetadata> metadata;
     std::optional<SessionTimeoutConfig> timeoutConfig;
 };
@@ -68,7 +68,7 @@ struct CreateSessionRequest {
  * Response for session creation
  */
 struct CreateSessionResponse {
-    std: sessionId;
+    std::string sessionId;
     UUID agentId;
     UUID userId;
     std::chrono::system_clock::time_point createdAt;
@@ -81,10 +81,10 @@ struct CreateSessionResponse {
  * Request body for sending a message
  */
 struct SendMessageRequest {
-    std: content;
-    std: type;
-    std: url;
-    std::optional<std:> name;
+    std::string content;
+    std::string type;
+    std::string url;
+    std::optional<std::string> name;
     std::optional<MessageMetadata> metadata;
 };
 
@@ -92,21 +92,21 @@ struct SendMessageRequest {
  * Query parameters for retrieving messages
  */
 struct GetMessagesQuery {
-    std::optional<std:> limit;
-    std::optional<std:> before;
-    std::optional<std:> after;
+    std::optional<std::string> limit;
+    std::optional<std::string> before;
+    std::optional<std::string> after;
 };
 
 /**
  * Simplified message format for API responses
  */
 struct SimplifiedMessage {
-    std: id;
-    std: content;
-    std: authorId;
+    std::string id;
+    std::string content;
+    std::string authorId;
     bool isAgent;
     std::chrono::system_clock::time_point createdAt;
-    std::optional<std:> thought;
+    std::optional<std::string> thought;
     std::optional<std::vector<std::string>> actions;
 };
 
@@ -124,7 +124,7 @@ struct GetMessagesResponse {
  * Session info response
  */
 struct SessionInfoResponse {
-    std: sessionId;
+    std::string sessionId;
     UUID agentId;
     UUID userId;
     std::chrono::system_clock::time_point createdAt;
@@ -141,9 +141,9 @@ struct SessionInfoResponse {
  * Health check response
  */
 struct HealthCheckResponse {
-    std: status;
+    std::string status;
     double activeSessions;
-    std: timestamp;
+    std::string timestamp;
 };
 
 

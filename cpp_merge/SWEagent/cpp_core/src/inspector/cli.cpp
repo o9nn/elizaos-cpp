@@ -8,7 +8,7 @@
 
 namespace elizaos {
 
-std::optional<Trajectory> loadTrajectory(const std:& filePath) {
+std::optional<Trajectory> loadTrajectory(const std::string& filePath) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto content = fs.readFileSync(filePath, "utf-8");
@@ -22,7 +22,7 @@ std::optional<Trajectory> loadTrajectory(const std:& filePath) {
 
 }
 
-std: formatStep(TrajectoryStep step, double index) {
+std::string formatStep(TrajectoryStep step, double index) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const std::vector<std::string> lines = [];

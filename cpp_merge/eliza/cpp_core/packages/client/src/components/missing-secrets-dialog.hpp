@@ -18,9 +18,9 @@ namespace elizaos {
 
 struct MissingSecretsDialogProps {
     bool open;
-    std: name;
-    std::optional<std:> plugin;
-    std::optional<std:> description;
+    std::string name;
+    std::optional<std::string> plugin;
+    std::optional<std::string> description;
 };
 
 void MissingSecretsDialog(auto onOpenChange, auto missingSecrets, auto onConfirm, auto onCancel);

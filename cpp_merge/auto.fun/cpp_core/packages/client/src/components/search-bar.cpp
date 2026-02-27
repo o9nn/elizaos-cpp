@@ -1,4 +1,5 @@
 #include "search-bar.hpp"
+#include <string>
 #include <map>
 #include <iostream>
 #include <stdexcept>
@@ -32,7 +33,7 @@ void SearchBar() {
                 });
 
                 const auto debouncedSetSearchQuery = useCallback[&](;
-                debounce((value: std:) {
+                debounce((value: std::string) {
                     setSearchQuery(value);
                     }, 300),
                     [],

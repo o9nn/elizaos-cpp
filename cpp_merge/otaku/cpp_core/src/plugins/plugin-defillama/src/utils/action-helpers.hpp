@@ -35,9 +35,9 @@ double parsePositiveInteger(const std::optional<double>& value);
   // Find ATH (All-Time High) and its date
 
 
-std: sanitizeChainName(const std:& value);
+std::string sanitizeChainName(const std::string& value);
 
-std: sanitizeFilterSegment(const std:& value);
+std::string sanitizeFilterSegment(const std::string& value);
 
 
 } // namespace elizaos

@@ -78,7 +78,7 @@ enum PlatformPrefix {
  */
 struct EventPayload {
     IAgentRuntime runtime;
-    std: source;
+    std::string source;
     std::optional<[&]() { return void> onComplete; };
 };
 

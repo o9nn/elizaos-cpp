@@ -4,7 +4,7 @@
 // External dependency removed
 #include "../../../types.h"
 
-std::shared_ptr<Promise<string>> generateTeamReport(std::shared_ptr<IAgentRuntime> runtime, string standupType, string roomId = undefined);
+std::shared_ptr<Promise<string>> generateTeamReport(std::shared_ptr<IAgentRuntime> runtime, string standupType, string roomId = std::nullopt);
 
 extern std::shared_ptr<Action> generateReport;
 #endif

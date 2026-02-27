@@ -1,4 +1,5 @@
 #include "package-utils.hpp"
+#include <string>
 #include <future>
 #include <unordered_map>
 #include <iostream>
@@ -6,10 +7,10 @@
 
 namespace elizaos {
 
-std::future<UpdateCheckResult> checkForUpdates(const std::unordered_map<std:, std:>& dependencies) {
+std::future<UpdateCheckResult> checkForUpdates(const std::unordered_map<std::string, std::string>& dependencies) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
-    const std::unordered_map<std:, PackageUpdate> updates = {};
+    const std::unordered_map<std::string, PackageUpdate> updates = {};
     const auto elizaPackages = Object.entries(dependencies);
     .filter[&](([pkg]) { return pkg.substr(0, ELIZAOS_ORG)); };
     .filter[&](([, version]) { return !isWorkspaceVersion(version)); };
@@ -30,7 +31,7 @@ std::future<UpdateCheckResult> checkForUpdates(const std::unordered_map<std:, st
 
 }
 
-void displayUpdateSummary(const std::unordered_map<std:, PackageUpdate>& updates) {
+void displayUpdateSummary(const std::unordered_map<std::string, PackageUpdate>& updates) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     std::cout << "\nAvailable updates:" << std::endl;
@@ -42,7 +43,7 @@ void displayUpdateSummary(const std::unordered_map<std:, PackageUpdate>& updates
 
 }
 
-std::future<void> updatePackageJson(const std:& packageJsonPath, const std::unordered_map<std:, PackageUpdate>& updates) {
+std::future<void> updatePackageJson(const std::string& packageJsonPath, const std::unordered_map<std::string, PackageUpdate>& updates) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     const auto content = fs.readFile(packageJsonPath, "utf8");
@@ -61,13 +62,13 @@ std::future<void> updatePackageJson(const std:& packageJsonPath, const std::unor
     }
 
     if (modified) {
-        fs.writeFile(packageJsonPath, /* JSON.stringify */ std:(packageJson, nullptr, 2) + "\n");
+        fs.writeFile(packageJsonPath, /* JSON.stringify */ std::string(packageJson, nullptr, 2) + "\n");
         std::cout << "Updated package.json with new versions" << std::endl;
     }
 
 }
 
-std::future<void> installDependencies(const std:& cwd) {
+std::future<void> installDependencies(const std::string& cwd) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

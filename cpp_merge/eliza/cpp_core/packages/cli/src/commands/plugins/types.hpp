@@ -22,22 +22,22 @@ struct ListPluginsOptions {
 struct AddPluginOptions {
     std::optional<bool> skipEnvPrompt;
     std::optional<bool> skipVerification;
-    std::optional<std:> branch;
-    std::optional<std:> tag;
+    std::optional<std::string> branch;
+    std::optional<std::string> tag;
 };
 
 struct UpgradePluginOptions {
-    std::optional<std:> apiKey;
+    std::optional<std::string> apiKey;
     std::optional<bool> skipTests;
     std::optional<bool> skipValidation;
 };
 
 struct GeneratePluginOptions {
-    std::optional<std:> apiKey;
+    std::optional<std::string> apiKey;
     std::optional<bool> skipTests;
     std::optional<bool> skipValidation;
     std::optional<bool> skipPrompts;
-    std::optional<std:> specFile;
+    std::optional<std::string> specFile;
 };
 
 /**
@@ -45,34 +45,34 @@ struct GeneratePluginOptions {
  */
 struct PluginRegistryInfo {
     std::optional<{> git;
-    std: repo;
+    std::string repo;
     std::optional<{> v0;
-    std: version;
-    std: branch;
+    std::string version;
+    std::string branch;
     std::optional<{> v1;
-    std: version;
-    std: branch;
+    std::string version;
+    std::string branch;
     std::optional<{> npm;
-    std: repo;
-    std::optional<std:> v0;
-    std::optional<std:> v1;
+    std::string repo;
+    std::optional<std::string> v0;
+    std::optional<std::string> v1;
     { supports;
     bool v0;
     bool v1;
 };
 
 struct PluginRegistry {
-    std::unordered_map<std:, PluginRegistryInfo> registry;
+    std::unordered_map<std::string, PluginRegistryInfo> registry;
 };
 
 /**
  * Environment variable configuration
  */
 struct EnvVarConfig {
-    std: type;
-    std: description;
+    std::string type;
+    std::string description;
     std::optional<bool> required;
-    std::optional<std:> default;
+    std::optional<std::string> default;
     std::optional<bool> sensitive;
 };
 
@@ -81,8 +81,8 @@ struct EnvVarConfig {
  */
 struct MigrationResult {
     bool success;
-    std::optional<std:> branchName;
-    std::optional<std:> repoPath;
+    std::optional<std::string> branchName;
+    std::optional<std::string> repoPath;
     std::optional<Error> error;
 };
 
@@ -91,8 +91,8 @@ struct MigrationResult {
  */
 struct GenerationResult {
     bool success;
-    std::optional<std:> pluginName;
-    std::optional<std:> pluginPath;
+    std::optional<std::string> pluginName;
+    std::optional<std::string> pluginPath;
     std::optional<Error> error;
 };
 
@@ -100,13 +100,13 @@ struct GenerationResult {
  * Directory information from detection
  */
 struct DirectoryInfo {
-    std: type;
+    std::string type;
     bool hasPackageJson;
 };
 
 /**
  * Package.json dependencies
  */
-using Dependencies = std::unordered_map<std:, std:>;
+using Dependencies = std::unordered_map<std::string, std::string>;
 
 } // namespace elizaos

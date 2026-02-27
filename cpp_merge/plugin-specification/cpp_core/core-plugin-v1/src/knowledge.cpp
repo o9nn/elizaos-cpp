@@ -1,4 +1,5 @@
 #include "knowledge.hpp"
+#include <string>
 #include <vector>
 #include <optional>
 #include <map>
@@ -96,7 +97,7 @@ bool isSharedKnowledge(const std::variant<KnowledgeItem, RAGKnowledgeItem>& item
 
 }
 
-void createKnowledgeMetadata(std::optional<std:> source, std::optional<bool> isShared) {
+void createKnowledgeMetadata(std::optional<std::string> source, std::optional<bool> isShared) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return {
@@ -108,7 +109,7 @@ void createKnowledgeMetadata(std::optional<std:> source, std::optional<bool> isS
 
 }
 
-void adaptKnowledgeSearchParams(std::optional<std:> params) {
+void adaptKnowledgeSearchParams(std::optional<std::string> params) {
     // NOTE: Auto-converted from TypeScript - may need refinement
 
     return {

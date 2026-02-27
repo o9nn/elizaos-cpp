@@ -1,4 +1,5 @@
 #include "profile.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
@@ -10,7 +11,7 @@ void Profile() {
 
         const auto [selectedTab, setSelectedTab] = useState<Tab>("held");
 
-        const auto { address } = useParams<{ address?: std: }>();
+        const auto { address } = useParams<{ address?: std::string }>();
         const auto { publicKey } = useWallet();
         const auto walletAddress = publicKey.toBase58();
 
@@ -35,7 +36,7 @@ void Profile() {
                 const auto [isSubmittingName, setIsSubmittingName] = useState(false);
                 const auto [isUploading, setIsUploading] = useState(false);
                 const auto [isGeneratingPic, setIsGeneratingPic] = useState(false);
-                const auto [editError, setEditError] = useState<std: | nullptr>(nullptr);
+                const auto [editError, setEditError] = useState<std::string | nullptr>(nullptr);
                 const auto fileInputRef = useRef<HTMLInputElement>(nullptr);
 
                 const auto isLoading = isCurrentUser ? isCurrentUserLoading : isOtherUserLoading;

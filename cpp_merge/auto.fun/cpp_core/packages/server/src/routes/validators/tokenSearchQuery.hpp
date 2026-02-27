@@ -21,6 +21,6 @@ namespace elizaos {
 
 using SearchTokenInput = z::infer<typeof SearchTokenBodySchema>;
 
-SearchTokenInput parseSearchTokenRequest(const std:& data);
+SearchTokenInput parseSearchTokenRequest(const std::string& data);
 
 } // namespace elizaos

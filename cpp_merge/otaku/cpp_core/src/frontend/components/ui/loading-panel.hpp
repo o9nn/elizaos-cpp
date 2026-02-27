@@ -18,8 +18,8 @@ namespace elizaos {
 
 
 struct LoadingPanelProps {
-    std: title;
-    std::variant<std:, std::vector<std::string>> messages;
+    std::string title;
+    std::variant<std::string, std::vector<std::string>> messages;
     std::optional<std::variant<'loading', 'success', 'error'>> type;
 };
 

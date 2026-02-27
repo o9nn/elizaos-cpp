@@ -23,7 +23,7 @@ using DrizzleDB = std::variant<NodePgDatabase, PgliteDatabase>;
  * Drizzle wraps PostgreSQL errors and only shows the SQL query in the error message,
  * hiding the actual error in the cause property.
  */
-std: extractErrorMessage(unknown error);
+std::string extractErrorMessage(unknown error);
 
 /**
  * Extract detailed error information including stack trace for logging
@@ -32,40 +32,40 @@ std: extractErrorMessage(unknown error);
 void extractErrorDetails(unknown error); {
 
 struct ColumnDefinition {
-    std: name;
-    std: type;
+    std::string name;
+    std::string type;
     std::optional<bool> primaryKey;
     std::optional<bool> notNull;
-    std::optional<std:> defaultValue;
+    std::optional<std::string> defaultValue;
     std::optional<bool> unique;
 };
 
 struct IndexDefinition {
-    std: name;
+    std::string name;
     std::vector<std::string> columns;
     std::optional<bool> unique;
 };
 
 struct ForeignKeyDefinition {
-    std: name;
+    std::string name;
     std::vector<std::string> columns;
-    std: referencedTable;
+    std::string referencedTable;
     std::vector<std::string> referencedColumns;
-    std::optional<std:> onDelete;
+    std::optional<std::string> onDelete;
 };
 
 struct TableDefinition {
-    std: name;
+    std::string name;
     std::vector<ColumnDefinition> columns;
     std::vector<IndexDefinition> indexes;
     std::vector<ForeignKeyDefinition> foreignKeys;
-    std::vector<{ name: std:; expression: std: }> checkConstraints;
+    std::vector<{ name: std::string; expression: std::string }> checkConstraints;
 
 // Known composite primary keys for tables that don't have proper metadata
   // Add other tables with composite primary keys here if needed
 
 class DrizzleSchemaIntrospector {
-  parseTableDefinition(table: std:, exportKey?: std:): TableDefinition {
+  parseTableDefinition(table: std::string, exportKey?: std::string): TableDefinition {
     const tableName = this.getTableName(table, exportKey);
 
     const columns = this.parseColumns(table);
@@ -173,7 +173,7 @@ class DrizzleSchemaIntrospector {
             //   tableName:
             //     referenceResult && referenceResult.table
             //       ? this.getTableName(referenceResult.table, '')
-            //       : undefined,
+            //       : std::nullopt,
             //   resultKeys: referenceResult ? Object.keys(referenceResult) : [],
             //   hasName: !!(referenceResult && referenceResult.name),
             //   hasForeignTable: !!(referenceResult && referenceResult.foreignTable),
@@ -186,10 +186,10 @@ class DrizzleSchemaIntrospector {
             // Method 1: Use our enhanced extraction method
 
             // Method 2: Direct properties from reference result
-              // Ensure it's a std:, not a table object
+              // Ensure it's a std::string, not a table object
 
             // Method 3: Extract from name if it looks like a table name
-              // Ensure it's a std:, not a table object
+              // Ensure it's a std::string, not a table object
 
             // Method 4: If we still have the table object, extract the name
 
@@ -203,12 +203,12 @@ class DrizzleSchemaIntrospector {
 
               // Default to 'id' for referenced columns
 
-            // Final safety check: ensure referencedTableName is a std:, not an object
+            // Final safety check: ensure referencedTableName is a std::string, not an object
 
               // logger.debug("[INTROSPECTOR] Created foreign key:", foreignKey);
 
     // Fallback: Try to extract from table config if no inline FKs found
-      // Add std: additional fallback logic here if needed
+      // Add std::string additional fallback logic here if needed
 
     // logger.debug("[INTROSPECTOR] Found " + std::to_string(foreignKeys.size()) + " foreign keys:", foreignKeys);
 
@@ -247,7 +247,7 @@ class DrizzleSchemaIntrospector {
                 // logger.debug("[INTROSPECTOR] Symbol array item:", {
                 //   hasName: !!item.name,
                 //   hasColumns: !!item.columns,
-                //   hasUnique: item.unique != undefined,
+                //   hasUnique: item.unique != std::nullopt,
                 //   name: item.name,
                 //   unique: item.unique,
                 //   itemKeys: Object.keys(item),
@@ -277,7 +277,7 @@ class DrizzleSchemaIntrospector {
 
                 // Extract column names from the primary key definition
                   // Handle column objects that have a name property
-                  // Handle std: column names
+                  // Handle std::string column names
                   // Fallback
 
     // Check if this is a std::vector column by name pattern
@@ -321,7 +321,7 @@ class DrizzleSchemaIntrospector {
   // Generate foreign key constraint SQL
 
 class PluginNamespaceManager {
-  constructor(private db: DrizzleDB) {}
+  /* constructor */ (private db: DrizzleDB) {}
 
       // For the core SQL plugin, try to use the current schema if available (for PG)
       // Otherwise, default to public.
@@ -344,11 +344,11 @@ class PluginNamespaceManager {
           // Check if check constraint already exists
 
 class ExtensionManager {
-  constructor(private db: DrizzleDB) {}
+  /* constructor */ (private db: DrizzleDB) {}
 
 // Topological sort for dependency ordering
-std::vector<std::string> topologicalSort(Map<std: tables, auto TableDefinition>);
+std::vector<std::string> topologicalSort(Map<std::string tables, auto TableDefinition>);
 
-std::future<void> runPluginMigrations(DrizzleDB db, const std:& pluginName, const std:& schema);
+std::future<void> runPluginMigrations(DrizzleDB db, const std::string& pluginName, const std::string& schema);
 
 } // namespace elizaos

@@ -1,4 +1,5 @@
 #include "decode.hpp"
+#include <string>
 
 string decodeBase64(string encodedString)
 {
@@ -15,7 +16,7 @@ string decodeBase64(string encodedString)
     }
     catch (const any& error)
     {
-        throw any(std::make_shared<Error>(std:("Failed to decode base64 string: ") + (is<Error>(error)) ? any(error->message) (std:("Unknown error")) + string_empty));
+        throw any(std::make_shared<Error>(std::string("Failed to decode base64 string: ") + (is<Error>(error)) ? any(error->message) (std::string("Unknown error")) + string_empty));
     }
 };
 

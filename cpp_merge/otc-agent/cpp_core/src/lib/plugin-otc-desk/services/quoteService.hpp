@@ -16,11 +16,11 @@ namespace elizaos {
 // Quote Service - quote management for Eliza OTC Desk
 // Single source of truth registered with runtime.getService("QuoteService")
 
-class QuoteService extends Service {
-  static serviceType = "QuoteService" as std:;
+class QuoteService : public Service {
+  static serviceType = "QuoteService" as std::string;
   static serviceName = "QuoteService";
 
-  get serviceType(): std: {
+  get serviceType(): std::string {
     return "QuoteService";
   }
 
@@ -51,7 +51,7 @@ class QuoteService extends Service {
 
       // Find quotes with matching entityId that weren't indexed
 
-      // Fix the index in batch if we found std:
+      // Fix the index in batch if we found std::string
 
     // Fetch all quotes in parallel
 

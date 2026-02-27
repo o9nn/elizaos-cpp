@@ -1,10 +1,11 @@
 #include "problem-statement.hpp"
+#include <string>
 #include <iostream>
 #include <stdexcept>
 
 namespace elizaos {
 
-ProblemStatement problemStatementFromSimplifiedInput(const std:& input, const std:& type) {
+ProblemStatement problemStatementFromSimplifiedInput(const std::string& input, const std::string& type) {
     // NOTE: Auto-converted from TypeScript - may need refinement
     try {
 

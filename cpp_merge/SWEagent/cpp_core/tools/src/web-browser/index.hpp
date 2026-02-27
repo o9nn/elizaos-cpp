@@ -24,7 +24,7 @@ class BrowserManager {
   private screenshotDir = '/tmp/browser-screenshots';
   private isHeadless = std::getenv("WEB_BROWSER_HEADLESS") != '0';
 
-  constructor() {
+  /* constructor */ () {
     // Ensure screenshot directory exists
     if (!fs.existsSync(this.screenshotDir)) {
       fs.mkdirSync(this.screenshotDir, Config{recursive = true});
@@ -43,7 +43,7 @@ class BrowserServer {
   private browserManager: BrowserManager;
   private port;
 
-  constructor(port = 8009) {
+  /* constructor */ (port = 8009) {
     this.port = port;
     this.app = express();
     this.browserManager = std::make_unique<BrowserManager>();

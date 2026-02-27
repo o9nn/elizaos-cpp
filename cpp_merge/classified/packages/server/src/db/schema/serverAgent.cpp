@@ -1,19 +1,20 @@
 #include "serverAgent.hpp"
+#include <string>
 
-any serverAgentsTable = pgTable(std:("server_agents"), object{
-    object::pair{std:("serverId"), uuid(std:("server_id"))->notNull()->references([=]() mutable
+any serverAgentsTable = pgTable(std::string("server_agents"), object{
+    object::pair{std::string("serverId"), uuid(std::string("server_id"))->notNull()->references([=]() mutable
     {
         return messageServerTable->id;
     }
     , object{
-        object::pair{std:("onDelete"), std:("cascade")}
+        object::pair{std::string("onDelete"), std::string("cascade")}
     })}, 
-    object::pair{std:("agentId"), uuid(std:("agent_id"))->notNull()}
+    object::pair{std::string("agentId"), uuid(std::string("agent_id"))->notNull()}
 }, [=](auto table) mutable
 {
     return (object{
-        object::pair{std:("pk"), primaryKey(object{
-            object::pair{std:("columns"), array<any>{ table["serverId"], table["agentId"] }}
+        object::pair{std::string("pk"), primaryKey(object{
+            object::pair{std::string("columns"), array<any>{ table["serverId"], table["agentId"] }}
         })}
     });
 }

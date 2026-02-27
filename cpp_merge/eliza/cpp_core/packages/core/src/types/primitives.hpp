@@ -17,26 +17,26 @@ namespace elizaos {
 using UUID = "" + std::to_string(string) + "-" + std::to_string(string) + "-" + std::to_string(string) + "-" + std::to_string(string) + "-" + std::to_string(string) + "";
 
 /**
- * Helper std::function to safely cast a std: to strongly typed UUID
- * @param id The std: UUID to validate and cast
+ * Helper std::function to safely cast a std::string to strongly typed UUID
+ * @param id The std::string UUID to validate and cast
  * @returns The same UUID with branded type information
  */
-UUID asUUID(const std:& id);
+UUID asUUID(const std::string& id);
 
 /**
  * Represents the content of a memory, message, or other information
  */
 struct Content {
-    std::optional<std:> thought;
-    std::optional<std:> text;
+    std::optional<std::string> thought;
+    std::optional<std::string> text;
     std::optional<std::vector<std::string>> actions;
     std::optional<std::vector<std::string>> providers;
-    std::optional<std:> source;
-    std::optional<std:> target;
-    std::optional<std:> url;
+    std::optional<std::string> source;
+    std::optional<std::string> target;
+    std::optional<std::string> url;
     std::optional<UUID> inReplyTo;
     std::optional<std::vector<Media>> attachments;
-    std::optional<std:> channelType;
+    std::optional<std::string> channelType;
 };
 
 /**
@@ -69,6 +69,6 @@ enum ContentType {
  * A generic type for metadata objects, allowing for arbitrary key-value pairs.
  * This encourages consumers to perform type checking or casting.
  */
-using Metadata = std::unordered_map<std:, unknown>;
+using Metadata = std::unordered_map<std::string, unknown>;
 
 } // namespace elizaos
